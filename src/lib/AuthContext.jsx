@@ -214,7 +214,8 @@ export const AuthProvider = ({ children }) => {
         ...profile, 
         role: staffRecord?.role || profile?.role || 'lawyer',
         company_logo_url: companyData?.logo_url || companyData?.logo_light_url || null,
-        company_name: companyData?.name || profile?.company_name || sessionUser.user_metadata?.company_name || "LexAfrica",
+        company_name: companyData?.name || profile?.company_name || sessionUser.user_metadata?.company_name || "Airzyle",
+        company_industry: companyData?.industry_type || 'law',
         email: sessionUser.email, 
         full_name: staffRecord?.full_name || profile?.full_name || sessionUser.user_metadata?.full_name || "Admin",
         subscription_plan: companyData?.subscription_plan || 'starter',
@@ -228,6 +229,7 @@ export const AuthProvider = ({ children }) => {
         updatedUser.role !== newUser.role ||
         updatedUser.company_logo_url !== newUser.company_logo_url ||
         updatedUser.company_name !== newUser.company_name ||
+        updatedUser.company_industry !== newUser.company_industry ||
         updatedUser.full_name !== newUser.full_name ||
         updatedUser.email !== newUser.email ||
         updatedUser.subscription_status !== newUser.subscription_status ||

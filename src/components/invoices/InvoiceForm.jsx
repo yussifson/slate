@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Plus, Trash2 } from "lucide-react";
 import { formatCurrency } from "@/lib/constants";
 
-export default function InvoiceForm({ open, onClose, onSubmit, initialData, clients, currency }) {
+export default function InvoiceForm({ open, onClose, onSubmit, initialData, clients, currency, clientTerm = "Client" }) {
   const [form, setForm] = useState({
     invoice_number: "", client_id: "", client_name: "", status: "draft",
     due_date: "", payment_method: "", notes: "",
@@ -59,9 +59,9 @@ export default function InvoiceForm({ open, onClose, onSubmit, initialData, clie
           <div className="grid grid-cols-2 gap-4">
             <div><Label>Invoice #</Label><Input value={form.invoice_number} onChange={(e) => handleChange("invoice_number", e.target.value)} /></div>
             <div>
-              <Label>Client <span className="text-muted-foreground text-xs">(optional)</span></Label>
+              <Label>{clientTerm} <span className="text-muted-foreground text-xs">(optional)</span></Label>
               <Select value={form.client_id} onValueChange={handleClientChange}>
-                <SelectTrigger><SelectValue placeholder="Select client" /></SelectTrigger>
+                <SelectTrigger><SelectValue placeholder={`Select ${clientTerm.toLowerCase()}`} /></SelectTrigger>
                 <SelectContent>{clients?.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
               </Select>
             </div>

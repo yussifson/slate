@@ -61,19 +61,19 @@ const features = [
     icon: Scale,
     title: 'Case & Pipeline Tracking',
     description:
-      'Manage legal matters from intake to resolution. Customize stages, set reminders, and track client documents in one central view.',
+      'Manage business operations from intake to resolution. Customize stages, set reminders, and track client documents in one central view.',
   },
   {
     icon: Users,
     title: 'Smart Client Portal',
     description:
-      'Give clients a secure, branded environment to sign documents, review milestones, and communicate directly with counsel.',
+      'Give clients a secure, branded environment to sign documents, review milestones, and communicate directly with your team.',
   },
   {
     icon: Clock,
     title: 'Integrated Time Tracking',
     description:
-      'Bill accurately with live timers for consultations, research, hearings, and court appearances — then convert hours to invoices.',
+      'Bill accurately with live timers for consultations, research, meetings, and project delivery — then convert hours to invoices.',
   },
   {
     icon: Smartphone,
@@ -98,10 +98,10 @@ const features = [
 const testimonials = [
   {
     quote:
-      'LexAfrica completely transformed our practice. We moved from paper files to a digital pipeline and reduced document turnaround by 60%.',
+      'Airzyle completely transformed our practice. We moved from paper files to a digital pipeline and reduced document turnaround by 60%.',
     author: 'Adama Mensah',
     role: 'Managing Partner',
-    firm: 'Mensah & Partners, Accra',
+    firm: 'Mensah & Partners',
     rating: 5,
   },
   {
@@ -114,10 +114,10 @@ const testimonials = [
   },
   {
     quote:
-      'Managing court schedules, billing via Paystack, and email sync has never been this seamless. Highly recommended for any African firm.',
+      'Managing schedules, billing via Paystack, and email sync has never been this seamless. Highly recommended for any organization.',
     author: 'Mariama Kamara',
     role: 'Founder',
-    firm: 'Kamara Advocacy, Freetown',
+    firm: 'Kamara Group',
     rating: 5,
   },
 ];
@@ -171,11 +171,11 @@ export default function Home() {
           {/* Headline */}
           <FadeIn delay="delay-100">
             <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold tracking-tighter text-foreground leading-[1.05] max-w-4xl mx-auto mb-6">
-              Streamline Your Legal{' '}
+              Streamline Your Business{' '}
               <br className="hidden sm:block" />
               Operations with{' '}
               <span className="bg-gradient-to-br from-white to-primary/80 bg-clip-text text-transparent drop-shadow-sm">
-                LexAfrica
+                Airzyle
               </span>
             </h1>
           </FadeIn>
@@ -185,7 +185,7 @@ export default function Home() {
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8 leading-relaxed">
               Manage cases, automate client communication, log billable hours,
               process payments, and track HR — all from a single, secure platform
-              built for African law firms.
+              built for growing organizations.
             </p>
           </FadeIn>
 
@@ -334,7 +334,7 @@ export default function Home() {
                 Features
               </p>
               <h2 className="text-3xl md:text-5xl font-extrabold text-foreground tracking-tighter mb-4">
-                Built for the complexities of modern law
+                Built for the complexities of modern business
               </h2>
               <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
                 Unify case files, client relationships, time tracking, billing,
@@ -435,7 +435,7 @@ export default function Home() {
 
               <div className="relative z-10 max-w-3xl mx-auto space-y-8">
                 <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter leading-[1.1]">
-                  Ready to modernize your law firm?
+                  Ready to modernize your organization?
                 </h2>
                 <p className="text-lg md:text-xl text-white/80 leading-relaxed max-w-2xl mx-auto font-medium">
                   Create your workspace, invite associates, and start managing

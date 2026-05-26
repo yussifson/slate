@@ -59,7 +59,7 @@ export default function MarketingLayout({ children }) {
             </div>
             <div className="flex flex-col">
               <span className="font-extrabold text-base md:text-lg tracking-tight text-foreground leading-none">
-                LexAfrica
+                Airzyle
               </span>
               <span className="text-[10px] text-muted-foreground font-semibold tracking-[0.15em] uppercase leading-none mt-0.5">
                 Legal OS
@@ -218,7 +218,7 @@ export default function MarketingLayout({ children }) {
                 <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center text-white shadow-sm">
                   <Scale className="w-4 h-4" />
                 </div>
-                <span className="font-extrabold text-base text-foreground tracking-tight">LexAfrica</span>
+                <span className="font-extrabold text-base text-foreground tracking-tight">Airzyle</span>
               </Link>
               <p className="text-sm leading-relaxed text-muted-foreground max-w-[280px]">
                 The unified practice operating system custom-engineered for legal practitioners across the African continent.
@@ -275,7 +275,7 @@ export default function MarketingLayout({ children }) {
           {/* Bottom Bar */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground/70">
             <p>
-              © {new Date().getFullYear()} LexAfrica Technologies Inc. All rights reserved.
+              © {new Date().getFullYear()} Airzyle Technologies Inc. All rights reserved.
             </p>
             <div className="flex items-center gap-6">
               <a href="#terms" className="hover:text-primary transition-colors">Terms</a>

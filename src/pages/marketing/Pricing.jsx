@@ -69,7 +69,7 @@ export default function Pricing() {
     },
     {
       q: "How does the 14-day free trial work?",
-      a: "You get full, unrestricted access to LexAfrica for 14 days under your selected plan. No credit card is required to sign up. Before the trial ends, we will notify you to add your payment details via Paystack to keep using the workspace."
+      a: "You get full, unrestricted access to Airzyle for 14 days under your selected plan. No credit card is required to sign up. Before the trial ends, we will notify you to add your payment details via Paystack to keep using the workspace."
     },
     {
       q: "Is client data stored securely?",

@@ -12,7 +12,7 @@ export default function Features() {
       bullets: [
         "Interactive case pipelines and customizable milestones",
         "Hearing logging with automated court calendar notifications",
-        "Detailed conflict checking to safeguard legal integrity",
+        "Detailed conflict checking to safeguard operational integrity",
         "Case outcome dashboards to analyze win/loss metrics",
       ],
       icon: Scale,
@@ -22,7 +22,7 @@ export default function Features() {
       badge: "Secure Client Environment",
       title: "Deliver premium experiences with Client Portals",
       description:
-        "Allow clients to check their case's progress, view active tasks, upload requested legal materials, and digitally sign retainers or signatures. Fully customized under your own brand color and logo.",
+        "Allow clients to check their case's progress, view active tasks, upload requested relevant materials, and digitally sign retainers or signatures. Fully customized under your own brand color and logo.",
       bullets: [
         "Self-service onboarding intake questionnaires",
         "Direct chat window with the lead advocacy team",
@@ -41,7 +41,7 @@ export default function Features() {
         "Desktop active timers tracking research and consults",
         "Dynamic invoice templates matching your corporate letterhead",
         "Local payments processed via Paystack (card, bank transfer, USSD)",
-        "Financial reporting tracking firm revenue and outstanding fees",
+        "Financial reporting tracking organization revenue and outstanding fees",
       ],
       icon: CreditCard,
       align: "left",
@@ -82,7 +82,7 @@ export default function Features() {
             Core Features
           </span>
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground mb-6 max-w-3xl mx-auto leading-[1.15]">
-            Everything your legal team needs
+            Everything your business team needs
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             Unlock a comprehensive system built specifically for modern practice
@@ -217,7 +217,7 @@ export default function Features() {
       <section className="py-24 md:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight mb-5">
-            Supercharge your legal office today
+            Supercharge your business office today
           </h2>
           <p className="text-lg text-muted-foreground max-w-lg mx-auto leading-relaxed mb-8">
             Sign up now for a 14-day free trial on your own customized

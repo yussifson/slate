@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import { getSubdomainAndBase } from '@/lib/domainUtils';
 
 export default function SignUp() {
   const [companyName, setCompanyName] = useState('');
   const [subdomain, setSubdomain] = useState('');
+  const [industryType, setIndustryType] = useState('law');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -40,6 +42,7 @@ export default function SignUp() {
         name: companyName,
         subdomain: cleanSubdomain,
         email: email,
+        industry_type: industryType,
         subscription_plan: 'starter',
         subscription_status: 'trial',
         status: 'active'
@@ -56,7 +59,7 @@ export default function SignUp() {
 
       if (profError) throw profError;
 
-      setSuccess("Account and Firm successfully created! Redirecting to your login portal...");
+      setSuccess("Account and Workspace successfully created! Redirecting to your login portal...");
       
       // Auto-redirect to their new subdomain
       setTimeout(() => {
@@ -81,8 +84,8 @@ export default function SignUp() {
       </div>
       <div className="w-full max-w-md space-y-8 rounded-xl bg-card p-8 shadow-xl border border-border/80">
         <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-foreground">Register your Law Firm</h2>
-          <p className="mt-2 text-sm text-muted-foreground">Create an account to start managing your firm</p>
+          <h2 className="text-3xl font-bold tracking-tight text-foreground">Register your Workspace</h2>
+          <p className="mt-2 text-sm text-muted-foreground">Create an account to start managing your business</p>
         </div>
         
         <form className="mt-8 space-y-6" onSubmit={handleSignUp}>
@@ -94,7 +97,7 @@ export default function SignUp() {
               <Input
                 type="text"
                 required
-                placeholder="Law Firm Name"
+                placeholder="Company Name"
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
                 className="w-full"
@@ -104,11 +107,29 @@ export default function SignUp() {
               <Input
                 type="text"
                 required
-                placeholder="Subdomain (e.g. yourfirm)"
+                placeholder="Subdomain (e.g. yourcompany)"
                 value={subdomain}
                 onChange={(e) => setSubdomain(e.target.value)}
                 className="w-full"
               />
+            </div>
+            <div>
+              <Select value={industryType} onValueChange={setIndustryType} required>
+                <SelectTrigger className="w-full bg-background">
+                  <SelectValue placeholder="Select your Industry" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="law">Law Firm</SelectItem>
+                  <SelectItem value="hospital">Hospital & Healthcare</SelectItem>
+                  <SelectItem value="school">School & Education</SelectItem>
+                  <SelectItem value="hotel">Hotel & Hospitality</SelectItem>
+                  <SelectItem value="church">Church & Religion</SelectItem>
+                  <SelectItem value="insurance">Insurance</SelectItem>
+                  <SelectItem value="retail">Retail / POS</SelectItem>
+                  <SelectItem value="logistics">Logistics & Delivery</SelectItem>
+                  <SelectItem value="hr">HR & ERP</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div>
               <Input

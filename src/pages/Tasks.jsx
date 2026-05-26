@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
-import { useCompanyId } from "@/hooks/useCompanyId";
+import { useCompanyId, useCompany } from "@/hooks/useCompanyId";
 import { isSuperAdmin } from "@/lib/constants";
+import { getTerm } from "@/config/industries";
 import PageHeader from "@/components/shared/PageHeader";
 import DataTable from "@/components/shared/DataTable";
 import { Button } from "@/components/ui/button";
@@ -32,7 +33,7 @@ const STATUS_COLORS = {
   cancelled: "bg-gray-100 text-gray-500",
 };
 
-function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId }) {
+function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, caseTerm }) {
   const queryClient = useQueryClient();
   const isEdit = !!initialData?.id;
 
@@ -143,9 +144,9 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId })
             </div>
           </div>
           <div>
-            <Label>Related Case</Label>
+            <Label>Related {caseTerm}</Label>
             <Select value={form.case_id} onValueChange={handleCaseChange}>
-              <SelectTrigger><SelectValue placeholder="Select case (optional)" /></SelectTrigger>
+              <SelectTrigger><SelectValue placeholder={`Select ${caseTerm.toLowerCase()} (optional)`} /></SelectTrigger>
               <SelectContent>
                 {cases.map(c => (
                   <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>
@@ -181,7 +182,11 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId })
 export default function Tasks() {
   const { user } = useAuth();
   const companyId = useCompanyId();
+  const { data: company } = useCompany();
   const queryClient = useQueryClient();
+
+  const industry = company?.industry_type || "law";
+  const caseTerm = getTerm(industry, "case");
 
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -345,6 +350,7 @@ export default function Tasks() {
           cases={cases}
           staff={staff}
           companyId={companyId}
+          caseTerm={caseTerm}
         />
       )}
     </div>

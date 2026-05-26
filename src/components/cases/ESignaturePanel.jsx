@@ -59,7 +59,7 @@ export default function ESignaturePanel({ caseData, user }) {
 
       await base44.integrations.Core.SendEmail({
         to: data.client_email,
-        from_name: user?.full_name || "LexAfrica",
+        from_name: user?.full_name || "Airzyle",
         subject: `Signature Required: ${data.document_name}`,
         body: `Dear ${data.client_name},
 
@@ -75,7 +75,7 @@ This link will expire in 7 days.
 
 Best regards,
 ${user?.full_name}
-LexAfrica Law Management`,
+Airzyle Law Management`,
       });
 
       return req;
@@ -93,7 +93,7 @@ LexAfrica Law Management`,
       await base44.integrations.Core.SendEmail({
         to: req.client_email,
         subject: `[Reminder] Signature Required: ${req.document_name}`,
-        body: `Dear ${req.client_name},\n\nThis is a reminder to sign the document: ${req.document_name}\n\nSigning link: ${signingUrl}\n\n— LexAfrica`,
+        body: `Dear ${req.client_name},\n\nThis is a reminder to sign the document: ${req.document_name}\n\nSigning link: ${signingUrl}\n\n— Airzyle`,
       });
       toast({ title: "Reminder sent" });
     },

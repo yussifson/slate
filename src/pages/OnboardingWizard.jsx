@@ -9,7 +9,7 @@ import { Scale, Building2, Users, Briefcase, ArrowRight, ArrowLeft, Check, Spark
 import confetti from 'canvas-confetti';
 import { useToast } from '@/components/ui/use-toast';
 import { getSubdomainAndBase } from '@/lib/domainUtils';
-
+import { getTerm, INDUSTRIES } from '@/config/industries';
 export default function OnboardingWizard() {
   const { user, refreshUser } = useAuth();
   const { toast } = useToast();
@@ -145,7 +145,7 @@ export default function OnboardingWizard() {
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center text-white">
             <Scale className="w-4 h-4" />
           </div>
-          <span className="font-bold text-base text-slate-900 tracking-tight">LexAfrica Setup Wizard</span>
+          <span className="font-bold text-base text-slate-900 tracking-tight">Workspace Setup Wizard</span>
         </div>
         <div className="text-xs font-semibold text-slate-400">
           Step {step} of 3
@@ -179,21 +179,21 @@ export default function OnboardingWizard() {
           <div className="space-y-6">
             <div className="space-y-2">
               <h2 className="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-1.5">
-                <Building2 className="w-5 h-5 text-primary" /> Setup your Law Firm
+                <Building2 className="w-5 h-5 text-primary" /> Setup your {INDUSTRIES[user?.company_industry || 'law']?.name || 'Workspace'}
               </h2>
               <p className="text-sm text-slate-500 leading-relaxed">
-                Provide your practice's physical coordinates and standard operating currency for dynamic billing templates.
+                Provide your organization's physical coordinates and standard operating currency for dynamic billing templates.
               </p>
             </div>
 
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Law Firm Name</label>
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{INDUSTRIES[user?.company_industry || 'law']?.name || 'Workspace'} Name</label>
                 <Input 
                   type="text"
                   value={firmName}
                   onChange={(e) => setFirmName(e.target.value)}
-                  placeholder="Mensah & Partners"
+                  placeholder="E.g. Mensah & Partners"
                   className="py-5 rounded-xl"
                 />
               </div>
@@ -254,10 +254,10 @@ export default function OnboardingWizard() {
           <div className="space-y-6">
             <div className="space-y-2">
               <h2 className="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-1.5">
-                <Users className="w-5 h-5 text-primary" /> Invite your legal team
+                <Users className="w-5 h-5 text-primary" /> Invite your team
               </h2>
               <p className="text-sm text-slate-500 leading-relaxed">
-                Add partners, senior counsels, associates, and legal secretaries to collaborate in real-time.
+                Add your {getTerm(user?.company_industry, 'lawyers').toLowerCase()} and staff members to collaborate in real-time.
               </p>
             </div>
 
@@ -287,10 +287,10 @@ export default function OnboardingWizard() {
                 <Select value={staffRole} onValueChange={setStaffRole} className="w-full">
                   <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="lawyer">Lawyer / Associate</SelectItem>
-                    <SelectItem value="partner">Managing Partner</SelectItem>
-                    <SelectItem value="secretary">Legal Secretary</SelectItem>
-                    <SelectItem value="clerk">Legal Clerk</SelectItem>
+                    <SelectItem value="lawyer">{getTerm(user?.company_industry, 'lawyer')}</SelectItem>
+                    <SelectItem value="partner">Manager / Partner</SelectItem>
+                    <SelectItem value="secretary">Admin / Secretary</SelectItem>
+                    <SelectItem value="clerk">Assistant / Clerk</SelectItem>
                   </SelectContent>
                 </Select>
                 <Button 
@@ -350,28 +350,28 @@ export default function OnboardingWizard() {
           <div className="space-y-6">
             <div className="space-y-2">
               <h2 className="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-1.5">
-                <Briefcase className="w-5 h-5 text-primary" /> Initialize your first Case
+                <Briefcase className="w-5 h-5 text-primary" /> Initialize your first {getTerm(user?.company_industry, 'case')}
               </h2>
               <p className="text-sm text-slate-500 leading-relaxed">
-                Create a matter and link it to your first active client to test the case management pipeline.
+                Create a {getTerm(user?.company_industry, 'case').toLowerCase()} and link it to your first active {getTerm(user?.company_industry, 'client').toLowerCase()} to test the pipeline.
               </p>
             </div>
 
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Matter / Case Title</label>
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(user?.company_industry, 'case')} Title</label>
                 <Input 
                   type="text"
                   value={caseTitle}
                   onChange={(e) => setCaseTitle(e.target.value)}
-                  placeholder="E.g., Kapchorwa Estate Dispute"
+                  placeholder={`E.g., Initial ${getTerm(user?.company_industry, 'case')} for setup`}
                   className="py-5 rounded-xl"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Client Full Name</label>
+                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(user?.company_industry, 'client')} Full Name</label>
                   <Input 
                     type="text"
                     value={clientName}
@@ -381,12 +381,12 @@ export default function OnboardingWizard() {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Client Email</label>
+                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(user?.company_industry, 'client')} Email</label>
                   <Input 
                     type="email"
                     value={clientEmail}
                     onChange={(e) => setClientEmail(e.target.value)}
-                    placeholder="client@email.com"
+                    placeholder="contact@email.com"
                     className="rounded-xl"
                   />
                 </div>

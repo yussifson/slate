@@ -58,7 +58,7 @@ export default function AppLayout() {
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4 shrink-0 animate-pulse" />
               <span className="font-semibold">Free Trial Active:</span>
-              <span>You have <strong className="font-extrabold">{trialDaysLeft} days</strong> remaining on your LexAfrica trial.</span>
+              <span>You have <strong className="font-extrabold">{trialDaysLeft} days</strong> remaining on your Airzyle trial.</span>
             </div>
             <div className="flex items-center gap-3">
               <Link to="/settings">

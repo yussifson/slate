@@ -123,7 +123,7 @@ function buildBillingHearingPDF(caseData, client, invoices, timeEntries, hearing
     doc.setFontSize(8);
     doc.setTextColor(150, 150, 150);
     doc.setFont("helvetica", "normal");
-    doc.text(`LexAfrica Law Management | Generated: ${today} | Page ${i} of ${totalPages}`, margin, 290);
+    doc.text(`Airzyle Law Management | Generated: ${today} | Page ${i} of ${totalPages}`, margin, 290);
   }
 
   return doc;
@@ -224,7 +224,7 @@ function buildPDF(template, caseData, client, additionalNotes) {
     addLine("Yours faithfully,", { size: 10 });
     addSpacer();
     addLine(caseData.assigned_lawyer_name || "Legal Counsel", { bold: true, size: 10 });
-    addLine("LexAfrica Law Management", { size: 10 });
+    addLine("Airzyle Law Management", { size: 10 });
 
   } else if (template === "court_filing") {
     addLine("COURT FILING — COVER SHEET", { bold: true, size: 16, color: [30, 64, 175] });
@@ -335,7 +335,7 @@ function buildPDF(template, caseData, client, additionalNotes) {
     addLine("Date: ____________________________", { size: 10 });
     addSpacer(2);
     addLine(`${caseData.assigned_lawyer_name || "Attorney"}`, { bold: true, size: 10 });
-    addLine("LexAfrica Law Management", { size: 10 });
+    addLine("Airzyle Law Management", { size: 10 });
   }
 
   // Footer
@@ -345,7 +345,7 @@ function buildPDF(template, caseData, client, additionalNotes) {
     doc.setFontSize(8);
     doc.setTextColor(150, 150, 150);
     doc.setFont("helvetica", "normal");
-    doc.text(`LexAfrica Law Management | Generated: ${today} | Page ${i} of ${totalPages}`, margin, 290);
+    doc.text(`Airzyle Law Management | Generated: ${today} | Page ${i} of ${totalPages}`, margin, 290);
   }
 
   return doc;

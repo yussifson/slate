@@ -13,7 +13,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [branding, setBranding] = useState({ name: 'LexAfrica', logo_url: null, tagline: 'Enter your credentials to access your account' });
+  const [branding, setBranding] = useState({ name: 'Airzyle', logo_url: null, tagline: 'Enter your credentials to access your account' });
   
   const { currentSubdomain, baseDomain } = getSubdomainAndBase();
 
@@ -32,16 +32,16 @@ export default function Login() {
              // Fallback to table query if RPC is not created yet (for development)
              const { data: tableData, error: tableError } = await supabase.from('companies').select('name, logo_url, logo_light_url').eq('subdomain', currentSubdomain).single();
              if (tableData) {
-               setBranding({ name: tableData.name || 'LexAfrica', logo_url: tableData.logo_url || tableData.logo_light_url, tagline: `Sign in to ${tableData.name || 'your firm'}` });
+               setBranding({ name: tableData.name || 'Airzyle', logo_url: tableData.logo_url || tableData.logo_light_url, tagline: `Sign in to ${tableData.name || 'your workspace'}` });
              } else if (tableError) {
                console.error("Table fallback error:", tableError);
                setInvalidSubdomain(true);
              }
           } else if (data && data.name) {
             setBranding({
-              name: data.name || 'LexAfrica',
+              name: data.name || 'Airzyle',
               logo_url: data.logo_url || data.logo_light_url,
-              tagline: `Sign in to ${data.name || 'your firm'}`
+              tagline: `Sign in to ${data.name || 'your workspace'}`
             });
           } else {
              // RPC succeeded but returned null/empty
@@ -82,7 +82,7 @@ export default function Login() {
         
         if (companySubdomain && companySubdomain !== currentSubdomain) {
           await supabase.auth.signOut();
-          setError(`Invalid Firm Identity! Your credentials are correct, but they belong to "${company?.name}". Please go to ${companySubdomain}.${baseDomain} to log in.`);
+          setError(`Invalid Workspace Identity! Your credentials are correct, but they belong to "${company?.name}". Please go to ${companySubdomain}.${baseDomain} to log in.`);
           setLoading(false);
           return;
         }
@@ -109,7 +109,7 @@ export default function Login() {
   if (checkingSubdomain) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="animate-pulse text-muted-foreground font-medium">Checking firm access...</div>
+        <div className="animate-pulse text-muted-foreground font-medium">Checking workspace access...</div>
       </div>
     );
   }
@@ -127,9 +127,9 @@ export default function Login() {
             <AlertCircle className="h-8 w-8 text-red-500" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">Firm Not Found</h2>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">Workspace Not Found</h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              We couldn't find a law firm matching the web address <span className="font-semibold text-foreground">"{currentSubdomain}"</span>.
+              We couldn't find an organization matching the web address <span className="font-semibold text-foreground">"{currentSubdomain}"</span>.
             </p>
           </div>
           <div className="pt-4 border-t border-border">

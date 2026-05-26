@@ -30,19 +30,19 @@ export default function Contact() {
       city: "Lagos, Nigeria",
       address: "14 Kingsway Road, Ikoyi, Lagos",
       phone: "+234 1 293 8472",
-      email: "lagos@lexafrica.oatstack.com"
+      email: "lagos@airzyle.oatstack.com"
     },
     {
       city: "Accra, Ghana",
       address: "8 Senchi Street, Airport Residential, Accra",
       phone: "+233 30 293 8472",
-      email: "accra@lexafrica.oatstack.com"
+      email: "accra@airzyle.oatstack.com"
     },
     {
       city: "Freetown, Sierra Leone",
       address: "42 Siaka Stevens Street, Central, Freetown",
       phone: "+232 76 293 842",
-      email: "freetown@lexafrica.oatstack.com"
+      email: "freetown@airzyle.oatstack.com"
     }
   ];
 
@@ -119,7 +119,7 @@ export default function Contact() {
                   Message Received Successfully!
                 </h3>
                 <p className="text-base text-muted-foreground max-w-md mx-auto leading-relaxed">
-                  Thank you for reaching out. A LexAfrica product counselor has been assigned and will reply shortly to your email.
+                  Thank you for reaching out. A Airzyle product counselor has been assigned and will reply shortly to your email.
                 </p>
                 <div className="pt-3">
                   <Button

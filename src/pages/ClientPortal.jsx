@@ -13,6 +13,7 @@ import ClientMessaging from "@/components/portal/ClientMessaging";
 import ClientBillingReport from "@/components/portal/ClientBillingReport";
 import ClientChecklistPanel from "@/components/portal/ClientChecklistPanel";
 import ClientAtAGlance from "@/components/portal/ClientAtAGlance";
+import { getTerm } from "@/config/industries";
 
 function StatCard({ icon: IconComp, label, value, color }) {
   return (
@@ -96,9 +97,9 @@ export default function ClientPortal() {
           <Scale className="w-8 h-8 text-muted-foreground" />
         </div>
         <div>
-          <h2 className="text-lg font-semibold">No Client Profile Found</h2>
+          <h2 className="text-lg font-semibold">No {getTerm(user?.company_industry, 'client')} Profile Found</h2>
           <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-            Your account ({user?.email}) is not linked to a client record. Please contact your law firm.
+            Your account ({user?.email}) is not linked to a {getTerm(user?.company_industry, 'client').toLowerCase()} record. Please contact your organization.
           </p>
         </div>
       </div>
@@ -115,15 +116,15 @@ export default function ClientPortal() {
           </div>
           <div>
             <h1 className="text-xl font-bold">Welcome, {client.name}</h1>
-            <p className="text-sm text-white/80">Your secure legal portal — view cases, documents & invoices</p>
+            <p className="text-sm text-white/80">Your secure portal — view {getTerm(user?.company_industry, 'cases').toLowerCase()}, documents & invoices</p>
           </div>
         </div>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <StatCard icon={Briefcase} label="My Cases" value={cases.length} color="bg-blue-50 text-blue-600" />
-        <StatCard icon={Calendar} label="Upcoming Hearings" value={upcomingHearings.length} color="bg-purple-50 text-purple-600" />
+        <StatCard icon={Briefcase} label={`My ${getTerm(user?.company_industry, 'cases')}`} value={cases.length} color="bg-blue-50 text-blue-600" />
+        <StatCard icon={Calendar} label="Upcoming Appointments" value={upcomingHearings.length} color="bg-purple-50 text-purple-600" />
         <StatCard icon={Receipt} label="Invoices Paid" value={invoices.filter(i => i.status === "paid").length} color="bg-green-50 text-green-600" />
         <StatCard icon={FolderOpen} label="Documents" value={sharedDocs.length} color="bg-amber-50 text-amber-600" />
       </div>
@@ -138,8 +139,8 @@ export default function ClientPortal() {
 
       <Tabs defaultValue="cases">
         <TabsList className="flex-wrap h-auto gap-1">
-          <TabsTrigger value="cases" className="gap-1.5"><Briefcase className="w-3.5 h-3.5" />My Cases</TabsTrigger>
-          <TabsTrigger value="hearings" className="gap-1.5"><Calendar className="w-3.5 h-3.5" />Hearings</TabsTrigger>
+          <TabsTrigger value="cases" className="gap-1.5"><Briefcase className="w-3.5 h-3.5" />My {getTerm(user?.company_industry, 'cases')}</TabsTrigger>
+          <TabsTrigger value="hearings" className="gap-1.5"><Calendar className="w-3.5 h-3.5" />Appointments</TabsTrigger>
           <TabsTrigger value="documents" className="gap-1.5"><FolderOpen className="w-3.5 h-3.5" />Documents</TabsTrigger>
           <TabsTrigger value="invoices" className="gap-1.5"><Receipt className="w-3.5 h-3.5" />Invoices</TabsTrigger>
           <TabsTrigger value="messages" className="gap-1.5"><MessageSquare className="w-3.5 h-3.5" />Messages</TabsTrigger>
@@ -151,7 +152,7 @@ export default function ClientPortal() {
         <TabsContent value="cases" className="mt-4">
           <div className="bg-card rounded-xl border border-border divide-y divide-border">
             {cases.length === 0 ? (
-              <div className="p-10 text-center text-sm text-muted-foreground">No cases found</div>
+              <div className="p-10 text-center text-sm text-muted-foreground">No {getTerm(user?.company_industry, 'cases').toLowerCase()} found</div>
             ) : cases.map(c => {
               const ps = getPipelineState(c.id);
               return (
@@ -170,12 +171,12 @@ export default function ClientPortal() {
                   </div>
                   {ps && (
                     <div className="flex items-center gap-1.5 mt-1">
-                      <span className="text-[10px] text-muted-foreground">Pipeline stage:</span>
+                      <span className="text-[10px] text-muted-foreground">Status:</span>
                       <Badge className="text-[10px] bg-primary/10 text-primary">{ps.current_stage_name}</Badge>
                     </div>
                   )}
                   {c.next_hearing_date && (
-                    <p className="text-xs text-muted-foreground">Next hearing: <span className="text-foreground">{format(new Date(c.next_hearing_date), "MMM d, yyyy")}</span></p>
+                    <p className="text-xs text-muted-foreground">Next appointment: <span className="text-foreground">{format(new Date(c.next_hearing_date), "MMM d, yyyy")}</span></p>
                   )}
                 </div>
               );
@@ -187,7 +188,7 @@ export default function ClientPortal() {
         <TabsContent value="hearings" className="mt-4">
           <div className="bg-card rounded-xl border border-border divide-y divide-border">
             {upcomingHearings.length === 0 ? (
-              <div className="p-10 text-center text-sm text-muted-foreground">No upcoming hearings</div>
+              <div className="p-10 text-center text-sm text-muted-foreground">No upcoming appointments</div>
             ) : upcomingHearings.map(h => (
               <div key={h.id} className="p-4 flex items-center gap-3">
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex flex-col items-center justify-center shrink-0">
@@ -273,7 +274,7 @@ export default function ClientPortal() {
         <TabsContent value="messages" className="mt-4">
           {cases.length === 0 ? (
             <div className="bg-card rounded-xl border border-border p-10 text-center text-sm text-muted-foreground">
-              No cases found to message about
+              No {getTerm(user?.company_industry, 'cases').toLowerCase()} found to message about
             </div>
           ) : (
             <div className="space-y-4">

@@ -272,7 +272,7 @@ export default function PlatformAdminDashboard() {
                             <td className="px-4 py-3.5">
                               <div>
                                 <p className="font-bold text-slate-900 text-xs">{c.name}</p>
-                                <p className="font-mono text-[10px] text-primary">{c.subdomain}.lexafrica.oatstack.com</p>
+                                <p className="font-mono text-[10px] text-primary">{c.subdomain}.airzyle.oatstack.com</p>
                                 <p className="text-[10px] text-slate-400">{c.email} · {activeUsers} users · {activeCases} cases</p>
                               </div>
                             </td>

@@ -334,7 +334,7 @@ function CurrencySettings({ company, onSave, saving }) {
 
 function EmailSettings({ onSave, saving }) {
   const [form, setForm] = useState({
-    from_name: "LexAfrica",
+    from_name: "Airzyle",
     from_email: "",
     reply_to: "",
     smtp_host: "",

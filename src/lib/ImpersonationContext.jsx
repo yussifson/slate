@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 
 const ImpersonationContext = createContext();
 
-const STORAGE_KEY = "lexafrica_impersonating";
+const STORAGE_KEY = "airzyle_impersonating";
 
 export function ImpersonationProvider({ children }) {
   const [impersonatedCompany, setImpersonatedCompany] = useState(() => {

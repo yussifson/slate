@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
-import { useCompanyId } from "@/hooks/useCompanyId";
+import { useCompanyId, useCompany } from "@/hooks/useCompanyId";
 import { Plus, Receipt, Search, CheckCircle2, Clock, AlertCircle } from "lucide-react";
+import { getTerm } from "@/config/industries";
 import ExportButton from "@/components/shared/ExportButton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +19,7 @@ import { format } from "date-fns";
 export default function Invoices() {
   const { user } = useAuth();
   const companyId = useCompanyId();
+  const { data: companyContext } = useCompany();
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
   const [editingInvoice, setEditingInvoice] = useState(null);
@@ -56,6 +58,9 @@ export default function Invoices() {
   });
 
   const currency = company?.currency || "GHS";
+  const industry = companyContext?.industry_type || "law";
+  const clientTerm = getTerm(industry, "client");
+
   const filtered = invoices.filter(i => {
     const matchSearch = !search || i.client_name?.toLowerCase().includes(search.toLowerCase()) || i.invoice_number?.toLowerCase().includes(search.toLowerCase());
     const matchStatus = statusFilter === "all" || i.status === statusFilter;
@@ -73,7 +78,7 @@ export default function Invoices() {
 
   const columns = [
     { header: "Invoice #", render: (row) => <span className="font-medium text-sm">{row.invoice_number || "—"}</span> },
-    { header: "Client", render: (row) => <span className="text-sm">{row.client_name}</span> },
+    { header: clientTerm, render: (row) => <span className="text-sm">{row.client_name}</span> },
     { header: "Amount", render: (row) => <span className="font-semibold text-sm">{formatCurrency(row.total_amount, row.currency)}</span> },
     { header: "Payment Status", render: (row) => getPaymentStatusIcon(row.status) },
     { header: "Status", render: (row) => <Badge className={`${INVOICE_STATUS_COLORS[row.status]} text-[10px]`}>{row.status}</Badge> },
@@ -129,6 +134,7 @@ export default function Invoices() {
           initialData={editingInvoice}
           clients={clients}
           currency={currency}
+          clientTerm={clientTerm}
         />
       )}
     </div>

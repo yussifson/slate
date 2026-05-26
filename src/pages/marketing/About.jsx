@@ -7,12 +7,11 @@ export default function About() {
     {
       icon: Target,
       title: "Our Mission",
-      description: "To build the most secure, comprehensive practice operating system that empowers African legal practitioners to automate manual tasks and serve clients seamlessly."
+      description: "To build the most secure, comprehensive practice operating system that empowers businesses to automate manual tasks and serve clients seamlessly."
     },
     {
       icon: Shield,
-      title: "Bank-Grade Confidentiality",
-      description: "We hold client secrecy and legal integrity as our ultimate directive. Every transaction, case document, and link is encrypted with advanced protocols."
+      description: "We hold client secrecy and operational integrity as our ultimate directive. Every transaction, case document, and link is encrypted with advanced protocols."
     },
     {
       icon: Users,
@@ -22,7 +21,7 @@ export default function About() {
   ];
 
   const stats = [
-    { value: "500+", label: "Advocates", icon: Users },
+    { value: "500+", label: "Organizations", icon: Users },
     { value: "12", label: "Countries", icon: Globe },
     { value: "99.9%", label: "Uptime", icon: Clock },
     { value: "24/7", label: "Support", icon: Headphones },
@@ -37,10 +36,10 @@ export default function About() {
             Our Story
           </span>
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground mb-6 max-w-3xl mx-auto leading-tight">
-            Digitizing legal operations across Africa
+            Digitizing business operations globally
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Founded by a team of legal practitioners and engineers, LexAfrica is the first dedicated SaaS legal practice manager custom-built for regional advocacy requirements.
+            Founded by a team of industry practitioners and engineers, Airzyle is the first dedicated SaaS business management platform custom-built for regional operational requirements.
           </p>
         </div>
       </section>
@@ -52,13 +51,13 @@ export default function About() {
             {/* Left — Narrative */}
             <div className="space-y-6">
               <h2 className="text-2xl font-bold text-foreground leading-tight">
-                Why we built LexAfrica
+                Why we built Airzyle
               </h2>
               <p className="text-base text-muted-foreground leading-relaxed">
-                Advocacy in the African continent has long relied on legacy software, paper files, or separate applications for emails, calendars, billing, and team communication. This fragmentation leads to lost billable hours, administrative confusion, and security liabilities.
+                Operations have long relied on legacy software, paper files, or separate applications for emails, calendars, billing, and team communication. This fragmentation leads to lost billable hours, administrative confusion, and security liabilities.
               </p>
               <p className="text-base text-muted-foreground leading-relaxed">
-                We created LexAfrica to provide a single, premium, cohesive ecosystem. An OS where an advocate can check case pipelines, message a client, sync court calendars, track consulting hours, and receive card or bank transfer payments in one click.
+                We created Airzyle to provide a single, premium, cohesive ecosystem. An OS where an organization can check pipelines, message a client, sync calendars, track consulting hours, and receive card or bank transfer payments in one click.
               </p>
             </div>
 
@@ -70,7 +69,7 @@ export default function About() {
                   500+
                 </span>
                 <p className="text-base font-semibold uppercase tracking-wider text-muted-foreground">
-                  Active advocates and counsels
+                  Active professionals and organizations
                 </p>
               </div>
             </div>
@@ -132,10 +131,10 @@ export default function About() {
       <section className="py-24 md:py-32">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
           <h2 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight">
-            Join the future of legal practice
+            Join the future of business operations
           </h2>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
-            Sign up today to create a dedicated subdomain workspace for your partners, lawyers, and clients. Explore the trial with no commitment.
+            Sign up today to create a dedicated subdomain workspace for your partners, team, and clients. Explore the trial with no commitment.
           </p>
           <div className="pt-4">
             <Link to="/signup">
