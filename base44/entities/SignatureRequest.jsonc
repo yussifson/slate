@@ -1,0 +1,142 @@
+{
+  "name": "SignatureRequest",
+  "type": "object",
+  "properties": {
+    "company_id": {
+      "type": "string"
+    },
+    "document_id": {
+      "type": "string"
+    },
+    "document_name": {
+      "type": "string"
+    },
+    "case_id": {
+      "type": "string"
+    },
+    "case_title": {
+      "type": "string"
+    },
+    "client_id": {
+      "type": "string"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "client_email": {
+      "type": "string"
+    },
+    "sent_by": {
+      "type": "string"
+    },
+    "sent_by_name": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "sent",
+        "opened",
+        "signed",
+        "declined",
+        "expired"
+      ],
+      "default": "draft"
+    },
+    "sent_at": {
+      "type": "string"
+    },
+    "opened_at": {
+      "type": "string"
+    },
+    "signed_at": {
+      "type": "string"
+    },
+    "signature_data": {
+      "type": "string",
+      "description": "Base64 signature image"
+    },
+    "signature_ip": {
+      "type": "string"
+    },
+    "signature_token": {
+      "type": "string",
+      "description": "Unique token for the signing URL"
+    },
+    "message": {
+      "type": "string"
+    },
+    "expires_at": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "document_id",
+    "client_email",
+    "company_id"
+  ],
+  "rls": {
+    "create": {
+      "data.company_id": "{{user.company_id}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "data.company_id": "{{user.company_id}}"
+        },
+        {
+          "data.sent_by": "{{user.email}}"
+        },
+        {
+          "data.client_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.company_id": "{{user.company_id}}",
+          "$or": [
+            {
+              "data.sent_by": "{{user.email}}"
+            },
+            {
+              "user_condition": {
+                "role": "company_admin"
+              }
+            }
+          ]
+        },
+        {
+          "data.client_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.company_id": "{{user.company_id}}",
+          "user_condition": {
+            "role": "company_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    }
+  }
+}

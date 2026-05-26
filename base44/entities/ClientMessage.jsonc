@@ -1,0 +1,46 @@
+{
+  "name": "ClientMessage",
+  "type": "object",
+  "properties": {
+    "company_id": {
+      "type": "string"
+    },
+    "case_id": {
+      "type": "string"
+    },
+    "case_title": {
+      "type": "string"
+    },
+    "sender_email": {
+      "type": "string"
+    },
+    "sender_name": {
+      "type": "string"
+    },
+    "sender_type": {
+      "type": "string",
+      "enum": [
+        "client",
+        "lawyer"
+      ],
+      "default": "client"
+    },
+    "content": {
+      "type": "string"
+    },
+    "read_by_lawyer": {
+      "type": "boolean",
+      "default": false
+    },
+    "read_by_client": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "company_id",
+    "case_id",
+    "sender_email",
+    "content"
+  ]
+}

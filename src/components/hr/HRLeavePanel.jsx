@@ -1,0 +1,182 @@
+import React, { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { base44 } from "@/api/base44Client";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Plus, CheckCircle, XCircle, User, Calendar } from "lucide-react";
+import { format, parseISO, differenceInCalendarDays } from "date-fns";
+import { cn } from "@/lib/utils";
+
+const LEAVE_TYPES = ["annual", "sick", "maternity", "paternity", "bereavement", "unpaid", "other"];
+const STATUS_COLORS = { pending: "bg-amber-100 text-amber-700", approved: "bg-green-100 text-green-700", rejected: "bg-red-100 text-red-700", cancelled: "bg-gray-100 text-gray-600" };
+const LEAVE_COLORS = { annual: "bg-blue-100 text-blue-700", sick: "bg-red-100 text-red-700", maternity: "bg-pink-100 text-pink-700", paternity: "bg-purple-100 text-purple-700", bereavement: "bg-gray-100 text-gray-600", unpaid: "bg-orange-100 text-orange-700", other: "bg-slate-100 text-slate-600" };
+
+export default function HRLeavePanel({ companyId, leaves, staff, isAdmin, user }) {
+  const queryClient = useQueryClient();
+  const [showForm, setShowForm] = useState(false);
+
+  const createMutation = useMutation({
+    mutationFn: (data) => {
+      const staffInfo = data._for_staff_email
+        ? { staff_email: data._for_staff_email, staff_name: data._for_staff_name }
+        : { staff_email: user.email, staff_name: user.full_name };
+      const { _for_staff_email, _for_staff_name, ...rest } = data;
+      return base44.entities.LeaveRequest.create({ ...rest, ...staffInfo, company_id: companyId });
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["leaves", companyId] }); setShowForm(false); },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }) => base44.entities.LeaveRequest.update(id, data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["leaves", companyId] }),
+  });
+
+  const myLeaves = leaves.filter(l => l.staff_email === user?.email);
+  const pending = leaves.filter(l => l.status === "pending");
+
+  const handleApprove = (leave) => updateMutation.mutate({ id: leave.id, data: { status: "approved", reviewed_by: user.email, reviewed_at: new Date().toISOString() } });
+  const handleReject = (leave) => updateMutation.mutate({ id: leave.id, data: { status: "rejected", reviewed_by: user.email, reviewed_at: new Date().toISOString() } });
+
+  const getBalance = (email) => {
+    const record = staff.find(s => s.user_email === email);
+    const used = leaves.filter(l => l.staff_email === email && l.status === "approved" && l.leave_type === "annual").reduce((s, l) => s + (l.days_requested || 0), 0);
+    const total = record?.leave_balance || 21;
+    return { total, used, remaining: total - used };
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex justify-end">
+        <Button size="sm" onClick={() => setShowForm(true)}><Plus className="w-4 h-4 mr-1" /> Request Leave</Button>
+      </div>
+
+      <Tabs defaultValue={isAdmin ? "all" : "mine"}>
+        <TabsList>
+          {isAdmin && <TabsTrigger value="all">All Requests {pending.length > 0 && <Badge className="ml-1 bg-amber-100 text-amber-700 text-[9px] h-4 px-1">{pending.length}</Badge>}</TabsTrigger>}
+          <TabsTrigger value="mine">My Requests</TabsTrigger>
+          {isAdmin && <TabsTrigger value="balances">Staff Balances</TabsTrigger>}
+        </TabsList>
+
+        <TabsContent value="all" className="mt-3">
+          <LeaveList leaves={isAdmin ? leaves : myLeaves} isAdmin={isAdmin} onApprove={handleApprove} onReject={handleReject} />
+        </TabsContent>
+        <TabsContent value="mine" className="mt-3">
+          <LeaveList leaves={myLeaves} isAdmin={false} onApprove={handleApprove} onReject={handleReject} />
+        </TabsContent>
+        {isAdmin && (
+          <TabsContent value="balances" className="mt-3">
+            <div className="bg-card border border-border rounded-xl divide-y divide-border">
+              {staff.map(s => {
+                const bal = getBalance(s.user_email);
+                const pct = Math.min((bal.used / bal.total) * 100, 100);
+                return (
+                  <div key={s.id} className="px-4 py-3 flex items-center gap-4">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <span className="text-xs font-bold text-primary">{s.full_name?.[0]}</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium">{s.full_name}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <div className="flex-1 bg-muted rounded-full h-1.5">
+                          <div className="bg-primary rounded-full h-1.5" style={{ width: `${pct}%` }} />
+                        </div>
+                        <span className="text-xs text-muted-foreground shrink-0">{bal.used}/{bal.total} days used</span>
+                      </div>
+                    </div>
+                    <Badge className={cn("text-[10px]", bal.remaining < 5 ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700")}>
+                      {bal.remaining} days left
+                    </Badge>
+                  </div>
+                );
+              })}
+            </div>
+          </TabsContent>
+        )}
+      </Tabs>
+
+      <LeaveRequestDialog open={showForm} onClose={() => setShowForm(false)} onSubmit={(d) => createMutation.mutate(d)} isAdmin={isAdmin} staffRecords={staff} />
+    </div>
+  );
+}
+
+function LeaveList({ leaves, isAdmin, onApprove, onReject }) {
+  if (!leaves.length) return (
+    <div className="bg-card border border-border rounded-xl p-10 text-center">
+      <Calendar className="w-10 h-10 text-muted-foreground mx-auto mb-2" />
+      <p className="text-sm text-muted-foreground">No leave requests</p>
+    </div>
+  );
+  return (
+    <div className="bg-card border border-border rounded-xl divide-y divide-border">
+      {leaves.map(leave => (
+        <div key={leave.id} className="px-4 py-3 flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center shrink-0"><User className="w-4 h-4 text-muted-foreground" /></div>
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="text-sm font-medium">{leave.staff_name}</span>
+              <Badge className={cn("text-[9px] h-4 px-1.5 capitalize", LEAVE_COLORS[leave.leave_type])}>{leave.leave_type}</Badge>
+              <Badge className={cn("text-[9px] h-4 px-1.5", STATUS_COLORS[leave.status])}>{leave.status}</Badge>
+            </div>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {leave.start_date && format(parseISO(leave.start_date), "MMM d")} – {leave.end_date && format(parseISO(leave.end_date), "MMM d, yyyy")} · {leave.days_requested} day(s)
+            </p>
+          </div>
+          {isAdmin && leave.status === "pending" && (
+            <div className="flex gap-1.5 shrink-0">
+              <Button size="sm" className="h-7 text-xs bg-green-600 hover:bg-green-700 gap-1" onClick={() => onApprove(leave)}><CheckCircle className="w-3 h-3" />Approve</Button>
+              <Button size="sm" variant="outline" className="h-7 text-xs gap-1 text-red-600 border-red-200" onClick={() => onReject(leave)}><XCircle className="w-3 h-3" />Reject</Button>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function LeaveRequestDialog({ open, onClose, onSubmit, isAdmin, staffRecords }) {
+  const [form, setForm] = useState({ leave_type: "annual", start_date: "", end_date: "", reason: "", _for_staff_email: "", _for_staff_name: "" });
+  const days = form.start_date && form.end_date ? Math.max(1, differenceInCalendarDays(parseISO(form.end_date), parseISO(form.start_date)) + 1) : 0;
+  const handleSubmit = (e) => { e.preventDefault(); onSubmit({ ...form, days_requested: days }); };
+  const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+  return (
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-md">
+        <DialogHeader><DialogTitle>Request Leave</DialogTitle></DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {isAdmin && (
+            <div>
+              <Label>For Team Member <span className="text-xs text-muted-foreground">(blank = yourself)</span></Label>
+              <Select value={form._for_staff_email} onValueChange={v => { const s = staffRecords.find(sr => sr.user_email === v); set("_for_staff_email", v); set("_for_staff_name", s?.full_name || ""); }}>
+                <SelectTrigger><SelectValue placeholder="Select staff member" /></SelectTrigger>
+                <SelectContent>{staffRecords.map(s => <SelectItem key={s.user_email} value={s.user_email}>{s.full_name}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
+          )}
+          <div>
+            <Label>Leave Type</Label>
+            <Select value={form.leave_type} onValueChange={v => set("leave_type", v)}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>{LEAVE_TYPES.map(t => <SelectItem key={t} value={t} className="capitalize">{t}</SelectItem>)}</SelectContent>
+            </Select>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div><Label>Start Date</Label><Input type="date" value={form.start_date} onChange={e => set("start_date", e.target.value)} required /></div>
+            <div><Label>End Date</Label><Input type="date" value={form.end_date} onChange={e => set("end_date", e.target.value)} required /></div>
+          </div>
+          {days > 0 && <p className="text-sm text-primary font-medium">{days} day(s) requested</p>}
+          <div><Label>Reason</Label><Textarea value={form.reason} onChange={e => set("reason", e.target.value)} className="resize-none h-20" /></div>
+          <div className="flex justify-end gap-2">
+            <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
+            <Button type="submit">Submit Request</Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}

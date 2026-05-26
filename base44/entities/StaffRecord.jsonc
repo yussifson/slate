@@ -1,0 +1,134 @@
+{
+  "name": "StaffRecord",
+  "type": "object",
+  "properties": {
+    "company_id": {
+      "type": "string"
+    },
+    "user_email": {
+      "type": "string"
+    },
+    "full_name": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "company_admin",
+        "lawyer",
+        "paralegal",
+        "hr",
+        "finance",
+        "support"
+      ],
+      "default": "lawyer"
+    },
+    "department": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "hire_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "on_leave"
+      ],
+      "default": "active"
+    },
+    "salary": {
+      "type": "number"
+    },
+    "currency": {
+      "type": "string",
+      "enum": [
+        "GHS",
+        "NGN",
+        "SLL",
+        "USD"
+      ],
+      "default": "GHS"
+    },
+    "leave_balance": {
+      "type": "number",
+      "default": 21
+    },
+    "bar_number": {
+      "type": "string",
+      "description": "For lawyers - bar association number"
+    }
+  },
+  "required": [
+    "full_name",
+    "company_id",
+    "user_email"
+  ],
+  "rls": {
+    "create": {
+      "$or": [
+        {
+          "data.company_id": "{{user.company_id}}",
+          "user_condition": {
+            "role": "company_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    },
+    "read": {
+      "$or": [
+        {
+          "data.company_id": "{{user.company_id}}"
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "data.company_id": "{{user.company_id}}",
+          "user_condition": {
+            "role": "company_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.company_id": "{{user.company_id}}",
+          "user_condition": {
+            "role": "company_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    }
+  }
+}

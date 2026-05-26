@@ -1,0 +1,170 @@
+{
+  "name": "Invoice",
+  "type": "object",
+  "properties": {
+    "company_id": {
+      "type": "string"
+    },
+    "invoice_number": {
+      "type": "string"
+    },
+    "client_id": {
+      "type": "string"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "case_id": {
+      "type": "string"
+    },
+    "case_title": {
+      "type": "string"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "unit_price": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "subtotal": {
+      "type": "number"
+    },
+    "tax_rate": {
+      "type": "number",
+      "default": 0
+    },
+    "tax_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "total_amount": {
+      "type": "number"
+    },
+    "currency": {
+      "type": "string",
+      "enum": [
+        "GHS",
+        "NGN",
+        "SLL",
+        "USD"
+      ],
+      "default": "GHS"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "sent",
+        "paid",
+        "overdue",
+        "cancelled"
+      ],
+      "default": "draft"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "paid_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "payment_method": {
+      "type": "string",
+      "enum": [
+        "bank_transfer",
+        "mobile_money",
+        "cash",
+        "card",
+        "other"
+      ]
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "client_name",
+    "total_amount",
+    "company_id"
+  ],
+  "rls": {
+    "create": {
+      "data.company_id": "{{user.company_id}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "data.company_id": "{{user.company_id}}"
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.company_id": "{{user.company_id}}",
+          "$or": [
+            {
+              "user_condition": {
+                "role": "company_admin"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "finance"
+              }
+            }
+          ]
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.company_id": "{{user.company_id}}",
+          "$or": [
+            {
+              "user_condition": {
+                "role": "company_admin"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "finance"
+              }
+            }
+          ]
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "name": "Promotion",
+  "type": "object",
+  "properties": {
+    "company_id": {
+      "type": "string"
+    },
+    "staff_email": {
+      "type": "string"
+    },
+    "staff_name": {
+      "type": "string"
+    },
+    "from_role": {
+      "type": "string"
+    },
+    "to_role": {
+      "type": "string"
+    },
+    "from_salary": {
+      "type": "number"
+    },
+    "to_salary": {
+      "type": "number"
+    },
+    "currency": {
+      "type": "string",
+      "enum": [
+        "GHS",
+        "NGN",
+        "SLL",
+        "USD"
+      ],
+      "default": "GHS"
+    },
+    "effective_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "reason": {
+      "type": "string"
+    },
+    "approved_by": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "company_id",
+    "staff_email",
+    "to_role"
+  ]
+}

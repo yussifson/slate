@@ -1,0 +1,105 @@
+{
+  "name": "Notification",
+  "type": "object",
+  "properties": {
+    "company_id": {
+      "type": "string"
+    },
+    "recipient_email": {
+      "type": "string"
+    },
+    "recipient_name": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "hearing_reminder",
+        "invoice_overdue"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "related_id": {
+      "type": "string",
+      "description": "Hearing or Invoice ID"
+    },
+    "is_read": {
+      "type": "boolean",
+      "default": false
+    },
+    "email_sent": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "recipient_email",
+    "type",
+    "title",
+    "message"
+  ],
+  "rls": {
+    "create": {
+      "data.company_id": "{{user.company_id}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "data.recipient_email": "{{user.email}}"
+        },
+        {
+          "data.company_id": "{{user.company_id}}",
+          "user_condition": {
+            "role": "company_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.recipient_email": "{{user.email}}"
+        },
+        {
+          "data.company_id": "{{user.company_id}}",
+          "user_condition": {
+            "role": "company_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.recipient_email": "{{user.email}}"
+        },
+        {
+          "data.company_id": "{{user.company_id}}",
+          "user_condition": {
+            "role": "company_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    }
+  }
+}

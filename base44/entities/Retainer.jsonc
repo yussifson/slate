@@ -1,0 +1,134 @@
+{
+  "name": "Retainer",
+  "type": "object",
+  "properties": {
+    "company_id": {
+      "type": "string"
+    },
+    "case_id": {
+      "type": "string"
+    },
+    "case_title": {
+      "type": "string"
+    },
+    "client_id": {
+      "type": "string"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "initial_deposit": {
+      "type": "number",
+      "description": "Original retainer amount paid by client"
+    },
+    "current_balance": {
+      "type": "number",
+      "description": "Remaining balance after deductions"
+    },
+    "total_deducted": {
+      "type": "number",
+      "default": 0
+    },
+    "currency": {
+      "type": "string",
+      "enum": [
+        "GHS",
+        "NGN",
+        "SLL",
+        "USD"
+      ],
+      "default": "GHS"
+    },
+    "alert_threshold": {
+      "type": "number",
+      "description": "Alert when balance falls below this amount"
+    },
+    "alert_triggered": {
+      "type": "boolean",
+      "default": false
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "depleted",
+        "closed"
+      ],
+      "default": "active"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "case_id",
+    "company_id",
+    "initial_deposit",
+    "current_balance"
+  ],
+  "rls": {
+    "create": {
+      "data.company_id": "{{user.company_id}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "data.company_id": "{{user.company_id}}"
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.company_id": "{{user.company_id}}",
+          "$or": [
+            {
+              "user_condition": {
+                "role": "company_admin"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "finance"
+              }
+            }
+          ]
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.company_id": "{{user.company_id}}",
+          "$or": [
+            {
+              "user_condition": {
+                "role": "company_admin"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "finance"
+              }
+            }
+          ]
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    }
+  }
+}

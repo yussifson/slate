@@ -1,0 +1,226 @@
+import React, { useState } from "react";
+import { base44 } from "@/api/base44Client";
+import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/lib/AuthContext";
+import { MessageCircle, Send, User, Briefcase, ExternalLink, Phone } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import PageHeader from "@/components/shared/PageHeader";
+
+const MESSAGE_TEMPLATES = [
+  { label: "Case Update", text: "Dear {client_name}, I wanted to update you on your case. Please feel free to contact us if you have any questions." },
+  { label: "Hearing Reminder", text: "Dear {client_name}, this is a reminder that your hearing is scheduled. Please ensure you are available and have all required documents." },
+  { label: "Document Request", text: "Dear {client_name}, we kindly request that you provide the following documents at your earliest convenience to proceed with your case." },
+  { label: "Invoice Ready", text: "Dear {client_name}, your invoice is ready. Please review and arrange payment at your earliest convenience. Contact us for any queries." },
+  { label: "Appointment Confirmation", text: "Dear {client_name}, your appointment with our office has been confirmed. Please arrive 10 minutes early with a valid ID." },
+];
+
+export default function WhatsAppMessenger() {
+  const { user } = useAuth();
+  const companyId = user?.company_id;
+  const [selectedClient, setSelectedClient] = useState(null);
+  const [selectedCase, setSelectedCase] = useState(null);
+  const [message, setMessage] = useState("");
+  const [phone, setPhone] = useState("");
+
+  const { data: clients = [] } = useQuery({
+    queryKey: ["clients", companyId],
+    queryFn: () => base44.entities.Client.filter({ company_id: companyId }),
+    enabled: !!companyId,
+  });
+
+  const { data: cases = [] } = useQuery({
+    queryKey: ["cases", companyId],
+    queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId }),
+    enabled: !!companyId,
+  });
+
+  const clientCases = selectedClient
+    ? cases.filter(c => c.client_id === selectedClient.id)
+    : [];
+
+  const handleClientChange = (clientId) => {
+    const c = clients.find(cl => cl.id === clientId);
+    setSelectedClient(c || null);
+    setSelectedCase(null);
+    setPhone(c?.phone || "");
+  };
+
+  const handleTemplate = (template) => {
+    const filled = template.text.replace("{client_name}", selectedClient?.name || "Client");
+    setMessage(filled);
+  };
+
+  const formatPhone = (raw) => {
+    // Strip everything except digits and leading +
+    return raw.replace(/[^\d+]/g, "");
+  };
+
+  const handleSend = () => {
+    const cleaned = formatPhone(phone);
+    if (!cleaned) return;
+    const encoded = encodeURIComponent(message);
+    const url = `https://wa.me/${cleaned.replace("+", "")}?text=${encoded}`;
+    window.open(url, "_blank");
+  };
+
+  const canSend = phone.trim().length > 5 && message.trim().length > 0;
+
+  return (
+    <div className="space-y-4 max-w-3xl">
+      <PageHeader
+        title="WhatsApp Messenger"
+        subtitle="Send case updates and documents to clients via WhatsApp"
+      />
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Left: Client & Case selection */}
+        <div className="bg-card border border-border rounded-xl p-5 space-y-4">
+          <h3 className="text-sm font-semibold flex items-center gap-2">
+            <User className="w-4 h-4 text-primary" /> Select Recipient
+          </h3>
+
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-muted-foreground">Client</label>
+            <Select onValueChange={handleClientChange}>
+              <SelectTrigger>
+                <SelectValue placeholder="Choose a client..." />
+              </SelectTrigger>
+              <SelectContent>
+                {clients.map(c => (
+                  <SelectItem key={c.id} value={c.id}>
+                    {c.name} {c.phone ? `(${c.phone})` : "— no phone"}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {selectedClient && (
+            <div className="bg-muted/40 rounded-lg p-3 space-y-1">
+              <p className="text-xs font-semibold">{selectedClient.name}</p>
+              {selectedClient.email && <p className="text-xs text-muted-foreground">{selectedClient.email}</p>}
+              <div className="flex items-center gap-1.5 mt-1">
+                <Phone className="w-3 h-3 text-muted-foreground" />
+                <input
+                  className="text-xs bg-transparent border-b border-dashed border-muted-foreground/40 focus:outline-none focus:border-primary w-full"
+                  value={phone}
+                  onChange={e => setPhone(e.target.value)}
+                  placeholder="+233200000000"
+                />
+              </div>
+              {!selectedClient.phone && (
+                <p className="text-[10px] text-amber-600 mt-1">No phone on file — enter manually above</p>
+              )}
+            </div>
+          )}
+
+          {clientCases.length > 0 && (
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-muted-foreground">Related Case (optional)</label>
+              <Select onValueChange={(id) => setSelectedCase(cases.find(c => c.id === id) || null)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Tag a case..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {clientCases.map(c => (
+                    <SelectItem key={c.id} value={c.id}>
+                      <div className="flex items-center gap-2">
+                        <Briefcase className="w-3 h-3" />
+                        {c.title}
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
+          {selectedCase && (
+            <div className="bg-primary/5 rounded-lg px-3 py-2 flex items-center gap-2">
+              <Briefcase className="w-3.5 h-3.5 text-primary" />
+              <span className="text-xs font-medium text-primary">{selectedCase.title}</span>
+              <Badge variant="outline" className="text-[9px] ml-auto">{selectedCase.status}</Badge>
+            </div>
+          )}
+        </div>
+
+        {/* Right: Message composer */}
+        <div className="bg-card border border-border rounded-xl p-5 space-y-4">
+          <h3 className="text-sm font-semibold flex items-center gap-2">
+            <MessageCircle className="w-4 h-4 text-green-600" /> Compose Message
+          </h3>
+
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-muted-foreground">Quick Templates</label>
+            <div className="flex flex-wrap gap-1.5">
+              {MESSAGE_TEMPLATES.map(t => (
+                <button
+                  key={t.label}
+                  onClick={() => handleTemplate(t)}
+                  className="text-[10px] px-2 py-1 rounded-md border border-border hover:border-primary hover:bg-primary/5 transition-colors"
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-muted-foreground">Message</label>
+            <Textarea
+              value={message}
+              onChange={e => setMessage(e.target.value)}
+              placeholder="Type your message here..."
+              rows={6}
+              className="text-sm resize-none"
+            />
+            <p className="text-[10px] text-muted-foreground text-right">{message.length} chars</p>
+          </div>
+
+          <Button
+            onClick={handleSend}
+            disabled={!canSend}
+            className="w-full gap-2 bg-[#25D366] hover:bg-[#20b857] text-white"
+          >
+            <Send className="w-4 h-4" />
+            Open in WhatsApp
+            <ExternalLink className="w-3.5 h-3.5 opacity-70" />
+          </Button>
+
+          <p className="text-[10px] text-center text-muted-foreground">
+            Opens WhatsApp with the message pre-filled. Works on desktop (WhatsApp Web) and mobile.
+          </p>
+        </div>
+      </div>
+
+      {/* Quick send cards */}
+      {clients.filter(c => c.phone).length > 0 && (
+        <div className="bg-card border border-border rounded-xl p-5">
+          <h3 className="text-sm font-semibold mb-3">Quick Contact — Clients with WhatsApp</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+            {clients.filter(c => c.phone).slice(0, 8).map(c => (
+              <a
+                key={c.id}
+                href={`https://wa.me/${formatPhone(c.phone).replace("+", "")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 p-2.5 rounded-lg border border-border hover:border-green-400 hover:bg-green-50 transition-colors group"
+              >
+                <div className="w-7 h-7 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                  <span className="text-[10px] font-bold text-green-700">{c.name?.[0]?.toUpperCase()}</span>
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs font-medium truncate">{c.name}</p>
+                  <p className="text-[10px] text-muted-foreground">{c.phone}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

@@ -1,0 +1,66 @@
+{
+  "name": "SubscriptionInvoice",
+  "type": "object",
+  "properties": {
+    "company_id": {
+      "type": "string"
+    },
+    "company_name": {
+      "type": "string"
+    },
+    "admin_email": {
+      "type": "string"
+    },
+    "plan": {
+      "type": "string"
+    },
+    "plan_name": {
+      "type": "string"
+    },
+    "amount_usd": {
+      "type": "number"
+    },
+    "billing_period": {
+      "type": "string",
+      "description": "e.g. 2026-04"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "paid_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "sent",
+        "paid",
+        "overdue",
+        "cancelled"
+      ],
+      "default": "pending"
+    },
+    "payment_method": {
+      "type": "string"
+    },
+    "reminder_count": {
+      "type": "number",
+      "default": 0
+    },
+    "last_reminder_at": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "company_id",
+    "plan",
+    "amount_usd",
+    "billing_period"
+  ]
+}

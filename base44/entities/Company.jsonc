@@ -1,0 +1,153 @@
+{
+  "name": "Company",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Law firm name"
+    },
+    "subdomain": {
+      "type": "string",
+      "description": "Unique subdomain for the firm (e.g. apple)"
+    },
+    "email": {
+      "type": "string",
+      "description": "Primary contact email"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Phone number"
+    },
+    "country": {
+      "type": "string",
+      "enum": [
+        "Ghana",
+        "Nigeria",
+        "Sierra Leone"
+      ],
+      "description": "Country of operation"
+    },
+    "city": {
+      "type": "string"
+    },
+    "address": {
+      "type": "string"
+    },
+    "logo_url": {
+      "type": "string"
+    },
+    "logo_light_url": {
+      "type": "string"
+    },
+    "favicon_url": {
+      "type": "string"
+    },
+    "tagline": {
+      "type": "string"
+    },
+    "primary_color": {
+      "type": "string",
+      "default": "#16a34a"
+    },
+    "subscription_plan": {
+      "type": "string",
+      "enum": [
+        "free",
+        "starter",
+        "professional",
+        "firm_plus",
+        "enterprise"
+      ],
+      "default": "free"
+    },
+    "subscription_status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "trial",
+        "expired"
+      ],
+      "default": "trial"
+    },
+    "max_users": {
+      "type": "number",
+      "default": 2
+    },
+    "max_cases": {
+      "type": "number",
+      "default": 10
+    },
+    "max_storage_gb": {
+      "type": "number",
+      "default": 1
+    },
+    "currency": {
+      "type": "string",
+      "enum": [
+        "GHS",
+        "NGN",
+        "SLL",
+        "USD"
+      ],
+      "default": "GHS"
+    },
+    "admin_email": {
+      "type": "string",
+      "description": "Company admin email"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "suspended",
+        "pending"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "name",
+    "email",
+    "country"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "super_admin"
+      }
+    },
+    "read": {
+      "$or": [
+        {
+          "id": "{{user.company_id}}"
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "id": "{{user.company_id}}",
+          "user_condition": {
+            "role": "company_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "super_admin"
+      }
+    }
+  }
+}

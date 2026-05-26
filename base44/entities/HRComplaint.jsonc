@@ -1,0 +1,78 @@
+{
+  "name": "HRComplaint",
+  "type": "object",
+  "properties": {
+    "company_id": {
+      "type": "string"
+    },
+    "staff_email": {
+      "type": "string"
+    },
+    "staff_name": {
+      "type": "string"
+    },
+    "subject": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "workplace_conduct",
+        "harassment",
+        "discrimination",
+        "salary",
+        "workload",
+        "management",
+        "safety",
+        "other"
+      ],
+      "default": "other"
+    },
+    "against_email": {
+      "type": "string"
+    },
+    "against_name": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "under_review",
+        "resolved",
+        "dismissed"
+      ],
+      "default": "open"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "default": "medium"
+    },
+    "resolution_notes": {
+      "type": "string"
+    },
+    "resolved_by": {
+      "type": "string"
+    },
+    "resolved_at": {
+      "type": "string"
+    },
+    "is_anonymous": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "company_id",
+    "subject",
+    "description"
+  ]
+}

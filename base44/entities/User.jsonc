@@ -1,0 +1,38 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "role": {
+      "type": "string",
+      "enum": [
+        "super_admin",
+        "company_admin",
+        "lawyer",
+        "paralegal",
+        "hr",
+        "finance",
+        "support"
+      ],
+      "default": "lawyer"
+    },
+    "company_id": {
+      "type": "string",
+      "description": "The company this user belongs to"
+    },
+    "company_name": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "avatar_url": {
+      "type": "string"
+    },
+    "department": {
+      "type": "string"
+    },
+    "bar_number": {
+      "type": "string"
+    }
+  }
+}

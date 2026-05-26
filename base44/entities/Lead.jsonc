@@ -1,0 +1,148 @@
+{
+  "name": "Lead",
+  "type": "object",
+  "properties": {
+    "company_id": {
+      "type": "string"
+    },
+    "full_name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "organization": {
+      "type": "string"
+    },
+    "case_type": {
+      "type": "string",
+      "enum": [
+        "civil",
+        "criminal",
+        "corporate",
+        "family",
+        "property",
+        "labor",
+        "tax",
+        "other"
+      ]
+    },
+    "case_description": {
+      "type": "string"
+    },
+    "urgency": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "urgent"
+      ],
+      "default": "medium"
+    },
+    "source": {
+      "type": "string",
+      "default": "web_form"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "contacted",
+        "qualified",
+        "converted",
+        "lost"
+      ],
+      "default": "new"
+    },
+    "assigned_to": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "preferred_contact": {
+      "type": "string",
+      "enum": [
+        "email",
+        "phone",
+        "whatsapp"
+      ]
+    }
+  },
+  "required": [
+    "full_name",
+    "email",
+    "case_description"
+  ],
+  "rls": {
+    "create": {
+      "data.company_id": "{{user.company_id}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "data.company_id": "{{user.company_id}}"
+        },
+        {
+          "data.assigned_to": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.company_id": "{{user.company_id}}",
+          "$or": [
+            {
+              "data.assigned_to": "{{user.email}}"
+            },
+            {
+              "user_condition": {
+                "role": "company_admin"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "lawyer"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "paralegal"
+              }
+            }
+          ]
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.company_id": "{{user.company_id}}",
+          "user_condition": {
+            "role": "company_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    }
+  }
+}

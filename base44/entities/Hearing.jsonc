@@ -1,0 +1,118 @@
+{
+  "name": "Hearing",
+  "type": "object",
+  "properties": {
+    "company_id": {
+      "type": "string"
+    },
+    "case_id": {
+      "type": "string"
+    },
+    "case_title": {
+      "type": "string"
+    },
+    "case_number": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "time": {
+      "type": "string"
+    },
+    "court_name": {
+      "type": "string"
+    },
+    "judge_name": {
+      "type": "string"
+    },
+    "lawyer_email": {
+      "type": "string"
+    },
+    "lawyer_name": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "scheduled",
+        "completed",
+        "adjourned",
+        "cancelled"
+      ],
+      "default": "scheduled"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "outcome": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "date",
+    "company_id"
+  ],
+  "rls": {
+    "create": {
+      "data.company_id": "{{user.company_id}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "data.company_id": "{{user.company_id}}"
+        },
+        {
+          "data.lawyer_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.company_id": "{{user.company_id}}",
+          "$or": [
+            {
+              "data.lawyer_email": "{{user.email}}"
+            },
+            {
+              "user_condition": {
+                "role": "company_admin"
+              }
+            }
+          ]
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.company_id": "{{user.company_id}}",
+          "user_condition": {
+            "role": "company_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,188 @@
+{
+  "name": "LegalCase",
+  "type": "object",
+  "properties": {
+    "company_id": {
+      "type": "string",
+      "description": "Tenant company ID"
+    },
+    "case_number": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "case_type": {
+      "type": "string",
+      "enum": [
+        "civil",
+        "criminal",
+        "corporate",
+        "family",
+        "property",
+        "labor",
+        "tax",
+        "other"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "in_progress",
+        "pending_hearing",
+        "closed",
+        "archived"
+      ],
+      "default": "open"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "urgent"
+      ],
+      "default": "medium"
+    },
+    "client_id": {
+      "type": "string"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "assigned_lawyer": {
+      "type": "string",
+      "description": "Email of assigned lawyer"
+    },
+    "assigned_lawyer_name": {
+      "type": "string"
+    },
+    "court_name": {
+      "type": "string"
+    },
+    "judge_name": {
+      "type": "string"
+    },
+    "opposing_party": {
+      "type": "string"
+    },
+    "opposing_counsel": {
+      "type": "string"
+    },
+    "filing_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "next_hearing_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "title",
+    "company_id"
+  ],
+  "rls": {
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "company_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "lawyer"
+          }
+        }
+      ]
+    },
+    "read": {
+      "$or": [
+        {
+          "data.company_id": "{{user.company_id}}"
+        },
+        {
+          "data.assigned_lawyer": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "company_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "lawyer"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "company_admin"
+          }
+        }
+      ]
+    }
+  }
+}

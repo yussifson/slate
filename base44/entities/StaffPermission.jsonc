@@ -1,0 +1,94 @@
+{
+  "name": "StaffPermission",
+  "type": "object",
+  "properties": {
+    "company_id": {
+      "type": "string"
+    },
+    "staff_id": {
+      "type": "string"
+    },
+    "staff_email": {
+      "type": "string"
+    },
+    "staff_name": {
+      "type": "string"
+    },
+    "can_view_cases": {
+      "type": "boolean",
+      "default": true
+    },
+    "can_create_cases": {
+      "type": "boolean",
+      "default": false
+    },
+    "can_edit_cases": {
+      "type": "boolean",
+      "default": false
+    },
+    "can_delete_cases": {
+      "type": "boolean",
+      "default": false
+    },
+    "can_view_clients": {
+      "type": "boolean",
+      "default": true
+    },
+    "can_create_clients": {
+      "type": "boolean",
+      "default": false
+    },
+    "can_edit_clients": {
+      "type": "boolean",
+      "default": false
+    },
+    "can_delete_clients": {
+      "type": "boolean",
+      "default": false
+    },
+    "can_view_invoices": {
+      "type": "boolean",
+      "default": false
+    },
+    "can_create_invoices": {
+      "type": "boolean",
+      "default": false
+    },
+    "can_view_documents": {
+      "type": "boolean",
+      "default": true
+    },
+    "can_upload_documents": {
+      "type": "boolean",
+      "default": true
+    },
+    "can_delete_documents": {
+      "type": "boolean",
+      "default": false
+    },
+    "can_view_tasks": {
+      "type": "boolean",
+      "default": true
+    },
+    "can_create_tasks": {
+      "type": "boolean",
+      "default": true
+    },
+    "can_view_team": {
+      "type": "boolean",
+      "default": false
+    },
+    "can_view_reports": {
+      "type": "boolean",
+      "default": false
+    },
+    "can_manage_leave": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "company_id",
+    "staff_email"
+  ]
+}

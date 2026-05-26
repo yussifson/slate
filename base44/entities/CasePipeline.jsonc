@@ -1,0 +1,65 @@
+{
+  "name": "CasePipeline",
+  "type": "object",
+  "properties": {
+    "company_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "description": "Pipeline name e.g. 'Criminal Defense'"
+    },
+    "case_type": {
+      "type": "string",
+      "enum": [
+        "civil",
+        "criminal",
+        "corporate",
+        "family",
+        "property",
+        "labor",
+        "tax",
+        "other"
+      ]
+    },
+    "stages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "order": {
+            "type": "number"
+          },
+          "color": {
+            "type": "string"
+          },
+          "deadline_days": {
+            "type": "number",
+            "description": "Days allowed in this stage before warning"
+          },
+          "notify_team": {
+            "type": "boolean",
+            "default": true
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "is_default": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "company_id",
+    "name"
+  ]
+}

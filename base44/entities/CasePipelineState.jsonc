@@ -1,0 +1,58 @@
+{
+  "name": "CasePipelineState",
+  "type": "object",
+  "properties": {
+    "company_id": {
+      "type": "string"
+    },
+    "case_id": {
+      "type": "string"
+    },
+    "case_title": {
+      "type": "string"
+    },
+    "pipeline_id": {
+      "type": "string"
+    },
+    "pipeline_name": {
+      "type": "string"
+    },
+    "current_stage_id": {
+      "type": "string"
+    },
+    "current_stage_name": {
+      "type": "string"
+    },
+    "stage_entered_at": {
+      "type": "string"
+    },
+    "stage_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "stage_id": {
+            "type": "string"
+          },
+          "stage_name": {
+            "type": "string"
+          },
+          "entered_at": {
+            "type": "string"
+          },
+          "exited_at": {
+            "type": "string"
+          },
+          "moved_by": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "company_id",
+    "case_id",
+    "pipeline_id"
+  ]
+}

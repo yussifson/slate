@@ -1,0 +1,65 @@
+{
+  "name": "LinkedEmail",
+  "type": "object",
+  "properties": {
+    "company_id": {
+      "type": "string"
+    },
+    "subject": {
+      "type": "string"
+    },
+    "from_email": {
+      "type": "string"
+    },
+    "from_name": {
+      "type": "string"
+    },
+    "to_email": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string"
+    },
+    "email_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "case_id": {
+      "type": "string"
+    },
+    "case_title": {
+      "type": "string"
+    },
+    "client_id": {
+      "type": "string"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "logged_by": {
+      "type": "string"
+    },
+    "direction": {
+      "type": "string",
+      "enum": [
+        "inbound",
+        "outbound"
+      ],
+      "default": "inbound"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "company_id",
+    "subject",
+    "from_email"
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "name": "CaseEmail",
+  "type": "object",
+  "properties": {
+    "company_id": {
+      "type": "string"
+    },
+    "subject": {
+      "type": "string"
+    },
+    "sender_email": {
+      "type": "string"
+    },
+    "recipient_email": {
+      "type": "string"
+    },
+    "received_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "body_preview": {
+      "type": "string"
+    },
+    "case_id": {
+      "type": "string"
+    },
+    "case_title": {
+      "type": "string"
+    },
+    "client_id": {
+      "type": "string"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "logged_by": {
+      "type": "string"
+    },
+    "direction": {
+      "type": "string",
+      "enum": [
+        "inbound",
+        "outbound"
+      ],
+      "default": "inbound"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "company_id",
+    "subject"
+  ]
+}

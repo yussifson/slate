@@ -1,0 +1,47 @@
+{
+  "name": "FirmSettings",
+  "type": "object",
+  "properties": {
+    "company_id": {
+      "type": "string"
+    },
+    "custom_case_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Additional case types beyond defaults"
+    },
+    "custom_case_statuses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Additional case statuses beyond defaults"
+    },
+    "custom_task_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Additional task types beyond defaults"
+    },
+    "custom_document_categories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Additional document categories beyond defaults"
+    },
+    "custom_roles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Additional staff roles beyond defaults"
+    }
+  },
+  "required": [
+    "company_id"
+  ]
+}
