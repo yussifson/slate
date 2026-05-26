@@ -1,10 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { supabase } from "@/api/supabaseClient";
 import { useAuth } from "@/lib/AuthContext";
 
 /**
  * Returns the ID of the Company record for this user.
- * All staff/cases/clients etc. belong to this company.
  */
 export function useCompanyId() {
   const { user } = useAuth();
@@ -14,11 +13,39 @@ export function useCompanyId() {
 export function useCompany() {
   const { user } = useAuth();
   const companyId = user?.company_id;
-  const { data: companies = [], isLoading } = useQuery({
+  const { data: company = null, isLoading } = useQuery({
     queryKey: ["company", companyId],
-    queryFn: () => base44.entities.Company.filter({ id: companyId }),
+    queryFn: async () => {
+      if (!companyId) return null;
+      const { data, error } = await supabase
+        .from("companies")
+        .select("*")
+        .eq("id", companyId)
+        .single();
+      if (error) { console.error("useCompany fetch error:", error); return null; }
+      return data;
+    },
     enabled: !!companyId,
     staleTime: 5 * 60 * 1000,
   });
-  return { company: companies[0] || null, isLoading: isLoading && !!companyId };
+
+  const override = typeof window !== 'undefined' ? sessionStorage.getItem('optalflow_industry_override') : null;
+
+  let finalCompany = company;
+  if (user?.role === 'super_admin') {
+    if (!finalCompany) {
+      finalCompany = {
+        id: 'super_admin_company',
+        name: 'Super Admin Co',
+        industry_type: override || 'law'
+      };
+    } else if (override) {
+      finalCompany = {
+        ...finalCompany,
+        industry_type: override
+      };
+    }
+  }
+
+  return { company: finalCompany, isLoading: isLoading && !!companyId };
 }

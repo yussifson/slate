@@ -1,0 +1,269 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Calendar as CalendarIcon, Clock, User, Stethoscope, Plus, Video, Trash2, CheckCircle, Play } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
+import { toast } from 'react-hot-toast';
+
+const typeColors = {
+  Consultation: 'bg-blue-50 text-blue-700 border-blue-200',
+  'Follow-up': 'bg-purple-50 text-purple-700 border-purple-200',
+  Emergency: 'bg-red-50 text-red-700 border-red-200',
+};
+
+const statusColors = {
+  Scheduled: 'text-blue-500 bg-blue-50 border-blue-200',
+  'In Progress': 'text-amber-600 bg-amber-50 border-amber-200 animate-pulse',
+  Completed: 'text-green-600 bg-green-50 border-green-200',
+};
+
+export default function Appointments() {
+  // Supabase Real-time Sync Hooks
+  const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('appt');
+  const mutateRecord = useMutateIndustryRecord();
+  const deleteRecord = useDeleteIndustryRecord();
+
+  // Map database records
+  const appointments = dbRecords.map(r => ({ id: r.id, status: r.status || 'Active', ...r.data }));
+
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedAppt, setSelectedAppt] = useState(null);
+
+  // Form State
+  const [formData, setFormData] = useState({
+    patient: '',
+    doctor: 'Dr. John Mensah',
+    date: new Date().toISOString().split('T')[0],
+    time: '09:00',
+    type: 'Consultation'
+  });
+
+  // Generic Save Handler for real DB persistence
+  const handleSaveToDb = () => {
+    if (!formData.patient.trim()) return toast.error("Please enter a patient name");
+
+    // Convert time to 12h format for UI consistency
+    const [hours, minutes] = formData.time.split(':');
+    const ampm = parseInt(hours) >= 12 ? 'PM' : 'AM';
+    const formattedHours = parseInt(hours) % 12 || 12;
+    const formattedTime = `${formattedHours}:${minutes} ${ampm}`;
+
+    const payload = {
+      patient: formData.patient,
+      doctor: formData.doctor,
+      date: formData.date,
+      time: formattedTime,
+      type: formData.type,
+      status: 'Scheduled'
+    };
+
+    mutateRecord.mutate({
+      recordType: 'appt',
+      payload,
+      status: 'Scheduled',
+      searchText: `${formData.patient} ${formData.doctor} ${formData.type}`
+    }, {
+      onSuccess: () => {
+        toast.success('Appointment booked successfully!');
+        setShowModal(false);
+        setFormData({
+          patient: '',
+          doctor: 'Dr. John Mensah',
+          date: new Date().toISOString().split('T')[0],
+          time: '09:00',
+          type: 'Consultation'
+        });
+      },
+      onError: (err) => {
+        toast.error('Failed to book appointment: ' + err.message);
+      }
+    });
+  };
+
+  // Change Appointment Status
+  const handleStatusChange = (appt, newStatus) => {
+    const updatedPayload = { ...appt, status: newStatus };
+    delete updatedPayload.id;
+
+    mutateRecord.mutate({
+      id: appt.id,
+      recordType: 'appt',
+      payload: updatedPayload,
+      status: newStatus,
+      searchText: `${appt.patient} ${appt.doctor} ${appt.type}`
+    }, {
+      onSuccess: () => {
+        toast.success(`Status updated to ${newStatus}`);
+        if (selectedAppt?.id === appt.id) {
+          setSelectedAppt({ ...appt, status: newStatus });
+        }
+      }
+    });
+  };
+
+  // Generic Delete Handler for real DB persistence
+  const handleDeleteFromDb = (id, e) => {
+    e.stopPropagation(); // prevent selecting the appt when clicking delete
+    if (window.confirm('Are you sure you want to cancel and delete this appointment?')) {
+      deleteRecord.mutate({ id, recordType: 'appt' }, {
+        onSuccess: () => {
+          toast.success('Appointment cancelled successfully!');
+          if (selectedAppt?.id === id) setSelectedAppt(null);
+        },
+        onError: (err) => {
+          toast.error('Failed to cancel appointment: ' + err.message);
+        }
+      });
+    }
+  };
+
+  const filteredAppts = appointments.filter(appt => appt.date === date);
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-card-foreground">Appointments</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">Manage doctor schedules and patient visits</p>
+        </div>
+        <div className="flex items-center gap-3">
+           <Input type="date" value={date} onChange={e => setDate(e.target.value)} className="w-auto bg-card" />
+           <Button onClick={() => setShowModal(true)} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white"><Plus className="w-4 h-4"/> Book Appointment</Button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+         {/* Sidebar Calendar List */}
+         <div className="col-span-1 bg-card rounded-xl border border-border p-4 shadow-sm h-[600px] overflow-y-auto space-y-4">
+            <h3 className="font-bold text-card-foreground flex items-center gap-2 border-b border-border pb-3"><CalendarIcon className="w-4 h-4 text-blue-500"/> Scheduled Visits ({filteredAppts.length})</h3>
+            <div className="space-y-3">
+               {filteredAppts.map(appt => (
+                  <div key={appt.id} onClick={() => setSelectedAppt(appt)} className={`p-3 rounded-lg border cursor-pointer hover:shadow-md transition-all flex flex-col gap-2 ${selectedAppt?.id === appt.id ? 'ring-2 ring-blue-500 border-transparent bg-blue-50/20' : 'border-border'}`}>
+                     <div className="flex justify-between items-start">
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${typeColors[appt.type]}`}>{appt.type}</span>
+                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded border ${statusColors[appt.status]}`}>{appt.status}</span>
+                     </div>
+                     <div>
+                        <Link to="/hospital/patients" className="font-bold text-sm text-blue-600 hover:underline">{appt.patient}</Link>
+                        <p className="text-xs text-muted-foreground font-medium">{appt.doctor}</p>
+                     </div>
+                     <div className="flex items-center justify-between gap-1 text-xs text-muted-foreground mt-1 border-t border-dashed border-border pt-2">
+                        <div className="flex items-center gap-1">
+                          <Clock className="w-3.5 h-3.5 text-muted-foreground" /> <span>{appt.time}</span>
+                        </div>
+                        <Button size="icon" variant="ghost" onClick={(e) => handleDeleteFromDb(appt.id, e)} className="h-6 w-6 text-red-500 hover:text-red-700 hover:bg-red-50">
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </Button>
+                     </div>
+                  </div>
+               ))}
+               {filteredAppts.length === 0 && (
+                 <div className="text-center py-12 text-muted-foreground">
+                   <CalendarIcon className="w-8 h-8 mx-auto mb-2 opacity-30" />
+                   <p className="text-xs">No appointments booked for this day.</p>
+                 </div>
+               )}
+            </div>
+         </div>
+
+         {/* Main Details Area */}
+         <div className="col-span-1 md:col-span-2 space-y-6">
+            {selectedAppt ? (
+              <div className="bg-card rounded-xl border border-border p-6 shadow-sm space-y-6">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <Link to="/hospital/patients" className="text-xl font-bold text-blue-600 hover:underline">{selectedAppt.patient}</Link>
+                    <p className="text-sm text-muted-foreground mt-0.5">Assigned: <strong>{selectedAppt.doctor}</strong></p>
+                  </div>
+                  <span className={`text-xs font-bold px-3 py-1 rounded-full border ${statusColors[selectedAppt.status]}`}>{selectedAppt.status}</span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 border-y border-border py-4 my-4">
+                  <div>
+                    <p className="text-xs text-muted-foreground uppercase font-bold">Appointment Type</p>
+                    <p className="font-semibold text-foreground">{selectedAppt.type}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground uppercase font-bold">Schedule Time</p>
+                    <p className="font-semibold text-foreground flex items-center gap-1.5"><Clock className="w-4 h-4 text-blue-500" /> {selectedAppt.time}</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  {selectedAppt.status === 'Scheduled' && (
+                    <Button onClick={() => handleStatusChange(selectedAppt, 'In Progress')} className="gap-2 bg-amber-500 hover:bg-amber-600 text-white flex-1">
+                      <Play className="w-4 h-4" /> Start Consultation
+                    </Button>
+                  )}
+                  {selectedAppt.status === 'In Progress' && (
+                    <Button onClick={() => handleStatusChange(selectedAppt, 'Completed')} className="gap-2 bg-green-600 hover:bg-green-700 text-white flex-1">
+                      <CheckCircle className="w-4 h-4" /> Complete Consultation
+                    </Button>
+                  )}
+                  {selectedAppt.status === 'Completed' && (
+                    <div className="bg-green-50 border border-green-200 text-green-700 text-sm p-4 rounded-xl flex items-center gap-2 w-full justify-center font-semibold">
+                      <CheckCircle className="w-5 h-5" /> Visit completed successfully. Clinical chart created.
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="bg-card rounded-xl border border-border p-6 shadow-sm flex flex-col items-center justify-center min-h-[300px] text-center">
+                 <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-4">
+                    <Stethoscope className="w-8 h-8 text-blue-500" />
+                 </div>
+                 <h2 className="text-lg font-bold text-card-foreground mb-2">Select an appointment</h2>
+                 <p className="text-sm text-muted-foreground max-w-sm">Click on an appointment from the schedule to view details, begin consultation, or update status.</p>
+              </div>
+            )}
+         </div>
+      </div>
+
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4">
+            <h2 className="text-lg font-bold text-card-foreground">Book Appointment</h2>
+            <div className="space-y-3">
+               <div>
+                 <label className="text-xs font-bold text-muted-foreground uppercase">Patient Name</label>
+                 <Input value={formData.patient} onChange={e => setFormData({ ...formData, patient: e.target.value })} className="mt-1" placeholder="e.g. Kwesi Asante" />
+               </div>
+               <div>
+                 <label className="text-xs font-bold text-muted-foreground uppercase">Doctor</label>
+                 <select value={formData.doctor} onChange={e => setFormData({ ...formData, doctor: e.target.value })} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+                   <option>Dr. John Mensah</option>
+                   <option>Dr. Jane Doe</option>
+                   <option>Dr. Sarah Connor</option>
+                 </select>
+               </div>
+               <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-xs font-bold text-muted-foreground uppercase">Date</label>
+                    <Input type="date" value={formData.date} onChange={e => setFormData({ ...formData, date: e.target.value })} className="mt-1" />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-muted-foreground uppercase">Time</label>
+                    <Input type="time" value={formData.time} onChange={e => setFormData({ ...formData, time: e.target.value })} className="mt-1" />
+                  </div>
+               </div>
+               <div>
+                 <label className="text-xs font-bold text-muted-foreground uppercase">Type</label>
+                 <select value={formData.type} onChange={e => setFormData({ ...formData, type: e.target.value })} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+                   <option>Consultation</option>
+                   <option>Follow-up</option>
+                   <option>Emergency</option>
+                 </select>
+               </div>
+            </div>
+            <div className="flex gap-3 pt-4">
+              <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>Cancel</Button>
+              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleSaveToDb}>Book Visit</Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

@@ -14,7 +14,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Search, CheckCircle2, Clock, AlertCircle } from "lucide-react";
+import { Plus, Search, CheckCircle2, Clock, AlertCircle, MoreVertical } from "lucide-react";
+import { Link } from "react-router-dom";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
@@ -192,6 +195,7 @@ export default function Tasks() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
+  const [viewingTask, setViewingTask] = useState(null);
 
   const { data: tasks = [], isLoading } = useQuery({
     queryKey: ["tasks", companyId],
@@ -216,6 +220,17 @@ export default function Tasks() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["tasks", companyId] }),
   });
 
+  const handleDeleteOne = async (id) => {
+    if (!window.confirm("Delete this task? This cannot be undone.")) return;
+    try {
+      await base44.entities.Task.delete(id);
+      queryClient.invalidateQueries({ queryKey: ["tasks", companyId] });
+      toast({ title: "Task deleted successfully" });
+    } catch (err) {
+      toast({ title: "Delete failed", description: err.message, variant: "destructive" });
+    }
+  };
+
   const filtered = tasks.filter(t => {
     const matchSearch = !search || t.title?.toLowerCase().includes(search.toLowerCase()) ||
       t.assigned_to_name?.toLowerCase().includes(search.toLowerCase());
@@ -236,13 +251,21 @@ export default function Tasks() {
       render: (row) => (
         <div>
           <p className="font-medium text-sm">{row.title}</p>
-          {row.case_title && <p className="text-xs text-muted-foreground">{row.case_title}</p>}
+          {row.case_title && (
+            <Link to={`/cases/${row.case_id}`} className="text-xs text-primary hover:underline">
+              {row.case_title}
+            </Link>
+          )}
         </div>
       ),
     },
     {
       header: "Assigned To",
-      render: (row) => <span className="text-sm">{row.assigned_to_name || "—"}</span>,
+      render: (row) => (
+        <Link to="/team" className="text-sm text-primary hover:underline">
+          {row.assigned_to_name || "—"}
+        </Link>
+      ),
     },
     {
       header: "Priority",
@@ -275,11 +298,20 @@ export default function Tasks() {
         : <span className="text-sm text-muted-foreground">—</span>,
     },
     {
-      header: "",
+      header: "Actions",
       render: (row) => (
-        <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); setEditing(row); setShowForm(true); }}>
-          Edit
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <MoreVertical className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setViewingTask(row); }}>View Details</DropdownMenuItem>
+            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setEditing(row); setShowForm(true); }}>Edit</DropdownMenuItem>
+            <DropdownMenuItem className="text-red-600" onClick={(e) => { e.stopPropagation(); handleDeleteOne(row.id); }}>Delete</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       ),
     },
   ];
@@ -353,6 +385,58 @@ export default function Tasks() {
           caseTerm={caseTerm}
         />
       )}
+
+      <Sheet open={!!viewingTask} onOpenChange={(open) => !open && setViewingTask(null)}>
+        <SheetContent className="overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle>Task Details</SheetTitle>
+          </SheetHeader>
+          {viewingTask && (
+            <div className="mt-6 space-y-4">
+              <div>
+                <Label className="text-muted-foreground">Title</Label>
+                <p className="font-medium">{viewingTask.title}</p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Description</Label>
+                <p className="font-medium whitespace-pre-wrap">{viewingTask.description || "—"}</p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Related {caseTerm}</Label>
+                <p className="font-medium">
+                  {viewingTask.case_id ? (
+                    <Link to={`/cases/${viewingTask.case_id}`} className="text-primary hover:underline">
+                      {viewingTask.case_title}
+                    </Link>
+                  ) : "—"}
+                </p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Assigned To</Label>
+                <p className="font-medium">
+                  <Link to="/team" className="text-primary hover:underline">{viewingTask.assigned_to_name || "Unassigned"}</Link>
+                </p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Priority</Label>
+                <p className="font-medium capitalize">{viewingTask.priority || "—"}</p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Status</Label>
+                <p className="font-medium capitalize">{viewingTask.status?.replace("_", " ") || "—"}</p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Due Date</Label>
+                <p className="font-medium">{viewingTask.due_date ? format(new Date(viewingTask.due_date), "MMM d, yyyy") : "—"}</p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Category</Label>
+                <p className="font-medium capitalize">{viewingTask.category || "—"}</p>
+              </div>
+            </div>
+          )}
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

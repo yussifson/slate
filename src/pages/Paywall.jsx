@@ -126,7 +126,7 @@ export default function Paywall() {
           <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center text-white">
             <Scale className="w-4.5 h-4.5" />
           </div>
-          <span className="font-bold text-lg text-slate-900 tracking-tight">Airzyle</span>
+          <span className="font-bold text-lg text-slate-900 tracking-tight">Optalflow</span>
         </div>
         <Button 
           variant="ghost" 
@@ -215,7 +215,7 @@ export default function Paywall() {
 
       {/* Bottom Bar */}
       <div className="max-w-7xl mx-auto w-full text-center text-xs text-slate-400">
-        © {new Date().getFullYear()} Airzyle. Transactions are fully secured and processed locally via Paystack.
+        © {new Date().getFullYear()} Optalflow. Transactions are fully secured and processed locally via Paystack.
       </div>
     </div>
   );

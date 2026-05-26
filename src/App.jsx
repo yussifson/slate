@@ -34,7 +34,7 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-// Page imports
+// Original Page imports
 import Dashboard from './pages/Dashboard';
 import Cases from './pages/Cases.jsx';
 import Clients from './pages/Clients.jsx';
@@ -65,10 +65,75 @@ import WhatsAppMessenger from './pages/WhatsAppMessenger';
 import HRDashboard from './pages/HRDashboard';
 import FirmSetup from './pages/SuperAdminDashboard';
 
+// School Pages
+import SchoolStudents from './pages/school/Students';
+import SchoolClasses from './pages/school/Classes';
+import SchoolTimetable from './pages/school/Timetable';
+import SchoolAttendance from './pages/school/Attendance';
+import SchoolGrades from './pages/school/Grades';
+import SchoolExams from './pages/school/Exams';
+import SchoolFees from './pages/school/FeeManagement';
+import SchoolLibrary from './pages/school/Library';
+import SchoolParentPortal from './pages/school/ParentPortal';
+
+// Hospital Pages
+import HospitalPatients from './pages/hospital/Patients';
+import HospitalAppointments from './pages/hospital/Appointments';
+import HospitalWards from './pages/hospital/Wards';
+import HospitalPrescriptions from './pages/hospital/Prescriptions';
+import HospitalLabResults from './pages/hospital/LabResults';
+import HospitalPharmacy from './pages/hospital/Pharmacy';
+
+// Hotel Pages
+import HotelFrontDesk from './pages/hotel/FrontDesk';
+import HotelReservations from './pages/hotel/Reservations';
+import HotelRooms from './pages/hotel/Rooms';
+import HotelHousekeeping from './pages/hotel/Housekeeping';
+import HotelRestaurant from './pages/hotel/Restaurant';
+import HotelGuestRequests from './pages/hotel/GuestRequests';
+
+// Church Pages
+import ChurchMembers from './pages/church/Members';
+import ChurchMinistries from './pages/church/Ministries';
+import ChurchEvents from './pages/church/Events';
+import ChurchTithes from './pages/church/Tithes';
+import ChurchVolunteers from './pages/church/Volunteers';
+import ChurchSermons from './pages/church/Sermons';
+import ChurchSmallGroups from './pages/church/SmallGroups';
+import ChurchPrayers from './pages/church/Prayers';
+
+// Insurance Pages
+import InsurancePolicies from './pages/insurance/Policies';
+import InsuranceClaims from './pages/insurance/Claims';
+import InsurancePremiums from './pages/insurance/Premiums';
+import InsuranceUnderwriting from './pages/insurance/Underwriting';
+import InsuranceAgentPerformance from './pages/insurance/AgentPerformance';
+
+// Retail Pages
+import RetailInventory from './pages/retail/Inventory';
+import RetailPOS from './pages/retail/POS';
+import RetailSales from './pages/retail/Sales';
+import RetailSuppliers from './pages/retail/Suppliers';
+import RetailCustomers from './pages/retail/Customers';
+
+// Logistics Pages
+import LogisticsShipments from './pages/logistics/Shipments';
+import LogisticsFleet from './pages/logistics/Fleet';
+import LogisticsDrivers from './pages/logistics/Drivers';
+import LogisticsWarehouses from './pages/logistics/Warehouses';
+
+// HR Pages
+import HREmployees from './pages/hr/Employees';
+import HRRecruitment from './pages/hr/Recruitment';
+import HRPayroll from './pages/hr/Payroll';
+import HRLeave from './pages/hr/Leave';
+
 // Layout
 import AppLayout from './components/layout/AppLayout';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 import { getSubdomainAndBase } from '@/lib/domainUtils';
 import MarketingLayout from './components/layout/MarketingLayout';
@@ -85,11 +150,10 @@ function ProtectedRoute() {
   
   if (isLoadingAuth) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-background">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
-          <p className="text-sm text-muted-foreground">Loading Airzyle...</p>
-          <p className="text-xs text-slate-400 font-mono">{authStep}</p>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+        <div className="relative flex items-center justify-center">
+          <div className="w-12 h-12 rounded-full border-[3px] border-primary/20 border-t-primary animate-spin"></div>
+          <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent rounded-full animate-pulse"></div>
         </div>
       </div>
     );
@@ -126,16 +190,26 @@ function App() {
                     </Route>
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<SignUp />} />
+                    <Route path="/forgot-password" element={<ForgotPassword />} />
+                    <Route path="/reset-password" element={<ResetPassword />} />
+                    
+                    <Route element={<ProtectedRoute />}>
+                      <Route path="/onboarding" element={<OnboardingWizard />} />
+                    </Route>
+                    
                     <Route path="*" element={<PageNotFound />} />
                   </Routes>
                 ) : (
-                  /* Law Firm Software Routes for Subdomains */
+                  /* App Routes for Subdomains */
                   <Routes>
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<SignUp />} />
+                    <Route path="/forgot-password" element={<ForgotPassword />} />
+                    <Route path="/reset-password" element={<ResetPassword />} />
                     
                     <Route element={<ProtectedRoute />}>
                       <Route element={<AppLayout />}>
+                        {/* Core / Shared Pages */}
                         <Route path="/" element={<Dashboard />} />
                         <Route path="/cases" element={<Cases />} />
                         <Route path="/clients" element={<Clients />} />
@@ -164,6 +238,70 @@ function App() {
                         <Route path="/hr" element={<HRDashboard />} />
                         <Route path="/firm-setup" element={<FirmSetup />} />
                         <Route path="/admin" element={<PlatformAdminDashboard />} />
+
+                        {/* School Suite */}
+                        <Route path="/students" element={<SchoolStudents />} />
+                        <Route path="/classes" element={<SchoolClasses />} />
+                        <Route path="/timetable" element={<SchoolTimetable />} />
+                        <Route path="/attendance" element={<SchoolAttendance />} />
+                        <Route path="/grades" element={<SchoolGrades />} />
+                        <Route path="/exams" element={<SchoolExams />} />
+                        <Route path="/fees" element={<SchoolFees />} />
+                        <Route path="/library" element={<SchoolLibrary />} />
+                        <Route path="/parent-portal" element={<SchoolParentPortal />} />
+
+                        {/* Hospital Suite */}
+                        <Route path="/patients" element={<HospitalPatients />} />
+                        <Route path="/appointments" element={<HospitalAppointments />} />
+                        <Route path="/wards" element={<HospitalWards />} />
+                        <Route path="/prescriptions" element={<HospitalPrescriptions />} />
+                        <Route path="/lab-results" element={<HospitalLabResults />} />
+                        <Route path="/pharmacy" element={<HospitalPharmacy />} />
+
+                        {/* Hotel Suite */}
+                        <Route path="/front-desk" element={<HotelFrontDesk />} />
+                        <Route path="/reservations" element={<HotelReservations />} />
+                        <Route path="/rooms" element={<HotelRooms />} />
+                        <Route path="/housekeeping" element={<HotelHousekeeping />} />
+                        <Route path="/restaurant" element={<HotelRestaurant />} />
+                        <Route path="/guest-requests" element={<HotelGuestRequests />} />
+
+                        {/* Church Suite */}
+                        <Route path="/members" element={<ChurchMembers />} />
+                        <Route path="/ministries" element={<ChurchMinistries />} />
+                        <Route path="/events" element={<ChurchEvents />} />
+                        <Route path="/tithes" element={<ChurchTithes />} />
+                        <Route path="/volunteers" element={<ChurchVolunteers />} />
+                        <Route path="/sermons" element={<ChurchSermons />} />
+                        <Route path="/small-groups" element={<ChurchSmallGroups />} />
+                        <Route path="/prayers" element={<ChurchPrayers />} />
+
+                        {/* Insurance Suite */}
+                        <Route path="/policies" element={<InsurancePolicies />} />
+                        <Route path="/claims" element={<InsuranceClaims />} />
+                        <Route path="/premiums" element={<InsurancePremiums />} />
+                        <Route path="/underwriting" element={<InsuranceUnderwriting />} />
+                        <Route path="/agent-performance" element={<InsuranceAgentPerformance />} />
+
+                        {/* Retail Suite */}
+                        <Route path="/pos" element={<RetailPOS />} />
+                        <Route path="/inventory" element={<RetailInventory />} />
+                        <Route path="/orders" element={<RetailSales />} />
+                        <Route path="/suppliers" element={<RetailSuppliers />} />
+                        <Route path="/retail-customers" element={<RetailCustomers />} />
+
+                        {/* Logistics Suite */}
+                        <Route path="/shipments" element={<LogisticsShipments />} />
+                        <Route path="/fleet" element={<LogisticsFleet />} />
+                        <Route path="/drivers" element={<LogisticsDrivers />} />
+                        <Route path="/warehouse" element={<LogisticsWarehouses />} />
+
+                        {/* HR Suite */}
+                        <Route path="/employees" element={<HREmployees />} />
+                        <Route path="/recruitment" element={<HRRecruitment />} />
+                        <Route path="/payroll" element={<HRPayroll />} />
+                        <Route path="/hr-leave" element={<HRLeave />} />
+
                       </Route>
                       <Route path="/intake" element={<IntakeForm />} />
                       <Route path="/onboarding" element={<OnboardingWizard />} />
@@ -173,7 +311,6 @@ function App() {
                 )}
               </ErrorBoundary>
             </Router>
-            <Toaster />
           </QueryClientProvider>
         </ImpersonationProvider>
       </ThemeProvider>

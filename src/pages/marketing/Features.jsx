@@ -1,62 +1,65 @@
 import { Link } from 'react-router-dom';
-import { Scale, Users, CreditCard, Mail, Database, Clock, Check, ArrowRight } from 'lucide-react';
+import { Briefcase, Users, CreditCard, Mail, Shield, Clock, Check, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function Features() {
   const deepDives = [
     {
-      badge: "Matter Management",
-      title: "Automate your case life cycle completely",
+      badge: "Project Management",
+      title: "Automate your workflow completely",
       description:
-        "Manage client disputes, filings, hearings, and outcome tracking. Move cases through drag-and-drop pipelines to visualize stages effortlessly. Get smart alerts when court dates approach.",
+        "Manage client projects, deliverables, milestones, and outcome tracking. Move tasks through drag-and-drop pipelines to visualize stages effortlessly. Get smart alerts when deadlines approach.",
       bullets: [
-        "Interactive case pipelines and customizable milestones",
-        "Hearing logging with automated court calendar notifications",
-        "Detailed conflict checking to safeguard operational integrity",
-        "Case outcome dashboards to analyze win/loss metrics",
+        "Interactive project pipelines and customizable milestones",
+        "Task logging with automated deadline notifications",
+        "Detailed capacity planning to safeguard operational integrity",
+        "Project outcome dashboards to analyze performance metrics",
       ],
-      icon: Scale,
+      icon: Briefcase,
       align: "left",
+      image: "/images/project_management_ui.png"
     },
     {
-      badge: "Secure Client Environment",
-      title: "Deliver premium experiences with Client Portals",
+      badge: "Secure Client Portal",
+      title: "Deliver premium experiences to your clients",
       description:
-        "Allow clients to check their case's progress, view active tasks, upload requested relevant materials, and digitally sign retainers or signatures. Fully customized under your own brand color and logo.",
+        "Allow clients to check their project's progress, view active tasks, upload requested relevant materials, and digitally sign agreements. Fully customized under your own brand color and logo.",
       bullets: [
         "Self-service onboarding intake questionnaires",
-        "Direct chat window with the lead advocacy team",
-        "Retainer agreements and signature signing prompts",
+        "Direct chat window with the lead project team",
+        "Service agreements and signature signing prompts",
         "Transparent billable charts and payment histories",
       ],
       icon: Users,
       align: "right",
+      image: "/images/client_portal_ui.png"
     },
     {
       badge: "Time & Billing",
-      title: "Accept payments locally with Paystack",
+      title: "Accept payments locally with ease",
       description:
-        "Record billable hours with accurate active timers. Automatically construct invoices based on time entries, flat fees, or advance retainer drawdowns. Process client card payments locally using Paystack integrations.",
+        "Record billable hours with accurate active timers. Automatically construct invoices based on time entries, flat fees, or advance retainer drawdowns. Process client payments securely.",
       bullets: [
-        "Desktop active timers tracking research and consults",
+        "Desktop active timers tracking research and execution",
         "Dynamic invoice templates matching your corporate letterhead",
-        "Local payments processed via Paystack (card, bank transfer, USSD)",
+        "Local payments processed via secure integrations",
         "Financial reporting tracking organization revenue and outstanding fees",
       ],
       icon: CreditCard,
       align: "left",
+      image: "/images/billing_ui.png"
     },
   ];
 
   const additionalFeatures = [
     {
       icon: Mail,
-      title: "Integrated Email Client",
+      title: "Integrated Email Sync",
       description:
-        "Connect your workspace directly with Office 365 or Gmail. Read, flag, and reply to client emails right inside the case files.",
+        "Connect your workspace directly with Office 365 or Gmail. Read, flag, and reply to client emails right inside the project files.",
     },
     {
-      icon: Database,
+      icon: Shield,
       title: "Compliance Audit Logs",
       description:
         "Maintain high-integrity logs tracking user logins, file modifications, client downloads, and sensitive database exports automatically.",
@@ -70,30 +73,29 @@ export default function Features() {
   ];
 
   return (
-    <div className="overflow-x-hidden">
+    <div className="overflow-x-hidden bg-white">
       {/* ── Hero Header ── */}
-      <section className="relative py-24 md:py-32 overflow-hidden">
-        {/* Subtle gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.04] via-background to-background pointer-events-none" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-primary/[0.06] rounded-full blur-3xl pointer-events-none" />
-
+      <section className="relative pt-10 pb-16 md:pt-14 md:pb-20 bg-slate-50 border-b border-slate-100">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <span className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-6">
+          <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-600 text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
             Core Features
           </span>
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground mb-6 max-w-3xl mx-auto leading-[1.15]">
-            Everything your business team needs
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-slate-900 mb-6 max-w-4xl mx-auto leading-[1.1]">
+            Everything your business team needs to{' '}
+            <span className="bg-green-100 text-slate-900 px-4 py-1 rounded-[1.5rem] inline-block mt-2">
+              succeed
+            </span>
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Unlock a comprehensive system built specifically for modern practice
-            requirements. Minimize admin operations and focus entirely on
-            protecting your clients.
+          <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed font-medium">
+            Unlock a comprehensive system built specifically for modern operational
+            requirements. Minimize admin work and focus entirely on
+            delivering value to your clients.
           </p>
         </div>
       </section>
 
       {/* ── Feature Deep Dives ── */}
-      <section className="py-20 md:py-28">
+      <section className="py-20 md:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-28 lg:space-y-32">
           {deepDives.map((feature, index) => {
             const Icon = feature.icon;
@@ -108,25 +110,25 @@ export default function Features() {
               >
                 {/* Text content */}
                 <div className="flex-1 space-y-6">
-                  <span className="inline-flex px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">
+                  <span className="inline-flex px-4 py-1.5 rounded-full bg-blue-50 text-blue-600 text-xs font-bold uppercase tracking-wider">
                     {feature.badge}
                   </span>
 
-                  <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight leading-tight">
+                  <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight leading-tight">
                     {feature.title}
                   </h2>
 
-                  <p className="text-base text-muted-foreground leading-relaxed">
+                  <p className="text-lg text-slate-600 leading-relaxed font-medium">
                     {feature.description}
                   </p>
 
-                  <ul className="space-y-3 pt-2">
+                  <ul className="space-y-4 pt-4">
                     {feature.bullets.map((bullet, idx) => (
                       <li
                         key={idx}
-                        className="flex items-start gap-3 text-base text-foreground/85"
+                        className="flex items-start gap-3 text-base text-slate-700 font-medium"
                       >
-                        <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-primary mt-0.5 shrink-0">
+                        <div className="w-5 h-5 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 mt-0.5 shrink-0">
                           <Check className="w-3.5 h-3.5" strokeWidth={3} />
                         </div>
                         <span>{bullet}</span>
@@ -137,38 +139,12 @@ export default function Features() {
 
                 {/* Stylized UI Mockup */}
                 <div className="flex-1 w-full">
-                  <div className="aspect-[4/3] rounded-2xl border border-border/60 bg-card p-5 shadow-sm hover:shadow-lg transition-shadow duration-300 relative overflow-hidden">
-                    {/* Gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.03] to-primary/[0.08] pointer-events-none" />
-
-                    <div className="relative w-full h-full bg-background rounded-xl border border-border/80 shadow-sm p-6 flex flex-col gap-4">
-                      {/* Mockup header */}
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-                          <Icon className="w-5 h-5" />
-                        </div>
-                        <div className="space-y-1.5">
-                          <div className="w-24 h-3 bg-muted rounded-sm" />
-                          <div className="w-14 h-2 bg-muted/60 rounded-sm" />
-                        </div>
-                      </div>
-
-                      <hr className="border-border/50" />
-
-                      {/* Mockup content rows */}
-                      <div className="flex-1 space-y-3">
-                        <div className="w-full h-3.5 bg-muted/30 rounded border border-border/20" />
-                        <div className="w-11/12 h-3.5 bg-muted/30 rounded border border-border/20" />
-                        <div className="w-4/5 h-3.5 bg-muted/30 rounded border border-border/20" />
-                        <div className="w-9/12 h-3.5 bg-muted/30 rounded border border-border/20" />
-                      </div>
-
-                      {/* Mockup footer bar */}
-                      <div className="flex items-center gap-2 pt-2">
-                        <div className="w-16 h-6 bg-primary/15 rounded" />
-                        <div className="w-16 h-6 bg-muted/40 rounded" />
-                      </div>
-                    </div>
+                  <div className="aspect-[4/3] rounded-3xl border border-slate-200 bg-slate-50 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden">
+                    <img 
+                      src={feature.image} 
+                      alt={`${feature.badge} Interface`} 
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                 </div>
               </div>
@@ -178,13 +154,13 @@ export default function Features() {
       </section>
 
       {/* ── Additional Capabilities Grid ── */}
-      <section className="py-20 md:py-28 bg-card border-y border-border">
+      <section className="py-20 md:py-28 bg-slate-50 border-t border-slate-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-4">
+            <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-600 text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
               Even More Capabilities
             </span>
-            <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900">
               An operating system packed with integrations
             </h2>
           </div>
@@ -195,15 +171,15 @@ export default function Features() {
               return (
                 <div
                   key={index}
-                  className="rounded-2xl border border-border/60 bg-background p-7 space-y-4 shadow-sm hover:shadow-lg transition-shadow duration-300"
+                  className="rounded-3xl border border-slate-100 bg-white p-8 space-y-5 shadow-sm hover:shadow-md transition-shadow duration-300"
                 >
-                  <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                    <FeatIcon className="w-5 h-5" />
+                  <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+                    <FeatIcon className="w-6 h-6" />
                   </div>
-                  <h3 className="font-bold text-lg text-foreground">
+                  <h3 className="font-bold text-xl text-slate-900">
                     {feat.title}
                   </h3>
-                  <p className="text-base text-muted-foreground leading-relaxed">
+                  <p className="text-base text-slate-600 leading-relaxed font-medium">
                     {feat.description}
                   </p>
                 </div>
@@ -214,19 +190,19 @@ export default function Features() {
       </section>
 
       {/* ── CTA Footer ── */}
-      <section className="py-24 md:py-32">
+      <section className="py-24 md:py-32 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight mb-5">
+          <h2 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-6">
             Supercharge your business office today
           </h2>
-          <p className="text-lg text-muted-foreground max-w-lg mx-auto leading-relaxed mb-8">
+          <p className="text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed mb-10 font-medium">
             Sign up now for a 14-day free trial on your own customized
             subdomain. Set up takes less than 2 minutes.
           </p>
           <Link to="/signup">
-            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-4 px-8 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 text-base">
+            <Button className="bg-primary hover:bg-primary/90 text-white font-bold py-6 px-10 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 text-base">
               Start Free Trial
-              <ArrowRight className="ml-2 w-4 h-4" />
+              <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </Link>
         </div>

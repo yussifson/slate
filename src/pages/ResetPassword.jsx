@@ -1,0 +1,135 @@
+import { useState, useEffect } from 'react';
+import { supabase } from '@/api/supabaseClient';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { CheckCircle2, Eye, EyeOff } from 'lucide-react';
+
+function Logo({ className }) {
+  return (
+    <div className={`rounded-xl bg-blue-600 flex items-center justify-center text-white font-black text-lg ${className}`}>
+      O
+    </div>
+  );
+}
+
+export default function ResetPassword() {
+  const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [done, setDone] = useState(false);
+  const [error, setError] = useState('');
+
+  // Supabase sends tokens as URL hash fragments; we need to set the session from them
+  useEffect(() => {
+    supabase.auth.getSession(); // trigger session loading from hash
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters.');
+      return;
+    }
+    if (password !== confirm) {
+      setError('Passwords do not match.');
+      return;
+    }
+    setLoading(true);
+    try {
+      const { error: err } = await supabase.auth.updateUser({ password });
+      if (err) throw err;
+      setDone(true);
+      // Redirect to login after 3 seconds
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 3000);
+    } catch (err) {
+      setError(err.message || 'Failed to update password.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="flex h-screen items-center justify-center bg-slate-50 px-4">
+      <div className="w-full max-w-md">
+        <div className="bg-white rounded-2xl shadow-xl border border-slate-100 p-10 space-y-8">
+          <div className="flex flex-col items-center gap-3 text-center">
+            <Logo className="w-12 h-12" />
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Set new password</h1>
+            <p className="text-sm text-slate-500">
+              {done ? 'Password updated! Redirecting to login...' : 'Choose a strong password for your account.'}
+            </p>
+          </div>
+
+          {done ? (
+            <div className="flex flex-col items-center gap-4 py-4">
+              <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center">
+                <CheckCircle2 className="w-8 h-8 text-green-500" />
+              </div>
+              <p className="text-sm text-slate-600 text-center">
+                Your password has been updated successfully!
+                <br />You will be redirected to login shortly.
+              </p>
+            </div>
+          ) : (
+            <form className="space-y-5" onSubmit={handleSubmit}>
+              {error && (
+                <div className="rounded-xl bg-red-50 p-4 text-sm text-red-600 border border-red-100 font-medium">
+                  {error}
+                </div>
+              )}
+
+              <div>
+                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">
+                  New Password
+                </label>
+                <div className="relative">
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    required
+                    placeholder="Min. 6 characters"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full h-14 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium px-4 pr-12 text-slate-900"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">
+                  Confirm Password
+                </label>
+                <Input
+                  type="password"
+                  required
+                  placeholder="Repeat password"
+                  value={confirm}
+                  onChange={(e) => setConfirm(e.target.value)}
+                  className="w-full h-14 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium px-4 text-slate-900"
+                />
+              </div>
+
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full h-14 text-base font-bold rounded-xl bg-blue-600 hover:bg-blue-700 text-white transition-all hover:-translate-y-0.5 shadow-lg shadow-blue-600/20"
+              >
+                {loading ? 'Updating...' : 'Update password'}
+              </Button>
+            </form>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

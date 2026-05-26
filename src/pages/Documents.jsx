@@ -4,7 +4,10 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { useFirmSettings } from "@/hooks/useFirmSettings";
-import { Plus, FolderOpen, Search, Download, Trash2, Upload } from "lucide-react";
+import { Plus, FolderOpen, Search, Download, Trash2, Upload, MoreVertical } from "lucide-react";
+import { Link } from "react-router-dom";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -25,6 +28,8 @@ export default function Documents() {
   const { toast } = useToast();
   const { docCategories, addDocCategory } = useFirmSettings();
   const [showForm, setShowForm] = useState(false);
+  const [editingDocument, setEditingDocument] = useState(null);
+  const [viewingDocument, setViewingDocument] = useState(null);
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
 
@@ -50,6 +55,16 @@ export default function Documents() {
     onError: (err) => toast({ title: "Failed to upload document", description: err.message, variant: "destructive" })
   });
 
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }) => base44.entities.Document.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["documents"] });
+      setEditingDocument(null);
+      toast({ title: "Document updated successfully" });
+    },
+    onError: (err) => toast({ title: "Failed to update document", description: err.message, variant: "destructive" })
+  });
+
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.Document.delete(id),
     onSuccess: () => {
@@ -71,7 +86,11 @@ export default function Documents() {
       render: (row) => (
         <div>
           <p className="font-medium text-sm">{row.name}</p>
-          <p className="text-xs text-muted-foreground">{row.case_title || "General"}</p>
+          {row.case_id ? (
+            <Link to={`/cases/${row.case_id}`} className="text-xs text-primary hover:underline">{row.case_title}</Link>
+          ) : (
+            <p className="text-xs text-muted-foreground">{row.case_title || "General"}</p>
+          )}
         </div>
       )
     },
@@ -81,16 +100,23 @@ export default function Documents() {
     {
       header: "Actions",
       render: (row) => (
-        <div className="flex gap-1">
-          {row.file_url && (
-            <a href={row.file_url} target="_blank" rel="noopener noreferrer">
-              <Button variant="ghost" size="icon" className="h-7 w-7"><Download className="w-3.5 h-3.5" /></Button>
-            </a>
-          )}
-          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(row.id); }}>
-            <Trash2 className="w-3.5 h-3.5 text-destructive" />
-          </Button>
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <MoreVertical className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => setViewingDocument(row)}>View Details</DropdownMenuItem>
+            {row.file_url && (
+              <DropdownMenuItem onClick={() => window.open(row.file_url, "_blank")}>Download</DropdownMenuItem>
+            )}
+            <DropdownMenuItem onClick={() => setEditingDocument(row)}>Edit</DropdownMenuItem>
+            <DropdownMenuItem className="text-red-600" onClick={() => {
+              if (window.confirm("Delete this document?")) deleteMutation.mutate(row.id);
+            }}>Delete</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       )
     },
   ];
@@ -118,21 +144,81 @@ export default function Documents() {
       <DataTable columns={columns} data={filtered} isLoading={isLoading} emptyTitle="No documents yet" emptyIcon={FolderOpen} />
 
       <DocumentUploadDialog
-        open={showForm}
-        onClose={() => setShowForm(false)}
-        onSubmit={(data) => createMutation.mutate(data)}
+        open={showForm || !!editingDocument}
+        onClose={() => { setShowForm(false); setEditingDocument(null); }}
+        onSubmit={(data) => editingDocument ? updateMutation.mutate({ id: editingDocument.id, data }) : createMutation.mutate(data)}
+        initialData={editingDocument}
         cases={cases}
         docCategories={docCategories}
         addDocCategory={addDocCategory}
       />
+
+      <Sheet open={!!viewingDocument} onOpenChange={(open) => !open && setViewingDocument(null)}>
+        <SheetContent className="overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle>Document Details</SheetTitle>
+          </SheetHeader>
+          {viewingDocument && (
+            <div className="mt-6 space-y-4">
+              <div>
+                <Label className="text-muted-foreground">Document Name</Label>
+                <p className="font-medium">{viewingDocument.name}</p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Category</Label>
+                <p className="font-medium capitalize">{viewingDocument.category?.replace(/_/g, " ") || "—"}</p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Case</Label>
+                <p className="font-medium">
+                  {viewingDocument.case_id ? (
+                    <Link to={`/cases/${viewingDocument.case_id}`} className="text-primary hover:underline">
+                      {viewingDocument.case_title}
+                    </Link>
+                  ) : viewingDocument.case_title || "General"}
+                </p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Uploaded By</Label>
+                <p className="font-medium">{viewingDocument.uploaded_by || "—"}</p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Date</Label>
+                <p className="font-medium">{format(new Date(viewingDocument.created_date), "MMM d, yyyy")}</p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Notes</Label>
+                <p className="font-medium whitespace-pre-wrap">{viewingDocument.notes || "—"}</p>
+              </div>
+              {viewingDocument.file_url && (
+                <div className="pt-4">
+                  <a href={viewingDocument.file_url} target="_blank" rel="noopener noreferrer">
+                    <Button><Download className="w-4 h-4 mr-2" /> Download File</Button>
+                  </a>
+                </div>
+              )}
+            </div>
+          )}
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
 
-function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, addDocCategory }) {
-  const [form, setForm] = useState({ name: "", category: "other", case_id: "", case_title: "", notes: "" });
+function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, addDocCategory, initialData }) {
+  const [form, setForm] = React.useState({ name: "", category: "other", case_id: "", case_title: "", notes: "" });
   const [uploading, setUploading] = useState(false);
   const [fileUrl, setFileUrl] = useState("");
+
+  React.useEffect(() => {
+    if (initialData) {
+      setForm(initialData);
+      setFileUrl(initialData.file_url || "");
+    } else {
+      setForm({ name: "", category: "other", case_id: "", case_title: "", notes: "" });
+      setFileUrl("");
+    }
+  }, [initialData, open]);
 
   const handleChange = (field, value) => setForm(prev => ({ ...prev, [field]: value }));
 
@@ -162,7 +248,7 @@ function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, a
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
-        <DialogHeader><DialogTitle>Upload Document</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle>{initialData ? "Edit Document" : "Upload Document"}</DialogTitle></DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <Label>File</Label>
@@ -194,7 +280,7 @@ function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, a
           </div>
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-            <Button type="submit" disabled={uploading}>Upload</Button>
+            <Button type="submit" disabled={uploading}>{initialData ? "Save Changes" : "Upload"}</Button>
           </div>
         </form>
       </DialogContent>

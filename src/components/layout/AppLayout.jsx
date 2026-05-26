@@ -49,16 +49,16 @@ export default function AppLayout() {
   }
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex h-screen overflow-hidden bg-background">
       <Sidebar user={user} />
-      <div className="flex-1 flex flex-col overflow-x-hidden">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Trial Countdown Banner */}
         {subscriptionStatus === 'trial' && !hideTrialBanner && !isSuperAdmin && (
           <div className="bg-gradient-to-r from-amber-500 to-orange-600 text-white px-4 py-2 flex items-center justify-between gap-3 text-xs md:text-sm shrink-0 shadow-sm font-sans">
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4 shrink-0 animate-pulse" />
               <span className="font-semibold">Free Trial Active:</span>
-              <span>You have <strong className="font-extrabold">{trialDaysLeft} days</strong> remaining on your Airzyle trial.</span>
+              <span>You have <strong className="font-extrabold">{trialDaysLeft} days</strong> remaining on your Optalflow trial.</span>
             </div>
             <div className="flex items-center gap-3">
               <Link to="/settings">
@@ -98,8 +98,10 @@ export default function AppLayout() {
           </div>
         )}
         <TopBar user={user} />
-        <main className="flex-1 p-4 lg:p-6 max-w-[1400px] w-full mx-auto">
-          <Outlet />
+        <main className="flex-1 overflow-y-auto p-4 lg:p-6">
+          <div className="max-w-[1400px] w-full mx-auto">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>

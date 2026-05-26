@@ -389,8 +389,8 @@ function SuperAdminBilling() {
   const sendReminder = async (inv) => {
     await base44.integrations.Core.SendEmail({
       to: inv.admin_email,
-      subject: `[Airzyle] Payment Reminder — ${inv.plan_name} Plan`,
-      body: `Dear ${inv.company_name},\n\nThis is a reminder that your Airzyle subscription of $${inv.amount_usd} USD for ${inv.billing_period} is ${inv.status === "overdue" ? "OVERDUE" : "pending payment"}.\n\nDue Date: ${inv.due_date}\n\nPlease arrange payment at your earliest convenience.\n\n— Airzyle Billing`,
+      subject: `[Optalflow] Payment Reminder — ${inv.plan_name} Plan`,
+      body: `Dear ${inv.company_name},\n\nThis is a reminder that your Optalflow subscription of $${inv.amount_usd} USD for ${inv.billing_period} is ${inv.status === "overdue" ? "OVERDUE" : "pending payment"}.\n\nDue Date: ${inv.due_date}\n\nPlease arrange payment at your earliest convenience.\n\n— Optalflow Billing`,
     });
     updateMutation.mutate({ id: inv.id, data: { reminder_count: (inv.reminder_count || 0) + 1, last_reminder_at: new Date().toISOString() } });
     toast({ title: "Reminder sent", description: `Email sent to ${inv.admin_email}` });

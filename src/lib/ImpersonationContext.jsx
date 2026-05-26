@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 
 const ImpersonationContext = createContext();
 
-const STORAGE_KEY = "airzyle_impersonating";
+const STORAGE_KEY = "optalflow_impersonating";
 
 export function ImpersonationProvider({ children }) {
   const [impersonatedCompany, setImpersonatedCompany] = useState(() => {

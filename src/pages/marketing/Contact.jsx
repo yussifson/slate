@@ -8,7 +8,7 @@ export default function Contact() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    firm: '',
+    company: '',
     phone: '',
     message: ''
   });
@@ -22,7 +22,7 @@ export default function Contact() {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) return;
     setFormSubmitted(true);
-    setFormData({ name: '', email: '', firm: '', phone: '', message: '' });
+    setFormData({ name: '', email: '', company: '', phone: '', message: '' });
   };
 
   const offices = [
@@ -30,204 +30,223 @@ export default function Contact() {
       city: "Lagos, Nigeria",
       address: "14 Kingsway Road, Ikoyi, Lagos",
       phone: "+234 1 293 8472",
-      email: "lagos@airzyle.oatstack.com"
+      email: "lagos@optalflow.oatstack.com"
     },
     {
       city: "Accra, Ghana",
       address: "8 Senchi Street, Airport Residential, Accra",
       phone: "+233 30 293 8472",
-      email: "accra@airzyle.oatstack.com"
+      email: "accra@optalflow.oatstack.com"
     },
     {
       city: "Freetown, Sierra Leone",
       address: "42 Siaka Stevens Street, Central, Freetown",
       phone: "+232 76 293 842",
-      email: "freetown@airzyle.oatstack.com"
+      email: "freetown@optalflow.oatstack.com"
     }
   ];
 
   return (
-    <div className="overflow-x-hidden">
+    <div className="overflow-x-hidden bg-white min-h-screen">
       {/* Hero Section */}
-      <section className="py-20 md:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-sm font-semibold uppercase tracking-widest text-primary mb-4">
+      <section className="relative py-10 md:py-14 lg:py-16">
+        <div className="absolute inset-0 bg-slate-50 pointer-events-none" />
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 text-xs font-semibold text-slate-600 mb-8 shadow-sm">
+            <span className="flex h-2 w-2 rounded-full bg-blue-500" />
             Get in Touch
-          </p>
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground mb-6">
-            We're here to support your firm
+          </div>
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1] max-w-4xl mx-auto mb-6">
+            We're here to{' '}
+            <span className="bg-blue-100 text-blue-900 px-4 py-1 rounded-[1.5rem] inline-block mt-2">
+              support
+            </span>{' '}
+            you
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Have questions about migrating case files, custom regional subdomain pipelines, or integrating Paystack payments? Send us a message and our success team will respond in less than an hour.
+          <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed font-medium mb-10">
+            Whether you're exploring enterprise options, need help migrating data, or have a simple question—our team is ready.
           </p>
         </div>
       </section>
 
-      {/* Two-Column Layout */}
-      <section className="py-20 md:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
+      {/* Main Content Layout */}
+      <section className="py-20 md:py-32 bg-white relative">
+        <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-slate-50 to-transparent"></div>
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+            
+            {/* Left Column — Contact Form */}
+            <div className="lg:col-span-7">
+              <div className="bg-white rounded-[2rem] border border-slate-200/60 p-8 md:p-12 shadow-2xl shadow-slate-200/40 hover:shadow-blue-900/5 transition-all duration-300">
+                {formSubmitted ? (
+                  <div className="text-center py-20 space-y-6">
+                    <div className="w-20 h-20 rounded-full bg-green-50 text-green-500 flex items-center justify-center mx-auto border-8 border-green-50/50 shadow-inner">
+                      <CheckCircle className="w-10 h-10" />
+                    </div>
+                    <h3 className="text-4xl font-extrabold text-slate-900 tracking-tight">
+                      Message Received
+                    </h3>
+                    <p className="text-lg text-slate-600 font-medium max-w-sm mx-auto leading-relaxed">
+                      Thank you for reaching out! A specialist has been assigned and will reply to your email shortly.
+                    </p>
+                    <div className="pt-8">
+                      <Button
+                        onClick={() => setFormSubmitted(false)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-6 px-10 rounded-full shadow-lg transition-all duration-300"
+                      >
+                        Send another message
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <form onSubmit={handleSubmit} className="space-y-8">
+                    <div>
+                      <h3 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">
+                        Send a Message
+                      </h3>
+                      <p className="text-slate-500 font-medium">We'll get back to you within 24 hours.</p>
+                    </div>
 
-          {/* Left Column — Contact Info */}
-          <div className="lg:col-span-5 space-y-8">
-            <div className="space-y-3">
-              <h2 className="text-xl font-bold text-foreground tracking-tight">
-                Contact Information
-              </h2>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Clock className="w-4 h-4 text-primary shrink-0" />
-                <span>Mon – Fri, 8:00 AM – 5:00 PM (GMT / WAT)</span>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label htmlFor="name" className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                          Full Name <span className="text-red-500">*</span>
+                        </label>
+                        <Input
+                          type="text"
+                          id="name"
+                          name="name"
+                          value={formData.name}
+                          onChange={handleInputChange}
+                          placeholder="Jane Doe"
+                          className="w-full h-14 bg-slate-50 border-slate-200 rounded-xl px-4 font-medium focus:bg-white transition-colors"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label htmlFor="email" className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                          Email Address <span className="text-red-500">*</span>
+                        </label>
+                        <Input
+                          type="email"
+                          id="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                          placeholder="jane@company.com"
+                          className="w-full h-14 bg-slate-50 border-slate-200 rounded-xl px-4 font-medium focus:bg-white transition-colors"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label htmlFor="company" className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                          Company Name
+                        </label>
+                        <Input
+                          type="text"
+                          id="company"
+                          name="company"
+                          value={formData.company}
+                          onChange={handleInputChange}
+                          placeholder="Acme Corp"
+                          className="w-full h-14 bg-slate-50 border-slate-200 rounded-xl px-4 font-medium focus:bg-white transition-colors"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label htmlFor="phone" className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                          Phone Number
+                        </label>
+                        <Input
+                          type="tel"
+                          id="phone"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleInputChange}
+                          placeholder="+1 (555) 000-0000"
+                          className="w-full h-14 bg-slate-50 border-slate-200 rounded-xl px-4 font-medium focus:bg-white transition-colors"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label htmlFor="message" className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                        How can we help? <span className="text-red-500">*</span>
+                      </label>
+                      <textarea
+                        id="message"
+                        name="message"
+                        rows="5"
+                        value={formData.message}
+                        onChange={handleInputChange}
+                        placeholder="Tell us about your project or inquiry..."
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-medium text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent focus:bg-white resize-none transition-colors"
+                        required
+                      ></textarea>
+                    </div>
+
+                    <Button type="submit" className="w-full h-14 bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg rounded-xl shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 hover:-translate-y-0.5 transition-all duration-300">
+                      Send Message
+                    </Button>
+                  </form>
+                )}
               </div>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Premium and Enterprise subscribers receive priority 24/7 emergency hotline access.
-              </p>
             </div>
 
-            <div className="space-y-4">
-              {offices.map((office, idx) => (
-                <div
-                  key={idx}
-                  className="rounded-2xl p-6 bg-card border border-border/60 space-y-4 hover:shadow-lg transition-shadow duration-300"
-                >
-                  <h3 className="font-bold text-foreground text-base flex items-center gap-2.5">
-                    <MapPin className="w-5 h-5 text-primary shrink-0" />
-                    <span>{office.city}</span>
-                  </h3>
-                  <div className="text-muted-foreground text-sm pl-7 space-y-2">
-                    <p>{office.address}</p>
-                    <p className="flex items-center gap-2 hover:text-primary transition-colors cursor-pointer">
-                      <Phone className="w-4 h-4 text-muted-foreground/60 shrink-0" />
-                      <span>{office.phone}</span>
-                    </p>
-                    <p className="flex items-center gap-2 hover:text-primary transition-colors cursor-pointer">
-                      <Mail className="w-4 h-4 text-muted-foreground/60 shrink-0" />
-                      <span>{office.email}</span>
-                    </p>
-                  </div>
+            {/* Right Column — Contact Info */}
+            <div className="lg:col-span-5 space-y-8 lg:pl-4">
+              <div className="bg-blue-50 border border-blue-100 rounded-3xl p-8 flex items-start gap-4">
+                <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white shrink-0 mt-1 shadow-md shadow-blue-600/20">
+                  <Clock className="w-6 h-6" />
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Right Column — Contact Form */}
-          <div className="lg:col-span-7 rounded-2xl bg-card border border-border/60 p-6 md:p-10 hover:shadow-lg transition-shadow duration-300">
-            {formSubmitted ? (
-              <div className="text-center py-16 space-y-5">
-                <div className="w-14 h-14 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto shadow-sm border border-emerald-100 animate-bounce">
-                  <CheckCircle className="w-7 h-7" />
-                </div>
-                <h3 className="text-2xl font-extrabold text-foreground">
-                  Message Received Successfully!
-                </h3>
-                <p className="text-base text-muted-foreground max-w-md mx-auto leading-relaxed">
-                  Thank you for reaching out. A Airzyle product counselor has been assigned and will reply shortly to your email.
-                </p>
-                <div className="pt-3">
-                  <Button
-                    onClick={() => setFormSubmitted(false)}
-                    className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 px-8 rounded-xl transition-all"
-                  >
-                    Send another message
-                  </Button>
+                <div>
+                  <h3 className="font-bold text-xl text-slate-900 mb-2">Support Hours</h3>
+                  <p className="text-slate-600 font-medium leading-relaxed">
+                    Monday – Friday<br />
+                    8:00 AM – 5:00 PM (GMT)
+                  </p>
+                  <p className="text-sm text-blue-600 font-bold mt-4 pt-4 border-t border-blue-200">
+                    * Enterprise subscribers receive 24/7 priority support.
+                  </p>
                 </div>
               </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <h3 className="text-xl font-bold text-foreground tracking-tight">
-                  Send a Message
-                </h3>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <div className="space-y-2">
-                    <label htmlFor="name" className="text-sm font-medium text-foreground">
-                      Full Name <span className="text-red-500">*</span>
-                    </label>
-                    <Input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      placeholder="Advocate Adama Mensah"
-                      required
-                      className="py-3 rounded-xl border-border bg-background"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="email" className="text-sm font-medium text-foreground">
-                      Email Address <span className="text-red-500">*</span>
-                    </label>
-                    <Input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      placeholder="adama@mensahchambers.com"
-                      required
-                      className="py-3 rounded-xl border-border bg-background"
-                    />
-                  </div>
+              <div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-6 px-2">Regional Offices</h3>
+                <div className="space-y-4">
+                  {offices.map((office, idx) => (
+                    <div
+                      key={idx}
+                      className="group rounded-3xl p-6 bg-white border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 transition-colors duration-300 flex items-start gap-5"
+                    >
+                      <div className="w-10 h-10 rounded-full bg-slate-100 group-hover:bg-blue-100 flex items-center justify-center text-slate-500 group-hover:text-blue-600 shrink-0 transition-colors">
+                        <MapPin className="w-5 h-5" />
+                      </div>
+                      <div className="space-y-3">
+                        <h4 className="font-bold text-slate-900 text-lg">{office.city}</h4>
+                        <div className="text-slate-600 font-medium text-sm space-y-2">
+                          <p>{office.address}</p>
+                          <p className="flex items-center gap-2 group-hover:text-blue-600 transition-colors">
+                            <Phone className="w-4 h-4 shrink-0" />
+                            <span>{office.phone}</span>
+                          </p>
+                          <p className="flex items-center gap-2 group-hover:text-blue-600 transition-colors">
+                            <Mail className="w-4 h-4 shrink-0" />
+                            <span>{office.email}</span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
+              </div>
+            </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <div className="space-y-2">
-                    <label htmlFor="firm" className="text-sm font-medium text-foreground">
-                      Law Firm Name
-                    </label>
-                    <Input
-                      type="text"
-                      id="firm"
-                      name="firm"
-                      value={formData.firm}
-                      onChange={handleInputChange}
-                      placeholder="Mensah & Partners"
-                      className="py-3 rounded-xl border-border bg-background"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="phone" className="text-sm font-medium text-foreground">
-                      Phone Number
-                    </label>
-                    <Input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      placeholder="+233 30 293 8472"
-                      className="py-3 rounded-xl border-border bg-background"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label htmlFor="message" className="text-sm font-medium text-foreground">
-                    Your Message <span className="text-red-500">*</span>
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    placeholder="Tell us about your practice and how we can support you..."
-                    rows={5}
-                    required
-                    className="w-full p-3 border border-border rounded-xl bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-base transition-all leading-relaxed"
-                  />
-                </div>
-
-                <div className="pt-2">
-                  <Button
-                    type="submit"
-                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 rounded-xl shadow-sm transition-all text-base"
-                  >
-                    Send Inquiry Message
-                  </Button>
-                </div>
-              </form>
-            )}
           </div>
-
         </div>
       </section>
     </div>

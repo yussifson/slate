@@ -131,8 +131,8 @@ View in App: ${window.location.origin}/leads`,
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-3">
-            {company?.logo_url || company?.logo_light_url ? (
-              <img src={company.logo_url || company.logo_light_url} alt="Logo" className="h-10 max-w-[200px] object-contain rounded" />
+            {company?.logo_url ? (
+              <img src={company.logo_url} alt="Logo" className="h-10 max-w-[200px] object-contain rounded" />
             ) : (
               <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
                 <Scale className="w-5 h-5 text-white" />

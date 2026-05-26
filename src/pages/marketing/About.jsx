@@ -11,12 +11,13 @@ export default function About() {
     },
     {
       icon: Shield,
-      description: "We hold client secrecy and operational integrity as our ultimate directive. Every transaction, case document, and link is encrypted with advanced protocols."
+      title: "Data Security",
+      description: "We hold client secrecy and operational integrity as our ultimate directive. Every transaction, project document, and link is encrypted with advanced protocols."
     },
     {
       icon: Users,
       title: "Inclusivity & Growth",
-      description: "We are committed to building local digital infrastructures, serving small chambers and elite firms in Nigeria, Ghana, Sierra Leone, South Africa, and beyond."
+      description: "We are committed to building local digital infrastructures, serving small teams and enterprise organizations globally."
     }
   ];
 
@@ -28,49 +29,68 @@ export default function About() {
   ];
 
   return (
-    <div className="overflow-x-hidden">
+    <div className="overflow-x-hidden bg-white min-h-screen">
       {/* Hero Section */}
-      <section className="py-20 md:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <span className="inline-block text-sm font-semibold uppercase tracking-widest text-primary mb-4">
+      <section className="relative py-10 md:py-14 lg:py-16">
+        <div className="absolute inset-0 bg-slate-50 pointer-events-none" />
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 text-xs font-semibold text-slate-600 mb-8 shadow-sm">
+            <span className="flex h-2 w-2 rounded-full bg-blue-500" />
             Our Story
-          </span>
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground mb-6 max-w-3xl mx-auto leading-tight">
-            Digitizing business operations globally
+          </div>
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1] max-w-4xl mx-auto mb-6">
+            Digitizing business operations{' '}
+            <span className="bg-blue-100 text-blue-900 px-4 py-1 rounded-[1.5rem] inline-block mt-2">
+              globally
+            </span>
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Founded by a team of industry practitioners and engineers, Airzyle is the first dedicated SaaS business management platform custom-built for regional operational requirements.
+          <p className="text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed font-medium mb-10">
+            Founded by a team of industry practitioners and engineers, Optalflow is the first dedicated SaaS business management platform custom-built for regional and global operational excellence.
           </p>
         </div>
       </section>
 
       {/* Story Section — Two Column */}
-      <section className="py-20 md:py-28">
+      <section className="py-24 md:py-32 bg-white relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
             {/* Left — Narrative */}
-            <div className="space-y-6">
-              <h2 className="text-2xl font-bold text-foreground leading-tight">
-                Why we built Airzyle
+            <div className="space-y-8">
+              <h2 className="text-4xl md:text-5xl font-bold text-slate-900 leading-tight tracking-tight">
+                Why we built <span className="text-blue-600">Optalflow</span>
               </h2>
-              <p className="text-base text-muted-foreground leading-relaxed">
-                Operations have long relied on legacy software, paper files, or separate applications for emails, calendars, billing, and team communication. This fragmentation leads to lost billable hours, administrative confusion, and security liabilities.
-              </p>
-              <p className="text-base text-muted-foreground leading-relaxed">
-                We created Airzyle to provide a single, premium, cohesive ecosystem. An OS where an organization can check pipelines, message a client, sync calendars, track consulting hours, and receive card or bank transfer payments in one click.
-              </p>
+              <div className="space-y-6 text-lg text-slate-600 font-medium leading-relaxed">
+                <p>
+                  Operations have long relied on legacy software, paper files, or separate applications for emails, calendars, billing, and team communication. This fragmentation leads to lost billable hours, administrative confusion, and security liabilities.
+                </p>
+                <p>
+                  We created Optalflow to provide a single, premium, cohesive ecosystem. An OS where an organization can check pipelines, message a client, sync calendars, track consulting hours, and receive secure payments in one click.
+                </p>
+              </div>
+              
+              <div className="pt-6 grid grid-cols-2 gap-8">
+                <div>
+                  <div className="font-black text-5xl text-slate-900 mb-2">500+</div>
+                  <div className="text-sm font-bold text-slate-500 uppercase tracking-wider">Organizations</div>
+                </div>
+                <div>
+                  <div className="font-black text-5xl text-slate-900 mb-2">12</div>
+                  <div className="text-sm font-bold text-slate-500 uppercase tracking-wider">Countries Active</div>
+                </div>
+              </div>
             </div>
 
-            {/* Right — Stats Card */}
-            <div className="rounded-2xl border border-border/60 p-10 bg-card shadow-sm hover:shadow-lg transition-shadow duration-300 aspect-video flex items-center justify-center relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-transparent to-transparent pointer-events-none" />
-              <div className="text-center space-y-3 relative z-10">
-                <span className="font-black text-6xl bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">
-                  500+
-                </span>
-                <p className="text-base font-semibold uppercase tracking-wider text-muted-foreground">
-                  Active professionals and organizations
-                </p>
+            {/* Right — Visual Collage */}
+            <div className="relative">
+              <div className="absolute inset-0 bg-blue-600/5 blur-[100px] rounded-full"></div>
+              <div className="relative rounded-[2rem] border border-slate-200/60 bg-white p-2 shadow-2xl overflow-hidden aspect-[4/5] transform lg:rotate-2 hover:rotate-0 transition-transform duration-700">
+                <img src="/images/hero_dashboard_ui.png" alt="Optalflow Interface" className="w-full h-full object-cover rounded-[1.5rem]" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent flex items-end p-8">
+                  <div className="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-2xl w-full">
+                    <p className="text-white font-medium italic">"The single best decision our operations team has made this decade."</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -78,49 +98,31 @@ export default function About() {
       </section>
 
       {/* Core Values Section */}
-      <section className="bg-card border-y border-border py-24 md:py-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <span className="inline-block text-sm font-semibold uppercase tracking-widest text-primary mb-4">
-              Our Principles
-            </span>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight">
+      <section className="bg-slate-50 border-y border-slate-100 py-24 md:py-32 relative overflow-hidden">
+        {/* Subtle grid pattern background */}
+        <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(148, 163, 184, 0.15) 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-6">
               The values that drive us
             </h2>
+            <p className="text-xl text-slate-600 font-medium max-w-2xl mx-auto">
+              Our principles define every line of code we write and every feature we ship.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
             {values.map((v, i) => (
               <div
                 key={i}
-                className="bg-background border border-border/60 rounded-2xl p-8 shadow-sm hover:shadow-lg transition-shadow duration-300"
+                className="bg-white border border-slate-200/60 rounded-[2rem] p-10 shadow-xl shadow-slate-200/20 hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-900/5 transition-all duration-300 group"
               >
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-6">
-                  <v.icon className="w-6 h-6" />
+                <div className="w-16 h-16 rounded-2xl bg-blue-50 group-hover:bg-blue-600 flex items-center justify-center text-blue-600 group-hover:text-white mb-8 transition-colors duration-300">
+                  <v.icon className="w-8 h-8" strokeWidth={2} />
                 </div>
-                <h3 className="font-bold text-lg text-foreground mb-3">{v.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{v.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Row */}
-      <section className="py-20 md:py-28 border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, i) => (
-              <div key={i} className="text-center space-y-2">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary mx-auto mb-3">
-                  <stat.icon className="w-5 h-5" />
-                </div>
-                <p className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight">
-                  {stat.value}
-                </p>
-                <p className="text-base text-muted-foreground font-medium">
-                  {stat.label}
-                </p>
+                <h3 className="font-bold text-2xl text-slate-900 mb-4">{v.title}</h3>
+                <p className="text-base text-slate-600 font-medium leading-relaxed">{v.description}</p>
               </div>
             ))}
           </div>
@@ -128,21 +130,19 @@ export default function About() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 md:py-32">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight">
+      <section className="py-32 bg-white relative overflow-hidden">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+          <h2 className="text-5xl md:text-6xl font-bold text-slate-900 tracking-tight mb-8">
             Join the future of business operations
           </h2>
-          <p className="text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
+          <p className="text-xl text-slate-600 font-medium max-w-2xl mx-auto leading-relaxed mb-12">
             Sign up today to create a dedicated subdomain workspace for your partners, team, and clients. Explore the trial with no commitment.
           </p>
-          <div className="pt-4">
-            <Link to="/signup">
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-4 px-8 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 text-base">
-                Start Free Trial Now
-              </Button>
-            </Link>
-          </div>
+          <Link to="/signup">
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-7 px-12 rounded-full shadow-lg transition-all duration-300 text-lg">
+              Start Your Free Trial
+            </Button>
+          </Link>
         </div>
       </section>
     </div>

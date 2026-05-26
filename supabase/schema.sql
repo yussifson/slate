@@ -234,6 +234,7 @@ CREATE TABLE IF NOT EXISTS public.companies (
   updated_date TIMESTAMPTZ DEFAULT now(),
   created_by TEXT,
   name TEXT,
+  subdomain TEXT UNIQUE,
   email TEXT,
   phone TEXT,
   country TEXT CHECK (country IN ('Ghana', 'Nigeria', 'Sierra Leone')),

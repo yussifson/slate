@@ -4,12 +4,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import ThemeToggle from '@/components/layout/ThemeToggle';
+import { Logo } from '@/components/ui/Logo';
 import { getSubdomainAndBase } from '@/lib/domainUtils';
 
 export default function SignUp() {
   const [companyName, setCompanyName] = useState('');
   const [subdomain, setSubdomain] = useState('');
   const [industryType, setIndustryType] = useState('law');
+  const [country, setCountry] = useState('Ghana');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -43,6 +45,7 @@ export default function SignUp() {
         subdomain: cleanSubdomain,
         email: email,
         industry_type: industryType,
+        country: country,
         subscription_plan: 'starter',
         subscription_status: 'trial',
         status: 'active'
@@ -78,91 +81,150 @@ export default function SignUp() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background relative p-4">
-      <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
-        <ThemeToggle />
-      </div>
-      <div className="w-full max-w-md space-y-8 rounded-xl bg-card p-8 shadow-xl border border-border/80">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-foreground">Register your Workspace</h2>
-          <p className="mt-2 text-sm text-muted-foreground">Create an account to start managing your business</p>
+    <div className="flex h-screen overflow-hidden bg-white">
+      {/* Left Side: Form */}
+      <div className="w-full lg:w-[45%] xl:w-[40%] flex flex-col justify-center px-6 sm:px-12 md:px-16 lg:px-20 relative z-10 bg-white shadow-[10px_0_40px_-15px_rgba(0,0,0,0.05)] border-r border-slate-100 overflow-y-auto py-8">
+        <div className="absolute top-6 right-6 lg:hidden">
+          <ThemeToggle />
         </div>
         
-        <form className="mt-8 space-y-6" onSubmit={handleSignUp}>
-          {error && <div className="rounded bg-red-500/10 p-4 text-sm text-red-500 border border-red-500/20">{error}</div>}
-          {success && <div className="rounded bg-green-500/10 p-4 text-sm text-green-500 border border-green-500/20">{success}</div>}
+        <div className="w-full max-w-sm mx-auto">
+          <div className="mb-4 text-center lg:text-left">
+            <Logo className="w-8 h-8 mx-auto lg:mx-0 mb-3" />
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">Register Workspace</h2>
+            <p className="text-xs text-slate-500 font-medium mt-1">Create an account to start managing your business</p>
+          </div>
           
-          <div className="space-y-4 rounded-md shadow-sm">
-            <div>
-              <Input
-                type="text"
-                required
-                placeholder="Company Name"
-                value={companyName}
-                onChange={(e) => setCompanyName(e.target.value)}
-                className="w-full"
-              />
+          <form className="space-y-3" onSubmit={handleSignUp}>
+            {error && <div className="rounded-xl bg-red-50 p-3 text-xs text-red-600 border border-red-100 font-medium">{error}</div>}
+            {success && <div className="rounded-xl bg-green-50 p-3 text-xs text-green-600 border border-green-100 font-medium">{success}</div>}
+            
+            <div className="space-y-2">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                    Company Name
+                  </label>
+                  <Input
+                    required
+                    placeholder="Acme Corp"
+                    value={companyName}
+                    onChange={(e) => setCompanyName(e.target.value)}
+                    className="w-full h-10 text-sm"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                    Subdomain
+                  </label>
+                  <Input
+                    required
+                    placeholder="acmecorp"
+                    value={subdomain}
+                    onChange={(e) => setSubdomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+                    className="w-full h-10 text-sm"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Workspace Region</label>
+                <Select value={country} onValueChange={setCountry}>
+                  <SelectTrigger className="w-full h-10 text-sm">
+                    <SelectValue placeholder="Select a region" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Ghana">Ghana</SelectItem>
+                    <SelectItem value="Nigeria">Nigeria</SelectItem>
+                    <SelectItem value="Sierra Leone">Sierra Leone</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Admin Email</label>
+                <Input
+                  type="email"
+                  required
+                  placeholder="admin@company.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full h-10 text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Admin Password</label>
+                <Input
+                  type="password"
+                  required
+                  placeholder="••••••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full h-10 text-sm"
+                />
+              </div>
             </div>
-            <div>
-              <Input
-                type="text"
-                required
-                placeholder="Subdomain (e.g. yourcompany)"
-                value={subdomain}
-                onChange={(e) => setSubdomain(e.target.value)}
-                className="w-full"
-              />
+
+            <Button 
+              type="submit" 
+              className="w-full h-10 bg-gradient-to-b from-primary/90 to-primary hover:from-primary hover:to-primary text-white font-bold rounded-lg shadow-md shadow-primary/20 transition-all hover:-translate-y-0.5 mt-2 text-sm active:scale-[0.98]"
+              disabled={loading}
+            >
+              {loading ? 'Creating...' : 'Create workspace'}
+            </Button>
+          </form>
+
+            <div className="text-center mt-4">
+              <span className="text-xs text-slate-500 font-medium">Already have an account? </span>
+              <a href="/login" className="text-xs font-bold text-blue-600 hover:underline">
+                Sign in
+              </a>
             </div>
-            <div>
-              <Select value={industryType} onValueChange={setIndustryType} required>
-                <SelectTrigger className="w-full bg-background">
-                  <SelectValue placeholder="Select your Industry" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="law">Law Firm</SelectItem>
-                  <SelectItem value="hospital">Hospital & Healthcare</SelectItem>
-                  <SelectItem value="school">School & Education</SelectItem>
-                  <SelectItem value="hotel">Hotel & Hospitality</SelectItem>
-                  <SelectItem value="church">Church & Religion</SelectItem>
-                  <SelectItem value="insurance">Insurance</SelectItem>
-                  <SelectItem value="retail">Retail / POS</SelectItem>
-                  <SelectItem value="logistics">Logistics & Delivery</SelectItem>
-                  <SelectItem value="hr">HR & ERP</SelectItem>
-                </SelectContent>
-              </Select>
+        </div>
+      </div>
+
+      {/* Right Side: Marketing Visual */}
+      <div className="hidden lg:flex flex-1 relative items-center justify-center bg-slate-50 overflow-hidden">
+        {/* Abstract Pattern Background */}
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-5 mix-blend-overlay"></div>
+        <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-gradient-to-br from-blue-400/20 to-indigo-500/20 blur-[100px] rounded-full pointer-events-none"></div>
+        <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-gradient-to-tr from-cyan-300/20 to-blue-400/20 blur-[100px] rounded-full pointer-events-none"></div>
+
+        <div className="relative z-10 w-full max-w-2xl bg-white rounded-[2rem] border border-slate-200/60 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] p-12 lg:p-16 flex flex-col justify-between relative group">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-[11px] font-bold text-blue-600 mb-6 uppercase tracking-widest">
+              <span className="flex h-1.5 w-1.5 rounded-full bg-blue-500" />
+              Scale Faster
             </div>
-            <div>
-              <Input
-                type="email"
-                required
-                placeholder="Admin Email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full"
-              />
-            </div>
-            <div>
-              <Input
-                type="password"
-                required
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full"
-              />
-            </div>
+            
+            <h3 className="text-4xl 2xl:text-5xl font-extrabold text-slate-900 mb-5 leading-[1.1] tracking-tight">
+              A workspace that grows with your ambition.
+            </h3>
+            <p className="text-lg text-slate-500 font-medium max-w-lg leading-relaxed">
+              Optalflow unifies your team's workflow, client communication, and billing into one single, beautifully simple platform.
+            </p>
           </div>
 
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? 'Creating account...' : 'Sign Up'}
-          </Button>
-
-          <div className="text-center mt-4">
-            <a href="/login" className="text-sm text-primary hover:underline">
-              Already have an account? Sign in
-            </a>
+          <div className="grid grid-cols-2 gap-6 mt-12 border-t border-slate-100 pt-8">
+            <div>
+              <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-700 mb-4 shadow-sm">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+              </div>
+              <h4 className="text-xl font-bold text-slate-900 mb-1">Set up in seconds</h4>
+              <p className="text-sm text-slate-500 font-medium leading-relaxed">No engineering required. Just invite your team and start working.</p>
+            </div>
+            
+            <div>
+              <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-700 mb-4 shadow-sm">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+              </div>
+              <h4 className="text-xl font-bold text-slate-900 mb-1">Bank-grade security</h4>
+              <p className="text-sm text-slate-500 font-medium leading-relaxed">SOC2 compliant infrastructure to keep your client data safe.</p>
+            </div>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );

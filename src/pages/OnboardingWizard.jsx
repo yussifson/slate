@@ -21,10 +21,12 @@ export default function OnboardingWizard() {
   const [firmName, setFirmName] = useState(user?.company_name || '');
   const [country, setCountry] = useState('Nigeria');
   const [currency, setCurrency] = useState('NGN');
+  const [subdomain, setSubdomain] = useState('');
+  const [industry, setIndustry] = useState(user?.company_industry || 'law');
 
   // Step 2: Staff invites
   const [staffEmail, setStaffEmail] = useState('');
-  const [staffRole, setStaffRole] = useState('lawyer');
+  const [staffRole, setStaffRole] = useState('');
   const [staffName, setStaffName] = useState('');
   const [invitedStaff, setInvitedStaff] = useState([]);
 
@@ -45,31 +47,60 @@ export default function OnboardingWizard() {
   };
 
   const handleCompleteOnboarding = async () => {
-    if (!user?.company_id) return;
     setLoading(true);
 
     try {
-      // 1. Update company details
-      const { error: compError } = await supabase
-        .from('companies')
-        .update({
-          name: firmName,
-          country: country,
-          currency: currency,
-          status: 'active'
-        })
-        .eq('id', user.company_id);
+      let companyIdToUse = user?.company_id;
 
-      if (compError) throw compError;
+      if (!companyIdToUse) {
+         if (!subdomain || !firmName) throw new Error("Please provide a workspace name and subdomain.");
+         const cleanSubdomain = subdomain.toLowerCase().replace(/[^a-z0-9-]/g, '');
+         
+         const { data: compData, error: compErr } = await supabase.from('companies').insert({
+            name: firmName,
+            subdomain: cleanSubdomain,
+            email: user?.email,
+            industry_type: industry,
+            country: country,
+            currency: currency,
+            subscription_plan: 'starter',
+            subscription_status: 'trial',
+            status: 'active'
+         }).select().single();
+
+         if (compErr) throw compErr;
+         companyIdToUse = compData.id;
+
+         const { error: profErr } = await supabase.from('profiles').update({
+            company_id: companyIdToUse,
+            company_name: firmName,
+            role: 'company_admin'
+         }).eq('id', user.id);
+         
+         if (profErr) throw profErr;
+      } else {
+        // 1. Update company details
+        const { error: compError } = await supabase
+          .from('companies')
+          .update({
+            name: firmName,
+            country: country,
+            currency: currency,
+            status: 'active'
+          })
+          .eq('id', companyIdToUse);
+
+        if (compError) throw compError;
+      }
 
       // 2. Insert invited staff records
       if (invitedStaff.length > 0) {
         const staffInserts = invitedStaff.map(s => ({
-          company_id: user.company_id,
+          company_id: companyIdToUse,
           user_email: s.email,
           full_name: s.name,
           role: s.role,
-          department: 'Legal Operations'
+          department: 'Operations'
         }));
         await supabase.from('staff_records').insert(staffInserts);
       }
@@ -79,7 +110,7 @@ export default function OnboardingWizard() {
         const { data: clientData, error: clientError } = await supabase
           .from('clients')
           .insert({
-            company_id: user.company_id,
+            company_id: companyIdToUse,
             name: clientName,
             email: clientEmail || `${clientName.toLowerCase().replace(/[^a-z0-9]/g, '')}@example.com`,
             status: 'active'
@@ -89,12 +120,12 @@ export default function OnboardingWizard() {
 
         if (!clientError && clientData) {
           await supabase.from('legal_cases').insert({
-            company_id: user.company_id,
+            company_id: companyIdToUse,
             client_id: clientData.id,
             title: caseTitle,
             stage: 'intake',
             status: 'active',
-            description: 'First case initialized during onboarding.'
+            description: `First ${getTerm(industry, 'case').toLowerCase()} initialized during onboarding.`
           });
         }
       }
@@ -110,13 +141,13 @@ export default function OnboardingWizard() {
       await refreshUser();
       
       // Store onboarding completion in localStorage to prevent repeat redirects
-      localStorage.setItem(`onboarding_done_${user.company_id}`, 'true');
+      localStorage.setItem(`onboarding_done_${companyIdToUse}`, 'true');
       
-      toast({ title: "Setup Complete!", description: "Welcome to your new digital legal workspace." });
+      toast({ title: "Setup Complete!", description: "Welcome to your new digital workspace." });
       
       const { currentSubdomain, baseDomain } = getSubdomainAndBase();
       if (!currentSubdomain) {
-         const { data: company } = await supabase.from('companies').select('subdomain').eq('id', user.company_id).single();
+         const { data: company } = await supabase.from('companies').select('subdomain').eq('id', companyIdToUse).single();
          if (company?.subdomain) {
              const port = window.location.port ? `:${window.location.port}` : '';
              window.location.href = `${window.location.protocol}//${company.subdomain}.${baseDomain}${port}/`;
@@ -153,7 +184,8 @@ export default function OnboardingWizard() {
       </div>
 
       {/* Main card */}
-      <div className="max-w-xl mx-auto w-full bg-white border border-slate-200/80 rounded-2xl p-8 shadow-xl shadow-slate-100 my-8">
+      <div className="max-w-xl mx-auto w-full glass-card bg-card rounded-3xl p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] my-8 relative overflow-hidden animate-in slide-in-from-bottom-8 duration-500">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-blue-400 to-primary"></div>
         {/* Progress indicator */}
         <div className="flex justify-between items-center mb-8">
           {[1, 2, 3].map((s) => (
@@ -188,15 +220,47 @@ export default function OnboardingWizard() {
 
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{INDUSTRIES[user?.company_industry || 'law']?.name || 'Workspace'} Name</label>
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{INDUSTRIES[industry]?.name || 'Workspace'} Name</label>
                 <Input 
                   type="text"
                   value={firmName}
                   onChange={(e) => setFirmName(e.target.value)}
                   placeholder="E.g. Mensah & Partners"
-                  className="py-5 rounded-xl"
+                  className="py-5"
                 />
               </div>
+
+              {!user?.company_id && (
+                <>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Workspace URL (Subdomain)</label>
+                    <Input 
+                      type="text"
+                      value={subdomain}
+                      onChange={(e) => setSubdomain(e.target.value)}
+                      placeholder="e.g. mycompany"
+                      className="py-5"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Industry</label>
+                    <Select value={industry} onValueChange={setIndustry}>
+                      <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="law">Law Firm</SelectItem>
+                        <SelectItem value="hospital">Hospital & Healthcare</SelectItem>
+                        <SelectItem value="school">School & Education</SelectItem>
+                        <SelectItem value="hotel">Hotel & Hospitality</SelectItem>
+                        <SelectItem value="church">Church & Religion</SelectItem>
+                        <SelectItem value="insurance">Insurance</SelectItem>
+                        <SelectItem value="retail">Retail / POS</SelectItem>
+                        <SelectItem value="logistics">Logistics & Delivery</SelectItem>
+                        <SelectItem value="hr">HR & ERP</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </>
+              )}
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
@@ -213,9 +277,6 @@ export default function OnboardingWizard() {
                       <SelectItem value="Nigeria">Nigeria</SelectItem>
                       <SelectItem value="Ghana">Ghana</SelectItem>
                       <SelectItem value="Sierra Leone">Sierra Leone</SelectItem>
-                      <SelectItem value="South Africa">South Africa</SelectItem>
-                      <SelectItem value="Kenya">Kenya</SelectItem>
-                      <SelectItem value="Other">Other</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -257,7 +318,7 @@ export default function OnboardingWizard() {
                 <Users className="w-5 h-5 text-primary" /> Invite your team
               </h2>
               <p className="text-sm text-slate-500 leading-relaxed">
-                Add your {getTerm(user?.company_industry, 'lawyers').toLowerCase()} and staff members to collaborate in real-time.
+                Add your {getTerm(industry, 'lawyer').toLowerCase()}s and staff members to collaborate in real-time.
               </p>
             </div>
 
@@ -269,16 +330,14 @@ export default function OnboardingWizard() {
                     placeholder="Full Name"
                     value={staffName}
                     onChange={(e) => setStaffName(e.target.value)}
-                    className="rounded-xl"
                   />
                 </div>
                 <div className="space-y-1.5">
                   <Input 
                     type="email"
-                    placeholder="email@firm.com"
+                    placeholder="email@company.com"
                     value={staffEmail}
                     onChange={(e) => setStaffEmail(e.target.value)}
-                    className="rounded-xl"
                   />
                 </div>
               </div>
@@ -287,7 +346,7 @@ export default function OnboardingWizard() {
                 <Select value={staffRole} onValueChange={setStaffRole} className="w-full">
                   <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="lawyer">{getTerm(user?.company_industry, 'lawyer')}</SelectItem>
+                    <SelectItem value="primary_role">{getTerm(industry, 'lawyer')}</SelectItem>
                     <SelectItem value="partner">Manager / Partner</SelectItem>
                     <SelectItem value="secretary">Admin / Secretary</SelectItem>
                     <SelectItem value="clerk">Assistant / Clerk</SelectItem>
@@ -350,44 +409,42 @@ export default function OnboardingWizard() {
           <div className="space-y-6">
             <div className="space-y-2">
               <h2 className="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-1.5">
-                <Briefcase className="w-5 h-5 text-primary" /> Initialize your first {getTerm(user?.company_industry, 'case')}
+                <Briefcase className="w-5 h-5 text-primary" /> Initialize your first {getTerm(industry, 'case')}
               </h2>
               <p className="text-sm text-slate-500 leading-relaxed">
-                Create a {getTerm(user?.company_industry, 'case').toLowerCase()} and link it to your first active {getTerm(user?.company_industry, 'client').toLowerCase()} to test the pipeline.
+                Create a {getTerm(industry, 'case').toLowerCase()} and link it to your first active {getTerm(industry, 'client').toLowerCase()} to test the pipeline.
               </p>
             </div>
 
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(user?.company_industry, 'case')} Title</label>
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(industry, 'case')} Title</label>
                 <Input 
                   type="text"
                   value={caseTitle}
                   onChange={(e) => setCaseTitle(e.target.value)}
-                  placeholder={`E.g., Initial ${getTerm(user?.company_industry, 'case')} for setup`}
-                  className="py-5 rounded-xl"
+                  placeholder={`E.g., Initial ${getTerm(industry, 'case')} for setup`}
+                  className="py-5"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(user?.company_industry, 'client')} Full Name</label>
+                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(industry, 'client')} Full Name</label>
                   <Input 
                     type="text"
                     value={clientName}
                     onChange={(e) => setClientName(e.target.value)}
                     placeholder="Adama Mensah"
-                    className="rounded-xl"
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(user?.company_industry, 'client')} Email</label>
+                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(industry, 'client')} Email</label>
                   <Input 
                     type="email"
                     value={clientEmail}
                     onChange={(e) => setClientEmail(e.target.value)}
                     placeholder="contact@email.com"
-                    className="rounded-xl"
                   />
                 </div>
               </div>

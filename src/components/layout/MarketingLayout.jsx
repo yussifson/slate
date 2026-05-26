@@ -1,12 +1,13 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { Menu, X, Scale, ArrowRight, Building, Home, Layers, CreditCard, Info, Mail } from 'lucide-react';
+import { Menu, X, Scale, ArrowRight, Building, Home, Layers, CreditCard, Info, Mail, Shield, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/lib/AuthContext';
 import { getSubdomainAndBase } from '@/lib/domainUtils';
+import { Logo } from '@/components/ui/Logo';
 
 export default function MarketingLayout({ children }) {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, isLoadingAuth } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
@@ -36,33 +37,21 @@ export default function MarketingLayout({ children }) {
   ];
 
   return (
-    <div className="dark min-h-screen bg-background text-foreground font-sans overflow-x-hidden selection:bg-primary/30 selection:text-primary-foreground relative">
-      {/* Noise Texture Overlay */}
-      <div className="fixed inset-0 z-[-1] opacity-[0.03] pointer-events-none bg-noise mix-blend-overlay" />
-      
-      {/* Subtle ambient background gradients */}
-      <div className="fixed top-0 inset-x-0 h-[600px] bg-gradient-to-b from-primary/10 via-transparent to-transparent pointer-events-none z-[-2]" />
-      <div className="fixed top-[10%] left-[-15%] w-[40vw] h-[40vw] rounded-full bg-primary/5 blur-[150px] pointer-events-none z-[-2]" />
-      <div className="fixed top-[25%] right-[-12%] w-[35vw] h-[35vw] rounded-full bg-blue-600/5 blur-[150px] pointer-events-none z-[-2]" />
+    <div className="light min-h-screen bg-background text-foreground font-sans overflow-x-hidden selection:bg-primary/20 selection:text-primary relative">
 
       {/* ========== NAVIGATION HEADER ========== */}
-      <header className={`sticky top-0 z-50 transition-all duration-300 ${
-        scrolled 
-          ? 'bg-background/40 backdrop-blur-2xl border-b border-white/5 shadow-sm' 
-          : 'bg-transparent border-b border-transparent'
-      }`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 md:h-[72px] flex items-center justify-between">
+      <div className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'py-3 bg-white/95 backdrop-blur-lg border-b-2 border-primary/80 shadow-sm' : 'py-5 bg-white/50 backdrop-blur-sm border-b-2 border-transparent'}`}>
+        <header className="max-w-6xl mx-auto">
+          <div className="h-14 flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 group shrink-0">
-            <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center text-white shadow-md transition-transform group-hover:scale-105 group-hover:shadow-lg">
-              <Scale className="w-4.5 h-4.5 md:w-5 md:h-5" />
-            </div>
+            <Logo className="w-8 h-8 md:w-9 md:h-9 transition-transform group-hover:scale-105" />
             <div className="flex flex-col">
               <span className="font-extrabold text-base md:text-lg tracking-tight text-foreground leading-none">
-                Airzyle
+                Optalflow
               </span>
-              <span className="text-[10px] text-muted-foreground font-semibold tracking-[0.15em] uppercase leading-none mt-0.5">
-                Legal OS
+              <span className="text-[9px] text-muted-foreground font-bold tracking-[0.2em] uppercase leading-none mt-0.5">
+                Unified Workspace
               </span>
             </div>
           </Link>
@@ -76,9 +65,9 @@ export default function MarketingLayout({ children }) {
                   key={item.name}
                   to={item.path}
                   className={`text-sm font-medium px-4 py-2 rounded-lg transition-all duration-200 relative ${
-                    isActive 
-                      ? 'text-primary bg-primary/[0.08]' 
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                      isActive 
+                        ? 'text-primary' 
+                        : 'text-foreground/70 hover:text-primary'
                   }`}
                 >
                   {item.name}
@@ -89,9 +78,11 @@ export default function MarketingLayout({ children }) {
 
           {/* Desktop CTA Buttons */}
           <div className="hidden lg:flex items-center gap-3">
-            {isAuthenticated ? (
+            {isLoadingAuth ? (
+              <div className="w-24 h-10 rounded-full animate-pulse bg-muted/60"></div>
+            ) : isAuthenticated ? (
               <a href={workspaceUrl}>
-                <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-md hover:shadow-lg group rounded-xl px-5 h-10 flex items-center gap-2 transition-all">
+                  <Button className="bg-primary hover:bg-primary/90 text-white font-semibold rounded-full px-6 h-10 flex items-center gap-2 transition-all">
                   <Building className="w-4 h-4" />
                   Go to Workspace
                   <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -105,7 +96,7 @@ export default function MarketingLayout({ children }) {
                   </Button>
                 </Link>
                 <Link to="/signup">
-                  <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-md hover:shadow-lg group rounded-xl px-5 h-10 transition-all">
+                    <Button className="bg-primary hover:bg-primary/90 text-white font-semibold rounded-full px-6 h-10 transition-all">
                     Start Free Trial
                     <ArrowRight className="w-4 h-4 ml-1.5 transition-transform group-hover:translate-x-0.5" />
                   </Button>
@@ -123,11 +114,13 @@ export default function MarketingLayout({ children }) {
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
+      </header>
+      </div>
 
-        {/* Mobile Navigation Drawer */}
-        {mobileMenuOpen && (
-          <div className="lg:hidden absolute top-full left-0 right-0 bg-background/95 backdrop-blur-xl border-b border-border shadow-xl animate-in slide-in-from-top-2 duration-200">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-2">
+      {/* Mobile Navigation Drawer */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden fixed top-[65px] left-0 right-0 bottom-0 z-40 bg-white border-t border-slate-200 shadow-xl overflow-y-auto animate-in slide-in-from-top-2 duration-200">
+          <nav className="flex flex-col p-6 gap-2">
               {navItems.map((item) => {
                 const isActive = location.pathname === item.path;
                 return (
@@ -149,7 +142,9 @@ export default function MarketingLayout({ children }) {
               <hr className="border-border/60 my-2" />
 
               <div className="flex flex-col gap-2.5 pt-1">
-                {isAuthenticated ? (
+                {isLoadingAuth ? (
+                  <div className="w-full h-11 rounded-xl animate-pulse bg-muted/60"></div>
+                ) : isAuthenticated ? (
                   <a href={workspaceUrl} className="w-full">
                     <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-md h-11 flex items-center justify-center gap-2 rounded-xl">
                       <Building className="w-4 h-4" />
@@ -171,13 +166,12 @@ export default function MarketingLayout({ children }) {
                   </>
                 )}
               </div>
-            </div>
-          </div>
-        )}
-      </header>
+            </nav>
+        </div>
+      )}
 
       {/* ========== MAIN CONTENT ========== */}
-      <main className="relative z-10 pb-20 md:pb-0">
+      <main className="relative z-10 pb-20 md:pb-0 pt-[80px] md:pt-[90px]">
         {children}
       </main>
 
@@ -208,80 +202,102 @@ export default function MarketingLayout({ children }) {
         <div className="h-[env(safe-area-inset-bottom)]" />
       </nav>
 
-      {/* ========== FOOTER ========== */}
-      <footer className="bg-card border-t border-border text-muted-foreground pt-16 md:pt-20 pb-24 md:pb-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-12 md:mb-16">
+      {/* ========== PREMIUM FOOTER (LIGHT THEME) ========== */}
+      <footer className="bg-slate-50 text-slate-600 pt-20 md:pt-28 pb-24 md:pb-12 border-t border-slate-200 relative overflow-hidden">
+        {/* Subtle background glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-full bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.05)_0%,transparent_70%)] pointer-events-none"></div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-2 md:grid-cols-12 gap-10 md:gap-12 mb-16 md:mb-20">
             {/* Brand Column */}
-            <div className="col-span-2 md:col-span-1 flex flex-col gap-4">
-              <Link to="/" className="flex items-center gap-2.5 group">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center text-white shadow-sm">
-                  <Scale className="w-4 h-4" />
-                </div>
-                <span className="font-extrabold text-base text-foreground tracking-tight">Airzyle</span>
+            <div className="col-span-2 md:col-span-5 lg:col-span-4 flex flex-col gap-6 pr-0 md:pr-10">
+              <Link to="/" className="flex items-center gap-2.5 group w-fit">
+                <Logo className="w-8 h-8 text-primary" />
+                <span className="font-extrabold text-xl text-slate-900 tracking-tight">Optalflow</span>
               </Link>
-              <p className="text-sm leading-relaxed text-muted-foreground max-w-[280px]">
-                The unified practice operating system custom-engineered for legal practitioners across the African continent.
+              <p className="text-sm leading-relaxed text-slate-600 font-medium">
+                The unified business operating system custom-engineered for modern enterprises across the globe. Built for scale, security, and speed.
               </p>
-              <p className="text-xs text-muted-foreground/70">
-                Trusted by 500+ advocates & counsels.
-              </p>
+              
+              <div className="flex items-center gap-4 mt-2">
+                <a href="#" className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-primary hover:border-primary hover:bg-primary/5 hover:shadow-sm transition-all">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+                </a>
+                <a href="#" className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-primary hover:border-primary hover:bg-primary/5 hover:shadow-sm transition-all">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+              </div>
             </div>
 
             {/* Product Links */}
-            <div className="space-y-4">
-              <h4 className="text-foreground font-semibold text-sm">Product</h4>
-              <ul className="flex flex-col gap-3">
-                <li><Link to="/features" className="text-sm hover:text-primary transition-colors">Core Features</Link></li>
-                <li><Link to="/pricing" className="text-sm hover:text-primary transition-colors">Pricing</Link></li>
-                <li><a href="#security" className="text-sm hover:text-primary transition-colors">Security</a></li>
-                <li><a href="#changelog" className="text-sm hover:text-primary transition-colors">Changelog</a></li>
+            <div className="col-span-1 md:col-span-2 lg:col-span-2 lg:col-start-6 space-y-5">
+              <h4 className="text-slate-900 font-bold text-sm uppercase tracking-wider">Product</h4>
+              <ul className="flex flex-col gap-3.5">
+                <li><Link to="/features" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">Core Features</Link></li>
+                <li><Link to="/pricing" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">Pricing Plans</Link></li>
+                <li><Link to="/integrations" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">Integrations</Link></li>
+                <li><Link to="/changelog" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">Changelog</Link></li>
               </ul>
             </div>
 
             {/* Company Links */}
-            <div className="space-y-4">
-              <h4 className="text-foreground font-semibold text-sm">Company</h4>
-              <ul className="flex flex-col gap-3">
-                <li><Link to="/about" className="text-sm hover:text-primary transition-colors">About Us</Link></li>
-                <li><Link to="/contact" className="text-sm hover:text-primary transition-colors">Contact</Link></li>
-                <li><a href="#privacy" className="text-sm hover:text-primary transition-colors">Privacy Policy</a></li>
-                <li><a href="#terms" className="text-sm hover:text-primary transition-colors">Terms of Service</a></li>
+            <div className="col-span-1 md:col-span-2 lg:col-span-2 space-y-5">
+              <h4 className="text-slate-900 font-bold text-sm uppercase tracking-wider">Company</h4>
+              <ul className="flex flex-col gap-3.5">
+                <li><Link to="/about" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">About Us</Link></li>
+                <li><Link to="/careers" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">Careers <span className="ml-1 inline-block px-1.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 text-[9px] font-bold">HIRING</span></Link></li>
+                <li><Link to="/contact" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">Contact Sales</Link></li>
+                <li><Link to="/partners" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">Partner Program</Link></li>
               </ul>
             </div>
 
             {/* Regional Offices */}
-            <div className="space-y-4">
-              <h4 className="text-foreground font-semibold text-sm">Offices</h4>
+            <div className="col-span-2 md:col-span-3 lg:col-span-2 space-y-5">
+              <h4 className="text-slate-900 font-bold text-sm uppercase tracking-wider">Offices</h4>
               <ul className="flex flex-col gap-4">
-                <li>
-                  <span className="text-foreground text-sm font-medium block">Lagos, Nigeria</span>
-                  <span className="text-xs text-muted-foreground/80">Victoria Island</span>
+                <li className="flex items-start gap-3 group">
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 group-hover:scale-150 transition-transform"></div>
+                  <div>
+                    <span className="text-slate-800 text-sm font-bold block">San Francisco, CA</span>
+                    <span className="text-xs text-slate-500 mt-0.5 block">Global HQ</span>
+                  </div>
                 </li>
-                <li>
-                  <span className="text-foreground text-sm font-medium block">Accra, Ghana</span>
-                  <span className="text-xs text-muted-foreground/80">Airport Residential</span>
-                </li>
-                <li>
-                  <span className="text-foreground text-sm font-medium block">Freetown, SL</span>
-                  <span className="text-xs text-muted-foreground/80">Central District</span>
+                <li className="flex items-start gap-3 group">
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 group-hover:scale-150 transition-transform"></div>
+                  <div>
+                    <span className="text-slate-800 text-sm font-bold block">London, UK</span>
+                    <span className="text-xs text-slate-500 mt-0.5 block">EMEA Hub</span>
+                  </div>
                 </li>
               </ul>
             </div>
           </div>
 
-          <hr className="border-border/60 mb-8" />
-
-          {/* Bottom Bar */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground/70">
-            <p>
-              © {new Date().getFullYear()} Airzyle Technologies Inc. All rights reserved.
-            </p>
+          <div className="pt-8 border-t border-slate-200 flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-6">
-              <a href="#terms" className="hover:text-primary transition-colors">Terms</a>
-              <a href="#privacy" className="hover:text-primary transition-colors">Privacy</a>
-              <a href="#cookies" className="hover:text-primary transition-colors">Cookies</a>
+              <div className="flex -space-x-2">
+                <div className="w-8 h-8 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center">
+                  <Shield className="w-3.5 h-3.5 text-slate-600" />
+                </div>
+                <div className="w-8 h-8 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center">
+                  <Clock className="w-3.5 h-3.5 text-slate-600" />
+                </div>
+              </div>
+              <div className="text-xs text-slate-600 font-medium">
+                SOC-2 Type II Certified <br/> 99.99% Uptime SLA
+              </div>
             </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm font-medium text-slate-600">
+              <a href="#terms" className="hover:text-primary transition-colors">Terms of Service</a>
+              <a href="#privacy" className="hover:text-primary transition-colors">Privacy Policy</a>
+              <a href="#security" className="hover:text-primary transition-colors">Security</a>
+              <a href="#cookies" className="hover:text-primary transition-colors">Cookie Policy</a>
+            </div>
+          </div>
+          
+          <div className="mt-8 text-center md:text-left text-xs text-slate-500 font-medium">
+            © {new Date().getFullYear()} Optalflow Technologies Inc. All rights reserved.
           </div>
         </div>
       </footer>

@@ -167,7 +167,6 @@ function BrandSettings({ company, onSave, saving }) {
   const [showSubdomainAlert, setShowSubdomainAlert] = useState(false);
   const [form, setForm] = useState({
     logo_url: company?.logo_url || "",
-    logo_light_url: company?.logo_light_url || "",
     favicon_url: company?.favicon_url || "",
     name: company?.name || "",
     subdomain: company?.subdomain || "",
@@ -200,9 +199,6 @@ function BrandSettings({ company, onSave, saving }) {
           <Field label="Logo URL (Dark Background)">
             <Input placeholder="https://..." value={form.logo_url} onChange={e => setForm({ ...form, logo_url: e.target.value })} />
             {form.logo_url && <img src={form.logo_url} alt="Logo preview" className="mt-2 h-10 object-contain rounded border border-border" />}
-          </Field>
-          <Field label="Logo URL (Light Background)">
-            <Input placeholder="https://..." value={form.logo_light_url || ""} onChange={e => setForm({ ...form, logo_light_url: e.target.value })} />
           </Field>
           <Field label="Favicon URL" full>
             <Input placeholder="https://..." value={form.favicon_url || ""} onChange={e => setForm({ ...form, favicon_url: e.target.value })} />
@@ -334,7 +330,7 @@ function CurrencySettings({ company, onSave, saving }) {
 
 function EmailSettings({ onSave, saving }) {
   const [form, setForm] = useState({
-    from_name: "Airzyle",
+    from_name: "Optalflow",
     from_email: "",
     reply_to: "",
     smtp_host: "",

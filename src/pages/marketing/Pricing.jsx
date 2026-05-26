@@ -9,55 +9,58 @@ export default function Pricing() {
   const plans = [
     {
       name: "Starter",
-      description: "Ideal for solo advocates and boutique law chambers starting out.",
+      description: "Effortless time tracking with unlimited integrations for individuals",
       price: { monthly: 29, yearly: 24 },
       quota: "Up to 3 active users",
       features: [
-        "Up to 10 active Cases",
-        "Up to 50 active Clients",
-        "Matter & Pipeline Tracking",
-        "Document storage (5 GB)",
-        "Email & Invoicing support",
-        "Paystack checkout portal",
-        "Standard email support"
+        "Unlimited time tracking",
+        "Unlimited clients & projects",
+        "Exportable reports for projects",
+        "Timer button in 50+ web apps",
+        "Web app, mobile apps, and desktop apps",
+        "Smart time links",
+        "API access"
       ],
-      cta: "Start Free Trial",
+      cta: "Get started for free",
       popular: false,
     },
     {
       name: "Professional",
-      description: "Perfect for growing mid-sized law firms and partnerships.",
+      description: "Seamless tracking and invoicing for small teams managing projects and budgets",
       price: { monthly: 79, yearly: 64 },
       quota: "Up to 10 active users",
       features: [
-        "Unlimited active Cases",
-        "Unlimited active Clients",
-        "Interactive Client Portals",
-        "Document storage (25 GB)",
-        "WhatsApp & Email Syncing",
-        "Staff Payroll & Leave tools",
-        "Conflict Checker module",
-        "Priority 24/7 support"
+        "Everything in Starter +",
+        "Billable rates & expenses",
+        "Project budgets & alerts",
+        "Time rounding",
+        "Client invoicing",
+        "Personalized My Timesheets",
+        "Calendar sync (Google, Outlook)",
+        "Task management",
+        "Client, project, and team import"
       ],
-      cta: "Start Free Trial",
+      cta: "Get started for free",
       popular: true,
     },
     {
       name: "Enterprise",
-      description: "Custom capabilities for multi-office corporate law firms.",
+      description: "Flexible, scalable solution for a large and dynamic organization",
       price: { monthly: 199, yearly: 159 },
       quota: "Unlimited active users",
       features: [
-        "Unlimited Cases & Clients",
-        "Everything in Professional",
-        "Dedicated Database server",
-        "Document storage (250 GB)",
-        "Custom branding & Favicon",
-        "Legal research assistant API",
-        "Data Export (JSON, Excel)",
-        "Dedicated Account Executive"
+        "Everything in Professional +",
+        "Time Off Module",
+        "Team Timesheets",
+        "App & Site Monitoring",
+        "Screenshot capturing",
+        "Activity tracking for teams",
+        "Real-time notifications",
+        "Advanced integrations: Jira, ClickUp",
+        "Priority support for faster resolutions",
+        "Secure deployment tailored to your needs"
       ],
-      cta: "Contact Sales",
+      cta: "Contact us",
       popular: false,
     }
   ];
@@ -69,7 +72,7 @@ export default function Pricing() {
     },
     {
       q: "How does the 14-day free trial work?",
-      a: "You get full, unrestricted access to Airzyle for 14 days under your selected plan. No credit card is required to sign up. Before the trial ends, we will notify you to add your payment details via Paystack to keep using the workspace."
+      a: "You get full, unrestricted access to Optalflow for 14 days under your selected plan. No credit card is required to sign up. Before the trial ends, we will notify you to add your payment details via Paystack to keep using the workspace."
     },
     {
       q: "Is client data stored securely?",
@@ -82,136 +85,212 @@ export default function Pricing() {
   ];
 
   return (
-    <div className="overflow-x-hidden">
+    <div className="overflow-x-hidden bg-slate-50 min-h-screen">
       {/* Pricing Header */}
-      <section className="py-20 md:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-sm font-semibold uppercase tracking-widest text-primary mb-4">
-            Simple Pricing
-          </p>
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground mb-5">
-            Plans built for every size of firm
+      <section className="pt-10 pb-12 md:pt-14 md:pb-16 bg-slate-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 mb-4">
+            Choose the Right Plan for Your Team
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed mb-10">
-            Select a transparent plan to optimize your legal work. Save up to 20% by subscribing to a yearly billing cycle.
+          <p className="text-xl text-slate-800 font-medium mb-10 flex items-center justify-center gap-2">
+            Start with a <span className="bg-green-100 text-green-800 px-3 py-0.5 rounded-md">14-day free trial.</span>
           </p>
 
-          {/* Billing period toggle */}
-          <div className="inline-flex items-center gap-1 bg-card p-1.5 rounded-full border border-border shadow-sm">
-            <button
-              onClick={() => setBillingPeriod('monthly')}
-              className={`text-sm font-semibold py-2.5 px-6 rounded-full transition-all duration-200 ${
-                billingPeriod === 'monthly'
-                  ? 'bg-primary text-primary-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
+          {/* Billing toggle */}
+          <div className="flex items-center justify-center gap-4 text-base font-medium text-slate-800">
+            <span>Monthly</span>
+            
+            <button 
+              onClick={() => setBillingPeriod(billingPeriod === 'monthly' ? 'yearly' : 'monthly')}
+              className="relative inline-flex h-8 w-14 items-center rounded-full bg-blue-600 transition-colors"
             >
-              Monthly
+              <span 
+                className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
+                  billingPeriod === 'yearly' ? 'translate-x-7' : 'translate-x-1'
+                }`} 
+              />
             </button>
-            <button
-              onClick={() => setBillingPeriod('yearly')}
-              className={`text-sm font-semibold py-2.5 px-6 rounded-full transition-all duration-200 flex items-center gap-2 ${
-                billingPeriod === 'yearly'
-                  ? 'bg-primary text-primary-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Yearly
-              <span className="text-xs font-bold bg-amber-500 text-white py-0.5 px-2 rounded-full leading-none">
-                -20%
+
+            <span className="flex items-center gap-2">
+              Annually
+              <span className="text-[11px] font-bold bg-cyan-400 text-white px-2 py-0.5 rounded-full">
+                Save up to 20%
               </span>
-            </button>
+            </span>
           </div>
         </div>
       </section>
 
-      {/* Pricing Cards Grid */}
-      <section className="pb-24 md:pb-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
-          {plans.map((p, i) => (
-            <div
-              key={i}
-              className={`relative rounded-2xl p-8 flex flex-col justify-between border transition-all duration-300 hover:shadow-lg ${
-                p.popular
-                  ? 'ring-2 ring-primary border-primary bg-card shadow-md'
-                  : 'border-border/60 bg-card hover:border-border'
-              }`}
-            >
-              {/* Popular badge */}
-              {p.popular && (
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary text-primary-foreground text-xs font-bold tracking-wide uppercase py-1.5 px-5 rounded-full shadow-md">
-                  Most Popular
-                </div>
-              )}
-
-              <div>
-                <div className="mb-6">
-                  <h3 className="font-extrabold text-xl text-foreground mb-1.5">{p.name}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{p.description}</p>
+      {/* Connected Pricing Cards */}
+      <section className="pb-20 md:pb-28">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="relative flex flex-col lg:flex-row bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden lg:overflow-visible">
+            {plans.map((p, i) => (
+              <div
+                key={i}
+                className={`relative flex-1 p-8 lg:p-10 ${
+                  p.popular
+                    ? 'lg:scale-[1.03] lg:-my-4 lg:bg-white lg:rounded-[2rem] lg:border-2 lg:border-blue-500 lg:shadow-xl z-10'
+                    : `border-b lg:border-b-0 lg:border-r border-slate-200 last:border-0 ${i === 0 ? 'lg:rounded-l-[2rem]' : ''} ${i === plans.length - 1 ? 'lg:rounded-r-[2rem]' : ''}`
+                }`}
+              >
+                <div className="mb-6 h-[100px]">
+                  <div className="flex items-center gap-3 mb-3">
+                    <h3 className="font-medium text-2xl text-slate-900">{p.name}</h3>
+                    {p.popular && (
+                      <span className="bg-cyan-400 text-white text-[11px] font-bold px-2 py-0.5 rounded-full">
+                        Most popular
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-slate-500 leading-relaxed max-w-[280px]">
+                    {p.description}
+                  </p>
                 </div>
 
                 {/* Price section */}
                 <div className="mb-8">
-                  <span className="text-4xl md:text-5xl font-black text-foreground tracking-tight">
+                  <span className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">
                     ${billingPeriod === 'monthly' ? p.price.monthly : p.price.yearly}
                   </span>
-                  <span className="text-muted-foreground text-base font-medium ml-1">/ month</span>
-                  <div className="text-sm text-muted-foreground mt-1 font-medium">
-                    Billed {billingPeriod === 'monthly' ? 'monthly' : 'annually'}
-                  </div>
+                  <span className="text-slate-500 text-sm font-medium ml-1">/ mo</span>
                 </div>
 
-                <hr className="border-border/60 mb-8" />
-
-                {/* Quota limit info */}
-                <div className="text-sm font-bold text-foreground uppercase tracking-wider mb-4">
-                  {p.quota}
+                {/* CTA action */}
+                <div className="mb-10">
+                  <Link to={`/signup?plan=${p.name.toLowerCase()}&billing=${billingPeriod}`} className="w-full block">
+                    <Button 
+                      variant={p.popular ? 'default' : 'outline'}
+                      className={`w-full py-6 px-6 text-sm font-bold rounded-full transition-all hover:scale-[1.02] ${
+                        p.popular 
+                          ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-md' 
+                          : 'border-2 border-blue-600 text-blue-600 hover:bg-blue-50'
+                      }`}
+                    >
+                      {p.cta}
+                    </Button>
+                  </Link>
                 </div>
 
                 {/* Features checklist */}
-                <ul className="space-y-3.5 mb-8">
+                <ul className="space-y-4">
                   {p.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-center gap-3 text-sm text-foreground/80">
-                      <Check className="w-4 h-4 text-primary shrink-0" />
+                    <li key={idx} className="flex items-start gap-3 text-sm text-slate-700 font-medium leading-snug">
+                      <div className="mt-0.5 shrink-0 rounded-full border border-green-500 flex items-center justify-center p-[2px]">
+                        <Check className="w-3 h-3 text-green-500" strokeWidth={3} />
+                      </div>
                       <span>{feature}</span>
                     </li>
                   ))}
                 </ul>
               </div>
+            ))}
+          </div>
 
-              {/* CTA action */}
-              <div>
-                {p.name === 'Enterprise' ? (
-                  <Link to="/contact" className="w-full block">
-                    <Button variant="outline" className="w-full py-3 px-6 text-sm font-semibold border-border hover:bg-muted/40 rounded-xl text-foreground">
-                      {p.cta}
-                    </Button>
-                  </Link>
-                ) : (
-                  <Link to={`/signup?plan=${p.name.toLowerCase()}&billing=${billingPeriod}`} className="w-full block">
-                    <Button className={`w-full py-3 px-6 text-sm font-semibold rounded-xl ${
-                      p.popular
-                        ? 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm'
-                        : 'bg-foreground hover:bg-foreground/90 text-background'
-                    }`}>
-                      {p.cta}
-                    </Button>
-                  </Link>
-                )}
-              </div>
+          <div className="mt-24">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-slate-900 flex items-center justify-center gap-3">
+                Full Plan <span className="bg-green-100 text-green-900 px-4 py-1 rounded-full">Comparison</span>
+              </h2>
             </div>
-          ))}
+            
+            <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+              <table className="w-full text-left border-collapse min-w-[800px]">
+                <thead>
+                  <tr className="border-b border-slate-200 bg-slate-50/50">
+                    <th className="py-5 px-6 font-bold text-slate-900 w-1/4">Features</th>
+                    <th className="py-5 px-6 font-bold text-slate-900 w-1/4 text-center">Starter</th>
+                    <th className="py-5 px-6 font-bold text-slate-900 w-1/4 text-center">Professional</th>
+                    <th className="py-5 px-6 font-bold text-slate-900 w-1/4 text-center">Enterprise</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {/* Category 1 */}
+                  <tr>
+                    <td colSpan="4" className="bg-slate-50 py-3 px-6 text-sm font-bold text-slate-500 uppercase tracking-wider">
+                      Time Tracking
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-slate-50/50 transition-colors">
+                    <td className="py-4 px-6 text-sm font-medium text-slate-700">Unlimited time tracking</td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                  </tr>
+                  <tr className="hover:bg-slate-50/50 transition-colors">
+                    <td className="py-4 px-6 text-sm font-medium text-slate-700">Timer button in 50+ web apps</td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                  </tr>
+                  <tr className="hover:bg-slate-50/50 transition-colors">
+                    <td className="py-4 px-6 text-sm font-medium text-slate-700">Time rounding</td>
+                    <td className="py-4 px-6 text-center text-slate-300 font-bold">—</td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                  </tr>
+
+                  {/* Category 2 */}
+                  <tr>
+                    <td colSpan="4" className="bg-slate-50 py-3 px-6 text-sm font-bold text-slate-500 uppercase tracking-wider">
+                      Project Management
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-slate-50/50 transition-colors">
+                    <td className="py-4 px-6 text-sm font-medium text-slate-700">Unlimited clients & projects</td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                  </tr>
+                  <tr className="hover:bg-slate-50/50 transition-colors">
+                    <td className="py-4 px-6 text-sm font-medium text-slate-700">Task management</td>
+                    <td className="py-4 px-6 text-center text-slate-300 font-bold">—</td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                  </tr>
+                  <tr className="hover:bg-slate-50/50 transition-colors">
+                    <td className="py-4 px-6 text-sm font-medium text-slate-700">Project budgets & alerts</td>
+                    <td className="py-4 px-6 text-center text-slate-300 font-bold">—</td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                  </tr>
+
+                  {/* Category 3 */}
+                  <tr>
+                    <td colSpan="4" className="bg-slate-50 py-3 px-6 text-sm font-bold text-slate-500 uppercase tracking-wider">
+                      Team & Security
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-slate-50/50 transition-colors">
+                    <td className="py-4 px-6 text-sm font-medium text-slate-700">API Access</td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                  </tr>
+                  <tr className="hover:bg-slate-50/50 transition-colors">
+                    <td className="py-4 px-6 text-sm font-medium text-slate-700">Time Off Module</td>
+                    <td className="py-4 px-6 text-center text-slate-300 font-bold">—</td>
+                    <td className="py-4 px-6 text-center text-slate-300 font-bold">—</td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                  </tr>
+                  <tr className="hover:bg-slate-50/50 transition-colors">
+                    <td className="py-4 px-6 text-sm font-medium text-slate-700">Screenshot capturing</td>
+                    <td className="py-4 px-6 text-center text-slate-300 font-bold">—</td>
+                    <td className="py-4 px-6 text-center text-slate-300 font-bold">—</td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* FAQ Section */}
-      <section className="bg-card border-t border-border py-24 md:py-32">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="bg-white border-t border-slate-200 py-24 md:py-32">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <p className="text-sm font-semibold uppercase tracking-widest text-primary mb-4">
-              Common Questions
-            </p>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">
               Frequently Asked Questions
             </h2>
           </div>
@@ -219,11 +298,11 @@ export default function Pricing() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             {faqs.map((faq, index) => (
               <div key={index} className="space-y-3">
-                <h4 className="font-semibold text-foreground flex items-start gap-3 text-base leading-snug">
-                  <Info className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                <h4 className="font-bold text-slate-900 flex items-start gap-3 text-base leading-snug">
+                  <Info className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
                   <span>{faq.q}</span>
                 </h4>
-                <p className="text-sm text-muted-foreground leading-relaxed pl-8">
+                <p className="text-sm text-slate-600 leading-relaxed font-medium pl-8">
                   {faq.a}
                 </p>
               </div>

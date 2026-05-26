@@ -5,41 +5,41 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
+  :root, .light {
     --font-inter: 'Inter', sans-serif;
-    --background: 220 20% 97%;
+    --background: 0 0% 100%;
     --foreground: 222 47% 11%;
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
-    --primary: 224 71% 45%;
+    --primary: 221 83% 53%; /* Bright vibrant blue similar to TMetric #2563EB or #1D4ED8 */
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 14% 96%;
+    --secondary: 210 40% 96%;
     --secondary-foreground: 222 47% 11%;
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 46%;
-    --accent: 38 92% 50%;
-    --accent-foreground: 0 0% 100%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222 47% 11%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 224 71% 45%;
-    --chart-1: 224 71% 45%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 221 83% 53%;
+    --chart-1: 221 83% 53%;
     --chart-2: 160 60% 45%;
     --chart-3: 38 92% 50%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
-    --radius: 0.625rem;
+    --radius: 0.75rem;
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 222 47% 15%;
-    --sidebar-primary: 224 71% 45%;
+    --sidebar-primary: 221 83% 53%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 14% 96%;
+    --sidebar-accent: 210 40% 96%;
     --sidebar-accent-foreground: 222 47% 15%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 224 71% 45%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 221 83% 53%;
   }
 
   .dark {
@@ -108,6 +108,14 @@
     background-repeat: repeat;
   }
   
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
   .custom-scrollbar::-webkit-scrollbar {
     width: 4px;
   }
@@ -121,6 +129,30 @@
   .custom-scrollbar:hover::-webkit-scrollbar-thumb {
     background-color: hsl(var(--primary));
   }
+
+  /* Premium Stat Card Effects */
+  .stat-card-premium {
+    @apply relative overflow-hidden transition-all duration-300 ease-out;
+  }
+  .stat-card-premium:hover {
+    @apply -translate-y-1.5 shadow-[0_20px_40px_-15px_rgba(var(--primary),0.2)] border-primary/30 z-10;
+  }
+  .stat-card-premium::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-br from-white/40 to-transparent dark:from-white/5 opacity-0 transition-opacity duration-300 pointer-events-none;
+  }
+  .stat-card-premium:hover::before {
+    @apply opacity-100;
+  }
+  /* Shimmer effect on hover */
+  .stat-card-premium::after {
+    content: '';
+    @apply absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent dark:via-white/10 opacity-0 transition-all duration-700 ease-in-out pointer-events-none;
+  }
+  .stat-card-premium:hover::after {
+    @apply translate-x-full opacity-100;
+    transition: all 0.7s ease-in-out;
+  }
 }
 
 @layer base {
@@ -130,5 +162,22 @@
 
   body {
     @apply bg-background text-foreground font-inter;
+  }
+
+  /* Global Enterprise Table Styling */
+  table {
+    @apply w-full border-collapse;
+  }
+  thead {
+    @apply bg-muted/40 backdrop-blur-sm sticky top-0 z-10;
+  }
+  th {
+    @apply px-6 py-4 text-left text-[10px] uppercase tracking-widest font-black text-muted-foreground border-b border-border;
+  }
+  td {
+    @apply px-6 py-4 border-b border-border/40 text-sm align-middle;
+  }
+  tbody tr {
+    @apply transition-colors duration-200 hover:bg-muted/30;
   }
 }

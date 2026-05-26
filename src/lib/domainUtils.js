@@ -1,4 +1,4 @@
-export const APP_BASE_DOMAIN = 'airzyle.oatstack.com';
+export const APP_BASE_DOMAIN = 'optalflow.oatstack.com';
 
 export function getSubdomainAndBase() {
   const host = window.location.hostname;

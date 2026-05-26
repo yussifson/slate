@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
 import { useImpersonation } from "@/lib/ImpersonationContext";
 import { useCompanyId } from "@/hooks/useCompanyId";
+import { getTerm } from "@/config/industries";
 import { Briefcase, Users, DollarSign, Clock, Calendar, BarChart2, RefreshCw, Building2, Settings2 } from "lucide-react";
 import HearingReminders from "@/components/dashboard/HearingReminders";
 import { Badge } from "@/components/ui/badge";
@@ -78,6 +79,12 @@ export default function CompanyDashboard() {
   const totalRevenue = invoices.filter(i => i.status === "paid").reduce((s, i) => s + (i.total_amount || 0), 0);
   const currency = company?.currency || "GHS";
   const plan = SUBSCRIPTION_PLANS[company?.subscription_plan] || SUBSCRIPTION_PLANS.free;
+  const industry = company?.industry_type || user?.company_industry || "law";
+
+  const casesTermPlural = getTerm(industry, "cases");
+  const clientsTermPlural = getTerm(industry, "clients");
+  const hearingsTermPlural = getTerm(industry, "hearings");
+  const caseTerm = getTerm(industry, "case");
 
   // Calculate high-fidelity charts dataset
   const chartData = [
@@ -167,13 +174,13 @@ export default function CompanyDashboard() {
 
       {/* Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard title="Active Cases" value={activeCases.length} icon={Briefcase} iconBg="bg-blue-100" iconColor="text-blue-500" subtitle={`${cases.length} total`} />
-        <MetricCard title="Active Clients" value={activeClients.length} icon={Users} iconBg="bg-purple-100" iconColor="text-purple-500"
+        <MetricCard title={`Active ${casesTermPlural}`} value={activeCases.length} icon={Briefcase} iconBg="bg-blue-100" iconColor="text-blue-500" subtitle={`${cases.length} total`} />
+        <MetricCard title={`Active ${clientsTermPlural}`} value={activeClients.length} icon={Users} iconBg="bg-purple-100" iconColor="text-purple-500"
           subtitle={clients.length > 0 ? `+${Math.round((activeClients.length / Math.max(clients.length, 1)) * 100)}% this month` : undefined}
           subtitleColor="text-green-600" />
         <MetricCard title="Total Revenue" value={formatCurrency(totalRevenue, currency)} icon={DollarSign} iconBg="bg-green-100" iconColor="text-green-500" subtitle="This year" />
         <MetricCard title="Pending Tasks" value={pendingTasks.length} icon={Clock} iconBg="bg-orange-100" iconColor="text-orange-500"
-          subtitle={overdueInvoices > 0 ? `${overdueInvoices} invoices overdue` : `${upcomingHearings.length} hearings due`}
+          subtitle={overdueInvoices > 0 ? `${overdueInvoices} invoices overdue` : `${upcomingHearings.length} ${hearingsTermPlural.toLowerCase()} due`}
           subtitleColor={overdueInvoices > 0 ? "text-red-500" : "text-muted-foreground"} />
       </div>
 
@@ -207,7 +214,7 @@ export default function CompanyDashboard() {
         {/* Case Distribution Bar Chart */}
         <div className="bg-card rounded-xl border border-border p-4 space-y-4">
           <div className="flex justify-between items-center">
-            <h3 className="text-sm font-semibold text-slate-800">Matter Distribution by Stage</h3>
+            <h3 className="text-sm font-semibold text-slate-800">{caseTerm} Distribution by Stage</h3>
             <span className="text-[10px] bg-blue-50 text-blue-700 py-0.5 px-2 rounded-full font-bold border border-blue-100 uppercase">Active Pipelines</span>
           </div>
           <div className="h-64 w-full">
@@ -231,7 +238,7 @@ export default function CompanyDashboard() {
           <div className="p-4 border-b border-border flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4 text-primary" />
-              <h3 className="text-sm font-semibold">Upcoming Hearings</h3>
+              <h3 className="text-sm font-semibold">Upcoming {hearingsTermPlural}</h3>
             </div>
             <span className="text-xs font-semibold text-primary bg-primary/10 rounded-full w-5 h-5 flex items-center justify-center">
               {upcomingHearings.length}
@@ -243,7 +250,7 @@ export default function CompanyDashboard() {
                 <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center">
                   <Calendar className="w-5 h-5 text-muted-foreground" />
                 </div>
-                <p className="text-sm text-muted-foreground">No upcoming hearings</p>
+                <p className="text-sm text-muted-foreground">No upcoming {hearingsTermPlural.toLowerCase()}</p>
               </div>
             ) : upcomingHearings.map((h) => (
               <div key={h.id} className="px-4 py-3 flex items-center gap-3 hover:bg-muted/40 transition-colors">

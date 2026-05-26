@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
   ArrowRight,
   Scale,
@@ -59,46 +60,52 @@ function FadeIn({ children, className = '', delay = '' }) {
 const features = [
   {
     icon: Scale,
-    title: 'Case & Pipeline Tracking',
+    title: 'Customer & Pipeline Tracking',
     description:
       'Manage business operations from intake to resolution. Customize stages, set reminders, and track client documents in one central view.',
+    image: '/images/feature_pipeline.png'
   },
   {
     icon: Users,
     title: 'Smart Client Portal',
     description:
       'Give clients a secure, branded environment to sign documents, review milestones, and communicate directly with your team.',
+    image: '/images/client_portal_ui.png'
   },
   {
     icon: Clock,
     title: 'Integrated Time Tracking',
     description:
       'Bill accurately with live timers for consultations, research, meetings, and project delivery — then convert hours to invoices.',
+    image: '/images/feature_time.png'
   },
   {
     icon: Smartphone,
     title: 'WhatsApp & Email Sync',
     description:
       'Communicate with clients via WhatsApp and automatic email logging. Retain a clear audit trail of all correspondence.',
+    image: '/images/feature_sync.png'
   },
   {
     icon: Briefcase,
     title: 'HR & Payroll Control',
     description:
       'Manage associate leaves, staff performance dashboards, and monthly salary slips under one secure portal.',
+    image: '/images/feature_hr.png'
   },
   {
     icon: Shield,
     title: 'Bank-Grade Compliance',
     description:
       'Client confidentiality, encrypted storage, automatic daily backups, and robust role-based access permissions.',
+    image: '/images/feature_security.png'
   },
 ];
 
 const testimonials = [
   {
     quote:
-      'Airzyle completely transformed our practice. We moved from paper files to a digital pipeline and reduced document turnaround by 60%.',
+      'Optalflow completely transformed our practice. We moved from paper files to a digital pipeline and reduced document turnaround by 60%.',
     author: 'Adama Mensah',
     role: 'Managing Partner',
     firm: 'Mensah & Partners',
@@ -131,6 +138,268 @@ const firms = [
   'CLIFFE DEKKER',
 ];
 
+const suites = [
+  {
+    id: 'law',
+    name: 'Law Firm Workspace',
+    tagline: 'Legal Practice Management',
+    description: 'A complete ecosystem for modern law firms to manage cases, track billable hours, and collaborate with clients securely.',
+    features: ['Case & Matter Management', 'Conflict Checking', 'Legal Billing & Trust Accounting', 'Secure Client Portal']
+  },
+  {
+    id: 'hospital',
+    name: 'Healthcare Workspace',
+    tagline: 'Clinic & Hospital Management',
+    description: 'Streamline patient onboarding, appointment scheduling, and staff rostering with our secure health-compliant platform.',
+    features: ['Patient Records & History', 'Appointment Scheduling', 'Medical Billing', 'Staff Rostering']
+  },
+  {
+    id: 'school',
+    name: 'Education Workspace',
+    tagline: 'School & Campus Management',
+    description: 'Unify student records, grading, fee collection, and parent communication in a single intuitive system.',
+    features: ['Student Information System', 'Fee Collection', 'Gradebook & Exams', 'Parent Portal']
+  },
+  {
+    id: 'hotel',
+    name: 'Hospitality Workspace',
+    tagline: 'Hotel & Property Management',
+    description: 'Deliver exceptional guest experiences with integrated booking, housekeeping, and point-of-sale systems.',
+    features: ['Booking & Reservations', 'Housekeeping Manager', 'Restaurant POS', 'Guest CRM']
+  },
+  {
+    id: 'church',
+    name: 'Ministry Workspace',
+    tagline: 'Church & Congregation Management',
+    description: 'Engage your congregation with powerful tools for donation tracking, event scheduling, and member communication.',
+    features: ['Member Database', 'Donation & Tithing', 'Event Management', 'Volunteer Scheduling']
+  },
+  {
+    id: 'insurance',
+    name: 'Insurance Workspace',
+    tagline: 'Agency & Policy Management',
+    description: 'Accelerate policy issuance, manage claims efficiently, and track commissions with our dedicated insurance suite.',
+    features: ['Policy Administration', 'Claims Processing', 'Commission Tracking', 'Client Portal']
+  },
+  {
+    id: 'retail',
+    name: 'Retail Workspace',
+    tagline: 'Multi-Store POS & Inventory',
+    description: 'Unify your retail operations with centralized inventory management, multi-store POS, and detailed sales analytics.',
+    features: ['Multi-Store Cloud POS', 'Real-time Inventory', 'Supplier Management', 'Sales Analytics']
+  },
+  {
+    id: 'logistics',
+    name: 'Logistics Workspace',
+    tagline: 'Freight & Delivery Management',
+    description: 'Optimize your supply chain with real-time fleet tracking, dispatch routing, and automated invoicing.',
+    features: ['Fleet & Asset Tracking', 'Dispatch Management', 'Automated Invoicing', 'Driver App Integration']
+  },
+  {
+    id: 'hr',
+    name: 'HR & ERP Workspace',
+    tagline: 'Enterprise Resource Planning',
+    description: 'Manage your most valuable assets with our comprehensive HR suite, including payroll, performance, and leave management.',
+    features: ['Automated Payroll', 'Leave & Attendance', 'Performance Reviews', 'Employee Self-Service']
+  }
+];
+
+function SuitesSection() {
+  const [activeSuite, setActiveSuite] = useState(suites[0]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  return (
+    <section className="py-24 md:py-32 bg-white relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-500/10 blur-[120px] rounded-full pointer-events-none transform translate-x-1/3 -translate-y-1/3"></div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <FadeIn>
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 mb-6">
+              Tailored suites for your industry
+            </h2>
+            <p className="text-lg text-slate-600 leading-relaxed font-medium">
+              We've built specialized operational systems that adapt to your specific business model and workflows.
+            </p>
+          </div>
+        </FadeIn>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 relative items-start">
+          {/* Left Tabs Column (Navigation) */}
+          <div className="lg:col-span-4 relative z-10 lg:pr-6">
+            <div className="mb-10">
+              <h3 className="text-slate-900 font-extrabold text-2xl md:text-3xl mb-3 tracking-tight">Select your sector</h3>
+              <p className="text-slate-500 text-sm font-medium leading-relaxed">
+                Explore how our unified workspace adapts to your specific operational needs and scales with your business.
+              </p>
+            </div>
+            
+            <div className="flex flex-col relative border-l border-slate-200">
+              {suites.map((suite) => (
+                <button
+                  key={suite.id}
+                  onClick={() => setActiveSuite(suite)}
+                  className={`w-full text-left px-6 py-4 md:py-5 transition-all duration-300 relative group overflow-hidden ${
+                    activeSuite.id === suite.id
+                      ? 'bg-gradient-to-r from-blue-50/80 to-transparent'
+                      : 'bg-transparent hover:bg-slate-50'
+                  }`}
+                >
+                  {/* Active Indicator Line */}
+                  {activeSuite.id === suite.id ? (
+                    <div className="absolute top-0 left-[-1px] w-[3px] h-full bg-blue-600 rounded-r-full shadow-[0_0_10px_rgba(37,99,235,0.4)]"></div>
+                  ) : (
+                    <div className="absolute top-0 left-[-1px] w-[3px] h-full bg-slate-300 scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-center rounded-r-full"></div>
+                  )}
+                  
+                  <div className="relative z-10 flex items-center justify-between">
+                    <div>
+                      <div className={`font-bold text-base transition-colors ${activeSuite.id === suite.id ? 'text-blue-700' : 'text-slate-700 group-hover:text-slate-900'}`}>
+                        {suite.name}
+                      </div>
+                      <div className={`text-[13px] font-medium mt-1 transition-colors ${activeSuite.id === suite.id ? 'text-blue-600/80' : 'text-slate-500'}`}>
+                        {suite.tagline}
+                      </div>
+                    </div>
+                    
+                    {/* Arrow Icon on Active */}
+                    <div className={`transition-all duration-300 ${activeSuite.id === suite.id ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}>
+                      <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Right Content Column (Sticky) */}
+          <div className="lg:col-span-8 lg:sticky lg:top-24">
+            <div className="bg-white border border-slate-200/60 rounded-[2rem] p-10 md:p-14 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] relative overflow-hidden">
+              {/* Subtle background glow */}
+              <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-blue-100/50 via-transparent to-transparent opacity-60 rounded-bl-[100px] pointer-events-none"></div>
+              
+              <div className="relative z-10">
+                <FadeIn key={activeSuite.id}>
+                  <div className="flex items-center gap-3 mb-6">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600 shadow-sm border border-blue-100/50">
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                      </svg>
+                    </span>
+                    <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold uppercase tracking-widest">
+                      {activeSuite.name}
+                    </div>
+                  </div>
+                  
+                  <h3 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 leading-[1.1] tracking-tight">
+                    {activeSuite.tagline}
+                  </h3>
+                  
+                  <p className="text-xl text-slate-600 mb-10 leading-relaxed font-medium">
+                    {activeSuite.description}
+                  </p>
+                  
+                  {/* Features List */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {activeSuite.features.map((feat, idx) => (
+                      <div key={idx} className="flex items-start gap-3 bg-white border border-slate-100 p-4 rounded-xl shadow-sm hover:shadow-md hover:border-blue-100 transition-all">
+                        <div className="mt-0.5 w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        </div>
+                        <span className="font-bold text-slate-700 text-sm leading-snug">{feat}</span>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="mt-12 pt-8 border-t border-slate-100 flex items-center">
+                    <Button 
+                      onClick={() => setIsModalOpen(true)}
+                      className="bg-blue-600 text-white hover:bg-blue-700 font-bold py-6 px-10 rounded-full shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5"
+                    >
+                      Explore {activeSuite.name} details
+                    </Button>
+                  </div>
+                </FadeIn>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Modal / Popup for Workspace Details */}
+      {isModalOpen && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6">
+          <div 
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" 
+            onClick={() => setIsModalOpen(false)}
+          ></div>
+          
+          <div className="relative bg-white w-full max-w-4xl max-h-[90vh] rounded-[2rem] shadow-2xl overflow-hidden flex flex-col transform transition-all animate-in fade-in zoom-in-95 duration-200">
+            {/* Header */}
+            <div className="flex-none p-6 sm:p-8 border-b border-slate-100 flex justify-between items-start bg-slate-50/50">
+              <div>
+                <div className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-[10px] font-bold uppercase tracking-widest mb-3">
+                  Workspace Module
+                </div>
+                <h3 className="text-3xl font-extrabold text-slate-900 tracking-tight">{activeSuite.name}</h3>
+                <p className="text-slate-500 font-medium mt-2 max-w-2xl">{activeSuite.description}</p>
+              </div>
+              <button 
+                onClick={() => setIsModalOpen(false)}
+                className="p-2 rounded-full hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition-colors -mr-2 -mt-2"
+              >
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            {/* Body */}
+            <div className="flex-1 overflow-y-auto p-6 sm:p-8 bg-white">
+              <div className="max-w-3xl mx-auto">
+                <h4 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  </div>
+                  Core Features & Capabilities
+                </h4>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                  {activeSuite.features.map((feat, idx) => (
+                    <div key={idx} className="bg-slate-50 rounded-2xl p-6 border border-slate-100 hover:border-blue-100 transition-colors">
+                      <h5 className="font-bold text-slate-900 text-lg mb-2">{feat}</h5>
+                      <p className="text-slate-500 text-sm leading-relaxed font-medium">
+                        Powerful tools to automate this aspect of your business, integrating seamlessly with your broader operations.
+                      </p>
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="bg-blue-600 rounded-3xl p-8 sm:p-10 text-white relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-[50px] -translate-y-1/2 translate-x-1/3"></div>
+                  <h4 className="text-2xl font-bold mb-4 relative z-10">Ready to transform your workflow?</h4>
+                  <p className="text-blue-100 font-medium mb-8 max-w-lg relative z-10">
+                    Get started today and see how {activeSuite.name} can streamline your daily operations and boost your bottom line.
+                  </p>
+                  <Button className="bg-white text-blue-600 hover:bg-slate-50 font-bold py-6 px-8 rounded-xl shadow-lg relative z-10">
+                    Start Your Free Trial
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      , document.body)}
+    </section>
+  );
+}
+
 /* ------------------------------------------------------------------ */
 /*  Component                                                         */
 /* ------------------------------------------------------------------ */
@@ -140,171 +409,127 @@ export default function Home() {
       {/* ============================================================ */}
       {/*  HERO                                                        */}
       {/* ============================================================ */}
-      <section className="relative py-16 md:py-20 lg:py-24">
-        {/* Soft Aurora Mesh Gradient background */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_50%,hsl(var(--primary)/0.12)_0%,transparent_60%),radial-gradient(ellipse_at_80%_20%,hsl(280_65%_60%/0.08)_0%,transparent_50%)] pointer-events-none" />
-
-        {/* Animated grid pattern */}
-        <div
-          className="absolute inset-0 pointer-events-none opacity-[0.35]"
-          style={{
-            backgroundImage:
-              'linear-gradient(hsl(var(--border)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--border)) 1px, transparent 1px)',
-            backgroundSize: '64px 64px',
-          }}
-        />
-
-        {/* Floating shapes */}
-        <div className="absolute top-20 left-[8%] w-72 h-72 rounded-full bg-primary/10 blur-3xl animate-pulse pointer-events-none" />
-        <div className="absolute bottom-16 right-[6%] w-96 h-96 rounded-full bg-primary/[0.07] blur-3xl animate-pulse pointer-events-none" style={{ animationDelay: '1.5s' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-primary/[0.04] blur-3xl pointer-events-none" />
+      <section className="relative py-10 md:py-14 lg:py-16">
+        {/* Soft light background */}
+        <div className="absolute inset-0 bg-slate-50 pointer-events-none" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Badge */}
           <FadeIn>
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs font-semibold text-primary mb-8 shadow-[0_0_15px_hsl(var(--primary)/0.2)]">
-              <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_hsl(var(--primary))]" />
-              ✦ Trusted by 500+ Enterprise Teams
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 text-xs font-semibold text-slate-600 mb-8 shadow-sm">
+              <span className="flex h-2 w-2 rounded-full bg-green-500" />
+              Trusted by 500+ Enterprise Teams
             </div>
           </FadeIn>
 
           {/* Headline */}
           <FadeIn delay="delay-100">
-            <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold tracking-tighter text-foreground leading-[1.05] max-w-4xl mx-auto mb-6">
-              Streamline Your Business{' '}
-              <br className="hidden sm:block" />
-              Operations with{' '}
-              <span className="bg-gradient-to-br from-white to-primary/80 bg-clip-text text-transparent drop-shadow-sm">
-                Airzyle
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1] max-w-4xl mx-auto mb-6">
+              The unified workspace that turns hours into{' '}
+              <span className="bg-green-100 text-slate-900 px-4 py-1 rounded-[1.5rem] inline-block mt-2">
+                clear profit
               </span>
             </h1>
           </FadeIn>
 
           {/* Subtitle */}
           <FadeIn delay="delay-200">
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8 leading-relaxed">
-              Manage cases, automate client communication, log billable hours,
-              process payments, and track HR — all from a single, secure platform
-              built for growing organizations.
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
+              Built for teams that take operations seriously. Manage cases, automate client communication, log billable hours,
+              process payments, and track HR — all in one place.
             </p>
           </FadeIn>
 
           {/* CTA buttons */}
           <FadeIn delay="delay-300">
-            <div className="flex flex-col items-center justify-center mb-12">
-              <div className="flex flex-col sm:flex-row items-center gap-4">
-                <Link to="/signup">
-                  <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-base py-6 px-10 rounded-xl shadow-[0_4px_24px_hsl(var(--primary)/0.4)] group transition-all hover:scale-[1.02]">
-                    Start Free Trial
-                    <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
-                  </Button>
-                </Link>
-                <Link to="/contact">
-                  <Button
-                    variant="outline"
-                    className="border-white/10 bg-white/5 hover:bg-white/10 font-semibold text-base py-6 px-10 rounded-xl text-foreground transition-all hover:scale-[1.02]"
-                  >
-                    Watch Demo →
-                  </Button>
-                </Link>
+            <div className="flex flex-col items-center justify-center mb-16">
+              <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
+                <div className="bg-white border border-slate-100 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 shadow-sm">Project Profitability</div>
+                <div className="bg-white border border-slate-100 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 shadow-sm">Billing & Invoicing</div>
+                <div className="bg-white border border-slate-100 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 shadow-sm">Client Portal</div>
+                <div className="bg-white border border-slate-100 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 shadow-sm">HR & Payroll</div>
+                <div className="bg-primary/5 border border-primary/10 text-primary px-6 py-2.5 rounded-xl text-sm font-semibold shadow-sm">All Features</div>
               </div>
-              <p className="mt-4 text-xs font-medium text-muted-foreground/60 tracking-wide">
-                No credit card required · Setup in minutes
-              </p>
             </div>
           </FadeIn>
 
           {/* Dashboard mockup */}
           <FadeIn delay="delay-[400ms]">
-            <div className="relative max-w-5xl mx-auto glass-card rounded-2xl p-2 md:p-3 shadow-[0_40px_80px_rgba(0,0,0,0.4)] transform [transform:perspective(1200px)_rotateX(4deg)]">
-              <div className="rounded-xl overflow-hidden border border-border bg-background">
-                {/* Top bar */}
-                <div className="flex items-center gap-2 px-4 py-3 border-b border-border bg-card/80">
-                  <div className="flex gap-1.5">
-                    <span className="w-3 h-3 rounded-full bg-red-400/70" />
-                    <span className="w-3 h-3 rounded-full bg-yellow-400/70" />
-                    <span className="w-3 h-3 rounded-full bg-green-400/70" />
-                  </div>
-                  <div className="flex-1 flex justify-center">
-                    <div className="w-64 h-6 rounded-md bg-muted/60 border border-border/40" />
-                  </div>
-                </div>
-
-                {/* Dashboard body */}
-                <div className="flex min-h-[320px] md:min-h-[420px]">
-                  {/* Sidebar */}
-                  <div className="hidden sm:flex w-48 border-r border-border bg-background/50 flex-col p-4 gap-3">
-                    <div className="w-24 h-5 bg-primary/15 rounded-md mb-2" />
-                    <div className="w-full h-9 bg-primary/10 border border-primary/20 rounded-lg flex items-center px-3 gap-2">
-                      <div className="w-4 h-4 rounded bg-primary/30" />
-                      <div className="w-16 h-2.5 bg-primary/30 rounded" />
-                    </div>
-                    {[1, 2, 3, 4].map((n) => (
-                      <div key={n} className="w-full h-9 rounded-lg flex items-center px-3 gap-2">
-                        <div className="w-4 h-4 rounded bg-muted-foreground/15" />
-                        <div className="w-14 h-2.5 bg-muted-foreground/15 rounded" />
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Main content */}
-                  <div className="flex-1 p-5 md:p-6 space-y-5">
-                    {/* Header row */}
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-1.5">
-                        <div className="w-36 h-5 bg-foreground/10 rounded" />
-                        <div className="w-52 h-3 bg-muted-foreground/15 rounded" />
-                      </div>
-                      <div className="w-24 h-9 bg-primary text-primary-foreground rounded-lg flex items-center justify-center text-xs font-bold shadow-sm">
-                        + New Case
-                      </div>
-                    </div>
-
-                    {/* Stats cards */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                      {[
-                        { label: 'Active Cases', value: '127', icon: Scale },
-                        { label: 'Hours This Week', value: '84.5', icon: Clock },
-                        { label: 'Documents', value: '2,451', icon: FileText },
-                        { label: 'Alerts', value: '12', icon: Bell },
-                      ].map((stat) => (
-                        <div key={stat.label} className="border border-border/80 rounded-xl p-4 bg-card/50 space-y-2 hover:bg-card transition-colors cursor-default">
-                          <div className="flex items-center gap-1.5">
-                            <stat.icon className="w-4 h-4 text-primary" />
-                            <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{stat.label}</span>
-                          </div>
-                          <div className="text-2xl font-black tracking-tight text-foreground">{stat.value}</div>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Chart placeholder */}
-                    <div className="border border-border/80 rounded-xl p-4 bg-card/50 flex items-end gap-2 h-32 relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent pointer-events-none" />
-                      {[40, 65, 45, 80, 55, 70, 90, 60, 75, 50, 85, 68].map((h, i) => (
-                        <div
-                          key={i}
-                          className="flex-1 bg-primary/40 rounded-t-sm hover:bg-primary transition-colors relative z-10"
-                          style={{ height: `${h}%` }}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div className="relative w-full max-w-6xl mx-auto h-[400px] md:h-[550px] rounded-2xl border border-slate-200/80 bg-slate-50 shadow-2xl overflow-hidden flex items-center justify-center">
+              <img src="/images/hero_dashboard_ui.png" alt="Optalflow Dashboard Mockup" className="w-full h-full object-cover object-top" />
             </div>
           </FadeIn>
         </div>
       </section>
 
       {/* ============================================================ */}
+      {/*  HOW IT WORKS                                                */}
+      {/* ============================================================ */}
+      <section className="py-20 md:py-32 bg-slate-50 border-t border-slate-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-16 md:mb-24">
+            <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-600 text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
+              Workflow
+            </span>
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-slate-900 mb-6">
+              How Optalflow works
+            </h2>
+            <p className="text-lg text-slate-600 leading-relaxed font-medium">
+              We've streamlined the entire project lifecycle so your team can focus on execution, not administration.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 relative">
+            {/* Connecting line for desktop */}
+            <div className="hidden md:block absolute top-[52px] left-[15%] right-[15%] h-0.5 bg-slate-200" />
+            
+            {[
+              {
+                step: '01',
+                title: 'Onboard Clients',
+                desc: 'Send automated intake forms and secure portal invitations to start new relationships on the right foot.',
+                icon: Users
+              },
+              {
+                step: '02',
+                title: 'Track & Execute',
+                desc: 'Log billable hours natively, manage project pipelines, and collaborate securely in real-time.',
+                icon: Clock
+              },
+              {
+                step: '03',
+                title: 'Bill & Review',
+                desc: 'Generate branded invoices instantly from tracked time and accept seamless local payments.',
+                icon: CreditCard
+              }
+            ].map((step, i) => (
+              <FadeIn key={i} delay={`delay-${(i + 1) * 100}`}>
+                <div className="relative bg-white rounded-3xl p-8 border border-slate-100 shadow-sm text-center z-10 group hover:shadow-md transition-shadow">
+                  <div className="w-16 h-16 mx-auto bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-inner">
+                    <step.icon className="w-8 h-8" />
+                  </div>
+                  <div className="absolute -top-4 -right-4 w-12 h-12 bg-blue-600 text-white font-black rounded-xl flex items-center justify-center text-lg shadow-lg transform rotate-6 group-hover:rotate-12 transition-transform">
+                    {step.step}
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-900 mb-4">{step.title}</h3>
+                  <p className="text-slate-600 font-medium leading-relaxed">
+                    {step.desc}
+                  </p>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
       {/*  SOCIAL PROOF STRIP                                          */}
       {/* ============================================================ */}
-      <section className="py-20 md:py-28 border-y border-border/50 bg-card/30">
+      <section className="py-20 md:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
-            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60 text-center mb-10">
-              Trusted by teams at
+            <p className="text-xl font-medium text-slate-500 text-center mb-10">
+              Trusted by over 10 000 companies worldwide
             </p>
           </FadeIn>
 
@@ -313,7 +538,7 @@ export default function Home() {
               {firms.map((firm) => (
                 <span
                   key={firm}
-                  className="text-base font-semibold text-foreground/40 hover:text-foreground/80 transition-opacity duration-300 cursor-default select-none tracking-wide"
+                  className="text-xl font-bold text-slate-400 hover:text-slate-600 transition-opacity duration-300 cursor-default select-none tracking-tight"
                 >
                   {firm}
                 </span>
@@ -326,91 +551,117 @@ export default function Home() {
       {/* ============================================================ */}
       {/*  FEATURES GRID                                               */}
       {/* ============================================================ */}
-      <section className="py-24 md:py-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* ============================================================ */}
+      {/*  FEATURES GRID (Bento Box Style)                           */}
+      {/* ============================================================ */}
+      <section className="py-24 md:py-32 bg-slate-50 border-y border-slate-100 relative overflow-hidden">
+        {/* Decorative Grid */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <FadeIn>
-            <div className="text-center max-w-2xl mx-auto mb-16">
-              <p className="text-[12px] font-bold uppercase tracking-[0.2em] text-primary mb-3">
-                Features
-              </p>
-              <h2 className="text-3xl md:text-5xl font-extrabold text-foreground tracking-tighter mb-4">
+            <div className="text-center max-w-2xl mx-auto mb-20">
+              <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-slate-200 text-blue-600 text-xs font-bold uppercase tracking-widest mb-6 shadow-sm">
+                Unified Architecture
+              </span>
+              <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-6">
                 Built for the complexities of modern business
               </h2>
-              <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
+              <p className="text-lg text-slate-600 leading-relaxed font-medium">
                 Unify case files, client relationships, time tracking, billing,
-                and employee metrics in one beautifully designed platform.
+                and employee metrics in one beautifully designed, secure platform.
               </p>
             </div>
           </FadeIn>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((feature, i) => (
-              <FadeIn key={i} delay={`delay-[${i * 80}ms]`}>
-                <div className="group border border-border/80 bg-card/80 rounded-2xl p-8 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-primary/20 transition-all duration-300">
-                    <feature.icon className="w-6 h-6 text-primary" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+            {features.map((feature, i) => {
+              const isLarge = i === 0 || i === 3;
+              return (
+                <FadeIn key={i} delay={`delay-[${i * 80}ms]`} className={isLarge ? "md:col-span-2" : "md:col-span-1"}>
+                  <div className={`group relative bg-white rounded-[2rem] border border-slate-200/80 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_-10px_rgba(37,99,235,0.1)] hover:-translate-y-1 hover:border-blue-200/60 transition-all duration-500 overflow-hidden h-full flex flex-col justify-between ${isLarge ? 'bg-gradient-to-b from-white to-slate-50/50' : ''}`}>
+                    {/* Hover Gradient Effect */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-600/0 via-transparent to-blue-600/[0.03] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                    
+                    <div className="relative z-10 px-8 pt-8 lg:px-10 lg:pt-10 pb-2">
+                      <div className="w-14 h-14 rounded-2xl bg-blue-50/60 border border-blue-100/40 flex items-center justify-center mb-8 group-hover:scale-110 group-hover:bg-blue-600 group-hover:border-blue-600 group-hover:shadow-lg group-hover:shadow-blue-600/20 transition-all duration-500">
+                        <feature.icon className="w-7 h-7 text-blue-600 group-hover:text-white transition-colors duration-500" strokeWidth={1.5} />
+                      </div>
+                      <h4 className="text-2xl font-extrabold text-slate-900 tracking-tight mb-4 group-hover:text-blue-700 transition-colors duration-300">
+                        {feature.title}
+                      </h4>
+                      <p className="text-base text-slate-600 leading-relaxed font-medium">
+                        {feature.description}
+                      </p>
+                    </div>
+                    
+                    {/* Edge-to-edge Premium Image Presentation */}
+                    <div className="mt-auto relative w-full pt-8 px-6 lg:px-8 pb-0 flex items-end justify-center">
+                      <div className="w-full rounded-t-[1.25rem] border-t border-l border-r border-slate-200/60 shadow-[0_-5px_20px_-10px_rgba(0,0,0,0.1)] overflow-hidden transform translate-y-4 group-hover:translate-y-1 transition-transform duration-700 bg-white">
+                        <img src={feature.image} alt={feature.title} className="block w-full h-auto object-cover object-top opacity-90 group-hover:opacity-100 transition-opacity duration-500" />
+                      </div>
+                    </div>
                   </div>
-                  <h4 className="text-xl font-bold text-foreground tracking-tight mb-3">
-                    {feature.title}
-                  </h4>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {feature.description}
-                  </p>
-                </div>
-              </FadeIn>
-            ))}
+                </FadeIn>
+              )
+            })}
           </div>
         </div>
       </section>
 
       {/* ============================================================ */}
+      {/*  SUITES SECTION (Interactive)                                */}
+      {/* ============================================================ */}
+      <SuitesSection />
+
+      {/* ============================================================ */}
       {/*  TESTIMONIALS                                                */}
       {/* ============================================================ */}
-      <section className="py-24 md:py-32 bg-card/20 border-y border-border/50 relative">
+      <section className="py-24 md:py-32 bg-white relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <FadeIn>
-            <div className="text-center max-w-2xl mx-auto mb-16">
-              <p className="text-[12px] font-bold uppercase tracking-[0.2em] text-primary mb-3">
+            <div className="text-center max-w-2xl mx-auto mb-20">
+              <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-bold uppercase tracking-widest mb-6">
                 Client Success
-              </p>
-              <h2 className="text-3xl md:text-5xl font-extrabold text-foreground tracking-tighter">
+              </span>
+              <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
                 What our customers say
               </h2>
             </div>
           </FadeIn>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((t, idx) => (
               <FadeIn key={idx} delay={`delay-[${idx * 120}ms]`}>
-                <div className="bg-card border border-border/80 rounded-2xl p-8 flex flex-col justify-between hover:border-primary/30 hover:shadow-lg transition-all duration-300 h-full group">
-                  {/* Stars */}
-                  <div>
-                    <div className="flex gap-1 mb-5">
+                <div className="bg-white border border-slate-200 rounded-[2rem] p-10 flex flex-col justify-between hover:border-blue-300 hover:shadow-2xl hover:shadow-blue-900/5 transition-all duration-300 h-full group relative overflow-hidden">
+                  <div className="absolute top-0 right-0 p-8 opacity-5 text-[8rem] font-serif leading-none font-black text-blue-900 group-hover:text-blue-600 group-hover:opacity-10 transition-colors duration-500">"</div>
+                  
+                  <div className="relative z-10">
+                    <div className="flex gap-1.5 mb-8">
                       {Array.from({ length: t.rating }).map((_, si) => (
                         <Star
                           key={si}
-                          className="w-5 h-5 fill-yellow-400 text-yellow-400"
+                          className="w-5 h-5 fill-amber-400 text-amber-400"
                         />
                       ))}
                     </div>
-                    <blockquote className="text-base text-foreground leading-relaxed mb-8">
-                      &ldquo;{t.quote}&rdquo;
+                    <blockquote className="text-lg text-slate-700 leading-relaxed font-medium mb-10">
+                      "{t.quote}"
                     </blockquote>
                   </div>
 
-                  {/* Author */}
-                  <div className="flex items-center gap-4 pt-6 border-t border-border/60">
-                    <div className="w-11 h-11 rounded-full border-2 border-primary/20 bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
+                  <div className="flex items-center gap-4 pt-6 border-t border-slate-100 relative z-10">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center text-blue-700 font-bold text-lg shadow-inner">
                       {t.author
                         .split(' ')
                         .map((n) => n[0])
                         .join('')}
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-foreground">
+                      <p className="text-base font-bold text-slate-900">
                         {t.author}
                       </p>
-                      <p className="text-[13px] text-muted-foreground mt-0.5">
+                      <p className="text-sm font-medium text-slate-500">
                         {t.role}, {t.firm}
                       </p>
                     </div>

@@ -5,7 +5,11 @@ import { useAuth } from "@/lib/AuthContext";
 import { useCompanyId, useCompany } from "@/hooks/useCompanyId";
 import { getTerm } from "@/config/industries";
 import { useNavigate } from "react-router-dom";
-import { Plus, Briefcase, Search, LayoutGrid, List } from "lucide-react";
+import { Plus, Briefcase, Search, LayoutGrid, List, MoreVertical } from "lucide-react";
+import { Link } from "react-router-dom";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Label } from "@/components/ui/label";
 import ExportButton from "@/components/shared/ExportButton";
 import BulkActionBar from "@/components/shared/BulkActionBar";
 import { Button } from "@/components/ui/button";
@@ -46,6 +50,7 @@ export default function Cases() {
   const [viewMode, setViewMode] = useState("list");
   const [selected, setSelected] = useState(new Set());
   const [deleting, setDeleting] = useState(false);
+  const [viewingCase, setViewingCase] = useState(null);
 
   const { data: cases = [], isLoading } = useQuery({
     queryKey: ["cases", companyId],
@@ -133,6 +138,17 @@ export default function Cases() {
     }
   };
 
+  const handleDeleteOne = async (id) => {
+    if (!window.confirm("Delete this case? This cannot be undone.")) return;
+    try {
+      await base44.entities.LegalCase.delete(id);
+      queryClient.invalidateQueries({ queryKey: ["cases"] });
+      toast({ title: "Case deleted successfully" });
+    } catch (err) {
+      toast({ title: "Delete failed", description: err.message, variant: "destructive" });
+    }
+  };
+
   const exportData = cases.map(c => ({
     title: c.title, case_number: c.case_number, client: c.client_name,
     type: c.case_type, status: c.status, priority: c.priority,
@@ -189,8 +205,8 @@ export default function Cases() {
           {isLoading ? (
             <div className="bg-card rounded-xl border border-border overflow-hidden">
               <Table>
-                <TableHeader><TableRow className="bg-muted/50">{["", caseTerm, clientTerm, "Type", "Status", "Priority", lawyerTerm, "Filed"].map((h, i) => <TableHead key={i}>{h}</TableHead>)}</TableRow></TableHeader>
-                <TableBody>{Array(5).fill(0).map((_, i) => <TableRow key={i}>{Array(8).fill(0).map((_, j) => <TableCell key={j}><Skeleton className="h-4 w-20" /></TableCell>)}</TableRow>)}</TableBody>
+                <TableHeader><TableRow className="bg-muted/50">{["", caseTerm, clientTerm, "Type", "Status", "Priority", lawyerTerm, "Filed", "Actions"].map((h, i) => <TableHead key={i}>{h}</TableHead>)}</TableRow></TableHeader>
+                <TableBody>{Array(5).fill(0).map((_, i) => <TableRow key={i}>{Array(9).fill(0).map((_, j) => <TableCell key={j}><Skeleton className="h-4 w-20" /></TableCell>)}</TableRow>)}</TableBody>
               </Table>
             </div>
           ) : filtered.length === 0 ? (
@@ -220,22 +236,37 @@ export default function Cases() {
                   <TableHeader>
                     <TableRow className="bg-muted/50">
                       <TableHead className="w-10"><Checkbox checked={allSelected} onCheckedChange={toggleAll} /></TableHead>
-                      {[caseTerm, clientTerm, "Type", "Status", "Priority", lawyerTerm, "Filed"].map(h => (
+                      {[caseTerm, clientTerm, "Type", "Status", "Priority", lawyerTerm, "Filed", "Actions"].map(h => (
                         <TableHead key={h} className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{h}</TableHead>
                       ))}
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {filtered.map(row => (
-                      <TableRow key={row.id} className="cursor-pointer hover:bg-muted/50 transition-colors" onClick={() => navigate(`/cases/${row.id}`, { state: { caseData: row } })}>
+                      <TableRow key={row.id} className="hover:bg-muted/50 transition-colors">
                         <TableCell onClick={e => toggleOne(row.id, e)}><Checkbox checked={selected.has(row.id)} onCheckedChange={() => {}} /></TableCell>
-                        <TableCell><div><p className="font-medium text-sm">{row.title}</p><p className="text-xs text-muted-foreground">{row.case_number || "No case #"}</p></div></TableCell>
-                        <TableCell><span className="text-sm">{row.client_name || "—"}</span></TableCell>
+                        <TableCell><div><Link to={`/cases/${row.id}`} state={{ caseData: row }} className="font-medium text-sm text-primary hover:underline">{row.title}</Link><p className="text-xs text-muted-foreground">{row.case_number || "No case #"}</p></div></TableCell>
+                        <TableCell><Link to="/clients" className="text-sm text-primary hover:underline">{row.client_name || "—"}</Link></TableCell>
                         <TableCell><Badge variant="outline" className="text-[10px] capitalize">{row.case_type}</Badge></TableCell>
                         <TableCell><Badge className={`${CASE_STATUS_COLORS[row.status]} text-[10px]`}>{row.status?.replace("_", " ")}</Badge></TableCell>
                         <TableCell><Badge className={`${PRIORITY_COLORS[row.priority]} text-[10px]`}>{row.priority}</Badge></TableCell>
-                        <TableCell><span className="text-sm">{row.assigned_lawyer_name || "Unassigned"}</span></TableCell>
+                        <TableCell><Link to="/team" className="text-sm text-primary hover:underline">{row.assigned_lawyer_name || "Unassigned"}</Link></TableCell>
                         <TableCell><span className="text-xs text-muted-foreground">{row.filing_date ? format(new Date(row.filing_date), "MMM d, yyyy") : "—"}</span></TableCell>
+                        <TableCell>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" className="h-8 w-8 p-0">
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem onClick={() => setViewingCase(row)}>View Details</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => navigate(`/cases/${row.id}`, { state: { caseData: row } })}>Open Full View</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => setEditingCase(row)}>Edit</DropdownMenuItem>
+                              <DropdownMenuItem className="text-red-600" onClick={() => handleDeleteOne(row.id)}>Delete</DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -256,6 +287,58 @@ export default function Cases() {
       {editingCase && (
         <CaseForm open={!!editingCase} onClose={() => setEditingCase(null)} onSubmit={(data) => updateMutation.mutate({ id: editingCase.id, data })} initialData={editingCase} clients={clients} staff={staff} />
       )}
+
+      <Sheet open={!!viewingCase} onOpenChange={(open) => !open && setViewingCase(null)}>
+        <SheetContent className="overflow-y-auto w-full sm:max-w-md">
+          <SheetHeader>
+            <SheetTitle>{caseTerm} Details</SheetTitle>
+          </SheetHeader>
+          {viewingCase && (
+            <div className="mt-6 space-y-4">
+              <div>
+                <Label className="text-muted-foreground">Title</Label>
+                <p className="font-medium">{viewingCase.title}</p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Case Number</Label>
+                <p className="font-medium">{viewingCase.case_number || "—"}</p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Client</Label>
+                <p className="font-medium">
+                  <Link to="/clients" className="text-primary hover:underline">{viewingCase.client_name || "—"}</Link>
+                </p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Type</Label>
+                <p className="font-medium capitalize">{viewingCase.case_type || "—"}</p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Status</Label>
+                <p className="font-medium capitalize">{viewingCase.status?.replace("_", " ") || "—"}</p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Priority</Label>
+                <p className="font-medium capitalize">{viewingCase.priority || "—"}</p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Assigned Lawyer</Label>
+                <p className="font-medium">
+                  <Link to="/team" className="text-primary hover:underline">{viewingCase.assigned_lawyer_name || "Unassigned"}</Link>
+                </p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Filing Date</Label>
+                <p className="font-medium">{viewingCase.filing_date ? format(new Date(viewingCase.filing_date), "MMM d, yyyy") : "—"}</p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Description</Label>
+                <p className="font-medium whitespace-pre-wrap">{viewingCase.description || "—"}</p>
+              </div>
+            </div>
+          )}
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

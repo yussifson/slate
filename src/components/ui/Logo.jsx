@@ -1,0 +1,10 @@
+import React from 'react';
+
+export function Logo({ className = "w-8 h-8" }) {
+  return (
+    <svg className={className} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="40" height="40" rx="10" fill="#2563EB" />
+      <path d="M20 10L10 30h4.5l2.5-6h6l2.5 6H30L20 10zm-1.5 10.5l3-7 3 7h-6z" fill="white" />
+    </svg>
+  );
+}

@@ -4,7 +4,10 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
 import { useCompanyId, useCompany } from "@/hooks/useCompanyId";
 import { getTerm } from "@/config/industries";
-import { Plus, Users, Search } from "lucide-react";
+import { Plus, Users, Search, MoreVertical } from "lucide-react";
+import { Link } from "react-router-dom";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import ExportButton from "@/components/shared/ExportButton";
 import BulkActionBar from "@/components/shared/BulkActionBar";
 import { Button } from "@/components/ui/button";
@@ -41,6 +44,7 @@ export default function Clients() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [selected, setSelected] = useState(new Set());
   const [deleting, setDeleting] = useState(false);
+  const [viewingClient, setViewingClient] = useState(null);
 
   const { data: clients = [], isLoading } = useQuery({
     queryKey: ["clients", companyId],
@@ -111,6 +115,17 @@ export default function Clients() {
       toast({ title: "Delete failed", description: err.message, variant: "destructive" });
     } finally {
       setDeleting(false);
+    }
+  };
+
+  const handleDeleteOne = async (id) => {
+    if (!window.confirm("Delete this client? This cannot be undone.")) return;
+    try {
+      await base44.entities.Client.delete(id);
+      queryClient.invalidateQueries({ queryKey: ["clients"] });
+      toast({ title: "Client deleted successfully" });
+    } catch (err) {
+      toast({ title: "Delete failed", description: err.message, variant: "destructive" });
     }
   };
 
@@ -191,14 +206,14 @@ export default function Clients() {
               <TableHeader>
                 <TableRow className="bg-muted/50">
                   <TableHead className="w-10"><Checkbox checked={allSelected} onCheckedChange={toggleAll} /></TableHead>
-                  {[clientTerm, "Phone", "Type", "Status", "Added"].map(h => (
+                  {[clientTerm, "Phone", "Type", "Status", "Added", "Actions"].map(h => (
                     <TableHead key={h} className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{h}</TableHead>
                   ))}
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filtered.map(row => (
-                  <TableRow key={row.id} className="cursor-pointer hover:bg-muted/50 transition-colors" onClick={() => setEditingClient(row)}>
+                  <TableRow key={row.id} className="hover:bg-muted/50 transition-colors">
                     <TableCell onClick={e => toggleOne(row.id, e)}><Checkbox checked={selected.has(row.id)} onCheckedChange={() => {}} /></TableCell>
                     <TableCell>
                       <div className="flex items-center gap-3">
@@ -219,6 +234,20 @@ export default function Clients() {
                       </Badge>
                     </TableCell>
                     <TableCell><span className="text-xs text-muted-foreground">{format(new Date(row.created_date), "MMM d, yyyy")}</span></TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0">
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => setViewingClient(row)}>View Details</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => setEditingClient(row)}>Edit</DropdownMenuItem>
+                          <DropdownMenuItem className="text-red-600" onClick={() => handleDeleteOne(row.id)}>Delete</DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -234,6 +263,54 @@ export default function Clients() {
         initialData={editingClient}
         clientTerm={clientTerm}
       />
+
+      <Sheet open={!!viewingClient} onOpenChange={(open) => !open && setViewingClient(null)}>
+        <SheetContent className="overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle>{clientTerm} Details</SheetTitle>
+          </SheetHeader>
+          {viewingClient && (
+            <div className="mt-6 space-y-4">
+              <div>
+                <Label className="text-muted-foreground">Name</Label>
+                <p className="font-medium">{viewingClient.name}</p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Email</Label>
+                <p className="font-medium">{viewingClient.email || "—"}</p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Phone</Label>
+                <p className="font-medium">{viewingClient.phone || "—"}</p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Type</Label>
+                <p className="font-medium capitalize">{viewingClient.type || "—"}</p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Status</Label>
+                <p className="font-medium capitalize">{viewingClient.status || "—"}</p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Address</Label>
+                <p className="font-medium">{viewingClient.address || "—"}</p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">City</Label>
+                <p className="font-medium">{viewingClient.city || "—"}</p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Country</Label>
+                <p className="font-medium">{viewingClient.country || "—"}</p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Notes</Label>
+                <p className="font-medium whitespace-pre-wrap">{viewingClient.notes || "—"}</p>
+              </div>
+            </div>
+          )}
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
