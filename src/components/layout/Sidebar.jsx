@@ -10,13 +10,15 @@ import {
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useImpersonation } from "@/lib/ImpersonationContext";
+import { useCompany } from "@/hooks/useCompanyId";
+import { getTerm } from "@/config/industries";
 
-const companyNav = [
+const getCompanyNav = (industry) => [
   { label: "Dashboard", icon: LayoutDashboard, path: "/" },
   { label: "My Dashboard", icon: UserCircle, path: "/my-dashboard" },
-  { label: "Cases", icon: Briefcase, path: "/cases" },
+  { label: getTerm(industry, "cases"), icon: Briefcase, path: "/cases" },
   { label: "Leads", icon: UserPlus, path: "/leads" },
-  { label: "Clients", icon: Users, path: "/clients" },
+  { label: getTerm(industry, "clients"), icon: Users, path: "/clients" },
   { label: "Calendar", icon: Calendar, path: "/calendar" },
   { label: "Invoices", icon: Receipt, path: "/invoices" },
   { label: "Billing", icon: CreditCard, path: "/billing" },
@@ -27,29 +29,30 @@ const companyNav = [
   { label: "HR", icon: HeartHandshake, path: "/hr" },
   { label: "Performance", icon: TrendingUp, path: "/performance" },
   { label: "Conflict Check", icon: Shield, path: "/conflict-check" },
-  { label: "Legal Research", icon: BookOpen, path: "/research" },
+  { label: "Research", icon: BookOpen, path: "/research" },
   { label: "Audit Log", icon: Search, path: "/audit" },
   { label: "WhatsApp", icon: MessageCircle, path: "/whatsapp" },
   { label: "Email Inbox", icon: Mail, path: "/email-inbox" },
   { label: "Reports", icon: BarChart2, path: "/reports" },
   { label: "Export Data", icon: Download, path: "/export" },
-  { label: "Team", icon: UserCog, path: "/team" },
   { label: "Settings", icon: Settings, path: "/settings" },
 ];
 
-const clientNav = [
+const clientNav = (industry) => [
   { label: "My Portal", icon: LayoutDashboard, path: "/client-portal" },
 ];
 
 export default function Sidebar({ user }) {
   const { impersonatedCompany } = useImpersonation();
+  const { company } = useCompany();
+  const industry = company?.industry_type || "law";
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const isAdmin = ["super_admin", "admin", "company_admin"].includes(user?.role);
   
   const activeCompanyLogo = impersonatedCompany?.logo_url || impersonatedCompany?.logo_light_url || user?.company_logo_url;
-  const activeCompanyName = impersonatedCompany?.name || user?.company_name || "LexAfrica";
+  const activeCompanyName = impersonatedCompany?.name || user?.company_name || "Airflake";
   
   const ROLE_PERMISSIONS = {
     lawyer: ["/", "/my-dashboard", "/cases", "/leads", "/clients", "/calendar", "/tasks", "/documents", "/conflict-check", "/research", "/email-inbox", "/reports", "/team"],
@@ -61,14 +64,15 @@ export default function Sidebar({ user }) {
 
   const allowedPaths = isAdmin ? null : (ROLE_PERMISSIONS[user?.role] || ROLE_PERMISSIONS.support);
 
-  const filteredCompanyNav = companyNav.filter(item => {
+  const navForIndustry = getCompanyNav(industry);
+  const filteredCompanyNav = navForIndustry.filter(item => {
     if (isAdmin) return true;
     return allowedPaths.includes(item.path);
   });
 
-  const baseNav = user?.role === "client" ? clientNav : filteredCompanyNav;
+  const baseNav = user?.role === "client" ? clientNav(industry) : filteredCompanyNav;
   const navItems = isAdmin
-    ? [...baseNav, { label: "Firm Setup", icon: Settings, path: "/firm-setup" }]
+    ? [...baseNav, { label: "System Setup", icon: Settings, path: "/firm-setup" }]
     : baseNav;
 
   const NavContent = ({ collapsed }) => (
@@ -85,7 +89,7 @@ export default function Sidebar({ user }) {
         {!collapsed && (
           <div className="animate-in fade-in zoom-in duration-200">
             <h1 className="text-sm font-bold text-sidebar-foreground tracking-tight leading-tight whitespace-nowrap truncate max-w-[140px]">{activeCompanyName}</h1>
-            <p className="text-[10px] text-muted-foreground uppercase tracking-wider whitespace-nowrap">Law Management</p>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider whitespace-nowrap">Airflake Platform</p>
           </div>
         )}
       </div>

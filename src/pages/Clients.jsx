@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
-import { useCompanyId } from "@/hooks/useCompanyId";
+import { useCompanyId, useCompany } from "@/hooks/useCompanyId";
+import { getTerm } from "@/config/industries";
 import { Plus, Users, Search } from "lucide-react";
 import ExportButton from "@/components/shared/ExportButton";
 import BulkActionBar from "@/components/shared/BulkActionBar";
@@ -30,6 +31,8 @@ const CLIENT_STATUS_OPTIONS = [
 export default function Clients() {
   const { user } = useAuth();
   const companyId = useCompanyId();
+  const { company } = useCompany();
+  const industry = company?.industry_type || "law";
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [showForm, setShowForm] = useState(false);
@@ -50,9 +53,9 @@ export default function Clients() {
     onSuccess: () => { 
       queryClient.invalidateQueries({ queryKey: ["clients"] }); 
       setShowForm(false); 
-      toast({ title: "Client added successfully" });
+      toast({ title: `${getTerm(industry, "client")} added successfully` });
     },
-    onError: (err) => toast({ title: "Failed to add client", description: err.message, variant: "destructive" })
+    onError: (err) => toast({ title: `Failed to add ${getTerm(industry, "client").toLowerCase()}`, description: err.message, variant: "destructive" })
   });
 
   const updateMutation = useMutation({
@@ -116,15 +119,18 @@ export default function Clients() {
     status: c.status, city: c.city, country: c.country,
   }));
 
+  const clientTerm = getTerm(industry, "client");
+  const clientsTerm = getTerm(industry, "clients");
+
   return (
     <div className="space-y-4">
       <PageHeader
-        title="Clients"
-        subtitle={`${clients.filter(c => c.status === "active").length} active clients`}
+        title={clientsTerm}
+        subtitle={`${clients.filter(c => c.status === "active").length} active ${clientsTerm.toLowerCase()}`}
         actions={
           <div className="flex items-center gap-2">
-            <ExportButton data={exportData} filename="clients_export" label="Export" />
-            <Button onClick={() => setShowForm(true)} size="sm"><Plus className="w-4 h-4 mr-1" /> Add Client</Button>
+            <ExportButton data={exportData} filename={`${clientsTerm.toLowerCase()}_export`} label="Export" />
+            <Button onClick={() => setShowForm(true)} size="sm"><Plus className="w-4 h-4 mr-1" /> Add {clientTerm}</Button>
           </div>
         }
       />
@@ -132,7 +138,7 @@ export default function Clients() {
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Search clients..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
+          <Input placeholder={`Search ${clientsTerm.toLowerCase()}...`} className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
@@ -154,7 +160,7 @@ export default function Clients() {
 
       {isLoading ? (
         <div className="bg-card rounded-xl border border-border overflow-hidden">
-          <Table><TableHeader><TableRow>{["", "Client", "Phone", "Type", "Status", "Added"].map((h, i) => <TableHead key={i}>{h}</TableHead>)}</TableRow></TableHeader>
+          <Table><TableHeader><TableRow>{["", clientTerm, "Phone", "Type", "Status", "Added"].map((h, i) => <TableHead key={i}>{h}</TableHead>)}</TableRow></TableHeader>
             <TableBody>{Array(5).fill(0).map((_, i) => <TableRow key={i}>{Array(6).fill(0).map((_, j) => <TableCell key={j}><Skeleton className="h-4 w-20" /></TableCell>)}</TableRow>)}</TableBody>
           </Table>
         </div>
@@ -164,9 +170,9 @@ export default function Clients() {
             <Users className="w-5 h-5" />
           </div>
           <div className="space-y-1">
-            <p className="font-bold text-sm text-slate-900">No Registered Clients</p>
+            <p className="font-bold text-sm text-slate-900">No Registered {clientsTerm}</p>
             <p className="text-xs text-slate-500 max-w-xs mx-auto leading-relaxed">
-              Start building your firm's address book, tracking intake forms, and sharing retainers by adding your first client.
+              Start building your firm's address book, tracking intake forms, and sharing retainers by adding your first {clientTerm.toLowerCase()}.
             </p>
           </div>
           <div className="pt-2">
@@ -174,7 +180,7 @@ export default function Clients() {
               onClick={() => setShowForm(true)}
               className="bg-primary hover:bg-primary/95 text-white font-semibold text-xs py-3.5 px-5 rounded-xl shadow-md"
             >
-              Add New Client
+              Add New {clientTerm}
             </Button>
           </div>
         </div>
@@ -185,7 +191,7 @@ export default function Clients() {
               <TableHeader>
                 <TableRow className="bg-muted/50">
                   <TableHead className="w-10"><Checkbox checked={allSelected} onCheckedChange={toggleAll} /></TableHead>
-                  {["Client", "Phone", "Type", "Status", "Added"].map(h => (
+                  {[clientTerm, "Phone", "Type", "Status", "Added"].map(h => (
                     <TableHead key={h} className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{h}</TableHead>
                   ))}
                 </TableRow>
@@ -226,12 +232,13 @@ export default function Clients() {
         onClose={() => { setShowForm(false); setEditingClient(null); }}
         onSubmit={(data) => editingClient ? updateMutation.mutate({ id: editingClient.id, data }) : createMutation.mutate(data)}
         initialData={editingClient}
+        clientTerm={clientTerm}
       />
     </div>
   );
 }
 
-function ClientFormDialog({ open, onClose, onSubmit, initialData }) {
+function ClientFormDialog({ open, onClose, onSubmit, initialData, clientTerm = "Client" }) {
   const [form, setForm] = useState({ name: "", email: "", phone: "", type: "individual", status: "active", address: "", city: "", country: "", notes: "" });
 
   useEffect(() => {
@@ -245,7 +252,7 @@ function ClientFormDialog({ open, onClose, onSubmit, initialData }) {
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
-        <DialogHeader><DialogTitle>{initialData ? "Edit Client" : "Add Client"}</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle>{initialData ? `Edit ${clientTerm}` : `Add ${clientTerm}`}</DialogTitle></DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-2"><Label>Name *</Label><Input value={form.name} onChange={(e) => set("name", e.target.value)} required /></div>
@@ -271,7 +278,7 @@ function ClientFormDialog({ open, onClose, onSubmit, initialData }) {
           </div>
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-            <Button type="submit">{initialData ? "Update" : "Add"} Client</Button>
+            <Button type="submit">{initialData ? "Update" : "Add"} {clientTerm}</Button>
           </div>
         </form>
       </DialogContent>

@@ -247,6 +247,7 @@ CREATE TABLE IF NOT EXISTS public.companies (
   max_storage_gb NUMERIC,
   currency TEXT CHECK (currency IN ('GHS', 'NGN', 'SLL', 'USD')),
   admin_email TEXT,
+  industry_type TEXT CHECK (industry_type IN ('law', 'school', 'hospital', 'hotel', 'church', 'insurance', 'retail', 'logistics', 'hr')),
   status TEXT CHECK (status IN ('active', 'suspended', 'pending'))
 );
 
