@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BedDouble, CheckCircle2, AlertTriangle, Settings, ArrowRightLeft } from 'lucide-react';
+import { BedDouble, CheckCircle2, AlertTriangle, Settings, ArrowRightLeft, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import { toast } from 'react-hot-toast';
@@ -63,6 +63,8 @@ export default function Wards() {
   // Selected Bed State
   const [selectedBed, setSelectedBed] = useState(null); // { wardIndex, bedIndex, bed, wardId }
   const [showModal, setShowModal] = useState(false);
+  const [showNewWardModal, setShowNewWardModal] = useState(false);
+  const [newWardData, setNewWardData] = useState({ name: '', numBeds: 4 });
   const [formData, setFormData] = useState({
     status: 'Available',
     patient: ''
@@ -127,6 +129,41 @@ export default function Wards() {
     });
   };
 
+  const handleCreateWard = () => {
+    if (!newWardData.name) {
+      toast.error('Ward name is required');
+      return;
+    }
+    
+    // Create an array of bed objects
+    const beds = Array.from({ length: newWardData.numBeds }).map((_, i) => ({
+      id: `B${(i + 1).toString().padStart(2, '0')}`,
+      status: 'Available',
+      patient: null
+    }));
+
+    const payload = {
+      name: newWardData.name,
+      beds: beds
+    };
+
+    mutateRecord.mutate({
+      recordType: 'ward',
+      payload,
+      status: 'Active',
+      searchText: `${newWardData.name}`
+    }, {
+      onSuccess: () => {
+        toast.success('Ward created successfully!');
+        setShowNewWardModal(false);
+        setNewWardData({ name: '', numBeds: 4 });
+      },
+      onError: (err) => {
+        toast.error('Failed to create ward: ' + err.message);
+      }
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -134,6 +171,9 @@ export default function Wards() {
           <h1 className="text-2xl font-bold text-card-foreground">Ward Management</h1>
           <p className="text-sm text-muted-foreground mt-0.5">Manage inpatient bed allocation and availability</p>
         </div>
+        <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={() => setShowNewWardModal(true)}>
+          <Plus className="w-4 h-4 mr-2" /> Add Ward
+        </Button>
       </div>
 
       <div className="flex gap-4">
@@ -192,6 +232,28 @@ export default function Wards() {
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>Cancel</Button>
               <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleSaveBedStatus}>Save Changes</Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showNewWardModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4">
+            <h2 className="text-lg font-bold text-card-foreground">Create New Ward</h2>
+            <div className="space-y-4">
+               <div>
+                 <label className="text-xs font-bold text-muted-foreground uppercase">Ward Name</label>
+                 <input type="text" value={newWardData.name} onChange={e => setNewWardData({ ...newWardData, name: e.target.value })} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="e.g. Pediatric Ward" />
+               </div>
+               <div>
+                 <label className="text-xs font-bold text-muted-foreground uppercase">Initial Number of Beds</label>
+                 <input type="number" min="1" max="50" value={newWardData.numBeds} onChange={e => setNewWardData({ ...newWardData, numBeds: parseInt(e.target.value) || 1 })} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
+               </div>
+            </div>
+            <div className="flex gap-3 pt-4">
+              <Button variant="outline" className="flex-1" onClick={() => setShowNewWardModal(false)}>Cancel</Button>
+              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleCreateWard}>Create Ward</Button>
             </div>
           </div>
         </div>
