@@ -534,10 +534,13 @@ export default function Home() {
               <div>
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-bold uppercase tracking-widest mb-6">
                   <Sparkles className="w-3.5 h-3.5" />
-                  Meet Orbit AI
+                  Your Intelligent Agent
                 </div>
                 <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-6 leading-[1.1]">
-                  Your proactive <br/><span className="text-blue-600">enterprise co-pilot</span>
+                  Meet <br/>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-6xl md:text-8xl drop-shadow-sm font-extrabold pb-2 inline-block tracking-tighter">
+                    Orbit AI
+                  </span>
                 </h2>
                 <p className="text-lg text-slate-600 mb-8 leading-relaxed font-medium">
                   Orbit isn't just a chatbot. It's an intelligent agent embedded directly into your workflow. 
