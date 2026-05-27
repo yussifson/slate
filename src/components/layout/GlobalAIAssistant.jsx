@@ -290,8 +290,14 @@ export default function GlobalAIAssistant({ onClose }) {
           }
           case 'navigate_to':
             if (action.route) {
-              setTimeout(() => navigate(action.route), 200);
-              results.push(`Navigated to ${action.route}`);
+              const dangerousRoutes = ['/logout', '/login', '/register', '/auth'];
+              if (dangerousRoutes.some(r => action.route.includes(r))) {
+                results.push(`Security Block: Navigation to ${action.route} is prohibited for AI agents.`);
+                toast.error(`Blocked AI from navigating to ${action.route}`);
+              } else {
+                setTimeout(() => navigate(action.route), 200);
+                results.push(`Navigated to ${action.route}`);
+              }
             }
             break;
           case 'show_toast':
@@ -493,6 +499,7 @@ AGENT POWERS (return EXACTLY this JSON format inline to act):
 - Toast: <AGENT_ACTION>{"tool":"show_toast","message":"Done!"}</AGENT_ACTION>
 - Remember: <AGENT_ACTION>{"tool":"remember","fact":"User prefers dark mode"}</AGENT_ACTION>
 - Search Memory: <AGENT_ACTION>{"tool":"search_memory","query":"preferences"}</AGENT_ACTION>
+- Request Confirmation: <AGENT_ACTION>{"tool":"ask_confirmation","actionToConfirm":{"tool":"navigate_to","route":"/classes"},"message":"Did you mean the Classes page?"}</AGENT_ACTION>
 
 RULES FOR MULTI-STEP REASONING:
 1. NEVER explain how the user can do something. YOU MUST do it for them.
@@ -501,7 +508,8 @@ RULES FOR MULTI-STEP REASONING:
 4. You can chain actions: create a record, then navigate to show it.
 5. DO NOT wrap <AGENT_ACTION> in markdown code blocks. Output it raw inline.
 6. Once all tasks are complete, summarize what you did in plain language and STOP outputting <AGENT_ACTION> blocks.
-7. For 'case' records, use 'title' instead of 'name'.`;
+7. For 'case' records, use 'title' instead of 'name'.
+8. If the user's input has a typo, is ambiguous, or if you are unsure which page they mean, ALWAYS use the 'ask_confirmation' tool first and wait for approval.`;
 
         const sessionMessages = currentSessions.find(s => s.id === sid)?.messages || [];
         const allMessages = [...sessionMessages, { role: 'user', content: userContent }];
@@ -525,21 +533,63 @@ RULES FOR MULTI-STEP REASONING:
             break; // AI is done
           }
 
+          let confirmationAction = actions.find(a => a.tool === 'ask_confirmation');
+          if (confirmationAction) {
+             addMessages(sid, [{ 
+               role: 'assistant', 
+               content: finalCleanText || confirmationAction.message,
+               isConfirmation: true,
+               pendingAction: confirmationAction.actionToConfirm 
+             }]);
+             finalCleanText = ""; // Handled via the confirmation message
+             break; // Pause loop
+          }
+
           const actionResults = await executeActionsAsync(actions);
           
           apiMessages.push({ role: 'assistant', content: responseText });
           apiMessages.push({ role: 'system', content: `Action Results:\n${actionResults.join('\n')}` });
         }
 
-        const finalContent = finalCleanText || "Action completed.";
-        addMessages(sid, [{ role: 'assistant', content: finalContent }]);
+        if (finalCleanText) {
+          addMessages(sid, [{ role: 'assistant', content: finalCleanText }]);
+        }
       }
     } catch (err) {
       addMessages(sid, [{ role: 'assistant', content: "Error: " + err.message + ". Please try again." }]);
     } finally {
       setIsLoading(false);
     }
-  }, [input, uploadedFile, activeId, sessions, addMessages, getPageContext, companyId, queryClient, navigate, location.pathname]);
+  }, [input, uploadedFile, activeId, sessions, addMessages, getPageContext, companyId, queryClient, navigate, location.pathname, executeActionsAsync]);
+
+  //  Action Confirmation Handlers
+  const confirmPendingAction = async (action, msgIndex) => {
+    setSessions(prev => prev.map(s => {
+      if (s.id !== activeId) return s;
+      const msgs = [...s.messages];
+      msgs[msgIndex] = { ...msgs[msgIndex], isConfirmation: false };
+      return { ...s, messages: msgs };
+    }));
+    
+    setIsLoading(true);
+    try {
+      const actionResults = await executeActionsAsync([action]);
+      addMessages(activeId, [{ role: 'system', content: `Action Confirmed & Executed. Results:\n${actionResults.join('\n')}` }]);
+      toast.success("Action confirmed");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const cancelPendingAction = (msgIndex) => {
+    setSessions(prev => prev.map(s => {
+      if (s.id !== activeId) return s;
+      const msgs = [...s.messages];
+      msgs[msgIndex] = { ...msgs[msgIndex], isConfirmation: false };
+      return { ...s, messages: msgs };
+    }));
+    addMessages(activeId, [{ role: 'user', content: "I cancelled that action." }]);
+  };
 
   //  Voice 
   const toggleVoice = () => {
@@ -740,7 +790,7 @@ RULES FOR MULTI-STEP REASONING:
         <div className="flex-1 overflow-y-auto p-4 space-y-4 relative bg-[radial-gradient(circle,#e2e8f0_1px,transparent_1px)] dark:bg-[radial-gradient(circle,#1e293b_1px,transparent_1px)] [background-size:18px_18px]">
           <div className="absolute inset-0 bg-card/65 pointer-events-none z-0"></div>
           <div className="relative z-10 space-y-4">
-            {messages.map((msg, i) => (
+            {messages.filter(m => m.role !== 'system').map((msg, i) => (
               <div key={i} className={`flex gap-2.5 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
                 <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-0.5 shadow-sm ${
                   msg.role === 'user'
@@ -755,6 +805,23 @@ RULES FOR MULTI-STEP REASONING:
                     : 'bg-card border border-border rounded-tl-sm text-foreground'
                 }`}>
                   <FormatMessage content={msg.content} />
+                  
+                  {msg.isConfirmation && msg.pendingAction && (
+                    <div className="mt-3 flex gap-2 pt-3 border-t border-border">
+                      <button 
+                        onClick={() => confirmPendingAction(msg.pendingAction, i)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shadow-sm flex items-center gap-1.5"
+                      >
+                        <Sparkles className="w-3 h-3" /> Continue Action
+                      </button>
+                      <button 
+                        onClick={() => cancelPendingAction(i)}
+                        className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border border-border shadow-sm"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
