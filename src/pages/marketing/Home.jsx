@@ -555,13 +555,12 @@ export default function Home() {
             </FadeIn>
 
             <FadeIn delay="delay-200">
-              <div className="relative rounded-2xl border border-slate-200/60 bg-slate-50 shadow-2xl overflow-hidden aspect-video transform rotate-1 hover:rotate-0 transition-transform duration-500 group">
+              <div className="relative rounded-2xl border border-slate-200/60 bg-white shadow-2xl overflow-hidden transform rotate-1 hover:rotate-0 transition-transform duration-500 group">
                 <img 
                   src="/images/orbit_dashboard_mockup.png" 
                   alt="Optalflow Dashboard featuring Orbit AI Panel" 
-                  className="w-full h-full object-cover object-left-top opacity-90 group-hover:opacity-100 transition-opacity duration-500" 
+                  className="w-full h-auto block" 
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/10 to-transparent pointer-events-none"></div>
               </div>
             </FadeIn>
 
