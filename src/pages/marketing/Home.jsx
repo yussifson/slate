@@ -100,6 +100,13 @@ const features = [
       'Client confidentiality, encrypted storage, automatic daily backups, and robust role-based access permissions.',
     image: '/images/feature_security.png'
   },
+  {
+    icon: Sparkles,
+    title: 'Orbit AI Assistant',
+    description:
+      'Your built-in enterprise AI. Orbit can search records, navigate the app, create tasks, and automate workflows via simple chat commands.',
+    image: '/images/hero_dashboard_ui_clean_1779790623615.png' 
+  }
 ];
 
 const testimonials = [
@@ -291,6 +298,9 @@ function SuitesSection() {
                     <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold uppercase tracking-widest">
                       {activeSuite.name}
                     </div>
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-bold uppercase tracking-widest">
+                      <Sparkles className="w-3.5 h-3.5" /> Orbit AI Powered
+                    </div>
                   </div>
                   
                   <h3 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 leading-[1.1] tracking-tight">
@@ -418,7 +428,7 @@ export default function Home() {
           <FadeIn>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 text-xs font-semibold text-slate-600 mb-8 shadow-sm">
               <span className="flex h-2 w-2 rounded-full bg-green-500" />
-              Trusted by 500+ Enterprise Teams
+              Trusted by 500+ Enterprise Teams &nbsp;&bull;&nbsp; <span className="font-bold text-blue-600 flex items-center gap-1"><Sparkles className="w-3 h-3"/> Powered by Orbit AI</span>
             </div>
           </FadeIn>
 
@@ -459,6 +469,117 @@ export default function Home() {
               <img src="/images/hero_dashboard_ui.png" alt="Optalflow Dashboard Mockup" className="w-full h-full object-cover object-top" />
             </div>
           </FadeIn>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/*  ORBIT AI HERO (INTERACTIVE DEMO)                            */}
+      {/* ============================================================ */}
+      <section className="py-20 md:py-24 bg-slate-900 text-white relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-500/20 blur-[120px] rounded-full pointer-events-none transform translate-x-1/3 -translate-y-1/3"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            
+            <FadeIn>
+              <div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold uppercase tracking-widest mb-6">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Meet Orbit AI
+                </div>
+                <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-6 leading-[1.1]">
+                  Your proactive <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">enterprise co-pilot</span>
+                </h2>
+                <p className="text-lg text-slate-300 mb-8 leading-relaxed font-medium">
+                  Orbit isn't just a chatbot. It's an intelligent agent embedded directly into your workflow. 
+                  Ask it to analyze data, schedule appointments, or draft emails — it executes actions automatically across the entire Optalflow suite.
+                </p>
+                <ul className="space-y-4 mb-10 text-slate-300 font-medium">
+                  <li className="flex items-center gap-3"><div className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 shrink-0"><Clock className="w-3.5 h-3.5" /></div> Saves an average of 14 hours per week</li>
+                  <li className="flex items-center gap-3"><div className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 shrink-0"><Shield className="w-3.5 h-3.5" /></div> Bank-grade secure long-term memory</li>
+                  <li className="flex items-center gap-3"><div className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 shrink-0"><Briefcase className="w-3.5 h-3.5" /></div> Understands all 9 industry sectors natively</li>
+                </ul>
+              </div>
+            </FadeIn>
+
+            <FadeIn delay="delay-200">
+              <div className="relative rounded-2xl border border-white/10 bg-[#0f172a] shadow-2xl overflow-hidden aspect-video flex flex-col font-mono text-sm">
+                {/* Terminal Header */}
+                <div className="bg-white/5 px-4 py-3 border-b border-white/10 flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
+                  <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                  <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
+                  <span className="ml-4 text-slate-400 text-xs tracking-wider">Orbit Agent Execution</span>
+                </div>
+                {/* Terminal Body */}
+                <div className="p-6 text-slate-300 space-y-4 flex-1 overflow-hidden relative">
+                  <div className="flex gap-3">
+                    <span className="text-green-400 font-bold">User</span>
+                    <span>Create a new task to review the Q3 financial report by Friday.</span>
+                  </div>
+                  <div className="flex gap-3">
+                    <span className="text-blue-400 font-bold">Orbit</span>
+                    <span>
+                      <span className="animate-pulse">_</span>
+                    </span>
+                  </div>
+                  {/* CSS Animated Typing effect overlay (Simulated) */}
+                  <div className="absolute top-14 left-[58px] bottom-0 right-0 bg-[#0f172a] animate-[slideRight_4s_steps(40)_forwards] origin-left z-10" />
+                  <div className="flex gap-3 mt-0 absolute top-[44px] w-full text-slate-300">
+                     <span className="text-blue-400 font-bold opacity-0">Orbit</span>
+                     <span className="whitespace-pre-line">
+                        I've created the task: "Review Q3 financial report".
+                        <br/><span className="text-slate-500">&gt; Action: create_record [Task ID: 89f2a]</span>
+                        <br/>Due date set to Friday.
+                        <br/><span className="text-slate-500">&gt; Action: navigate_to [/tasks]</span>
+                     </span>
+                  </div>
+                </div>
+              </div>
+            </FadeIn>
+
+          </div>
+        </div>
+      </section>
+      
+      <style dangerouslySetInnerHTML={{__html: \`
+        @keyframes slideRight {
+          0% { transform: scaleX(1); }
+          100% { transform: scaleX(0); }
+        }
+      \`}} />
+
+      {/* ============================================================ */}
+      {/*  ORBIT VIDEO SECTION                                         */}
+      {/* ============================================================ */}
+      <section className="py-24 md:py-32 bg-white relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+              <div className="lg:col-span-5">
+                <FadeIn>
+                  <h2 className="text-3xl md:text-5xl font-black tracking-tight text-slate-900 mb-6">
+                    See Orbit in action
+                  </h2>
+                  <p className="text-lg text-slate-600 leading-relaxed font-medium mb-8">
+                    Watch how easily you can navigate the system, manage your workload, and delegate complex tasks to your AI co-pilot using simple natural language.
+                  </p>
+                  <Button className="bg-slate-900 text-white hover:bg-slate-800 rounded-full px-8 font-bold">
+                    Book a Live Demo
+                  </Button>
+                </FadeIn>
+              </div>
+              
+              <div className="lg:col-span-7">
+                <FadeIn delay="delay-200">
+                  <div className="relative rounded-[2rem] border border-slate-200 bg-slate-50 shadow-2xl overflow-hidden aspect-[16/9] group cursor-pointer flex items-center justify-center">
+                    <img src="/images/hero_dashboard_ui_new_1779826400711.png" alt="Demo Video Thumbnail" className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity duration-500" />
+                    {/* Play Button Overlay */}
+                    <div className="relative z-10 w-20 h-20 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-500">
+                      <div className="w-0 h-0 border-t-[12px] border-t-transparent border-l-[20px] border-l-blue-600 border-b-[12px] border-b-transparent ml-2"></div>
+                    </div>
+                  </div>
+                </FadeIn>
+              </div>
+           </div>
         </div>
       </section>
 

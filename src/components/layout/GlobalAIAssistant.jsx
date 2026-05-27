@@ -51,6 +51,21 @@ const PAGE_CONTEXT = {
   '/pos': { title: 'Point of Sale', suite: 'Retail', desc: 'retail POS system' },
 };
 
+// Contextual smart suggestions per page/suite
+const PAGE_SUGGESTIONS = {
+  '/patients':    ['List all patients admitted today', 'Create a new patient record', 'Show patients with pending lab results'],
+  '/appointments':['Schedule an appointment for tomorrow', 'List today\'s appointments', 'Find upcoming appointments this week'],
+  '/wards':       ['Show all occupied beds', 'Assign patient to a bed in Ward A', 'List available beds'],
+  '/cases':       ['Show all open cases', 'Create a new case', 'Find cases assigned to me'],
+  '/tasks':       ['Show my pending tasks', 'Create an urgent task', 'Mark overdue tasks'],
+  '/employees':   ['List all active employees', 'Add a new employee', 'Show employees on leave'],
+  '/payroll':     ['Generate payroll for this month', 'Show pending payslips', 'Calculate overtime'],
+  '/students':    ['Show students with missing fees', 'Add a new student', 'Find students by class'],
+  '/inventory':   ['Show low stock items', 'Add a new product', 'Find products below reorder level'],
+  '/claims':      ['List pending claims', 'Create a new claim', 'Show high-value claims this month'],
+  '/':            ['Give me a summary of today\'s activity', 'Show key metrics', 'What needs my attention today?'],
+};
+
 //  Session Storage (Fallback/Types)
 function newSession() {
   return {
@@ -143,6 +158,7 @@ export default function GlobalAIAssistant({ onClose }) {
   const [showHistory, setShowHistory] = useState(false);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [streamingText, setStreamingText] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [uploadedFile, setUploadedFile] = useState(null);
@@ -747,16 +763,34 @@ RULES FOR MULTI-STEP REASONING:
                 <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shrink-0 shadow-sm">
                   <Sparkles className="w-3.5 h-3.5 text-white animate-spin" />
                 </div>
-                <div className="px-4 py-3 bg-card border border-border rounded-2xl rounded-tl-sm shadow-sm flex gap-1.5 items-center">
-                  <span className="w-2 h-2 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <span className="w-2 h-2 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <span className="w-2 h-2 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: '300ms' }} />
+                <div className="px-4 py-3 bg-card border border-border rounded-2xl rounded-tl-sm shadow-sm">
+                  <div className="flex gap-1.5 items-center">
+                    <span className="w-2 h-2 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <span className="w-2 h-2 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <span className="w-2 h-2 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: '300ms' }} />
+                  </div>
+                  <p className="text-[10px] text-muted-foreground mt-1.5 italic">Orbit is thinking...</p>
                 </div>
               </div>
             )}
             <div ref={messagesEndRef} />
           </div>
         </div>
+
+        {/* Contextual Suggestions */}
+        {!isLoading && messages.length <= 1 && (
+          <div className="px-3 pb-2 flex flex-wrap gap-1.5 shrink-0">
+            {(PAGE_SUGGESTIONS[location.pathname] || PAGE_SUGGESTIONS['/']).map((s, i) => (
+              <button
+                key={i}
+                onClick={() => handleSend(s)}
+                className="text-[10px] font-medium px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors truncate max-w-[180px]"
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Attached File Preview */}
         {uploadedFile && (
