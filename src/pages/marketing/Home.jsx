@@ -556,14 +556,13 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
               <div className="lg:col-span-5">
-                <FadeIn>
-                  <h2 className="text-3xl md:text-5xl font-black tracking-tight text-slate-900 mb-6">
+                  <h2 className="text-3xl md:text-5xl font-black tracking-tight text-blue-600 mb-6">
                     See Orbit in action
                   </h2>
                   <p className="text-lg text-slate-600 leading-relaxed font-medium mb-8">
                     Watch how easily you can navigate the system, manage your workload, and delegate complex tasks to your AI co-pilot using simple natural language.
                   </p>
-                  <Button className="bg-slate-900 text-white hover:bg-slate-800 rounded-full px-8 font-bold">
+                  <Button className="bg-blue-600 text-white hover:bg-blue-700 rounded-full px-8 font-bold">
                     Book a Live Demo
                   </Button>
                 </FadeIn>
