@@ -713,10 +713,10 @@ export default function Home() {
                       </p>
                     </div>
                     
-                    {/* Edge-to-edge Premium Image Presentation */}
-                    <div className="mt-auto relative w-full pt-8 px-6 lg:px-8 pb-0 flex items-end justify-center">
-                      <div className="w-full rounded-t-[1.25rem] border-t border-l border-r border-slate-200/60 shadow-[0_-5px_20px_-10px_rgba(0,0,0,0.1)] overflow-hidden transform translate-y-4 group-hover:translate-y-1 transition-transform duration-700 bg-white">
-                        <img src={feature.image} alt={feature.title} className="block w-full h-auto object-cover object-top opacity-90 group-hover:opacity-100 transition-opacity duration-500" />
+                    {/* Clean Image Presentation */}
+                    <div className="mt-auto relative w-full pt-6 px-6 lg:px-8">
+                      <div className={`w-full rounded-t-xl border-t border-l border-r border-slate-200/60 shadow-[0_-4px_15px_-8px_rgba(0,0,0,0.08)] overflow-hidden bg-white ${isLarge ? 'h-[220px] md:h-[280px]' : 'h-[180px] md:h-[220px]'}`}>
+                        <img src={feature.image} alt={feature.title} className="w-full h-full object-cover object-top" />
                       </div>
                     </div>
                   </div>
