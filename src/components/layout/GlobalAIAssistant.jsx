@@ -58,7 +58,7 @@ function newSession() {
     createdAt: new Date().toISOString(),
     messages: [{
       role: 'assistant',
-      content: "Hello! I'm **OptalSeek** 🤖\n\nI can help you:\n• Navigate the app\n• Create, edit & manage records\n• Analyze data on any page\n• Answer any question\n\nYou can also use your **🎤 voice** or **📎 upload files** (images, PDFs, CSV, etc.)\n\nWhat would you like to do?"
+      content: "Hello! I'm **Orbit** 👋\n\nI can help you:\n  Navigate the app\n  Create, edit & manage records\n  Analyze data on any page\n  Answer any question\n\nYou can also use your **🎙️ voice** or **📎 upload files** (images, PDFs, CSV, etc.)\n\nWhat would you like to do?"
     }]
   };
 }
@@ -336,10 +336,11 @@ export default function GlobalAIAssistant({ onClose }) {
         const promptText = `You are an AI agent embedded in Optalflow enterprise SaaS. ${getPageContext()}\n\nUser says: ${text || 'Please analyze this image.'}\n\nDescribe the image and provide relevant business insights.`;
         responseText = await analyzeImage(fileSnap.bytes, promptText);
       } else {
-        const systemPrompt = `You are OptalSeek  an intelligent, proactive enterprise assistant embedded in Optalflow SaaS.
+        const ctx = PAGE_CONTEXT[location.pathname] || { title: 'Unknown', suite: 'Unknown' };
+        const systemPrompt = `You are Orbit — an intelligent, proactive enterprise assistant embedded in Optalflow SaaS.
+Your current context is the ${ctx.suite} suite, specifically the '${ctx.title}' page.
 
-CURRENT PAGE: ${getPageContext()}
-PLATFORM: 8 industry suites  Legal, School, Hospital, Hotel, Church, Insurance, Retail, Logistics, HR.
+CRITICAL INSTRUCTIONS: 8 industry suites  Legal, School, Hospital, Hotel, Church, Insurance, Retail, Logistics, HR.
 
 AGENT POWERS (return EXACTLY this JSON format inline to act):
 - Search: <AGENT_ACTION>{"tool":"search_records","recordType":"case|staff|client","query":"Ali"}</AGENT_ACTION>
@@ -392,7 +393,7 @@ RULES FOR MULTI-STEP REASONING:
     } finally {
       setIsLoading(false);
     }
-  }, [input, uploadedFile, activeId, sessions, addMessages, getPageContext, companyId, queryClient, navigate]);
+  }, [input, uploadedFile, activeId, sessions, addMessages, getPageContext, companyId, queryClient, navigate, location.pathname]);
 
   //  Voice 
   const toggleVoice = () => {
@@ -536,15 +537,15 @@ RULES FOR MULTI-STEP REASONING:
           >
             <Clock className="w-4 h-4" />
           </button>
-          <div className="flex items-center gap-2 flex-1 min-w-0">
-            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shrink-0 shadow-sm">
-              <Sparkles className="w-3.5 h-3.5 text-white" />
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-5 h-5 rounded flex items-center justify-center bg-blue-600/20 text-blue-600 shrink-0">
+              <Bot className="w-3.5 h-3.5" />
             </div>
-            <div className="min-w-0">
-              <p className="text-[11px] font-bold text-foreground leading-none">OptalSeek</p>
-              <div className="flex items-center gap-1 mt-0.5">
+            <div className="flex items-center gap-1.5 flex-1">
+              <p className="text-[11px] font-bold text-foreground leading-none">Orbit</p>
+              <div className="flex items-center gap-1 bg-gradient-to-r from-blue-600 to-indigo-600 px-1.5 py-0.5 rounded-full">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse shrink-0"></span>
-                <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground truncate">Agent Active  LLaMA 3.1</span>
+                <span className="text-[9px] font-bold uppercase tracking-wider text-white truncate">Agent Active</span>
               </div>
             </div>
           </div>
