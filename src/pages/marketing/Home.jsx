@@ -476,34 +476,34 @@ export default function Home() {
       {/* ============================================================ */}
       {/*  ORBIT AI HERO (INTERACTIVE DEMO)                            */}
       {/* ============================================================ */}
-      <section className="py-20 md:py-24 bg-slate-900 text-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-500/20 blur-[120px] rounded-full pointer-events-none transform translate-x-1/3 -translate-y-1/3"></div>
+      <section className="py-20 md:py-24 bg-white text-slate-900 relative overflow-hidden border-t border-slate-100">
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-100/40 blur-[120px] rounded-full pointer-events-none transform translate-x-1/3 -translate-y-1/3"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             
             <FadeIn>
               <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold uppercase tracking-widest mb-6">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-bold uppercase tracking-widest mb-6">
                   <Sparkles className="w-3.5 h-3.5" />
                   Meet Orbit AI
                 </div>
                 <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-6 leading-[1.1]">
-                  Your proactive <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">enterprise co-pilot</span>
+                  Your proactive <br/><span className="text-blue-600">enterprise co-pilot</span>
                 </h2>
-                <p className="text-lg text-slate-300 mb-8 leading-relaxed font-medium">
+                <p className="text-lg text-slate-600 mb-8 leading-relaxed font-medium">
                   Orbit isn't just a chatbot. It's an intelligent agent embedded directly into your workflow. 
                   Ask it to analyze data, schedule appointments, or draft emails — it executes actions automatically across the entire Optalflow suite.
                 </p>
-                <ul className="space-y-4 mb-10 text-slate-300 font-medium">
-                  <li className="flex items-center gap-3"><div className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 shrink-0"><Clock className="w-3.5 h-3.5" /></div> Saves an average of 14 hours per week</li>
-                  <li className="flex items-center gap-3"><div className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 shrink-0"><Shield className="w-3.5 h-3.5" /></div> Bank-grade secure long-term memory</li>
-                  <li className="flex items-center gap-3"><div className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 shrink-0"><Briefcase className="w-3.5 h-3.5" /></div> Understands all 9 industry sectors natively</li>
+                <ul className="space-y-4 mb-10 text-slate-700 font-medium">
+                  <li className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0"><Clock className="w-4 h-4" /></div> Saves an average of 14 hours per week</li>
+                  <li className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0"><Shield className="w-4 h-4" /></div> Bank-grade secure long-term memory</li>
+                  <li className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0"><Briefcase className="w-4 h-4" /></div> Understands all 9 industry sectors natively</li>
                 </ul>
               </div>
             </FadeIn>
 
             <FadeIn delay="delay-200">
-              <div className="relative rounded-2xl border border-white/10 bg-[#0f172a] shadow-2xl overflow-hidden aspect-video flex flex-col font-mono text-sm">
+              <div className="relative rounded-2xl border border-slate-800 bg-[#0f172a] shadow-2xl overflow-hidden aspect-video flex flex-col font-mono text-sm shadow-blue-900/10 transform rotate-1 hover:rotate-0 transition-transform duration-500">
                 {/* Terminal Header */}
                 <div className="bg-white/5 px-4 py-3 border-b border-white/10 flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
