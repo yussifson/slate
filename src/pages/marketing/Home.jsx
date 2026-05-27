@@ -714,9 +714,9 @@ export default function Home() {
                     </div>
                     
                     {/* Clean Image Presentation */}
-                    <div className="mt-auto relative w-full pt-6 px-6 lg:px-8 flex-1 flex items-end justify-center">
-                      <div className="w-full rounded-t-xl border-t border-l border-r border-slate-200/60 shadow-[0_-4px_15px_-8px_rgba(0,0,0,0.08)] overflow-hidden bg-white flex items-end">
-                        <img src={feature.image} alt={feature.title} className="w-full h-auto object-contain object-bottom" />
+                    <div className="mt-auto w-full p-6 lg:p-8 pt-0">
+                      <div className="w-full rounded-xl border border-slate-200/60 shadow-sm overflow-hidden bg-white">
+                        <img src={feature.image} alt={feature.title} className="w-full h-auto block" />
                       </div>
                     </div>
                   </div>
