@@ -138,12 +138,61 @@ const testimonials = [
 ];
 
 const firms = [
-  'KAPLAN & STRATTON',
-  'ALN ADVOCATES',
-  'BOWMANS LEGAL',
-  'ENS AFRICA',
-  'WERKSMANS',
-  'CLIFFE DEKKER',
+  {
+    name: 'GlobalTech',
+    logo: (
+      <svg className="w-6 h-6 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+      </svg>
+    ),
+    font: 'font-sans font-black tracking-tighter'
+  },
+  {
+    name: 'ApexHealth',
+    logo: (
+      <svg className="w-6 h-6 mr-2 text-emerald-600" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
+      </svg>
+    ),
+    font: 'font-serif font-bold tracking-tight'
+  },
+  {
+    name: 'Horizon Logistics',
+    logo: (
+      <svg className="w-7 h-7 mr-2 text-amber-500" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+      </svg>
+    ),
+    font: 'font-sans font-extrabold italic tracking-wider uppercase text-sm'
+  },
+  {
+    name: 'Crescent Edu',
+    logo: (
+      <svg className="w-6 h-6 mr-2 text-indigo-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+      </svg>
+    ),
+    font: 'font-serif font-semibold tracking-normal'
+  },
+  {
+    name: 'Vanguard Legal',
+    logo: (
+      <svg className="w-6 h-6 mr-2 text-slate-800" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      </svg>
+    ),
+    font: 'font-serif font-bold uppercase tracking-widest text-sm'
+  },
+  {
+    name: 'Sterling Retail',
+    logo: (
+      <svg className="w-6 h-6 mr-2 text-rose-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+      </svg>
+    ),
+    font: 'font-sans font-bold tracking-tight'
+  },
 ];
 
 const suites = [
@@ -656,14 +705,17 @@ export default function Home() {
           </FadeIn>
 
           <FadeIn delay="delay-100">
-            <div className="flex flex-wrap justify-center items-center gap-x-14 gap-y-6">
-              {firms.map((firm) => (
-                <span
-                  key={firm}
-                  className="text-xl font-bold text-slate-400 hover:text-slate-600 transition-opacity duration-300 cursor-default select-none tracking-tight"
+            <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-10 md:gap-x-16">
+              {firms.map((firm, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-center grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300 cursor-default select-none"
                 >
-                  {firm}
-                </span>
+                  {firm.logo}
+                  <span className={`text-slate-900 ${firm.font}`}>
+                    {firm.name}
+                  </span>
+                </div>
               ))}
             </div>
           </FadeIn>
