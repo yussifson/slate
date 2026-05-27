@@ -114,8 +114,8 @@ export default function Login() {
           return;
         }
       }
-      // Only send to onboarding if it has never been completed
-      if (!profile?.onboarding_completed) {
+      // Only send to onboarding if they don't have a company AND haven't completed it
+      if (!profile?.company_id && !profile?.onboarding_completed) {
         window.location.href = '/onboarding';
       } else {
         window.location.href = '/';
