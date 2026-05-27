@@ -78,7 +78,8 @@ export default function CompanyDashboard() {
   const pendingTasks = tasks.filter(t => ["pending", "in_progress"].includes(t.status));
   const totalRevenue = invoices.filter(i => i.status === "paid").reduce((s, i) => s + (i.total_amount || 0), 0);
   const currency = company?.currency || "GHS";
-  const plan = SUBSCRIPTION_PLANS[company?.subscription_plan] || SUBSCRIPTION_PLANS.free;
+  const planKey = company?.subscription_plan === 'free' ? 'free_trial' : company?.subscription_plan;
+  const plan = SUBSCRIPTION_PLANS[planKey] || SUBSCRIPTION_PLANS.free_trial;
   const industry = company?.industry_type || user?.company_industry || "law";
 
   const casesTermPlural = getTerm(industry, "cases");

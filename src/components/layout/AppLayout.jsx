@@ -62,17 +62,17 @@ export default function AppLayout() {
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Trial Countdown Banner */}
         {subscriptionStatus === 'trial' && !hideTrialBanner && !isSuperAdmin && (
-          <div className="bg-gradient-to-r from-amber-500 to-orange-600 text-white px-4 py-2 flex items-center justify-between gap-3 text-xs md:text-sm shrink-0 shadow-sm font-sans">
+          <div className={`px-4 py-2 flex items-center justify-between gap-3 text-xs md:text-sm shrink-0 shadow-sm font-sans text-white ${trialDaysLeft <= 3 ? 'bg-gradient-to-r from-red-600 to-red-800' : 'bg-gradient-to-r from-amber-500 to-orange-600'}`}>
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4 shrink-0 animate-pulse" />
               <span className="font-semibold">Free Trial Active:</span>
-              <span>You have <strong className="font-extrabold">{trialDaysLeft} days</strong> remaining on your Optalflow trial.</span>
+              <span>You have <strong className="font-extrabold">{trialDaysLeft} days</strong> remaining on your Optalflow trial. {trialDaysLeft <= 3 && "Upgrade now to prevent service interruption."}</span>
             </div>
             <div className="flex items-center gap-3">
               <Link to="/settings">
                 <Button
                   size="sm"
-                  className="h-7 bg-white hover:bg-slate-50 text-orange-700 hover:text-orange-850 font-bold text-[11px] gap-1 shrink-0 rounded-lg shadow-sm"
+                  className={`h-7 bg-white font-bold text-[11px] gap-1 shrink-0 rounded-lg shadow-sm ${trialDaysLeft <= 3 ? 'text-red-700 hover:text-red-800 hover:bg-slate-50' : 'text-orange-700 hover:text-orange-850 hover:bg-slate-50'}`}
                 >
                   <CreditCard className="w-3.5 h-3.5" /> Upgrade Plan
                 </Button>

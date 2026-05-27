@@ -1,46 +1,41 @@
-export const APP_BASE_DOMAIN = 'optalflow.oatstack.com';
+
 
 export function getSubdomainAndBase() {
   const host = window.location.hostname;
-  
-  let currentSubdomain = null;
-  let baseDomain = host;
 
+  // Handle localhost scenarios
   if (host === 'localhost' || host.startsWith('127.0.0.1')) {
     return { currentSubdomain: null, baseDomain: host };
   }
-
-  // Handle the user's specific domain gracefully
-  if (host.endsWith(APP_BASE_DOMAIN)) {
-    if (host === APP_BASE_DOMAIN) {
-      currentSubdomain = null;
-      baseDomain = APP_BASE_DOMAIN;
-    } else {
-      currentSubdomain = host.replace(`.${APP_BASE_DOMAIN}`, '');
-      baseDomain = APP_BASE_DOMAIN;
-    }
-  } else {
-    // Fallback for vercel.app or firm.localhost testing
+  
+  // Handle firm.localhost testing
+  if (host.endsWith('.localhost')) {
     const parts = host.split('.');
-    const isVercel = host.endsWith('vercel.app');
+    return { currentSubdomain: parts[0], baseDomain: 'localhost' };
+  }
+
+  // Handle custom domains (e.g. firm.company.com -> current: firm, base: company.com)
+  const parts = host.split('.');
+  
+  // If it's a standard domain like company.com
+  if (parts.length === 2) {
+    return { currentSubdomain: null, baseDomain: host };
+  }
+
+  // If it has a subdomain, e.g. firm.company.com
+  if (parts.length > 2) {
+    const currentSubdomain = parts.shift();
+    const baseDomain = parts.join('.');
     
-    if (isVercel) {
-      if (parts.length >= 4) currentSubdomain = parts[0];
-      baseDomain = parts.slice(-3).join('.'); // e.g., app-name.vercel.app
-    } else if (parts.length === 2 && parts[1] === 'localhost') {
-      currentSubdomain = parts[0];
-      baseDomain = 'localhost';
-    } else if (parts.length >= 3) {
-      currentSubdomain = parts[0];
-      baseDomain = parts.slice(1).join('.');
+    // Ignore 'www' and 'app' as functional subdomains
+    if (currentSubdomain === 'www' || currentSubdomain === 'app') {
+      return { currentSubdomain: null, baseDomain };
     }
+    
+    return { currentSubdomain, baseDomain };
   }
 
-  if (currentSubdomain === 'www' || currentSubdomain === 'app') {
-    currentSubdomain = null;
-  }
-
-  return { currentSubdomain, baseDomain };
+  return { currentSubdomain: null, baseDomain: host };
 }
 
 export function getMainAppUrl() {

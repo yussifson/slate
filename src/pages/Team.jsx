@@ -15,7 +15,8 @@ import { format } from "date-fns";
 import { useFirmSettings } from "@/hooks/useFirmSettings";
 import AddOptionInline from "@/components/shared/AddOptionInline";
 import { useToast } from "@/components/ui/use-toast";
-import { useCompanyId } from "@/hooks/useCompanyId";
+import { useCompanyId, useCompany } from "@/hooks/useCompanyId";
+import { SUBSCRIPTION_PLANS } from "@/lib/constants";
 
 const DEFAULT_ROLES = [
   { value: "company_admin", label: "Company Admin" },
@@ -38,6 +39,7 @@ const roleColors = {
 export default function Team() {
   const { user } = useAuth();
   const companyId = useCompanyId();
+  const { company } = useCompany();
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [showCreate, setShowCreate] = useState(false);
@@ -45,6 +47,21 @@ export default function Team() {
   const [search, setSearch] = useState("");
 
   const canManage = ["super_admin", "company_admin"].includes(user?.role);
+
+  const handleAddClick = () => {
+    const currentPlan = SUBSCRIPTION_PLANS[company?.subscription_plan] || SUBSCRIPTION_PLANS.free_trial;
+    const userLimit = currentPlan.maxUsers || 5;
+    
+    if (staff.length >= userLimit) {
+      toast({ 
+        title: "Limit Reached", 
+        description: `Your ${currentPlan.name} plan allows up to ${userLimit} team members. Please upgrade your plan.`, 
+        variant: "destructive" 
+      });
+      return;
+    }
+    setShowCreate(true);
+  };
 
   const { data: staff = [], isLoading } = useQuery({
     queryKey: ["staff", companyId],
@@ -125,7 +142,7 @@ export default function Team() {
         title="Team"
         subtitle={`${staff.filter(s => s.status === "active").length} active members`}
         actions={canManage && (
-          <Button onClick={() => setShowCreate(true)} size="sm" className="gap-1.5">
+          <Button onClick={handleAddClick} size="sm" className="gap-1.5">
             <UserPlus className="w-4 h-4" /> Add Team Member
           </Button>
         )}

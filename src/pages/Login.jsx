@@ -81,7 +81,7 @@ export default function Login() {
 
     if (currentSubdomain) {
       // Check if user belongs to this subdomain
-      const { data: profile } = await supabase.from('profiles').select('company_id').eq('id', authData.user.id).single();
+      const { data: profile } = await supabase.from('profiles').select('company_id, role').eq('id', authData.user.id).single();
       if (profile?.company_id) {
         const { data: company } = await supabase.from('companies').select('name, subdomain').eq('id', profile.company_id).single();
         const companySubdomain = company?.subdomain || company?.name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
@@ -95,8 +95,15 @@ export default function Login() {
       }
       window.location.href = '/';
     } else {
-      // Base domain login - redirect to their subdomain or onboarding
-      const { data: profile } = await supabase.from('profiles').select('company_id').eq('id', authData.user.id).single();
+      // Base domain login
+      const { data: profile } = await supabase.from('profiles').select('company_id, role').eq('id', authData.user.id).single();
+      
+      // If Super Admin logs into the Base Domain, route directly to the admin command center
+      if (profile?.role === 'super_admin') {
+        window.location.href = '/admin';
+        return;
+      }
+
       if (profile?.company_id) {
         const { data: company } = await supabase.from('companies').select('name, subdomain').eq('id', profile.company_id).single();
         const companySubdomain = company?.subdomain || company?.name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
@@ -107,7 +114,7 @@ export default function Login() {
           return;
         }
       }
-      // If no company, go to onboarding
+      // If no company and not super admin, go to onboarding
       window.location.href = '/onboarding';
     }
   };

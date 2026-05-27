@@ -1,9 +1,9 @@
 export const SUBSCRIPTION_PLANS = {
-  free: { name: "Free", price: 0, maxUsers: 2, maxCases: 10, maxStorageGB: 1, maxClients: 20 },
-  starter: { name: "Starter", price: 49, maxUsers: 3, maxCases: 50, maxStorageGB: 5, maxClients: 50 },
-  professional: { name: "Professional", price: 149, maxUsers: 10, maxCases: 200, maxStorageGB: 20, maxClients: 200 },
-  firm_plus: { name: "Firm Plus", price: 349, maxUsers: 30, maxCases: 500, maxStorageGB: 50, maxClients: 500 },
-  enterprise: { name: "Enterprise", price: 799, maxUsers: 999, maxCases: 9999, maxStorageGB: 200, maxClients: 9999 }
+  free_trial: { name: "Free Trial", price: 0, maxUsers: 5, maxCases: 10, maxStorageGB: 1, maxClients: 20, maxIndustries: 1, aiLimited: true },
+  starter: { name: "Starter", price: 49, maxUsers: 5, maxCases: 50, maxStorageGB: 5, maxClients: 50, maxIndustries: 1, aiLimited: true },
+  professional: { name: "Professional", price: 149, maxUsers: 15, maxCases: 500, maxStorageGB: 50, maxClients: 500, maxIndustries: 99, aiLimited: false },
+  enterprise: { name: "Enterprise", price: 499, maxUsers: 9999, maxCases: 9999, maxStorageGB: 500, maxClients: 9999, maxIndustries: 99, aiLimited: false },
+  off_cloud: { name: "Off-Cloud", price: "Custom", maxUsers: "Unlimited", isContactSales: true }
 };
 
 export const CURRENCIES = {

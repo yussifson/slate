@@ -24,8 +24,9 @@ import CaseForm from "@/components/cases/CaseForm";
 import CasesKanban from "@/components/cases/CasesKanban";
 import AIEmailDrafter from "@/components/shared/AIEmailDrafter";
 import { Sparkles } from "lucide-react";
-import { CASE_STATUS_COLORS, PRIORITY_COLORS } from "@/lib/constants";
+import { CASE_STATUS_COLORS, PRIORITY_COLORS, SUBSCRIPTION_PLANS } from "@/lib/constants";
 import { format } from "date-fns";
+import { NotificationService } from "@/lib/notifications";
 
 import { useToast } from "@/components/ui/use-toast";
 
@@ -75,13 +76,39 @@ export default function Cases() {
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.LegalCase.create({ ...data, company_id: companyId }),
-    onSuccess: () => { 
+    onSuccess: async (createdCase) => { 
       queryClient.invalidateQueries({ queryKey: ["cases"] }); 
       setShowForm(false); 
       toast({ title: "Case created successfully" });
+
+      // Trigger notification for new case
+      await NotificationService.send({
+        companyId: companyId,
+        recipientEmail: user?.email,
+        recipientName: user?.full_name,
+        title: `New ${getTerm(industry, "case")} Created`,
+        message: `A new ${getTerm(industry, "case").toLowerCase()} "${createdCase.title || 'Untitled'}" was created.`,
+        type: 'info',
+        channels: ['in-app'] 
+      });
     },
     onError: (err) => toast({ title: "Failed to create case", description: err.message, variant: "destructive" })
   });
+
+  const handleAddClick = () => {
+    const currentPlan = SUBSCRIPTION_PLANS[company?.subscription_plan] || SUBSCRIPTION_PLANS.free_trial;
+    const caseLimit = currentPlan.maxCases || 10;
+    
+    if (cases.length >= caseLimit) {
+      toast({ 
+        title: "Limit Reached", 
+        description: `Your ${currentPlan.name} plan allows up to ${caseLimit} active projects/cases. Please upgrade your plan.`, 
+        variant: "destructive" 
+      });
+      return;
+    }
+    setShowForm(true);
+  };
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.LegalCase.update(id, data),
@@ -175,7 +202,7 @@ export default function Cases() {
               <button onClick={() => setViewMode("kanban")} className={`p-2 transition-colors ${viewMode === "kanban" ? "bg-primary text-white" : "hover:bg-muted text-muted-foreground"}`}><LayoutGrid className="w-4 h-4" /></button>
             </div>
             <ExportButton data={exportData} filename={`${casesTerm.toLowerCase()}_export`} label="Export" />
-            <Button onClick={() => setShowForm(true)} size="sm"><Plus className="w-4 h-4 mr-1" /> New {caseTerm}</Button>
+            <Button onClick={handleAddClick} size="sm"><Plus className="w-4 h-4 mr-1" /> New {caseTerm}</Button>
           </div>
         }
       />
@@ -225,7 +252,7 @@ export default function Cases() {
               </div>
               <div className="pt-2">
                 <Button 
-                  onClick={() => setShowForm(true)}
+                  onClick={handleAddClick}
                   className="bg-primary hover:bg-primary/95 text-white font-semibold text-xs py-3.5 px-5 rounded-xl shadow-md"
                 >
                   Initialize First {caseTerm}

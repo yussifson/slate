@@ -143,8 +143,116 @@ import Features from './pages/marketing/Features';
 import Pricing from './pages/marketing/Pricing';
 import About from './pages/marketing/About';
 import Contact from './pages/marketing/Contact';
+import EnterpriseContact from './pages/marketing/EnterpriseContact';
 import OnboardingWizard from './pages/OnboardingWizard';
-import PlatformAdminDashboard from './pages/PlatformAdminDashboard';
+
+// Admin Ecosystem Pages
+import AdminOverview from './pages/admin/AdminOverview';
+import AdminFirms from './pages/admin/AdminFirms';
+import AdminUsers from './pages/admin/AdminUsers';
+import AdminBilling from './pages/admin/AdminBilling';
+import AdminSecurity from './pages/admin/AdminSecurity';
+import AdminBroadcasts from './pages/admin/AdminBroadcasts';
+import AdminAI from './pages/admin/AdminAI';
+
+function PlatformRoutes() {
+  return (
+    <>
+      {/* Core / Shared Pages */}
+      <Route path="/" element={<Dashboard />} />
+      <Route path="/cases" element={<Cases />} />
+      <Route path="/clients" element={<Clients />} />
+      <Route path="/calendar" element={<CalendarPage />} />
+      <Route path="/invoices" element={<Invoices />} />
+      <Route path="/tasks" element={<Tasks />} />
+      <Route path="/documents" element={<Documents />} />
+      <Route path="/team" element={<Team />} />
+      <Route path="/settings" element={<Settings />} />
+      <Route path="/settings/custom-fields" element={<CustomFieldsSettings />} />
+      <Route path="/client-portal" element={<ClientPortal />} />
+      <Route path="/cases/:id" element={<CaseDetail />} />
+      <Route path="/my-dashboard" element={<StaffDashboard />} />
+      <Route path="/leads" element={<Leads />} />
+      <Route path="/billing" element={<BillingDashboard />} />
+      <Route path="/pipeline" element={<CasePipelinePage />} />
+      <Route path="/research" element={<LegalResearch />} />
+      <Route path="/audit" element={<AuditLog />} />
+      <Route path="/leave" element={<LeaveManagement />} />
+      <Route path="/performance" element={<PerformanceDashboard />} />
+      <Route path="/outcomes" element={<CaseOutcomes />} />
+      <Route path="/conflict-check" element={<ConflictChecker />} />
+      <Route path="/email-inbox" element={<EmailInbox />} />
+      <Route path="/reports" element={<ReportsDashboard />} />
+      <Route path="/export" element={<DataExport />} />
+      <Route path="/whatsapp" element={<WhatsAppMessenger />} />
+      <Route path="/hr" element={<HRDashboard />} />
+      <Route path="/firm-setup" element={<FirmSetup />} />
+
+      {/* School Suite */}
+      <Route path="/students" element={<SchoolStudents />} />
+      <Route path="/classes" element={<SchoolClasses />} />
+      <Route path="/timetable" element={<SchoolTimetable />} />
+      <Route path="/attendance" element={<SchoolAttendance />} />
+      <Route path="/grades" element={<SchoolGrades />} />
+      <Route path="/exams" element={<SchoolExams />} />
+      <Route path="/fees" element={<SchoolFees />} />
+      <Route path="/library" element={<SchoolLibrary />} />
+      <Route path="/parent-portal" element={<SchoolParentPortal />} />
+
+      {/* Hospital Suite */}
+      <Route path="/patients" element={<HospitalPatients />} />
+      <Route path="/appointments" element={<HospitalAppointments />} />
+      <Route path="/wards" element={<HospitalWards />} />
+      <Route path="/prescriptions" element={<HospitalPrescriptions />} />
+      <Route path="/lab-results" element={<HospitalLabResults />} />
+      <Route path="/pharmacy" element={<HospitalPharmacy />} />
+
+      {/* Hotel Suite */}
+      <Route path="/front-desk" element={<HotelFrontDesk />} />
+      <Route path="/reservations" element={<HotelReservations />} />
+      <Route path="/rooms" element={<HotelRooms />} />
+      <Route path="/housekeeping" element={<HotelHousekeeping />} />
+      <Route path="/restaurant" element={<HotelRestaurant />} />
+      <Route path="/guest-requests" element={<HotelGuestRequests />} />
+
+      {/* Church Suite */}
+      <Route path="/members" element={<ChurchMembers />} />
+      <Route path="/ministries" element={<ChurchMinistries />} />
+      <Route path="/events" element={<ChurchEvents />} />
+      <Route path="/tithes" element={<ChurchTithes />} />
+      <Route path="/volunteers" element={<ChurchVolunteers />} />
+      <Route path="/sermons" element={<ChurchSermons />} />
+      <Route path="/small-groups" element={<ChurchSmallGroups />} />
+      <Route path="/prayers" element={<ChurchPrayers />} />
+
+      {/* Insurance Suite */}
+      <Route path="/policies" element={<InsurancePolicies />} />
+      <Route path="/claims" element={<InsuranceClaims />} />
+      <Route path="/premiums" element={<InsurancePremiums />} />
+      <Route path="/underwriting" element={<InsuranceUnderwriting />} />
+      <Route path="/agent-performance" element={<InsuranceAgentPerformance />} />
+
+      {/* Retail Suite */}
+      <Route path="/pos" element={<RetailPOS />} />
+      <Route path="/inventory" element={<RetailInventory />} />
+      <Route path="/orders" element={<RetailSales />} />
+      <Route path="/suppliers" element={<RetailSuppliers />} />
+      <Route path="/retail-customers" element={<RetailCustomers />} />
+
+      {/* Logistics Suite */}
+      <Route path="/shipments" element={<LogisticsShipments />} />
+      <Route path="/fleet" element={<LogisticsFleet />} />
+      <Route path="/drivers" element={<LogisticsDrivers />} />
+      <Route path="/warehouse" element={<LogisticsWarehouses />} />
+
+      {/* HR Suite */}
+      <Route path="/employees" element={<HREmployees />} />
+      <Route path="/recruitment" element={<HRRecruitment />} />
+      <Route path="/payroll" element={<HRPayroll />} />
+      <Route path="/hr-leave" element={<HRLeave />} />
+    </>
+  );
+}
 
 function ProtectedRoute() {
   const { isAuthenticated, isLoadingAuth, authStep } = useAuth();
@@ -188,6 +296,7 @@ function App() {
                       <Route path="/pricing" element={<Pricing />} />
                       <Route path="/about" element={<About />} />
                       <Route path="/contact" element={<Contact />} />
+                      <Route path="/enterprise-contact" element={<EnterpriseContact />} />
                     </Route>
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<SignUp />} />
@@ -196,8 +305,21 @@ function App() {
                     
                     <Route element={<ProtectedRoute />}>
                       <Route path="/onboarding" element={<OnboardingWizard />} />
+                      
+                      {/* Super Admin Base Domain Dashboard */}
+                      <Route element={<AppLayout />}>
+                        <Route path="/admin" element={<AdminOverview />} />
+                        <Route path="/admin/firms" element={<AdminFirms />} />
+                        <Route path="/admin/users" element={<AdminUsers />} />
+                        <Route path="/admin/billing" element={<AdminBilling />} />
+                        <Route path="/admin/security" element={<AdminSecurity />} />
+                        <Route path="/admin/broadcasts" element={<AdminBroadcasts />} />
+                        <Route path="/admin/ai" element={<AdminAI />} />
+                        {PlatformRoutes()}
+                      </Route>
                     </Route>
                     
+                    <Route path="/intake" element={<IntakeForm />} />
                     <Route path="*" element={<PageNotFound />} />
                   </Routes>
                 ) : (
@@ -210,100 +332,7 @@ function App() {
                     
                     <Route element={<ProtectedRoute />}>
                       <Route element={<AppLayout />}>
-                        {/* Core / Shared Pages */}
-                        <Route path="/" element={<Dashboard />} />
-                        <Route path="/cases" element={<Cases />} />
-                        <Route path="/clients" element={<Clients />} />
-                        <Route path="/calendar" element={<CalendarPage />} />
-                        <Route path="/invoices" element={<Invoices />} />
-                        <Route path="/tasks" element={<Tasks />} />
-                        <Route path="/documents" element={<Documents />} />
-                        <Route path="/team" element={<Team />} />
-                        <Route path="/settings" element={<Settings />} />
-                        <Route path="/settings/custom-fields" element={<CustomFieldsSettings />} />
-                        <Route path="/client-portal" element={<ClientPortal />} />
-                        <Route path="/cases/:id" element={<CaseDetail />} />
-                        <Route path="/my-dashboard" element={<StaffDashboard />} />
-                        <Route path="/leads" element={<Leads />} />
-                        <Route path="/billing" element={<BillingDashboard />} />
-                        <Route path="/pipeline" element={<CasePipelinePage />} />
-                        <Route path="/research" element={<LegalResearch />} />
-                        <Route path="/audit" element={<AuditLog />} />
-                        <Route path="/leave" element={<LeaveManagement />} />
-                        <Route path="/performance" element={<PerformanceDashboard />} />
-                        <Route path="/outcomes" element={<CaseOutcomes />} />
-                        <Route path="/conflict-check" element={<ConflictChecker />} />
-                        <Route path="/email-inbox" element={<EmailInbox />} />
-                        <Route path="/reports" element={<ReportsDashboard />} />
-                        <Route path="/export" element={<DataExport />} />
-                        <Route path="/whatsapp" element={<WhatsAppMessenger />} />
-                        <Route path="/hr" element={<HRDashboard />} />
-                        <Route path="/firm-setup" element={<FirmSetup />} />
-                        <Route path="/admin" element={<PlatformAdminDashboard />} />
-
-                        {/* School Suite */}
-                        <Route path="/students" element={<SchoolStudents />} />
-                        <Route path="/classes" element={<SchoolClasses />} />
-                        <Route path="/timetable" element={<SchoolTimetable />} />
-                        <Route path="/attendance" element={<SchoolAttendance />} />
-                        <Route path="/grades" element={<SchoolGrades />} />
-                        <Route path="/exams" element={<SchoolExams />} />
-                        <Route path="/fees" element={<SchoolFees />} />
-                        <Route path="/library" element={<SchoolLibrary />} />
-                        <Route path="/parent-portal" element={<SchoolParentPortal />} />
-
-                        {/* Hospital Suite */}
-                        <Route path="/patients" element={<HospitalPatients />} />
-                        <Route path="/appointments" element={<HospitalAppointments />} />
-                        <Route path="/wards" element={<HospitalWards />} />
-                        <Route path="/prescriptions" element={<HospitalPrescriptions />} />
-                        <Route path="/lab-results" element={<HospitalLabResults />} />
-                        <Route path="/pharmacy" element={<HospitalPharmacy />} />
-
-                        {/* Hotel Suite */}
-                        <Route path="/front-desk" element={<HotelFrontDesk />} />
-                        <Route path="/reservations" element={<HotelReservations />} />
-                        <Route path="/rooms" element={<HotelRooms />} />
-                        <Route path="/housekeeping" element={<HotelHousekeeping />} />
-                        <Route path="/restaurant" element={<HotelRestaurant />} />
-                        <Route path="/guest-requests" element={<HotelGuestRequests />} />
-
-                        {/* Church Suite */}
-                        <Route path="/members" element={<ChurchMembers />} />
-                        <Route path="/ministries" element={<ChurchMinistries />} />
-                        <Route path="/events" element={<ChurchEvents />} />
-                        <Route path="/tithes" element={<ChurchTithes />} />
-                        <Route path="/volunteers" element={<ChurchVolunteers />} />
-                        <Route path="/sermons" element={<ChurchSermons />} />
-                        <Route path="/small-groups" element={<ChurchSmallGroups />} />
-                        <Route path="/prayers" element={<ChurchPrayers />} />
-
-                        {/* Insurance Suite */}
-                        <Route path="/policies" element={<InsurancePolicies />} />
-                        <Route path="/claims" element={<InsuranceClaims />} />
-                        <Route path="/premiums" element={<InsurancePremiums />} />
-                        <Route path="/underwriting" element={<InsuranceUnderwriting />} />
-                        <Route path="/agent-performance" element={<InsuranceAgentPerformance />} />
-
-                        {/* Retail Suite */}
-                        <Route path="/pos" element={<RetailPOS />} />
-                        <Route path="/inventory" element={<RetailInventory />} />
-                        <Route path="/orders" element={<RetailSales />} />
-                        <Route path="/suppliers" element={<RetailSuppliers />} />
-                        <Route path="/retail-customers" element={<RetailCustomers />} />
-
-                        {/* Logistics Suite */}
-                        <Route path="/shipments" element={<LogisticsShipments />} />
-                        <Route path="/fleet" element={<LogisticsFleet />} />
-                        <Route path="/drivers" element={<LogisticsDrivers />} />
-                        <Route path="/warehouse" element={<LogisticsWarehouses />} />
-
-                        {/* HR Suite */}
-                        <Route path="/employees" element={<HREmployees />} />
-                        <Route path="/recruitment" element={<HRRecruitment />} />
-                        <Route path="/payroll" element={<HRPayroll />} />
-                        <Route path="/hr-leave" element={<HRLeave />} />
-
+                        {PlatformRoutes()}
                       </Route>
                       <Route path="/intake" element={<IntakeForm />} />
                       <Route path="/onboarding" element={<OnboardingWizard />} />

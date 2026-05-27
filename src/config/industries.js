@@ -333,6 +333,31 @@ export const INDUSTRIES = {
       { label: 'Settings', path: '/settings', icon: 'Settings' },
     ],
   },
+
+  optalflow: {
+    name: 'Optalflow Admin',
+    icon: '⚙️',
+    terms: {
+      client: 'Firm', clients: 'Firms',
+      case: 'Subscription', cases: 'Subscriptions',
+      staff: 'Admin', staffPlural: 'Admins',
+      venue: 'Data Center', intake: 'Firm Onboarding',
+      hearing: 'Audit Event', hearings: 'Audit Events',
+    },
+    roles: [
+      { value: 'super_admin', label: 'Platform Administrator' }
+    ],
+    nav: [
+      { label: 'Platform Overview', path: '/admin', icon: 'LayoutDashboard' },
+      { label: 'Firms & Quotas', path: '/admin/firms', icon: 'Building2' },
+      { label: 'System Users', path: '/admin/users', icon: 'Users2' },
+      { label: 'Revenue & Billing', path: '/admin/billing', icon: 'CreditCard' },
+      { label: 'Security & Audit', path: '/admin/security', icon: 'Shield' },
+      { label: 'System Broadcasts', path: '/admin/broadcasts', icon: 'BellRing' },
+      { label: 'Master AI Intelligence', path: '/admin/ai', icon: 'Sparkles' },
+      { label: 'Settings', path: '/settings', icon: 'Settings' },
+    ],
+  },
 };
 
 export const getIndustryTerms = (industryKey) => {

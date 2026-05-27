@@ -3,65 +3,91 @@ import { useAuth } from '@/lib/AuthContext';
 import { supabase } from '@/api/supabaseClient';
 import { initiatePaystackSubscription } from '@/lib/paystack';
 import { Button } from '@/components/ui/button';
-import { Scale, Check, LogOut, Loader2, Sparkles } from 'lucide-react';
+import { Scale, Check, LogOut, Loader2, Sparkles, Server, Shield, Database, Headphones } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import confetti from 'canvas-confetti';
+import { SUBSCRIPTION_PLANS } from '@/lib/constants';
+import { getMainAppUrl } from '@/lib/domainUtils';
+import { NotificationService } from '@/lib/notifications';
 
 export default function Paywall() {
   const { user, refreshUser, logout } = useAuth();
   const [loadingPlan, setLoadingPlan] = useState(null);
+  const [showOffCloudDialog, setShowOffCloudDialog] = useState(false);
 
   const plans = [
     {
       name: "starter",
       displayName: "Starter Plan",
-      price: 29,
-      description: "Essential matter and client management for boutique chambers.",
+      price: SUBSCRIPTION_PLANS.starter.price,
+      description: "Essential management for boutique firms.",
       features: [
-        "Up to 3 active users",
-        "Up to 10 active Cases",
-        "Matter & Pipeline Tracking",
-        "Document storage (5 GB)",
-        "Invoicing & billing tools",
+        `Up to ${SUBSCRIPTION_PLANS.starter.maxUsers} active users`,
+        `Up to ${SUBSCRIPTION_PLANS.starter.maxCases} projects/cases`,
+        "1 Industry Suite access",
+        "Limited AI features",
+        `Document storage (${SUBSCRIPTION_PLANS.starter.maxStorageGB} GB)`,
         "Paystack secure checkout"
       ]
     },
     {
       name: "professional",
       displayName: "Professional Plan",
-      price: 79,
+      price: SUBSCRIPTION_PLANS.professional.price,
       description: "Our most popular package for growing mid-sized practices.",
       features: [
-        "Up to 10 active users",
-        "Unlimited Cases & Clients",
-        "Interactive Client Portals",
-        "Document storage (25 GB)",
-        "WhatsApp & Email Syncing",
-        "Staff Payroll & Leave tools",
-        "Conflict Checker module",
-        "Priority 24/7 support"
+        `Up to ${SUBSCRIPTION_PLANS.professional.maxUsers} active users`,
+        `Up to ${SUBSCRIPTION_PLANS.professional.maxCases} projects/cases`,
+        "All Industry Suites access",
+        "Industry Switcher tool",
+        "Full AI capabilities",
+        `Document storage (${SUBSCRIPTION_PLANS.professional.maxStorageGB} GB)`,
+        "Paystack secure checkout"
       ],
       popular: true
     },
     {
       name: "enterprise",
       displayName: "Enterprise Plan",
-      price: 199,
-      description: "High-volume custom features for corporate multi-office legal teams.",
+      price: SUBSCRIPTION_PLANS.enterprise.price,
+      description: "High-volume custom features for corporate multi-office teams.",
       features: [
         "Unlimited active users",
-        "Unlimited Cases & Clients",
+        "Unlimited projects/cases",
+        "All Industry Suites access",
         "Dedicated Database server",
-        "Document storage (250 GB)",
+        "Full AI capabilities",
         "Custom branding & Favicon",
-        "Legal research assistant API",
         "Data Export (JSON, Excel)",
-        "Dedicated Account Executive"
+        "Priority 24/7 support"
       ]
+    },
+    {
+      name: "off_cloud",
+      displayName: "Off-Cloud",
+      price: "Custom",
+      description: "Complete ownership. Self-host Optalflow on your own servers.",
+      features: [
+        "Full Source Code Access",
+        "On-Premise Deployment",
+        "Unlimited everything",
+        "White-label branding",
+        "Custom API Integrations",
+        "Dedicated Engineering Support",
+        "One-time perpetual license"
+      ],
+      isSales: true
     }
   ];
 
   const handleSubscribe = async (plan) => {
     if (!user || !user.company_id) return;
+    
+    if (plan.isSales) {
+      window.location.href = "mailto:sales@optalflow.com?subject=Enterprise Off-Cloud Inquiry";
+      return;
+    }
+
     setLoadingPlan(plan.name);
 
     try {
@@ -77,9 +103,9 @@ export default function Paywall() {
             .update({
               subscription_plan: plan.name,
               subscription_status: 'active',
-              max_users: plan.name === 'starter' ? 3 : plan.name === 'professional' ? 10 : 999,
-              max_cases: plan.name === 'starter' ? 10 : 9999,
-              max_storage_gb: plan.name === 'starter' ? 5 : plan.name === 'professional' ? 25 : 250
+              max_users: SUBSCRIPTION_PLANS[plan.name]?.maxUsers || 999,
+              max_cases: SUBSCRIPTION_PLANS[plan.name]?.maxCases || 9999,
+              max_storage_gb: SUBSCRIPTION_PLANS[plan.name]?.maxStorageGB || 500
             })
             .eq('id', user.company_id);
 
@@ -92,6 +118,17 @@ export default function Paywall() {
             status: 'paid',
             plan_name: plan.displayName,
             paystack_ref: response.reference
+          });
+
+          // Trigger omnichannel notification
+          await NotificationService.send({
+            companyId: user?.company_id,
+            recipientEmail: user?.email,
+            recipientName: user?.full_name,
+            title: 'Plan Upgraded Successfully',
+            message: `Your workspace has been successfully upgraded to the ${plan.name} plan.`,
+            type: 'success',
+            channels: ['in-app', 'email'] // Sending email receipt and in-app alert
           });
 
           // 3. Fire celebration confetti
@@ -116,6 +153,10 @@ export default function Paywall() {
       alert("Error completing transaction. Please try again.");
       setLoadingPlan(null);
     }
+  };
+
+  const handleCustomPlanClick = () => {
+    setShowOffCloudDialog(true);
   };
 
   return (
@@ -153,8 +194,9 @@ export default function Paywall() {
         </p>
 
         {/* Pricing options */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left items-stretch">
-          {plans.map((p, idx) => (
+        {/* Pricing options */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left items-stretch mb-8">
+          {plans.slice(0, 3).map((p, idx) => (
             <div 
               key={idx}
               className={`bg-white border rounded-2xl p-8 flex flex-col justify-between hover:shadow-lg transition-all duration-300 relative ${
@@ -204,13 +246,137 @@ export default function Paywall() {
                       Processing...
                     </>
                   ) : (
-                    `Subscribe via Paystack`
+                    "Subscribe via Paystack"
                   )}
                 </Button>
               </div>
             </div>
           ))}
         </div>
+
+        {/* Off-Cloud / Enterprise Horizontal Banner */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-8 text-left flex flex-col md:flex-row items-center justify-between hover:shadow-lg transition-all duration-300 gap-8">
+          <div className="flex-1">
+            <h3 className="font-bold text-xl text-slate-900 mb-2">{plans[3].displayName}</h3>
+            <p className="text-sm text-slate-500 leading-relaxed mb-6">{plans[3].description}</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6">
+              {plans[3].features.map((feat, fIdx) => (
+                <div key={fIdx} className="flex items-center gap-2.5 text-xs text-slate-600">
+                  <Check className="w-4 h-4 text-primary shrink-0" />
+                  <span className="font-medium">{feat}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="w-full md:w-64 shrink-0 flex flex-col items-center justify-center border-t md:border-t-0 md:border-l border-slate-100 pt-6 md:pt-0 md:pl-8">
+            <span className="text-2xl font-black text-slate-900 mb-4">Custom</span>
+            <Button 
+              onClick={handleCustomPlanClick}
+              variant="outline"
+              className="w-full py-6 rounded-xl font-bold text-sm border-slate-900 text-slate-900 hover:bg-slate-50"
+            >
+              Learn More
+            </Button>
+          </div>
+        </div>
+
+        {/* Off-Cloud Dialog Modal */}
+        <Dialog open={showOffCloudDialog} onOpenChange={setShowOffCloudDialog}>
+          <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden bg-white border-0 rounded-[2rem] shadow-2xl flex flex-col max-h-[85vh]">
+            {/* Header */}
+            <div className="bg-slate-50 px-8 py-5 border-b border-slate-100 relative shrink-0">
+              <div className="mx-auto w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mb-3 border border-blue-100 shadow-sm">
+                <Server className="w-6 h-6 text-blue-600" />
+              </div>
+              <div className="text-center">
+                <DialogTitle className="text-2xl font-extrabold text-slate-900 mb-1 tracking-tight">Off-Cloud Enterprise</DialogTitle>
+                <DialogDescription className="text-slate-500 text-xs max-w-sm mx-auto leading-relaxed font-medium">
+                  Deploy Optalflow securely on your own private infrastructure.
+                </DialogDescription>
+              </div>
+            </div>
+            
+            {/* Scrollable Content */}
+            <div className="px-8 py-8 overflow-y-auto bg-white flex-1 custom-scrollbar">
+              <div className="space-y-8">
+                <div>
+                  <h4 className="font-bold text-slate-900 mb-4 uppercase tracking-wider text-xs border-b border-slate-100 pb-2">Deployment & Architecture</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="flex gap-4">
+                      <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 shadow-sm">
+                        <Server className="w-5 h-5 text-slate-700" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-slate-900">Self-Hosted / On-Premise</p>
+                        <p className="text-xs text-slate-500 mt-1 leading-relaxed">Deploy the platform directly to your internal bare-metal servers or private AWS, Azure, and Google Cloud networks.</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-4">
+                      <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 shadow-sm">
+                        <Shield className="w-5 h-5 text-slate-700" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-slate-900">Air-Gapped Operation</p>
+                        <p className="text-xs text-slate-500 mt-1 leading-relaxed">Optalflow can operate fully offline without external API dependencies, ensuring total data isolation for sensitive sectors.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="font-bold text-slate-900 mb-4 uppercase tracking-wider text-xs border-b border-slate-100 pb-2">Security & Integration</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="flex gap-4">
+                      <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 shadow-sm">
+                        <Database className="w-5 h-5 text-slate-700" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-slate-900">Custom DB Integration</p>
+                        <p className="text-xs text-slate-500 mt-1 leading-relaxed">Map Optalflow to your existing legacy databases. We support PostgreSQL, SQL Server, and custom on-prem storage pipelines.</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-4">
+                      <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 shadow-sm">
+                        <Check className="w-5 h-5 text-slate-700" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-slate-900">SLA & Compliance</p>
+                        <p className="text-xs text-slate-500 mt-1 leading-relaxed">Guaranteed 99.99% uptime SLA. Built to comply with GDPR, HIPAA, SOC2, and government data sovereignty laws.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="font-bold text-slate-900 mb-4 uppercase tracking-wider text-xs border-b border-slate-100 pb-2">Premium Support</h4>
+                  <div className="grid grid-cols-1 gap-6">
+                    <div className="flex gap-4">
+                      <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 shadow-sm">
+                        <Headphones className="w-5 h-5 text-slate-700" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-slate-900">Dedicated Solution Engineer</p>
+                        <p className="text-xs text-slate-500 mt-1 leading-relaxed">Your firm will be assigned a dedicated engineer to handle deployment, white-labeling, maintenance, and custom feature development. Direct phone line and prioritized ticketing included.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer CTA */}
+            <DialogFooter className="p-6 bg-slate-50 border-t border-slate-100 sm:justify-between items-center flex-col sm:flex-row gap-4 shrink-0">
+              <Button type="button" variant="ghost" onClick={() => setShowOffCloudDialog(false)} className="w-full sm:w-auto font-bold text-slate-600 hover:text-slate-900">
+                Close
+              </Button>
+              <a href={`${getMainAppUrl()}/enterprise-contact`} className="w-full sm:w-auto block">
+                <Button className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-6 px-8 rounded-full shadow-lg shadow-blue-600/20 transition-all hover:scale-105">
+                  Build Custom Quote
+                </Button>
+              </a>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Bottom Bar */}

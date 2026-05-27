@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, RefreshCw, Globe, Layers, Sparkles } from "lucide-react";
+import { LayoutDashboard, RefreshCw, Globe, Layers, Sparkles, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { isSuperAdmin } from "@/lib/constants";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { useToast } from "@/components/ui/use-toast";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { base44 } from "@/api/base44Client";
 import ThemeToggle from "./ThemeToggle";
 import { useCompany } from "@/hooks/useCompanyId";
 import { INDUSTRIES } from "@/config/industries";
@@ -31,6 +33,33 @@ export default function TopBar({ user, isAIOpen, toggleAI }) {
   const { toast } = useToast();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { company } = useCompany();
+
+  // Fetch Notifications
+  const { data: notifications = [], refetch: refetchNotifications } = useQuery({
+    queryKey: ['notifications', company?.id, user?.email],
+    queryFn: async () => {
+      if (!company?.id || !user?.email) return [];
+      const res = await base44.entities.Notification.list({
+        company_id: company.id,
+        recipient_email: user.email
+      });
+      // Sort by newest first
+      return res.sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
+    },
+    enabled: !!company?.id && !!user?.email,
+    refetchInterval: 60000 // poll every minute
+  });
+
+  const unreadCount = notifications.filter(n => !n.is_read).length;
+
+  const markAsRead = async (id) => {
+    try {
+      await base44.entities.Notification.update(id, { is_read: true });
+      refetchNotifications();
+    } catch (err) {
+      console.error("Failed to mark as read", err);
+    }
+  };
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -75,8 +104,8 @@ export default function TopBar({ user, isAIOpen, toggleAI }) {
 
       {/* Right */}
       <div className="flex items-center gap-2">
-        {/* Super Admin Industry Switcher */}
-        {user?.role === 'super_admin' && (
+        {/* Industry Switcher (Super Admin or Pro/Enterprise) */}
+        {(user?.role === 'super_admin' || ['professional', 'enterprise'].includes(company?.subscription_plan)) && (
           <div className="flex items-center gap-1.5 border border-amber-200 dark:border-amber-900 bg-amber-500/10 dark:bg-amber-950/20 px-2 py-1 rounded-md text-xs font-bold text-amber-700 dark:text-amber-400">
             <Layers className="w-3.5 h-3.5 animate-spin" />
             <select
@@ -84,7 +113,9 @@ export default function TopBar({ user, isAIOpen, toggleAI }) {
               onChange={e => handleIndustryChange(e.target.value)}
               className="bg-transparent border-none outline-none font-bold text-xs pr-4 cursor-pointer text-amber-700 dark:text-amber-400"
             >
-              {Object.entries(INDUSTRIES).map(([key, ind]) => (
+              {Object.entries(INDUSTRIES)
+                .filter(([key]) => key !== 'optalflow' || user?.role === 'super_admin')
+                .map(([key, ind]) => (
                 <option key={key} value={key} className="bg-card text-foreground">
                   {ind.icon} {ind.name}
                 </option>
@@ -99,6 +130,56 @@ export default function TopBar({ user, isAIOpen, toggleAI }) {
           <span>English</span>
           <span>🇬🇧</span>
         </div>
+
+        {/* Notifications Dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="relative text-muted-foreground hover:text-foreground">
+              <Bell className="w-4 h-4" />
+              {unreadCount > 0 && (
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-card shadow-sm"></span>
+              )}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-80 max-h-[400px] overflow-y-auto">
+            <DropdownMenuLabel className="font-bold flex justify-between items-center">
+              Notifications
+              {unreadCount > 0 && (
+                <span className="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded-full">{unreadCount} New</span>
+              )}
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {notifications.length === 0 ? (
+              <div className="p-4 text-center text-sm text-muted-foreground">
+                No notifications yet.
+              </div>
+            ) : (
+              notifications.slice(0, 10).map((notif) => (
+                <DropdownMenuItem key={notif.id} className="p-3 flex flex-col items-start gap-1 cursor-default focus:bg-muted/50">
+                  <div className="flex justify-between w-full items-start">
+                    <span className={`text-sm font-bold ${!notif.is_read ? 'text-foreground' : 'text-muted-foreground'}`}>
+                      {notif.title}
+                    </span>
+                    {!notif.is_read && (
+                      <button 
+                        onClick={(e) => { e.preventDefault(); markAsRead(notif.id); }}
+                        className="text-[10px] font-medium text-blue-600 hover:text-blue-800"
+                      >
+                        Mark read
+                      </button>
+                    )}
+                  </div>
+                  <span className={`text-xs ${!notif.is_read ? 'text-foreground' : 'text-muted-foreground'}`}>
+                    {notif.message}
+                  </span>
+                  <span className="text-[10px] text-muted-foreground mt-1">
+                    {new Date(notif.created_date).toLocaleDateString()}
+                  </span>
+                </DropdownMenuItem>
+              ))
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         {/* Premium Theme Toggle */}
         <ThemeToggle />

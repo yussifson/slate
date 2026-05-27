@@ -4,7 +4,7 @@
 
 const PAYSTACK_SDK_URL = 'https://js.paystack.co/v1/inline.js';
 // High-fidelity sandbox public key for instant test checkouts
-const DEFAULT_TEST_PUBLIC_KEY = 'pk_test_a25c1103c80918738b556396bc7a8790b50302b1';
+const DEFAULT_TEST_PUBLIC_KEY = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || 'pk_test_a25c1103c80918738b556396bc7a8790b50302b1';
 
 export function loadPaystackScript() {
   return new Promise((resolve) => {

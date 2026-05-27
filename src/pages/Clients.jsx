@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
 import { useCompanyId, useCompany } from "@/hooks/useCompanyId";
 import { getTerm } from "@/config/industries";
+import { SUBSCRIPTION_PLANS } from "@/lib/constants";
 import { Plus, Users, Search, MoreVertical } from "lucide-react";
 import { Link } from "react-router-dom";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
@@ -61,6 +62,21 @@ export default function Clients() {
     },
     onError: (err) => toast({ title: `Failed to add ${getTerm(industry, "client").toLowerCase()}`, description: err.message, variant: "destructive" })
   });
+
+  const handleAddClick = () => {
+    const currentPlan = SUBSCRIPTION_PLANS[company?.subscription_plan] || SUBSCRIPTION_PLANS.free_trial;
+    const clientLimit = currentPlan.maxClients || 20;
+    
+    if (clients.length >= clientLimit) {
+      toast({ 
+        title: "Limit Reached", 
+        description: `Your ${currentPlan.name} plan allows up to ${clientLimit} ${getTerm(industry, "clients").toLowerCase()}. Please upgrade your plan.`, 
+        variant: "destructive" 
+      });
+      return;
+    }
+    setShowForm(true);
+  };
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Client.update(id, data),
@@ -145,7 +161,7 @@ export default function Clients() {
         actions={
           <div className="flex items-center gap-2">
             <ExportButton data={exportData} filename={`${clientsTerm.toLowerCase()}_export`} label="Export" />
-            <Button onClick={() => setShowForm(true)} size="sm"><Plus className="w-4 h-4 mr-1" /> Add {clientTerm}</Button>
+            <Button onClick={handleAddClick} size="sm"><Plus className="w-4 h-4 mr-1" /> Add {clientTerm}</Button>
           </div>
         }
       />
@@ -192,7 +208,7 @@ export default function Clients() {
           </div>
           <div className="pt-2">
             <Button 
-              onClick={() => setShowForm(true)}
+              onClick={handleAddClick}
               className="bg-primary hover:bg-primary/95 text-white font-semibold text-xs py-3.5 px-5 rounded-xl shadow-md"
             >
               Add New {clientTerm}

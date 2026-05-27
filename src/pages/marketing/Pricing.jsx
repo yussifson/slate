@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Check, Info } from 'lucide-react';
+import { Check, Info, Server, Shield, Database, Headphones } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 
 export default function Pricing() {
   const [billingPeriod, setBillingPeriod] = useState('monthly');
+  const [showOffCloudDialog, setShowOffCloudDialog] = useState(false);
 
   const plans = [
     {
@@ -186,6 +188,139 @@ export default function Pricing() {
               </div>
             ))}
           </div>
+
+          {/* Off-Cloud / Enterprise Horizontal Banner */}
+          <div className="mt-8 bg-white border border-slate-200 rounded-3xl p-8 lg:p-10 text-left flex flex-col md:flex-row items-center justify-between hover:shadow-xl transition-all duration-300 gap-8 relative z-0">
+            <div className="flex-1">
+              <h3 className="font-bold text-2xl text-slate-900 mb-2">Off-Cloud (On-Premise)</h3>
+              <p className="text-sm text-slate-500 leading-relaxed mb-6 max-w-xl">
+                For organizations with strict data sovereignty requirements. Deploy Optalflow entirely on your own private servers.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6">
+                {[
+                  "Self-hosted deployment",
+                  "Air-gapped network support",
+                  "Custom database integration",
+                  "Dedicated solution engineer"
+                ].map((feat, fIdx) => (
+                  <div key={fIdx} className="flex items-center gap-2.5 text-sm text-slate-700 font-medium">
+                    <div className="shrink-0 rounded-full border border-green-500 flex items-center justify-center p-[2px]">
+                      <Check className="w-3 h-3 text-green-500" strokeWidth={3} />
+                    </div>
+                    <span>{feat}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="w-full md:w-72 shrink-0 flex flex-col items-center justify-center border-t md:border-t-0 md:border-l border-slate-100 pt-6 md:pt-0 md:pl-10">
+              <span className="text-3xl font-black text-slate-900 mb-6">Custom</span>
+              <Button 
+                onClick={() => setShowOffCloudDialog(true)}
+                variant="outline"
+                className="w-full py-6 rounded-full font-bold text-sm border-2 border-slate-900 text-slate-900 hover:bg-slate-50"
+              >
+                Learn More
+              </Button>
+            </div>
+          </div>
+
+          {/* Off-Cloud Dialog Modal */}
+          <Dialog open={showOffCloudDialog} onOpenChange={setShowOffCloudDialog}>
+            <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden bg-white border-0 rounded-[2rem] shadow-2xl flex flex-col max-h-[85vh]">
+              {/* Header */}
+              <div className="bg-slate-50 px-8 py-5 border-b border-slate-100 relative shrink-0">
+                <div className="mx-auto w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mb-3 border border-blue-100 shadow-sm">
+                  <Server className="w-6 h-6 text-blue-600" />
+                </div>
+                <div className="text-center">
+                  <DialogTitle className="text-2xl font-extrabold text-slate-900 mb-1 tracking-tight">Off-Cloud Enterprise</DialogTitle>
+                  <DialogDescription className="text-slate-500 text-xs max-w-sm mx-auto leading-relaxed font-medium">
+                    Deploy Optalflow securely on your own private infrastructure.
+                  </DialogDescription>
+                </div>
+              </div>
+              
+              {/* Scrollable Content */}
+              <div className="px-8 py-8 overflow-y-auto bg-white flex-1 custom-scrollbar">
+                <div className="space-y-8">
+                  <div>
+                    <h4 className="font-bold text-slate-900 mb-4 uppercase tracking-wider text-xs border-b border-slate-100 pb-2">Deployment & Architecture</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="flex gap-4">
+                        <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 shadow-sm">
+                          <Server className="w-5 h-5 text-slate-700" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold text-slate-900">Self-Hosted / On-Premise</p>
+                          <p className="text-xs text-slate-500 mt-1 leading-relaxed">Deploy the platform directly to your internal bare-metal servers or private AWS, Azure, and Google Cloud networks.</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-4">
+                        <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 shadow-sm">
+                          <Shield className="w-5 h-5 text-slate-700" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold text-slate-900">Air-Gapped Operation</p>
+                          <p className="text-xs text-slate-500 mt-1 leading-relaxed">Optalflow can operate fully offline without external API dependencies, ensuring total data isolation for sensitive sectors.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="font-bold text-slate-900 mb-4 uppercase tracking-wider text-xs border-b border-slate-100 pb-2">Security & Integration</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="flex gap-4">
+                        <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 shadow-sm">
+                          <Database className="w-5 h-5 text-slate-700" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold text-slate-900">Custom DB Integration</p>
+                          <p className="text-xs text-slate-500 mt-1 leading-relaxed">Map Optalflow to your existing legacy databases. We support PostgreSQL, SQL Server, and custom on-prem storage pipelines.</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-4">
+                        <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 shadow-sm">
+                          <Check className="w-5 h-5 text-slate-700" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold text-slate-900">SLA & Compliance</p>
+                          <p className="text-xs text-slate-500 mt-1 leading-relaxed">Guaranteed 99.99% uptime SLA. Built to comply with GDPR, HIPAA, SOC2, and government data sovereignty laws.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="font-bold text-slate-900 mb-4 uppercase tracking-wider text-xs border-b border-slate-100 pb-2">Premium Support</h4>
+                    <div className="grid grid-cols-1 gap-6">
+                      <div className="flex gap-4">
+                        <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 shadow-sm">
+                          <Headphones className="w-5 h-5 text-slate-700" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold text-slate-900">Dedicated Solution Engineer</p>
+                          <p className="text-xs text-slate-500 mt-1 leading-relaxed">Your firm will be assigned a dedicated engineer to handle deployment, white-labeling, maintenance, and custom feature development. Direct phone line and prioritized ticketing included.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer CTA */}
+              <DialogFooter className="p-6 bg-slate-50 border-t border-slate-100 sm:justify-between items-center flex-col sm:flex-row gap-4 shrink-0">
+                <Button type="button" variant="ghost" onClick={() => setShowOffCloudDialog(false)} className="w-full sm:w-auto font-bold text-slate-600 hover:text-slate-900">
+                  Close
+                </Button>
+                <Link to="/enterprise-contact" onClick={() => setShowOffCloudDialog(false)} className="w-full sm:w-auto block">
+                  <Button className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-6 px-8 rounded-full shadow-lg shadow-blue-600/20 transition-all hover:scale-105">
+                    Build Custom Quote
+                  </Button>
+                </Link>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
 
           <div className="mt-24">
             <div className="text-center mb-12">

@@ -161,7 +161,10 @@ export default function Sidebar({ user }) {
       <nav className="flex-1 px-2 pb-3 space-y-0.5 overflow-y-auto overflow-x-hidden scrollbar-hide">
         {finalNav.map((item) => {
           const IconComponent = ICON_MAP[item.icon] || LayoutDashboard;
-          const isActive = location.pathname === item.path || (item.path !== "/" && location.pathname.startsWith(item.path));
+          const isRootPath = item.path === "/" || item.path === "/admin";
+          const isActive = isRootPath
+            ? location.pathname === item.path
+            : location.pathname.startsWith(item.path);
           return (
             <Link
               key={item.path}
