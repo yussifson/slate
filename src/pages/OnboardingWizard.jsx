@@ -74,7 +74,8 @@ export default function OnboardingWizard() {
          const { error: profErr } = await supabase.from('profiles').update({
             company_id: companyIdToUse,
             company_name: firmName,
-            role: 'company_admin'
+            role: 'company_admin',
+            onboarding_completed: true
          }).eq('id', user.id);
          
          if (profErr) throw profErr;
@@ -91,6 +92,9 @@ export default function OnboardingWizard() {
           .eq('id', companyIdToUse);
 
         if (compError) throw compError;
+        
+        // Ensure profile is marked completed even if company existed
+        await supabase.from('profiles').update({ onboarding_completed: true }).eq('id', user.id);
       }
 
       // 2. Insert invited staff records

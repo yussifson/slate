@@ -8,8 +8,10 @@ import { useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useInd
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { useAuth } from '@/lib/AuthContext';
 
 //  Page Context Map 
 const PAGE_CONTEXT = {
@@ -48,19 +50,7 @@ const PAGE_CONTEXT = {
   '/pos': { title: 'Point of Sale', suite: 'Retail', desc: 'retail POS system' },
 };
 
-//  Session Storage 
-const STORAGE_KEY = 'optalflow_ai_sessions_v2';
-
-function getSessions() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
-  catch { return []; }
-}
-
-function saveSessions(sessions) {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions.slice(0, 50))); }
-  catch {}
-}
-
+//  Session Storage (Fallback/Types)
 function newSession() {
   return {
     id: crypto.randomUUID(),
@@ -68,7 +58,7 @@ function newSession() {
     createdAt: new Date().toISOString(),
     messages: [{
       role: 'assistant',
-      content: "Hello! I'm your **Optalflow AI Agent** 🤖\n\nI can help you:\n• Navigate the app\n• Create, edit & manage records\n• Analyze data on any page\n• Answer any question\n\nYou can also use your **🎤 voice** or **📎 upload files** (images, PDFs, CSV, etc.)\n\nWhat would you like to do?"
+      content: "Hello! I'm **OptalSeek** 🤖\n\nI can help you:\n• Navigate the app\n• Create, edit & manage records\n• Analyze data on any page\n• Answer any question\n\nYou can also use your **🎤 voice** or **📎 upload files** (images, PDFs, CSV, etc.)\n\nWhat would you like to do?"
     }]
   };
 }
@@ -76,13 +66,52 @@ function newSession() {
 //  Parse Agent Actions 
 function parseAgentActions(text) {
   const actions = [];
-  // Forgiving regex to catch typos like <GENT_ACTION>, <AGENT_ACTION>, </AGENT_ACTION>, etc.
-  const regex = /<\/?\w*GENT_ACTION>([\s\S]*?)<\/?\w*GENT_ACTION>/gi;
+  let cleanText = text;
+  const startRegex = /\{\s*"tool"\s*:/gi;
+  
   let match;
-  while ((match = regex.exec(text)) !== null) {
-    try { actions.push(JSON.parse(match[1])); } catch {}
+  while ((match = startRegex.exec(cleanText)) !== null) {
+    let start = match.index;
+    let braces = 0;
+    let end = -1;
+    let inString = false;
+    let escape = false;
+
+    for (let j = start; j < cleanText.length; j++) {
+      let char = cleanText[j];
+      if (char === '\\' && !escape) {
+        escape = true;
+        continue;
+      }
+      if (char === '"' && !escape) {
+        inString = !inString;
+      }
+      if (!inString) {
+        if (char === '{') braces++;
+        if (char === '}') braces--;
+      }
+      escape = false;
+
+      if (braces === 0 && j > start) {
+        end = j;
+        break;
+      }
+    }
+
+    if (end !== -1) {
+      let jsonStr = cleanText.substring(start, end + 1);
+      try {
+        let obj = JSON.parse(jsonStr);
+        if (obj && obj.tool) {
+          actions.push(obj);
+          cleanText = cleanText.substring(0, start) + cleanText.substring(end + 1);
+          startRegex.lastIndex = start; 
+        }
+      } catch (e) {}
+    }
   }
-  const cleanText = text.replace(/<\/?\w*GENT_ACTION>[\s\S]*?<\/?\w*GENT_ACTION>/gi, '').trim();
+
+  cleanText = cleanText.replace(/<\/?[a-zA-Z0-9_]+ACTION>/gi, '').trim();
   return { cleanText, actions };
 }
 
@@ -99,6 +128,7 @@ function FormatMessage({ content }) {
 
 //  Main Component 
 export default function GlobalAIAssistant({ onClose }) {
+  const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const mutateRecord = useMutateIndustryRecord();
@@ -106,16 +136,9 @@ export default function GlobalAIAssistant({ onClose }) {
   const companyId = useCompanyId();
   const queryClient = useQueryClient();
 
-  const initSessions = () => {
-    const saved = getSessions();
-    return saved.length > 0 ? saved : [newSession()];
-  };
-
-  const [sessions, setSessions] = useState(initSessions);
-  const [activeId, setActiveId] = useState(() => {
-    const saved = getSessions();
-    return saved.length > 0 ? saved[0].id : initSessions()[0].id;
-  });
+  const [sessions, setSessions] = useState([]);
+  const [activeId, setActiveId] = useState(null);
+  const [isInitialized, setIsInitialized] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -127,6 +150,33 @@ export default function GlobalAIAssistant({ onClose }) {
   const fileInputRef = useRef(null);
   const recognitionRef = useRef(null);
 
+  useEffect(() => {
+    if (!companyId || !user?.email || isInitialized) return;
+    const loadSessions = async () => {
+      const { data } = await supabase
+        .from('industry_records')
+        .select('*')
+        .eq('company_id', companyId)
+        .eq('record_type', 'ai_session')
+        .eq('search_text', user.email)
+        .order('created_at', { ascending: false });
+      
+      if (data && data.length > 0) {
+        setSessions(data.map(d => d.data));
+        setActiveId(data[0].data.id);
+      } else {
+        const s = newSession();
+        setSessions([s]);
+        setActiveId(s.id);
+        supabase.from('industry_records').upsert({
+          id: s.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: s
+        }).then();
+      }
+      setIsInitialized(true);
+    };
+    loadSessions();
+  }, [companyId, user?.email, isInitialized]);
+
   const activeSession = sessions.find(s => s.id === activeId) || sessions[0];
   const messages = activeSession?.messages || [];
 
@@ -134,21 +184,27 @@ export default function GlobalAIAssistant({ onClose }) {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  useEffect(() => {
-    saveSessions(sessions);
-  }, [sessions]);
-
   const addMessages = useCallback((sid, newMsgs) => {
-    setSessions(prev => prev.map(s => {
-      if (s.id !== sid) return s;
-      const updated = [...s.messages, ...newMsgs];
-      const firstUser = updated.find(m => m.role === 'user');
-      const title = firstUser
-        ? firstUser.content.replace(/\[Attached:.*?\]/g, '').trim().slice(0, 42) + (firstUser.content.length > 42 ? '' : '')
-        : s.title;
-      return { ...s, messages: updated, title: title || 'New Chat' };
-    }));
-  }, []);
+    setSessions(prev => {
+      const updated = prev.map(s => {
+        if (s.id !== sid) return s;
+        const upMsgs = [...s.messages, ...newMsgs];
+        const firstUser = upMsgs.find(m => m.role === 'user');
+        const title = firstUser
+          ? firstUser.content.replace(/\[Attached:.*?\]/g, '').trim().slice(0, 42)
+          : s.title;
+        const newS = { ...s, messages: upMsgs, title: title || 'New Chat' };
+        
+        if (companyId && user?.email) {
+          supabase.from('industry_records').upsert({
+            id: newS.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: newS
+          }).then();
+        }
+        return newS;
+      });
+      return updated;
+    });
+  }, [companyId, user?.email]);
 
   const getPageContext = useCallback(() => {
     const ctx = PAGE_CONTEXT[location.pathname];
@@ -166,14 +222,20 @@ export default function GlobalAIAssistant({ onClose }) {
             const rt = (action.recordType || '').toLowerCase();
             const entityMap = { 'case': 'LegalCase', 'client': 'Client', 'lead': 'Lead', 'staff': 'StaffRecord', 'invoice': 'Invoice', 'task': 'Task' };
             const entityName = entityMap[rt];
+            const q = (action.query || '').toLowerCase();
             if (entityName) {
               const records = await base44.entities[entityName].list();
-              const q = (action.query || '').toLowerCase();
               const found = records.filter(r => JSON.stringify(r).toLowerCase().includes(q)).slice(0, 5);
               const simplified = found.map(r => ({ id: r.id, title: r.title, name: r.name, email: r.email, case_number: r.case_number }));
               results.push(`Search results for ${rt} matching "${q}":\n` + JSON.stringify(simplified));
             } else {
-              results.push(`Error: Unknown recordType for search: ${action.recordType}`);
+              const { data: records } = await supabase
+                .from('industry_records')
+                .select('id, data, status')
+                .eq('company_id', companyId)
+                .eq('record_type', rt);
+              const found = (records || []).filter(r => JSON.stringify(r).toLowerCase().includes(q)).slice(0, 5);
+              results.push(`Search results for ${rt} matching "${q}":\n` + JSON.stringify(found));
             }
             break;
           }
@@ -206,7 +268,14 @@ export default function GlobalAIAssistant({ onClose }) {
                 queryClient.invalidateQueries(['cases']);
                 results.push(`Success: ${action.tool} for ${rt}. Record ID is ${res.id}`);
               } else {
-                results.push(`Error: Generic industry_records fallback not supported in agent loop yet.`);
+                const res = await mutateRecord.mutateAsync({
+                  id: action.id,
+                  recordType: rt,
+                  payload: action.payload,
+                  status: action.payload.status || 'active',
+                  searchText: JSON.stringify(action.payload).toLowerCase()
+                });
+                results.push(`Success: ${action.tool} for ${rt}. Record ID is ${res.id}`);
               }
             }
             break;
@@ -223,7 +292,8 @@ export default function GlobalAIAssistant({ onClose }) {
                 queryClient.invalidateQueries(['cases']);
                 results.push(`Success: deleted ${rt} with ID ${action.id}`);
               } else {
-                results.push(`Error: delete unsupported for ${rt}`);
+                await deleteRecord.mutateAsync({ id: action.id, recordType: rt });
+                results.push(`Success: deleted ${rt} with ID ${action.id}`);
               }
             }
             break;
@@ -266,7 +336,7 @@ export default function GlobalAIAssistant({ onClose }) {
         const promptText = `You are an AI agent embedded in Optalflow enterprise SaaS. ${getPageContext()}\n\nUser says: ${text || 'Please analyze this image.'}\n\nDescribe the image and provide relevant business insights.`;
         responseText = await analyzeImage(fileSnap.bytes, promptText);
       } else {
-        const systemPrompt = `You are Optalflow AI Agent  an intelligent, proactive enterprise assistant embedded in Optalflow SaaS.
+        const systemPrompt = `You are OptalSeek  an intelligent, proactive enterprise assistant embedded in Optalflow SaaS.
 
 CURRENT PAGE: ${getPageContext()}
 PLATFORM: 8 industry suites  Legal, School, Hospital, Hotel, Church, Insurance, Retail, Logistics, HR.
@@ -330,20 +400,30 @@ RULES FOR MULTI-STEP REASONING:
     if (!SR) { toast.error('Voice not supported. Please use Chrome or Edge.'); return; }
     if (isRecording) { recognitionRef.current?.stop(); setIsRecording(false); return; }
     const r = new SR();
-    r.continuous = false;
+    r.continuous = true;
     r.interimResults = false;
     r.lang = 'en-US';
     r.onresult = e => {
-      const t = e.results[0][0].transcript;
-      setInput(prev => prev ? `${prev} ${t}` : t);
-      setIsRecording(false);
+      let t = '';
+      for (let i = e.resultIndex; i < e.results.length; ++i) {
+        if (e.results[i].isFinal) {
+          t += e.results[i][0].transcript;
+        }
+      }
+      if (t) {
+        setInput(prev => prev ? `${prev} ${t}` : t);
+      }
     };
-    r.onerror = () => { setIsRecording(false); toast.error('Voice error. Try again.'); };
+    r.onerror = (e) => { 
+      if (e.error !== 'no-speech') {
+        setIsRecording(false); toast.error('Voice error. Try again.'); 
+      }
+    };
     r.onend = () => setIsRecording(false);
     recognitionRef.current = r;
     r.start();
     setIsRecording(true);
-    toast('Listening', { icon: '', duration: 2000 });
+    toast('Listening', { icon: '🎤', duration: 2000 });
   };
 
   //  File Upload 
@@ -367,17 +447,30 @@ RULES FOR MULTI-STEP REASONING:
   //  Session Management 
   const startNewChat = () => {
     const s = newSession();
+    if (companyId && user?.email) {
+      supabase.from('industry_records').upsert({
+        id: s.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: s
+      }).then();
+    }
     setSessions(prev => [s, ...prev]);
     setActiveId(s.id);
     setShowHistory(false);
   };
 
-  const deleteSession = (sid, e) => {
+  const deleteSession = async (sid, e) => {
     e.stopPropagation();
+    if (companyId) {
+      await supabase.from('industry_records').delete().eq('id', sid).eq('company_id', companyId);
+    }
     setSessions(prev => {
       const rest = prev.filter(s => s.id !== sid);
       if (rest.length === 0) {
         const fresh = newSession();
+        if (companyId && user?.email) {
+          supabase.from('industry_records').upsert({
+            id: fresh.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: fresh
+          }).then();
+        }
         setActiveId(fresh.id);
         return [fresh];
       }
@@ -448,7 +541,7 @@ RULES FOR MULTI-STEP REASONING:
               <Sparkles className="w-3.5 h-3.5 text-white" />
             </div>
             <div className="min-w-0">
-              <p className="text-[11px] font-bold text-foreground leading-none">Optalflow AI Agent</p>
+              <p className="text-[11px] font-bold text-foreground leading-none">OptalSeek</p>
               <div className="flex items-center gap-1 mt-0.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse shrink-0"></span>
                 <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground truncate">Agent Active  LLaMA 3.1</span>

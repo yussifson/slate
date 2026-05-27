@@ -114,8 +114,12 @@ export default function Login() {
           return;
         }
       }
-      // If no company and not super admin, go to onboarding
-      window.location.href = '/onboarding';
+      // Only send to onboarding if it has never been completed
+      if (!profile?.onboarding_completed) {
+        window.location.href = '/onboarding';
+      } else {
+        window.location.href = '/';
+      }
     }
   };
 
@@ -182,7 +186,7 @@ export default function Login() {
                   placeholder="name@company.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-14 text-base"
+                  className="w-full h-14 text-base bg-white text-slate-900 border-slate-200 placeholder:text-slate-400 focus-visible:ring-primary/30 focus-visible:border-primary"
                 />
               </div>
               <div>
@@ -196,7 +200,7 @@ export default function Login() {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full h-14 text-base"
+                  className="w-full h-14 text-base bg-white text-slate-900 border-slate-200 placeholder:text-slate-400 focus-visible:ring-primary/30 focus-visible:border-primary"
                 />
               </div>
             </div>

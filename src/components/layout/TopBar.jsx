@@ -77,9 +77,7 @@ export default function TopBar({ user, isAIOpen, toggleAI }) {
       title: "Industry Switched",
       description: `Active industry changed to ${INDUSTRIES[newIndustry]?.name || newIndustry}.`,
     });
-    // Navigate back to dashboard to prevent route mismatch on specific pages
-    navigate('/');
-    // Smooth reload of the layout
+    // Smooth reload of the layout on the current page
     setTimeout(() => {
       window.location.reload();
     }, 100);

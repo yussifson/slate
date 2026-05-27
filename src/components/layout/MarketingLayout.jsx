@@ -289,10 +289,10 @@ export default function MarketingLayout({ children }) {
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm font-medium text-slate-600">
-              <a href="#terms" className="hover:text-primary transition-colors">Terms of Service</a>
-              <a href="#privacy" className="hover:text-primary transition-colors">Privacy Policy</a>
-              <a href="#security" className="hover:text-primary transition-colors">Security</a>
-              <a href="#cookies" className="hover:text-primary transition-colors">Cookie Policy</a>
+              <Link to="/legal#terms" className="hover:text-primary transition-colors">Terms of Service</Link>
+              <Link to="/legal#privacy" className="hover:text-primary transition-colors">Privacy Policy</Link>
+              <Link to="/legal#security" className="hover:text-primary transition-colors">Security</Link>
+              <Link to="/legal#cookies" className="hover:text-primary transition-colors">Cookie Policy</Link>
             </div>
           </div>
           
