@@ -555,38 +555,13 @@ export default function Home() {
             </FadeIn>
 
             <FadeIn delay="delay-200">
-              <div className="relative rounded-2xl border border-blue-900/50 bg-blue-950 shadow-2xl shadow-blue-900/20 overflow-hidden aspect-video flex flex-col font-mono text-sm transform rotate-1 hover:rotate-0 transition-transform duration-500">
-                {/* Terminal Header */}
-                <div className="bg-blue-900/40 px-4 py-3 border-b border-blue-900/50 flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
-                  <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
-                  <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
-                  <span className="ml-4 text-blue-300/70 text-xs font-bold tracking-wider uppercase flex items-center gap-1.5"><Sparkles className="w-3 h-3 text-blue-400"/> Orbit Agent Execution</span>
-                </div>
-                {/* Terminal Body */}
-                <div className="p-6 text-slate-200 space-y-4 flex-1 overflow-hidden relative">
-                  <div className="flex gap-3">
-                    <span className="text-green-400 font-bold shrink-0">User</span>
-                    <span className="font-semibold text-slate-100">Create a new task to review the Q3 financial report by Friday.</span>
-                  </div>
-                  <div className="flex gap-3">
-                    <span className="text-blue-400 font-bold shrink-0 flex items-center gap-1">Orbit</span>
-                    <span>
-                      <span className="animate-pulse text-blue-400">_</span>
-                    </span>
-                  </div>
-                  {/* CSS Animated Typing effect overlay (Simulated) */}
-                  <div className="absolute top-14 left-[58px] bottom-0 right-0 bg-blue-950 animate-[slideRight_4s_steps(40)_forwards] origin-left z-10" />
-                  <div className="flex gap-3 mt-0 absolute top-[44px] w-full text-slate-200">
-                     <span className="text-blue-400 font-bold opacity-0 shrink-0">Orbit</span>
-                     <span className="whitespace-pre-line leading-relaxed">
-                        I've created the task: "Review Q3 financial report".
-                        <br/><span className="text-blue-400/70 font-medium text-xs">&gt; Action: create_record [Task ID: 89f2a]</span>
-                        <br/>Due date set to Friday.
-                        <br/><span className="text-blue-400/70 font-medium text-xs">&gt; Action: navigate_to [/tasks]</span>
-                     </span>
-                  </div>
-                </div>
+              <div className="relative rounded-2xl border border-slate-200/60 bg-slate-50 shadow-2xl overflow-hidden aspect-video transform rotate-1 hover:rotate-0 transition-transform duration-500 group">
+                <img 
+                  src="/images/orbit_dashboard_mockup.png" 
+                  alt="Optalflow Dashboard featuring Orbit AI Panel" 
+                  className="w-full h-full object-cover object-left-top opacity-90 group-hover:opacity-100 transition-opacity duration-500" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/10 to-transparent pointer-events-none"></div>
               </div>
             </FadeIn>
 
