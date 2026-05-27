@@ -24,7 +24,6 @@ export default function Policies() {
   const [showModal, setShowModal] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState(null);
   const [viewDetailsId, setViewDetailsId] = useState(null);
-  const [editTargetId, setEditTargetId] = useState(null);
 
   const [formData, setFormData] = useState({
     holderName: '',
@@ -34,16 +33,14 @@ export default function Policies() {
     startDate: new Date().toISOString().split('T')[0],
     endDate: new Date(Date.now() + 31536000000).toISOString().split('T')[0] // 1 year
   });
-  const [editingId, setEditingId] = useState(null);
   const [viewRecord, setViewRecord] = useState(null);
 
   const handleCreatePolicy = () => {
     if (!formData.holderName.trim()) return toast.error("Please enter a policy holder name");
     
-    if (editingId) {
+    if (editTargetId) {
       mutateRecord.mutate({
-      id: editTargetId,
-        id: editingId,
+        id: editTargetId,
         recordType: 'policy',
         payload: { ...formData },
         status: formData.status || 'Active',
@@ -52,8 +49,6 @@ export default function Policies() {
         onSuccess: () => {
           toast.success('Policy updated successfully!');
           setShowModal(false);
-        setEditTargetId(null);
-          setEditingId(null);
           setFormData({
             holderName: '', policyType: 'Life', premium: '', sumInsured: '', 
             startDate: new Date().toISOString().split('T')[0], 
@@ -74,7 +69,6 @@ export default function Policies() {
         onSuccess: () => {
           toast.success('Policy created successfully!');
           setShowModal(false);
-        setEditTargetId(null);
           setFormData({
             holderName: '', policyType: 'Life', premium: '', sumInsured: '', 
             startDate: new Date().toISOString().split('T')[0], 
@@ -87,7 +81,6 @@ export default function Policies() {
   };
 
   const handleEdit = (policy) => {
-    setEditingId(policy.id);
     setFormData({
       holderName: policy.holderName || '',
       policyType: policy.policyType || 'Life',
@@ -101,7 +94,6 @@ export default function Policies() {
   };
 
   const openNewModal = () => {
-    setEditingId(null);
     setFormData({
       holderName: '', policyType: 'Life', premium: '', sumInsured: '', 
       startDate: new Date().toISOString().split('T')[0], 
@@ -283,7 +275,7 @@ export default function Policies() {
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-border">
-            <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Record' : '{editingId ? 'Edit Policy' : 'New Policy'}'}</h2>
+            <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Policy' : 'New Policy'}</h2>
             <div className="space-y-3">
               <div>
                 <label className="text-xs font-bold text-muted-foreground uppercase">Holder Name</label>
@@ -322,7 +314,7 @@ export default function Policies() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditTargetId(null); }}>Cancel</Button>
-              <Button className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white" onClick={handleCreatePolicy}>{editTargetId ? 'Save Changes' : '{editingId ? 'Save Changes' : 'Create Policy'}'}</Button>
+              <Button className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white" onClick={handleCreatePolicy}>{editTargetId ? 'Save Changes' : 'Create Policy'}</Button>
             </div>
           </div>
         </div>

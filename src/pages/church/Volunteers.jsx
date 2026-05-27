@@ -7,7 +7,6 @@ import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
-import { MoreVertical, Eye, Edit, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function Volunteers() {

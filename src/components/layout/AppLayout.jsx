@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Outlet, useNavigate, Link } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
@@ -7,12 +7,20 @@ import { useImpersonation } from "@/lib/ImpersonationContext";
 import { Building2, X, Clock, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Paywall from "@/pages/Paywall";
+import GlobalAIAssistant from "./GlobalAIAssistant";
 
 export default function AppLayout() {
   const { user } = useAuth();
   const { impersonatedCompany, stopImpersonation } = useImpersonation();
   const navigate = useNavigate();
   const [hideTrialBanner, setHideTrialBanner] = useState(false);
+  const [isAIOpen, setIsAIOpen] = useState(() => {
+    try { return localStorage.getItem('optalflow_ai_open') === 'true'; } catch { return false; }
+  });
+
+  useEffect(() => {
+    try { localStorage.setItem('optalflow_ai_open', isAIOpen); } catch {}
+  }, [isAIOpen]);
 
   const handleStopImpersonation = () => {
     stopImpersonation();
@@ -97,12 +105,15 @@ export default function AppLayout() {
             </Button>
           </div>
         )}
-        <TopBar user={user} />
-        <main className="flex-1 overflow-y-auto p-4 lg:p-6">
-          <div className="max-w-[1400px] w-full mx-auto">
-            <Outlet />
-          </div>
-        </main>
+        <TopBar user={user} isAIOpen={isAIOpen} toggleAI={() => setIsAIOpen(!isAIOpen)} />
+        <div className="flex-1 flex overflow-hidden relative">
+          <main className="flex-1 overflow-y-auto p-4 lg:p-6">
+            <div className="max-w-[1400px] w-full mx-auto">
+              <Outlet />
+            </div>
+          </main>
+          {isAIOpen && <GlobalAIAssistant onClose={() => setIsAIOpen(false)} />}
+        </div>
       </div>
     </div>
   );

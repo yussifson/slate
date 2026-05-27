@@ -24,7 +24,6 @@ export default function Premiums() {
   const [showModal, setShowModal] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState(null);
   const [viewDetailsId, setViewDetailsId] = useState(null);
-  const [editTargetId, setEditTargetId] = useState(null);
 
   const [formData, setFormData] = useState({
     policyNumber: '',
@@ -33,7 +32,6 @@ export default function Premiums() {
     dueDate: new Date(Date.now() + 86400000 * 7).toISOString().split('T')[0],
     paymentMethod: 'Bank Transfer'
   });
-  const [editingId, setEditingId] = useState(null);
   const [viewRecord, setViewRecord] = useState(null);
 
   const handleCreatePremium = () => {
@@ -41,10 +39,9 @@ export default function Premiums() {
       return toast.error("Please enter policy holder and number");
     }
     
-    if (editingId) {
+    if (editTargetId) {
       mutateRecord.mutate({
-      id: editTargetId,
-        id: editingId,
+        id: editTargetId,
         recordType: 'premium_payment',
         payload: { ...formData },
         status: formData.status || 'Pending',
@@ -53,8 +50,6 @@ export default function Premiums() {
         onSuccess: () => {
           toast.success('Premium record updated!');
           setShowModal(false);
-        setEditTargetId(null);
-          setEditingId(null);
           setFormData({
             policyNumber: '', policyHolder: '', amount: '', 
             dueDate: new Date(Date.now() + 86400000 * 7).toISOString().split('T')[0], paymentMethod: 'Bank Transfer'
@@ -74,7 +69,6 @@ export default function Premiums() {
         onSuccess: () => {
           toast.success('Premium record created!');
           setShowModal(false);
-        setEditTargetId(null);
           setFormData({
             policyNumber: '', policyHolder: '', amount: '', 
             dueDate: new Date(Date.now() + 86400000 * 7).toISOString().split('T')[0], paymentMethod: 'Bank Transfer'
@@ -86,7 +80,6 @@ export default function Premiums() {
   };
 
   const handleEdit = (premium) => {
-    setEditingId(premium.id);
     setFormData({
       policyNumber: premium.policyNumber || '',
       policyHolder: premium.policyHolder || '',
@@ -99,7 +92,6 @@ export default function Premiums() {
   };
 
   const openNewModal = () => {
-    setEditingId(null);
     setFormData({
       policyNumber: '', policyHolder: '', amount: '', 
       dueDate: new Date(Date.now() + 86400000 * 7).toISOString().split('T')[0], paymentMethod: 'Bank Transfer'
@@ -262,7 +254,7 @@ export default function Premiums() {
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-border">
-            <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Record' : '{editingId ? 'Edit Premium Payment' : 'Record Premium Payment'}'}</h2>
+            <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Premium Payment' : 'Record Premium Payment'}</h2>
             <div className="space-y-3">
               <div>
                 <label className="text-xs font-bold text-muted-foreground uppercase">Policy Number</label>
@@ -294,7 +286,7 @@ export default function Premiums() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditTargetId(null); }}>Cancel</Button>
-              <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleCreatePremium}>{editTargetId ? 'Save Changes' : '{editingId ? 'Save Changes' : 'Save Record'}'}</Button>
+              <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleCreatePremium}>{editTargetId ? 'Save Changes' : 'Save Record'}</Button>
             </div>
           </div>
         </div>

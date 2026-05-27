@@ -24,7 +24,6 @@ export default function AgentPerformance() {
   const [showModal, setShowModal] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState(null);
   const [viewDetailsId, setViewDetailsId] = useState(null);
-  const [editTargetId, setEditTargetId] = useState(null);
 
   const [formData, setFormData] = useState({
     agentName: '',
@@ -35,7 +34,6 @@ export default function AgentPerformance() {
     commissionEarned: 0,
     rating: 5
   });
-  const [editingId, setEditingId] = useState(null);
   const [viewRecord, setViewRecord] = useState(null);
 
   const handleCreateAgent = () => {
@@ -43,10 +41,9 @@ export default function AgentPerformance() {
       return toast.error("Please enter agent name");
     }
     
-    if (editingId) {
+    if (editTargetId) {
       mutateRecord.mutate({
-      id: editTargetId,
-        id: editingId,
+        id: editTargetId,
         recordType: 'agent',
         payload: { ...formData },
         status: formData.status || 'Active',
@@ -55,8 +52,6 @@ export default function AgentPerformance() {
         onSuccess: () => {
           toast.success('Agent updated successfully!');
           setShowModal(false);
-        setEditTargetId(null);
-          setEditingId(null);
           setFormData({
             agentName: '', region: 'North', policiesSold: 0, premiumCollected: 0, claimsHandled: 0, commissionEarned: 0, rating: 5
           });
@@ -75,7 +70,6 @@ export default function AgentPerformance() {
         onSuccess: () => {
           toast.success('Agent added successfully!');
           setShowModal(false);
-        setEditTargetId(null);
           setFormData({
             agentName: '', region: 'North', policiesSold: 0, premiumCollected: 0, claimsHandled: 0, commissionEarned: 0, rating: 5
           });
@@ -86,7 +80,6 @@ export default function AgentPerformance() {
   };
 
   const handleEdit = (agent) => {
-    setEditingId(agent.id);
     setFormData({
       agentName: agent.agentName || '',
       region: agent.region || 'North',
@@ -101,7 +94,6 @@ export default function AgentPerformance() {
   };
 
   const openNewModal = () => {
-    setEditingId(null);
     setFormData({
       agentName: '', region: 'North', policiesSold: 0, premiumCollected: 0, claimsHandled: 0, commissionEarned: 0, rating: 5
     });
@@ -268,7 +260,7 @@ export default function AgentPerformance() {
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-border">
-            <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Record' : '{editingId ? 'Edit Agent' : 'Add New Agent'}'}</h2>
+            <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Agent' : 'Add New Agent'}</h2>
             <div className="space-y-3">
               <div>
                 <label className="text-xs font-bold text-muted-foreground uppercase">Agent Name</label>
@@ -311,7 +303,7 @@ export default function AgentPerformance() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditTargetId(null); }}>Cancel</Button>
-              <Button className="flex-1 bg-amber-600 hover:bg-amber-700 text-white" onClick={handleCreateAgent}>{editTargetId ? 'Save Changes' : '{editingId ? 'Save Changes' : 'Save Agent'}'}</Button>
+              <Button className="flex-1 bg-amber-600 hover:bg-amber-700 text-white" onClick={handleCreateAgent}>{editTargetId ? 'Save Changes' : 'Save Agent'}</Button>
             </div>
           </div>
         </div>

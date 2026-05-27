@@ -45,6 +45,7 @@ import Documents from './pages/Documents';
 import Team from './pages/Team';
 
 import Settings from './pages/Settings';
+import CustomFieldsSettings from './pages/settings/CustomFields';
 import ClientPortal from './pages/ClientPortal';
 import CaseDetail from './pages/CaseDetail';
 import StaffDashboard from './pages/StaffDashboard';
@@ -219,6 +220,7 @@ function App() {
                         <Route path="/documents" element={<Documents />} />
                         <Route path="/team" element={<Team />} />
                         <Route path="/settings" element={<Settings />} />
+                        <Route path="/settings/custom-fields" element={<CustomFieldsSettings />} />
                         <Route path="/client-portal" element={<ClientPortal />} />
                         <Route path="/cases/:id" element={<CaseDetail />} />
                         <Route path="/my-dashboard" element={<StaffDashboard />} />

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Plus, Trash2, FileWarning, CheckCircle, Clock, MoreVertical, Edit, Eye } from 'lucide-react';
+import { Search, Plus, Trash2, FileWarning, CheckCircle, Clock, MoreVertical, Edit, Eye, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
@@ -8,6 +8,26 @@ import { Input } from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
+import AIDocumentParser from '@/components/shared/AIDocumentParser';
+import AIRiskAnalyzer from '@/components/shared/AIRiskAnalyzer';
+import AISearchBar from '@/components/shared/AISearchBar';
+
+const CLAIM_FIELDS = [
+  { key: 'claimantName', label: 'Claimant Name', type: 'text' },
+  { key: 'policyNumber', label: 'Policy Number', type: 'text' },
+  { key: 'claimType', label: 'Claim Type', type: 'text' },
+  { key: 'claimAmount', label: 'Claim Amount', type: 'number' },
+  { key: 'status', label: 'Status', type: 'text' },
+  { key: 'incidentDate', label: 'Incident Date', type: 'date' },
+];
+
+const statusColors = {
+  'Submitted': 'bg-muted text-muted-foreground',
+  'Under Review': 'bg-amber-100 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400',
+  'Approved': 'bg-blue-100 text-blue-700 dark:bg-blue-950/30 dark:text-blue-400',
+  'Rejected': 'bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400',
+  'Paid': 'bg-green-100 text-green-700 dark:bg-green-950/30 dark:text-green-400',
+};
 
 export default function Claims() {
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('claim');
@@ -21,7 +41,9 @@ export default function Claims() {
   }));
 
   const [search, setSearch] = useState('');
+  const [aiFilters, setAiFilters] = useState({ logic: 'AND', conditions: [] });
   const [showModal, setShowModal] = useState(false);
+  const [showRiskAnalyzer, setShowRiskAnalyzer] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState(null);
   const [viewDetailsId, setViewDetailsId] = useState(null);
   const [editTargetId, setEditTargetId] = useState(null);
@@ -41,12 +63,15 @@ export default function Claims() {
     }
     
     const isEdit = !!editTargetId;
-    const finalClaimNumber = isEdit ? claims.find(c => c.id === editTargetId)?.claimNumber : `CLM-${Math.floor(1000 + Math.random() * 9000)}`;
-    const finalStatus = isEdit ? claims.find(c => c.id === editTargetId)?.status : 'Submitted';
+    const finalClaimNumber = isEdit
+      ? claims.find(c => c.id === editTargetId)?.claimNumber
+      : `CLM-${Math.floor(1000 + Math.random() * 9000)}`;
+    const finalStatus = isEdit
+      ? claims.find(c => c.id === editTargetId)?.status
+      : 'Submitted';
 
     mutateRecord.mutate({
-      id: editTargetId,
-      id: editTargetId,
+      ...(editTargetId ? { id: editTargetId } : {}),
       recordType: 'claim',
       payload: { ...formData, claimNumber: finalClaimNumber },
       status: finalStatus,
@@ -56,11 +81,7 @@ export default function Claims() {
         toast.success(isEdit ? 'Claim updated successfully!' : 'Claim submitted successfully!');
         setShowModal(false);
         setEditTargetId(null);
-        setEditTargetId(null);
-        setFormData({
-          policyNumber: '', claimantName: '', claimType: 'Auto', 
-          incidentDate: new Date().toISOString().split('T')[0], claimAmount: '', description: ''
-        });
+        setFormData({ policyNumber: '', claimantName: '', claimType: 'Auto', incidentDate: new Date().toISOString().split('T')[0], claimAmount: '', description: '' });
       },
       onError: (err) => toast.error(`Failed to ${isEdit ? 'update' : 'submit'} claim: ` + err.message)
     });
@@ -68,10 +89,7 @@ export default function Claims() {
 
   const openNewModal = () => {
     setEditTargetId(null);
-    setFormData({
-      policyNumber: '', claimantName: '', claimType: 'Auto', 
-      incidentDate: new Date().toISOString().split('T')[0], claimAmount: '', description: ''
-    });
+    setFormData({ policyNumber: '', claimantName: '', claimType: 'Auto', incidentDate: new Date().toISOString().split('T')[0], claimAmount: '', description: '' });
     setShowModal(true);
   };
 
@@ -79,39 +97,49 @@ export default function Claims() {
     const payload = { ...claim };
     delete payload.id;
     delete payload.status;
-    
     mutateRecord.mutate({
-      id: claim.id,
-      recordType: 'claim',
-      payload,
-      status: newStatus,
+      id: claim.id, recordType: 'claim', payload, status: newStatus,
       searchText: `${claim.claimantName} ${claim.policyNumber} ${claim.claimNumber}`
-    }, {
-      onSuccess: () => toast.success(`Claim status updated to ${newStatus}`)
-    });
+    }, { onSuccess: () => toast.success(`Status updated to ${newStatus}`) });
   };
 
   const handleDelete = () => {
     if (!deleteTargetId) return;
     deleteRecord.mutate({ id: deleteTargetId, recordType: 'claim' }, {
-      onSuccess: () => {
-        toast.success('Claim removed!');
-        setDeleteTargetId(null);
-      },
-      onError: (err) => {
-        toast.error('Failed to remove: ' + err.message);
-        setDeleteTargetId(null);
-      }
+      onSuccess: () => { toast.success('Claim removed!'); setDeleteTargetId(null); },
+      onError: (err) => { toast.error('Failed to remove: ' + err.message); setDeleteTargetId(null); }
     });
   };
 
-  const filtered = claims.filter(c => 
-    c.claimantName?.toLowerCase().includes(search.toLowerCase()) || 
-    c.claimNumber?.toLowerCase().includes(search.toLowerCase()) ||
-    c.policyNumber?.toLowerCase().includes(search.toLowerCase())
-  );
+  // Apply AI filters
+  const applyAIFilter = (record) => {
+    if (!aiFilters.conditions.length) return true;
+    const results = aiFilters.conditions.map(({ field, operator, value }) => {
+      const fieldVal = String(record[field] || '').toLowerCase();
+      const filterVal = String(value).toLowerCase();
+      switch (operator) {
+        case 'equals': return fieldVal === filterVal;
+        case 'not_equals': return fieldVal !== filterVal;
+        case 'contains': return fieldVal.includes(filterVal);
+        case 'starts_with': return fieldVal.startsWith(filterVal);
+        case 'greater_than': return parseFloat(record[field]) > parseFloat(value);
+        case 'less_than': return parseFloat(record[field]) < parseFloat(value);
+        default: return true;
+      }
+    });
+    return aiFilters.logic === 'OR' ? results.some(Boolean) : results.every(Boolean);
+  };
+
+  const filtered = claims
+    .filter(c =>
+      c.claimantName?.toLowerCase().includes(search.toLowerCase()) ||
+      c.claimNumber?.toLowerCase().includes(search.toLowerCase()) ||
+      c.policyNumber?.toLowerCase().includes(search.toLowerCase())
+    )
+    .filter(applyAIFilter);
 
   const totalAmount = claims.reduce((sum, c) => sum + (Number(c.claimAmount) || 0), 0);
+  const viewRecord = claims.find(r => r.id === viewDetailsId);
 
   return (
     <div className="space-y-6">
@@ -120,11 +148,17 @@ export default function Claims() {
           <h1 className="text-2xl font-bold text-card-foreground">Claims Processing</h1>
           <p className="text-sm text-muted-foreground mt-0.5">Manage and evaluate policyholder claims</p>
         </div>
-        <Button onClick={openNewModal} className="gap-2 bg-red-600 hover:bg-red-700 text-white">
-          <Plus className="w-4 h-4" /> File New Claim
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={() => setShowRiskAnalyzer(true)} variant="outline" className="gap-2 border-amber-300 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/20">
+            <Sparkles className="w-4 h-4" /> AI Risk Scan
+          </Button>
+          <Button onClick={openNewModal} className="gap-2 bg-red-600 hover:bg-red-700 text-white">
+            <Plus className="w-4 h-4" /> File New Claim
+          </Button>
+        </div>
       </div>
 
+      {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
           <div className="flex items-center gap-2 mb-2 text-muted-foreground"><FileWarning className="w-4 h-4"/> Total Claims</div>
@@ -144,6 +178,13 @@ export default function Claims() {
         </div>
       </div>
 
+      {/* AI Search */}
+      <AISearchBar
+        fields={CLAIM_FIELDS}
+        onApplyFilters={(f) => setAiFilters(f)}
+      />
+
+      {/* Table */}
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         <div className="p-4 border-b border-border bg-muted/50">
           <div className="relative max-w-md">
@@ -158,7 +199,7 @@ export default function Claims() {
             <div className="py-12 text-center text-muted-foreground">
               <FileWarning className="w-12 h-12 mx-auto mb-3 opacity-30 text-red-600" />
               <p className="font-semibold text-lg text-card-foreground">No claims found</p>
-              <p className="text-xs mt-1">File a new claim to see it here.</p>
+              <p className="text-xs mt-1">File a new claim or adjust your filters.</p>
             </div>
           ) : (
             <table className="w-full text-sm">
@@ -184,9 +225,7 @@ export default function Claims() {
                       <p className="font-bold text-card-foreground">{claim.claimantName}</p>
                       <p className="text-xs text-muted-foreground">{claim.claimType} Claim</p>
                     </td>
-                    <td className="px-6 py-4 text-muted-foreground font-medium max-w-xs truncate">
-                      {claim.description}
-                    </td>
+                    <td className="px-6 py-4 text-muted-foreground font-medium max-w-xs truncate">{claim.description}</td>
                     <td className="px-6 py-4 text-right">
                       <p className="font-bold text-card-foreground">${Number(claim.claimAmount).toLocaleString()}</p>
                     </td>
@@ -194,12 +233,7 @@ export default function Claims() {
                       <select
                         value={claim.status}
                         onChange={e => handleUpdateStatus(claim, e.target.value)}
-                        className={`rounded-md border border-input px-2 py-1 text-xs font-bold ${
-                          claim.status === 'Paid' ? 'bg-green-100 text-green-700' : 
-                          claim.status === 'Approved' ? 'bg-blue-100 text-blue-700' : 
-                          claim.status === 'Rejected' ? 'bg-red-100 text-red-700' : 
-                          claim.status === 'Under Review' ? 'bg-amber-100 text-amber-700' : 'bg-muted text-muted-foreground'
-                        }`}
+                        className={`rounded-md border border-input px-2 py-1 text-xs font-bold ${statusColors[claim.status] || 'bg-muted text-muted-foreground'}`}
                       >
                         <option value="Submitted">Submitted</option>
                         <option value="Under Review">Under Review</option>
@@ -221,14 +255,7 @@ export default function Claims() {
                             <Eye className="mr-2 h-4 w-4" /> View Details
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => {
-                            setFormData({
-                              policyNumber: claim.policyNumber || '',
-                              claimantName: claim.claimantName || '',
-                              claimType: claim.claimType || 'Auto',
-                              incidentDate: claim.incidentDate || '',
-                              claimAmount: claim.claimAmount || '',
-                              description: claim.description || ''
-                            });
+                            setFormData({ policyNumber: claim.policyNumber || '', claimantName: claim.claimantName || '', claimType: claim.claimType || 'Auto', incidentDate: claim.incidentDate || '', claimAmount: claim.claimAmount || '', description: claim.description || '' });
                             setEditTargetId(claim.id);
                             setShowModal(true);
                           }}>
@@ -248,10 +275,35 @@ export default function Claims() {
         </div>
       </div>
 
+      {/* AI Risk Analyzer Modal */}
+      {showRiskAnalyzer && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-2xl border border-border p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-amber-500" /> AI Risk Analyzer — Claims
+              </h2>
+              <Button variant="ghost" size="sm" onClick={() => setShowRiskAnalyzer(false)}>Close</Button>
+            </div>
+            <AIRiskAnalyzer records={claims} recordType="insurance claims" />
+          </div>
+        </div>
+      )}
+
+      {/* Add/Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-border">
-            <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Record' : '{editTargetId ? 'Edit Claim' : 'File New Claim'}'}</h2>
+          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-lg p-6 space-y-4 border border-border overflow-y-auto max-h-[90vh]">
+            <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Claim' : 'File New Claim'}</h2>
+
+            {/* AI Document Parser */}
+            {!editTargetId && (
+              <AIDocumentParser
+                fieldsContext="insurance claim details including policy number, claimant name, claim type, incident date, and claim amount"
+                onExtracted={(data) => setFormData(prev => ({ ...prev, ...data }))}
+              />
+            )}
+
             <div className="space-y-3">
               <div>
                 <label className="text-xs font-bold text-muted-foreground uppercase">Policy Number</label>
@@ -283,75 +335,44 @@ export default function Claims() {
               </div>
               <div>
                 <label className="text-xs font-bold text-muted-foreground uppercase">Description / Details</label>
-                <textarea 
-                  value={formData.description} 
-                  onChange={e => setFormData({...formData, description: e.target.value})} 
-                  placeholder="Describe the incident..." 
-                  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm h-20 resize-none"
-                />
+                <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} placeholder="Describe the incident..." className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm h-20 resize-none text-foreground" />
               </div>
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditTargetId(null); }}>Cancel</Button>
-              <Button className="flex-1 bg-red-600 hover:bg-red-700 text-white" onClick={handleCreateClaim}>{editTargetId ? 'Save Changes' : '{editTargetId ? 'Save Changes' : 'Submit Claim'}'}</Button>
+              <Button className="flex-1 bg-red-600 hover:bg-red-700 text-white" onClick={handleCreateClaim}>{editTargetId ? 'Save Changes' : 'Submit Claim'}</Button>
             </div>
           </div>
         </div>
       )}
 
+      {/* View Details Sheet */}
       <Sheet open={viewDetailsId !== null} onOpenChange={(open) => !open && setViewDetailsId(null)}>
         <SheetContent className="bg-card text-card-foreground overflow-y-auto">
           <SheetHeader>
             <SheetTitle>Claim Details</SheetTitle>
+            <SheetDescription>Full record for claim {viewRecord?.claimNumber}</SheetDescription>
           </SheetHeader>
           <div className="mt-6 space-y-4">
-            {viewDetailsId && (() => {
-              const record = claims.find(r => r.id === viewDetailsId);
-              if (!record) return null;
-              return Object.entries(record).map(([key, value]) => {
-                if (key === 'id') return null;
-                return (
-                  <div key={key}>
-                    <label className="text-xs font-bold text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</label>
-                    <p className="font-medium">
-                      {key === 'policyNumber' ? (
-                        <Link to="/insurance/policies" className="text-primary hover:underline">{String(value)}</Link>
-                      ) : (
-                        String(value)
-                      )}
-                    </p>
-                  </div>
-                );
-              });
-            })()}
+            {viewRecord && Object.entries(viewRecord).map(([key, value]) => {
+              if (key === 'id') return null;
+              return (
+                <div key={key} className="border-b border-border pb-3">
+                  <label className="text-xs font-bold text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</label>
+                  <p className="font-medium mt-1">
+                    {key === 'policyNumber' ? (
+                      <Link to="/insurance/policies" className="text-primary hover:underline">{String(value)}</Link>
+                    ) : (
+                      String(value)
+                    )}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         </SheetContent>
       </Sheet>
 
-      
-      <Sheet open={viewDetailsId !== null} onOpenChange={(open) => !open && setViewDetailsId(null)}>
-        <SheetContent className="bg-card text-card-foreground">
-          <SheetHeader>
-            <SheetTitle>Record Details</SheetTitle>
-          </SheetHeader>
-          <div className="mt-6 space-y-4">
-            {viewDetailsId && (() => {
-              const record = claims.find(r => r.id === viewDetailsId);
-              if (!record) return null;
-              return Object.entries(record).map(([key, value]) => {
-                if (key === 'id') return null;
-                return (
-                  <div key={key}>
-                    <label className="text-xs font-bold text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</label>
-                    <p className="font-medium">{String(value)}</p>
-                  </div>
-                );
-              });
-            })()}
-          </div>
-        </SheetContent>
-      </Sheet>
-    
       <ConfirmationModal
         isOpen={deleteTargetId !== null}
         onClose={() => setDeleteTargetId(null)}
@@ -359,8 +380,6 @@ export default function Claims() {
         title="Delete Claim"
         message="Are you sure you want to completely remove this claim record? This cannot be undone."
       />
-
-
     </div>
   );
 }

@@ -7,7 +7,14 @@ export default defineConfig({
   logLevel: 'error', // Suppress warnings, only show errors
   server: {
     port: 3000,
-    strictPort: true
+    strictPort: true,
+    proxy: {
+      '/api/ai': {
+        target: 'https://api.cloudflare.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/ai/, '/client/v4/accounts/bf5126510c1f8f2759cc81c4e7d795ef/ai/run'),
+      }
+    }
   },
   plugins: [
     react(),

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, RefreshCw, Globe, Layers } from "lucide-react";
+import { LayoutDashboard, RefreshCw, Globe, Layers, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { isSuperAdmin } from "@/lib/constants";
 import { useQueryClient } from "@tanstack/react-query";
@@ -24,7 +24,7 @@ const PAGE_TITLES = {
   "/client-portal": "Client Portal",
 };
 
-export default function TopBar({ user }) {
+export default function TopBar({ user, isAIOpen, toggleAI }) {
   const location = useLocation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -110,6 +110,17 @@ export default function TopBar({ user }) {
             <span className="text-[11px] font-bold text-white">{initials}</span>
           </div>
         </div>
+
+        {/* AI Toggle */}
+        <Button
+          variant="outline"
+          size="sm"
+          className={`gap-1.5 text-xs h-8 ${isAIOpen ? 'bg-indigo-50 border-indigo-200 text-indigo-700 dark:bg-indigo-950/30 dark:border-indigo-800 dark:text-indigo-400' : 'text-muted-foreground'}`}
+          onClick={toggleAI}
+        >
+          <Sparkles className={`w-3.5 h-3.5 ${isAIOpen ? 'text-indigo-600 dark:text-indigo-400' : ''}`} />
+          <span className="hidden sm:block">Ask AI</span>
+        </Button>
 
         {/* Refresh */}
         <Button

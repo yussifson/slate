@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { DollarSign, Search, TrendingUp, Calendar, ArrowUpRight, Download, MoreVertical, Eye, Edit2, Trash2 } from 'lucide-react';
+import { DollarSign, Search, TrendingUp, Calendar, ArrowUpRight, Download, MoreVertical, Eye, Edit2, Trash2, Edit, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
-import { MoreVertical, Edit, FileText } from 'lucide-react';
 
 import { Input } from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
@@ -37,7 +36,6 @@ export default function Sales() {
   const [search, setSearch] = useState('');
   const [deleteTargetId, setDeleteTargetId] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [deleteTargetId, setDeleteTargetId] = useState(null);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);

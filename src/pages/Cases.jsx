@@ -22,6 +22,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import PageHeader from "@/components/shared/PageHeader";
 import CaseForm from "@/components/cases/CaseForm";
 import CasesKanban from "@/components/cases/CasesKanban";
+import AIEmailDrafter from "@/components/shared/AIEmailDrafter";
+import { Sparkles } from "lucide-react";
 import { CASE_STATUS_COLORS, PRIORITY_COLORS } from "@/lib/constants";
 import { format } from "date-fns";
 
@@ -51,6 +53,7 @@ export default function Cases() {
   const [selected, setSelected] = useState(new Set());
   const [deleting, setDeleting] = useState(false);
   const [viewingCase, setViewingCase] = useState(null);
+  const [draftingEmailFor, setDraftingEmailFor] = useState(null);
 
   const { data: cases = [], isLoading } = useQuery({
     queryKey: ["cases", companyId],
@@ -259,11 +262,16 @@ export default function Cases() {
                                 <MoreVertical className="h-4 w-4" />
                               </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
+                            <DropdownMenuContent align="end" className="w-48 shadow-xl border-border/50">
                               <DropdownMenuItem onClick={() => setViewingCase(row)}>View Details</DropdownMenuItem>
                               <DropdownMenuItem onClick={() => navigate(`/cases/${row.id}`, { state: { caseData: row } })}>Open Full View</DropdownMenuItem>
                               <DropdownMenuItem onClick={() => setEditingCase(row)}>Edit</DropdownMenuItem>
-                              <DropdownMenuItem className="text-red-600" onClick={() => handleDeleteOne(row.id)}>Delete</DropdownMenuItem>
+                              <div className="h-px bg-border my-1" />
+                              <DropdownMenuItem onClick={() => setDraftingEmailFor(row)} className="text-indigo-600 font-medium focus:text-indigo-700 focus:bg-indigo-50 dark:text-indigo-400 dark:focus:bg-indigo-950/50">
+                                <Sparkles className="w-4 h-4 mr-2" /> Draft AI Email
+                              </DropdownMenuItem>
+                              <div className="h-px bg-border my-1" />
+                              <DropdownMenuItem className="text-red-600 focus:text-red-700 focus:bg-red-50 dark:focus:bg-red-950/50" onClick={() => handleDeleteOne(row.id)}>Delete</DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </TableCell>
@@ -339,6 +347,14 @@ export default function Cases() {
           )}
         </SheetContent>
       </Sheet>
+
+      {draftingEmailFor && (
+        <AIEmailDrafter 
+          recordData={draftingEmailFor} 
+          defaultContext="Write a polite and professional update email to the client regarding this legal case."
+          onClose={() => setDraftingEmailFor(null)} 
+        />
+      )}
     </div>
   );
 }

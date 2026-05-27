@@ -24,7 +24,6 @@ export default function Underwriting() {
   const [showModal, setShowModal] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState(null);
   const [viewDetailsId, setViewDetailsId] = useState(null);
-  const [editTargetId, setEditTargetId] = useState(null);
 
   const [formData, setFormData] = useState({
     applicantName: '',
@@ -33,7 +32,6 @@ export default function Underwriting() {
     premiumQuote: '',
     sumInsuredRequested: ''
   });
-  const [editingId, setEditingId] = useState(null);
   const [viewRecord, setViewRecord] = useState(null);
 
   const handleCreateApplication = () => {
@@ -41,10 +39,9 @@ export default function Underwriting() {
       return toast.error("Please enter applicant name");
     }
     
-    if (editingId) {
+    if (editTargetId) {
       mutateRecord.mutate({
-      id: editTargetId,
-        id: editingId,
+        id: editTargetId,
         recordType: 'underwriting_application',
         payload: { ...formData },
         status: formData.status || 'Pending Review',
@@ -53,8 +50,6 @@ export default function Underwriting() {
         onSuccess: () => {
           toast.success('Application updated successfully!');
           setShowModal(false);
-        setEditTargetId(null);
-          setEditingId(null);
           setFormData({
             applicantName: '', productType: 'Life Insurance', riskLevel: 'Low', 
             premiumQuote: '', sumInsuredRequested: ''
@@ -74,7 +69,6 @@ export default function Underwriting() {
         onSuccess: () => {
           toast.success('Application added successfully!');
           setShowModal(false);
-        setEditTargetId(null);
           setFormData({
             applicantName: '', productType: 'Life Insurance', riskLevel: 'Low', 
             premiumQuote: '', sumInsuredRequested: ''
@@ -86,7 +80,6 @@ export default function Underwriting() {
   };
 
   const handleEdit = (app) => {
-    setEditingId(app.id);
     setFormData({
       applicantName: app.applicantName || '',
       productType: app.productType || 'Life Insurance',
@@ -99,7 +92,6 @@ export default function Underwriting() {
   };
 
   const openNewModal = () => {
-    setEditingId(null);
     setFormData({
       applicantName: '', productType: 'Life Insurance', riskLevel: 'Low', 
       premiumQuote: '', sumInsuredRequested: ''
@@ -266,7 +258,7 @@ export default function Underwriting() {
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-border">
-            <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Record' : '{editingId ? 'Edit Underwriting Application' : 'New Underwriting Application'}'}</h2>
+            <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Underwriting Application' : 'New Underwriting Application'}</h2>
             <div className="space-y-3">
               <div>
                 <label className="text-xs font-bold text-muted-foreground uppercase">Applicant Name</label>
@@ -304,7 +296,7 @@ export default function Underwriting() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditTargetId(null); }}>Cancel</Button>
-              <Button className="flex-1 bg-purple-600 hover:bg-purple-700 text-white" onClick={handleCreateApplication}>{editTargetId ? 'Save Changes' : '{editingId ? 'Save Changes' : 'Submit Application'}'}</Button>
+              <Button className="flex-1 bg-purple-600 hover:bg-purple-700 text-white" onClick={handleCreateApplication}>{editTargetId ? 'Save Changes' : 'Submit Application'}</Button>
             </div>
           </div>
         </div>

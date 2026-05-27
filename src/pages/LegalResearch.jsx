@@ -11,6 +11,7 @@ import { Sparkles, BookOpen, Scale, Loader2, AlertTriangle, ChevronDown, Chevron
 import { cn } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
 import { format } from "date-fns";
+import { generateText } from "@/lib/cloudflareAI";
 
 const JURISDICTIONS = ["Ghana", "Nigeria", "Sierra Leone", "West Africa (General)", "International"];
 const CASE_TYPES = ["civil", "criminal", "corporate", "family", "property", "labor", "tax", "other"];
@@ -45,12 +46,37 @@ export default function LegalResearch() {
     setResult(null);
     setError(null);
     try {
-      const res = await base44.functions.invoke("legalResearch", { question, jurisdiction, case_type: caseType });
-      const data = res.data.research;
+      const prompt = `You are an expert legal researcher for West African jurisdictions.
+Task: Perform legal research on the following question regarding ${jurisdiction} law (Case Type: ${caseType || 'Any'}).
+Question: ${question}
+
+Return ONLY a valid JSON object with this exact structure. 
+CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw newlines inside strings.
+{
+  "answer": "Detailed answer in markdown",
+  "confidence": "high|medium|low",
+  "legislation": [{"name": "Act Name", "section": "Section X", "relevance": "Why"}],
+  "case_law": [{"case_name": "Case Name", "year": "YYYY", "principle": "Principle"}],
+  "next_steps": ["Step 1", "Step 2"],
+  "practical_notes": "Markdown notes",
+  "caveats": "Warning text"
+}`;
+      const responseText = await generateText([{ role: 'user', content: prompt }]);
+      
+      let cleanJson = responseText.replace(/```json/gi, '').replace(/```/g, '').trim();
+      // Remove any remaining raw control characters (like literal newlines) that break JSON.parse
+      cleanJson = cleanJson.replace(/[\u0000-\u001F]+/g, (match) => {
+        // preserve actual newlines if they are outside strings (roughly)
+        // this is a naive fix, relying mostly on the prompt instruction above
+        return "";
+      });
+
+      const data = JSON.parse(cleanJson);
+      
       setResult(data);
       setHistory(prev => [{ question, jurisdiction, caseType, result: data, timestamp: new Date() }, ...prev].slice(0, 10));
     } catch (err) {
-      setError(err.message);
+      setError("AI Error: " + err.message);
     } finally {
       setLoading(false);
     }

@@ -1,16 +1,16 @@
 import { useState } from 'react';
-import { Users, Search, Plus, Mail, Star, Heart, Trash2, MoreVertical, Eye, Edit } from 'lucide-react';
+import { Users, Search, Plus, Mail, Star, Heart, Trash2, MoreVertical, Eye, Edit, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
-import { MoreVertical, Edit, FileText } from 'lucide-react';
-
 
 import { Input } from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
+import CSVImportModal from '@/components/shared/CSVImportModal';
+import { UploadCloud } from 'lucide-react';
 
 const segmentColors = {
   VIP: 'bg-purple-100 dark:bg-purple-950/20 text-purple-700 dark:text-purple-400 border-purple-200 dark:border-purple-900',
@@ -46,6 +46,7 @@ export default function Customers() {
 
   const [search, setSearch] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState(null);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -94,8 +95,6 @@ export default function Customers() {
     };
 
     mutateRecord.mutate({
-      ...(editingItem ? { id: editingItem.id } : {}),
-      ...(editingItem ? { id: editingItem.id } : {}),
       ...(editingId ? { id: editingId } : {}),
       recordType: 'customer',
       payload,
@@ -151,9 +150,14 @@ export default function Customers() {
           <h1 className="text-2xl font-bold text-card-foreground">Customers</h1>
           <p className="text-sm text-muted-foreground mt-0.5">Manage customer profiles and loyalty tiers</p>
         </div>
-        <Button onClick={() => { setEditingId(null); setFormData({ name: '', email: '', phone: '', totalSpent: '', orders: '' }); setShowModal(true); }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
-          <Plus className="w-4 h-4" /> Add Customer
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={() => setShowImportModal(true)} variant="outline" className="gap-2 text-primary border-primary hover:bg-primary/5">
+            <UploadCloud className="w-4 h-4" /> Import CSV
+          </Button>
+          <Button onClick={() => { setEditingId(null); setFormData({ name: '', email: '', phone: '', totalSpent: '', orders: '' }); setShowModal(true); }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+            <Plus className="w-4 h-4" /> Add Customer
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -317,7 +321,7 @@ export default function Customers() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditingId(null); }}>Cancel</Button>
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleCreateCustomer}>{editingId ? 'Save Changes' : 'Add Customer'}</Button>
+              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleSaveCustomer}>{editingId ? 'Save Changes' : 'Add Customer'}</Button>
             </div>
           </div>
         </div>
@@ -329,6 +333,12 @@ export default function Customers() {
         onConfirm={handleDeleteCustomer}
         title="Delete Customer Profile"
         message="Are you sure you want to delete this customer profile? This will remove all loyalty and spend metrics permanently."
+      />
+
+      <CSVImportModal 
+        isOpen={showImportModal} 
+        onClose={() => setShowImportModal(false)} 
+        recordType="customer" 
       />
 
       

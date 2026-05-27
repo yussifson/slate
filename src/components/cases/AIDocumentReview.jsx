@@ -8,6 +8,7 @@ import {
   Clock, Users, ChevronDown, ChevronUp, Loader2, X, CheckCircle
 } from "lucide-react";
 import { format, parseISO, isValid, isBefore } from "date-fns";
+import { generateText, analyzeImage } from "@/lib/cloudflareAI";
 
 const URGENCY_COLORS = {
   critical: "bg-red-100 text-red-700 border-red-200",
@@ -131,19 +132,43 @@ export default function AIDocumentReview({ caseData }) {
   const handleAnalyze = async () => {
     if (!file) return;
     setError(null);
-    setUploading(true);
+    setAnalyzing(true);
+    
     try {
-      const path = `${Date.now()}_${file.name}`;
-      await base44.storage.upload('documents', path, file);
-      const file_url = base44.storage.getPublicUrl('documents', path);
-      setUploading(false);
-      setAnalyzing(true);
-      const res = await base44.functions.invoke("analyzeDocument", { file_url, document_name: docName });
-      setAnalysis(res.data.analysis);
+      const prompt = `Analyze this legal document (${docName}).
+Return ONLY a valid JSON object with this exact structure.
+CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw newlines inside strings.
+{
+  "summary": "Executive summary of the document",
+  "risk_flags": [{"flag": "Risk description", "severity": "critical|high|medium|low"}],
+  "key_legal_points": [{"point": "Key point", "importance": "high|medium|low", "category": "Obligation|Right|Condition"}],
+  "deadlines": [{"description": "What is due", "date": "YYYY-MM-DD", "urgency": "high|medium|low", "party_responsible": "Who"}],
+  "important_dates": [{"label": "Hearing date etc", "date": "YYYY-MM-DD", "type": "Hearing|Signing|Effective"}],
+  "parties": [{"name": "Name", "role": "Role"}]
+}`;
+
+      let responseText = "";
+      
+      if (file.type.startsWith("image/")) {
+        const buffer = await file.arrayBuffer();
+        const bytes = new Uint8Array(buffer);
+        responseText = await analyzeImage(bytes, prompt);
+      } else if (file.type === "text/plain") {
+        const textContent = await file.text();
+        const fullPrompt = `${prompt}\n\nDocument Content:\n${textContent}`;
+        responseText = await generateText([{ role: 'user', content: fullPrompt }]);
+      } else {
+        throw new Error("Currently, the browser-based Cloudflare AI only supports .txt files and Images. For PDFs, a backend PDF parser must be deployed.");
+      }
+
+      let cleanJson = responseText.replace(/```json/gi, '').replace(/```/g, '').trim();
+      cleanJson = cleanJson.replace(/[\u0000-\u001F]+/g, "");
+      const data = JSON.parse(cleanJson);
+      
+      setAnalysis(data);
     } catch (err) {
       setError(err.message || "Analysis failed. Please try again.");
     } finally {
-      setUploading(false);
       setAnalyzing(false);
     }
   };
