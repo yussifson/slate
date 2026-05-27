@@ -21,6 +21,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
+import { useNotifications } from "@/hooks/useNotifications";
 
 const PRIORITY_COLORS = {
   low: "bg-gray-100 text-gray-700",
@@ -55,6 +56,7 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
 
   const [form, setForm] = useState(initialData || defaultForm);
   const { toast } = useToast();
+  const { notify } = useNotifications();
 
   useEffect(() => {
     setForm(initialData || defaultForm);
@@ -64,8 +66,19 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
     mutationFn: (data) => isEdit
       ? base44.entities.Task.update(initialData.id, data)
       : base44.entities.Task.create({ ...data, company_id: companyId }),
-    onSuccess: () => {
+    onSuccess: async (data, vars) => {
       queryClient.invalidateQueries({ queryKey: ["tasks", companyId] });
+      
+      if (!isEdit && vars.assigned_to) {
+        await notify({
+          recipientEmail: vars.assigned_to,
+          title: "New Task Assigned",
+          message: `You have been assigned a new task: "${vars.title}". Priority: ${vars.priority}.`,
+          type: "TASK_ASSIGNED",
+          data: { actionUrl: "https://optalflow.com/tasks" }
+        });
+      }
+      
       onClose();
       toast({ title: isEdit ? "Task updated" : "Task created successfully" });
     },

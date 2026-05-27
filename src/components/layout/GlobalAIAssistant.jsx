@@ -150,6 +150,7 @@ export default function GlobalAIAssistant({ onClose }) {
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const recognitionRef = useRef(null);
+  const manualStopRef = useRef(false);
 
   useEffect(() => {
     if (!companyId || !user?.email || isInitialized) return;
@@ -237,6 +238,37 @@ export default function GlobalAIAssistant({ onClose }) {
                 .eq('record_type', rt);
               const found = (records || []).filter(r => JSON.stringify(r).toLowerCase().includes(q)).slice(0, 5);
               results.push(`Search results for ${rt} matching "${q}":\n` + JSON.stringify(found));
+            }
+            break;
+          }
+          case 'remember': {
+            if (action.fact) {
+              await mutateRecord.mutateAsync({
+                id: crypto.randomUUID(),
+                recordType: 'ai_memory',
+                payload: { fact: action.fact, user: user?.email },
+                status: 'active',
+                searchText: `${user?.email} ${action.fact}`
+              });
+              results.push(`Fact successfully committed to long-term memory.`);
+            }
+            break;
+          }
+          case 'search_memory': {
+            const { data: mems } = await supabase
+              .from('industry_records')
+              .select('*')
+              .eq('company_id', companyId)
+              .eq('record_type', 'ai_memory')
+              .ilike('search_text', `%${user?.email}%`);
+            
+            if (mems && mems.length > 0) {
+              const matched = mems
+                .filter(m => m.data.fact.toLowerCase().includes((action.query || '').toLowerCase()))
+                .map(m => m.data.fact);
+              results.push(matched.length ? `Memory results:\n${matched.join('\n')}` : `No memories found matching "${action.query}".`);
+            } else {
+              results.push(`Memory is empty.`);
             }
             break;
           }
@@ -341,14 +373,21 @@ export default function GlobalAIAssistant({ onClose }) {
         const systemPrompt = `You are Orbit — an intelligent, proactive enterprise assistant embedded in Optalflow SaaS.
 Your current context is the ${ctx.suite} suite, specifically the '${ctx.title}' page.
 
-CRITICAL INSTRUCTIONS: 8 industry suites  Legal, School, Hospital, Hotel, Church, Insurance, Retail, Logistics, HR.
+CRITICAL INSTRUCTIONS:
+- You have Long-Term Memory. You can remember facts about the user across sessions. Always check your memory or save important details when asked.
+- 8 industry suites: Legal, School, Hospital, Hotel, Church, Insurance, Retail, Logistics, HR.
 
 AGENT POWERS (return EXACTLY this JSON format inline to act):
 - Search: <AGENT_ACTION>{"tool":"search_records","recordType":"case|staff|client","query":"Ali"}</AGENT_ACTION>
-- Create: <AGENT_ACTION>{"tool":"create_record","recordType":"staff","payload":{"name":"Jamila"}}</AGENT_ACTION>
-- Update: <AGENT_ACTION>{"tool":"update_record","recordType":"case","id":"uuid-here","payload":{"assigned_lawyer_id":"uuid"}}</AGENT_ACTION>
-- Delete: <AGENT_ACTION>{"tool":"delete_record","id":"uuid-here","recordType":"patient"}</AGENT_ACTION>
-- Navigate: <AGENT_ACTION>{"tool":"navigate_to","route":"/route"}</AGENT_ACTION>
+- Navigate: <AGENT_ACTION>{"tool":"navigate_to","route":"/legal/cases"}</AGENT_ACTION>
+- Create: <AGENT_ACTION>{"tool":"create_record","recordType":"task","payload":{"title":"Call Client","status":"pending"}}</AGENT_ACTION>
+- Update: <AGENT_ACTION>{"tool":"update_record","recordType":"task","id":"123","payload":{"status":"completed"}}</AGENT_ACTION>
+- Delete: <AGENT_ACTION>{"tool":"delete_record","recordType":"task","id":"123"}</AGENT_ACTION>
+- Toast: <AGENT_ACTION>{"tool":"show_toast","message":"Welcome!"}</AGENT_ACTION>
+- Remember: <AGENT_ACTION>{"tool":"remember","fact":"User prefers dark mode"}</AGENT_ACTION>
+- Search Memory: <AGENT_ACTION>{"tool":"search_memory","query":"preferences"}</AGENT_ACTION>
+
+Wait for the system to reply with Action Results before finalizing your answer if you take an action.
 
 RULES FOR MULTI-STEP REASONING:
 1. NEVER explain how the user can do something. YOU MUST do it for them.
@@ -400,11 +439,20 @@ RULES FOR MULTI-STEP REASONING:
   const toggleVoice = () => {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SR) { toast.error('Voice not supported. Please use Chrome or Edge.'); return; }
-    if (isRecording) { recognitionRef.current?.stop(); setIsRecording(false); return; }
+    
+    if (isRecording) { 
+      manualStopRef.current = true;
+      recognitionRef.current?.stop(); 
+      setIsRecording(false); 
+      return; 
+    }
+    
+    manualStopRef.current = false;
     const r = new SR();
     r.continuous = true;
     r.interimResults = false;
     r.lang = 'en-US';
+    
     r.onresult = e => {
       let t = '';
       for (let i = e.resultIndex; i < e.results.length; ++i) {
@@ -416,16 +464,27 @@ RULES FOR MULTI-STEP REASONING:
         setInput(prev => prev ? `${prev} ${t}` : t);
       }
     };
+    
     r.onerror = (e) => { 
       if (e.error !== 'no-speech') {
-        setIsRecording(false); toast.error('Voice error. Try again.'); 
+        manualStopRef.current = true;
+        setIsRecording(false); 
+        toast.error('Voice error: ' + e.error); 
       }
     };
-    r.onend = () => setIsRecording(false);
+    
+    r.onend = () => {
+      if (!manualStopRef.current) {
+        try { r.start(); } catch (err) { setIsRecording(false); }
+      } else {
+        setIsRecording(false);
+      }
+    };
+    
     recognitionRef.current = r;
     r.start();
     setIsRecording(true);
-    toast('Listening', { icon: '🎤', duration: 2000 });
+    toast('Listening continuously...', { icon: '🎤', duration: 2000 });
   };
 
   //  File Upload 

@@ -17,6 +17,7 @@ import AddOptionInline from "@/components/shared/AddOptionInline";
 import { useToast } from "@/components/ui/use-toast";
 import { useCompanyId, useCompany } from "@/hooks/useCompanyId";
 import { SUBSCRIPTION_PLANS } from "@/lib/constants";
+import { useNotifications } from "@/hooks/useNotifications";
 
 const DEFAULT_ROLES = [
   { value: "company_admin", label: "Company Admin" },
@@ -45,6 +46,7 @@ export default function Team() {
   const [showCreate, setShowCreate] = useState(false);
   const [editingStaff, setEditingStaff] = useState(null);
   const [search, setSearch] = useState("");
+  const { notify } = useNotifications();
 
   const canManage = ["super_admin", "company_admin"].includes(user?.role);
 
@@ -164,6 +166,14 @@ export default function Team() {
             try {
               await base44.auth.register({ email: data.user_email, password });
               createMutation.mutate(data);
+              
+              await notify({
+                recipientEmail: data.user_email,
+                title: "Welcome to Optalflow!",
+                message: `Your account has been created by ${user?.full_name || 'an Admin'}. You can now log in using this email address and the temporary password provided to you.`,
+                type: "WELCOME"
+              });
+
               toast({ title: `✓ Account created for ${data.full_name}`, description: `They can log in and change their password anytime.` });
             } catch (err) {
               toast({ title: "Account creation failed", description: err?.message || "Please try again.", variant: "destructive" });

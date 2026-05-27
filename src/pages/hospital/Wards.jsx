@@ -4,6 +4,8 @@ import { BedDouble, CheckCircle2, AlertTriangle, Settings, ArrowRightLeft } from
 import { Button } from '@/components/ui/button';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import { toast } from 'react-hot-toast';
+import { useNotifications } from '@/hooks/useNotifications';
+import { useAuth } from '@/lib/AuthContext';
 
 const bedColors = {
   Occupied: 'bg-red-50 border-red-200 text-red-700 hover:bg-red-100/50',
@@ -19,9 +21,11 @@ const bedIcons = {
 
 export default function Wards() {
   // Supabase Real-time Sync Hooks
+  const { user } = useAuth();
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('ward');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
+  const { notify } = useNotifications();
 
   // Map database records — always ensure beds is an array to prevent .filter() crash
   const dbWards = dbRecords.map(r => ({ id: r.id, status: r.status || 'Active', ...r.data, beds: r.data?.beds || [] }));
@@ -103,7 +107,16 @@ export default function Wards() {
       status: 'Active',
       searchText: `${targetWard.name}`
     }, {
-      onSuccess: () => {
+      onSuccess: async () => {
+        if (formData.status === 'Occupied' && selectedBed.bed.status !== 'Occupied') {
+          await notify({
+            recipientEmail: user?.email, // In a real app, this would be the assigned doctor/nurse email
+            title: `Bed Assigned: ${targetWard.name}`,
+            message: `Bed ${selectedBed.bed.id} has been assigned to patient ${formData.patient}.`,
+            type: "WARD_UPDATE",
+            data: { actionUrl: "https://optalflow.com/hospital/wards" }
+          });
+        }
         toast.success('Bed status updated successfully!');
         setShowModal(false);
         setSelectedBed(null);
