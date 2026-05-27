@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Sparkles, X, Send, Bot, User, Maximize2, Minimize2, Plus, Clock, Mic, MicOff, Paperclip, Trash2, FileText, Image } from 'lucide-react';
+import { Sparkles, MessageSquare, X, Send, Bot, User, Maximize2, Minimize2, Plus, Clock, Mic, MicOff, Paperclip, Trash2, FileText, Image, Square } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { generateText, analyzeImage } from '@/lib/cloudflareAI';
 import { toast } from 'react-hot-toast';
@@ -9,6 +9,7 @@ import { useCompanyId } from '@/hooks/useCompanyId';
 import { useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { supabase } from '@/api/supabaseClient';
+import { OrbitIcon } from '@/components/ui/OrbitIcon';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useAuth } from '@/lib/AuthContext';
@@ -539,7 +540,7 @@ RULES FOR MULTI-STEP REASONING:
           </button>
           <div className="flex items-center gap-2 mb-2">
             <div className="w-5 h-5 rounded flex items-center justify-center bg-blue-600/20 text-blue-600 shrink-0">
-              <Bot className="w-3.5 h-3.5" />
+              <OrbitIcon className="w-3.5 h-3.5" />
             </div>
             <div className="flex items-center gap-1.5 flex-1">
               <p className="text-[11px] font-bold text-foreground leading-none">Orbit</p>

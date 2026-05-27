@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, RefreshCw, Globe, Layers, Sparkles, Bell } from "lucide-react";
+import { LayoutDashboard, RefreshCw, Globe, Layers, Bell } from "lucide-react";
+import { OrbitIcon } from "@/components/ui/OrbitIcon";
 import { Button } from "@/components/ui/button";
 import { isSuperAdmin } from "@/lib/constants";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
@@ -197,8 +198,8 @@ export default function TopBar({ user, isAIOpen, toggleAI }) {
           className={`gap-1.5 text-xs h-8 ${isAIOpen ? 'bg-indigo-50 border-indigo-200 text-indigo-700 dark:bg-indigo-950/30 dark:border-indigo-800 dark:text-indigo-400' : 'text-muted-foreground'}`}
           onClick={toggleAI}
         >
-          <Sparkles className={`w-3.5 h-3.5 ${isAIOpen ? 'text-indigo-600 dark:text-indigo-400' : ''}`} />
-          <span className="hidden sm:block">Ask AI</span>
+          <OrbitIcon className={`w-3.5 h-3.5 ${isAIOpen ? 'text-indigo-600 dark:text-indigo-400' : ''}`} />
+          <span className="hidden sm:inline">Orbit</span>
         </Button>
 
         {/* Refresh */}
