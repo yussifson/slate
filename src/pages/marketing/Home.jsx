@@ -541,12 +541,12 @@ export default function Home() {
         </div>
       </section>
       
-      <style dangerouslySetInnerHTML={{__html: \`
+      <style dangerouslySetInnerHTML={{__html: `
         @keyframes slideRight {
           0% { transform: scaleX(1); }
           100% { transform: scaleX(0); }
         }
-      \`}} />
+      `}} />
 
       {/* ============================================================ */}
       {/*  ORBIT VIDEO SECTION                                         */}
