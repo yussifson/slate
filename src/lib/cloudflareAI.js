@@ -2,7 +2,7 @@
 // Routes through Vite's dev proxy (/api/ai) to avoid CORS.
 // In production, route through a Cloudflare Worker or backend function.
 
-const API_TOKEN = "cfut_DjZLCGykcMI0D0wtJIHxOME8NpAIwe68bLYMsyWOd091300e";
+const API_TOKEN = import.meta.env.VITE_CLOUDFLARE_AI_TOKEN || "cfut_DjZLCGykcMI0D0wtJIHxOME8NpAIwe68bLYMsyWOd091300e";
 
 const MODELS = {
   text: "@cf/meta/llama-3.1-8b-instruct",
