@@ -106,7 +106,7 @@ const features = [
     title: 'Orbit AI Assistant',
     description:
       'Your built-in enterprise AI. Orbit can search records, navigate the app, create tasks, and automate workflows via simple chat commands.',
-    image: '/images/hero_dashboard_ui_clean_1779790623615.png' 
+    image: '/images/orbit_dashboard_mockup.png' 
   }
 ];
 
