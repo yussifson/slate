@@ -23,8 +23,8 @@ export default function Wards() {
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
 
-  // Map database records
-  const dbWards = dbRecords.map(r => ({ id: r.id, status: r.status || 'Active', ...r.data }));
+  // Map database records — always ensure beds is an array to prevent .filter() crash
+  const dbWards = dbRecords.map(r => ({ id: r.id, status: r.status || 'Active', ...r.data, beds: r.data?.beds || [] }));
 
   // Default wards to display or initialize
   const defaultWards = [
@@ -135,11 +135,11 @@ export default function Wards() {
               <div className="p-4 border-b border-border bg-muted/50 flex items-center justify-between">
                  <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><BedDouble className="w-5 h-5 text-blue-500"/> {ward.name}</h2>
                  <span className="text-sm font-semibold text-muted-foreground">
-                   {ward.beds.filter(b => b.status === 'Available').length} / {ward.beds.length} Available
+                   {(ward.beds || []).filter(b => b.status === 'Available').length} / {(ward.beds || []).length} Available
                  </span>
               </div>
               <div className="p-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                 {ward.beds.map((bed, bIdx) => (
+                 {(ward.beds || []).map((bed, bIdx) => (
                     <div key={bed.id} onClick={() => handleBedClick(wIdx, bIdx, bed, ward.id)} className={`p-4 rounded-xl border-2 flex flex-col items-center justify-center text-center hover:shadow-md transition-all cursor-pointer ${bedColors[bed.status]}`}>
                        {bedIcons[bed.status]}
                        <p className="font-bold mt-2 text-lg">{bed.id}</p>
