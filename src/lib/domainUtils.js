@@ -14,23 +14,13 @@ export function getSubdomainAndBase() {
     return { currentSubdomain: parts[0], baseDomain: 'localhost' };
   }
 
+  // Handle Vercel preview and production domains
+  if (host.endsWith('.vercel.app')) {
+    return { currentSubdomain: null, baseDomain: host };
+  }
+
   // Handle custom domains (e.g. firm.company.com -> current: firm, base: company.com)
   const parts = host.split('.');
-
-  // Explicit check for known PaaS domains that have 3 parts by default (e.g., project.vercel.app)
-  if (host.endsWith('.vercel.app') || host.endsWith('.onrender.com') || host.endsWith('.netlify.app')) {
-    if (parts.length === 3) {
-      return { currentSubdomain: null, baseDomain: host };
-    }
-    if (parts.length > 3) {
-      const currentSubdomain = parts.shift();
-      const baseDomain = parts.join('.');
-      if (currentSubdomain === 'www' || currentSubdomain === 'app') {
-        return { currentSubdomain: null, baseDomain };
-      }
-      return { currentSubdomain, baseDomain };
-    }
-  }
   
   // If it's a standard domain like company.com
   if (parts.length === 2) {
