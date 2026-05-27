@@ -1,6 +1,12 @@
 {
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/index.html" }
+  "rewrites": [
+    {
+      "source": "/api/ai/:model*",
+      "destination": "https://api.cloudflare.com/client/v4/accounts/bf5126510c1f8f2759cc81c4e7d795ef/ai/run/:model*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }
