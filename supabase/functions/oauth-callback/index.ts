@@ -17,10 +17,14 @@ serve(async (req) => {
 
     // Decode the state object
     const stateObj = JSON.parse(atob(state))
-    const { company_id, provider } = stateObj
+    const { company_id, provider, return_url } = stateObj
+    const fallbackUrl = return_url || `${appUrl}/integrations`
 
     if (!company_id || !provider) {
-      return Response.redirect(`${appUrl}/integrations?status=error&message=Invalid_State_Token`, 302)
+      const errUrl = new URL(fallbackUrl)
+      errUrl.searchParams.set('status', 'error')
+      errUrl.searchParams.set('message', 'Invalid_State_Token')
+      return Response.redirect(errUrl.toString(), 302)
     }
 
     // Initialize Supabase Admin client to bypass RLS for inserting sensitive tokens
@@ -30,7 +34,11 @@ serve(async (req) => {
     // Fallback if missing Supabase keys (e.g. running locally without env set)
     if (!supabaseUrl || !supabaseServiceKey) {
       console.error("Missing Supabase URL or Service Role Key")
-      return Response.redirect(`${appUrl}/integrations?status=mock_success&provider=${provider}&company_id=${company_id}`, 302)
+      const mockUrl = new URL(fallbackUrl)
+      mockUrl.searchParams.set('status', 'mock_success')
+      mockUrl.searchParams.set('provider', provider)
+      mockUrl.searchParams.set('company_id', company_id)
+      return Response.redirect(mockUrl.toString(), 302)
     }
 
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
@@ -38,9 +46,6 @@ serve(async (req) => {
     // ==========================================
     // TOKEN EXCHANGE LOGIC WOULD GO HERE
     // ==========================================
-    // In a full production environment, we would make a POST request to the provider's token endpoint
-    // e.g., POST https://oauth2.googleapis.com/token with the client_id, client_secret, code, and grant_type.
-    // Because we don't know if the user has valid keys yet, we will mock the tokens securely to avoid crashes.
     
     const mockAccessToken = `mock_access_token_${provider}_${crypto.randomUUID()}`
     const mockRefreshToken = `mock_refresh_token_${provider}_${crypto.randomUUID()}`
@@ -62,11 +67,18 @@ serve(async (req) => {
 
     if (error) {
       console.error("DB Upsert Error:", error)
-      return Response.redirect(`${appUrl}/integrations?status=error&message=Database_Insert_Failed`, 302)
+      const dbErrUrl = new URL(fallbackUrl)
+      dbErrUrl.searchParams.set('status', 'error')
+      dbErrUrl.searchParams.set('message', 'Database_Insert_Failed')
+      return Response.redirect(dbErrUrl.toString(), 302)
     }
 
-    // Redirect back to the Optalflow UI with a success flag
-    return Response.redirect(`${appUrl}/integrations?status=success&provider=${provider}&company_id=${company_id}`, 302)
+    // Redirect back to the exact URL the user came from
+    const successUrl = new URL(fallbackUrl)
+    successUrl.searchParams.set('status', 'success')
+    successUrl.searchParams.set('provider', provider)
+    successUrl.searchParams.set('company_id', company_id)
+    return Response.redirect(successUrl.toString(), 302)
 
   } catch (error) {
     const appUrl = Deno.env.get('APP_URL') || 'http://localhost:3000'

@@ -199,7 +199,8 @@ export default function Integrations() {
     // In production, we redirect to our Edge Function which handles the OAuth Init flow
     // Replace YOUR_SUPABASE_URL with your actual project URL when deployed
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://your-project.supabase.co';
-    const edgeFunctionUrl = `${supabaseUrl}/functions/v1/oauth-init?provider=${app.provider}&company_id=${companyId}`;
+    const returnUrl = encodeURIComponent(window.location.href);
+    const edgeFunctionUrl = `${supabaseUrl}/functions/v1/oauth-init?provider=${app.provider}&company_id=${companyId}&return_url=${returnUrl}`;
     
     // Redirect the user
     setTimeout(() => {
