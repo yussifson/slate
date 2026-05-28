@@ -158,7 +158,6 @@ import AdminUsers from './pages/admin/AdminUsers';
 import AdminBilling from './pages/admin/AdminBilling';
 import AdminSecurity from './pages/admin/AdminSecurity';
 import AdminBroadcasts from './pages/admin/AdminBroadcasts';
-import AdminAI from './pages/admin/AdminAI';
 
 function PlatformRoutes() {
   return (
@@ -324,7 +323,7 @@ function App() {
                         <Route path="/admin/billing" element={<AdminBilling />} />
                         <Route path="/admin/security" element={<AdminSecurity />} />
                         <Route path="/admin/broadcasts" element={<AdminBroadcasts />} />
-                        <Route path="/admin/ai" element={<AdminAI />} />
+
                         {PlatformRoutes()}
                       </Route>
                     </Route>
@@ -348,7 +347,7 @@ function App() {
                         <Route path="/admin/billing" element={<AdminBilling />} />
                         <Route path="/admin/security" element={<AdminSecurity />} />
                         <Route path="/admin/broadcasts" element={<AdminBroadcasts />} />
-                        <Route path="/admin/ai" element={<AdminAI />} />
+
                         {PlatformRoutes()}
                       </Route>
                       <Route path="/intake" element={<IntakeForm />} />

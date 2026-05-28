@@ -16,21 +16,29 @@ export default function AdminUsers() {
   const fetchProfiles = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      const { data: profData, error: profErr } = await supabase
         .from('profiles')
-        .select(`
-          id, 
-          email, 
-          full_name, 
-          role, 
-          created_at,
-          companies:company_id(name)
-        `)
+        .select('id, email, full_name, role, created_at, company_id')
         .order('created_at', { ascending: false })
         .limit(100);
 
-      if (error) throw error;
-      setProfiles(data || []);
+      if (profErr) throw profErr;
+
+      const { data: compData, error: compErr } = await supabase
+        .from('companies')
+        .select('id, name');
+
+      if (compErr) throw compErr;
+
+      // Join data manually since Supabase FK might not be exposed
+      const joinedData = (profData || []).map(profile => ({
+        ...profile,
+        companies: {
+          name: compData?.find(c => c.id === profile.company_id)?.name || null
+        }
+      }));
+
+      setProfiles(joinedData);
     } catch (err) {
       toast({ title: "Failed to load users", description: err.message, variant: "destructive" });
     } finally {
