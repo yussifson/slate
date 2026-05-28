@@ -16,7 +16,7 @@ const INTEGRATION_CATALOG = [
     provider: 'google',
     category: 'Productivity',
     description: 'Two-way sync for Google Calendar, automatic Google Meet links, and Drive folder generation.',
-    logo: 'https://logo.clearbit.com/google.com',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/240px-Google_%22G%22_logo.svg.png',
     learnMore: 'https://workspace.google.com/',
     industries: ['all'],
     popular: true
@@ -27,7 +27,7 @@ const INTEGRATION_CATALOG = [
     provider: 'microsoft',
     category: 'Productivity',
     description: 'Sync with Outlook Calendar, auto-generate Microsoft Teams links, and save files to OneDrive.',
-    logo: 'https://logo.clearbit.com/microsoft.com',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Microsoft_logo_%282012%29.svg/320px-Microsoft_logo_%282012%29.svg.png',
     learnMore: 'https://www.microsoft.com/en-us/microsoft-365',
     industries: ['all', 'corporate'],
     popular: true
@@ -38,7 +38,7 @@ const INTEGRATION_CATALOG = [
     provider: 'zoom',
     category: 'Communication',
     description: 'Automatically generate and send Zoom links for client consultations and internal team meetings.',
-    logo: 'https://logo.clearbit.com/zoom.us',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Zoom_Communications_Logo.svg/320px-Zoom_Communications_Logo.svg.png',
     learnMore: 'https://zoom.us/',
     industries: ['all'],
     popular: true
@@ -49,7 +49,7 @@ const INTEGRATION_CATALOG = [
     provider: 'slack',
     category: 'Communication',
     description: 'Receive real-time notifications for new leads, signed documents, and overdue invoices directly in Slack.',
-    logo: 'https://logo.clearbit.com/slack.com',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Slack_icon_2019.svg/240px-Slack_icon_2019.svg.png',
     learnMore: 'https://slack.com/',
     industries: ['all', 'law', 'agency'],
     popular: false
@@ -60,7 +60,7 @@ const INTEGRATION_CATALOG = [
     provider: 'quickbooks',
     category: 'Finance',
     description: 'Automatically push paid invoices, expenses, and client records directly into your QuickBooks ledger.',
-    logo: 'https://logo.clearbit.com/quickbooks.intuit.com',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/QuickBooks_logo_2020.svg/320px-QuickBooks_logo_2020.svg.png',
     learnMore: 'https://quickbooks.intuit.com/',
     industries: ['all', 'law', 'corporate'],
     popular: true
@@ -71,7 +71,7 @@ const INTEGRATION_CATALOG = [
     provider: 'docusign',
     category: 'Documents',
     description: 'Send contracts, intake forms, and agreements for legally binding e-signatures directly from case files.',
-    logo: 'https://logo.clearbit.com/docusign.com',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/DocuSign_logo.svg/320px-DocuSign_logo.svg.png',
     learnMore: 'https://www.docusign.com/',
     industries: ['law', 'real_estate', 'corporate'],
     popular: true
@@ -82,7 +82,7 @@ const INTEGRATION_CATALOG = [
     provider: 'twilio',
     category: 'Communication',
     description: 'Send automated SMS and WhatsApp reminders for appointments, hearings, and overdue invoices.',
-    logo: 'https://logo.clearbit.com/whatsapp.com',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/240px-WhatsApp.svg.png',
     learnMore: 'https://business.whatsapp.com/',
     industries: ['hospital', 'law', 'school', 'church'],
     popular: true
@@ -93,7 +93,7 @@ const INTEGRATION_CATALOG = [
     provider: 'stripe',
     category: 'Finance',
     description: 'Accept credit card and ACH payments globally with automatic invoice reconciliation.',
-    logo: 'https://logo.clearbit.com/stripe.com',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Stripe_Logo%2C_revised_2016.svg/320px-Stripe_Logo%2C_revised_2016.svg.png',
     learnMore: 'https://stripe.com/',
     industries: ['all'],
     popular: true
