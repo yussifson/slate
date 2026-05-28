@@ -692,32 +692,40 @@ export default function Home() {
             </div>
           </FadeIn>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
             {features.map((feature, i) => {
-              const isLarge = i === 0 || i === 3;
+              // Create a masonry-like staggered layout by varying card heights subtly or using spans for certain items
+              const isWide = i === 0 || i === 3;
               return (
-                <FadeIn key={i} delay={`delay-[${i * 80}ms]`} className={isLarge ? "md:col-span-2" : "md:col-span-1"}>
-                  <div className={`group relative bg-white rounded-[2rem] border border-slate-200/80 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_-10px_rgba(37,99,235,0.1)] hover:-translate-y-1 hover:border-blue-200/60 transition-all duration-500 overflow-hidden h-full flex flex-col justify-between ${isLarge ? 'bg-gradient-to-b from-white to-slate-50/50' : ''}`}>
-                    {/* Hover Gradient Effect */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-600/0 via-transparent to-blue-600/[0.03] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                <FadeIn key={i} delay={`delay-[${i * 80}ms]`} className={isWide ? "lg:col-span-2" : "col-span-1"}>
+                  <div className="group relative bg-white rounded-[2rem] border border-slate-200/60 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_-10px_rgba(37,99,235,0.12)] hover:-translate-y-1.5 hover:border-blue-200/80 transition-all duration-500 overflow-hidden h-full flex flex-col p-8 lg:p-10">
                     
-                    <div className="relative z-10 px-8 pt-8 lg:px-10 lg:pt-10 pb-2">
+                    {/* Hover Gradient Effect */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-transparent to-blue-50/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+                    
+                    {/* Abstract watermark icon on hover */}
+                    <div className="absolute -bottom-6 -right-6 text-blue-50 opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-150 transition-all duration-700 pointer-events-none">
+                      <feature.icon className="w-48 h-48" strokeWidth={0.5} />
+                    </div>
+
+                    <div className="relative z-10 flex-1">
                       <div className="w-14 h-14 rounded-2xl bg-blue-50/60 border border-blue-100/40 flex items-center justify-center mb-8 group-hover:scale-110 group-hover:bg-blue-600 group-hover:border-blue-600 group-hover:shadow-lg group-hover:shadow-blue-600/20 transition-all duration-500">
                         <feature.icon className="w-7 h-7 text-blue-600 group-hover:text-white transition-colors duration-500" strokeWidth={1.5} />
                       </div>
                       <h4 className="text-2xl font-extrabold text-slate-900 tracking-tight mb-4 group-hover:text-blue-700 transition-colors duration-300">
                         {feature.title}
                       </h4>
-                      <p className="text-base text-slate-600 leading-relaxed font-medium">
+                      <p className="text-slate-600 leading-relaxed font-medium text-[17px]">
                         {feature.description}
                       </p>
                     </div>
                     
-                    {/* Clean Image Presentation */}
-                    <div className="mt-auto w-full p-6 lg:p-8 pt-0">
-                      <div className="w-full rounded-xl border border-slate-200/60 shadow-sm overflow-hidden bg-white">
-                        <img src={feature.image} alt={feature.title} className="w-full h-auto block" />
-                      </div>
+                    {/* Clean Footer / Link interaction */}
+                    <div className="relative z-10 mt-10 flex items-center text-blue-600 font-bold opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500">
+                      Explore feature 
+                      <svg className="w-4 h-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      </svg>
                     </div>
                   </div>
                 </FadeIn>
