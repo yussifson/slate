@@ -326,8 +326,20 @@ export default function Integrations() {
       } else if (app.provider === 'slack' || app.provider === 'twilio') {
         endpoint = 'notify-team';
         payload.message = `Hello from Optalflow! This is an automated test notification at ${new Date().toLocaleTimeString()}`;
-        if (app.provider === 'twilio') payload.recipientPhone = "+1234567890"; // Mock number for UI test
+        if (app.provider === 'twilio') payload.recipientPhone = "+1234567890";
         if (app.provider === 'slack') payload.channel = "#general";
+      } else if (app.provider === 'stripe' || app.provider === 'paystack') {
+        endpoint = 'process-payment';
+        payload.amount = 100.00;
+        payload.currency = app.provider === 'stripe' ? 'usd' : 'NGN';
+        payload.customerEmail = "test@optalflow.com";
+      } else if (app.provider === 'quickbooks') {
+        endpoint = 'sync-invoice';
+        payload.invoiceDetails = { amount: 500.00 };
+      } else if (app.provider === 'docusign') {
+        endpoint = 'send-contract';
+        payload.documentName = "Optalflow Demo Contract";
+        payload.signerEmail = "test@optalflow.com";
       }
 
       const res = await fetch(`${supabaseUrl}/functions/v1/${endpoint}`, {
@@ -347,9 +359,7 @@ export default function Integrations() {
 
       toast({
         title: "Test Successful!",
-        description: app.provider === 'zoom' 
-          ? `Zoom meeting created! Check your Zoom account.` 
-          : `Message pushed successfully!`,
+        description: data.paymentUrl ? `Generated Payment URL!` : `Integration tested successfully!`,
         variant: "default"
       });
     } catch (err) {
@@ -488,7 +498,7 @@ export default function Integrations() {
                           {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Test Sync"}
                         </Button>
                       )}
-                      {(app.provider === 'zoom' || app.provider === 'slack' || app.provider === 'twilio') && (
+                      {(app.provider === 'zoom' || app.provider === 'slack' || app.provider === 'twilio' || app.provider === 'stripe' || app.provider === 'paystack' || app.provider === 'quickbooks' || app.provider === 'docusign') && (
                         <Button 
                           variant="secondary" 
                           disabled={isLoading}
