@@ -6,40 +6,34 @@ import {
   Receipt, CheckSquare, FolderOpen, Settings,
   Scale, UserCog, LogOut, CreditCard, UserCircle, UserPlus, GitBranch,
   BookOpen, Shield, TrendingUp, Trophy, Search, Mail, BarChart2, Download, MessageCircle, HeartHandshake,
-  ChevronLeft, ChevronRight, PanelLeft, X
+  ChevronLeft, ChevronRight, PanelLeft, X,
+  GraduationCap, BookMarked, ClipboardList, Bus, FileText,
+  Stethoscope, Bed, Pill, FlaskConical, Activity,
+  Sparkles, UtensilsCrossed, Star,
+  ShoppingCart, Package, Truck, Tag, Layers, Bell,
+  Award, Library, Building2, AlertCircle, Clock,
+  Network, AlertTriangle, Gift, Banknote, CalendarOff,
+  HandCoins, Users2, Blocks, Map, Warehouse, Car, MapPin,
+  FileSearch, LayoutGrid, BedDouble, BellRing
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useImpersonation } from "@/lib/ImpersonationContext";
-
-const companyNav = [
-  { label: "Dashboard", icon: LayoutDashboard, path: "/" },
-  { label: "My Dashboard", icon: UserCircle, path: "/my-dashboard" },
-  { label: "Cases", icon: Briefcase, path: "/cases" },
-  { label: "Leads", icon: UserPlus, path: "/leads" },
-  { label: "Clients", icon: Users, path: "/clients" },
-  { label: "Calendar", icon: Calendar, path: "/calendar" },
-  { label: "Invoices", icon: Receipt, path: "/invoices" },
-  { label: "Billing", icon: CreditCard, path: "/billing" },
-  { label: "Tasks", icon: CheckSquare, path: "/tasks" },
-  { label: "Documents", icon: FolderOpen, path: "/documents" },
-  { label: "Pipeline", icon: GitBranch, path: "/pipeline" },
-  { label: "Outcomes", icon: Trophy, path: "/outcomes" },
-  { label: "HR", icon: HeartHandshake, path: "/hr" },
-  { label: "Performance", icon: TrendingUp, path: "/performance" },
-  { label: "Conflict Check", icon: Shield, path: "/conflict-check" },
-  { label: "Legal Research", icon: BookOpen, path: "/research" },
-  { label: "Audit Log", icon: Search, path: "/audit" },
-  { label: "WhatsApp", icon: MessageCircle, path: "/whatsapp" },
-  { label: "Email Inbox", icon: Mail, path: "/email-inbox" },
-  { label: "Reports", icon: BarChart2, path: "/reports" },
-  { label: "Export Data", icon: Download, path: "/export" },
-  { label: "Team", icon: UserCog, path: "/team" },
-  { label: "Settings", icon: Settings, path: "/settings" },
-];
+import { INDUSTRIES, getIndustryNav } from "@/config/industries";
 
 const clientNav = [
-  { label: "My Portal", icon: LayoutDashboard, path: "/client-portal" },
+  { label: "My Portal", icon: "LayoutDashboard", path: "/client-portal" },
 ];
+
+const ICON_MAP = {
+  LayoutDashboard, Briefcase, Users, Calendar, Receipt, CheckSquare, FolderOpen, Settings,
+  Scale, UserCog, LogOut, CreditCard, UserCircle, UserPlus, GitBranch, BookOpen, Shield,
+  TrendingUp, Trophy, Search, Mail, BarChart2, Download, MessageCircle, HeartHandshake,
+  GraduationCap, BookMarked, ClipboardList, Bus, FileText, Stethoscope, Bed, Pill,
+  FlaskConical, Activity, Sparkles, UtensilsCrossed, Star, ShoppingCart, Package, Truck,
+  Tag, Layers, Bell, Award, Library, Building2, AlertCircle, Clock, Network, AlertTriangle,
+  Gift, Banknote, CalendarOff, HandCoins, Users2, Blocks, Map, Warehouse, Car, MapPin,
+  FileSearch, LayoutGrid, BedDouble, BellRing, CheckSquare2: CheckSquare
+};
 
 export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   const { impersonatedCompany } = useImpersonation();
@@ -49,6 +43,10 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   
   const activeCompanyLogo = impersonatedCompany?.logo_url || impersonatedCompany?.logo_light_url || user?.company_logo_url;
   const activeCompanyName = impersonatedCompany?.name || user?.company_name || "LexAfrica";
+
+  const activeIndustry = sessionStorage.getItem('optalflow_industry_override') || impersonatedCompany?.industry_type || user?.company_industry || 'law';
+  const industryData = INDUSTRIES[activeIndustry] || INDUSTRIES.law;
+  const industryNav = getIndustryNav(activeIndustry);
   
   const ROLE_PERMISSIONS = {
     lawyer: ["/my-dashboard", "/cases", "/leads", "/clients", "/calendar", "/tasks", "/documents", "/conflict-check", "/research", "/email-inbox", "/team"],
@@ -60,35 +58,35 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
 
   const allowedPaths = isAdmin ? null : (ROLE_PERMISSIONS[user?.role] || ROLE_PERMISSIONS.support);
 
-  const filteredCompanyNav = companyNav.filter(item => {
+  const filteredCompanyNav = industryNav.filter(item => {
     if (isAdmin) return true;
+    if (activeIndustry !== 'law') return true; // Only apply strict law role filtering in law mode for now
     return allowedPaths.includes(item.path);
   });
 
   const baseNav = user?.role === "client" ? clientNav : filteredCompanyNav;
   let navItems = isAdmin
-    ? [...baseNav, { label: "Firm Setup", icon: Settings, path: "/firm-setup" }]
+    ? [...baseNav, { label: "Firm Setup", icon: "Settings", path: "/firm-setup" }]
     : baseNav;
     
   if (user?.role === "super_admin") {
-    navItems = [...navItems, { label: "Super Admin Portal", icon: Shield, path: "/system-admin" }];
+    navItems = [...navItems, { label: "Super Admin Portal", icon: "Shield", path: "/system-admin" }];
   }
 
   const NavContent = ({ collapsed }) => (
     <div className="flex flex-col h-full bg-sidebar overflow-x-hidden">
-      {/* Logo area */}
       <div className={cn("py-5 border-b border-sidebar-border flex items-center transition-all", collapsed ? "px-4 justify-center" : "px-5 gap-3")}>
         {activeCompanyLogo ? (
           <img src={activeCompanyLogo} alt="Logo" className={cn("object-contain", collapsed ? "w-8 h-8" : "w-9 h-9")} />
         ) : (
-          <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center flex-shrink-0 shadow-sm">
-            <Scale className="w-5 h-5 text-white" />
+          <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center flex-shrink-0 shadow-sm text-lg">
+            {industryData.icon}
           </div>
         )}
         {!collapsed && (
           <div className="animate-in fade-in zoom-in duration-200">
             <h1 className="text-sm font-bold text-sidebar-foreground tracking-tight leading-tight whitespace-nowrap truncate max-w-[140px]">{activeCompanyName}</h1>
-            <p className="text-[10px] text-muted-foreground uppercase tracking-wider whitespace-nowrap">Law Management</p>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider whitespace-nowrap">{industryData.name}</p>
           </div>
         )}
       </div>
@@ -106,6 +104,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
       <nav className="flex-1 px-3 pb-3 space-y-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path || (item.path !== "/" && location.pathname.startsWith(item.path));
+          const IconComp = typeof item.icon === 'string' ? ICON_MAP[item.icon] || LayoutDashboard : item.icon;
           return (
             <Link
               key={item.path}
@@ -120,7 +119,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
                   : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"
               )}
             >
-              <item.icon className={cn("flex-shrink-0 transition-all", collapsed ? "w-5 h-5" : "w-4 h-4")} />
+              <IconComp className={cn("flex-shrink-0 transition-all", collapsed ? "w-5 h-5" : "w-4 h-4")} />
               {!collapsed && <span className="whitespace-nowrap animate-in fade-in duration-200">{item.label}</span>}
             </Link>
           );

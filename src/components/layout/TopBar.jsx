@@ -64,7 +64,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
   const initials = nameStr.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
   const displayName = isSuperAdmin(user) ? "Super Admin" : nameStr;
 
-  const currentIndustry = company?.industry_type || 'law';
+  const currentIndustry = sessionStorage.getItem('optalflow_industry_override') || company?.industry_type || 'law';
 
   return (
     <div className="h-12 border-b border-border bg-card sticky top-0 z-30 flex items-center pl-4 pr-5 lg:px-5 gap-3">
