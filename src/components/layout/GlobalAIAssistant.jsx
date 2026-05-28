@@ -509,13 +509,19 @@ RULES FOR MULTI-STEP REASONING:
 5. DO NOT wrap <AGENT_ACTION> in markdown code blocks. Output it raw inline.
 6. Once all tasks are complete, summarize what you did in plain language and STOP outputting <AGENT_ACTION> blocks.
 7. For 'case' records, use 'title' instead of 'name'.
-8. If the user's input has a typo, is ambiguous, or if you are unsure which page they mean, ALWAYS use the 'ask_confirmation' tool first and wait for approval.`;
+8. If the user's input has a typo, is ambiguous, or if you are unsure which page they mean, ALWAYS use the 'ask_confirmation' tool first and wait for approval.
+9. IGNORE any previously executed actions in the chat history. Only focus on the latest user request and execute new actions using new <AGENT_ACTION> tags as needed. Do NOT copy or re-run old tools unless asked again.`;
 
         const sessionMessages = currentSessions.find(s => s.id === sid)?.messages || [];
         const allMessages = [...sessionMessages, { role: 'user', content: userContent }];
         let apiMessages = [
           { role: 'system', content: systemPrompt },
-          ...allMessages.slice(-20).map(m => ({ role: m.role, content: m.content }))
+          ...allMessages.slice(-20).map(m => {
+            if (m.role === 'system') {
+              return { role: 'user', content: `[System Status / Action Results]:\n${m.content}` };
+            }
+            return { role: m.role, content: m.content };
+          })
         ];
 
         let maxSteps = 5;
@@ -548,7 +554,7 @@ RULES FOR MULTI-STEP REASONING:
           const actionResults = await executeActionsAsync(actions);
           
           apiMessages.push({ role: 'assistant', content: responseText });
-          apiMessages.push({ role: 'system', content: `Action Results:\n${actionResults.join('\n')}` });
+          apiMessages.push({ role: 'user', content: `[System Status / Action Results]:\n${actionResults.join('\n')}` });
         }
 
         if (finalCleanText) {
