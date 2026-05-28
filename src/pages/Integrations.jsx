@@ -154,6 +154,39 @@ export default function Integrations() {
     fetchConnections();
   }, [companyId]);
 
+  // Handle OAuth callback redirects
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const status = params.get('status');
+    const provider = params.get('provider');
+    
+    if (status && provider) {
+      const app = INTEGRATION_CATALOG.find(a => a.provider === provider);
+      const appName = app ? app.name : provider;
+      
+      if (status === 'success' || status === 'mock_success') {
+        toast({
+          title: "Connection Successful",
+          description: `You have successfully securely linked ${appName}.`,
+          variant: "default"
+        });
+        
+        // Optimistically update the UI
+        setConnectedApps(prev => ({ ...prev, [provider]: true }));
+      } else if (status === 'error') {
+        const message = params.get('message')?.replace(/_/g, ' ') || 'An unknown error occurred.';
+        toast({
+          title: "Connection Failed",
+          description: `Failed to connect ${appName}: ${message}`,
+          variant: "destructive"
+        });
+      }
+
+      // Clean up the URL
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, [toast]);
+
   const handleConnect = async (app) => {
     if (!companyId) return;
     setLoadingAppId(app.id);
