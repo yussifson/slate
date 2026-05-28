@@ -15,24 +15,15 @@ CREATE TABLE IF NOT EXISTS public.connected_apps (
 -- RLS Policies
 ALTER TABLE public.connected_apps ENABLE ROW LEVEL SECURITY;
 
--- Allow users to view their company's connected apps
-CREATE POLICY "Users can view connected apps for their company" ON public.connected_apps
+-- Allow authenticated users to view connected apps
+CREATE POLICY "Users can view connected apps" ON public.connected_apps
     FOR SELECT
-    USING (
-        company_id IN (
-            SELECT company_id FROM public.users WHERE id = auth.uid()
-        )
-    );
+    USING (auth.role() = 'authenticated');
 
--- Allow admins to insert/update connected apps for their company
-CREATE POLICY "Admins can manage connected apps" ON public.connected_apps
+-- Allow authenticated users to manage connected apps
+CREATE POLICY "Users can manage connected apps" ON public.connected_apps
     FOR ALL
-    USING (
-        company_id IN (
-            SELECT company_id FROM public.users 
-            WHERE id = auth.uid() AND role IN ('super_admin', 'admin', 'company_admin')
-        )
-    );
+    USING (auth.role() = 'authenticated');
 
 -- Function to automatically update the updated_at timestamp
 CREATE OR REPLACE FUNCTION update_modified_column()
