@@ -8,22 +8,30 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Plus, Trash2 } from "lucide-react";
 import { formatCurrency } from "@/lib/constants";
 
-export default function InvoiceForm({ open, onClose, onSubmit, initialData, clients, currency, clientTerm = "Client" }) {
+export default function InvoiceForm({ open, onClose, onSubmit, initialData, clients, currency: defaultCurrency }) {
   const [form, setForm] = useState({
     invoice_number: "", client_id: "", client_name: "", status: "draft",
-    due_date: "", payment_method: "", notes: "",
+    due_date: "", due_time: "", currency: "GHS", exchange_rate: 1.0, payment_method: "", notes: "",
     items: [{ description: "", quantity: 1, unit_price: 0, total: 0 }]
   });
 
   useEffect(() => {
-    if (initialData) setForm(initialData);
-    else setForm({
-      invoice_number: `INV-${Date.now().toString().slice(-6)}`,
-      client_id: "", client_name: "", status: "draft",
-      due_date: "", payment_method: "", notes: "",
-      items: [{ description: "", quantity: 1, unit_price: 0, total: 0 }]
-    });
-  }, [initialData, open]);
+    if (initialData) {
+      setForm({
+        ...initialData,
+        currency: initialData.currency || defaultCurrency || "GHS",
+        exchange_rate: initialData.exchange_rate || 1.0,
+        due_time: initialData.due_time || ""
+      });
+    } else {
+      setForm({
+        invoice_number: `INV-${Date.now().toString().slice(-6)}`,
+        client_id: "", client_name: "", status: "draft",
+        due_date: "", due_time: "", currency: defaultCurrency || "GHS", exchange_rate: 1.0, payment_method: "", notes: "",
+        items: [{ description: "", quantity: 1, unit_price: 0, total: 0 }]
+      });
+    }
+  }, [initialData, open, defaultCurrency]);
 
   const handleChange = (field, value) => setForm(prev => ({ ...prev, [field]: value }));
 
@@ -59,9 +67,9 @@ export default function InvoiceForm({ open, onClose, onSubmit, initialData, clie
           <div className="grid grid-cols-2 gap-4">
             <div><Label>Invoice #</Label><Input value={form.invoice_number} onChange={(e) => handleChange("invoice_number", e.target.value)} /></div>
             <div>
-              <Label>{clientTerm} <span className="text-muted-foreground text-xs">(optional)</span></Label>
+              <Label>Client <span className="text-muted-foreground text-xs">(optional)</span></Label>
               <Select value={form.client_id} onValueChange={handleClientChange}>
-                <SelectTrigger><SelectValue placeholder={`Select ${clientTerm.toLowerCase()}`} /></SelectTrigger>
+                <SelectTrigger><SelectValue placeholder="Select client" /></SelectTrigger>
                 <SelectContent>{clients?.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
               </Select>
             </div>
@@ -77,7 +85,42 @@ export default function InvoiceForm({ open, onClose, onSubmit, initialData, clie
                 </SelectContent>
               </Select>
             </div>
-            <div><Label>Due Date <span className="text-muted-foreground text-xs">(optional)</span></Label><Input type="date" value={form.due_date} onChange={(e) => handleChange("due_date", e.target.value)} /></div>
+            
+            {/* Due Date and Time side-by-side */}
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <Label>Due Date</Label>
+                <Input type="date" value={form.due_date} onChange={(e) => handleChange("due_date", e.target.value)} />
+              </div>
+              <div>
+                <Label>Due Time</Label>
+                <Input type="time" value={form.due_time} onChange={(e) => handleChange("due_time", e.target.value)} />
+              </div>
+            </div>
+
+            {/* Currency and Exchange Rate */}
+            <div>
+              <Label>Currency</Label>
+              <Select value={form.currency} onValueChange={(v) => handleChange("currency", v)}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="GHS">GHS (Ghana Cedi)</SelectItem>
+                  <SelectItem value="NGN">NGN (Nigerian Naira)</SelectItem>
+                  <SelectItem value="SLL">SLL (Sierra Leonean Leone)</SelectItem>
+                  <SelectItem value="USD">USD (US Dollar)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Exchange Rate (to USD or Base)</Label>
+              <Input
+                type="number"
+                step="0.000001"
+                min="0"
+                value={form.exchange_rate}
+                onChange={(e) => handleChange("exchange_rate", parseFloat(e.target.value) || 1.0)}
+              />
+            </div>
           </div>
 
           {/* Line Items */}
@@ -99,7 +142,7 @@ export default function InvoiceForm({ open, onClose, onSubmit, initialData, clie
                     <Input type="number" min="0" step="0.01" value={item.unit_price} onChange={(e) => handleItemChange(idx, "unit_price", Number(e.target.value))} />
                   </div>
                   <div className="col-span-2 text-sm font-medium text-right py-2">
-                    {formatCurrency(item.total, currency)}
+                    {formatCurrency(item.total, form.currency)}
                   </div>
                   <div className="col-span-1">
                     {form.items.length > 1 && (
@@ -110,7 +153,7 @@ export default function InvoiceForm({ open, onClose, onSubmit, initialData, clie
               ))}
             </div>
             <div className="flex justify-end mt-3 text-lg font-bold">
-              Total: {formatCurrency(subtotal, currency)}
+              Total: {formatCurrency(subtotal, form.currency)}
             </div>
           </div>
 

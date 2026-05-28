@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
-import { ArrowLeft, Clock, FolderOpen, Wallet, FileText, Receipt, PenTool, MessageSquare, Sparkles, CheckSquare } from "lucide-react";
+import { ArrowLeft, Clock, FolderOpen, Wallet, FileText, Receipt, PenTool, MessageSquare, Sparkles, CheckSquare, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +18,8 @@ import CaseMessaging from "@/components/cases/CaseMessaging";
 import ClientMessaging from "@/components/portal/ClientMessaging";
 import AIDocumentReview from "@/components/cases/AIDocumentReview";
 import ClientChecklistManager from "@/components/cases/ClientChecklistManager";
+import CaseCommunications from "@/components/cases/CaseCommunications";
+import CaseTimeline from "@/components/cases/CaseTimeline";
 
 export default function CaseDetail() {
   const navigate = useNavigate();
@@ -60,9 +62,10 @@ export default function CaseDetail() {
       </div>
 
       {/* Tabs */}
-      <Tabs defaultValue="time">
-        <TabsList>
-          <TabsTrigger value="time" className="gap-1.5"><Clock className="w-3.5 h-3.5" />Billable Hours</TabsTrigger>
+      <Tabs defaultValue="time" className="w-full">
+        <div className="w-full overflow-x-auto scrollbar-hide pb-2">
+          <TabsList className="w-max min-w-full justify-start">
+            <TabsTrigger value="time" className="gap-1.5"><Clock className="w-3.5 h-3.5" />Billable Hours</TabsTrigger>
           <TabsTrigger value="retainer" className="gap-1.5"><Wallet className="w-3.5 h-3.5" />Retainer</TabsTrigger>
           <TabsTrigger value="documents" className="gap-1.5"><FolderOpen className="w-3.5 h-3.5" />Documents</TabsTrigger>
           <TabsTrigger value="messages" className="gap-1.5"><MessageSquare className="w-3.5 h-3.5" />Team Chat</TabsTrigger>
@@ -72,7 +75,10 @@ export default function CaseDetail() {
           <TabsTrigger value="pdf" className="gap-1.5"><FileText className="w-3.5 h-3.5" />Generate PDF</TabsTrigger>
           <TabsTrigger value="ai-review" className="gap-1.5"><Sparkles className="w-3.5 h-3.5" />AI Review</TabsTrigger>
           <TabsTrigger value="checklist" className="gap-1.5"><CheckSquare className="w-3.5 h-3.5" />Client Checklist</TabsTrigger>
-        </TabsList>
+          <TabsTrigger value="comms" className="gap-1.5"><Send className="w-3.5 h-3.5" />Communications</TabsTrigger>
+          <TabsTrigger value="timeline" className="gap-1.5"><Clock className="w-3.5 h-3.5" />Diary / Timeline</TabsTrigger>
+          </TabsList>
+        </div>
         <TabsContent value="time" className="mt-4">
           <CaseTimeTracker caseData={caseData} user={user} />
         </TabsContent>
@@ -102,6 +108,12 @@ export default function CaseDetail() {
         </TabsContent>
         <TabsContent value="checklist" className="mt-4">
           <ClientChecklistManager caseData={caseData} client={client} user={user} />
+        </TabsContent>
+        <TabsContent value="comms" className="mt-4">
+          <CaseCommunications caseData={caseData} client={client} user={user} />
+        </TabsContent>
+        <TabsContent value="timeline" className="mt-4">
+          <CaseTimeline caseData={caseData} user={user} />
         </TabsContent>
       </Tabs>
     </div>

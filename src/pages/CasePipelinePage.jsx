@@ -253,18 +253,21 @@ export default function CasePipelinePage() {
         title="Case Pipelines"
         subtitle="Define custom stages for each case type and track progress"
         actions={
-          <Button size="sm" onClick={() => setShowNew(true)} className="gap-1.5">
-            <Plus className="w-4 h-4" /> New Pipeline
-          </Button>
+          ["super_admin", "company_admin", "managing_partner"].includes(user?.role) && (
+            <Button size="sm" onClick={() => setShowNew(true)} className="gap-1.5">
+              <Plus className="w-4 h-4" /> New Pipeline
+            </Button>
+          )
         }
       />
 
       {/* Active case boards */}
       <CasePipelineKanban pipelines={pipelines} caseStates={caseStates} companyId={user?.company_id} />
 
-      {/* Pipeline templates */}
-      <div>
-        <h2 className="text-sm font-semibold mb-3 text-muted-foreground uppercase tracking-wide">Pipeline Templates</h2>
+      {/* Pipeline templates - Admin Only */}
+      {["super_admin", "company_admin", "managing_partner"].includes(user?.role) && (
+        <div>
+          <h2 className="text-sm font-semibold mb-3 text-muted-foreground uppercase tracking-wide">Pipeline Templates</h2>
         {isLoading ? (
           <div className="text-center text-sm text-muted-foreground py-8">Loading pipelines...</div>
         ) : pipelines.length === 0 ? (
@@ -288,6 +291,7 @@ export default function CasePipelinePage() {
           </div>
         )}
       </div>
+      )}
 
       {(showNew || editing) && (
         <PipelineEditor

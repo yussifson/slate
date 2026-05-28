@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
-import { Mail, Link2, Search, User, Briefcase, CheckCircle2, Plus, X } from "lucide-react";
+import { Mail, Link2, Search, User, Briefcase, CheckCircle2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -123,6 +123,7 @@ export default function EmailInbox() {
         onSubmit={createMutation.mutate}
         cases={cases}
         clients={clients}
+        user={user}
       />
 
       {/* Link Email Dialog */}
@@ -171,8 +172,24 @@ function EmailCard({ email, onLink, isLinked }) {
   );
 }
 
-function AddEmailDialog({ open, onClose, onSubmit, cases, clients }) {
+function AddEmailDialog({ open, onClose, onSubmit, cases, clients, user }) {
+  const isAdmin = ["super_admin", "company_admin", "managing_partner"].includes(user?.role);
   const [form, setForm] = useState({ subject: "", sender_email: "", recipient_email: "", received_date: "", body_preview: "", case_id: "", client_id: "" });
+
+  useEffect(() => {
+    if (open) {
+      setForm({
+        subject: "",
+        sender_email: isAdmin ? "" : (user?.email || ""),
+        recipient_email: "",
+        received_date: new Date().toISOString().split("T")[0],
+        body_preview: "",
+        case_id: "",
+        client_id: ""
+      });
+    }
+  }, [open, user, isAdmin]);
+
   const handleChange = (f, v) => setForm(p => ({ ...p, [f]: v }));
 
   const handleClientChange = (clientId) => {
@@ -194,7 +211,15 @@ function AddEmailDialog({ open, onClose, onSubmit, cases, clients }) {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-2"><Label>Subject *</Label><Input value={form.subject} onChange={(e) => handleChange("subject", e.target.value)} required /></div>
-            <div><Label>From</Label><Input value={form.sender_email} onChange={(e) => handleChange("sender_email", e.target.value)} placeholder="sender@example.com" /></div>
+            <div>
+              <Label>From</Label>
+              <Input
+                value={form.sender_email}
+                onChange={(e) => handleChange("sender_email", e.target.value)}
+                placeholder="sender@example.com"
+                disabled={!isAdmin}
+              />
+            </div>
             <div><Label>To</Label><Input value={form.recipient_email} onChange={(e) => handleChange("recipient_email", e.target.value)} placeholder="recipient@example.com" /></div>
             <div><Label>Date Received</Label><Input type="date" value={form.received_date} onChange={(e) => handleChange("received_date", e.target.value)} /></div>
             <div>

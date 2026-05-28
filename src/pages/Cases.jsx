@@ -2,14 +2,9 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
-import { useCompanyId, useCompany } from "@/hooks/useCompanyId";
-import { getTerm } from "@/config/industries";
+import { useCompanyId } from "@/hooks/useCompanyId";
 import { useNavigate } from "react-router-dom";
-import { Plus, Briefcase, Search, LayoutGrid, List, MoreVertical } from "lucide-react";
-import { Link } from "react-router-dom";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { Label } from "@/components/ui/label";
+import { Plus, Briefcase, Search, LayoutGrid, List, MoreVertical, ExternalLink } from "lucide-react";
 import ExportButton from "@/components/shared/ExportButton";
 import BulkActionBar from "@/components/shared/BulkActionBar";
 import { Button } from "@/components/ui/button";
@@ -18,15 +13,15 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import { Link } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import PageHeader from "@/components/shared/PageHeader";
 import CaseForm from "@/components/cases/CaseForm";
 import CasesKanban from "@/components/cases/CasesKanban";
-import AIEmailDrafter from "@/components/shared/AIEmailDrafter";
-import { Sparkles } from "lucide-react";
-import { CASE_STATUS_COLORS, PRIORITY_COLORS, SUBSCRIPTION_PLANS } from "@/lib/constants";
+import { CASE_STATUS_COLORS, PRIORITY_COLORS } from "@/lib/constants";
 import { format } from "date-fns";
-import { NotificationService } from "@/lib/notifications";
 
 import { useToast } from "@/components/ui/use-toast";
 
@@ -42,8 +37,6 @@ export default function Cases() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const companyId = useCompanyId();
-  const { company } = useCompany();
-  const industry = company?.industry_type || "law";
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [showForm, setShowForm] = useState(false);
@@ -54,11 +47,16 @@ export default function Cases() {
   const [selected, setSelected] = useState(new Set());
   const [deleting, setDeleting] = useState(false);
   const [viewingCase, setViewingCase] = useState(null);
-  const [draftingEmailFor, setDraftingEmailFor] = useState(null);
+
+  const isAdmin = ["super_admin", "company_admin", "managing_partner"].includes(user?.role);
 
   const { data: cases = [], isLoading } = useQuery({
-    queryKey: ["cases", companyId],
-    queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId }),
+    queryKey: ["cases", companyId, user?.email, isAdmin],
+    queryFn: async () => {
+      const list = await base44.entities.LegalCase.filter({ company_id: companyId });
+      if (isAdmin) return list;
+      return list.filter(c => c.assigned_lawyer === user?.email || c.created_by === user?.id);
+    },
     enabled: !!companyId,
   });
 
@@ -76,39 +74,13 @@ export default function Cases() {
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.LegalCase.create({ ...data, company_id: companyId }),
-    onSuccess: async (createdCase) => { 
+    onSuccess: () => { 
       queryClient.invalidateQueries({ queryKey: ["cases"] }); 
       setShowForm(false); 
       toast({ title: "Case created successfully" });
-
-      // Trigger notification for new case
-      await NotificationService.send({
-        companyId: companyId,
-        recipientEmail: user?.email,
-        recipientName: user?.full_name,
-        title: `New ${getTerm(industry, "case")} Created`,
-        message: `A new ${getTerm(industry, "case").toLowerCase()} "${createdCase.title || 'Untitled'}" was created.`,
-        type: 'info',
-        channels: ['in-app'] 
-      });
     },
     onError: (err) => toast({ title: "Failed to create case", description: err.message, variant: "destructive" })
   });
-
-  const handleAddClick = () => {
-    const currentPlan = SUBSCRIPTION_PLANS[company?.subscription_plan] || SUBSCRIPTION_PLANS.free_trial;
-    const caseLimit = currentPlan.maxCases || 10;
-    
-    if (cases.length >= caseLimit) {
-      toast({ 
-        title: "Limit Reached", 
-        description: `Your ${currentPlan.name} plan allows up to ${caseLimit} active projects/cases. Please upgrade your plan.`, 
-        variant: "destructive" 
-      });
-      return;
-    }
-    setShowForm(true);
-  };
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.LegalCase.update(id, data),
@@ -168,41 +140,25 @@ export default function Cases() {
     }
   };
 
-  const handleDeleteOne = async (id) => {
-    if (!window.confirm("Delete this case? This cannot be undone.")) return;
-    try {
-      await base44.entities.LegalCase.delete(id);
-      queryClient.invalidateQueries({ queryKey: ["cases"] });
-      toast({ title: "Case deleted successfully" });
-    } catch (err) {
-      toast({ title: "Delete failed", description: err.message, variant: "destructive" });
-    }
-  };
-
   const exportData = cases.map(c => ({
     title: c.title, case_number: c.case_number, client: c.client_name,
     type: c.case_type, status: c.status, priority: c.priority,
     lawyer: c.assigned_lawyer_name, filing_date: c.filing_date,
   }));
 
-  const caseTerm = getTerm(industry, "case");
-  const casesTerm = getTerm(industry, "cases");
-  const clientTerm = getTerm(industry, "client");
-  const lawyerTerm = getTerm(industry, "lawyer");
-
   return (
     <div className="space-y-4">
       <PageHeader
-        title={casesTerm}
-        subtitle={`${activeCasesCount(cases)} active ${casesTerm.toLowerCase()}`}
+        title="Cases"
+        subtitle={`${activeCasesCount(cases)} active cases`}
         actions={
           <div className="flex items-center gap-2">
             <div className="flex items-center border border-border rounded-lg overflow-hidden">
               <button onClick={() => setViewMode("list")} className={`p-2 transition-colors ${viewMode === "list" ? "bg-primary text-white" : "hover:bg-muted text-muted-foreground"}`}><List className="w-4 h-4" /></button>
               <button onClick={() => setViewMode("kanban")} className={`p-2 transition-colors ${viewMode === "kanban" ? "bg-primary text-white" : "hover:bg-muted text-muted-foreground"}`}><LayoutGrid className="w-4 h-4" /></button>
             </div>
-            <ExportButton data={exportData} filename={`${casesTerm.toLowerCase()}_export`} label="Export" />
-            <Button onClick={handleAddClick} size="sm"><Plus className="w-4 h-4 mr-1" /> New {caseTerm}</Button>
+            <ExportButton data={exportData} filename="cases_export" label="Export" />
+            <Button onClick={() => setShowForm(true)} size="sm"><Plus className="w-4 h-4 mr-1" /> New Case</Button>
           </div>
         }
       />
@@ -212,7 +168,7 @@ export default function Cases() {
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input placeholder={`Search ${casesTerm.toLowerCase()}...`} className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
+              <Input placeholder="Search cases..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
             </div>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
@@ -235,8 +191,8 @@ export default function Cases() {
           {isLoading ? (
             <div className="bg-card rounded-xl border border-border overflow-hidden">
               <Table>
-                <TableHeader><TableRow className="bg-muted/50">{["", caseTerm, clientTerm, "Type", "Status", "Priority", lawyerTerm, "Filed", "Actions"].map((h, i) => <TableHead key={i}>{h}</TableHead>)}</TableRow></TableHeader>
-                <TableBody>{Array(5).fill(0).map((_, i) => <TableRow key={i}>{Array(9).fill(0).map((_, j) => <TableCell key={j}><Skeleton className="h-4 w-20" /></TableCell>)}</TableRow>)}</TableBody>
+                <TableHeader><TableRow className="bg-muted/50">{["", "Case", "Client", "Type", "Status", "Priority", "Lawyer", "Filed"].map((h, i) => <TableHead key={i}>{h}</TableHead>)}</TableRow></TableHeader>
+                <TableBody>{Array(5).fill(0).map((_, i) => <TableRow key={i}>{Array(8).fill(0).map((_, j) => <TableCell key={j}><Skeleton className="h-4 w-20" /></TableCell>)}</TableRow>)}</TableBody>
               </Table>
             </div>
           ) : filtered.length === 0 ? (
@@ -245,17 +201,17 @@ export default function Cases() {
                 <Briefcase className="w-5 h-5" />
               </div>
               <div className="space-y-1">
-                <p className="font-bold text-sm text-slate-900">No Active {caseTerm} Matters</p>
+                <p className="font-bold text-sm text-slate-900">No Active Case Matters</p>
                 <p className="text-xs text-slate-500 max-w-xs mx-auto leading-relaxed">
-                  Start tracking client pipelines, court filings, and milestones by creating your first {caseTerm.toLowerCase()}.
+                  Start tracking client pipelines, court filings, and milestones by creating your first legal case.
                 </p>
               </div>
               <div className="pt-2">
                 <Button 
-                  onClick={handleAddClick}
+                  onClick={() => setShowForm(true)}
                   className="bg-primary hover:bg-primary/95 text-white font-semibold text-xs py-3.5 px-5 rounded-xl shadow-md"
                 >
-                  Initialize First {caseTerm}
+                  Initialize First Case
                 </Button>
               </div>
             </div>
@@ -266,8 +222,8 @@ export default function Cases() {
                   <TableHeader>
                     <TableRow className="bg-muted/50">
                       <TableHead className="w-10"><Checkbox checked={allSelected} onCheckedChange={toggleAll} /></TableHead>
-                      {[caseTerm, clientTerm, "Type", "Status", "Priority", lawyerTerm, "Filed", "Actions"].map(h => (
-                        <TableHead key={h} className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{h}</TableHead>
+                      {["Case", "Client", "Type", "Status", "Priority", "Lawyer", "Filed", ""].map((h, i) => (
+                        <TableHead key={i} className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{h}</TableHead>
                       ))}
                     </TableRow>
                   </TableHeader>
@@ -275,30 +231,45 @@ export default function Cases() {
                     {filtered.map(row => (
                       <TableRow key={row.id} className="hover:bg-muted/50 transition-colors">
                         <TableCell onClick={e => toggleOne(row.id, e)}><Checkbox checked={selected.has(row.id)} onCheckedChange={() => {}} /></TableCell>
-                        <TableCell><div><Link to={`/cases/${row.id}`} state={{ caseData: row }} className="font-medium text-sm text-primary hover:underline">{row.title}</Link><p className="text-xs text-muted-foreground">{row.case_number || "No case #"}</p></div></TableCell>
-                        <TableCell><Link to="/clients" className="text-sm text-primary hover:underline">{row.client_name || "—"}</Link></TableCell>
+                        <TableCell className="cursor-pointer" onClick={() => navigate(`/cases/${row.id}`, { state: { caseData: row } })}><div><p className="font-medium text-sm">{row.title}</p><p className="text-xs text-muted-foreground">{row.case_number || "No case #"}</p></div></TableCell>
+                        <TableCell>
+                          {row.client_id ? (
+                            <Link to="/clients" className="text-primary hover:underline text-sm inline-flex items-center gap-1">
+                              {row.client_name} <ExternalLink className="w-3 h-3" />
+                            </Link>
+                          ) : (
+                            <span className="text-sm">{row.client_name || "—"}</span>
+                          )}
+                        </TableCell>
                         <TableCell><Badge variant="outline" className="text-[10px] capitalize">{row.case_type}</Badge></TableCell>
                         <TableCell><Badge className={`${CASE_STATUS_COLORS[row.status]} text-[10px]`}>{row.status?.replace("_", " ")}</Badge></TableCell>
                         <TableCell><Badge className={`${PRIORITY_COLORS[row.priority]} text-[10px]`}>{row.priority}</Badge></TableCell>
-                        <TableCell><Link to="/team" className="text-sm text-primary hover:underline">{row.assigned_lawyer_name || "Unassigned"}</Link></TableCell>
+                        <TableCell>
+                          {row.assigned_lawyer_id ? (
+                            <Link to="/team" className="text-primary hover:underline text-sm inline-flex items-center gap-1">
+                              {row.assigned_lawyer_name} <ExternalLink className="w-3 h-3" />
+                            </Link>
+                          ) : (
+                            <span className="text-sm">{row.assigned_lawyer_name || "Unassigned"}</span>
+                          )}
+                        </TableCell>
                         <TableCell><span className="text-xs text-muted-foreground">{row.filing_date ? format(new Date(row.filing_date), "MMM d, yyyy") : "—"}</span></TableCell>
                         <TableCell>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" className="h-8 w-8 p-0">
-                                <MoreVertical className="h-4 w-4" />
-                              </Button>
+                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0"><MoreVertical className="h-4 w-4" /></Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-48 shadow-xl border-border/50">
+                            <DropdownMenuContent align="end">
                               <DropdownMenuItem onClick={() => setViewingCase(row)}>View Details</DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => navigate(`/cases/${row.id}`, { state: { caseData: row } })}>Open Full View</DropdownMenuItem>
                               <DropdownMenuItem onClick={() => setEditingCase(row)}>Edit</DropdownMenuItem>
-                              <div className="h-px bg-border my-1" />
-                              <DropdownMenuItem onClick={() => setDraftingEmailFor(row)} className="text-indigo-600 font-medium focus:text-indigo-700 focus:bg-indigo-50 dark:text-indigo-400 dark:focus:bg-indigo-950/50">
-                                <Sparkles className="w-4 h-4 mr-2" /> Draft AI Email
-                              </DropdownMenuItem>
-                              <div className="h-px bg-border my-1" />
-                              <DropdownMenuItem className="text-red-600 focus:text-red-700 focus:bg-red-50 dark:focus:bg-red-950/50" onClick={() => handleDeleteOne(row.id)}>Delete</DropdownMenuItem>
+                              <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => {
+                                if (window.confirm("Delete this case?")) {
+                                  base44.entities.LegalCase.delete(row.id).then(() => {
+                                    queryClient.invalidateQueries({ queryKey: ["cases"] });
+                                    toast({ title: "Case deleted successfully" });
+                                  }).catch(err => toast({ title: "Delete failed", description: err.message, variant: "destructive" }));
+                                }
+                              }}>Delete</DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </TableCell>
@@ -324,64 +295,42 @@ export default function Cases() {
       )}
 
       <Sheet open={!!viewingCase} onOpenChange={(open) => !open && setViewingCase(null)}>
-        <SheetContent className="overflow-y-auto w-full sm:max-w-md">
-          <SheetHeader>
-            <SheetTitle>{caseTerm} Details</SheetTitle>
+        <SheetContent className="overflow-y-auto">
+          <SheetHeader className="mb-6">
+            <SheetTitle>Case Details</SheetTitle>
+            <SheetDescription>View complete case record</SheetDescription>
           </SheetHeader>
           {viewingCase && (
-            <div className="mt-6 space-y-4">
+            <div className="space-y-4">
+              <div><span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Title</span><p className="font-medium mt-1">{viewingCase.title}</p></div>
+              <div><span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Case Number</span><p className="mt-1">{viewingCase.case_number || "—"}</p></div>
               <div>
-                <Label className="text-muted-foreground">Title</Label>
-                <p className="font-medium">{viewingCase.title}</p>
+                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-1">Client</span>
+                {viewingCase.client_id ? (
+                  <Link to="/clients" className="text-primary hover:underline text-sm inline-flex items-center gap-1">
+                    {viewingCase.client_name} <ExternalLink className="w-3 h-3" />
+                  </Link>
+                ) : <span className="text-sm">—</span>}
               </div>
               <div>
-                <Label className="text-muted-foreground">Case Number</Label>
-                <p className="font-medium">{viewingCase.case_number || "—"}</p>
+                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-1">Assigned Lawyer</span>
+                {viewingCase.assigned_lawyer_id ? (
+                  <Link to="/team" className="text-primary hover:underline text-sm inline-flex items-center gap-1">
+                    {viewingCase.assigned_lawyer_name} <ExternalLink className="w-3 h-3" />
+                  </Link>
+                ) : <span className="text-sm">Unassigned</span>}
               </div>
-              <div>
-                <Label className="text-muted-foreground">Client</Label>
-                <p className="font-medium">
-                  <Link to="/clients" className="text-primary hover:underline">{viewingCase.client_name || "—"}</Link>
-                </p>
-              </div>
-              <div>
-                <Label className="text-muted-foreground">Type</Label>
-                <p className="font-medium capitalize">{viewingCase.case_type || "—"}</p>
-              </div>
-              <div>
-                <Label className="text-muted-foreground">Status</Label>
-                <p className="font-medium capitalize">{viewingCase.status?.replace("_", " ") || "—"}</p>
-              </div>
-              <div>
-                <Label className="text-muted-foreground">Priority</Label>
-                <p className="font-medium capitalize">{viewingCase.priority || "—"}</p>
-              </div>
-              <div>
-                <Label className="text-muted-foreground">Assigned Lawyer</Label>
-                <p className="font-medium">
-                  <Link to="/team" className="text-primary hover:underline">{viewingCase.assigned_lawyer_name || "Unassigned"}</Link>
-                </p>
-              </div>
-              <div>
-                <Label className="text-muted-foreground">Filing Date</Label>
-                <p className="font-medium">{viewingCase.filing_date ? format(new Date(viewingCase.filing_date), "MMM d, yyyy") : "—"}</p>
-              </div>
-              <div>
-                <Label className="text-muted-foreground">Description</Label>
-                <p className="font-medium whitespace-pre-wrap">{viewingCase.description || "—"}</p>
-              </div>
+              <div><span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-1">Status</span><Badge className={`${CASE_STATUS_COLORS[viewingCase.status]} capitalize`}>{viewingCase.status?.replace("_", " ")}</Badge></div>
+              <div><span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-1">Priority</span><Badge className={`${PRIORITY_COLORS[viewingCase.priority]} capitalize`}>{viewingCase.priority}</Badge></div>
+              <div><span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Case Type</span><p className="capitalize mt-1">{viewingCase.case_type}</p></div>
+              <div><span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Filing Date</span><p className="mt-1">{viewingCase.filing_date ? format(new Date(viewingCase.filing_date), "MMM d, yyyy") : "—"}</p></div>
+              {viewingCase.description && (
+                <div><span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Description</span><p className="text-sm whitespace-pre-wrap mt-1">{viewingCase.description}</p></div>
+              )}
             </div>
           )}
         </SheetContent>
       </Sheet>
-
-      {draftingEmailFor && (
-        <AIEmailDrafter 
-          recordData={draftingEmailFor} 
-          defaultContext="Write a polite and professional update email to the client regarding this legal case."
-          onClose={() => setDraftingEmailFor(null)} 
-        />
-      )}
     </div>
   );
 }

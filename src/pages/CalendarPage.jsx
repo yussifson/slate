@@ -2,10 +2,7 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
-import { useCompanyId } from "@/hooks/useCompanyId";
-import { useMeeting } from "@/hooks/integrations/useMeeting";
-import { useCalendar } from "@/hooks/integrations/useCalendar";
-import { Plus, Calendar, ChevronLeft, ChevronRight, Video, RefreshCw } from "lucide-react";
+import { Plus, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -13,17 +10,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
 import PageHeader from "@/components/shared/PageHeader";
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, isToday } from "date-fns";
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths, subMonths, isToday } from "date-fns";
 
 export default function CalendarPage() {
   const { user } = useAuth();
-  const companyId = useCompanyId();
+  const companyId = user?.company_id;
   const queryClient = useQueryClient();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [showForm, setShowForm] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
+
+  const isAdminUser = ["super_admin", "company_admin", "managing_partner"].includes(user?.role);
+  const [showAdminCalendar, setShowAdminCalendar] = useState(true);
+  const [showStaffCalendar, setShowStaffCalendar] = useState(true);
 
   const { data: hearings = [] } = useQuery({
     queryKey: ["hearings", companyId],
@@ -32,8 +32,12 @@ export default function CalendarPage() {
   });
 
   const { data: cases = [] } = useQuery({
-    queryKey: ["cases", companyId],
-    queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId }),
+    queryKey: ["cases", companyId, user?.email, isAdminUser],
+    queryFn: async () => {
+      const list = await base44.entities.LegalCase.filter({ company_id: companyId });
+      if (isAdminUser) return list;
+      return list.filter(c => c.assigned_lawyer === user?.email || c.created_by === user?.id);
+    },
     enabled: !!companyId,
   });
 
@@ -53,24 +57,61 @@ export default function CalendarPage() {
   const days = eachDayOfInterval({ start: monthStart, end: monthEnd });
   const startPad = monthStart.getDay();
 
-  const getHearingsForDay = (date) => hearings.filter(h => h.date && isSameDay(new Date(h.date), date));
+  // Enforce Calendar toggles and assigned visibility logic
+  const filteredHearings = hearings.filter(h => {
+    if (!isAdminUser) {
+      return h.lawyer_email === user?.email;
+    }
+    const assignedStaff = staff.find(s => s.user_email === h.lawyer_email);
+    const isEventAdmin = !assignedStaff || ["company_admin", "managing_partner", "super_admin"].includes(assignedStaff.role);
+    if (isEventAdmin && !showAdminCalendar) return false;
+    if (!isEventAdmin && !showStaffCalendar) return false;
+    return true;
+  });
 
-  const upcomingHearings = hearings
+  const getHearingsForDay = (date) => filteredHearings.filter(h => h.date && isSameDay(new Date(h.date), date));
+
+  const upcomingHearings = filteredHearings
     .filter(h => h.date && new Date(h.date) >= new Date())
     .sort((a, b) => new Date(a.date) - new Date(b.date))
     .slice(0, 8);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 font-sans">
       <PageHeader
         title="Calendar"
         subtitle="Court hearings and important dates"
         actions={<Button onClick={() => setShowForm(true)} size="sm"><Plus className="w-4 h-4 mr-1" /> Add Hearing</Button>}
       />
 
+      {/* Calendar Controls (Admin / Staff visibility toggles) */}
+      {isAdminUser && (
+        <div className="bg-card rounded-xl border border-border p-4 flex gap-6 items-center text-sm shadow-sm select-none">
+          <span className="font-semibold text-muted-foreground uppercase text-[10px] tracking-wider">Toggles:</span>
+          <label className="flex items-center gap-2 cursor-pointer hover:opacity-90">
+            <input
+              type="checkbox"
+              checked={showAdminCalendar}
+              onChange={(e) => setShowAdminCalendar(e.target.checked)}
+              className="rounded text-primary focus:ring-primary border-border"
+            />
+            <span className="font-medium text-foreground">Firm Admin Calendar</span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer hover:opacity-90">
+            <input
+              type="checkbox"
+              checked={showStaffCalendar}
+              onChange={(e) => setShowStaffCalendar(e.target.checked)}
+              className="rounded text-primary focus:ring-primary border-border"
+            />
+            <span className="font-medium text-foreground">Staff Calendars</span>
+          </label>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Calendar Grid */}
-        <div className="lg:col-span-2 bg-card rounded-xl border border-border p-4">
+        <div className="lg:col-span-2 bg-card rounded-xl border border-border p-4 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold">{format(currentMonth, "MMMM yyyy")}</h3>
             <div className="flex gap-1">
@@ -104,8 +145,8 @@ export default function CalendarPage() {
                   </span>
                   <div className="mt-1 space-y-0.5">
                     {dayHearings.slice(0, 2).map(h => (
-                      <div key={h.id} className="text-[10px] bg-primary/10 text-primary rounded px-1 py-0.5 truncate flex items-center gap-1">
-                        {h.meeting_url && <Video className="w-3 h-3 flex-shrink-0" />} {h.title}
+                      <div key={h.id} className="text-[10px] bg-primary/10 text-primary rounded px-1 py-0.5 truncate">
+                        {h.title}
                       </div>
                     ))}
                     {dayHearings.length > 2 && (
@@ -130,16 +171,7 @@ export default function CalendarPage() {
               <div className="p-8 text-center text-sm text-muted-foreground">No upcoming hearings</div>
             ) : upcomingHearings.map(h => (
               <div key={h.id} className="px-4 py-3">
-                <div className="flex items-start justify-between">
-                  <p className="text-sm font-medium">{h.title}</p>
-                  {h.meeting_url && (
-                    <a href={h.meeting_url} target="_blank" rel="noreferrer">
-                      <Button variant="ghost" size="icon" className="h-6 w-6 text-blue-600 hover:text-blue-700 hover:bg-blue-50">
-                        <Video className="w-3 h-3" />
-                      </Button>
-                    </a>
-                  )}
-                </div>
+                <p className="text-sm font-medium">{h.title}</p>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   {format(new Date(h.date), "MMM d, yyyy")} · {h.time || "TBD"} · {h.court_name || "Court TBD"}
                 </p>
@@ -162,18 +194,13 @@ export default function CalendarPage() {
         initialDate={selectedDate}
         cases={cases}
         staff={staff}
-        companyId={companyId}
       />
     </div>
   );
 }
 
-function HearingFormDialog({ open, onClose, onSubmit, initialDate, cases, staff, companyId }) {
+function HearingFormDialog({ open, onClose, onSubmit, initialDate, cases, staff }) {
   const [form, setForm] = useState({ title: "", date: "", time: "", court_name: "", judge_name: "", case_id: "", case_title: "", case_number: "", lawyer_email: "", lawyer_name: "", notes: "" });
-  const [generateZoom, setGenerateZoom] = useState(false);
-  const [syncGoogle, setSyncGoogle] = useState(true);
-  const { generateMeetingLink, isGenerating } = useMeeting();
-  const { syncEvent, isSyncing } = useCalendar();
 
   useEffect(() => {
     if (initialDate) setForm(prev => ({ ...prev, date: format(initialDate, "yyyy-MM-dd") }));
@@ -191,36 +218,7 @@ function HearingFormDialog({ open, onClose, onSubmit, initialDate, cases, staff,
     setForm(prev => ({ ...prev, lawyer_email: email, lawyer_name: s?.full_name || "" }));
   };
 
-  const handleSubmit = async (e) => { 
-    e.preventDefault(); 
-    let finalData = { ...form };
-
-    // Handle Zoom
-    if (generateZoom) {
-      try {
-        const startTime = form.date && form.time ? `${form.date}T${form.time}:00Z` : undefined;
-        const meeting = await generateMeetingLink({ companyId, provider: 'zoom', topic: form.title, startTime, duration: 60 });
-        if (meeting?.join_url) {
-          finalData.meeting_url = meeting.join_url;
-          finalData.notes = `${finalData.notes || ''}\n\nZoom Link: ${meeting.join_url}`.trim();
-        }
-      } catch (err) {
-        console.error("Zoom generation failed during submission", err);
-      }
-    }
-
-    // Handle Sync
-    if (syncGoogle) {
-      try {
-        const startTime = form.date && form.time ? `${form.date}T${form.time}:00Z` : undefined;
-        await syncEvent({ companyId, provider: 'google', eventDetails: { title: form.title, description: finalData.notes, startTime, endTime: startTime } });
-      } catch (err) {
-        console.error("Google Sync failed during submission", err);
-      }
-    }
-
-    onSubmit(finalData); 
-  };
+  const handleSubmit = (e) => { e.preventDefault(); onSubmit(form); };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -251,28 +249,9 @@ function HearingFormDialog({ open, onClose, onSubmit, initialDate, cases, staff,
             </Select>
           </div>
           <div><Label>Notes</Label><Textarea value={form.notes} onChange={(e) => handleChange("notes", e.target.value)} rows={2} /></div>
-          
-          <div className="flex flex-col gap-2 p-3 bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800">
-            <div className="flex items-center space-x-2">
-              <Checkbox id="generateZoom" checked={generateZoom} onCheckedChange={setGenerateZoom} />
-              <label htmlFor="generateZoom" className="text-sm font-medium leading-none cursor-pointer">
-                Generate Zoom Meeting Link
-              </label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox id="syncGoogle" checked={syncGoogle} onCheckedChange={setSyncGoogle} />
-              <label htmlFor="syncGoogle" className="text-sm font-medium leading-none cursor-pointer">
-                Sync to Google Calendar
-              </label>
-            </div>
-          </div>
-
-          <div className="flex justify-end gap-2 pt-2">
+          <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-            <Button type="submit" disabled={isGenerating || isSyncing}>
-              {(isGenerating || isSyncing) ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : null}
-              Create Hearing
-            </Button>
+            <Button type="submit">Create Hearing</Button>
           </div>
         </form>
       </DialogContent>

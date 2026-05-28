@@ -1,212 +1,201 @@
 import { Link } from 'react-router-dom';
-import { Briefcase, Users, CreditCard, Mail, Shield, Clock, Check, ArrowRight } from 'lucide-react';
+import { Scale, Users, CreditCard, Mail, Shield, Clock, LayoutDashboard, FileText, CheckCircle2, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { motion } from 'framer-motion';
 
 export default function Features() {
-  const deepDives = [
-    {
-      badge: "Project Management",
-      title: "Automate your workflow completely",
-      description:
-        "Manage client projects, deliverables, milestones, and outcome tracking. Move tasks through drag-and-drop pipelines to visualize stages effortlessly. Get smart alerts when deadlines approach.",
-      bullets: [
-        "Interactive project pipelines and customizable milestones",
-        "Task logging with automated deadline notifications",
-        "Detailed capacity planning to safeguard operational integrity",
-        "Project outcome dashboards to analyze performance metrics",
-      ],
-      icon: Briefcase,
-      align: "left",
-      image: "/images/project_management_ui.png"
-    },
-    {
-      badge: "Secure Client Portal",
-      title: "Deliver premium experiences to your clients",
-      description:
-        "Allow clients to check their project's progress, view active tasks, upload requested relevant materials, and digitally sign agreements. Fully customized under your own brand color and logo.",
-      bullets: [
-        "Self-service onboarding intake questionnaires",
-        "Direct chat window with the lead project team",
-        "Service agreements and signature signing prompts",
-        "Transparent billable charts and payment histories",
-      ],
-      icon: Users,
-      align: "right",
-      image: "/images/client_portal_ui.png"
-    },
-    {
-      badge: "Time & Billing",
-      title: "Accept payments locally with ease",
-      description:
-        "Record billable hours with accurate active timers. Automatically construct invoices based on time entries, flat fees, or advance retainer drawdowns. Process client payments securely.",
-      bullets: [
-        "Desktop active timers tracking research and execution",
-        "Dynamic invoice templates matching your corporate letterhead",
-        "Local payments processed via secure integrations",
-        "Financial reporting tracking organization revenue and outstanding fees",
-      ],
-      icon: CreditCard,
-      align: "left",
-      image: "/images/billing_ui.png"
-    },
-  ];
-
-  const additionalFeatures = [
-    {
-      icon: Mail,
-      title: "Integrated Email Sync",
-      description:
-        "Connect your workspace directly with Office 365 or Gmail. Read, flag, and reply to client emails right inside the project files.",
-    },
-    {
-      icon: Shield,
-      title: "Compliance Audit Logs",
-      description:
-        "Maintain high-integrity logs tracking user logins, file modifications, client downloads, and sensitive database exports automatically.",
-    },
-    {
-      icon: Clock,
-      title: "Leave & Payroll Tools",
-      description:
-        "Manage associate leave requests, store payroll structures, generate salary slips, and run performance analytics indicators.",
-    },
-  ];
-
   return (
-    <div className="overflow-x-hidden bg-white">
-      {/* ── Hero Header ── */}
-      <section className="relative pt-10 pb-16 md:pt-14 md:pb-20 bg-slate-50 border-b border-slate-100">
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-600 text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
-            Core Features
-          </span>
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-slate-900 mb-6 max-w-4xl mx-auto leading-[1.1]">
-            Everything your business team needs to{' '}
-            <span className="bg-green-100 text-slate-900 px-4 py-1 rounded-[1.5rem] inline-block mt-2">
-              succeed
-            </span>
-          </h1>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed font-medium">
-            Unlock a comprehensive system built specifically for modern operational
-            requirements. Minimize admin work and focus entirely on
-            delivering value to your clients.
-          </p>
+    <div className="overflow-x-hidden bg-background text-foreground pb-20">
+      {/* Hero */}
+      <section className="relative pt-24 pb-16 md:pt-32 md:pb-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-playfair tracking-tight text-foreground mb-6 max-w-4xl mx-auto leading-[1.1]">
+              The complete infrastructure for <span className="text-primary font-medium">modern legal teams</span>
+            </h1>
+            <p className="text-xl text-muted-foreground/80 max-w-2xl mx-auto leading-relaxed">
+              A carefully crafted suite of tools that work together beautifully, so you can focus on winning cases instead of fighting software.
+            </p>
+          </motion.div>
         </div>
       </section>
 
-      {/* ── Feature Deep Dives ── */}
-      <section className="py-20 md:py-28 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-28 lg:space-y-32">
-          {deepDives.map((feature, index) => {
-            const Icon = feature.icon;
-            const isReversed = feature.align === "right";
+      {/* Bento Box Grid */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:auto-rows-[360px]">
+          
+          {/* Card 1: Large Featured Card (Spans 2 columns) */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="md:col-span-2 bg-muted/10 border border-border/50 rounded-[2rem] p-8 md:p-12 relative overflow-hidden group hover:border-primary/30 transition-colors duration-500"
+          >
+            <div className="absolute top-0 right-0 p-12 opacity-5 group-hover:opacity-10 transition-opacity duration-700">
+              <Scale className="w-72 h-72 text-primary" strokeWidth={0.5} />
+            </div>
+            <div className="relative z-10 h-full flex flex-col justify-end max-w-lg">
+              <div className="w-14 h-14 bg-background rounded-2xl border border-border/50 flex items-center justify-center mb-8 shadow-sm">
+                <LayoutDashboard className="w-7 h-7 text-primary" />
+              </div>
+              <h2 className="text-3xl md:text-4xl font-playfair font-semibold mb-4 text-foreground">Matter Management</h2>
+              <p className="text-muted-foreground leading-relaxed text-lg">
+                Organize every case effortlessly. Track disputes, critical filings, and case milestones using simple, visual pipelines that keep your entire team aligned.
+              </p>
+            </div>
+          </motion.div>
 
-            return (
-              <div
-                key={index}
-                className={`flex flex-col lg:flex-row items-center gap-12 lg:gap-16 ${
-                  isReversed ? "lg:flex-row-reverse" : ""
-                }`}
-              >
-                {/* Text content */}
-                <div className="flex-1 space-y-6">
-                  <span className="inline-flex px-4 py-1.5 rounded-full bg-blue-50 text-blue-600 text-xs font-bold uppercase tracking-wider">
-                    {feature.badge}
-                  </span>
+          {/* Card 2: Square Card (Accent Color) */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="bg-primary/[0.03] border border-primary/20 rounded-[2rem] p-8 md:p-10 flex flex-col relative overflow-hidden group hover:border-primary/40 transition-colors duration-500"
+          >
+            <div className="absolute -right-10 -top-10 w-48 h-48 bg-primary/10 rounded-full blur-3xl group-hover:bg-primary/20 transition-all duration-700" />
+            <div className="w-14 h-14 bg-background rounded-2xl border border-border/50 flex items-center justify-center mb-8 shadow-sm relative z-10">
+              <CreditCard className="w-7 h-7 text-primary" />
+            </div>
+            <h3 className="text-2xl md:text-3xl font-playfair font-semibold mb-4 text-foreground relative z-10">Time & Billing</h3>
+            <p className="text-muted-foreground text-base leading-relaxed mb-8 flex-1 relative z-10">
+              Never miss a billable hour again. Simple timers and elegant invoice generation built right into your workflow.
+            </p>
+            <ul className="space-y-3 mt-auto relative z-10">
+              <li className="flex items-center gap-3 text-sm font-medium text-foreground/80">
+                <CheckCircle2 className="w-5 h-5 text-primary"/> Paystack Integration
+              </li>
+              <li className="flex items-center gap-3 text-sm font-medium text-foreground/80">
+                <CheckCircle2 className="w-5 h-5 text-primary"/> Smart Payment Reminders
+              </li>
+            </ul>
+          </motion.div>
 
-                  <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight leading-tight">
-                    {feature.title}
-                  </h2>
+          {/* Card 3: Square Card */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="bg-card border border-border/50 rounded-[2rem] p-8 md:p-10 flex flex-col hover:border-primary/30 transition-colors duration-500 shadow-sm"
+          >
+             <div className="w-14 h-14 bg-muted/40 rounded-2xl flex items-center justify-center mb-8">
+              <Users className="w-7 h-7 text-primary" />
+            </div>
+            <h3 className="text-2xl md:text-3xl font-playfair font-semibold mb-4 text-foreground">Client Portals</h3>
+            <p className="text-muted-foreground text-base leading-relaxed">
+              Give your clients a premium experience with a dedicated, secure space to view updates, sign documents, and message your team directly.
+            </p>
+          </motion.div>
 
-                  <p className="text-lg text-slate-600 leading-relaxed font-medium">
-                    {feature.description}
+          {/* Card 4: Horizontal Card (Spans 2 columns) */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="md:col-span-2 bg-card border border-border/50 rounded-[2rem] p-8 md:p-12 flex flex-col md:flex-row items-center gap-10 hover:border-primary/30 transition-colors duration-500 shadow-sm"
+          >
+            <div className="flex-1">
+              <div className="w-14 h-14 bg-muted/40 rounded-2xl flex items-center justify-center mb-8">
+                <Shield className="w-7 h-7 text-primary" />
+              </div>
+              <h3 className="text-2xl md:text-3xl font-playfair font-semibold mb-4 text-foreground">Uncompromising Security</h3>
+              <p className="text-muted-foreground text-lg leading-relaxed">
+                Bank-grade encryption, detailed audit logs, and strict access controls ensure your firm's sensitive data is always protected and fully compliant with regional regulations.
+              </p>
+            </div>
+            <div className="hidden md:flex w-1/3 justify-center relative">
+              <div className="relative w-full aspect-square max-w-[220px] border-[12px] border-muted/30 rounded-full flex items-center justify-center">
+                 <Shield className="w-16 h-16 text-primary/40" strokeWidth={1} />
+                 <div className="absolute -inset-1 border-2 border-primary/60 rounded-full border-dashed animate-[spin_30s_linear_infinite]" />
+              </div>
+            </div>
+          </motion.div>
+
+        </div>
+      </section>
+
+      {/* Grid of smaller features */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="bg-card border border-border/50 rounded-[2rem] p-8 hover:border-primary/30 transition-colors shadow-sm"
+            >
+              <Mail className="w-8 h-8 text-primary mb-5" strokeWidth={1.5} />
+              <h4 className="font-semibold text-xl mb-3 text-foreground">Email & WhatsApp</h4>
+              <p className="text-base text-muted-foreground leading-relaxed">Automatically sync your external communications directly to the relevant case file for a complete history.</p>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="bg-card border border-border/50 rounded-[2rem] p-8 hover:border-primary/30 transition-colors shadow-sm"
+            >
+              <FileText className="w-8 h-8 text-primary mb-5" strokeWidth={1.5} />
+              <h4 className="font-semibold text-xl mb-3 text-foreground">Document Storage</h4>
+              <p className="text-base text-muted-foreground leading-relaxed">Keep all pleadings and evidence centralized, searchable, and securely backed up in the cloud.</p>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="bg-card border border-border/50 rounded-[2rem] p-8 hover:border-primary/30 transition-colors shadow-sm md:col-span-3 mt-4"
+            >
+              <div className="flex flex-col md:flex-row justify-between gap-8">
+                <div className="flex-1">
+                  <Share2 className="w-10 h-10 text-primary mb-5" strokeWidth={1.5} />
+                  <h4 className="font-semibold text-2xl mb-3 text-foreground">Premium SaaS Integrations Hub</h4>
+                  <p className="text-base text-muted-foreground leading-relaxed max-w-xl">
+                    Connect the power of global industry systems directly inside your workspace. LexAfrica connects your calendars, billing accounts, and communications instantly.
                   </p>
-
-                  <ul className="space-y-4 pt-4">
-                    {feature.bullets.map((bullet, idx) => (
-                      <li
-                        key={idx}
-                        className="flex items-start gap-3 text-base text-slate-700 font-medium"
-                      >
-                        <div className="w-5 h-5 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 mt-0.5 shrink-0">
-                          <Check className="w-3.5 h-3.5" strokeWidth={3} />
-                        </div>
-                        <span>{bullet}</span>
-                      </li>
-                    ))}
-                  </ul>
                 </div>
-
-                {/* Stylized UI Mockup */}
-                <div className="flex-1 w-full">
-                  <div className="aspect-[4/3] rounded-3xl border border-slate-200 bg-slate-50 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden">
-                    <img 
-                      src={feature.image} 
-                      alt={`${feature.badge} Interface`} 
-                      className="w-full h-full object-cover"
-                    />
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 flex-1">
+                  <div className="p-4 bg-muted/20 rounded-2xl border border-border/40">
+                    <span className="text-xs font-bold text-primary block mb-1">📹 ZOOM CONSULTATIONS</span>
+                    <p className="text-xs text-muted-foreground">Auto-generate video meeting channels directly within client calendar slots.</p>
+                  </div>
+                  <div className="p-4 bg-muted/20 rounded-2xl border border-border/40">
+                    <span className="text-xs font-bold text-primary block mb-1">💳 STRIPE & PAYSTACK</span>
+                    <p className="text-xs text-muted-foreground">Accept card, bank, and mobile transfers with multi-currency ledgers.</p>
+                  </div>
+                  <div className="p-4 bg-muted/20 rounded-2xl border border-border/40">
+                    <span className="text-xs font-bold text-primary block mb-1">✍️ SECURE DOCUSIGN</span>
+                    <p className="text-xs text-muted-foreground">Draft covenants and sign agreements with binding legal digital trails.</p>
+                  </div>
+                  <div className="p-4 bg-muted/20 rounded-2xl border border-border/40">
+                    <span className="text-xs font-bold text-primary block mb-1">💬 SLACK REAL-TIME</span>
+                    <p className="text-xs text-muted-foreground">Broadcast workflow alerts, reminders, and notifications to channels.</p>
                   </div>
                 </div>
               </div>
-            );
-          })}
-        </div>
+            </motion.div>
+         </div>
       </section>
 
-      {/* ── Additional Capabilities Grid ── */}
-      <section className="py-20 md:py-28 bg-slate-50 border-t border-slate-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-600 text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
-              Even More Capabilities
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900">
-              An operating system packed with integrations
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {additionalFeatures.map((feat, index) => {
-              const FeatIcon = feat.icon;
-              return (
-                <div
-                  key={index}
-                  className="rounded-3xl border border-slate-100 bg-white p-8 space-y-5 shadow-sm hover:shadow-md transition-shadow duration-300"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
-                    <FeatIcon className="w-6 h-6" />
-                  </div>
-                  <h3 className="font-bold text-xl text-slate-900">
-                    {feat.title}
-                  </h3>
-                  <p className="text-base text-slate-600 leading-relaxed font-medium">
-                    {feat.description}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+      {/* Footer CTA */}
+      <section className="py-32 text-center mt-12 bg-muted/10 border-t border-border/40">
+        <h2 className="text-4xl md:text-5xl font-playfair font-normal text-foreground mb-6">
+          Ready to <span className="text-primary font-medium">get started?</span>
+        </h2>
+        <p className="text-xl text-muted-foreground/80 max-w-2xl mx-auto leading-relaxed mb-10">
+          Reach out to our team to discuss how LexAfrica can support your firm's specific operational needs.
+        </p>
+        <Link to="/contact">
+          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-7 px-12 rounded-full shadow-md transition-all hover:scale-105 text-lg tracking-wide">
+            Contact Sales
+          </Button>
+        </Link>
       </section>
 
-      {/* ── CTA Footer ── */}
-      <section className="py-24 md:py-32 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-6">
-            Supercharge your business office today
-          </h2>
-          <p className="text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed mb-10 font-medium">
-            Sign up now for a 14-day free trial on your own customized
-            subdomain. Set up takes less than 2 minutes.
-          </p>
-          <Link to="/signup">
-            <Button className="bg-primary hover:bg-primary/90 text-white font-bold py-6 px-10 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 text-base">
-              Start Free Trial
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-          </Link>
-        </div>
-      </section>
     </div>
   );
 }

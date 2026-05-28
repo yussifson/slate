@@ -290,8 +290,10 @@ export const SCHEMA_COLUMNS = {
     "tax_amount",
     "total_amount",
     "currency",
+    "exchange_rate",
     "status",
     "due_date",
+    "due_time",
     "paid_date",
     "payment_method",
     "notes"
@@ -605,5 +607,18 @@ export const SCHEMA_COLUMNS = {
     "avatar_url",
     "department",
     "bar_number"
+  ],
+  "case_timeline": [
+    "id",
+    "created_date",
+    "updated_date",
+    "created_by",
+    "company_id",
+    "case_id",
+    "case_title",
+    "title",
+    "description",
+    "activity_type",
+    "logged_by_name"
   ]
 };

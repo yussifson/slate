@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { isSuperAdmin } from "@/lib/constants";
-import { CreditCard, TrendingUp, AlertCircle, CheckCircle, Clock, Send, RefreshCw, DollarSign, MoreVertical, Pencil, Plus, Search, Receipt } from "lucide-react";
+import { CreditCard, AlertCircle, CheckCircle, Clock, Send, RefreshCw, DollarSign, MoreVertical, Pencil, Plus, Search, Receipt } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -245,7 +245,7 @@ function CompanyBilling({ companyId }) {
                               <Badge className={`text-[10px] ${INVOICE_STATUS_COLORS[inv.status]}`}>{inv.status}</Badge>
                             </div>
                             <p className="text-xs text-muted-foreground mt-0.5">
-                              {inv.client_name} {inv.due_date ? `· Due ${format(new Date(inv.due_date), "MMM d, yyyy")}` : ""}
+                              {inv.client_name} {inv.due_date ? `· Due ${format(new Date(inv.due_date), "MMM d, yyyy")}` : ""}{inv.due_time ? ` at ${inv.due_time}` : ""}
                             </p>
                           </div>
                           <p className="text-sm font-bold shrink-0">{formatCurrency(inv.total_amount, inv.currency)}</p>
@@ -389,8 +389,8 @@ function SuperAdminBilling() {
   const sendReminder = async (inv) => {
     await base44.integrations.Core.SendEmail({
       to: inv.admin_email,
-      subject: `[Optalflow] Payment Reminder — ${inv.plan_name} Plan`,
-      body: `Dear ${inv.company_name},\n\nThis is a reminder that your Optalflow subscription of $${inv.amount_usd} USD for ${inv.billing_period} is ${inv.status === "overdue" ? "OVERDUE" : "pending payment"}.\n\nDue Date: ${inv.due_date}\n\nPlease arrange payment at your earliest convenience.\n\n— Optalflow Billing`,
+      subject: `[LexAfrica] Payment Reminder — ${inv.plan_name} Plan`,
+      body: `Dear ${inv.company_name},\n\nThis is a reminder that your LexAfrica subscription of $${inv.amount_usd} USD for ${inv.billing_period} is ${inv.status === "overdue" ? "OVERDUE" : "pending payment"}.\n\nDue Date: ${inv.due_date}\n\nPlease arrange payment at your earliest convenience.\n\n— LexAfrica Billing`,
     });
     updateMutation.mutate({ id: inv.id, data: { reminder_count: (inv.reminder_count || 0) + 1, last_reminder_at: new Date().toISOString() } });
     toast({ title: "Reminder sent", description: `Email sent to ${inv.admin_email}` });

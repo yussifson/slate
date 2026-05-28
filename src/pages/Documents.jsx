@@ -4,10 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { useFirmSettings } from "@/hooks/useFirmSettings";
-import { Plus, FolderOpen, Search, Download, Trash2, Upload, MoreVertical } from "lucide-react";
-import { Link } from "react-router-dom";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Plus, FolderOpen, Search, Download, Trash2, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -17,33 +14,41 @@ import { Label } from "@/components/ui/label";
 import PageHeader from "@/components/shared/PageHeader";
 import DataTable from "@/components/shared/DataTable";
 import AddOptionInline from "@/components/shared/AddOptionInline";
+import DocumentPreviewModal from "@/components/shared/DocumentPreviewModal";
 import { format } from "date-fns";
 
 import { useToast } from "@/components/ui/use-toast";
-import { useContracts } from "@/hooks/integrations/useContracts";
 
 export default function Documents() {
   const { user } = useAuth();
   const companyId = useCompanyId();
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const { sendForSignature, isSending } = useContracts();
   const { docCategories, addDocCategory } = useFirmSettings();
   const [showForm, setShowForm] = useState(false);
-  const [editingDocument, setEditingDocument] = useState(null);
-  const [viewingDocument, setViewingDocument] = useState(null);
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
+  const [previewDoc, setPreviewDoc] = useState(null);
+
+  const isAdmin = ["super_admin", "company_admin", "managing_partner"].includes(user?.role);
 
   const { data: documents = [], isLoading } = useQuery({
-    queryKey: ["documents", companyId],
-    queryFn: () => base44.entities.Document.filter({ company_id: companyId }),
+    queryKey: ["documents", companyId, user?.email, isAdmin],
+    queryFn: async () => {
+      const list = await base44.entities.Document.filter({ company_id: companyId });
+      if (isAdmin) return list;
+      return list.filter(d => d.uploaded_by === user?.email || d.created_by === user?.id);
+    },
     enabled: !!companyId,
   });
 
   const { data: cases = [] } = useQuery({
-    queryKey: ["cases", companyId],
-    queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId }),
+    queryKey: ["cases", companyId, user?.email, isAdmin],
+    queryFn: async () => {
+      const list = await base44.entities.LegalCase.filter({ company_id: companyId });
+      if (isAdmin) return list;
+      return list.filter(c => c.assigned_lawyer === user?.email || c.created_by === user?.id);
+    },
     enabled: !!companyId,
   });
 
@@ -55,16 +60,6 @@ export default function Documents() {
       toast({ title: "Document uploaded successfully" });
     },
     onError: (err) => toast({ title: "Failed to upload document", description: err.message, variant: "destructive" })
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Document.update(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["documents"] });
-      setEditingDocument(null);
-      toast({ title: "Document updated successfully" });
-    },
-    onError: (err) => toast({ title: "Failed to update document", description: err.message, variant: "destructive" })
   });
 
   const deleteMutation = useMutation({
@@ -88,11 +83,7 @@ export default function Documents() {
       render: (row) => (
         <div>
           <p className="font-medium text-sm">{row.name}</p>
-          {row.case_id ? (
-            <Link to={`/cases/${row.case_id}`} className="text-xs text-primary hover:underline">{row.case_title}</Link>
-          ) : (
-            <p className="text-xs text-muted-foreground">{row.case_title || "General"}</p>
-          )}
+          <p className="text-xs text-muted-foreground">{row.case_title || "General"}</p>
         </div>
       )
     },
@@ -102,33 +93,16 @@ export default function Documents() {
     {
       header: "Actions",
       render: (row) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <MoreVertical className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => setViewingDocument(row)}>View Details</DropdownMenuItem>
-            {row.file_url && (
-              <DropdownMenuItem onClick={() => window.open(row.file_url, "_blank")}>Download</DropdownMenuItem>
-            )}
-            <DropdownMenuItem onClick={() => setEditingDocument(row)}>Edit</DropdownMenuItem>
-            {row.file_url && (
-              <DropdownMenuItem onClick={() => {
-                const signerEmail = prompt("Enter signer's email address:");
-                if (signerEmail) {
-                  sendForSignature({ companyId, provider: 'docusign', documentName: row.name, signerEmail, signerName: 'Client' });
-                }
-              }}>
-                Send for Signature (DocuSign)
-              </DropdownMenuItem>
-            )}
-            <DropdownMenuItem className="text-red-600" onClick={() => {
-              if (window.confirm("Delete this document?")) deleteMutation.mutate(row.id);
-            }}>Delete</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex gap-1">
+          {row.file_url && (
+            <a href={row.file_url} target="_blank" rel="noopener noreferrer">
+              <Button variant="ghost" size="icon" className="h-7 w-7"><Download className="w-3.5 h-3.5" /></Button>
+            </a>
+          )}
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(row.id); }}>
+            <Trash2 className="w-3.5 h-3.5 text-destructive" />
+          </Button>
+        </div>
       )
     },
   ];
@@ -153,84 +127,40 @@ export default function Documents() {
           </SelectContent>
         </Select>
       </div>
-      <DataTable columns={columns} data={filtered} isLoading={isLoading} emptyTitle="No documents yet" emptyIcon={FolderOpen} />
+      <DataTable
+        columns={columns}
+        data={filtered}
+        isLoading={isLoading}
+        onRowClick={(row) => setPreviewDoc(row)}
+        emptyTitle="No documents yet"
+        emptyIcon={FolderOpen}
+      />
 
       <DocumentUploadDialog
-        open={showForm || !!editingDocument}
-        onClose={() => { setShowForm(false); setEditingDocument(null); }}
-        onSubmit={(data) => editingDocument ? updateMutation.mutate({ id: editingDocument.id, data }) : createMutation.mutate(data)}
-        initialData={editingDocument}
+        open={showForm}
+        onClose={() => setShowForm(false)}
+        onSubmit={(data) => createMutation.mutate(data)}
         cases={cases}
         docCategories={docCategories}
         addDocCategory={addDocCategory}
       />
 
-      <Sheet open={!!viewingDocument} onOpenChange={(open) => !open && setViewingDocument(null)}>
-        <SheetContent className="overflow-y-auto">
-          <SheetHeader>
-            <SheetTitle>Document Details</SheetTitle>
-          </SheetHeader>
-          {viewingDocument && (
-            <div className="mt-6 space-y-4">
-              <div>
-                <Label className="text-muted-foreground">Document Name</Label>
-                <p className="font-medium">{viewingDocument.name}</p>
-              </div>
-              <div>
-                <Label className="text-muted-foreground">Category</Label>
-                <p className="font-medium capitalize">{viewingDocument.category?.replace(/_/g, " ") || "—"}</p>
-              </div>
-              <div>
-                <Label className="text-muted-foreground">Case</Label>
-                <p className="font-medium">
-                  {viewingDocument.case_id ? (
-                    <Link to={`/cases/${viewingDocument.case_id}`} className="text-primary hover:underline">
-                      {viewingDocument.case_title}
-                    </Link>
-                  ) : viewingDocument.case_title || "General"}
-                </p>
-              </div>
-              <div>
-                <Label className="text-muted-foreground">Uploaded By</Label>
-                <p className="font-medium">{viewingDocument.uploaded_by || "—"}</p>
-              </div>
-              <div>
-                <Label className="text-muted-foreground">Date</Label>
-                <p className="font-medium">{format(new Date(viewingDocument.created_date), "MMM d, yyyy")}</p>
-              </div>
-              <div>
-                <Label className="text-muted-foreground">Notes</Label>
-                <p className="font-medium whitespace-pre-wrap">{viewingDocument.notes || "—"}</p>
-              </div>
-              {viewingDocument.file_url && (
-                <div className="pt-4">
-                  <a href={viewingDocument.file_url} target="_blank" rel="noopener noreferrer">
-                    <Button><Download className="w-4 h-4 mr-2" /> Download File</Button>
-                  </a>
-                </div>
-              )}
-            </div>
-          )}
-        </SheetContent>
-      </Sheet>
+      {previewDoc && (
+        <DocumentPreviewModal
+          fileUrl={previewDoc.file_url}
+          fileName={previewDoc.name}
+          open={!!previewDoc}
+          onClose={() => setPreviewDoc(null)}
+        />
+      )}
     </div>
   );
 }
 
-function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, addDocCategory, initialData }) {
-  const [form, setForm] = React.useState({ name: "", category: "other", case_id: "", case_title: "", notes: "" });
+function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, addDocCategory }) {
+  const [form, setForm] = useState({ name: "", category: "other", case_id: "", case_title: "", notes: "" });
   const [uploading, setUploading] = useState(false);
   const [fileUrl, setFileUrl] = useState("");
-
-  React.useEffect(() => {
-    if (initialData) {
-      setForm(initialData);
-      setFileUrl(initialData.file_url || "");
-    } else {
-      setForm({ name: "", category: "other", case_id: "", case_title: "", notes: "" });
-      setFileUrl("");
-    }
-  }, [initialData, open]);
 
   const handleChange = (field, value) => setForm(prev => ({ ...prev, [field]: value }));
 
@@ -260,7 +190,7 @@ function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, a
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
-        <DialogHeader><DialogTitle>{initialData ? "Edit Document" : "Upload Document"}</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle>Upload Document</DialogTitle></DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <Label>File</Label>
@@ -292,7 +222,7 @@ function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, a
           </div>
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-            <Button type="submit" disabled={uploading}>{initialData ? "Save Changes" : "Upload"}</Button>
+            <Button type="submit" disabled={uploading}>Upload</Button>
           </div>
         </form>
       </DialogContent>
