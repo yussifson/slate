@@ -1,0 +1,37 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { FileQuestion, ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+
+export default function NotFound() {
+  return (
+    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-slate-50 p-6 font-sans">
+      <div className="max-w-md w-full bg-white border border-slate-200 rounded-3xl p-10 text-center shadow-2xl shadow-slate-200/50">
+        <div className="w-24 h-24 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner">
+          <FileQuestion className="w-12 h-12" strokeWidth={1.5} />
+        </div>
+        <h1 className="text-4xl font-black text-slate-900 tracking-tight mb-4">
+          404
+        </h1>
+        <h2 className="text-xl font-bold text-slate-700 mb-4">
+          Page Not Found
+        </h2>
+        <p className="text-slate-500 font-medium leading-relaxed mb-10">
+          The page or workspace you are looking for doesn't exist, has been moved, or you don't have access to it.
+        </p>
+        
+        <div className="flex flex-col gap-3">
+          <Button 
+            asChild
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-6 font-bold text-lg shadow-lg shadow-blue-600/20"
+          >
+            <Link to="/">
+              <ArrowLeft className="w-5 h-5 mr-2" />
+              Return Home
+            </Link>
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -514,7 +514,7 @@ export default function Home() {
           </FadeIn>
 
           {/* Dashboard mockup */}
-          <FadeIn delay="delay-[400ms]">
+          <FadeIn delay="delay-500">
             <div className="relative w-full max-w-6xl mx-auto h-[400px] md:h-[550px] rounded-2xl border border-slate-200/80 bg-slate-50 shadow-2xl overflow-hidden flex items-center justify-center">
               <img src="/images/hero_dashboard_ui.png" alt="Optalflow Dashboard Mockup" className="w-full h-full object-cover object-top" />
             </div>

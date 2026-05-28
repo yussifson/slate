@@ -68,7 +68,7 @@ export const base44 = {
     },
     users: {
         inviteUser: async (email, role) => {
-            console.log(`Invited user: ${email} with role: ${role}`);
+            // Invited user: ${email} with role: ${role}
             return { email, role };
         }
     },
@@ -93,7 +93,7 @@ export const base44 = {
     integrations: {
         Core: {
             SendEmail: async (payload) => {
-                console.log("Mock sending email:", payload);
+                // Mock sending email
                 return { success: true };
             }
         }

@@ -16,7 +16,7 @@ export function loadPaystackScript() {
     script.src = PAYSTACK_SDK_URL;
     script.async = true;
     script.onload = () => {
-      console.log('Paystack SDK loaded successfully.');
+      // Paystack SDK loaded successfully.
       resolve(true);
     };
     script.onerror = () => {
@@ -69,11 +69,11 @@ export async function initiatePaystackSubscription({
       ]
     },
     callback: function(response) {
-      console.log('Paystack payment successful. Reference:', response.reference);
+      // Paystack payment successful
       if (onSuccess) onSuccess(response);
     },
     onClose: function() {
-      console.log('Paystack checkout window closed by user.');
+      // Paystack checkout window closed by user
       if (onClose) onClose();
     }
   });
