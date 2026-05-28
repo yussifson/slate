@@ -697,24 +697,24 @@ export default function Home() {
               const isWide = i === 0 || i === 3;
               return (
                 <FadeIn key={i} delay={`delay-[${i * 80}ms]`} className={isWide ? "lg:col-span-2" : "col-span-1"}>
-                  <div className="group relative bg-white rounded-[2.5rem] border border-slate-200/50 shadow-sm hover:shadow-2xl hover:shadow-blue-900/10 transition-all duration-500 overflow-hidden h-full flex flex-col p-10 md:p-12 z-0">
+                  <div className="group relative bg-white rounded-[2.5rem] border border-blue-100/60 shadow-[0_8px_30px_-12px_rgba(37,99,235,0.08)] hover:shadow-2xl hover:shadow-blue-900/15 transition-all duration-500 overflow-hidden h-full flex flex-col p-10 md:p-12 z-0">
                     
-                    {/* Vibrant Animated Background Gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-50/80 via-white to-indigo-50/40 opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10"></div>
+                    {/* Vibrant Background Gradient (Always Partially Visible) */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-50/90 via-white to-indigo-50/50 opacity-100 group-hover:from-blue-100/60 group-hover:to-indigo-100/40 transition-colors duration-700 -z-10"></div>
                     
-                    {/* Abstract Decorative Icon Watermark */}
-                    <div className="absolute -bottom-12 -right-12 text-slate-50 group-hover:text-blue-100/50 transition-colors duration-700 -z-10 transform group-hover:scale-110 group-hover:-rotate-12 transition-transform ease-out">
+                    {/* Abstract Decorative Icon Watermark (Always Visible) */}
+                    <div className="absolute -bottom-12 -right-12 text-blue-600 opacity-[0.03] group-hover:opacity-[0.06] transition-all duration-700 -z-10 transform scale-100 group-hover:scale-110 group-hover:-rotate-12 ease-out">
                       <feature.icon className="w-72 h-72" strokeWidth={0.5} />
                     </div>
 
                     <div className="relative z-10 flex-1">
-                      {/* Jewel-like Icon Container */}
-                      <div className="w-16 h-16 rounded-[1.25rem] bg-gradient-to-br from-white to-slate-50 border border-slate-200 shadow-sm flex items-center justify-center mb-10 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:from-blue-600 group-hover:to-indigo-600 group-hover:border-transparent group-hover:shadow-[0_8px_16px_rgba(37,99,235,0.25)] transition-all duration-500">
-                        <feature.icon className="w-8 h-8 text-slate-700 group-hover:text-white transition-colors duration-500" strokeWidth={1.5} />
+                      {/* Jewel-like Icon Container (Blue by Default) */}
+                      <div className="w-16 h-16 rounded-[1.25rem] bg-gradient-to-br from-blue-100 to-white border border-blue-200/60 shadow-sm shadow-blue-600/10 flex items-center justify-center mb-10 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:from-blue-600 group-hover:to-indigo-600 group-hover:border-transparent group-hover:shadow-[0_8px_16px_rgba(37,99,235,0.3)] transition-all duration-500">
+                        <feature.icon className="w-8 h-8 text-blue-600 group-hover:text-white transition-colors duration-500" strokeWidth={1.5} />
                       </div>
                       
-                      {/* Premium Typography */}
-                      <h4 className="text-[28px] leading-[1.2] font-black text-slate-900 tracking-tight mb-5 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-700 group-hover:to-indigo-700 transition-all duration-300">
+                      {/* Premium Typography (Blue theme) */}
+                      <h4 className="text-[28px] leading-[1.2] font-black text-blue-950 tracking-tight mb-5 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-700 group-hover:to-indigo-700 transition-all duration-300">
                         {feature.title}
                       </h4>
                       <p className="text-slate-600 leading-[1.7] font-medium text-lg">
@@ -722,10 +722,10 @@ export default function Home() {
                       </p>
                     </div>
                     
-                    {/* Elegant Reveal Link */}
-                    <div className="relative z-10 mt-12 flex items-center text-blue-600 font-extrabold text-lg opacity-0 -translate-x-6 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 ease-out">
+                    {/* Elegant Reveal Link (Always visible but enhances on hover) */}
+                    <div className="relative z-10 mt-12 flex items-center text-blue-700 font-extrabold text-lg opacity-80 group-hover:opacity-100 transition-all duration-500 ease-out">
                       Explore capabilities
-                      <span className="ml-3 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors duration-500">
+                      <span className="ml-3 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center group-hover:bg-blue-600 text-blue-700 group-hover:text-white transition-all duration-500 shadow-sm transform group-hover:translate-x-1">
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                         </svg>
