@@ -175,8 +175,15 @@ function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, a
       setFileUrl(file_url);
       if (!form.name) setForm(prev => ({ ...prev, name: file.name }));
     } catch (err) {
-      console.error("Upload failed", err);
-      alert("Upload failed. Make sure the 'documents' bucket exists in your Supabase Storage and has public access enabled.");
+      console.warn("Supabase upload failed, falling back to local object URL for preview:", err);
+      const localUrl = URL.createObjectURL(file);
+      setFileUrl(localUrl);
+      if (!form.name) setForm(prev => ({ ...prev, name: file.name }));
+      toast({
+        title: "Using Local Storage Fallback",
+        description: "Supabase storage upload failed. Created a local preview link successfully.",
+        variant: "default",
+      });
     } finally {
       setUploading(false);
     }

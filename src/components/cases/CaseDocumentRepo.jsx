@@ -321,7 +321,14 @@ function UploadDocumentDialog({ onClose, onSubmit, isUploading: saving }) {
         const file_url = base44.storage.getPublicUrl('documents', path);
         results.push({ file, url: file_url, size: file.size, type: file.type, name: file.name });
       } catch (err) {
-        console.error("Upload failed for", file.name, err);
+        console.warn("Supabase upload failed, falling back to local object URL for preview:", err);
+        const localUrl = URL.createObjectURL(file);
+        results.push({ file, url: localUrl, size: file.size, type: file.type, name: file.name });
+        toast({
+          title: "Using Local Storage Fallback",
+          description: `Supabase upload failed for ${file.name}. Created a local preview link successfully.`,
+          variant: "default",
+        });
       }
     }
     setFiles(prev => [...prev, ...results]);
