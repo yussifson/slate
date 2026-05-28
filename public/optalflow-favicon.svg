@@ -1,4 +1,16 @@
-<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="40" height="40" rx="10" fill="#2563EB" />
-  <path d="M20 10L10 30h4.5l2.5-6h6l2.5 6H30L20 10zm-1.5 10.5l3-7 3 7h-6z" fill="white" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="optalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F46E5"/>
+      <stop offset="100%" stop-color="#9333EA"/>
+    </linearGradient>
+    <linearGradient id="optalWave" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+  </defs>
+  
+  <circle cx="50" cy="50" r="36" fill="none" stroke="url(#optalGrad)" stroke-width="14" />
+  
+  <path d="M22,50 Q36,20 50,50 T78,50" fill="none" stroke="url(#optalWave)" stroke-width="12" stroke-linecap="round" />
 </svg>

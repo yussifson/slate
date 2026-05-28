@@ -98,7 +98,7 @@ export default function Sidebar({ user }) {
   const isAdmin = ADMIN_ROLES.includes(user?.role);
   const isSuperAdmin = user?.role === "super_admin";
 
-  const activeCompanyLogo = impersonatedCompany?.logo_url || user?.company_logo_url;
+  const activeCompanyLogo = impersonatedCompany?.logo_url || user?.company_logo_url || (isSuperAdmin ? "/optalflow-favicon.svg" : null);
   const activeCompanyName = impersonatedCompany?.name || user?.company_name || "Optalflow";
   const industryInfo = INDUSTRIES[industry] || INDUSTRIES.law;
 

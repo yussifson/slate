@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100">
+  <defs>
+    <linearGradient id="optalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F46E5"/>
+      <stop offset="100%" stop-color="#9333EA"/>
+    </linearGradient>
+    <linearGradient id="optalWave" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+  </defs>
+  
+  <g transform="translate(10, 10) scale(0.8)">
+    <circle cx="50" cy="50" r="36" fill="none" stroke="url(#optalGrad)" stroke-width="14" />
+    <path d="M22,50 Q36,20 50,50 T78,50" fill="none" stroke="url(#optalWave)" stroke-width="12" stroke-linecap="round" />
+  </g>
+
+  <text x="110" y="65" font-family="-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif" font-size="48" font-weight="800" fill="#0F172A" letter-spacing="-1.5">
+    Optal<tspan fill="#4F46E5">Flow</tspan>
+  </text>
+</svg>
