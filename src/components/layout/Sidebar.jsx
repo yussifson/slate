@@ -127,7 +127,7 @@ export default function Sidebar({ user }) {
     <div className="flex flex-col h-full bg-sidebar overflow-x-hidden">
       {/* Logo / Company Header */}
       <div className={cn("py-4 border-b-2 border-primary/80 flex items-center transition-all", collapsed ? "px-4 justify-center" : "px-4 gap-3")}>
-        <div className={cn("rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 font-bold text-primary", collapsed ? "w-9 h-9 text-base" : "w-9 h-9 text-sm")}>
+        <div className={cn("rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 font-bold text-primary", collapsed ? "w-11 h-11 text-lg" : "w-11 h-11 text-base")}>
           {activeCompanyLogo
             ? <img src={activeCompanyLogo} alt="Logo" className="w-full h-full object-contain rounded-xl" />
             : industryInfo.icon}

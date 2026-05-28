@@ -45,7 +45,7 @@ export default function MarketingLayout({ children }) {
           <div className="h-14 flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 group shrink-0">
-            <Logo className="w-8 h-8 md:w-9 md:h-9 transition-transform group-hover:scale-105" />
+            <Logo className="w-10 h-10 md:w-11 md:h-11 transition-transform group-hover:scale-105" />
             <div className="flex flex-col">
               <span className="font-extrabold text-base md:text-lg tracking-tight text-foreground leading-none">
                 Optalflow
@@ -212,7 +212,7 @@ export default function MarketingLayout({ children }) {
             {/* Brand Column */}
             <div className="col-span-2 md:col-span-5 lg:col-span-4 flex flex-col gap-6 pr-0 md:pr-10">
               <Link to="/" className="flex items-center gap-2.5 group w-fit">
-                <Logo className="w-8 h-8 text-primary" />
+                <Logo className="w-10 h-10 text-primary" />
                 <span className="font-extrabold text-xl text-slate-900 tracking-tight">Optalflow</span>
               </Link>
               <p className="text-sm leading-relaxed text-slate-600 font-medium">
