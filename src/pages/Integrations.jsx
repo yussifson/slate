@@ -400,7 +400,7 @@ export default function Integrations() {
       </div>
 
       {/* Top Filter Bar */}
-      <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl border border-slate-800 p-4 shadow-lg flex flex-col md:flex-row gap-4 items-center justify-between">
+      <div className="bg-white dark:bg-slate-900/50 dark:backdrop-blur-xl rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm dark:shadow-lg flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 hide-scrollbar">
           {categories.map(cat => (
             <button
@@ -409,7 +409,7 @@ export default function Integrations() {
               className={`px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all ${
                 activeCategory === cat 
                   ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20' 
-                  : 'bg-slate-800/50 text-slate-300 border border-slate-700 hover:bg-slate-700'
+                  : 'bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
               }`}
             >
               {cat}
@@ -422,7 +422,7 @@ export default function Integrations() {
             placeholder="Search apps or features..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 h-11 bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-400 rounded-xl w-full focus:bg-slate-800 transition-colors"
+            className="pl-10 h-11 bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 rounded-xl w-full focus:bg-white dark:focus:bg-slate-800 transition-colors"
           />
         </div>
       </div>
@@ -430,7 +430,7 @@ export default function Integrations() {
       {/* Integration Grid */}
       {initialLoading ? (
         <div className="py-24 flex justify-center">
-          <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+          <Loader2 className="w-8 h-8 animate-spin text-blue-600 dark:text-blue-500" />
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -442,13 +442,15 @@ export default function Integrations() {
             return (
               <div 
                 key={app.id} 
-                className={`bg-slate-900 rounded-2xl border transition-all duration-300 flex flex-col overflow-hidden ${
-                  isConnected ? 'border-blue-500 shadow-lg shadow-blue-500/10 ring-1 ring-blue-500/20' : 'border-slate-800 shadow-sm hover:shadow-xl hover:border-slate-700 hover:-translate-y-1'
+                className={`bg-white dark:bg-slate-900 rounded-2xl border transition-all duration-300 flex flex-col overflow-hidden ${
+                  isConnected 
+                    ? 'border-blue-500 shadow-lg shadow-blue-500/10 ring-1 ring-blue-500/20' 
+                    : 'border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-700 hover:-translate-y-1'
                 }`}
               >
                 <div className="p-6 sm:p-7 flex-1">
                   <div className="flex justify-between items-start mb-6">
-                    <div className="w-16 h-16 rounded-2xl bg-white border border-slate-200 flex items-center justify-center p-3 shadow-md group-hover:scale-105 transition-transform">
+                    <div className="w-16 h-16 rounded-2xl bg-white border border-slate-200 dark:border-slate-700 flex items-center justify-center p-3 shadow-sm dark:shadow-md group-hover:scale-105 transition-transform">
                       <img 
                         src={app.logo} 
                         alt={app.name} 
@@ -460,28 +462,28 @@ export default function Integrations() {
                       />
                     </div>
                     {isConnected && (
-                      <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 font-extrabold gap-1.5 px-3 py-1.5 rounded-full shadow-sm">
+                      <Badge className="bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20 font-extrabold gap-1.5 px-3 py-1.5 rounded-full shadow-sm">
                         <CheckCircle2 className="w-4 h-4" /> Connected
                       </Badge>
                     )}
                     {!isConnected && app.popular && (
-                      <Badge variant="outline" className="text-xs font-bold text-blue-400 border-blue-500/20 bg-blue-500/10 px-3 py-1 rounded-full">
+                      <Badge variant="outline" className="text-xs font-bold text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-500/20 bg-blue-50 dark:bg-blue-500/10 px-3 py-1 rounded-full">
                         Popular
                       </Badge>
                     )}
                   </div>
                   
-                  <h3 className="text-xl font-extrabold text-white mb-1.5">{app.name}</h3>
+                  <h3 className="text-xl font-extrabold text-slate-900 dark:text-white mb-1.5">{app.name}</h3>
                   <p className="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3.5">{app.category}</p>
-                  <p className="text-sm text-slate-400 leading-relaxed">{app.description}</p>
+                  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{app.description}</p>
                 </div>
 
-                <div className="px-6 py-5 border-t border-slate-800 bg-slate-900/50 flex items-center justify-between">
+                <div className="px-6 py-5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/50 flex items-center justify-between">
                   <a 
                     href={app.learnMore} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="text-sm font-bold text-blue-500 hover:text-blue-400 flex items-center gap-1.5 transition-colors"
+                    className="text-sm font-bold text-blue-600 dark:text-blue-500 hover:text-blue-800 dark:hover:text-blue-400 flex items-center gap-1.5 transition-colors"
                   >
                     Learn more <ExternalLink className="w-3.5 h-3.5" />
                   </a>
@@ -493,7 +495,7 @@ export default function Integrations() {
                           variant="secondary" 
                           disabled={isLoading}
                           onClick={() => handleTestSync(app)}
-                          className="h-10 px-4 rounded-xl bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 font-bold transition-colors shadow-sm"
+                          className="h-10 px-4 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-500/20 font-bold transition-colors shadow-sm"
                         >
                           {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Test Sync"}
                         </Button>
@@ -503,7 +505,7 @@ export default function Integrations() {
                           variant="secondary" 
                           disabled={isLoading}
                           onClick={() => handleTestFeature(app)}
-                          className="h-10 px-4 rounded-xl bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 font-bold transition-colors shadow-sm"
+                          className="h-10 px-4 rounded-xl bg-purple-50 dark:bg-purple-500/10 text-purple-700 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-500/20 font-bold transition-colors shadow-sm"
                         >
                           {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Test Feature"}
                         </Button>
@@ -512,7 +514,7 @@ export default function Integrations() {
                         variant="outline" 
                         disabled={isLoading}
                         onClick={() => handleDisconnect(app)}
-                        className="h-10 px-4 rounded-xl border-slate-700 bg-transparent text-slate-300 hover:text-red-400 hover:bg-red-500/10 hover:border-red-500/20 transition-colors font-bold shadow-sm"
+                        className="h-10 px-4 rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-transparent text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:border-red-200 dark:hover:border-red-500/20 transition-colors font-bold shadow-sm"
                       >
                         {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Disconnect"}
                       </Button>
