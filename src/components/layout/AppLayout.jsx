@@ -17,10 +17,21 @@ export default function AppLayout() {
   const [isAIOpen, setIsAIOpen] = useState(() => {
     try { return localStorage.getItem('optalflow_ai_open') === 'true'; } catch { return false; }
   });
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    try { return localStorage.getItem('optalflow_sidebar_collapsed') === 'true'; } catch { return false; }
+  });
 
   useEffect(() => {
     try { localStorage.setItem('optalflow_ai_open', isAIOpen); } catch {}
   }, [isAIOpen]);
+
+  const toggleSidebar = () => {
+    setIsSidebarCollapsed(prev => {
+      const next = !prev;
+      try { localStorage.setItem('optalflow_sidebar_collapsed', next); } catch {}
+      return next;
+    });
+  };
 
   const handleStopImpersonation = () => {
     stopImpersonation();
@@ -58,7 +69,7 @@ export default function AppLayout() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
-      <Sidebar user={user} />
+      <Sidebar user={user} isCollapsed={isSidebarCollapsed} setIsCollapsed={setIsSidebarCollapsed} />
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Trial Countdown Banner */}
         {subscriptionStatus === 'trial' && !hideTrialBanner && !isSuperAdmin && (
@@ -66,7 +77,7 @@ export default function AppLayout() {
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4 shrink-0 animate-pulse" />
               <span className="font-semibold">Free Trial Active:</span>
-              <span>You have <strong className="font-extrabold">{trialDaysLeft} days</strong> remaining on your Optalflow trial. {trialDaysLeft <= 3 && "Upgrade now to prevent service interruption."}</span>
+               <span>You have <strong className="font-extrabold">{trialDaysLeft} days</strong> remaining on your Optalflow trial. {trialDaysLeft <= 3 && "Upgrade now to prevent service interruption."}</span>
             </div>
             <div className="flex items-center gap-3">
               <Link to="/settings">
@@ -105,7 +116,13 @@ export default function AppLayout() {
             </Button>
           </div>
         )}
-        <TopBar user={user} isAIOpen={isAIOpen} toggleAI={() => setIsAIOpen(!isAIOpen)} />
+        <TopBar 
+          user={user} 
+          isAIOpen={isAIOpen} 
+          toggleAI={() => setIsAIOpen(!isAIOpen)} 
+          isSidebarCollapsed={isSidebarCollapsed} 
+          toggleSidebar={toggleSidebar} 
+        />
         <div className="flex-1 flex overflow-hidden relative">
           <main className="flex-1 overflow-y-auto p-4 lg:p-6">
             <div className="max-w-[1400px] w-full mx-auto">
