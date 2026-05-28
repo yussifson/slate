@@ -1,15 +1,68 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { DollarSign, TrendingUp, CreditCard, ArrowUpRight, Activity } from 'lucide-react';
+import { DollarSign, TrendingUp, CreditCard, ArrowUpRight, Activity, Plus, Search, MoreVertical, Edit, CheckCircle } from 'lucide-react';
 import PageHeader from '@/components/shared/PageHeader';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
+import { Button } from '@/components/ui/button';
+import { formatCurrency } from '@/lib/constants';
+import { format } from 'date-fns';
+import { useToast } from '@/components/ui/use-toast';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel } from '@/components/ui/dropdown-menu';
 
 export default function AdminBilling() {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+  const [searchTerm, setSearchTerm] = useState('');
+  
+  // Fetch Global Data
+  const { data: invoices = [], isLoading: loadingInvoices } = useQuery({
+    queryKey: ['admin_invoices'],
+    queryFn: () => base44.entities.Invoice.list()
+  });
+
+  const { data: companies = [] } = useQuery({
+    queryKey: ['admin_companies'],
+    queryFn: () => base44.entities.Company.list()
+  });
+
+  // Calculate Metrics
+  const totalRevenue = invoices.filter(i => i.status === 'paid').reduce((acc, i) => acc + (i.total_amount || i.amount || 0), 0);
+  const pendingRevenue = invoices.filter(i => i.status === 'pending').reduce((acc, i) => acc + (i.total_amount || i.amount || 0), 0);
+  const failedCharges = invoices.filter(i => i.status === 'overdue' || i.status === 'failed').length;
+
+  const getCompanyName = (companyId) => companies.find(c => c.id === companyId)?.name || 'Unknown Firm';
+
+  const updateStatusMutation = useMutation({
+    mutationFn: async ({ id, status }) => {
+      return await base44.entities.Invoice.update(id, { status });
+    },
+    onSuccess: () => {
+      toast({ title: 'Invoice Updated', description: 'The billing status has been updated successfully.' });
+      queryClient.invalidateQueries(['admin_invoices']);
+    }
+  });
+
+  const handleUpdateStatus = (id, status) => {
+    updateStatusMutation.mutate({ id, status });
+  };
+
+  const filteredInvoices = invoices.filter(inv => {
+    const firmName = getCompanyName(inv.company_id).toLowerCase();
+    return firmName.includes(searchTerm.toLowerCase()) || inv.status?.toLowerCase().includes(searchTerm.toLowerCase());
+  }).sort((a, b) => new Date(b.created_at || Date.now()) - new Date(a.created_at || Date.now()));
+
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto">
       <PageHeader 
-        title="Revenue & Billing" 
-        subtitle="Global platform financial analytics and payment gateway health." 
+        title="Revenue & Billing Management" 
+        subtitle="Global platform financial controls and invoice management." 
+        action={
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Plus className="w-4 h-4 mr-2" /> Create Manual Bill
+          </Button>
+        }
       />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -17,113 +70,132 @@ export default function AdminBilling() {
           <CardContent className="p-6">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm font-bold text-indigo-600/80 uppercase tracking-wider mb-1">Total MRR</p>
-                <h3 className="text-4xl font-extrabold text-indigo-950">$42,500</h3>
+                <p className="text-sm font-bold text-indigo-600/80 uppercase tracking-wider mb-1">Total Paid MRR</p>
+                <h3 className="text-4xl font-extrabold text-indigo-950">{formatCurrency(totalRevenue, 'USD')}</h3>
               </div>
               <div className="w-12 h-12 rounded-2xl bg-indigo-100 flex items-center justify-center">
                 <DollarSign className="w-6 h-6 text-indigo-600" />
               </div>
             </div>
             <div className="mt-4 flex items-center gap-2 text-sm">
-              <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-none font-bold">+12.5%</Badge>
-              <span className="text-slate-500 font-medium">from last month</span>
+              <span className="text-slate-500 font-medium">All-time collected revenue</span>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-emerald-50 to-white border-emerald-100 shadow-sm rounded-2xl">
+        <Card className="bg-gradient-to-br from-amber-50 to-white border-amber-100 shadow-sm rounded-2xl">
           <CardContent className="p-6">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm font-bold text-emerald-600/80 uppercase tracking-wider mb-1">Active Subscriptions</p>
-                <h3 className="text-4xl font-extrabold text-emerald-950">1,248</h3>
+                <p className="text-sm font-bold text-amber-600/80 uppercase tracking-wider mb-1">Pending Revenue</p>
+                <h3 className="text-4xl font-extrabold text-amber-950">{formatCurrency(pendingRevenue, 'USD')}</h3>
               </div>
-              <div className="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-emerald-600" />
+              <div className="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-amber-600" />
               </div>
             </div>
             <div className="mt-4 flex items-center gap-2 text-sm">
-              <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-none font-bold">+4.2%</Badge>
-              <span className="text-slate-500 font-medium">new this week</span>
+              <span className="text-slate-500 font-medium">Awaiting payment clearing</span>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-slate-50 to-white border-slate-200 shadow-sm rounded-2xl">
+        <Card className="bg-gradient-to-br from-rose-50 to-white border-rose-100 shadow-sm rounded-2xl">
           <CardContent className="p-6">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-1">Failed Charges</p>
-                <h3 className="text-4xl font-extrabold text-slate-900">12</h3>
+                <p className="text-sm font-bold text-rose-500 uppercase tracking-wider mb-1">Overdue / Failed</p>
+                <h3 className="text-4xl font-extrabold text-rose-900">{failedCharges}</h3>
               </div>
-              <div className="w-12 h-12 rounded-2xl bg-rose-50 flex items-center justify-center">
-                <CreditCard className="w-6 h-6 text-rose-500" />
+              <div className="w-12 h-12 rounded-2xl bg-rose-100 flex items-center justify-center">
+                <CreditCard className="w-6 h-6 text-rose-600" />
               </div>
             </div>
             <div className="mt-4 flex items-center gap-2 text-sm">
-              <span className="text-slate-500 font-medium">Action required on 5 accounts</span>
+              <span className="text-slate-500 font-medium">Action required on accounts</span>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="border-border shadow-sm rounded-2xl overflow-hidden">
-          <CardHeader className="bg-slate-50 border-b border-slate-100">
-            <CardTitle className="text-base font-bold text-slate-800 flex items-center gap-2">
-              <Activity className="w-4 h-4 text-primary" /> Gateway Sync Health
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="divide-y divide-slate-50">
-              <div className="p-4 flex items-center justify-between hover:bg-slate-50/50 transition-colors">
-                <div>
-                  <p className="font-bold text-sm text-slate-900">Stripe Integration</p>
-                  <p className="text-xs text-slate-500">Last synced: 2 minutes ago</p>
-                </div>
-                <Badge className="bg-emerald-50 text-emerald-700 border border-emerald-200">Healthy</Badge>
-              </div>
-              <div className="p-4 flex items-center justify-between hover:bg-slate-50/50 transition-colors">
-                <div>
-                  <p className="font-bold text-sm text-slate-900">Paystack Integration</p>
-                  <p className="text-xs text-slate-500">Last synced: 5 minutes ago</p>
-                </div>
-                <Badge className="bg-emerald-50 text-emerald-700 border border-emerald-200">Healthy</Badge>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-border shadow-sm rounded-2xl overflow-hidden">
-          <CardHeader className="bg-slate-50 border-b border-slate-100">
-            <CardTitle className="text-base font-bold text-slate-800 flex items-center gap-2">
-              <ArrowUpRight className="w-4 h-4 text-primary" /> Recent Transactions
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="divide-y divide-slate-50">
-              {[
-                { org: "Apex Legal Partners", plan: "Enterprise", amount: "$199.00", status: "Succeeded", time: "10 mins ago" },
-                { org: "Global Logistics Co", plan: "Professional", amount: "$79.00", status: "Succeeded", time: "1 hour ago" },
-                { org: "City General Hospital", plan: "Enterprise", amount: "$199.00", status: "Failed", time: "2 hours ago" },
-              ].map((tx, idx) => (
-                <div key={idx} className="p-4 flex items-center justify-between hover:bg-slate-50/50 transition-colors">
-                  <div>
-                    <p className="font-bold text-sm text-slate-900">{tx.org}</p>
-                    <p className="text-xs text-slate-500">{tx.plan} &middot; {tx.time}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-bold text-sm text-slate-900">{tx.amount}</p>
-                    <span className={`text-[10px] font-bold uppercase tracking-wider ${tx.status === 'Failed' ? 'text-rose-500' : 'text-emerald-500'}`}>
-                      {tx.status}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <Card className="border-border shadow-sm rounded-2xl overflow-hidden">
+        <CardHeader className="bg-slate-50 border-b border-slate-100 flex flex-row items-center justify-between py-4">
+          <CardTitle className="text-lg font-bold text-slate-800">Global Invoices</CardTitle>
+          <div className="relative w-64">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Search firm or status..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-9 pr-4 py-2 w-full border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead className="bg-slate-50/50 text-slate-500 font-medium border-b border-slate-100">
+                <tr>
+                  <th className="px-6 py-4">Firm / Company</th>
+                  <th className="px-6 py-4">Amount</th>
+                  <th className="px-6 py-4">Date Created</th>
+                  <th className="px-6 py-4">Status</th>
+                  <th className="px-6 py-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {loadingInvoices ? (
+                  <tr>
+                    <td colSpan="5" className="px-6 py-8 text-center text-slate-500">Loading invoices...</td>
+                  </tr>
+                ) : filteredInvoices.length === 0 ? (
+                  <tr>
+                    <td colSpan="5" className="px-6 py-8 text-center text-slate-500">No invoices found.</td>
+                  </tr>
+                ) : (
+                  filteredInvoices.map((inv) => (
+                    <tr key={inv.id} className="hover:bg-slate-50/50 transition-colors">
+                      <td className="px-6 py-4 font-semibold text-slate-900">{getCompanyName(inv.company_id)}</td>
+                      <td className="px-6 py-4 font-bold">{formatCurrency(inv.total_amount || inv.amount || 0, 'USD')}</td>
+                      <td className="px-6 py-4 text-slate-500">{inv.created_at ? format(new Date(inv.created_at), 'MMM dd, yyyy') : 'N/A'}</td>
+                      <td className="px-6 py-4">
+                        <Badge className={`${inv.status === 'paid' ? 'bg-emerald-100 text-emerald-700' : inv.status === 'pending' ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'} border-none`}>
+                          {inv.status || 'unknown'}
+                        </Badge>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                              <span className="sr-only">Open menu</span>
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-48">
+                            <DropdownMenuLabel>Manage Invoice</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => handleUpdateStatus(inv.id, 'paid')} className="text-emerald-600 font-medium cursor-pointer">
+                              <CheckCircle className="mr-2 h-4 w-4" /> Mark as Paid
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleUpdateStatus(inv.id, 'pending')} className="text-amber-600 font-medium cursor-pointer">
+                              <Activity className="mr-2 h-4 w-4" /> Mark as Pending
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleUpdateStatus(inv.id, 'overdue')} className="text-rose-600 font-medium cursor-pointer">
+                              <Activity className="mr-2 h-4 w-4" /> Mark as Overdue
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
+

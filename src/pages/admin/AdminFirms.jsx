@@ -3,15 +3,17 @@ import { supabase } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Edit2, CheckCircle2, AlertOctagon, Loader2, Search, UserCheck } from 'lucide-react';
+import { Edit2, CheckCircle2, AlertOctagon, Loader2, Search, UserCheck, MessageSquare } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { useImpersonation } from '@/lib/ImpersonationContext';
 import PageHeader from '@/components/shared/PageHeader';
+import { useNotifications } from '@/hooks/useNotifications';
 
 export default function AdminFirms() {
   const { toast } = useToast();
   const { startImpersonation } = useImpersonation();
+  const { notify } = useNotifications();
   
   const [companies, setCompanies] = useState([]);
   const [profiles, setProfiles] = useState([]);
@@ -20,12 +22,19 @@ export default function AdminFirms() {
   const [searchQuery, setSearchQuery] = useState('');
   
   const [selectedCompany, setSelectedCompany] = useState(null);
+  
+  // Quota Modal
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [maxUsers, setMaxUsers] = useState(0);
   const [maxCases, setMaxCases] = useState(0);
   const [subPlan, setSubPlan] = useState('starter');
   const [subStatus, setSubStatus] = useState('trial');
   const [updatingQuota, setUpdatingQuota] = useState(false);
+
+  // Message Modal
+  const [messageDialogOpen, setMessageDialogOpen] = useState(false);
+  const [messageContent, setMessageContent] = useState('');
+  const [sendingMessage, setSendingMessage] = useState(false);
 
   const fetchData = async () => {
     setLoading(true);
@@ -72,6 +81,32 @@ export default function AdminFirms() {
     setSubPlan(company.subscription_plan || 'starter');
     setSubStatus(company.subscription_status || 'trial');
     setEditDialogOpen(true);
+  };
+
+  const handleOpenMessageDialog = (company) => {
+    setSelectedCompany(company);
+    setMessageContent('');
+    setMessageDialogOpen(true);
+  };
+
+  const handleSendMessage = async () => {
+    if (!messageContent.trim() || !selectedCompany) return;
+    setSendingMessage(true);
+    try {
+      await notify({
+        recipientEmail: selectedCompany.email,
+        title: `Message from Platform Support`,
+        message: messageContent,
+        type: "SYSTEM_ALERT",
+        data: { from: "Super Admin" }
+      });
+      toast({ title: "Message sent", description: `Your message has been dispatched to the admin of ${selectedCompany.name}.` });
+      setMessageDialogOpen(false);
+    } catch (err) {
+      toast({ title: "Message failed", description: err.message, variant: "destructive" });
+    } finally {
+      setSendingMessage(false);
+    }
   };
 
   const handleSaveQuotas = async () => {
@@ -197,6 +232,14 @@ export default function AdminFirms() {
                             <Button 
                               variant="outline" 
                               size="sm" 
+                              onClick={() => handleOpenMessageDialog(c)}
+                              className="h-8 text-xs gap-1.5 px-3 rounded-lg border-blue-200 text-blue-700 bg-blue-50 hover:bg-blue-100 hover:text-blue-800"
+                            >
+                              <MessageSquare className="w-3.5 h-3.5" /> Message
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
                               onClick={() => handleOpenEditDialog(c)}
                               className="h-8 text-xs gap-1.5 px-3 rounded-lg border-slate-200"
                             >
@@ -229,6 +272,50 @@ export default function AdminFirms() {
           )}
         </div>
       )}
+
+      {/* Message Dialog */}
+      <Dialog open={messageDialogOpen} onOpenChange={setMessageDialogOpen}>
+        <DialogContent className="max-w-md rounded-2xl border border-slate-100 shadow-xl bg-white p-6 font-sans">
+          <DialogHeader>
+            <DialogTitle className="text-slate-900 font-extrabold text-base flex items-center gap-1.5">
+              <MessageSquare className="w-4 h-4 text-blue-600" />
+              Message Firm Admin: {selectedCompany?.name}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4 text-sm text-slate-700">
+            <div className="space-y-1.5">
+              <label className="font-bold uppercase tracking-wide text-[10px] text-slate-500 block">Message Content</label>
+              <textarea 
+                value={messageContent} 
+                onChange={(e) => setMessageContent(e.target.value)}
+                rows={4}
+                placeholder="Type your message to the firm administrator here..."
+                className="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none bg-slate-50 text-sm resize-none"
+              />
+            </div>
+          </div>
+          <DialogFooter className="flex gap-2 pt-2">
+            <Button 
+              variant="outline"
+              onClick={() => setMessageDialogOpen(false)}
+              className="flex-1 rounded-xl text-slate-700 border-slate-200 h-11"
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleSendMessage}
+              disabled={sendingMessage}
+              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl h-11"
+            >
+              {sendingMessage ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                "Send Message"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Edit Quota & Plans Dialog */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
