@@ -342,6 +342,13 @@ function App() {
                     
                     <Route element={<ProtectedRoute />}>
                       <Route element={<AppLayout />}>
+                        <Route path="/admin" element={<AdminOverview />} />
+                        <Route path="/admin/firms" element={<AdminFirms />} />
+                        <Route path="/admin/users" element={<AdminUsers />} />
+                        <Route path="/admin/billing" element={<AdminBilling />} />
+                        <Route path="/admin/security" element={<AdminSecurity />} />
+                        <Route path="/admin/broadcasts" element={<AdminBroadcasts />} />
+                        <Route path="/admin/ai" element={<AdminAI />} />
                         {PlatformRoutes()}
                       </Route>
                       <Route path="/intake" element={<IntakeForm />} />
