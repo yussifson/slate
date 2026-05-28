@@ -8,7 +8,14 @@ serve(async (req) => {
     const url = new URL(req.url)
     const code = url.searchParams.get('code')
     const state = url.searchParams.get('state')
+    const providerError = url.searchParams.get('error')
+    const providerErrorDesc = url.searchParams.get('error_description')
     const appUrl = Deno.env.get('APP_URL') || 'http://localhost:3000'
+
+    if (providerError) {
+      const errMsg = providerErrorDesc ? providerErrorDesc.replace(/\s+/g, '_') : providerError.replace(/\s+/g, '_')
+      return Response.redirect(`${appUrl}/integrations?status=error&message=Provider_Error:_${errMsg}`, 302)
+    }
 
     // If there's no code or state, something went wrong or it's a direct hit
     if (!code || !state) {
