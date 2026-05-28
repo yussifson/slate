@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/context/AuthContext';
-import { useToast } from '@/components/ui/use-toast';
+import { supabase } from '@/api/supabaseClient';
+import { useAuth } from '@/lib/AuthContext';
+import { toast } from 'react-hot-toast';
 
 export const useContracts = () => {
   const [isSending, setIsSending] = useState(false);
   const { session } = useAuth();
-  const { toast } = useToast();
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://your-project.supabase.co';
 
   const sendForSignature = async ({ companyId, provider = 'docusign', documentName, signerEmail, signerName }) => {
@@ -33,19 +32,11 @@ export const useContracts = () => {
         throw new Error(data.error || 'Failed to send contract for signature');
       }
 
-      toast({
-        title: "Sent for Signature",
-        description: `Successfully sent to ${signerEmail} via ${provider}.`,
-        variant: "default"
-      });
+      toast.success(`Successfully sent to ${signerEmail} via ${provider}.`);
       return data; 
     } catch (error) {
       console.error("Contract Error:", error);
-      toast({
-        title: "Sending Failed",
-        description: error.message,
-        variant: "destructive"
-      });
+      toast.error(`Sending Failed: ${error.message}`);
       throw error;
     } finally {
       setIsSending(false);

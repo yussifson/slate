@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/context/AuthContext';
-import { useToast } from '@/components/ui/use-toast';
+import { supabase } from '@/api/supabaseClient';
+import { useAuth } from '@/lib/AuthContext';
+import { toast } from 'react-hot-toast';
 
 export const useNotifications = () => {
   const [isNotifying, setIsNotifying] = useState(false);
   const { session } = useAuth();
-  const { toast } = useToast();
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://your-project.supabase.co';
 
   const notifyTeam = async ({ companyId, provider, message, channel, recipientPhone }) => {

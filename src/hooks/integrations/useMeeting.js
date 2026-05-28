@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/context/AuthContext';
-import { useToast } from '@/components/ui/use-toast';
+import { supabase } from '@/api/supabaseClient';
+import { useAuth } from '@/lib/AuthContext';
+import { toast } from 'react-hot-toast';
 
 export const useMeeting = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const { session } = useAuth();
-  const { toast } = useToast();
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://your-project.supabase.co';
 
   const generateMeetingLink = async ({ companyId, provider = 'zoom', topic, duration, startTime }) => {
@@ -33,19 +32,11 @@ export const useMeeting = () => {
         throw new Error(data.error || 'Failed to generate meeting link');
       }
 
-      toast({
-        title: "Meeting Generated",
-        description: `Successfully created ${provider} meeting room.`,
-        variant: "default"
-      });
+      toast.success(`Successfully created ${provider} meeting room.`);
       return data.data; // returns { join_url, start_url, password }
     } catch (error) {
       console.error("Meeting Error:", error);
-      toast({
-        title: "Meeting Generation Failed",
-        description: error.message,
-        variant: "destructive"
-      });
+      toast.error(`Meeting Generation Failed: ${error.message}`);
       throw error;
     } finally {
       setIsGenerating(false);

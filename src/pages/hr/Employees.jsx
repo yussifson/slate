@@ -9,7 +9,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Link } from 'react-router-dom';
 import { useNotifications } from '@/hooks/integrations/useNotifications';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/lib/AuthContext';
 
 export default function Employees() {
   const { user } = useAuth();

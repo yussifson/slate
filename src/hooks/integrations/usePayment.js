@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/context/AuthContext';
-import { useToast } from '@/components/ui/use-toast';
+import { supabase } from '@/api/supabaseClient';
+import { useAuth } from '@/lib/AuthContext';
+import { toast } from 'react-hot-toast';
 
 export const usePayment = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { session } = useAuth();
-  const { toast } = useToast();
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://your-project.supabase.co';
 
   const processPayment = async ({ companyId, provider, amount, currency, customerEmail, invoiceId }) => {
@@ -39,11 +38,7 @@ export const usePayment = () => {
       }
       return data;
     } catch (error) {
-      toast({
-        title: "Payment Error",
-        description: error.message,
-        variant: "destructive"
-      });
+      toast.error(`Payment Error: ${error.message}`);
       throw error;
     } finally {
       setIsLoading(false);
@@ -68,11 +63,11 @@ export const usePayment = () => {
       const data = await res.json();
       if (!res.ok || data.error) throw new Error(data.error || 'QuickBooks sync failed');
       
-      toast({ title: "Invoice Synced", description: "Successfully pushed to QuickBooks." });
+      toast.success("Successfully pushed to QuickBooks.");
       return data;
     } catch (error) {
       console.error("QB Sync Error:", error);
-      toast({ title: "Sync Failed", description: error.message, variant: "destructive" });
+      toast.error(`Sync Failed: ${error.message}`);
     }
   };
 

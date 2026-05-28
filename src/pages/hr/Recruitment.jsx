@@ -10,7 +10,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { Link } from 'react-router-dom';
 import { useMeeting } from '@/hooks/integrations/useMeeting';
 import { useCalendar } from '@/hooks/integrations/useCalendar';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/lib/AuthContext';
 
 export default function Recruitment() {
   const { user } = useAuth();

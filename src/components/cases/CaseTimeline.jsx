@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "react-hot-toast";
 import { supabase } from "@/api/supabaseClient";
 
 const ACTIVITY_ICONS = {
@@ -20,7 +20,6 @@ const ACTIVITY_ICONS = {
 
 export default function CaseTimeline({ caseData, user }) {
   const queryClient = useQueryClient();
-  const { toast } = useToast();
   const [showAdd, setShowAdd] = useState(false);
   const [newEntry, setNewEntry] = useState({ title: "", description: "", activity_type: "note" });
 
@@ -56,10 +55,10 @@ export default function CaseTimeline({ caseData, user }) {
       queryClient.invalidateQueries(["case-timeline", caseData.id]);
       setShowAdd(false);
       setNewEntry({ title: "", description: "", activity_type: "note" });
-      toast({ title: "Timeline entry added" });
+      toast.success("Timeline entry added");
     },
     onError: (err) => {
-      toast({ title: "Failed to add entry", description: err.message, variant: "destructive" });
+      toast.error("Failed to add entry: " + err.message);
     }
   });
 
