@@ -16,7 +16,8 @@ const INTEGRATION_CATALOG = [
     provider: 'google',
     category: 'Productivity',
     description: 'Two-way sync for Google Calendar, automatic Google Meet links, and Drive folder generation.',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg',
+    logo: 'https://logo.clearbit.com/google.com',
+    learnMore: 'https://workspace.google.com/',
     industries: ['all'],
     popular: true
   },
@@ -26,7 +27,8 @@ const INTEGRATION_CATALOG = [
     provider: 'microsoft',
     category: 'Productivity',
     description: 'Sync with Outlook Calendar, auto-generate Microsoft Teams links, and save files to OneDrive.',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg',
+    logo: 'https://logo.clearbit.com/microsoft.com',
+    learnMore: 'https://www.microsoft.com/en-us/microsoft-365',
     industries: ['all', 'corporate'],
     popular: true
   },
@@ -36,7 +38,8 @@ const INTEGRATION_CATALOG = [
     provider: 'zoom',
     category: 'Communication',
     description: 'Automatically generate and send Zoom links for client consultations and internal team meetings.',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/7/7b/Zoom_Communications_Logo.svg',
+    logo: 'https://logo.clearbit.com/zoom.us',
+    learnMore: 'https://zoom.us/',
     industries: ['all'],
     popular: true
   },
@@ -45,8 +48,9 @@ const INTEGRATION_CATALOG = [
     name: 'Slack',
     provider: 'slack',
     category: 'Communication',
-    description: 'Receive real-time notifications for new leads, signed documents, and overdue invoices directly in Slack channels.',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/d/d5/Slack_icon_2019.svg',
+    description: 'Receive real-time notifications for new leads, signed documents, and overdue invoices directly in Slack.',
+    logo: 'https://logo.clearbit.com/slack.com',
+    learnMore: 'https://slack.com/',
     industries: ['all', 'law', 'agency'],
     popular: false
   },
@@ -56,7 +60,8 @@ const INTEGRATION_CATALOG = [
     provider: 'quickbooks',
     category: 'Finance',
     description: 'Automatically push paid invoices, expenses, and client records directly into your QuickBooks ledger.',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/9/9a/QuickBooks_logo.svg',
+    logo: 'https://logo.clearbit.com/quickbooks.intuit.com',
+    learnMore: 'https://quickbooks.intuit.com/',
     industries: ['all', 'law', 'corporate'],
     popular: true
   },
@@ -66,7 +71,8 @@ const INTEGRATION_CATALOG = [
     provider: 'docusign',
     category: 'Documents',
     description: 'Send contracts, intake forms, and agreements for legally binding e-signatures directly from case files.',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/1/1a/DocuSign_logo.svg',
+    logo: 'https://logo.clearbit.com/docusign.com',
+    learnMore: 'https://www.docusign.com/',
     industries: ['law', 'real_estate', 'corporate'],
     popular: true
   },
@@ -76,7 +82,8 @@ const INTEGRATION_CATALOG = [
     provider: 'twilio',
     category: 'Communication',
     description: 'Send automated SMS and WhatsApp reminders for appointments, hearings, and overdue invoices.',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg',
+    logo: 'https://logo.clearbit.com/whatsapp.com',
+    learnMore: 'https://business.whatsapp.com/',
     industries: ['hospital', 'law', 'school', 'church'],
     popular: true
   },
@@ -86,7 +93,8 @@ const INTEGRATION_CATALOG = [
     provider: 'stripe',
     category: 'Finance',
     description: 'Accept credit card and ACH payments globally with automatic invoice reconciliation.',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg',
+    logo: 'https://logo.clearbit.com/stripe.com',
+    learnMore: 'https://stripe.com/',
     industries: ['all'],
     popular: true
   }
@@ -101,66 +109,92 @@ export default function Integrations() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [connectedApps, setConnectedApps] = useState({});
   const [loadingAppId, setLoadingAppId] = useState(null);
+  const [initialLoading, setInitialLoading] = useState(true);
 
-  // In a real implementation, we would fetch the user's connected apps from the Supabase `connected_apps` table.
-  // For now, we mock the local state.
   useEffect(() => {
-    // Mock fetching connection state
     const fetchConnections = async () => {
-      // Simulate network delay
-      await new Promise(resolve => setTimeout(resolve, 600));
-      // Read from local storage as a temporary mock for the demo
-      const saved = localStorage.getItem(`optalflow_integrations_${companyId}`);
-      if (saved) {
-        setConnectedApps(JSON.parse(saved));
-      } else {
-        // Pre-connect Stripe if they already did billing setup
-        setConnectedApps({ stripe: true });
+      if (!companyId) return;
+      try {
+        setInitialLoading(true);
+        // Fetch from production database
+        const { data, error } = await supabase
+          .from('connected_apps')
+          .select('provider, status')
+          .eq('company_id', companyId)
+          .eq('status', 'active');
+
+        if (error) {
+          // If the table doesn't exist yet, we catch it silently so the UI doesn't crash during development
+          console.error("Connected apps fetch error:", error.message);
+          setConnectedApps({});
+        } else {
+          const map = {};
+          data?.forEach(app => {
+            map[app.provider] = true; // Map provider names to true
+          });
+          setConnectedApps(map);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setInitialLoading(false);
       }
     };
-    if (companyId) fetchConnections();
+
+    fetchConnections();
   }, [companyId]);
 
   const handleConnect = async (app) => {
+    if (!companyId) return;
     setLoadingAppId(app.id);
     
-    // Simulate OAuth Redirect Flow
     toast({
       title: "Connecting to " + app.name,
       description: "Redirecting you to the secure authorization portal...",
     });
 
+    // In production, we redirect to our Edge Function which handles the OAuth Init flow
+    // Replace YOUR_SUPABASE_URL with your actual project URL when deployed
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://your-project.supabase.co';
+    const edgeFunctionUrl = `${supabaseUrl}/functions/v1/oauth-init?provider=${app.provider}&company_id=${companyId}`;
+    
+    // Redirect the user
     setTimeout(() => {
-      // In production, this sets window.location.href = `https://api.optalflow.com/oauth/${app.provider}?company_id=${companyId}`
-      // For this interactive demo, we simulate a successful OAuth callback return.
-      const newConnections = { ...connectedApps, [app.id]: true };
-      setConnectedApps(newConnections);
-      localStorage.setItem(`optalflow_integrations_${companyId}`, JSON.stringify(newConnections));
-      
-      toast({
-        title: "Integration Successful",
-        description: `${app.name} has been successfully connected to your workspace.`,
-      });
-      setLoadingAppId(null);
-    }, 2500);
+      window.location.href = edgeFunctionUrl;
+    }, 1500);
   };
 
   const handleDisconnect = async (app) => {
+    if (!companyId) return;
     setLoadingAppId(app.id);
     
-    setTimeout(() => {
+    try {
+      // Remove from production database
+      const { error } = await supabase
+        .from('connected_apps')
+        .delete()
+        .match({ company_id: companyId, provider: app.provider });
+
+      if (error) throw error;
+
       const newConnections = { ...connectedApps };
-      delete newConnections[app.id];
+      delete newConnections[app.provider];
       setConnectedApps(newConnections);
-      localStorage.setItem(`optalflow_integrations_${companyId}`, JSON.stringify(newConnections));
       
       toast({
         title: "Integration Removed",
         description: `${app.name} access has been securely revoked.`,
         variant: "destructive"
       });
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to disconnect app: " + err.message,
+        variant: "destructive"
+      });
+    } finally {
       setLoadingAppId(null);
-    }, 1500);
+    }
   };
 
   const filteredApps = INTEGRATION_CATALOG.filter(app => {
@@ -183,119 +217,137 @@ export default function Integrations() {
           <Badge variant="outline" className="h-8 gap-1.5 bg-emerald-50 text-emerald-700 border-emerald-200">
             <ShieldCheck className="w-3.5 h-3.5" /> Secure OAuth 2.0
           </Badge>
-          <Button variant="ghost" size="sm" className="h-8 text-slate-500">
+          <Button variant="ghost" size="sm" className="h-8 text-slate-500 hover:text-blue-600">
             <HelpCircle className="w-4 h-4 mr-1.5" /> API Docs
           </Button>
         </div>
       </div>
 
       {/* Top Filter Bar */}
-      <div className="bg-card rounded-2xl border border-border p-4 shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between">
+      <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 hide-scrollbar">
           {categories.map(cat => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-colors ${
+              className={`px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all ${
                 activeCategory === cat 
-                  ? 'bg-slate-900 text-white shadow-md' 
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20' 
+                  : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100'
               }`}
             >
               {cat}
             </button>
           ))}
         </div>
-        <div className="relative w-full md:w-72">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+        <div className="relative w-full md:w-80">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <Input 
             placeholder="Search apps or features..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 h-11 bg-slate-50 border-slate-200 rounded-xl w-full focus:bg-white transition-colors"
+            className="pl-10 h-11 bg-slate-50 border-slate-200 rounded-xl w-full focus:bg-white transition-colors"
           />
         </div>
       </div>
 
       {/* Integration Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {filteredApps.map((app) => {
-          const isConnected = !!connectedApps[app.id];
-          const isLoading = loadingAppId === app.id;
+      {initialLoading ? (
+        <div className="py-24 flex justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {filteredApps.map((app) => {
+            // Check connected status via the `provider` key, not `id`
+            const isConnected = !!connectedApps[app.provider];
+            const isLoading = loadingAppId === app.id;
 
-          return (
-            <div 
-              key={app.id} 
-              className={`bg-white rounded-2xl border transition-all duration-200 flex flex-col ${
-                isConnected ? 'border-primary/40 shadow-md ring-1 ring-primary/10' : 'border-border shadow-sm hover:shadow-md hover:border-slate-300'
-              }`}
-            >
-              <div className="p-6 flex-1">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="w-14 h-14 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center p-2.5 shadow-sm">
-                    <img src={app.logo} alt={app.name} className="w-full h-full object-contain" />
+            return (
+              <div 
+                key={app.id} 
+                className={`bg-white rounded-2xl border transition-all duration-300 flex flex-col overflow-hidden ${
+                  isConnected ? 'border-blue-500 shadow-lg shadow-blue-500/10 ring-1 ring-blue-500/20' : 'border-slate-200 shadow-sm hover:shadow-md hover:border-slate-300'
+                }`}
+              >
+                <div className="p-6 sm:p-7 flex-1">
+                  <div className="flex justify-between items-start mb-5">
+                    <div className="w-16 h-16 rounded-2xl bg-white border border-slate-100 flex items-center justify-center p-3 shadow-sm group-hover:scale-105 transition-transform">
+                      <img 
+                        src={app.logo} 
+                        alt={app.name} 
+                        className="w-full h-full object-contain" 
+                        onError={(e) => {
+                          // Fallback if Clearbit fails
+                          e.target.src = 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Appuse-icon.png';
+                        }}
+                      />
+                    </div>
+                    {isConnected && (
+                      <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 font-extrabold gap-1.5 px-3 py-1.5 rounded-full shadow-sm">
+                        <CheckCircle2 className="w-4 h-4" /> Connected
+                      </Badge>
+                    )}
+                    {!isConnected && app.popular && (
+                      <Badge variant="outline" className="text-xs font-bold text-blue-600 border-blue-200 bg-blue-50 px-3 py-1 rounded-full">
+                        Popular
+                      </Badge>
+                    )}
                   </div>
-                  {isConnected && (
-                    <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-none font-bold gap-1 pl-1.5 pr-2.5 py-1">
-                      <CheckCircle2 className="w-3.5 h-3.5" /> Connected
-                    </Badge>
-                  )}
-                  {!isConnected && app.popular && (
-                    <Badge variant="outline" className="text-xs font-semibold text-primary border-primary/20 bg-primary/5">
-                      Popular
-                    </Badge>
+                  
+                  <h3 className="text-xl font-extrabold text-slate-900 mb-1.5">{app.name}</h3>
+                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3.5">{app.category}</p>
+                  <p className="text-sm text-slate-600 leading-relaxed">{app.description}</p>
+                </div>
+
+                <div className="px-6 py-5 border-t border-slate-100 bg-slate-50/80 flex items-center justify-between">
+                  <a 
+                    href={app.learnMore} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-sm font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1.5 transition-colors"
+                  >
+                    Learn more <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                  
+                  {isConnected ? (
+                    <Button 
+                      variant="outline" 
+                      disabled={isLoading}
+                      onClick={() => handleDisconnect(app)}
+                      className="h-10 px-5 rounded-xl border-slate-200 text-slate-700 hover:text-red-600 hover:bg-red-50 hover:border-red-200 transition-colors font-bold shadow-sm"
+                    >
+                      {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Disconnect"}
+                    </Button>
+                  ) : (
+                    <Button 
+                      disabled={isLoading}
+                      onClick={() => handleConnect(app)}
+                      className="h-10 px-6 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-md shadow-blue-600/20 transition-all hover:translate-y-[-1px]"
+                    >
+                      {isLoading ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <>
+                          Connect <Link2 className="w-4 h-4 ml-2 opacity-80" />
+                        </>
+                      )}
+                    </Button>
                   )}
                 </div>
-                
-                <h3 className="text-lg font-bold text-slate-900 mb-1">{app.name}</h3>
-                <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-3">{app.category}</p>
-                <p className="text-sm text-slate-600 leading-relaxed">{app.description}</p>
               </div>
+            );
+          })}
+        </div>
+      )}
 
-              <div className="px-6 py-4 border-t border-slate-100 bg-slate-50/50 rounded-b-2xl flex items-center justify-between">
-                <a href="#" className="text-xs font-semibold text-slate-500 hover:text-primary flex items-center gap-1 transition-colors">
-                  Learn more <ExternalLink className="w-3 h-3" />
-                </a>
-                
-                {isConnected ? (
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    disabled={isLoading}
-                    onClick={() => handleDisconnect(app)}
-                    className="h-9 px-4 rounded-lg border-slate-200 text-slate-600 hover:text-red-600 hover:bg-red-50 hover:border-red-200 transition-colors font-semibold"
-                  >
-                    {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Disconnect"}
-                  </Button>
-                ) : (
-                  <Button 
-                    size="sm"
-                    disabled={isLoading}
-                    onClick={() => handleConnect(app)}
-                    className="h-9 px-5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold shadow-sm transition-all hover:shadow"
-                  >
-                    {isLoading ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <>
-                        Connect <Link2 className="w-3.5 h-3.5 ml-1.5 opacity-70" />
-                      </>
-                    )}
-                  </Button>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {filteredApps.length === 0 && (
-        <div className="py-24 flex flex-col items-center justify-center text-center px-4">
-          <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+      {!initialLoading && filteredApps.length === 0 && (
+        <div className="py-24 flex flex-col items-center justify-center text-center px-4 bg-white rounded-2xl border border-slate-200 border-dashed">
+          <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-5 border border-slate-100">
             <Search className="w-8 h-8 text-slate-400" />
           </div>
-          <h3 className="text-xl font-bold text-slate-900 mb-2">No apps found</h3>
-          <p className="text-slate-500 max-w-md">We couldn't find any integrations matching your search criteria. Try a different term or clear your filters.</p>
+          <h3 className="text-xl font-extrabold text-slate-900 mb-2">No apps found</h3>
+          <p className="text-slate-500 max-w-md leading-relaxed">We couldn't find any integrations matching your search criteria. Try a different term or clear your filters.</p>
         </div>
       )}
     </div>
