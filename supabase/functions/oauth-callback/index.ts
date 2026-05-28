@@ -29,14 +29,14 @@ serve(async (req) => {
 
     // Initialize Supabase Admin client to bypass RLS for inserting sensitive tokens
     const supabaseUrl = Deno.env.get('SUPABASE_URL') || ''
-    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
+    const supabaseServiceKey = Deno.env.get('SERVICE_ROLE_KEY') || ''
     
     // Fallback if missing Supabase keys (e.g. running locally without env set)
     if (!supabaseUrl || !supabaseServiceKey) {
-      console.error("Missing Supabase URL or Service Role Key")
+      console.error("Missing Supabase URL or SERVICE_ROLE_KEY")
       const errUrl = new URL(fallbackUrl)
       errUrl.searchParams.set('status', 'error')
-      errUrl.searchParams.set('message', 'Missing_Supabase_Service_Role_Key_In_Secrets')
+      errUrl.searchParams.set('message', 'Missing_SERVICE_ROLE_KEY_In_Secrets')
       return Response.redirect(errUrl.toString(), 302)
     }
 
