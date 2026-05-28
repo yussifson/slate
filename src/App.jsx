@@ -150,7 +150,7 @@ import Careers from './pages/marketing/Careers';
 import Partners from './pages/marketing/Partners';
 import LegalDocs from './pages/marketing/LegalDocs';
 import OnboardingWizard from './pages/OnboardingWizard';
-import Integrations from './pages/Integrations';
+import AppIntegrations from './pages/Integrations';
 
 // Admin Ecosystem Pages
 import AdminOverview from './pages/admin/AdminOverview';
@@ -174,7 +174,7 @@ function PlatformRoutes() {
       <Route path="/team" element={<Team />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/settings/custom-fields" element={<CustomFieldsSettings />} />
-      <Route path="/integrations" element={<Integrations />} />
+      <Route path="/integrations" element={<AppIntegrations />} />
       <Route path="/client-portal" element={<ClientPortal />} />
       <Route path="/cases/:id" element={<CaseDetail />} />
       <Route path="/my-dashboard" element={<StaffDashboard />} />
