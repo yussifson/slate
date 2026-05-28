@@ -241,6 +241,59 @@ export default function Integrations() {
     }
   };
 
+  const handleTestSync = async (app) => {
+    if (!companyId) return;
+    setLoadingAppId(app.id);
+    
+    toast({
+      title: "Syncing Calendar...",
+      description: `Pushing a test event to ${app.name}...`,
+    });
+
+    try {
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://your-project.supabase.co';
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      const res = await fetch(`${supabaseUrl}/functions/v1/sync-calendar`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session?.access_token || import.meta.env.VITE_SUPABASE_ANON_KEY}`
+        },
+        body: JSON.stringify({
+          companyId,
+          provider: app.provider,
+          eventDetails: {
+            title: "Optalflow Test Sync Event",
+            description: "This is an automated test event to verify the two-way calendar sync.",
+            start: new Date(Date.now() + 3600000).toISOString(), // 1 hour from now
+            end: new Date(Date.now() + 7200000).toISOString(),   // 2 hours from now
+          }
+        })
+      });
+
+      const data = await res.json();
+      
+      if (!res.ok || data.error) {
+        throw new Error(data.error || "Failed to sync calendar");
+      }
+
+      toast({
+        title: "Sync Successful!",
+        description: `Check your ${app.name} calendar. The test event has been added.`,
+        variant: "default"
+      });
+    } catch (err) {
+      toast({
+        title: "Sync Failed",
+        description: err.message,
+        variant: "destructive"
+      });
+    } finally {
+      setLoadingAppId(null);
+    }
+  };
+
   const filteredApps = INTEGRATION_CATALOG.filter(app => {
     const matchesSearch = app.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           app.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -355,14 +408,26 @@ export default function Integrations() {
                   </a>
                   
                   {isConnected ? (
-                    <Button 
-                      variant="outline" 
-                      disabled={isLoading}
-                      onClick={() => handleDisconnect(app)}
-                      className="h-10 px-5 rounded-xl border-slate-200 text-slate-700 hover:text-red-600 hover:bg-red-50 hover:border-red-200 transition-colors font-bold shadow-sm"
-                    >
-                      {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Disconnect"}
-                    </Button>
+                    <div className="flex gap-2">
+                      {(app.provider === 'google' || app.provider === 'microsoft') && (
+                        <Button 
+                          variant="secondary" 
+                          disabled={isLoading}
+                          onClick={() => handleTestSync(app)}
+                          className="h-10 px-4 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold transition-colors shadow-sm"
+                        >
+                          {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Test Sync"}
+                        </Button>
+                      )}
+                      <Button 
+                        variant="outline" 
+                        disabled={isLoading}
+                        onClick={() => handleDisconnect(app)}
+                        className="h-10 px-4 rounded-xl border-slate-200 text-slate-700 hover:text-red-600 hover:bg-red-50 hover:border-red-200 transition-colors font-bold shadow-sm"
+                      >
+                        {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Disconnect"}
+                      </Button>
+                    </div>
                   ) : (
                     <Button 
                       disabled={isLoading}
