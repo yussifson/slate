@@ -142,13 +142,14 @@ serve(async (req) => {
         expires_at: expiresAt.toISOString(),
         status: 'active',
         updated_at: new Date().toISOString()
-      }, { onConflict: 'company_id, provider' })
+      }, { onConflict: 'company_id,provider' })
 
     if (error) {
       console.error("DB Upsert Error:", error)
       const dbErrUrl = new URL(fallbackUrl)
       dbErrUrl.searchParams.set('status', 'error')
-      dbErrUrl.searchParams.set('message', 'Database_Insert_Failed')
+      const safeErrorMessage = error.message ? error.message.replace(/\s+/g, '_') : 'Database_Insert_Failed'
+      dbErrUrl.searchParams.set('message', safeErrorMessage)
       return Response.redirect(dbErrUrl.toString(), 302)
     }
 
