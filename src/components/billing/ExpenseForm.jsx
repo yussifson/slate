@@ -73,7 +73,7 @@ export default function ExpenseForm({ open, onClose, onSubmit, initialData, case
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{initialData?.id ? "Edit Expense" : "Log Expense"}</DialogTitle>
         </DialogHeader>

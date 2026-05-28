@@ -237,7 +237,7 @@ function StaffDialog({ open, onClose, onSubmit, initialData, isNew }) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             {isNew ? <><UserPlus className="w-4 h-4" /> Add Team Member</> : <><UserCog className="w-4 h-4" /> Edit Staff Member</>}

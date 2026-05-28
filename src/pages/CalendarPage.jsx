@@ -222,7 +222,7 @@ function HearingFormDialog({ open, onClose, onSubmit, initialDate, cases, staff 
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader><DialogTitle>New Hearing</DialogTitle></DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div><Label>Title *</Label><Input value={form.title} onChange={(e) => handleChange("title", e.target.value)} required /></div>
