@@ -44,13 +44,93 @@ serve(async (req) => {
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
 
     // ==========================================
-    // TOKEN EXCHANGE LOGIC WOULD GO HERE
+    // REAL OAUTH TOKEN EXCHANGE LOGIC
     // ==========================================
     
-    const mockAccessToken = `mock_access_token_${provider}_${crypto.randomUUID()}`
-    const mockRefreshToken = `mock_refresh_token_${provider}_${crypto.randomUUID()}`
+    let accessToken = ''
+    let refreshToken = ''
+    let expiresIn = 3600
+    
+    const redirectUri = Deno.env.get('OAUTH_REDIRECT_URI') || 'http://localhost:54321/functions/v1/oauth-callback'
+
+    try {
+      if (provider === 'google') {
+        const clientId = Deno.env.get('GOOGLE_CLIENT_ID')
+        const clientSecret = Deno.env.get('GOOGLE_CLIENT_SECRET')
+        if (!clientId || !clientSecret) throw new Error("Missing Google Client ID/Secret in Edge Function Env")
+
+        const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            client_id: clientId,
+            client_secret: clientSecret,
+            code,
+            grant_type: 'authorization_code',
+            redirect_uri: redirectUri
+          })
+        })
+        const data = await tokenResponse.json()
+        if (data.error) throw new Error(data.error_description || data.error)
+        accessToken = data.access_token
+        refreshToken = data.refresh_token || ''
+        expiresIn = data.expires_in || 3600
+        
+      } else if (provider === 'microsoft') {
+        const clientId = Deno.env.get('MICROSOFT_CLIENT_ID')
+        const clientSecret = Deno.env.get('MICROSOFT_CLIENT_SECRET')
+        if (!clientId || !clientSecret) throw new Error("Missing Microsoft Client ID/Secret in Edge Function Env")
+
+        const tokenResponse = await fetch('https://login.microsoftonline.com/common/oauth2/v2.0/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            client_id: clientId,
+            client_secret: clientSecret,
+            code,
+            grant_type: 'authorization_code',
+            redirect_uri: redirectUri
+          })
+        })
+        const data = await tokenResponse.json()
+        if (data.error) throw new Error(data.error_description || data.error)
+        accessToken = data.access_token
+        refreshToken = data.refresh_token || ''
+        expiresIn = data.expires_in || 3600
+
+      } else if (provider === 'slack') {
+        const clientId = Deno.env.get('SLACK_CLIENT_ID')
+        const clientSecret = Deno.env.get('SLACK_CLIENT_SECRET')
+        if (!clientId || !clientSecret) throw new Error("Missing Slack Client ID/Secret in Edge Function Env")
+
+        const tokenResponse = await fetch('https://slack.com/api/oauth.v2.access', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            client_id: clientId,
+            client_secret: clientSecret,
+            code,
+            redirect_uri: redirectUri
+          })
+        })
+        const data = await tokenResponse.json()
+        if (!data.ok) throw new Error(data.error)
+        accessToken = data.authed_user?.access_token || data.access_token
+        refreshToken = data.authed_user?.refresh_token || data.refresh_token || ''
+        expiresIn = data.authed_user?.expires_in || data.expires_in || 3600
+      } else {
+        throw new Error(`Unsupported provider for real exchange: ${provider}`)
+      }
+    } catch (err) {
+      console.error(`Token Exchange Error for ${provider}:`, err.message)
+      const errUrl = new URL(fallbackUrl)
+      errUrl.searchParams.set('status', 'error')
+      errUrl.searchParams.set('message', 'Token_Exchange_Failed')
+      return Response.redirect(errUrl.toString(), 302)
+    }
+
     const expiresAt = new Date()
-    expiresAt.setHours(expiresAt.getHours() + 1) // Expires in 1 hour
+    expiresAt.setSeconds(expiresAt.getSeconds() + expiresIn)
 
     // Securely upsert the connected app credentials into the database
     const { error } = await supabaseAdmin
@@ -58,8 +138,8 @@ serve(async (req) => {
       .upsert({
         company_id: company_id,
         provider: provider,
-        access_token: mockAccessToken,
-        refresh_token: mockRefreshToken,
+        access_token: accessToken,
+        refresh_token: refreshToken,
         expires_at: expiresAt.toISOString(),
         status: 'active',
         updated_at: new Date().toISOString()
