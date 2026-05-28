@@ -105,8 +105,17 @@ const INTEGRATION_CATALOG = [
     description: 'Accept credit card and ACH payments globally with automatic invoice reconciliation.',
     logo: stripeLogo,
     learnMore: 'https://stripe.com/',
-    industries: ['all'],
-    popular: true
+    categories: ['all']
+  },
+  {
+    id: 'paystack',
+    name: 'Paystack',
+    provider: 'paystack',
+    category: 'Finance',
+    description: 'Accept payments from customers in Africa seamlessly via cards, mobile money, and USSD.',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/0/0b/Paystack_Logo.png',
+    learnMore: 'https://paystack.com/',
+    categories: ['all']
   }
 ];
 
@@ -294,6 +303,66 @@ export default function Integrations() {
     }
   };
 
+  const handleTestFeature = async (app) => {
+    if (!companyId) return;
+    setLoadingAppId(app.id);
+    
+    toast({
+      title: `Testing ${app.name}...`,
+      description: `Triggering automation feature...`,
+    });
+
+    try {
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://your-project.supabase.co';
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      let endpoint = '';
+      let payload = { companyId, provider: app.provider };
+
+      if (app.provider === 'zoom') {
+        endpoint = 'generate-meeting';
+        payload.topic = "Optalflow Test Meeting";
+        payload.duration = 30;
+      } else if (app.provider === 'slack' || app.provider === 'twilio') {
+        endpoint = 'notify-team';
+        payload.message = `Hello from Optalflow! This is an automated test notification at ${new Date().toLocaleTimeString()}`;
+        if (app.provider === 'twilio') payload.recipientPhone = "+1234567890"; // Mock number for UI test
+        if (app.provider === 'slack') payload.channel = "#general";
+      }
+
+      const res = await fetch(`${supabaseUrl}/functions/v1/${endpoint}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session?.access_token || import.meta.env.VITE_SUPABASE_ANON_KEY}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      
+      if (!res.ok || data.error) {
+        throw new Error(data.error || `Failed to test ${app.name}`);
+      }
+
+      toast({
+        title: "Test Successful!",
+        description: app.provider === 'zoom' 
+          ? `Zoom meeting created! Check your Zoom account.` 
+          : `Message pushed successfully!`,
+        variant: "default"
+      });
+    } catch (err) {
+      toast({
+        title: "Test Failed",
+        description: err.message,
+        variant: "destructive"
+      });
+    } finally {
+      setLoadingAppId(null);
+    }
+  };
+
   const filteredApps = INTEGRATION_CATALOG.filter(app => {
     const matchesSearch = app.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           app.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -417,6 +486,16 @@ export default function Integrations() {
                           className="h-10 px-4 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold transition-colors shadow-sm"
                         >
                           {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Test Sync"}
+                        </Button>
+                      )}
+                      {(app.provider === 'zoom' || app.provider === 'slack' || app.provider === 'twilio') && (
+                        <Button 
+                          variant="secondary" 
+                          disabled={isLoading}
+                          onClick={() => handleTestFeature(app)}
+                          className="h-10 px-4 rounded-xl bg-purple-50 text-purple-700 hover:bg-purple-100 font-bold transition-colors shadow-sm"
+                        >
+                          {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Test Feature"}
                         </Button>
                       )}
                       <Button 
