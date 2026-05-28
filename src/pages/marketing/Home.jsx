@@ -694,38 +694,42 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
             {features.map((feature, i) => {
-              // Create a masonry-like staggered layout by varying card heights subtly or using spans for certain items
               const isWide = i === 0 || i === 3;
               return (
                 <FadeIn key={i} delay={`delay-[${i * 80}ms]`} className={isWide ? "lg:col-span-2" : "col-span-1"}>
-                  <div className="group relative bg-white rounded-[2rem] border border-slate-200/60 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_-10px_rgba(37,99,235,0.12)] hover:-translate-y-1.5 hover:border-blue-200/80 transition-all duration-500 overflow-hidden h-full flex flex-col p-8 lg:p-10">
+                  <div className="group relative bg-white rounded-[2.5rem] border border-slate-200/50 shadow-sm hover:shadow-2xl hover:shadow-blue-900/10 transition-all duration-500 overflow-hidden h-full flex flex-col p-10 md:p-12 z-0">
                     
-                    {/* Hover Gradient Effect */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-transparent to-blue-50/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+                    {/* Vibrant Animated Background Gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-50/80 via-white to-indigo-50/40 opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10"></div>
                     
-                    {/* Abstract watermark icon on hover */}
-                    <div className="absolute -bottom-6 -right-6 text-blue-50 opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-150 transition-all duration-700 pointer-events-none">
-                      <feature.icon className="w-48 h-48" strokeWidth={0.5} />
+                    {/* Abstract Decorative Icon Watermark */}
+                    <div className="absolute -bottom-12 -right-12 text-slate-50 group-hover:text-blue-100/50 transition-colors duration-700 -z-10 transform group-hover:scale-110 group-hover:-rotate-12 transition-transform ease-out">
+                      <feature.icon className="w-72 h-72" strokeWidth={0.5} />
                     </div>
 
                     <div className="relative z-10 flex-1">
-                      <div className="w-14 h-14 rounded-2xl bg-blue-50/60 border border-blue-100/40 flex items-center justify-center mb-8 group-hover:scale-110 group-hover:bg-blue-600 group-hover:border-blue-600 group-hover:shadow-lg group-hover:shadow-blue-600/20 transition-all duration-500">
-                        <feature.icon className="w-7 h-7 text-blue-600 group-hover:text-white transition-colors duration-500" strokeWidth={1.5} />
+                      {/* Jewel-like Icon Container */}
+                      <div className="w-16 h-16 rounded-[1.25rem] bg-gradient-to-br from-white to-slate-50 border border-slate-200 shadow-sm flex items-center justify-center mb-10 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:from-blue-600 group-hover:to-indigo-600 group-hover:border-transparent group-hover:shadow-[0_8px_16px_rgba(37,99,235,0.25)] transition-all duration-500">
+                        <feature.icon className="w-8 h-8 text-slate-700 group-hover:text-white transition-colors duration-500" strokeWidth={1.5} />
                       </div>
-                      <h4 className="text-2xl font-extrabold text-slate-900 tracking-tight mb-4 group-hover:text-blue-700 transition-colors duration-300">
+                      
+                      {/* Premium Typography */}
+                      <h4 className="text-[28px] leading-[1.2] font-black text-slate-900 tracking-tight mb-5 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-700 group-hover:to-indigo-700 transition-all duration-300">
                         {feature.title}
                       </h4>
-                      <p className="text-slate-600 leading-relaxed font-medium text-[17px]">
+                      <p className="text-slate-600 leading-[1.7] font-medium text-lg">
                         {feature.description}
                       </p>
                     </div>
                     
-                    {/* Clean Footer / Link interaction */}
-                    <div className="relative z-10 mt-10 flex items-center text-blue-600 font-bold opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500">
-                      Explore feature 
-                      <svg className="w-4 h-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                      </svg>
+                    {/* Elegant Reveal Link */}
+                    <div className="relative z-10 mt-12 flex items-center text-blue-600 font-extrabold text-lg opacity-0 -translate-x-6 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 ease-out">
+                      Explore capabilities
+                      <span className="ml-3 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors duration-500">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                      </span>
                     </div>
                   </div>
                 </FadeIn>
