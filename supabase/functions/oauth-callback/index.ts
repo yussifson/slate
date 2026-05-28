@@ -34,11 +34,10 @@ serve(async (req) => {
     // Fallback if missing Supabase keys (e.g. running locally without env set)
     if (!supabaseUrl || !supabaseServiceKey) {
       console.error("Missing Supabase URL or Service Role Key")
-      const mockUrl = new URL(fallbackUrl)
-      mockUrl.searchParams.set('status', 'mock_success')
-      mockUrl.searchParams.set('provider', provider)
-      mockUrl.searchParams.set('company_id', company_id)
-      return Response.redirect(mockUrl.toString(), 302)
+      const errUrl = new URL(fallbackUrl)
+      errUrl.searchParams.set('status', 'error')
+      errUrl.searchParams.set('message', 'Missing_Supabase_Service_Role_Key_In_Secrets')
+      return Response.redirect(errUrl.toString(), 302)
     }
 
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)

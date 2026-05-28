@@ -45,28 +45,23 @@ serve(async (req) => {
         break;
 
       default:
-        // If a provider isn't fully set up yet, mock the success redirect for demo purposes
-        const defaultUrl = new URL(return_url)
-        defaultUrl.searchParams.set('status', 'mock_success')
-        defaultUrl.searchParams.set('provider', provider)
-        defaultUrl.searchParams.set('company_id', company_id)
-        return Response.redirect(defaultUrl.toString(), 302)
+        const errUrl = new URL(return_url)
+        errUrl.searchParams.set('status', 'error')
+        errUrl.searchParams.set('message', 'Unsupported_Provider')
+        return Response.redirect(errUrl.toString(), 302)
     }
 
     // Redirect the user to the provider's consent screen
     return Response.redirect(authUrl, 302)
   } catch (error) {
-    // If keys are missing or an error occurs, fallback to a mock success redirect to keep the UI smooth during development
     const url = new URL(req.url)
     const provider = url.searchParams.get('provider') || 'unknown'
-    const company_id = url.searchParams.get('company_id') || 'unknown'
     const return_url = url.searchParams.get('return_url') || `${Deno.env.get('APP_URL') || 'http://localhost:3000'}/integrations`
     
-    console.error("OAuth Init Error (falling back to mock):", error.message)
+    console.error("OAuth Init Error:", error.message)
     const errUrl = new URL(return_url)
-    errUrl.searchParams.set('status', 'mock_success')
-    errUrl.searchParams.set('provider', provider)
-    errUrl.searchParams.set('company_id', company_id)
+    errUrl.searchParams.set('status', 'error')
+    errUrl.searchParams.set('message', error.message.replace(/\s+/g, '_'))
     return Response.redirect(errUrl.toString(), 302)
   }
 })
