@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
-import { LayoutDashboard, RefreshCw, Globe, PanelLeft } from "lucide-react";
+import { LayoutDashboard, RefreshCw, Globe, PanelLeft, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { isSuperAdmin } from "@/lib/constants";
 import { useQueryClient } from "@tanstack/react-query";
@@ -23,7 +23,7 @@ const PAGE_TITLES = {
   "/client-portal": "Client Portal",
 };
 
-export default function TopBar({ user, isSidebarCollapsed, toggleSidebar }) {
+export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOpen, toggleAI }) {
   const location = useLocation();
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -68,6 +68,26 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar }) {
           <span>English</span>
           <span>🇬🇧</span>
         </div>
+
+        {/* Orbit AI Toggle */}
+        <Button
+          onClick={toggleAI}
+          variant="ghost"
+          size="sm"
+          className={`relative overflow-hidden gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg border transition-all duration-300 ${
+            isAIOpen
+              ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)] scale-95"
+              : "bg-card text-foreground border-border hover:border-blue-500/50 hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-indigo-50/50 dark:hover:from-blue-950/20 dark:hover:to-indigo-950/20 hover:text-blue-600 dark:hover:text-blue-400 hover:shadow-[0_0_10px_rgba(59,130,246,0.15)]"
+          }`}
+        >
+          <span className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 opacity-0 hover:opacity-100 transition-opacity duration-300" />
+          <Sparkles className={`w-3.5 h-3.5 ${isAIOpen ? "animate-spin text-white" : "text-blue-500"}`} style={{ animationDuration: '3s' }} />
+          <span>Orbit AI</span>
+          <span className="flex h-1.5 w-1.5 relative">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
+          </span>
+        </Button>
 
         {/* Premium Theme Toggle & Notifications */}
         <ThemeToggle />
