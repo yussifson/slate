@@ -8,8 +8,14 @@ import ConfirmationModal from '@/components/ConfirmationModal';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Link } from 'react-router-dom';
+import { useMeeting } from '@/hooks/integrations/useMeeting';
+import { useCalendar } from '@/hooks/integrations/useCalendar';
+import { useAuth } from '@/context/AuthContext';
 
 export default function Recruitment() {
+  const { user } = useAuth();
+  const { generateMeetingLink } = useMeeting();
+  const { syncEvent } = useCalendar();
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('candidate');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
@@ -103,7 +109,30 @@ export default function Recruitment() {
       status: newStage,
       searchText: `${candidate.name} ${candidate.position}`
     }, {
-      onSuccess: () => toast.success(`Candidate moved to ${newStage}`)
+      onSuccess: () => {
+        toast.success(`Candidate moved to ${newStage}`);
+        if (newStage === 'Interview') {
+          generateMeetingLink({
+            companyId: user?.company_id,
+            provider: 'zoom',
+            topic: `Interview with ${candidate.name}`,
+            duration: 60,
+            startTime: new Date(Date.now() + 86400000).toISOString()
+          }).then(meetingData => {
+            syncEvent({
+              companyId: user?.company_id,
+              provider: 'google',
+              eventDetails: {
+                title: `Interview: ${candidate.name} - ${candidate.position}`,
+                startTime: new Date(Date.now() + 86400000).toISOString(),
+                endTime: new Date(Date.now() + 86400000 + 3600000).toISOString(),
+                description: `Zoom Link: ${meetingData?.join_url}`,
+                attendees: [candidate.email]
+              }
+            }).catch(console.error);
+          }).catch(console.error);
+        }
+      }
     });
   };
 

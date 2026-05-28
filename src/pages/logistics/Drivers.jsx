@@ -11,7 +11,9 @@ import ConfirmationModal from '@/components/ConfirmationModal';
 import { Link } from 'react-router-dom';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { MoreVertical, Eye } from 'lucide-react';
+import { MoreVertical, Eye, FileSignature } from 'lucide-react';
+import { useContracts } from '@/hooks/integrations/useContracts';
+import { useCompanyId } from '@/hooks/useCompanyId';
 
 const STATUS_COLORS = {
   'Active':    'bg-green-100 text-green-700 dark:bg-green-950/30 dark:text-green-400',
@@ -42,6 +44,8 @@ export default function Drivers() {
   const { data: dbRecords = [], isLoading } = useIndustryRecords('driver');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
+  const companyId = useCompanyId();
+  const { sendForSignature, isSending } = useContracts();
 
   const drivers = dbRecords.map(r => ({
     id: r.id,
@@ -284,6 +288,14 @@ export default function Drivers() {
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem onClick={() => setViewTarget(driver)}>
                               <Eye className="w-4 h-4 mr-2" /> View Details
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => {
+                              const signerEmail = prompt("Enter driver's email for contract signature:", driver.email || "");
+                              if (signerEmail) {
+                                sendForSignature({ companyId, provider: 'docusign', documentName: `Driver_Agreement_${driver.driverName}`, signerEmail, signerName: driver.driverName });
+                              }
+                            }}>
+                              <FileSignature className="w-4 h-4 mr-2" /> Send Contract
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => openEdit(driver)}>
                               <Edit2 className="w-4 h-4 mr-2" /> Edit

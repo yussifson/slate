@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { DollarSign, Search, TrendingUp, Calendar, ArrowUpRight, Download, MoreVertical, Eye, Edit2, Trash2, Edit, FileText } from 'lucide-react';
+import { DollarSign, Search, TrendingUp, Calendar, ArrowUpRight, Download, MoreVertical, Eye, Edit2, Trash2, Edit, FileText, CreditCard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 
 import { Input } from '@/components/ui/input';
+import { usePayment } from '@/hooks/integrations/usePayment';
+import { useCompanyId } from '@/hooks/useCompanyId';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
@@ -15,6 +17,8 @@ export default function Sales() {
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('retail_sale');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
+  const companyId = useCompanyId();
+  const { processPayment } = usePayment();
 
   // Map database records
   const sales = dbRecords.map(r => {
@@ -185,6 +189,14 @@ export default function Sales() {
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem onClick={() => openDetails(sale)}>
                             <Eye className="mr-2 h-4 w-4" /> View Details
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => {
+                            const customerEmail = prompt("Enter customer email for payment receipt:");
+                            if (customerEmail) {
+                              processPayment({ companyId, provider: 'stripe', amount: sale.total, currency: 'USD', customerEmail, invoiceId: sale.saleId });
+                            }
+                          }}>
+                            <CreditCard className="mr-2 h-4 w-4" /> Process Payment
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => openEdit(sale)}>
                             <Edit2 className="mr-2 h-4 w-4" /> Edit Status

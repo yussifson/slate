@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
+import { useMeeting } from '@/hooks/integrations/useMeeting';
+import { useCalendar } from '@/hooks/integrations/useCalendar';
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
 
@@ -49,8 +51,10 @@ export default function Timetable() {
   const [showModal, setShowModal] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState(null);
   const [editingId, setEditingId] = useState(null);
-  const [formData, setFormData] = useState(defaultForm);
+  const [formData, setFormData] = useState({ ...defaultForm, createZoomLink: false, addCalendar: false });
 
+  const { generateMeetingLink, isGenerating } = useMeeting();
+  const { addToCalendar, isAdding } = useCalendar();
   const { data: dbRecords = [], isLoading } = useIndustryRecords('timetable_slot');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
@@ -71,7 +75,7 @@ export default function Timetable() {
     slotGrid[s.day][s.period] = s;
   });
 
-  const handleAddSlot = () => {
+  const handleAddSlot = async () => {
     if (!formData.room.trim()) return toast.error('Please enter a room number.');
     const period = parseInt(formData.period);
     if (isNaN(period) || period < 1 || period > 8) return toast.error('Period must be 1–8.');
@@ -80,20 +84,31 @@ export default function Timetable() {
     const conflict = classSlots.find(s => s.day === formData.day && String(s.period) === String(formData.period) && s.id !== editingId);
     if (conflict) return toast.error(`A slot already exists for ${formData.day} Period ${formData.period} in ${formData.className}.`);
 
+    const payload = {
+      className: formData.className,
+      day: formData.day,
+      period,
+      startTime: formData.startTime,
+      endTime: formData.endTime,
+      subject: formData.subject,
+      teacher: formData.teacher,
+      room: formData.room.trim(),
+    };
+
+    if (formData.createZoomLink) {
+      const meeting = await generateMeetingLink({ topic: payload.subject, startTime: `2026-06-01 ${payload.startTime}`, duration: 60 });
+      if (meeting?.join_url) payload.room = `Zoom: ${meeting.join_url}`;
+    }
+
+    if (formData.addCalendar) {
+      await addToCalendar({ title: `${payload.subject} (${payload.className})`, date: payload.day, time: payload.startTime, details: payload.room });
+    }
+
     if (editingId) {
       mutateRecord.mutate({
         id: editingId,
         recordType: 'timetable_slot',
-        payload: {
-          className: formData.className,
-          day: formData.day,
-          period,
-          startTime: formData.startTime,
-          endTime: formData.endTime,
-          subject: formData.subject,
-          teacher: formData.teacher,
-          room: formData.room.trim(),
-        },
+        payload,
         status: 'Active',
         searchText: `${formData.className} ${formData.day} ${formData.subject} ${formData.teacher}`,
       }, {
@@ -108,16 +123,7 @@ export default function Timetable() {
     } else {
       mutateRecord.mutate({
         recordType: 'timetable_slot',
-        payload: {
-          className: formData.className,
-          day: formData.day,
-          period,
-          startTime: formData.startTime,
-          endTime: formData.endTime,
-          subject: formData.subject,
-          teacher: formData.teacher,
-          room: formData.room.trim(),
-        },
+        payload,
         status: 'Active',
         searchText: `${formData.className} ${formData.day} ${formData.subject} ${formData.teacher}`,
       }, {
@@ -386,11 +392,21 @@ export default function Timetable() {
                 />
               </div>
             </div>
+            <div className="flex items-center gap-4 mt-2">
+              <label className="flex items-center gap-2 text-sm text-foreground">
+                <input type="checkbox" checked={formData.createZoomLink || false} onChange={e => setFormData({ ...formData, createZoomLink: e.target.checked })} />
+                Generate Zoom Link
+              </label>
+              <label className="flex items-center gap-2 text-sm text-foreground">
+                <input type="checkbox" checked={formData.addCalendar || false} onChange={e => setFormData({ ...formData, addCalendar: e.target.checked })} />
+                Add to Calendar
+              </label>
+            </div>
             <div className="flex gap-3 pt-2">
               <Button
                 variant="outline"
                 className="flex-1"
-                onClick={() => { setShowModal(false); setEditingId(null); setFormData(defaultForm); }}
+                onClick={() => { setShowModal(false); setEditingId(null); setFormData({ ...defaultForm, className: selectedClass }); }}
                 disabled={mutateRecord.isPending}
               >
                 Cancel

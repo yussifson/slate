@@ -7,7 +7,9 @@ import { toast } from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
-import { MoreVertical, FileText, Edit, Activity, User } from 'lucide-react';
+import { MoreVertical, FileText, Edit, Activity, User, CreditCard } from 'lucide-react';
+import { usePayment } from '@/hooks/integrations/usePayment';
+import { useCompanyId } from '@/hooks/useCompanyId';
 
 const statusColors = {
   'Checked-in': 'bg-blue-100 text-blue-700',
@@ -21,6 +23,8 @@ export default function Reservations() {
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('reservation');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
+  const companyId = useCompanyId();
+  const { processPayment } = usePayment();
 
   // Map database records
   const reservations = dbRecords.map(r => ({ id: r.id, status: r.status || 'Active', ...r.data }));
@@ -200,6 +204,14 @@ export default function Reservations() {
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={() => setViewDetailsId(res.id)}>
                           <FileText className="w-4 h-4 mr-2" /> View Details
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => {
+                          const customerEmail = prompt("Enter customer email for payment receipt:");
+                          if (customerEmail) {
+                            processPayment({ companyId, provider: 'stripe', amount: res.total, currency: 'USD', customerEmail, invoiceId: res.resId });
+                          }
+                        }}>
+                          <CreditCard className="w-4 h-4 mr-2" /> Process Payment
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleEdit(res)}>
                           <Edit className="w-4 h-4 mr-2" /> Edit

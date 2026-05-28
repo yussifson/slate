@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Truck, Search, Plus, Phone, Mail, FileText, Star, Trash2, MoreVertical, Eye, Edit } from 'lucide-react';
+import { Truck, Search, Plus, Phone, Mail, FileText, Star, Trash2, MoreVertical, Eye, Edit, FileSignature } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
@@ -8,12 +8,16 @@ import ConfirmationModal from '@/components/ConfirmationModal';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Link } from 'react-router-dom';
+import { useContracts } from '@/hooks/integrations/useContracts';
+import { useCompanyId } from '@/hooks/useCompanyId';
 
 export default function Suppliers() {
   // Supabase Real-time Sync Hooks
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('supplier');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
+  const companyId = useCompanyId();
+  const { sendForSignature, isSending } = useContracts();
 
   // Map database records
   const suppliers = dbRecords.map(r => ({
@@ -189,6 +193,14 @@ export default function Suppliers() {
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem onClick={() => openDetails(sup)}>
                             <Eye className="mr-2 h-4 w-4" /> View Details
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => {
+                            const signerEmail = prompt("Enter supplier email for vendor agreement signature:", sup.email || "");
+                            if (signerEmail) {
+                              sendForSignature({ companyId, provider: 'docusign', documentName: `Vendor_Agreement_${sup.name}`, signerEmail, signerName: sup.contact || sup.name });
+                            }
+                          }}>
+                            <FileSignature className="mr-2 h-4 w-4" /> Send Agreement
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => openEdit(sup)}>
                             <Edit className="mr-2 h-4 w-4" /> Edit

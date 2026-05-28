@@ -8,8 +8,12 @@ import ConfirmationModal from '@/components/ConfirmationModal';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Link } from 'react-router-dom';
+import { useNotifications } from '@/hooks/integrations/useNotifications';
+import { useAuth } from '@/context/AuthContext';
 
 export default function Leave() {
+  const { user } = useAuth();
+  const { notifyTeam } = useNotifications();
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('leave_request');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
@@ -71,6 +75,7 @@ export default function Leave() {
       }, {
         onSuccess: () => {
           toast.success('Leave request submitted!');
+          notifyTeam({ companyId: user?.company_id, provider: 'slack', message: `Leave request submitted by ${formData.employeeName} for ${formData.leaveType}`, channel: '#hr' }).catch(console.error);
           setShowModal(false);
           setFormData({
             employeeName: '', leaveType: 'Annual', 
@@ -119,7 +124,12 @@ export default function Leave() {
       status: newStatus,
       searchText: `${req.employeeName} ${req.leaveType}`
     }, {
-      onSuccess: () => toast.success(`Leave request ${newStatus}`)
+      onSuccess: () => {
+        toast.success(`Leave request ${newStatus}`);
+        if (newStatus === 'Approved') {
+          notifyTeam({ companyId: user?.company_id, provider: 'slack', message: `Leave request for ${req.employeeName} has been approved.`, channel: '#hr' }).catch(console.error);
+        }
+      }
     });
   };
 

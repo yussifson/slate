@@ -20,12 +20,14 @@ import AddOptionInline from "@/components/shared/AddOptionInline";
 import { format } from "date-fns";
 
 import { useToast } from "@/components/ui/use-toast";
+import { useContracts } from "@/hooks/integrations/useContracts";
 
 export default function Documents() {
   const { user } = useAuth();
   const companyId = useCompanyId();
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { sendForSignature, isSending } = useContracts();
   const { docCategories, addDocCategory } = useFirmSettings();
   const [showForm, setShowForm] = useState(false);
   const [editingDocument, setEditingDocument] = useState(null);
@@ -112,6 +114,16 @@ export default function Documents() {
               <DropdownMenuItem onClick={() => window.open(row.file_url, "_blank")}>Download</DropdownMenuItem>
             )}
             <DropdownMenuItem onClick={() => setEditingDocument(row)}>Edit</DropdownMenuItem>
+            {row.file_url && (
+              <DropdownMenuItem onClick={() => {
+                const signerEmail = prompt("Enter signer's email address:");
+                if (signerEmail) {
+                  sendForSignature({ companyId, provider: 'docusign', documentName: row.name, signerEmail, signerName: 'Client' });
+                }
+              }}>
+                Send for Signature (DocuSign)
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem className="text-red-600" onClick={() => {
               if (window.confirm("Delete this document?")) deleteMutation.mutate(row.id);
             }}>Delete</DropdownMenuItem>

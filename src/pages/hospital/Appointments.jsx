@@ -4,6 +4,11 @@ import { Calendar as CalendarIcon, Clock, User, Stethoscope, Plus, Video, Trash2
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
+import { useMeeting } from "@/hooks/integrations/useMeeting";
+import { useCalendar } from "@/hooks/integrations/useCalendar";
+import { useCompanyId } from "@/hooks/useCompanyId";
+import { Checkbox } from "@/components/ui/checkbox";
+import { RefreshCw } from "lucide-react";
 import { toast } from 'react-hot-toast';
 
 const typeColors = {
@@ -23,6 +28,12 @@ export default function Appointments() {
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('appt');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
+  const companyId = useCompanyId();
+
+  const { generateMeetingLink, isGenerating } = useMeeting();
+  const { syncEvent, isSyncing } = useCalendar();
+  const [generateZoom, setGenerateZoom] = useState(false);
+  const [syncGoogle, setSyncGoogle] = useState(true);
 
   // Map database records
   const appointments = dbRecords.map(r => ({ id: r.id, status: r.status || 'Active', ...r.data }));
@@ -41,7 +52,7 @@ export default function Appointments() {
   });
 
   // Generic Save Handler for real DB persistence
-  const handleSaveToDb = () => {
+  const handleSaveToDb = async () => {
     if (!formData.patient.trim()) return toast.error("Please enter a patient name");
 
     // Convert time to 12h format for UI consistency
@@ -50,14 +61,39 @@ export default function Appointments() {
     const formattedHours = parseInt(hours) % 12 || 12;
     const formattedTime = `${formattedHours}:${minutes} ${ampm}`;
 
-    const payload = {
+    let payload = {
       patient: formData.patient,
       doctor: formData.doctor,
       date: formData.date,
       time: formattedTime,
       type: formData.type,
-      status: 'Scheduled'
+      status: 'Scheduled',
+      notes: ''
     };
+
+    // Handle Zoom
+    if (generateZoom) {
+      try {
+        const startTime = formData.date && formData.time ? `${formData.date}T${formData.time}:00Z` : undefined;
+        const meeting = await generateMeetingLink({ companyId, provider: 'zoom', topic: `Consultation with ${formData.patient}`, startTime, duration: 60 });
+        if (meeting?.join_url) {
+          payload.meeting_url = meeting.join_url;
+          payload.notes = `Zoom Link: ${meeting.join_url}`;
+        }
+      } catch (err) {
+        console.error("Zoom generation failed", err);
+      }
+    }
+
+    // Handle Sync
+    if (syncGoogle) {
+      try {
+        const startTime = formData.date && formData.time ? `${formData.date}T${formData.time}:00Z` : undefined;
+        await syncEvent({ companyId, provider: 'google', eventDetails: { title: `Consultation with ${formData.patient}`, description: payload.notes, startTime, endTime: startTime } });
+      } catch (err) {
+        console.error("Google Sync failed", err);
+      }
+    }
 
     mutateRecord.mutate({
       recordType: 'appt',
@@ -257,9 +293,26 @@ export default function Appointments() {
                  </select>
                </div>
             </div>
+            <div className="flex flex-col gap-2 p-3 bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800">
+              <div className="flex items-center space-x-2">
+                <Checkbox id="generateZoom" checked={generateZoom} onCheckedChange={setGenerateZoom} />
+                <label htmlFor="generateZoom" className="text-sm font-medium leading-none cursor-pointer">
+                  Generate Zoom Meeting Link
+                </label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox id="syncGoogle" checked={syncGoogle} onCheckedChange={setSyncGoogle} />
+                <label htmlFor="syncGoogle" className="text-sm font-medium leading-none cursor-pointer">
+                  Sync to Google Calendar
+                </label>
+              </div>
+            </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>Cancel</Button>
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleSaveToDb}>Book Visit</Button>
+              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleSaveToDb} disabled={isGenerating || isSyncing}>
+                {(isGenerating || isSyncing) ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : null}
+                Book Visit
+              </Button>
             </div>
           </div>
         </div>

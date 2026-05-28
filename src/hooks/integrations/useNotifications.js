@@ -1,0 +1,48 @@
+import { useState } from 'react';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/context/AuthContext';
+import { useToast } from '@/components/ui/use-toast';
+
+export const useNotifications = () => {
+  const [isNotifying, setIsNotifying] = useState(false);
+  const { session } = useAuth();
+  const { toast } = useToast();
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://your-project.supabase.co';
+
+  const notifyTeam = async ({ companyId, provider, message, channel, recipientPhone }) => {
+    setIsNotifying(true);
+    try {
+      const res = await fetch(`${supabaseUrl}/functions/v1/notify-team`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session?.access_token || import.meta.env.VITE_SUPABASE_ANON_KEY}`
+        },
+        body: JSON.stringify({
+          companyId,
+          provider, 
+          message,
+          channel,
+          recipientPhone
+        })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || data.error) {
+        throw new Error(data.error || 'Failed to send notification');
+      }
+
+      return data; 
+    } catch (error) {
+      console.error("Notification Error:", error);
+      // We don't always want to toast notifications since they run in background, 
+      // but keeping it here for debug/explicit triggers
+      throw error;
+    } finally {
+      setIsNotifying(false);
+    }
+  };
+
+  return { notifyTeam, isNotifying };
+};

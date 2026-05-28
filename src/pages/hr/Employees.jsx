@@ -8,8 +8,12 @@ import ConfirmationModal from '@/components/ConfirmationModal';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Link } from 'react-router-dom';
+import { useNotifications } from '@/hooks/integrations/useNotifications';
+import { useAuth } from '@/context/AuthContext';
 
 export default function Employees() {
+  const { user } = useAuth();
+  const { notifyTeam } = useNotifications();
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('employee');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
@@ -72,6 +76,7 @@ export default function Employees() {
       }, {
         onSuccess: () => {
           toast.success('Employee added successfully!');
+          notifyTeam({ companyId: user?.company_id, provider: 'slack', message: `New employee onboarded: ${formData.name} as ${formData.role}`, channel: '#general' }).catch(console.error);
           setShowModal(false);
           setFormData({
             name: '', department: '', role: '', email: '', phone: '', salary: '', startDate: new Date().toISOString().split('T')[0]

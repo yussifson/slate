@@ -3,6 +3,8 @@ import { Calendar, MapPin, Clock, Users, Plus, Trash2, Search } from 'lucide-rea
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
+import { useMeeting } from '@/hooks/integrations/useMeeting';
+import { useCalendar } from '@/hooks/integrations/useCalendar';
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -10,6 +12,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { Link } from 'react-router-dom';
 
 export default function Events() {
+  const { generateMeetingLink, isGenerating } = useMeeting();
+  const { addToCalendar, isAdding } = useCalendar();
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('event');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
@@ -33,17 +37,19 @@ export default function Events() {
     time: '08:30 AM',
     venue: 'Main Auditorium',
     rsvp: 100,
-    type: 'Service'
+    type: 'Service',
+    createZoomLink: false,
+    addCalendar: false
   });
 
   
   const openEdit = (record) => {
     setEditRecord(record);
-    setFormData(record);
+    setFormData({ ...record, createZoomLink: false, addCalendar: false });
     setShowModal(true);
   };
 
-  const handleCreateEvent = () => {
+  const handleCreateEvent = async () => {
     if (!formData.title.trim() || !formData.venue.trim()) {
       return toast.error("Please enter a title and venue for the event");
     }
@@ -56,6 +62,15 @@ export default function Events() {
       rsvp: parseInt(formData.rsvp) || 0,
       type: formData.type
     };
+
+    if (formData.createZoomLink) {
+      const meeting = await generateMeetingLink({ topic: payload.title, startTime: `${payload.date} ${payload.time}`, duration: 60 });
+      if (meeting?.join_url) payload.venue = `Zoom: ${meeting.join_url}`;
+    }
+
+    if (formData.addCalendar) {
+      await addToCalendar({ title: payload.title, date: payload.date, time: payload.time, details: payload.venue });
+    }
 
     mutateRecord.mutate({
       ...(editRecord ? { id: editRecord.id } : {}),
@@ -237,9 +252,19 @@ export default function Events() {
                 />
               </div>
             </div>
+            <div className="flex items-center gap-4 mt-2">
+              <label className="flex items-center gap-2 text-sm text-foreground">
+                <input type="checkbox" checked={formData.createZoomLink} onChange={e => setFormData({ ...formData, createZoomLink: e.target.checked })} />
+                Generate Zoom Link
+              </label>
+              <label className="flex items-center gap-2 text-sm text-foreground">
+                <input type="checkbox" checked={formData.addCalendar} onChange={e => setFormData({ ...formData, addCalendar: e.target.checked })} />
+                Add to Calendar
+              </label>
+            </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditRecord(null); }}>Cancel</Button>
-              <Button className="flex-1 bg-purple-600 hover:bg-purple-700 text-white" onClick={handleCreateEvent}>{editRecord ? 'Update' : 'Schedule'}</Button>
+              <Button className="flex-1 bg-purple-600 hover:bg-purple-700 text-white" disabled={isGenerating || isAdding} onClick={handleCreateEvent}>{editRecord ? 'Update' : 'Schedule'}</Button>
             </div>
           </div>
         </div>

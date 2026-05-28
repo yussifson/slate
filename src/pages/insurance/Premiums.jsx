@@ -6,6 +6,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
+import { usePayment } from "@/hooks/integrations/usePayment";
+import { useCompanyId } from "@/hooks/useCompanyId";
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
 
@@ -13,6 +15,8 @@ export default function Premiums() {
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('premium_payment');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
+  const companyId = useCompanyId();
+  const { processPayment, isPaymentLoading } = usePayment();
 
   const premiums = dbRecords.map(r => ({
     id: r.id,
@@ -34,7 +38,7 @@ export default function Premiums() {
   });
   const [viewRecord, setViewRecord] = useState(null);
 
-  const handleCreatePremium = () => {
+  const handleCreatePremium = async () => {
     if (!formData.policyHolder.trim() || !formData.policyNumber.trim()) {
       return toast.error("Please enter policy holder and number");
     }
@@ -59,6 +63,23 @@ export default function Premiums() {
       });
     } else {
       const receiptNumber = `RCP-${Math.floor(1000 + Math.random() * 9000)}`;
+
+      if (formData.paymentMethod === 'Credit Card') {
+        try {
+          await processPayment({
+            companyId,
+            provider: 'stripe',
+            amount: parseFloat(formData.amount),
+            currency: 'USD',
+            reference: receiptNumber,
+            customerName: formData.policyHolder
+          });
+          toast.success("Payment processed successfully via Stripe");
+        } catch (err) {
+          console.error("Payment failed", err);
+          return toast.error("Payment failed: " + err.message);
+        }
+      }
 
       mutateRecord.mutate({
         recordType: 'premium_payment',
@@ -286,7 +307,9 @@ export default function Premiums() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditTargetId(null); }}>Cancel</Button>
-              <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleCreatePremium}>{editTargetId ? 'Save Changes' : 'Save Record'}</Button>
+              <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleCreatePremium} disabled={isPaymentLoading}>
+                {isPaymentLoading ? 'Processing...' : editTargetId ? 'Save Changes' : 'Save Record'}
+              </Button>
             </div>
           </div>
         </div>

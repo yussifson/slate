@@ -3,9 +3,10 @@ import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
 import { useCompanyId, useCompany } from "@/hooks/useCompanyId";
-import { Plus, Receipt, Search, CheckCircle2, Clock, AlertCircle, MoreVertical } from "lucide-react";
+import { usePayment } from "@/hooks/integrations/usePayment";
+import { Plus, Receipt, Search, CheckCircle2, Clock, AlertCircle, MoreVertical, CreditCard, RefreshCw } from "lucide-react";
 import { Link } from "react-router-dom";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
 import { getTerm } from "@/config/industries";
@@ -25,6 +26,7 @@ export default function Invoices() {
   const companyId = useCompanyId();
   const { data: companyContext } = useCompany();
   const queryClient = useQueryClient();
+  const { processPayment, syncInvoiceToQuickBooks, isPaymentLoading } = usePayment();
   const [showForm, setShowForm] = useState(false);
   const [editingInvoice, setEditingInvoice] = useState(null);
   const [viewingInvoice, setViewingInvoice] = useState(null);
@@ -111,6 +113,21 @@ export default function Invoices() {
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setViewingInvoice(row); }}>View Details</DropdownMenuItem>
             <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setEditingInvoice(row); }}>Edit</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            {row.status !== "paid" && (
+              <>
+                <DropdownMenuItem onClick={(e) => { e.stopPropagation(); processPayment({ companyId, provider: 'stripe', amount: row.total_amount, currency: row.currency, customerEmail: 'client@example.com', invoiceId: row.id }); }}>
+                  <CreditCard className="w-4 h-4 mr-2" /> Pay via Stripe
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={(e) => { e.stopPropagation(); processPayment({ companyId, provider: 'paystack', amount: row.total_amount, currency: row.currency, customerEmail: 'client@example.com', invoiceId: row.id }); }}>
+                  <CreditCard className="w-4 h-4 mr-2" /> Pay via Paystack
+                </DropdownMenuItem>
+              </>
+            )}
+            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); syncInvoiceToQuickBooks({ companyId, invoiceDetails: { amount: row.total_amount, invoiceNumber: row.invoice_number } }); }}>
+              <RefreshCw className="w-4 h-4 mr-2" /> Sync to QuickBooks
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuItem className="text-red-600" onClick={(e) => { e.stopPropagation(); handleDeleteOne(row.id); }}>Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

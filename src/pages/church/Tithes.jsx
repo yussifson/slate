@@ -3,6 +3,7 @@ import { DollarSign, Search, Plus, Trash2, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
+import { usePayment } from '@/hooks/integrations/usePayment';
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -10,6 +11,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { Link } from 'react-router-dom';
 
 export default function Tithes() {
+  const { processPayment, isProcessing } = usePayment();
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('tithe');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
@@ -41,38 +43,51 @@ export default function Tithes() {
     setShowModal(true);
   };
 
-  const handleCreateTithe = () => {
+  const handleCreateTithe = async () => {
     if (!formData.member.trim() || formData.amount <= 0) {
       return toast.error("Please enter a donor name and positive amount");
     }
 
-    const trxId = `TRX-${Math.floor(1000 + Math.random() * 9000)}`;
-    const payload = {
-      trxId,
-      member: formData.member,
-      type: formData.type,
-      amount: parseFloat(formData.amount) || 0,
-      method: formData.method,
-      date: new Date().toISOString().split('T')[0]
-    };
+    try {
+      const paymentResult = await processPayment({
+        amount: parseFloat(formData.amount),
+        currency: 'USD',
+        description: `${formData.type} from ${formData.member}`,
+        customerName: formData.member
+      });
 
-    mutateRecord.mutate({
-      ...(editRecord ? { id: editRecord.id } : {}),
-      recordType: 'tithe',
-      payload,
-      status: 'Active',
-      searchText: `${trxId} ${formData.member} ${formData.type}`
-    }, {
-      onSuccess: () => {
-        toast.success('Giving transaction logged successfully!');
-        setShowModal(false);
-        setEditRecord(null);
-        setFormData({ member: '', type: 'Tithe', amount: 100, method: 'Mobile Money' });
-      },
-      onError: (err) => {
-        toast.error('Failed to log giving: ' + err.message);
+      if (paymentResult.success) {
+        const trxId = `TRX-${Math.floor(1000 + Math.random() * 9000)}`;
+        const payload = {
+          trxId,
+          member: formData.member,
+          type: formData.type,
+          amount: parseFloat(formData.amount) || 0,
+          method: formData.method,
+          date: new Date().toISOString().split('T')[0]
+        };
+
+        mutateRecord.mutate({
+          ...(editRecord ? { id: editRecord.id } : {}),
+          recordType: 'tithe',
+          payload,
+          status: 'Active',
+          searchText: `${trxId} ${formData.member} ${formData.type}`
+        }, {
+          onSuccess: () => {
+            toast.success('Giving transaction logged successfully!');
+            setShowModal(false);
+            setEditRecord(null);
+            setFormData({ member: '', type: 'Tithe', amount: 100, method: 'Mobile Money' });
+          },
+          onError: (err) => {
+            toast.error('Failed to log giving: ' + err.message);
+          }
+        });
       }
-    });
+    } catch (err) {
+      toast.error('Payment processing failed: ' + err.message);
+    }
   };
 
   const handleDeleteTithe = () => {

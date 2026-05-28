@@ -6,10 +6,12 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
+import { usePayment } from '@/hooks/integrations/usePayment';
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
 
 export default function FeeManagement() {
+  const { processPayment, isProcessing } = usePayment();
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('student');
   const mutateRecord = useMutateIndustryRecord();
 
@@ -52,34 +54,47 @@ export default function FeeManagement() {
     setShowPaymentModal(true);
   };
 
-  const handleConfirmPayment = () => {
+  const handleConfirmPayment = async () => {
     if (!selectedStudent || paymentAmount <= 0) return;
 
-    const currentRaw = selectedStudent.rawRecord;
-    const isFull = paymentAmount >= selectedStudent.balance;
-    const nextStatus = isFull ? 'Paid' : 'Partial';
+    try {
+      const paymentResult = await processPayment({
+        amount: paymentAmount,
+        currency: 'USD',
+        description: `Tuition payment for ${selectedStudent.student}`,
+        customerName: selectedStudent.student
+      });
 
-    const updatedData = {
-      ...currentRaw.data,
-      feeStatus: nextStatus
-    };
+      if (paymentResult.success) {
+        const currentRaw = selectedStudent.rawRecord;
+        const isFull = paymentAmount >= selectedStudent.balance;
+        const nextStatus = isFull ? 'Paid' : 'Partial';
 
-    mutateRecord.mutate({
-      id: currentRaw.id,
-      recordType: 'student',
-      payload: updatedData,
-      status: currentRaw.status || 'Active',
-      searchText: `${updatedData.name} ${updatedData.studentId}`
-    }, {
-      onSuccess: () => {
-        toast.success(`Recorded payment of $${paymentAmount} for ${selectedStudent.student}`);
-        setShowPaymentModal(false);
-        setSelectedStudent(null);
-      },
-      onError: (err) => {
-        toast.error('Failed to log payment: ' + err.message);
+        const updatedData = {
+          ...currentRaw.data,
+          feeStatus: nextStatus
+        };
+
+        mutateRecord.mutate({
+          id: currentRaw.id,
+          recordType: 'student',
+          payload: updatedData,
+          status: currentRaw.status || 'Active',
+          searchText: `${updatedData.name} ${updatedData.studentId}`
+        }, {
+          onSuccess: () => {
+            toast.success(`Recorded payment of $${paymentAmount} for ${selectedStudent.student}`);
+            setShowPaymentModal(false);
+            setSelectedStudent(null);
+          },
+          onError: (err) => {
+            toast.error('Failed to log payment: ' + err.message);
+          }
+        });
       }
-    });
+    } catch (err) {
+      toast.error('Payment processing failed: ' + err.message);
+    }
   };
 
   return (
