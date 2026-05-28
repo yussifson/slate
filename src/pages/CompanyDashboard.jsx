@@ -115,14 +115,6 @@ export default function CompanyDashboard() {
   const isLawyer = user?.role === "lawyer";
   const isAdmin = ["company_admin", "super_admin", "admin"].includes(user?.role);
 
-  useEffect(() => {
-    if (companyId && cases.length === 0 && clients.length === 0 && isAdmin) {
-      const done = localStorage.getItem(`onboarding_done_${companyId}`);
-      if (done !== "true") {
-        navigate("/onboarding");
-      }
-    }
-  }, [companyId, cases.length, clients.length, isAdmin, navigate]);
 
   const { toast } = useToast();
   const [isRefreshing, setIsRefreshing] = useState(false);
