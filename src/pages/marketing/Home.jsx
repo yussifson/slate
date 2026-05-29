@@ -1,26 +1,27 @@
 import { Link } from 'react-router-dom';
-import { useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
+  ArrowRight,
   Scale,
   Shield,
+  Users,
   Clock,
   Briefcase,
   Smartphone,
-  Building2,
-  Hexagon,
-  Diamond,
-  Pyramid,
-  Box,
-  ShieldCheck,
-  Share2,
-  Video,
+  Star,
+  ChevronRight,
+  BarChart3,
+  FileText,
+  Bell,
   CreditCard,
-  FileSignature,
-  Slack
+  Sparkles,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
+/* ------------------------------------------------------------------ */
+/*  Fade-in-up observer hook                                          */
+/* ------------------------------------------------------------------ */
 function useFadeInOnScroll() {
   const ref = useRef(null);
   useEffect(() => {
@@ -47,180 +48,615 @@ function FadeIn({ children, className = '', delay = '' }) {
   return (
     <div
       ref={ref}
-      className={`opacity-0 translate-y-8 transition-all duration-1000 ease-out ${delay} ${className}`}
+      className={`opacity-0 translate-y-8 transition-all duration-700 ease-out ${delay} ${className}`}
     >
       {children}
     </div>
   );
 }
 
+/* ------------------------------------------------------------------ */
+/*  Data                                                              */
+/* ------------------------------------------------------------------ */
 const features = [
   {
     icon: Scale,
-    title: 'Case Intelligence',
+    title: 'Customer & Pipeline Tracking',
     description:
-      'Manage legal matters with precision. Set automated reminders, track critical documents, and monitor case pipelines with AI-powered insights.',
+      'Manage business operations from intake to resolution. Customize stages, set reminders, and track client documents in one central view.',
+    image: '/images/feature_pipeline.png'
   },
   {
-    icon: Building2,
-    title: 'Exclusive Client Portal',
+    icon: Users,
+    title: 'Smart Client Portal',
     description:
-      'Provide a premium, branded experience for high-net-worth clients to review milestones and securely sign documents.',
+      'Give clients a secure, branded environment to sign documents, review milestones, and communicate directly with your team.',
+    image: '/images/client_portal_ui.png'
   },
   {
     icon: Clock,
-    title: 'Precision Time Tracking',
+    title: 'Integrated Time Tracking',
     description:
-      'Capture every billable minute seamlessly. Transform court appearances and legal research into professional invoices instantly.',
+      'Bill accurately with live timers for consultations, research, meetings, and project delivery — then convert hours to invoices.',
+    image: '/images/feature_time.png'
   },
   {
-    icon: Share2,
-    title: 'Enterprise Integrations',
+    icon: Smartphone,
+    title: 'WhatsApp & Email Sync',
     description:
-      'Seamlessly connect Zoom for telehealth/video consults, Stripe and Paystack for billing, DocuSign for signing, and Slack for real-time team synchronization.',
+      'Communicate with clients via WhatsApp and automatic email logging. Retain a clear audit trail of all correspondence.',
+    image: '/images/feature_sync.png'
   },
   {
     icon: Briefcase,
-    title: 'Firm Administration',
+    title: 'HR & Payroll Control',
     description:
-      'Centralize partner and associate management, from performance metrics to sophisticated payroll and HR controls.',
+      'Manage associate leaves, staff performance dashboards, and monthly salary slips under one secure portal.',
+    image: '/images/feature_hr.png'
   },
   {
     icon: Shield,
-    title: 'Enterprise Security',
+    title: 'Bank-Grade Compliance',
     description:
-      'Bank-grade encryption, strict role-based access, and SOC2 compliance ensure your firm\'s data remains unconditionally protected.',
+      'Client confidentiality, encrypted storage, automatic daily backups, and robust role-based access permissions.',
+    image: '/images/feature_security.png'
   },
+  {
+    icon: Sparkles,
+    title: 'Orbit AI Assistant',
+    description:
+      'Your built-in enterprise AI. Orbit can search records, navigate the app, create tasks, and automate workflows via simple chat commands.',
+    image: '/images/orbit_dashboard_mockup.png' 
+  }
 ];
 
 const testimonials = [
   {
     quote:
-      'LexAfrica has improved how our firm works day-to-day. The transition to a unified digital system was smooth, and our clients love the portal.',
+      'Optalflow completely transformed our practice. We moved from paper files to a digital pipeline and reduced document turnaround by 60%.',
     author: 'Adama Mensah',
     role: 'Managing Partner',
     firm: 'Mensah & Partners',
+    rating: 5,
   },
   {
     quote:
-      'It aligns perfectly with our standards. It has fundamentally modernized how we track time and manage complex corporate litigation.',
+      'The custom-branded client portal lets us serve high-net-worth clients under their own secure domain. Best investment we made this year.',
     author: 'Chinedu Okafor',
     role: 'Senior Partner',
-    firm: 'Temple Chambers',
+    firm: 'Temple Chambers, Lagos',
+    rating: 5,
   },
   {
     quote:
-      'A great tool for legal tech. The seamless integration of billing, communications, and case management provides us with an unparalleled advantage.',
+      'Managing schedules, billing via Paystack, and email sync has never been this seamless. Highly recommended for any organization.',
     author: 'Mariama Kamara',
     role: 'Founder',
-    firm: 'Kamara Advocacy',
+    firm: 'Kamara Group',
+    rating: 5,
   },
 ];
 
 const firms = [
-  { name: 'ZENITH CHAMBERS', icon: Hexagon },
-  { name: 'STERLING ADVOCATES', icon: Diamond },
-  { name: 'ADEBAYO & CO.', icon: ShieldCheck },
-  { name: 'LUMINA LEGAL', icon: Pyramid },
-  { name: 'VANGUARD SOLICITORS', icon: Box },
+  {
+    name: 'GlobalTech',
+    logo: (
+      <svg className="w-6 h-6 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+      </svg>
+    ),
+    font: 'font-sans font-black tracking-tighter'
+  },
+  {
+    name: 'ApexHealth',
+    logo: (
+      <svg className="w-6 h-6 mr-2 text-emerald-600" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
+      </svg>
+    ),
+    font: 'font-serif font-bold tracking-tight'
+  },
+  {
+    name: 'Horizon Logistics',
+    logo: (
+      <svg className="w-7 h-7 mr-2 text-amber-500" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+      </svg>
+    ),
+    font: 'font-sans font-extrabold italic tracking-wider uppercase text-sm'
+  },
+  {
+    name: 'Crescent Edu',
+    logo: (
+      <svg className="w-6 h-6 mr-2 text-indigo-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+      </svg>
+    ),
+    font: 'font-serif font-semibold tracking-normal'
+  },
+  {
+    name: 'Vanguard Legal',
+    logo: (
+      <svg className="w-6 h-6 mr-2 text-slate-800" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      </svg>
+    ),
+    font: 'font-serif font-bold uppercase tracking-widest text-sm'
+  },
+  {
+    name: 'Sterling Retail',
+    logo: (
+      <svg className="w-6 h-6 mr-2 text-rose-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+      </svg>
+    ),
+    font: 'font-sans font-bold tracking-tight'
+  },
 ];
 
+const suites = [
+  {
+    id: 'law',
+    name: 'Law Firm Workspace',
+    tagline: 'Legal Practice Management',
+    description: 'A complete ecosystem for modern law firms to manage cases, track billable hours, and collaborate with clients securely.',
+    features: ['Case & Matter Management', 'Conflict Checking', 'Legal Billing & Trust Accounting', 'Secure Client Portal']
+  },
+  {
+    id: 'hospital',
+    name: 'Healthcare Workspace',
+    tagline: 'Clinic & Hospital Management',
+    description: 'Streamline patient onboarding, appointment scheduling, and staff rostering with our secure health-compliant platform.',
+    features: ['Patient Records & History', 'Appointment Scheduling', 'Medical Billing', 'Staff Rostering']
+  },
+  {
+    id: 'school',
+    name: 'Education Workspace',
+    tagline: 'School & Campus Management',
+    description: 'Unify student records, grading, fee collection, and parent communication in a single intuitive system.',
+    features: ['Student Information System', 'Fee Collection', 'Gradebook & Exams', 'Parent Portal']
+  },
+  {
+    id: 'hotel',
+    name: 'Hospitality Workspace',
+    tagline: 'Hotel & Property Management',
+    description: 'Deliver exceptional guest experiences with integrated booking, housekeeping, and point-of-sale systems.',
+    features: ['Booking & Reservations', 'Housekeeping Manager', 'Restaurant POS', 'Guest CRM']
+  },
+  {
+    id: 'church',
+    name: 'Ministry Workspace',
+    tagline: 'Church & Congregation Management',
+    description: 'Engage your congregation with powerful tools for donation tracking, event scheduling, and member communication.',
+    features: ['Member Database', 'Donation & Tithing', 'Event Management', 'Volunteer Scheduling']
+  },
+  {
+    id: 'insurance',
+    name: 'Insurance Workspace',
+    tagline: 'Agency & Policy Management',
+    description: 'Accelerate policy issuance, manage claims efficiently, and track commissions with our dedicated insurance suite.',
+    features: ['Policy Administration', 'Claims Processing', 'Commission Tracking', 'Client Portal']
+  },
+  {
+    id: 'retail',
+    name: 'Retail Workspace',
+    tagline: 'Multi-Store POS & Inventory',
+    description: 'Unify your retail operations with centralized inventory management, multi-store POS, and detailed sales analytics.',
+    features: ['Multi-Store Cloud POS', 'Real-time Inventory', 'Supplier Management', 'Sales Analytics']
+  },
+  {
+    id: 'logistics',
+    name: 'Logistics Workspace',
+    tagline: 'Freight & Delivery Management',
+    description: 'Optimize your supply chain with real-time fleet tracking, dispatch routing, and automated invoicing.',
+    features: ['Fleet & Asset Tracking', 'Dispatch Management', 'Automated Invoicing', 'Driver App Integration']
+  },
+  {
+    id: 'hr',
+    name: 'HR & ERP Workspace',
+    tagline: 'Enterprise Resource Planning',
+    description: 'Manage your most valuable assets with our comprehensive HR suite, including payroll, performance, and leave management.',
+    features: ['Automated Payroll', 'Leave & Attendance', 'Performance Reviews', 'Employee Self-Service']
+  }
+];
+
+function SuitesSection() {
+  const [activeSuite, setActiveSuite] = useState(suites[0]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  return (
+    <section className="py-24 md:py-32 bg-white relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-500/10 blur-[120px] rounded-full pointer-events-none transform translate-x-1/3 -translate-y-1/3"></div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <FadeIn>
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 mb-6">
+              Tailored suites for your industry
+            </h2>
+            <p className="text-lg text-slate-600 leading-relaxed font-medium">
+              We've built specialized operational systems that adapt to your specific business model and workflows.
+            </p>
+          </div>
+        </FadeIn>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 relative items-start">
+          {/* Left Tabs Column (Navigation) */}
+          <div className="lg:col-span-4 relative z-10 lg:pr-6">
+            <div className="mb-10">
+              <h3 className="text-slate-900 font-extrabold text-2xl md:text-3xl mb-3 tracking-tight">Select your sector</h3>
+              <p className="text-slate-500 text-sm font-medium leading-relaxed">
+                Explore how our unified workspace adapts to your specific operational needs and scales with your business.
+              </p>
+            </div>
+            
+            <div className="flex flex-col relative border-l border-slate-200">
+              {suites.map((suite) => (
+                <button
+                  key={suite.id}
+                  onClick={() => setActiveSuite(suite)}
+                  className={`w-full text-left px-6 py-4 md:py-5 transition-all duration-300 relative group overflow-hidden ${
+                    activeSuite.id === suite.id
+                      ? 'bg-gradient-to-r from-blue-50/80 to-transparent'
+                      : 'bg-transparent hover:bg-slate-50'
+                  }`}
+                >
+                  {/* Active Indicator Line */}
+                  {activeSuite.id === suite.id ? (
+                    <div className="absolute top-0 left-[-1px] w-[3px] h-full bg-blue-600 rounded-r-full shadow-[0_0_10px_rgba(37,99,235,0.4)]"></div>
+                  ) : (
+                    <div className="absolute top-0 left-[-1px] w-[3px] h-full bg-slate-300 scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-center rounded-r-full"></div>
+                  )}
+                  
+                  <div className="relative z-10 flex items-center justify-between">
+                    <div>
+                      <div className={`font-bold text-base transition-colors ${activeSuite.id === suite.id ? 'text-blue-700' : 'text-slate-700 group-hover:text-slate-900'}`}>
+                        {suite.name}
+                      </div>
+                      <div className={`text-[13px] font-medium mt-1 transition-colors ${activeSuite.id === suite.id ? 'text-blue-600/80' : 'text-slate-500'}`}>
+                        {suite.tagline}
+                      </div>
+                    </div>
+                    
+                    {/* Arrow Icon on Active */}
+                    <div className={`transition-all duration-300 ${activeSuite.id === suite.id ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}>
+                      <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Right Content Column (Sticky) */}
+          <div className="lg:col-span-8 lg:sticky lg:top-24">
+            <div className="bg-white border border-slate-200/60 rounded-[2rem] p-10 md:p-14 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] relative overflow-hidden">
+              {/* Subtle background glow */}
+              <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-blue-100/50 via-transparent to-transparent opacity-60 rounded-bl-[100px] pointer-events-none"></div>
+              
+              <div className="relative z-10">
+                <FadeIn key={activeSuite.id}>
+                  <div className="flex items-center gap-3 mb-6">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600 shadow-sm border border-blue-100/50">
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                      </svg>
+                    </span>
+                    <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold uppercase tracking-widest">
+                      {activeSuite.name}
+                    </div>
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-bold uppercase tracking-widest">
+                      <Sparkles className="w-3.5 h-3.5" /> Orbit AI Powered
+                    </div>
+                  </div>
+                  
+                  <h3 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 leading-[1.1] tracking-tight">
+                    {activeSuite.tagline}
+                  </h3>
+                  
+                  <p className="text-xl text-slate-600 mb-10 leading-relaxed font-medium">
+                    {activeSuite.description}
+                  </p>
+                  
+                  {/* Features List */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {activeSuite.features.map((feat, idx) => (
+                      <div key={idx} className="flex items-start gap-3 bg-white border border-slate-100 p-4 rounded-xl shadow-sm hover:shadow-md hover:border-blue-100 transition-all">
+                        <div className="mt-0.5 w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        </div>
+                        <span className="font-bold text-slate-700 text-sm leading-snug">{feat}</span>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="mt-12 pt-8 border-t border-slate-100 flex items-center">
+                    <Button 
+                      onClick={() => setIsModalOpen(true)}
+                      className="bg-blue-600 text-white hover:bg-blue-700 font-bold py-6 px-10 rounded-full shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5"
+                    >
+                      Explore {activeSuite.name} details
+                    </Button>
+                  </div>
+                </FadeIn>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Modal / Popup for Workspace Details */}
+      {isModalOpen && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6">
+          <div 
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" 
+            onClick={() => setIsModalOpen(false)}
+          ></div>
+          
+          <div className="relative bg-white w-full max-w-4xl max-h-[90vh] rounded-[2rem] shadow-2xl overflow-hidden flex flex-col transform transition-all animate-in fade-in zoom-in-95 duration-200">
+            {/* Header */}
+            <div className="flex-none p-6 sm:p-8 border-b border-slate-100 flex justify-between items-start bg-slate-50/50">
+              <div>
+                <div className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-[10px] font-bold uppercase tracking-widest mb-3">
+                  Workspace Module
+                </div>
+                <h3 className="text-3xl font-extrabold text-slate-900 tracking-tight">{activeSuite.name}</h3>
+                <p className="text-slate-500 font-medium mt-2 max-w-2xl">{activeSuite.description}</p>
+              </div>
+              <button 
+                onClick={() => setIsModalOpen(false)}
+                className="p-2 rounded-full hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition-colors -mr-2 -mt-2"
+              >
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            {/* Body */}
+            <div className="flex-1 overflow-y-auto p-6 sm:p-8 bg-white">
+              <div className="max-w-3xl mx-auto">
+                <h4 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  </div>
+                  Core Features & Capabilities
+                </h4>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                  {activeSuite.features.map((feat, idx) => (
+                    <div key={idx} className="bg-slate-50 rounded-2xl p-6 border border-slate-100 hover:border-blue-100 transition-colors">
+                      <h5 className="font-bold text-slate-900 text-lg mb-2">{feat}</h5>
+                      <p className="text-slate-500 text-sm leading-relaxed font-medium">
+                        Powerful tools to automate this aspect of your business, integrating seamlessly with your broader operations.
+                      </p>
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="bg-blue-600 rounded-3xl p-8 sm:p-10 text-white relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-[50px] -translate-y-1/2 translate-x-1/3"></div>
+                  <h4 className="text-2xl font-bold mb-4 relative z-10">Ready to transform your workflow?</h4>
+                  <p className="text-blue-100 font-medium mb-8 max-w-lg relative z-10">
+                    Get started today and see how {activeSuite.name} can streamline your daily operations and boost your bottom line.
+                  </p>
+                  <Button className="bg-white text-blue-600 hover:bg-slate-50 font-bold py-6 px-8 rounded-xl shadow-lg relative z-10">
+                    Start Your Free Trial
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      , document.body)}
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Component                                                         */
+/* ------------------------------------------------------------------ */
 export default function Home() {
   return (
-    <div className="overflow-x-hidden bg-background text-foreground selection:bg-primary/30">
-      {/* HERO */}
-      <section className="relative min-h-[90vh] flex flex-col items-center justify-center pt-24 pb-20 overflow-hidden">
-        {/* Modern SaaS Grid Background */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
-        
-        <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[1000px] h-[500px] opacity-20 pointer-events-none">
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-primary/40 blur-[100px] rounded-full" />
-        </div>
+    <div className="overflow-x-hidden">
+      {/* ============================================================ */}
+      {/*  HERO                                                        */}
+      {/* ============================================================ */}
+      <section className="relative py-10 md:py-14 lg:py-16">
+        {/* Soft light background */}
+        <div className="absolute inset-0 bg-slate-50 pointer-events-none" />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10 w-full flex flex-col items-center">
-          
-          {/* Top Copy & CTA */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/20 bg-background/50 backdrop-blur-sm text-xs font-semibold text-foreground mb-8 shadow-sm"
-          >
-            <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse" />
-            LexAfrica 2.0 is now live
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
-          >
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-foreground leading-[1.05] max-w-5xl mx-auto mb-6">
-              The operating system for <br className="hidden md:block" />
-              <span className="text-primary">modern law firms</span>
-            </h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
-              Manage cases, automate billing, and deliver exceptional client experiences with a single, unified platform designed for top-tier legal teams.
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="flex flex-col sm:flex-row items-center gap-4 justify-center"
-          >
-            <Link to="/signup">
-              <Button size="lg" className="h-14 px-8 text-base rounded-xl font-semibold shadow-xl shadow-primary/20 hover:scale-105 transition-transform bg-primary text-primary-foreground">
-                Start Free Trial
-              </Button>
-            </Link>
-            <Link to="/contact">
-              <Button variant="outline" size="lg" className="h-14 px-8 text-base rounded-xl font-semibold border-border text-foreground bg-background hover:bg-muted">
-                Book a Demo
-              </Button>
-            </Link>
-          </motion.div>
-
-          {/* Wide Dashboard Mockup Below Hero */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
-            className="mt-20 w-full max-w-6xl mx-auto relative perspective-1000"
-          >
-            <div className="relative rounded-2xl border border-border/60 bg-card/80 backdrop-blur-xl shadow-2xl p-2 overflow-hidden ring-1 ring-border/5">
-              <div className="absolute top-0 left-0 w-full h-8 bg-muted/30 border-b border-border/50 z-20"></div>
-              <img 
-                src="/dashboard_mockup.png" 
-                alt="LexAfrica Dashboard Mockup" 
-                className="w-full h-[250px] md:h-[400px] lg:h-[500px] object-cover object-left-top rounded-xl mt-6 relative z-10 shadow-sm"
-              />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          {/* Badge */}
+          <FadeIn>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 text-xs font-semibold text-slate-600 mb-8 shadow-sm">
+              <span className="flex h-2 w-2 rounded-full bg-green-500" />
+              Trusted by 500+ Enterprise Teams &nbsp;&bull;&nbsp; <span className="font-bold text-blue-600 flex items-center gap-1"><Sparkles className="w-3 h-3"/> Powered by Orbit AI</span>
             </div>
-          </motion.div>
+          </FadeIn>
+
+          {/* Headline */}
+          <FadeIn delay="delay-100">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1] max-w-4xl mx-auto mb-6">
+              The unified workspace that turns hours into{' '}
+              <span className="bg-green-100 text-slate-900 px-4 py-1 rounded-[1.5rem] inline-block mt-2">
+                clear profit
+              </span>
+            </h1>
+          </FadeIn>
+
+          {/* Subtitle */}
+          <FadeIn delay="delay-200">
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
+              Built for teams that take operations seriously. Manage cases, automate client communication, log billable hours,
+              process payments, and track HR — all in one place.
+            </p>
+          </FadeIn>
+
+          {/* CTA buttons */}
+          <FadeIn delay="delay-300">
+            <div className="flex flex-col items-center justify-center mb-16">
+              <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
+                <div className="bg-white border border-slate-100 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 shadow-sm">Project Profitability</div>
+                <div className="bg-white border border-slate-100 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 shadow-sm">Billing & Invoicing</div>
+                <div className="bg-white border border-slate-100 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 shadow-sm">Client Portal</div>
+                <div className="bg-white border border-slate-100 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 shadow-sm">HR & Payroll</div>
+                <div className="bg-primary/5 border border-primary/10 text-primary px-6 py-2.5 rounded-xl text-sm font-semibold shadow-sm">All Features</div>
+              </div>
+            </div>
+          </FadeIn>
+
+          {/* Dashboard mockup */}
+          <FadeIn delay="delay-500">
+            <div className="relative w-full max-w-6xl mx-auto h-[400px] md:h-[550px] rounded-2xl border border-slate-200/80 bg-slate-50 shadow-2xl overflow-hidden flex items-center justify-center">
+              <img src="/images/hero_dashboard_ui.png" alt="Optalflow Dashboard Mockup" className="w-full h-full object-cover object-top" />
+            </div>
+          </FadeIn>
         </div>
       </section>
 
+      {/* ============================================================ */}
+      {/*  ORBIT AI HERO (INTERACTIVE DEMO)                            */}
+      {/* ============================================================ */}
+      <section className="py-20 md:py-24 bg-white text-slate-900 relative overflow-hidden border-t border-slate-100">
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-100/40 blur-[120px] rounded-full pointer-events-none transform translate-x-1/3 -translate-y-1/3"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            
+            <FadeIn>
+              <div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-bold uppercase tracking-widest mb-6">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Your Intelligent Agent
+                </div>
+                <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-6 leading-[1.1]">
+                  Meet <br/>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-6xl md:text-8xl drop-shadow-sm font-extrabold pb-2 inline-block tracking-tighter">
+                    Orbit AI
+                  </span>
+                </h2>
+                <p className="text-lg text-slate-600 mb-8 leading-relaxed font-medium">
+                  Orbit isn't just a chatbot. It's an intelligent agent embedded directly into your workflow. 
+                  Ask it to analyze data, schedule appointments, or draft emails — it executes actions automatically across the entire Optalflow suite.
+                </p>
+                <ul className="space-y-4 mb-10 text-slate-700 font-medium">
+                  <li className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0"><Clock className="w-4 h-4" /></div> Saves an average of 14 hours per week</li>
+                  <li className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0"><Shield className="w-4 h-4" /></div> Bank-grade secure long-term memory</li>
+                  <li className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0"><Briefcase className="w-4 h-4" /></div> Understands all 9 industry sectors natively</li>
+                </ul>
+              </div>
+            </FadeIn>
+
+            <FadeIn delay="delay-200">
+              <div className="relative rounded-2xl border border-slate-200/60 bg-white shadow-2xl overflow-hidden transform rotate-1 hover:rotate-0 transition-transform duration-500 group">
+                <img 
+                  src="/images/orbit_dashboard_mockup.png" 
+                  alt="Optalflow Dashboard featuring Orbit AI Panel" 
+                  className="w-full h-auto block" 
+                />
+              </div>
+            </FadeIn>
+
+          </div>
+        </div>
+      </section>
+      
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes slideRight {
+          0% { transform: scaleX(1); }
+          100% { transform: scaleX(0); }
+        }
+      `}} />
 
 
-      {/* SOCIAL PROOF */}
-      <section className="py-16 border-y border-border/40 bg-muted/20">
+
+      {/* ============================================================ */}
+      {/*  HOW IT WORKS                                                */}
+      {/* ============================================================ */}
+      <section className="py-20 md:py-32 bg-slate-50 border-t border-slate-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-16 md:mb-24">
+            <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-600 text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
+              Workflow
+            </span>
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-slate-900 mb-6">
+              How Optalflow works
+            </h2>
+            <p className="text-lg text-slate-600 leading-relaxed font-medium">
+              We've streamlined the entire project lifecycle so your team can focus on execution, not administration.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 relative">
+            {/* Connecting line for desktop */}
+            <div className="hidden md:block absolute top-[52px] left-[15%] right-[15%] h-0.5 bg-slate-200" />
+            
+            {[
+              {
+                step: '01',
+                title: 'Onboard Clients',
+                desc: 'Send automated intake forms and secure portal invitations to start new relationships on the right foot.',
+                icon: Users
+              },
+              {
+                step: '02',
+                title: 'Track & Execute',
+                desc: 'Log billable hours natively, manage project pipelines, and collaborate securely in real-time.',
+                icon: Clock
+              },
+              {
+                step: '03',
+                title: 'Bill & Review',
+                desc: 'Generate branded invoices instantly from tracked time and accept seamless local payments.',
+                icon: CreditCard
+              }
+            ].map((step, i) => (
+              <FadeIn key={i} delay={`delay-${(i + 1) * 100}`}>
+                <div className="relative bg-white rounded-3xl p-8 border border-slate-100 shadow-sm text-center z-10 group hover:shadow-md transition-shadow">
+                  <div className="w-16 h-16 mx-auto bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-inner">
+                    <step.icon className="w-8 h-8" />
+                  </div>
+                  <div className="absolute -top-4 -right-4 w-12 h-12 bg-blue-600 text-white font-black rounded-xl flex items-center justify-center text-lg shadow-lg transform rotate-6 group-hover:rotate-12 transition-transform">
+                    {step.step}
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-900 mb-4">{step.title}</h3>
+                  <p className="text-slate-600 font-medium leading-relaxed">
+                    {step.desc}
+                  </p>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/*  SOCIAL PROOF STRIP                                          */}
+      {/* ============================================================ */}
+      <section className="py-20 md:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
-            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground text-center mb-8">
-              Powering modern legal infrastructure for 5,000+ teams globally
+            <p className="text-xl font-medium text-slate-500 text-center mb-10">
+              Trusted by over 10 000 companies worldwide
             </p>
           </FadeIn>
 
           <FadeIn delay="delay-100">
-            <div className="flex flex-wrap justify-center items-center gap-x-12 md:gap-x-20 gap-y-10">
+            <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-10 md:gap-x-16">
               {firms.map((firm, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center gap-3 text-foreground/60 hover:text-primary transition-colors duration-500 cursor-default select-none group"
+                  className="flex items-center grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300 cursor-default select-none"
                 >
-                  <firm.icon className="w-7 h-7 md:w-9 md:h-9 group-hover:scale-110 transition-transform duration-500" strokeWidth={1.75} />
-                  <span className="text-sm md:text-base font-bold font-sans tracking-widest uppercase mt-0.5">
+                  {firm.logo}
+                  <span className={`text-slate-900 ${firm.font}`}>
                     {firm.name}
                   </span>
                 </div>
@@ -230,140 +666,133 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FEATURES */}
-      <section className="py-32 bg-background relative">
+      {/* ============================================================ */}
+      {/*  FEATURES GRID                                               */}
+      {/* ============================================================ */}
+      {/* ============================================================ */}
+      {/*  FEATURES GRID (Bento Box Style)                           */}
+      {/* ============================================================ */}
+      <section className="py-24 md:py-32 bg-slate-50 border-y border-slate-100 relative overflow-hidden">
+        {/* Decorative Grid */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+        
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <FadeIn>
-            <div className="text-center max-w-3xl mx-auto mb-24">
-              <h2 className="text-4xl md:text-5xl font-playfair font-normal text-foreground tracking-tight mb-6">
-                Tools built for <span className="text-primary font-medium">legal teams</span>
-              </h2>
-              <p className="text-lg text-muted-foreground/80 leading-relaxed">
-                LexAfrica is meticulously crafted to handle the rigorous demands of enterprise legal work, combining an intuitive interface with powerful features.
-              </p>
-            </div>
-          </FadeIn>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
-            {features.map((feature, i) => (
-              <FadeIn key={i} delay={`delay-[${i * 100}ms]`}>
-                <div className="group relative p-8 border border-border/40 rounded-2xl hover:border-primary/50 transition-colors duration-500 bg-card">
-                  <div className="mb-6 relative">
-                    <feature.icon className="w-8 h-8 text-primary" strokeWidth={1.5} />
-                  </div>
-                  <h4 className="text-xl font-playfair font-semibold text-foreground tracking-wide mb-3">
-                    {feature.title}
-                  </h4>
-                  <p className="text-sm text-muted-foreground/80 leading-relaxed">
-                    {feature.description}
-                  </p>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ENTERPRISE INTEGRATIONS HUB */}
-      <section className="py-24 bg-muted/10 border-t border-border/40 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.01] to-transparent pointer-events-none" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <FadeIn>
-            <div className="text-center max-w-3xl mx-auto mb-20">
-              <span className="text-xs font-semibold uppercase tracking-widest text-primary bg-primary/10 px-3.5 py-1 rounded-full mb-4 inline-block">
-                LexAfrica Connectors
+            <div className="text-center max-w-2xl mx-auto mb-20">
+              <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-slate-200 text-blue-600 text-xs font-bold uppercase tracking-widest mb-6 shadow-sm">
+                Unified Architecture
               </span>
-              <h2 className="text-4xl md:text-5xl font-playfair font-normal text-foreground tracking-tight mt-3 mb-6">
-                Unified with the apps <span className="text-primary font-medium">you trust</span>
+              <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-6">
+                Built for the complexities of modern business
               </h2>
-              <p className="text-lg text-muted-foreground/80 leading-relaxed">
-                Connect your business workflows seamlessly. From telemedicine and virtual client meetings to global payment gateways and automated signature cycles.
+              <p className="text-lg text-slate-600 leading-relaxed font-medium">
+                Unify case files, client relationships, time tracking, billing,
+                and employee metrics in one beautifully designed, secure platform.
               </p>
             </div>
           </FadeIn>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-            {[
-              {
-                name: "Zoom Video",
-                purpose: "Consultations & Video Meetings",
-                desc: "Launch telehealth, legal counsel, or board meetings with auto-generated secure calendar rooms linked to client records.",
-                color: "bg-blue-500/10 border-blue-500/20 text-blue-400 hover:border-blue-500/40",
-                icon: Video
-              },
-              {
-                name: "Stripe Billing",
-                purpose: "International Credit Card Gateways",
-                desc: "Process multi-currency debit & credit card transactions instantly from global enterprise partners and high-net-worth clients.",
-                color: "bg-indigo-500/10 border-indigo-500/20 text-indigo-400 hover:border-indigo-500/40",
-                icon: CreditCard
-              },
-              {
-                name: "Paystack Payments",
-                purpose: "Localized Direct Invoicing & Cards",
-                desc: "Collect local bank transfers, mobile money, and card payments seamlessly across all emerging African market networks.",
-                color: "bg-teal-500/10 border-teal-500/20 text-teal-400 hover:border-teal-500/40",
-                icon: ShieldCheck
-              },
-              {
-                name: "DocuSign e-Sign",
-                purpose: "Secure Retainers & Agreements",
-                desc: "Distribute service covenants, patient waivers, or logistics contracts and capture audit-trailed digital signatures in seconds.",
-                color: "bg-yellow-500/10 border-yellow-500/20 text-yellow-400 hover:border-yellow-500/40",
-                icon: FileSignature
-              },
-              {
-                name: "Slack Channel sync",
-                purpose: "Real-time Corporate Alerts",
-                desc: "Send instant notifications for case milestones, incoming billing items, leave management updates, and alert triggers.",
-                color: "bg-pink-500/10 border-pink-500/20 text-pink-400 hover:border-pink-500/40",
-                icon: Slack
-              }
-            ].map((app, i) => {
-              const AppIcon = app.icon;
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            {features.map((feature, i) => {
+              const isWide = i === 0 || i === 3;
               return (
-                <FadeIn key={i} delay={`delay-[${i * 100}ms]`}>
-                  <div className={`h-full border rounded-2xl p-6 transition-all duration-300 hover:scale-[1.03] hover:shadow-md bg-card flex flex-col justify-between ${app.color}`}>
-                    <div>
-                      <div className="w-12 h-12 rounded-xl bg-background border border-border/60 flex items-center justify-center mb-6 shadow-sm">
-                        <AppIcon className="w-6 h-6" />
+                <FadeIn key={i} delay={`delay-[${i * 80}ms]`} className={isWide ? "lg:col-span-2" : "col-span-1"}>
+                  <div className="group relative bg-white rounded-[2.5rem] border border-blue-100/60 shadow-[0_8px_30px_-12px_rgba(37,99,235,0.08)] hover:shadow-2xl hover:shadow-blue-900/15 transition-all duration-500 overflow-hidden h-full flex flex-col p-10 md:p-12 z-0">
+                    
+                    {/* Vibrant Background Gradient (Always Partially Visible) */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-50/90 via-white to-indigo-50/50 opacity-100 group-hover:from-blue-100/60 group-hover:to-indigo-100/40 transition-colors duration-700 -z-10"></div>
+                    
+                    {/* Abstract Decorative Icon Watermark (Always Visible) */}
+                    <div className="absolute -bottom-12 -right-12 text-blue-600 opacity-[0.03] group-hover:opacity-[0.06] transition-all duration-700 -z-10 transform scale-100 group-hover:scale-110 group-hover:-rotate-12 ease-out">
+                      <feature.icon className="w-72 h-72" strokeWidth={0.5} />
+                    </div>
+
+                    <div className="relative z-10 flex-1">
+                      {/* Jewel-like Icon Container (Blue by Default) */}
+                      <div className="w-16 h-16 rounded-[1.25rem] bg-gradient-to-br from-blue-100 to-white border border-blue-200/60 shadow-sm shadow-blue-600/10 flex items-center justify-center mb-10 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:from-blue-600 group-hover:to-indigo-600 group-hover:border-transparent group-hover:shadow-[0_8px_16px_rgba(37,99,235,0.3)] transition-all duration-500">
+                        <feature.icon className="w-8 h-8 text-blue-600 group-hover:text-white transition-colors duration-500" strokeWidth={1.5} />
                       </div>
-                      <h4 className="font-semibold text-lg text-foreground tracking-tight">{app.name}</h4>
-                      <p className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground mt-1 block">{app.purpose}</p>
-                      <p className="text-xs text-muted-foreground/80 mt-4 leading-relaxed">{app.desc}</p>
+                      
+                      {/* Premium Typography (Blue theme) */}
+                      <h4 className="text-[28px] leading-[1.2] font-black text-blue-950 tracking-tight mb-5 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-700 group-hover:to-indigo-700 transition-all duration-300">
+                        {feature.title}
+                      </h4>
+                      <p className="text-slate-600 leading-[1.7] font-medium text-lg">
+                        {feature.description}
+                      </p>
+                    </div>
+                    
+                    {/* Elegant Reveal Link (Always visible but enhances on hover) */}
+                    <div className="relative z-10 mt-12 flex items-center text-blue-700 font-extrabold text-lg opacity-80 group-hover:opacity-100 transition-all duration-500 ease-out">
+                      Explore capabilities
+                      <span className="ml-3 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center group-hover:bg-blue-600 text-blue-700 group-hover:text-white transition-all duration-500 shadow-sm transform group-hover:translate-x-1">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                      </span>
                     </div>
                   </div>
                 </FadeIn>
-              );
+              )
             })}
           </div>
         </div>
       </section>
 
-      {/* TESTIMONIALS */}
-      <section className="py-32 bg-muted/30 border-y border-border/40 text-foreground">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* ============================================================ */}
+      {/*  SUITES SECTION (Interactive)                                */}
+      {/* ============================================================ */}
+      <SuitesSection />
+
+      {/* ============================================================ */}
+      {/*  TESTIMONIALS                                                */}
+      {/* ============================================================ */}
+      <section className="py-24 md:py-32 bg-white relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <FadeIn>
             <div className="text-center max-w-2xl mx-auto mb-20">
-              <h2 className="text-3xl md:text-5xl font-playfair font-normal tracking-tight">
-                Trusted by <span className="text-primary font-medium">leading chambers</span>
+              <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-bold uppercase tracking-widest mb-6">
+                Client Success
+              </span>
+              <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
+                What our customers say
               </h2>
             </div>
           </FadeIn>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((t, idx) => (
-              <FadeIn key={idx} delay={`delay-[${idx * 150}ms]`}>
-                <div className="flex flex-col justify-between h-full bg-background p-8 rounded-2xl border border-border/50 shadow-sm">
-                  <div>
-                    <blockquote className="text-lg text-foreground/80 leading-relaxed mb-8 font-playfair italic">
+              <FadeIn key={idx} delay={`delay-[${idx * 120}ms]`}>
+                <div className="bg-white border border-slate-200 rounded-[2rem] p-10 flex flex-col justify-between hover:border-blue-300 hover:shadow-2xl hover:shadow-blue-900/5 transition-all duration-300 h-full group relative overflow-hidden">
+                  <div className="absolute top-0 right-0 p-8 opacity-5 text-[8rem] font-serif leading-none font-black text-blue-900 group-hover:text-blue-600 group-hover:opacity-10 transition-colors duration-500">"</div>
+                  
+                  <div className="relative z-10">
+                    <div className="flex gap-1.5 mb-8">
+                      {Array.from({ length: t.rating }).map((_, si) => (
+                        <Star
+                          key={si}
+                          className="w-5 h-5 fill-amber-400 text-amber-400"
+                        />
+                      ))}
+                    </div>
+                    <blockquote className="text-lg text-slate-700 leading-relaxed font-medium mb-10">
                       "{t.quote}"
                     </blockquote>
                   </div>
-                  <div className="flex items-center pt-6 border-t border-border/50">
+
+                  <div className="flex items-center gap-4 pt-6 border-t border-slate-100 relative z-10">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center text-blue-700 font-bold text-lg shadow-inner">
+                      {t.author
+                        .split(' ')
+                        .map((n) => n[0])
+                        .join('')}
+                    </div>
                     <div>
-                      <p className="text-sm font-semibold text-foreground uppercase tracking-wide">
+                      <p className="text-base font-bold text-slate-900">
                         {t.author}
+                      </p>
+                      <p className="text-sm font-medium text-slate-500">
+                        {t.role}, {t.firm}
                       </p>
                     </div>
                   </div>
@@ -374,22 +803,50 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA BANNER */}
-      <section className="py-32 relative bg-background">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+      {/* ============================================================ */}
+      {/*  CTA BANNER                                                  */}
+      {/* ============================================================ */}
+      <section className="py-24 md:py-32">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
-            <h2 className="text-5xl md:text-6xl font-playfair font-normal text-foreground tracking-tight mb-6">
-              Let's talk about <span className="text-primary font-medium">your firm</span>
-            </h2>
-            <p className="text-xl text-muted-foreground/80 leading-relaxed max-w-2xl mx-auto mb-10">
-              Discover how LexAfrica can streamline your day-to-day operations and improve client satisfaction.
-            </p>
+            <div className="relative bg-gradient-to-br from-primary to-blue-700 rounded-3xl px-6 py-20 md:py-24 md:px-12 text-center overflow-hidden shadow-[0_20px_60px_hsl(var(--primary)/0.3)]">
+              {/* Decorative glow circles */}
+              <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.2)_0%,transparent_50%)] pointer-events-none" />
+              <div className="absolute -bottom-32 -left-20 w-96 h-96 rounded-full bg-white/[0.07] blur-3xl pointer-events-none" />
 
-            <Link to="/contact">
-              <Button className="bg-primary text-primary-foreground hover:bg-primary/90 font-medium text-lg py-7 px-12 rounded-xl shadow-md transition-all hover:scale-[1.02] tracking-wide">
-                Contact Sales
-              </Button>
-            </Link>
+              <div className="relative z-10 max-w-3xl mx-auto space-y-8">
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter leading-[1.1]">
+                  Ready to modernize your organization?
+                </h2>
+                <p className="text-lg md:text-xl text-white/80 leading-relaxed max-w-2xl mx-auto font-medium">
+                  Create your workspace, invite associates, and start managing
+                  cases in minutes.
+                </p>
+
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
+                  <Link to="/signup">
+                    <Button className="bg-white text-primary hover:bg-white/90 font-bold text-base py-6 px-10 rounded-xl shadow-xl group transition-all hover:scale-[1.02]">
+                      Start Your Free Trial
+                      <ChevronRight className="w-5 h-5 ml-1 transition-transform group-hover:translate-x-1" />
+                    </Button>
+                  </Link>
+                  <Link to="/contact">
+                    <Button
+                      variant="outline"
+                      className="border-white/30 text-white hover:bg-white/10 font-bold text-base py-6 px-10 rounded-xl transition-all hover:scale-[1.02] bg-transparent"
+                    >
+                      Contact Sales
+                    </Button>
+                  </Link>
+                </div>
+                
+                <div className="pt-8 flex flex-wrap justify-center gap-6 text-sm text-white/70 font-medium">
+                  <span className="flex items-center gap-1.5"><Shield className="w-4 h-4"/> SOC2 Certified</span>
+                  <span className="flex items-center gap-1.5"><Clock className="w-4 h-4"/> 5-Minute Setup</span>
+                  <span className="flex items-center gap-1.5"><CreditCard className="w-4 h-4"/> No Credit Card Required</span>
+                </div>
+              </div>
+            </div>
           </FadeIn>
         </div>
       </section>
