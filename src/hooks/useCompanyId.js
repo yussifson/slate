@@ -1,10 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/api/supabaseClient";
 import { useAuth } from "@/lib/AuthContext";
+import { get, set } from 'idb-keyval';
 
-/**
- * Returns the ID of the Company record for this user.
- */
 export function useCompanyId() {
   const { user } = useAuth();
   return user?.company_id || null;
@@ -13,17 +11,32 @@ export function useCompanyId() {
 export function useCompany() {
   const { user } = useAuth();
   const companyId = user?.company_id;
+  const cacheKey = `optalflow_company_${companyId}`;
+
   const { data: company = null, isLoading } = useQuery({
     queryKey: ["company", companyId],
     queryFn: async () => {
       if (!companyId) return null;
-      const { data, error } = await supabase
-        .from("companies")
-        .select("*")
-        .eq("id", companyId)
-        .single();
-      if (error) { console.error("useCompany fetch error:", error); return null; }
-      return data;
+      try {
+        const { data, error } = await supabase
+          .from("companies")
+          .select("*")
+          .eq("id", companyId)
+          .single();
+        if (error) throw error;
+        
+        // Cache for offline
+        await set(cacheKey, data).catch(() => {});
+        return data;
+      } catch (err) {
+        console.warn("useCompany offline fallback:", err.message);
+        try {
+          const cached = await get(cacheKey);
+          return cached || null;
+        } catch (e) {
+          return null;
+        }
+      }
     },
     enabled: !!companyId,
     staleTime: 5 * 60 * 1000,

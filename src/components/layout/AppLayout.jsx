@@ -122,7 +122,7 @@ export default function AppLayout() {
   }
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden relative">
+    <div className="flex h-screen bg-background overflow-hidden relative border-t-[3px] border-t-blue-500 border-l-[3px] border-l-blue-500">
       <Sidebar user={user} isCollapsed={isSidebarCollapsed} setIsCollapsed={setIsSidebarCollapsed} />
       <div className="flex-1 flex flex-col overflow-x-hidden overflow-y-auto h-screen">
         {/* Trial Countdown Banner */}

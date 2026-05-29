@@ -184,6 +184,14 @@ export function useMutateIndustryRecord() {
       }
     },
     onSuccess: (data) => {
+      queryClient.setQueryData(
+        ['industry_records', companyId, industry, data.record_type],
+        (old = []) => {
+          const exists = old.find(r => r.id === data.id);
+          if (exists) return old.map(r => r.id === data.id ? data : r);
+          return [data, ...old];
+        }
+      );
       queryClient.invalidateQueries(['industry_records', companyId, industry, data.record_type]);
     },
   });
@@ -222,6 +230,10 @@ export function useDeleteIndustryRecord() {
       }
     },
     onSuccess: (data) => {
+      queryClient.setQueryData(
+        ['industry_records', companyId, company?.industry_type, data.recordType],
+        (old = []) => old.filter(r => r.id !== data.id)
+      );
       queryClient.invalidateQueries(['industry_records', companyId, company?.industry_type, data.recordType]);
     },
   });
