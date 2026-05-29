@@ -1,6 +1,7 @@
 import { supabase } from './supabaseClient';
 import { SCHEMA_COLUMNS } from './schemaColumns';
 import { encryptText, decryptText } from '../lib/encryption';
+import { get, set } from 'idb-keyval';
 
 const toSnakeCase = (str) => {
     if (str === 'User') return 'profiles';
@@ -56,44 +57,44 @@ const revealResults = async (data) => {
     return revealItem(data);
 };
 
-// --- Offline Storage Cache Helpers ---
-const getLocalCache = (tableName) => {
+// --- Offline Storage Cache Helpers (IndexedDB via idb-keyval) ---
+const getLocalCache = async (tableName) => {
     try {
-        const val = localStorage.getItem(`base44_cache_${tableName}`);
-        return val ? JSON.parse(val) : [];
+        const val = await get(`base44_cache_${tableName}`);
+        return val ? val : [];
     } catch (e) {
         console.error("LocalCache Read Error:", e);
         return [];
     }
 };
 
-const setLocalCache = (tableName, data) => {
+const setLocalCache = async (tableName, data) => {
     try {
-        localStorage.setItem(`base44_cache_${tableName}`, JSON.stringify(data));
+        await set(`base44_cache_${tableName}`, data);
     } catch (e) {
         console.error("LocalCache Write Error:", e);
     }
 };
 
-const getOutbox = () => {
+const getOutbox = async () => {
     try {
-        const val = localStorage.getItem('base44_offline_outbox');
-        return val ? JSON.parse(val) : [];
+        const val = await get('base44_offline_outbox');
+        return val ? val : [];
     } catch (e) {
         return [];
     }
 };
 
-const setOutbox = (outbox) => {
+const setOutbox = async (outbox) => {
     try {
-        localStorage.setItem('base44_offline_outbox', JSON.stringify(outbox));
+        await set('base44_offline_outbox', outbox);
     } catch (e) {}
 };
 
 // Automatic Background Sync Engine
 export const syncOfflineOutbox = async () => {
     if (!navigator.onLine) return;
-    const outbox = getOutbox();
+    const outbox = await getOutbox();
     if (outbox.length === 0) return;
 
     console.log(`[Offline Sync] Found ${outbox.length} queued mutations. Commencing synchronization...`);
@@ -108,15 +109,19 @@ export const syncOfflineOutbox = async () => {
                 await supabase.from(tableName).update(payload).eq('id', id);
             } else if (type === 'delete') {
                 await supabase.from(tableName).delete().eq('id', id);
+            } else if (type === 'upload') {
+                const res = await fetch(payload);
+                const blob = await res.blob();
+                await supabase.storage.from(item.bucket).upload(item.path, blob);
             }
-            console.log(`[Offline Sync] Synchronized ${type} mutation on ${tableName} successfully.`);
+            console.log(`[Offline Sync] Synchronized ${type} mutation successfully.`);
         } catch (err) {
             console.error(`[Offline Sync] Mutation failed. Re-queueing.`, err);
             remaining.push(item);
         }
     }
 
-    setOutbox(remaining);
+    await setOutbox(remaining);
 
     if (remaining.length === 0) {
         console.log("[Offline Sync] Synchronized all offline operations successfully.");
@@ -201,6 +206,22 @@ export const base44 = {
     },
     storage: {
         upload: async (bucket, path, file) => {
+            if (!navigator.onLine) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = async () => {
+                        const base64data = reader.result;
+                        const outbox = await getOutbox();
+                        await setOutbox([...outbox, { type: 'upload', bucket, path, payload: base64data }]);
+                        
+                        // Fake return data matching supabase signature
+                        resolve({ path, fullPath: `${bucket}/${path}` });
+                    };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            }
+
             const { data, error } = await supabase.storage.from(bucket).upload(path, file);
             if (error) throw error;
             return data;
@@ -239,15 +260,15 @@ export const base44 = {
                             const res = await req;
                             if (res.error) throw res.error;
                             data = res.data || [];
-                            const fullCache = getLocalCache(tableName);
+                            const fullCache = await getLocalCache(tableName);
                             const updatedCache = [...fullCache.filter(item => !data.some(d => d.id === item.id)), ...data];
-                            setLocalCache(tableName, updatedCache);
+                            await setLocalCache(tableName, updatedCache);
                         } catch (err) {
                             console.warn(`[Offline Mode] Fetch failed, falling back to local cache.`, err);
-                            data = getLocalCache(tableName);
+                            data = await getLocalCache(tableName);
                         }
                     } else {
-                        data = getLocalCache(tableName);
+                        data = await getLocalCache(tableName);
                     }
 
                     // Perform clientside filter & sort on cached records
@@ -275,13 +296,13 @@ export const base44 = {
                             const res = await supabase.from(tableName).select('*');
                             if (res.error) throw res.error;
                             data = res.data || [];
-                            setLocalCache(tableName, data);
+                            await setLocalCache(tableName, data);
                         } catch (err) {
                             console.warn(`[Offline Mode] List failed, using local cache.`, err);
-                            data = getLocalCache(tableName);
+                            data = await getLocalCache(tableName);
                         }
                     } else {
-                        data = getLocalCache(tableName);
+                        data = await getLocalCache(tableName);
                     }
                     return revealResults(data);
                 },
@@ -299,7 +320,7 @@ export const base44 = {
                             console.warn(`[Offline Mode] FindUnique failed, falling back to cache.`, err);
                         }
                     }
-                    const cached = getLocalCache(tableName);
+                    const cached = await getLocalCache(tableName);
                     const record = cached.find(item => {
                         return Object.entries(query.filter).every(([k, v]) => item[k] == v);
                     });
@@ -320,11 +341,11 @@ export const base44 = {
                         const tempId = crypto.randomUUID();
                         const record = { id: tempId, created_date: new Date().toISOString(), ...securedPayload };
                         
-                        const cache = getLocalCache(tableName);
-                        setLocalCache(tableName, [...cache, record]);
+                        const cache = await getLocalCache(tableName);
+                        await setLocalCache(tableName, [...cache, record]);
 
-                        const outbox = getOutbox();
-                        setOutbox([...outbox, { id: tempId, type: 'create', tableName, payload: record }]);
+                        const outbox = await getOutbox();
+                        await setOutbox([...outbox, { id: tempId, type: 'create', tableName, payload: record }]);
 
                         return revealResults(record);
                     }
@@ -345,8 +366,8 @@ export const base44 = {
                     }
                     if (res.error) throw res.error;
 
-                    const cache = getLocalCache(tableName);
-                    setLocalCache(tableName, [...cache.filter(c => c.id !== res.data.id), res.data]);
+                    const cache = await getLocalCache(tableName);
+                    await setLocalCache(tableName, [...cache.filter(c => c.id !== res.data.id), res.data]);
 
                     return revealResults(res.data);
                 },
@@ -361,17 +382,17 @@ export const base44 = {
                     const securedPayload = await securePayload(cleanedPayload);
 
                     if (!navigator.onLine) {
-                        const cache = getLocalCache(tableName);
+                        const cache = await getLocalCache(tableName);
                         const recordIndex = cache.findIndex(item => item.id === id);
                         let updatedRecord = { id };
                         if (recordIndex !== -1) {
                             updatedRecord = { ...cache[recordIndex], ...securedPayload };
                             cache[recordIndex] = updatedRecord;
-                            setLocalCache(tableName, cache);
+                            await setLocalCache(tableName, cache);
                         }
 
-                        const outbox = getOutbox();
-                        setOutbox([...outbox, { id, type: 'update', tableName, payload: securedPayload }]);
+                        const outbox = await getOutbox();
+                        await setOutbox([...outbox, { id, type: 'update', tableName, payload: securedPayload }]);
 
                         return revealResults(updatedRecord);
                     }
@@ -392,18 +413,18 @@ export const base44 = {
                     }
                     if (res.error) throw res.error;
 
-                    const cache = getLocalCache(tableName);
-                    setLocalCache(tableName, cache.map(item => item.id === id ? res.data : item));
+                    const cache = await getLocalCache(tableName);
+                    await setLocalCache(tableName, cache.map(item => item.id === id ? res.data : item));
 
                     return revealResults(res.data);
                 },
                 delete: async (id) => {
                     if (!navigator.onLine) {
-                        const cache = getLocalCache(tableName);
-                        setLocalCache(tableName, cache.filter(item => item.id !== id));
+                        const cache = await getLocalCache(tableName);
+                        await setLocalCache(tableName, cache.filter(item => item.id !== id));
 
-                        const outbox = getOutbox();
-                        setOutbox([...outbox, { id, type: 'delete', tableName }]);
+                        const outbox = await getOutbox();
+                        await setOutbox([...outbox, { id, type: 'delete', tableName }]);
 
                         return { id };
                     }
@@ -411,8 +432,8 @@ export const base44 = {
                     const { data, error } = await supabase.from(tableName).delete().eq('id', id).select().single();
                     if (error) throw error;
 
-                    const cache = getLocalCache(tableName);
-                    setLocalCache(tableName, cache.filter(item => item.id !== id));
+                    const cache = await getLocalCache(tableName);
+                    await setLocalCache(tableName, cache.filter(item => item.id !== id));
 
                     return revealResults(data);
                 },

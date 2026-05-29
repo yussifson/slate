@@ -44,6 +44,14 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
   };
 
   const handleIndustryChange = (newIndustry) => {
+    if (!navigator.onLine) {
+      toast({
+        title: "Offline Mode",
+        description: "Cannot switch industries while offline. Please reconnect.",
+        variant: "destructive",
+      });
+      return;
+    }
     sessionStorage.setItem('optalflow_industry_override', newIndustry);
     queryClient.invalidateQueries();
     toast({
