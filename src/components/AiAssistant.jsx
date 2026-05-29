@@ -203,33 +203,7 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // When Spotlight injects a record context, auto-start a new chat about it
-  useEffect(() => {
-    if (!injectedContext || !isInitialized || sessions.length === 0) return;
 
-    // Start a fresh session for this context
-    const s = newSession();
-    const label = injectedContext.label || 'this record';
-    const entityType = injectedContext.entityType || 'Record';
-    const query = injectedContext.query || '';
-    const recordJson = JSON.stringify(injectedContext.record, null, 2);
-
-    const displayMessage = query
-      ? `I searched for "${query}" and found this ${entityType}: **${label}**. Please help me with this record.`
-      : `I want to ask about this ${entityType}: **${label}**. What can you tell me about this record?`;
-
-    const contextMessage = `${displayMessage}\n\n<!-- HIDDEN_CONTEXT_START\n${recordJson}\nHIDDEN_CONTEXT_END -->`;
-
-    setSessions(prev => [s, ...prev]);
-    setActiveId(s.id);
-
-    // Small delay to let state settle, then fire the message
-    setTimeout(() => {
-      setInput(contextMessage);
-    }, 150);
-
-    if (onContextConsumed) onContextConsumed();
-  }, [injectedContext, isInitialized]);
 
   const addMessages = useCallback((sid, newMsgs) => {
     setSessions(prev => {
@@ -590,6 +564,36 @@ RULES FOR MULTI-STEP REASONING:
       setIsLoading(false);
     }
   }, [input, uploadedFile, activeId, sessions, addMessages, getPageContext, companyId, queryClient, navigate, location.pathname, executeActionsAsync]);
+
+  // When Spotlight injects a record context, auto-start a new chat about it
+  useEffect(() => {
+    if (!injectedContext || !isInitialized || sessions.length === 0) return;
+
+    // Start a fresh session for this context
+    const s = newSession();
+    const label = injectedContext.label || 'this record';
+    const entityType = injectedContext.entityType || 'Record';
+    const query = injectedContext.query || '';
+    const recordJson = JSON.stringify(injectedContext.record, null, 2);
+
+    const displayMessage = query
+      ? `I searched for "${query}" and found this ${entityType}: **${label}**. Please help me with this record.`
+      : `I want to ask about this ${entityType}: **${label}**. What can you tell me about this record?`;
+
+    const contextMessage = `${displayMessage}\n\n<!-- HIDDEN_CONTEXT_START\n${recordJson}\nHIDDEN_CONTEXT_END -->`;
+
+    setSessions(prev => [s, ...prev]);
+    setActiveId(s.id);
+    setInput(''); // Ensure input box is empty
+
+    // Small delay to let state settle, then fire the message automatically
+    setTimeout(() => {
+      handleSend(contextMessage);
+    }, 150);
+
+    if (onContextConsumed) onContextConsumed();
+  }, [injectedContext, isInitialized, handleSend, onContextConsumed]);
+
 
   //  Action Confirmation Handlers
   const confirmPendingAction = async (action, msgIndex) => {
