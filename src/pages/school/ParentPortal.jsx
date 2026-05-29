@@ -181,7 +181,6 @@ export default function ParentPortal() {
             </div>
           </div>
         </div>
-      </div>
 
       {showUpload && (
         <UploadDocumentDialog
