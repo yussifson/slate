@@ -103,9 +103,26 @@ export function useIndustryRecords(recordType) {
 
         if (error) throw error;
 
-        // Cache the fresh data for offline use
-        await setIdrCache(cacheKey, data);
-        return data;
+        // Merge with pending outbox items so we don't wipe offline data when coming online
+        const outbox = await getIdrOutbox();
+        const pendingUpserts = outbox.filter(item => item.op === 'upsert' && item.record.record_type === recordType && item.record.company_id === companyId).map(i => i.record);
+        const pendingDeletes = outbox.filter(item => item.op === 'delete' && item.companyId === companyId).map(i => i.id);
+
+        let mergedData = [...data];
+        
+        // Remove pending deletes
+        mergedData = mergedData.filter(d => !pendingDeletes.includes(d.id));
+        
+        // Add/update pending upserts
+        for (const upsert of pendingUpserts) {
+          const idx = mergedData.findIndex(d => d.id === upsert.id);
+          if (idx >= 0) mergedData[idx] = upsert;
+          else mergedData.push(upsert);
+        }
+
+        // Update local cache for offline fallback
+        await setIdrCache(cacheKey, mergedData);
+        return mergedData;
       } catch (err) {
         // Network error or timeout — fall back to local cache silently
         console.warn(`[Offline Mode] useIndustryRecords(${recordType}) failed, using cache.`, err.message);
