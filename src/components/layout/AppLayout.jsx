@@ -17,6 +17,7 @@ export default function AppLayout() {
   const [hideTrialBanner, setHideTrialBanner] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
+  const [hideOfflineBanner, setHideOfflineBanner] = useState(false);
 
   const [isAIOpen, setIsAIOpen] = useState(false);
   const [isPrefsLoaded, setIsPrefsLoaded] = useState(false);
@@ -125,6 +126,28 @@ export default function AppLayout() {
     <div className="flex h-screen bg-background overflow-hidden relative">
       <Sidebar user={user} isCollapsed={isSidebarCollapsed} setIsCollapsed={setIsSidebarCollapsed} />
       <div className="flex-1 flex flex-col overflow-x-hidden overflow-y-auto h-screen">
+        {/* Offline Banner */}
+        {isOffline && !hideOfflineBanner && (
+          <div className="bg-red-600 text-white px-4 py-2 flex items-center justify-between gap-3 text-xs md:text-sm shrink-0 shadow-sm font-sans z-50">
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-2 w-2 shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+              </span>
+              <WifiOff className="w-4 h-4 shrink-0" />
+              <span className="font-semibold uppercase tracking-wider text-[11px]">Offline Mode Active</span>
+              <span className="hidden md:inline font-medium text-red-100">· You are currently disconnected. Changes will sync automatically when you reconnect.</span>
+            </div>
+            <button 
+              onClick={() => setHideOfflineBanner(true)}
+              className="p-1 hover:bg-white/10 rounded-full transition-colors shrink-0"
+              title="Dismiss"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
+
         {/* Trial Countdown Banner */}
         {subscriptionStatus === 'trial' && !hideTrialBanner && !isSuperAdmin && (
           <div className="bg-gradient-to-r from-amber-500 to-orange-600 text-white px-4 py-2 flex items-center justify-between gap-3 text-xs md:text-sm shrink-0 shadow-sm font-sans">
@@ -183,16 +206,6 @@ export default function AppLayout() {
       </div>
       <AiAssistant isOpen={isAIOpen} onClose={toggleAI} injectedContext={orbitContext} onContextConsumed={() => setOrbitContext(null)} />
       <SpotlightSearch />
-      {isOffline && (
-        <div className="fixed bottom-6 right-6 z-50 bg-red-600/90 hover:bg-red-700/90 backdrop-blur-md text-white font-semibold px-4 py-2.5 rounded-full flex items-center gap-2.5 shadow-lg border border-red-500/20 select-none animate-pulse">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
-          </span>
-          <WifiOff className="w-4 h-4 shrink-0" />
-          <span className="text-xs tracking-wider uppercase font-bold">Offline Mode Active</span>
-        </div>
-      )}
     </div>
   );
 }
