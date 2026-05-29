@@ -133,11 +133,10 @@ function parseAgentActions(text) {
 
 //  Format message with simple markdown 
 function FormatMessage({ content }) {
-  const displayContent = content.replace(/<!-- HIDDEN_CONTEXT_START[\s\S]*?HIDDEN_CONTEXT_END -->/g, '').trim();
   return (
     <div className="prose prose-sm dark:prose-invert max-w-none break-words [&>p]:mb-2 [&>p:last-child]:mb-0 [&>ul]:mt-1 [&>ul]:mb-2 [&>ol]:mt-1 [&>ol]:mb-2 [&>ul]:pl-4 [&>ol]:pl-4">
       <ReactMarkdown remarkPlugins={[remarkGfm]}>
-        {displayContent}
+        {content}
       </ReactMarkdown>
     </div>
   );
@@ -367,7 +366,7 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
     return results;
   };
 
-  const handleSend = useCallback(async (overrideText, targetSid = null) => {
+  const handleSend = useCallback(async (overrideText, targetSid = null, hiddenContext = null) => {
     const text = (overrideText !== undefined ? overrideText : input).trim();
     if (!text && !uploadedFile) return;
 
@@ -381,7 +380,7 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
         : `[Attached: ${uploadedFile.name}]`;
     }
 
-    addMessages(sid, [{ role: 'user', content: userContent }]);
+    addMessages(sid, [{ role: 'user', content: userContent, hiddenContext }]);
     setInput('');
     const fileSnap = uploadedFile;
     setUploadedFile(null);
@@ -518,7 +517,10 @@ RULES FOR MULTI-STEP REASONING:
         const allMessages = [...sessionMessages, { role: 'user', content: userContent }];
         let apiMessages = [
           { role: 'system', content: systemPrompt },
-          ...allMessages.slice(-20).map(m => ({ role: m.role, content: m.content }))
+          ...allMessages.slice(-20).map(m => ({ 
+            role: m.role, 
+            content: m.hiddenContext ? `${m.content}\n\nSystem Context:\n\`\`\`json\n${m.hiddenContext}\n\`\`\`` : m.content 
+          }))
         ];
 
         let maxSteps = 5;
@@ -580,15 +582,13 @@ RULES FOR MULTI-STEP REASONING:
       ? `I searched for "${query}" and found this ${entityType}: **${label}**. Please help me with this record.`
       : `I want to ask about this ${entityType}: **${label}**. What can you tell me about this record?`;
 
-    const contextMessage = `${displayMessage}\n\n<!-- HIDDEN_CONTEXT_START\n${recordJson}\nHIDDEN_CONTEXT_END -->`;
-
     setSessions(prev => [s, ...prev]);
     setActiveId(s.id);
     setInput(''); // Ensure input box is empty
 
     // Small delay to let state settle, then fire the message automatically
     setTimeout(() => {
-      handleSend(contextMessage, s.id);
+      handleSend(displayMessage, s.id, recordJson);
     }, 150);
 
     if (onContextConsumed) onContextConsumed();
