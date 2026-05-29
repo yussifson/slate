@@ -162,6 +162,7 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
   const [isRecording, setIsRecording] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [uploadedFile, setUploadedFile] = useState(null);
+  const [pendingHiddenContext, setPendingHiddenContext] = useState(null);
 
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -370,6 +371,9 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
     const text = (overrideText !== undefined ? overrideText : input).trim();
     if (!text && !uploadedFile) return;
 
+    const actualHiddenContext = hiddenContext || pendingHiddenContext;
+    setPendingHiddenContext(null);
+
     const sid = targetSid || activeId;
     const currentSessions = sessions;
 
@@ -380,7 +384,7 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
         : `[Attached: ${uploadedFile.name}]`;
     }
 
-    addMessages(sid, [{ role: 'user', content: userContent, hiddenContext }]);
+    addMessages(sid, [{ role: 'user', content: userContent, hiddenContext: actualHiddenContext }]);
     setInput('');
     const fileSnap = uploadedFile;
     setUploadedFile(null);
@@ -584,15 +588,13 @@ RULES FOR MULTI-STEP REASONING:
 
     setSessions(prev => [s, ...prev]);
     setActiveId(s.id);
-    setInput(''); // Ensure input box is empty
-
-    // Small delay to let state settle, then fire the message automatically
-    setTimeout(() => {
-      handleSend(displayMessage, s.id, recordJson);
-    }, 150);
+    
+    // Instead of auto-sending, populate the text box so user can refine it
+    setInput(displayMessage);
+    setPendingHiddenContext(recordJson);
 
     if (onContextConsumed) onContextConsumed();
-  }, [injectedContext, isInitialized, handleSend, onContextConsumed]);
+  }, [injectedContext, isInitialized, onContextConsumed]);
 
 
   //  Action Confirmation Handlers

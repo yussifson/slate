@@ -258,6 +258,7 @@ export const AuthProvider = ({ children }) => {
         error.message?.includes('NetworkError') ||
         error.message?.includes('ERR_INTERNET_DISCONNECTED') ||
         error.message?.includes('Too Many Requests') ||
+        (error.message === 'Not logged in' && !navigator.onLine) ||
         error.status === 429 ||
         error.status >= 500 ||
         error.code === 'PGRST116' ||
