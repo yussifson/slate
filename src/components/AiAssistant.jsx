@@ -1,4 +1,4 @@
-﻿import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Sparkles, MessageSquare, X, Send, Bot, User, Maximize2, Minimize2, Plus, Clock, Mic, MicOff, Paperclip, Trash2, FileText, Image, Square } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -143,7 +143,7 @@ function FormatMessage({ content }) {
 }
 
 //  Main Component 
-export default function GlobalAIAssistant({ onClose }) {
+export default function GlobalAIAssistant({ isOpen = false, onClose }) {
   const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -700,7 +700,7 @@ RULES FOR MULTI-STEP REASONING:
 
   //  Render 
   return (
-    <div className={`flex h-full shrink-0 border-l-[3px] border-l-blue-500 bg-card shadow-[-8px_0_30px_rgba(0,0,0,0.07)] animate-in slide-in-from-right-8 duration-300 z-40 transition-all ${isExpanded ? 'w-[680px]' : 'w-[400px]'}`}>
+    <div className={`flex h-full shrink-0 border-l-[3px] border-l-blue-500 bg-card shadow-[-8px_0_30px_rgba(0,0,0,0.07)] z-40 transition-all duration-300 ${isOpen ? (isExpanded ? 'w-[680px] opacity-100' : 'w-[400px] opacity-100') : 'w-0 opacity-0 overflow-hidden border-none pointer-events-none'}`}>
 
       {/*  History Sidebar  */}
       {showHistory && (

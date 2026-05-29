@@ -73,7 +73,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
     navItems = [...navItems, { label: "Super Admin Portal", icon: "Shield", path: "/system-admin" }];
   }
 
-  const NavContent = ({ collapsed }) => (
+  const renderNavContent = (collapsed) => (
     <div className="flex flex-col h-full bg-sidebar overflow-x-hidden">
       <div className={cn("py-5 border-b border-sidebar-border flex items-center transition-all", collapsed ? "px-4 justify-center" : "px-5 gap-3")}>
         {activeCompanyLogo ? (
@@ -169,7 +169,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
             >
               <X className="w-6 h-6" />
             </button>
-            <NavContent collapsed={false} />
+            {renderNavContent(false)}
           </div>
         </div>
       )}
@@ -179,7 +179,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
         "hidden lg:flex flex-col h-screen sticky top-0 border-r border-sidebar-border shadow-sm transition-all duration-300 relative z-40",
         isCollapsed ? "w-[80px] min-w-[80px] max-w-[80px]" : "w-[256px] min-w-[256px] max-w-[256px]"
       )}>
-        <NavContent collapsed={isCollapsed} />
+        {renderNavContent(isCollapsed)}
       </aside>
     </>
   );
