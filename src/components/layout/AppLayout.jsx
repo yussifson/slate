@@ -18,6 +18,8 @@ export default function AppLayout() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
+  const [isAIOpen, setIsAIOpen] = useState(false);
+
   useEffect(() => {
     const handleOnline = () => setIsOffline(false);
     const handleOffline = () => setIsOffline(true);
@@ -64,7 +66,7 @@ export default function AppLayout() {
   }
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
+    <div className="flex h-screen bg-background overflow-hidden relative">
       <Sidebar user={user} isCollapsed={isSidebarCollapsed} setIsCollapsed={setIsSidebarCollapsed} />
       <div className="flex-1 flex flex-col overflow-x-hidden overflow-y-auto h-screen">
         {/* Trial Countdown Banner */}
@@ -116,12 +118,14 @@ export default function AppLayout() {
           user={user} 
           isSidebarCollapsed={isSidebarCollapsed} 
           toggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)} 
+          isAIOpen={isAIOpen}
+          toggleAI={() => setIsAIOpen(!isAIOpen)}
         />
         <main className="flex-1 p-4 lg:p-6 max-w-[1400px] w-full mx-auto">
           <Outlet />
         </main>
       </div>
-      <AiAssistant />
+      <AiAssistant isOpen={isAIOpen} onClose={() => setIsAIOpen(false)} />
       <SpotlightSearch />
       {isOffline && (
         <div className="fixed bottom-6 right-6 z-50 bg-red-600/90 hover:bg-red-700/90 backdrop-blur-md text-white font-semibold px-4 py-2.5 rounded-full flex items-center gap-2.5 shadow-lg border border-red-500/20 select-none animate-pulse">

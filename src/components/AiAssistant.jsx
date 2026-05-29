@@ -26,9 +26,7 @@ import ReactMarkdown from 'react-markdown';
 import { base44 } from '@/api/base44Client';
 import { useToast } from "@/components/ui/use-toast";
 
-export default function AiAssistant({ inline = false }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
+export default function AiAssistant({ inline = false, isOpen = false, onClose }) {
   const [activeTab, setActiveTab] = useState('chat'); // 'chat' or 'commands'
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState([
@@ -265,20 +263,11 @@ export default function AiAssistant({ inline = false }) {
     runSteps();
   }, [runningCmd, currentStepIdx]);
 
-  if (!inline && !isOpen) {
-    return (
-      <button
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 p-4 rounded-full bg-primary text-primary-foreground shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all z-50 group flex items-center justify-center border border-primary/20 backdrop-blur-md"
-      >
-        <Sparkles className="w-6 h-6 group-hover:rotate-12 transition-transform duration-500" />
-      </button>
-    );
-  }
+  if (!inline && !isOpen) return null;
 
   const containerClasses = inline 
     ? "flex flex-col h-full w-full bg-card border-l border-border" 
-    : `fixed bottom-6 right-6 bg-card border border-border rounded-2xl shadow-2xl overflow-hidden flex flex-col z-50 transition-all duration-300 ${isExpanded ? 'w-[90vw] md:w-[650px] h-[85vh]' : 'w-[90vw] sm:w-[450px] h-[600px]'}`;
+    : "fixed top-0 right-0 h-screen w-[90vw] sm:w-[450px] bg-card border-l border-border shadow-2xl flex flex-col z-50 animate-in slide-in-from-right duration-300";
 
   return (
     <div className={containerClasses}>
@@ -297,10 +286,7 @@ export default function AiAssistant({ inline = false }) {
         </div>
         {!inline && (
           <div className="flex items-center gap-1 text-muted-foreground">
-            <button onClick={() => setIsExpanded(!isExpanded)} className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-colors">
-              {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
-            </button>
-            <button onClick={() => setIsOpen(false)} className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-colors">
+            <button onClick={onClose} className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-colors">
               <X className="w-4 h-4" />
             </button>
           </div>
