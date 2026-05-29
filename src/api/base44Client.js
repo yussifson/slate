@@ -63,7 +63,10 @@ const isNetworkError = (error) => {
         error?.message?.includes('Failed to fetch') || 
         error?.message?.includes('NetworkError') ||
         error?.message?.includes('ERR_INTERNET_DISCONNECTED') ||
-        error?.name === 'TypeError';
+        error?.message?.includes('ERR_NETWORK_CHANGED') ||
+        error?.message?.includes('Request timeout') ||
+        error?.name === 'TypeError' ||
+        error?.name === 'AuthRetryableFetchError';
 };
 
 const getLocalCache = async (tableName) => {
@@ -256,26 +259,22 @@ export const base44 = {
             return {
                 filter: async (filter = {}, sort = []) => {
                     let data = [];
-                    if (navigator.onLine) {
-                        try {
-                            let req = supabase.from(tableName).select('*');
-                            for (const [k, v] of Object.entries(filter)) {
-                                req = req.eq(k, v);
-                            }
-                            for (const s of sort) {
-                                req = req.order(s.field, { ascending: s.direction === 'asc' });
-                            }
-                            const res = await req;
-                            if (res.error) throw res.error;
-                            data = res.data || [];
-                            const fullCache = await getLocalCache(tableName);
-                            const updatedCache = [...fullCache.filter(item => !data.some(d => d.id === item.id)), ...data];
-                            await setLocalCache(tableName, updatedCache);
-                        } catch (err) {
-                            console.warn(`[Offline Mode] Fetch failed, falling back to local cache.`, err);
-                            data = await getLocalCache(tableName);
+                    try {
+                        let req = supabase.from(tableName).select('*');
+                        for (const [k, v] of Object.entries(filter)) {
+                            req = req.eq(k, v);
                         }
-                    } else {
+                        for (const s of sort) {
+                            req = req.order(s.field, { ascending: s.direction === 'asc' });
+                        }
+                        const res = await req;
+                        if (res.error) throw res.error;
+                        data = res.data || [];
+                        const fullCache = await getLocalCache(tableName);
+                        const updatedCache = [...fullCache.filter(item => !data.some(d => d.id === item.id)), ...data];
+                        await setLocalCache(tableName, updatedCache);
+                    } catch (err) {
+                        console.warn(`[Offline Mode] Filter failed, falling back to local cache.`, err);
                         data = await getLocalCache(tableName);
                     }
 
@@ -299,17 +298,13 @@ export const base44 = {
                 },
                 list: async () => {
                     let data = [];
-                    if (navigator.onLine) {
-                        try {
-                            const res = await supabase.from(tableName).select('*');
-                            if (res.error) throw res.error;
-                            data = res.data || [];
-                            await setLocalCache(tableName, data);
-                        } catch (err) {
-                            console.warn(`[Offline Mode] List failed, using local cache.`, err);
-                            data = await getLocalCache(tableName);
-                        }
-                    } else {
+                    try {
+                        const res = await supabase.from(tableName).select('*');
+                        if (res.error) throw res.error;
+                        data = res.data || [];
+                        await setLocalCache(tableName, data);
+                    } catch (err) {
+                        console.warn(`[Offline Mode] List failed, using local cache.`, err);
                         data = await getLocalCache(tableName);
                     }
                     return revealResults(data);
