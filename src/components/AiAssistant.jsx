@@ -367,11 +367,11 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
     return results;
   };
 
-  const handleSend = useCallback(async (overrideText) => {
+  const handleSend = useCallback(async (overrideText, targetSid = null) => {
     const text = (overrideText !== undefined ? overrideText : input).trim();
     if (!text && !uploadedFile) return;
 
-    const sid = activeId;
+    const sid = targetSid || activeId;
     const currentSessions = sessions;
 
     let userContent = text;
@@ -588,7 +588,7 @@ RULES FOR MULTI-STEP REASONING:
 
     // Small delay to let state settle, then fire the message automatically
     setTimeout(() => {
-      handleSend(contextMessage);
+      handleSend(contextMessage, s.id);
     }, 150);
 
     if (onContextConsumed) onContextConsumed();
