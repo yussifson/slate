@@ -79,6 +79,36 @@ export default function Features() {
       align: "left",
       image: "/images/integrations_ui.png"
     },
+    {
+      badge: "Orbit AI Assistant",
+      title: "Your intelligent co-pilot",
+      description:
+        "Meet Orbit, an advanced AI integrated directly into your workspace. It understands your cases, summarizes documents, and answers questions using contextual data instantly.",
+      bullets: [
+        "Context-aware insights from your active screen",
+        "Natural language search across the entire database",
+        "Automated document summarization and extraction",
+        "Actionable workflows launched via chat",
+      ],
+      icon: Briefcase,
+      align: "right",
+      image: "/images/orbit_ai_ui.png"
+    },
+    {
+      badge: "Spotlight Search",
+      title: "Navigate at the speed of thought",
+      description:
+        "Press Ctrl+K from anywhere in the app to open Spotlight Search. Instantly find clients, cases, documents, or jump to any settings page without clicking through menus.",
+      bullets: [
+        "Global search across all modules simultaneously",
+        "Keyboard-first navigation for power users",
+        "Instant context injection directly into Orbit AI",
+        "Fuzzy matching for typos and partial words",
+      ],
+      icon: Briefcase,
+      align: "left",
+      image: "/images/spotlight_search_ui.png"
+    },
   ];
 
   const additionalFeatures = [

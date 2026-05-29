@@ -78,7 +78,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
   const currentIndustry = sessionStorage.getItem('optalflow_industry_override') || company?.industry_type || 'law';
 
   return (
-    <div className="h-12 border-b-[3px] border-b-blue-500 bg-card sticky top-0 z-30 flex items-center pl-4 pr-5 lg:px-5 gap-3">
+    <div className="h-12 border-t-[3px] border-t-blue-500 border-b border-border bg-card sticky top-0 z-30 flex items-center pl-4 pr-5 lg:px-5 gap-3">
       {/* Sidebar Toggle & Breadcrumb */}
       <div className="flex items-center gap-3 text-sm flex-1">
         <button 
