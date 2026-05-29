@@ -239,10 +239,34 @@ export const AuthProvider = ({ children }) => {
         setAuthStep("Setting user...");
         setUser(newUser);
       }
+      
+      // Cache the fully constructed user profile for offline fallback
+      try {
+        localStorage.setItem('optalflow_cached_user', JSON.stringify(newUser));
+      } catch (e) {}
+
       setIsAuthenticated(true);
       setAuthChecked(true);
     } catch (error) {
       console.error('User auth check failed:', error);
+      
+      // OFFLINE FALLBACK: If network fails during session fetch (e.g. token refresh fails offline)
+      if (!navigator.onLine || error.message?.includes('Failed to fetch') || error.name === 'AuthRetryableFetchError') {
+        try {
+          const cachedUserRaw = localStorage.getItem('optalflow_cached_user');
+          if (cachedUserRaw) {
+            console.warn("Offline mode active: Auth fetch failed. Using cached user profile.");
+            const cachedUser = JSON.parse(cachedUserRaw);
+            setUser(cachedUser);
+            setIsAuthenticated(true);
+            setAuthChecked(true);
+            setIsLoadingAuth(false);
+            isCheckingRef.current = false;
+            return;
+          }
+        } catch (e) {}
+      }
+
       setUser(null);
       setIsAuthenticated(false);
       setAuthError({ type: 'auth_required', message: 'Not logged in' });
