@@ -61,3 +61,12 @@ export async function analyzeImage(imageBytes, prompt) {
   });
   return result.response;
 }
+
+export async function invokeCloudflareAi(prompt, systemPrompt = "") {
+  const messages = [];
+  if (systemPrompt) {
+    messages.push({ role: "system", content: systemPrompt });
+  }
+  messages.push({ role: "user", content: prompt });
+  return await generateText(messages);
+}

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { invokeCloudflareAi } from '@/lib/cloudflareAi';
+import { invokeCloudflareAi } from '@/lib/cloudflareAI';
 import { 
   Bot, 
   X, 
