@@ -139,60 +139,98 @@ const testimonials = [
 
 const firms = [
   {
-    name: 'GlobalTech',
+    name: 'Vertex',
     logo: (
-      <svg className="w-6 h-6 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+      <svg className="w-6 h-6 mr-2 text-indigo-600" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 2L2 22h5l5-10 5 10h5L12 2z" />
       </svg>
     ),
     font: 'font-sans font-black tracking-tighter'
   },
   {
-    name: 'ApexHealth',
+    name: 'Nexus Cloud',
+    logo: (
+      <svg className="w-6 h-6 mr-2 text-blue-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+        <circle cx="8" cy="12" r="6" />
+        <circle cx="16" cy="12" r="6" />
+      </svg>
+    ),
+    font: 'font-sans font-bold tracking-tight'
+  },
+  {
+    name: 'Strata Financial',
     logo: (
       <svg className="w-6 h-6 mr-2 text-emerald-600" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
+        <path d="M3 6h18v4H3zM3 14h18v4H3z" />
       </svg>
     ),
     font: 'font-serif font-bold tracking-tight'
   },
   {
-    name: 'Horizon Logistics',
+    name: 'LUMINA',
     logo: (
-      <svg className="w-7 h-7 mr-2 text-amber-500" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+      <svg className="w-6 h-6 mr-2 text-amber-500" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83" />
       </svg>
     ),
-    font: 'font-sans font-extrabold italic tracking-wider uppercase text-sm'
+    font: 'font-sans font-extrabold uppercase tracking-widest text-sm'
   },
   {
-    name: 'Crescent Edu',
+    name: 'QUANTUM',
     logo: (
-      <svg className="w-6 h-6 mr-2 text-indigo-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+      <svg className="w-6 h-6 mr-2 text-violet-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+        <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(45 12 12)" />
+        <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-45 12 12)" />
+        <circle cx="12" cy="12" r="2" fill="currentColor" />
       </svg>
     ),
-    font: 'font-serif font-semibold tracking-normal'
+    font: 'font-sans font-bold tracking-[0.2em] text-sm'
   },
   {
-    name: 'Vanguard Legal',
+    name: 'Echo Systems',
+    logo: (
+      <svg className="w-6 h-6 mr-2 text-cyan-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v8m-4-6v4m-4-2v.01m16-.01v.01m-4-2v4" />
+      </svg>
+    ),
+    font: 'font-sans font-medium tracking-wide'
+  },
+  {
+    name: 'FORGE',
     logo: (
       <svg className="w-6 h-6 mr-2 text-slate-800" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        <path d="M4 6h16l-2 12H6L4 6zm4 0V4h8v2H8z" />
       </svg>
     ),
-    font: 'font-serif font-bold uppercase tracking-widest text-sm'
+    font: 'font-serif font-black uppercase tracking-tight'
   },
   {
-    name: 'Sterling Retail',
+    name: 'Nova Retail',
     logo: (
-      <svg className="w-6 h-6 mr-2 text-rose-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+      <svg className="w-6 h-6 mr-2 text-rose-500" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3 3-7z" />
       </svg>
     ),
     font: 'font-sans font-bold tracking-tight'
   },
+  {
+    name: 'Zenith Media',
+    logo: (
+      <svg className="w-6 h-6 mr-2 text-fuchsia-600" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+        <path d="M4 20h16L4 4h16" />
+      </svg>
+    ),
+    font: 'font-serif font-semibold italic'
+  },
+  {
+    name: 'APEX',
+    logo: (
+      <svg className="w-6 h-6 mr-2 text-blue-700" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 2L1 21h22L12 2zm0 4.5l7 12H5l7-12z" />
+      </svg>
+    ),
+    font: 'font-sans font-black tracking-widest uppercase text-sm'
+  }
 ];
 
 const suites = [
