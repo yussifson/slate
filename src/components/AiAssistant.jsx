@@ -263,30 +263,29 @@ export default function AiAssistant({ inline = false, isOpen = false, onClose })
     runSteps();
   }, [runningCmd, currentStepIdx]);
 
-  if (!inline && !isOpen) return null;
+  // Let the width transition handle hiding when closed
 
   const containerClasses = inline 
     ? "flex flex-col h-full w-full bg-card border-l border-border" 
-    : "fixed top-0 right-0 h-screen w-[90vw] sm:w-[450px] bg-card border-l border-border shadow-2xl flex flex-col z-50 animate-in slide-in-from-right duration-300";
+    : `h-screen bg-card border-l border-border flex flex-col transition-all duration-300 shrink-0 ${isOpen ? 'w-[350px] lg:w-[400px] opacity-100' : 'w-0 border-l-0 opacity-0 overflow-hidden'}`;
 
   return (
     <div className={containerClasses}>
       {/* Top Header */}
-      <div className="bg-primary/5 border-b border-border p-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center shadow-md shadow-primary/20">
-            <Bot className="w-4 h-4 text-white" />
-          </div>
-          <div>
-            <h3 className="font-bold text-sm text-foreground flex items-center gap-1.5">
-              Orbit <span className="text-[10px] bg-primary/20 text-primary px-1.5 py-0.5 rounded font-mono">v2.0</span>
-            </h3>
-            <p className="text-[9px] text-muted-foreground">Premium Enterprise Intelligence Agent</p>
-          </div>
+      <div className="bg-background border-b border-border p-3 flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-1.5 text-sm font-medium text-foreground hover:bg-muted px-2 py-1.5 rounded-md cursor-pointer transition-colors">
+          Orbit Assistant
+          <svg className="w-3.5 h-3.5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
         </div>
         {!inline && (
-          <div className="flex items-center gap-1 text-muted-foreground">
-            <button onClick={onClose} className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-colors">
+          <div className="flex items-center gap-0.5 text-muted-foreground">
+            <button className="p-1.5 hover:bg-muted rounded-md transition-colors" title="New conversation">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+            </button>
+            <button className="p-1.5 hover:bg-muted rounded-md transition-colors" title="Expand">
+              <Maximize2 className="w-4 h-4" />
+            </button>
+            <button onClick={onClose} className="p-1.5 hover:bg-muted rounded-md transition-colors" title="Close">
               <X className="w-4 h-4" />
             </button>
           </div>
