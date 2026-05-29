@@ -41,6 +41,7 @@ const securePayload = async (payload) => {
 const revealResults = async (data) => {
     const passphrase = getPassphrase();
     if (!passphrase || !data) return data;
+    
     const revealItem = async (item) => {
         const revealed = { ...item };
         for (const field of SENSITIVE_FIELDS) {
@@ -55,6 +56,30 @@ const revealResults = async (data) => {
         return Promise.all(data.map(revealItem));
     }
     return revealItem(data);
+};
+
+const mergeWithOutbox = async (tableName, serverData) => {
+    const outbox = await getOutbox();
+    const pendingCreates = outbox.filter(item => item.tableName === tableName && item.type === 'create').map(i => i.payload);
+    const pendingUpdates = outbox.filter(item => item.tableName === tableName && item.type === 'update');
+    const pendingDeletes = outbox.filter(item => item.tableName === tableName && item.type === 'delete').map(i => i.id);
+
+    let mergedData = Array.isArray(serverData) ? [...serverData] : (serverData ? [serverData] : []);
+    
+    mergedData = mergedData.filter(d => !pendingDeletes.includes(d.id));
+
+    for (const update of pendingUpdates) {
+        const idx = mergedData.findIndex(d => d.id === update.id);
+        if (idx >= 0) mergedData[idx] = { ...mergedData[idx], ...update.payload };
+    }
+
+    for (const create of pendingCreates) {
+        const idx = mergedData.findIndex(d => d.id === create.id);
+        if (idx >= 0) mergedData[idx] = create;
+        else mergedData.push(create);
+    }
+
+    return Array.isArray(serverData) ? mergedData : (mergedData[0] || null);
 };
 
 // --- Offline Storage Cache Helpers (IndexedDB via idb-keyval) ---
@@ -250,29 +275,6 @@ export const base44 = {
             }
         }
     },
-    mergeWithOutbox: async (tableName, serverData) => {
-        const outbox = await getOutbox();
-        const pendingCreates = outbox.filter(item => item.tableName === tableName && item.type === 'create').map(i => i.payload);
-        const pendingUpdates = outbox.filter(item => item.tableName === tableName && item.type === 'update');
-        const pendingDeletes = outbox.filter(item => item.tableName === tableName && item.type === 'delete').map(i => i.id);
-
-        let mergedData = Array.isArray(serverData) ? [...serverData] : (serverData ? [serverData] : []);
-        
-        mergedData = mergedData.filter(d => !pendingDeletes.includes(d.id));
-
-        for (const update of pendingUpdates) {
-            const idx = mergedData.findIndex(d => d.id === update.id);
-            if (idx >= 0) mergedData[idx] = { ...mergedData[idx], ...update.payload };
-        }
-
-        for (const create of pendingCreates) {
-            const idx = mergedData.findIndex(d => d.id === create.id);
-            if (idx >= 0) mergedData[idx] = create;
-            else mergedData.push(create);
-        }
-
-        return Array.isArray(serverData) ? mergedData : (mergedData[0] || null);
-    },
     entities: new Proxy({}, {
         get: (target, entityName) => {
             if (typeof entityName !== 'string') return undefined;
@@ -296,7 +298,7 @@ export const base44 = {
                             const res = await req;
                             if (res.error) throw res.error;
                             let serverData = res.data || [];
-                            data = await base44Client.mergeWithOutbox(tableName, serverData);
+                            data = await mergeWithOutbox(tableName, serverData);
                             await setLocalCache(tableName, data);
                         } catch (err) {
                             console.warn(`[Offline Mode] Filter failed, falling back to local cache.`, err);
@@ -332,7 +334,7 @@ export const base44 = {
                         const res = await supabase.from(tableName).select('*');
                         if (res.error) throw res.error;
                         let serverData = res.data || [];
-                        data = await base44Client.mergeWithOutbox(tableName, serverData);
+                        data = await mergeWithOutbox(tableName, serverData);
                         await setLocalCache(tableName, data);
                     } catch (err) {
                         console.warn(`[Offline Mode] List failed, using local cache.`, err);
@@ -349,7 +351,7 @@ export const base44 = {
                             }
                             const { data, error } = await req.single();
                             if (error) throw error;
-                            const mergedData = await base44Client.mergeWithOutbox(tableName, data);
+                            const mergedData = await mergeWithOutbox(tableName, data);
                             return revealResults(mergedData);
                         } catch (err) {
                             console.warn(`[Offline Mode] FindUnique failed, falling back to cache.`, err);
