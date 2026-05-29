@@ -49,6 +49,36 @@ export default function Features() {
       align: "left",
       image: "/images/billing_ui.png"
     },
+    {
+      badge: "Offline First",
+      title: "Work seamlessly without internet",
+      description:
+        "Lose connection? Keep working. Our robust offline-first architecture lets you access your data, edit cases, and track time even without internet. Changes sync automatically when you're back online.",
+      bullets: [
+        "Full read/write capabilities while disconnected",
+        "Intelligent background sync on reconnection",
+        "Local conflict resolution for offline edits",
+        "No more 'loading forever' when on flaky networks",
+      ],
+      icon: Clock,
+      align: "right",
+      image: "/images/offline_feature_ui.png"
+    },
+    {
+      badge: "Ecosystem Integrations",
+      title: "Connect all your favorite tools",
+      description:
+        "Optalflow acts as your central hub. Connect communication channels, calendar apps, and payment gateways seamlessly without leaving the platform.",
+      bullets: [
+        "Slack & Microsoft Teams instant notifications",
+        "Google & Outlook Calendar bidirectional sync",
+        "Stripe & local payment processor support",
+        "Open API for custom enterprise connections",
+      ],
+      icon: Briefcase,
+      align: "left",
+      image: "/images/integrations_ui.png"
+    },
   ];
 
   const additionalFeatures = [
