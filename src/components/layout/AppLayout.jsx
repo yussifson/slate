@@ -8,6 +8,7 @@ import { Building2, X, Clock, CreditCard, WifiOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Paywall from "@/pages/Paywall";
 import AiAssistant from "@/components/AiAssistant";
+import SpotlightSearch from "./SpotlightSearch";
 
 export default function AppLayout() {
   const { user } = useAuth();
@@ -121,6 +122,7 @@ export default function AppLayout() {
         </main>
       </div>
       <AiAssistant />
+      <SpotlightSearch />
       {isOffline && (
         <div className="fixed bottom-6 right-6 z-50 bg-red-600/90 hover:bg-red-700/90 backdrop-blur-md text-white font-semibold px-4 py-2.5 rounded-full flex items-center gap-2.5 shadow-lg border border-red-500/20 select-none animate-pulse">
           <span className="relative flex h-2 w-2">

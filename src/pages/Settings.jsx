@@ -724,6 +724,9 @@ function SecuritySettings() {
   const { toast } = useToast();
   const [form, setForm] = useState({ new_password: "", confirm_password: "" });
   const [saving, setSaving] = useState(false);
+  const [passphrase, setPassphrase] = useState(() => {
+    return localStorage.getItem('base44_e2ee_passphrase') || "";
+  });
 
   const handleUpdatePassword = async () => {
     if (!form.new_password) return;
@@ -747,17 +750,45 @@ function SecuritySettings() {
     }
   };
 
+  const handleSavePassphrase = () => {
+    try {
+      localStorage.setItem('base44_e2ee_passphrase', passphrase);
+      toast({ title: "Passphrase saved!", description: "Zero-Trust local encryption is now active for sensitive fields." });
+    } catch (e) {
+      toast({ title: "Failed to save passphrase", variant: "destructive" });
+    }
+  };
+
   return (
-    <SectionCard title="Access Security" subtitle="Update account authorization credentials" onSave={handleUpdatePassword} saving={saving}>
-      <FormRow>
-        <Field label="New Secure Password">
-          <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" type="password" value={form.new_password} onChange={e => setForm({ ...form, new_password: e.target.value })} placeholder="Enter new password" />
-        </Field>
-        <Field label="Confirm Security Password">
-          <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" type="password" value={form.confirm_password} onChange={e => setForm({ ...form, confirm_password: e.target.value })} placeholder="Confirm new password" />
-        </Field>
-      </FormRow>
-    </SectionCard>
+    <div className="space-y-6">
+      <SectionCard title="Access Security" subtitle="Update account authorization credentials" onSave={handleUpdatePassword} saving={saving}>
+        <FormRow>
+          <Field label="New Secure Password">
+            <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" type="password" value={form.new_password} onChange={e => setForm({ ...form, new_password: e.target.value })} placeholder="Enter new password" />
+          </Field>
+          <Field label="Confirm Security Password">
+            <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" type="password" value={form.confirm_password} onChange={e => setForm({ ...form, confirm_password: e.target.value })} placeholder="Confirm new password" />
+          </Field>
+        </FormRow>
+      </SectionCard>
+
+      <SectionCard title="Zero-Trust End-to-End Encryption Keys" subtitle="Configure secure client-side encryption keys to protect sensitive charts, medical diagnostic notes, and legal details locally in your browser" onSave={handleSavePassphrase}>
+        <div className="space-y-4">
+          <Field label="Secure Encryption Passphrase" full>
+            <Input 
+              className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" 
+              type="password" 
+              value={passphrase} 
+              onChange={e => setPassphrase(e.target.value)} 
+              placeholder="Enter secure company-wide passphrase" 
+            />
+          </Field>
+          <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-600 dark:text-amber-500 leading-relaxed font-semibold">
+            🔑 LexAfrica Zero-Trust Framework: All sensitive text fields (notes, diagnostics, case outcome details) are cryptographically encrypted directly inside your local web browser using AES-GCM-256 before leaving your computer. Our cloud databases and system administrators can never decrypt or access this data. Store this passphrase securely; if lost, encrypted data cannot be recovered.
+          </div>
+        </div>
+      </SectionCard>
+    </div>
   );
 }
 

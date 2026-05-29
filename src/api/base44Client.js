@@ -1,5 +1,6 @@
 import { supabase } from './supabaseClient';
 import { SCHEMA_COLUMNS } from './schemaColumns';
+import { encryptText, decryptText } from '../lib/encryption';
 
 const toSnakeCase = (str) => {
     if (str === 'User') return 'profiles';
@@ -9,6 +10,50 @@ const toSnakeCase = (str) => {
         else name += 's';
     }
     return name;
+};
+
+// --- E2EE Configuration & Passphrase Accessor ---
+const SENSITIVE_FIELDS = ['notes', 'description', 'details', 'outcome_summary', 'content', 'resolution_notes'];
+
+const getPassphrase = () => {
+    try {
+        return localStorage.getItem('base44_e2ee_passphrase') || null;
+    } catch (e) {
+        return null;
+    }
+};
+
+// Cryptographic Hook: Intercept & Encrypt Outgoing Write Payload
+const securePayload = async (payload) => {
+    const passphrase = getPassphrase();
+    if (!passphrase || !payload) return payload;
+    const secured = { ...payload };
+    for (const field of SENSITIVE_FIELDS) {
+        if (secured[field] && typeof secured[field] === 'string') {
+            secured[field] = await encryptText(secured[field], passphrase);
+        }
+    }
+    return secured;
+};
+
+// Cryptographic Hook: Intercept & Decrypt Incoming Read Results
+const revealResults = async (data) => {
+    const passphrase = getPassphrase();
+    if (!passphrase || !data) return data;
+    const revealItem = async (item) => {
+        const revealed = { ...item };
+        for (const field of SENSITIVE_FIELDS) {
+            if (revealed[field] && typeof revealed[field] === 'string') {
+                revealed[field] = await decryptText(revealed[field], passphrase);
+            }
+        }
+        return revealed;
+    };
+
+    if (Array.isArray(data)) {
+        return Promise.all(data.map(revealItem));
+    }
+    return revealItem(data);
 };
 
 // --- Offline Storage Cache Helpers ---
@@ -58,10 +103,7 @@ export const syncOfflineOutbox = async () => {
         try {
             const { type, tableName, id, payload } = item;
             if (type === 'create') {
-                // If it was a mock UUID, let Supabase create a fresh one or insert
-                const cleanPayload = { ...payload };
-                // Remove temp id if desired, or keep it to maintain relationships
-                await supabase.from(tableName).insert(cleanPayload);
+                await supabase.from(tableName).insert(payload);
             } else if (type === 'update') {
                 await supabase.from(tableName).update(payload).eq('id', id);
             } else if (type === 'delete') {
@@ -78,7 +120,6 @@ export const syncOfflineOutbox = async () => {
 
     if (remaining.length === 0) {
         console.log("[Offline Sync] Synchronized all offline operations successfully.");
-        // Custom event to notify components that updates have synchronized
         window.dispatchEvent(new CustomEvent('base44_sync_complete'));
     }
 };
@@ -198,7 +239,6 @@ export const base44 = {
                             const res = await req;
                             if (res.error) throw res.error;
                             data = res.data || [];
-                            // Update local cache with latest values
                             const fullCache = getLocalCache(tableName);
                             const updatedCache = [...fullCache.filter(item => !data.some(d => d.id === item.id)), ...data];
                             setLocalCache(tableName, updatedCache);
@@ -226,7 +266,7 @@ export const base44 = {
                             return s.direction === 'asc' ? valA - valB : valB - valA;
                         });
                     }
-                    return filtered;
+                    return revealResults(filtered);
                 },
                 list: async () => {
                     let data = [];
@@ -243,7 +283,7 @@ export const base44 = {
                     } else {
                         data = getLocalCache(tableName);
                     }
-                    return data;
+                    return revealResults(data);
                 },
                 findUnique: async (query) => {
                     if (navigator.onLine) {
@@ -254,7 +294,7 @@ export const base44 = {
                             }
                             const { data, error } = await req.single();
                             if (error) throw error;
-                            return data;
+                            return revealResults(data);
                         } catch (err) {
                             console.warn(`[Offline Mode] FindUnique failed, falling back to cache.`, err);
                         }
@@ -264,7 +304,7 @@ export const base44 = {
                         return Object.entries(query.filter).every(([k, v]) => item[k] == v);
                     });
                     if (!record) throw new Error("Record not found offline");
-                    return record;
+                    return revealResults(record);
                 },
                 create: async (payload) => {
                     const validCols = SCHEMA_COLUMNS[tableName];
@@ -273,26 +313,26 @@ export const base44 = {
                         cleanedPayload = Object.fromEntries(Object.entries(cleanedPayload).filter(([k]) => validCols.includes(k)));
                     }
 
+                    // Encrypt sensitive fields
+                    const securedPayload = await securePayload(cleanedPayload);
+
                     if (!navigator.onLine) {
-                        // Offline creation mode
                         const tempId = crypto.randomUUID();
-                        const record = { id: tempId, created_date: new Date().toISOString(), ...cleanedPayload };
+                        const record = { id: tempId, created_date: new Date().toISOString(), ...securedPayload };
                         
-                        // Update cache
                         const cache = getLocalCache(tableName);
                         setLocalCache(tableName, [...cache, record]);
 
-                        // Queue mutation
                         const outbox = getOutbox();
                         setOutbox([...outbox, { id: tempId, type: 'create', tableName, payload: record }]);
 
-                        return record;
+                        return revealResults(record);
                     }
 
                     let res;
                     let retries = 5;
                     while (retries > 0) {
-                        res = await supabase.from(tableName).insert(cleanedPayload).select().single();
+                        res = await supabase.from(tableName).insert(securedPayload).select().single();
                         if (res.error && (res.error.code === '42703' || res.error.code === 'PGRST204')) {
                             const match = res.error.message.match(/column "?([^"]+)"? of relation/i) || res.error.message.match(/Could not find the '([^']+)' column/);
                             if (match && match[1]) {
@@ -305,11 +345,10 @@ export const base44 = {
                     }
                     if (res.error) throw res.error;
 
-                    // Update Cache
                     const cache = getLocalCache(tableName);
                     setLocalCache(tableName, [...cache.filter(c => c.id !== res.data.id), res.data]);
 
-                    return res.data;
+                    return revealResults(res.data);
                 },
                 update: async (id, payload) => {
                     const validCols = SCHEMA_COLUMNS[tableName];
@@ -318,28 +357,29 @@ export const base44 = {
                         cleanedPayload = Object.fromEntries(Object.entries(cleanedPayload).filter(([k]) => validCols.includes(k)));
                     }
 
+                    // Encrypt sensitive fields
+                    const securedPayload = await securePayload(cleanedPayload);
+
                     if (!navigator.onLine) {
-                        // Offline update mode
                         const cache = getLocalCache(tableName);
                         const recordIndex = cache.findIndex(item => item.id === id);
                         let updatedRecord = { id };
                         if (recordIndex !== -1) {
-                            updatedRecord = { ...cache[recordIndex], ...cleanedPayload };
+                            updatedRecord = { ...cache[recordIndex], ...securedPayload };
                             cache[recordIndex] = updatedRecord;
                             setLocalCache(tableName, cache);
                         }
 
-                        // Queue mutation
                         const outbox = getOutbox();
-                        setOutbox([...outbox, { id, type: 'update', tableName, payload: cleanedPayload }]);
+                        setOutbox([...outbox, { id, type: 'update', tableName, payload: securedPayload }]);
 
-                        return updatedRecord;
+                        return revealResults(updatedRecord);
                     }
 
                     let res;
                     let retries = 5;
                     while (retries > 0) {
-                        res = await supabase.from(tableName).update(cleanedPayload).eq('id', id).select().single();
+                        res = await supabase.from(tableName).update(securedPayload).eq('id', id).select().single();
                         if (res.error && (res.error.code === '42703' || res.error.code === 'PGRST204')) {
                             const match = res.error.message.match(/column "?([^"]+)"? of relation/i) || res.error.message.match(/Could not find the '([^']+)' column/);
                             if (match && match[1]) {
@@ -352,19 +392,16 @@ export const base44 = {
                     }
                     if (res.error) throw res.error;
 
-                    // Update Cache
                     const cache = getLocalCache(tableName);
                     setLocalCache(tableName, cache.map(item => item.id === id ? res.data : item));
 
-                    return res.data;
+                    return revealResults(res.data);
                 },
                 delete: async (id) => {
                     if (!navigator.onLine) {
-                        // Offline delete mode
                         const cache = getLocalCache(tableName);
                         setLocalCache(tableName, cache.filter(item => item.id !== id));
 
-                        // Queue mutation
                         const outbox = getOutbox();
                         setOutbox([...outbox, { id, type: 'delete', tableName }]);
 
@@ -374,11 +411,10 @@ export const base44 = {
                     const { data, error } = await supabase.from(tableName).delete().eq('id', id).select().single();
                     if (error) throw error;
 
-                    // Update Cache
                     const cache = getLocalCache(tableName);
                     setLocalCache(tableName, cache.filter(item => item.id !== id));
 
-                    return data;
+                    return revealResults(data);
                 },
                 subscribe: (callback) => {
                     if (!navigator.onLine) return () => {};
@@ -387,7 +423,9 @@ export const base44 = {
                             let type = payload.eventType.toLowerCase();
                             if (type === 'insert') type = 'create';
                             const data = payload.new || payload.old;
-                            callback({ type, data });
+                            revealResults(data).then(decryptedData => {
+                                callback({ type, data: decryptedData });
+                            });
                         })
                         .subscribe();
                     
