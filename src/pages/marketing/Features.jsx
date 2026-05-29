@@ -92,7 +92,7 @@ export default function Features() {
       ],
       icon: Briefcase,
       align: "right",
-      image: "/images/orbit_ai_ui.png"
+      image: "/images/orbit_dashboard_mockup.png"
     },
     {
       badge: "Spotlight Search",

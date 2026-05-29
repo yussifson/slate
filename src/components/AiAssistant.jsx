@@ -133,10 +133,11 @@ function parseAgentActions(text) {
 
 //  Format message with simple markdown 
 function FormatMessage({ content }) {
+  const displayContent = content.replace(/<!-- HIDDEN_CONTEXT_START[\s\S]*?HIDDEN_CONTEXT_END -->/g, '').trim();
   return (
     <div className="prose prose-sm dark:prose-invert max-w-none break-words [&>p]:mb-2 [&>p:last-child]:mb-0 [&>ul]:mt-1 [&>ul]:mb-2 [&>ol]:mt-1 [&>ol]:mb-2 [&>ul]:pl-4 [&>ol]:pl-4">
       <ReactMarkdown remarkPlugins={[remarkGfm]}>
-        {content}
+        {displayContent}
       </ReactMarkdown>
     </div>
   );
@@ -213,9 +214,11 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
     const query = injectedContext.query || '';
     const recordJson = JSON.stringify(injectedContext.record, null, 2);
 
-    const contextMessage = query
-      ? `I searched for "${query}" and found this ${entityType}: **${label}**. Here are the full details:\n\`\`\`json\n${recordJson}\n\`\`\`\n\nPlease help me with this record. I may want to view details, make edits, or ask questions about it.`
-      : `I want to ask about this ${entityType}: **${label}**. Here are the full details:\n\`\`\`json\n${recordJson}\n\`\`\`\n\nWhat can you tell me about this record?`;
+    const displayMessage = query
+      ? `I searched for "${query}" and found this ${entityType}: **${label}**. Please help me with this record.`
+      : `I want to ask about this ${entityType}: **${label}**. What can you tell me about this record?`;
+
+    const contextMessage = `${displayMessage}\n\n<!-- HIDDEN_CONTEXT_START\n${recordJson}\nHIDDEN_CONTEXT_END -->`;
 
     setSessions(prev => [s, ...prev]);
     setActiveId(s.id);
