@@ -101,7 +101,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
       )}
 
       {/* Nav */}
-      <nav className="flex-1 px-3 pb-3 space-y-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
+      <nav className="flex-1 px-3 pb-3 space-y-1 overflow-y-auto overflow-x-hidden scrollbar-hide">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path || (item.path !== "/" && location.pathname.startsWith(item.path));
           const IconComp = typeof item.icon === 'string' ? ICON_MAP[item.icon] || LayoutDashboard : item.icon;
