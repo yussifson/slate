@@ -87,9 +87,12 @@ export default function Login() {
         const companySubdomain = company?.subdomain || company?.name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
         
         if (companySubdomain && companySubdomain !== currentSubdomain) {
-          await supabase.auth.signOut();
-          setError(`Invalid Workspace Identity! Your credentials are correct, but they belong to "${company?.name}". Please go to ${companySubdomain}.${baseDomain} to log in.`);
-          setLoading(false);
+          const port = window.location.port ? `:${window.location.port}` : '';
+          let url = `${window.location.protocol}//${companySubdomain}.${baseDomain}${port}/`;
+          if (authData?.session?.access_token && authData?.session?.refresh_token) {
+            url += `?access_token=${authData.session.access_token}&refresh_token=${authData.session.refresh_token}`;
+          }
+          window.location.href = url;
           return;
         }
       }
@@ -110,7 +113,11 @@ export default function Login() {
         
         if (companySubdomain) {
           const port = window.location.port ? `:${window.location.port}` : '';
-          window.location.href = `${window.location.protocol}//${companySubdomain}.${baseDomain}${port}/`;
+          let url = `${window.location.protocol}//${companySubdomain}.${baseDomain}${port}/`;
+          if (authData?.session?.access_token && authData?.session?.refresh_token) {
+            url += `?access_token=${authData.session.access_token}&refresh_token=${authData.session.refresh_token}`;
+          }
+          window.location.href = url;
           return;
         }
       }
@@ -222,7 +229,7 @@ export default function Login() {
       {/* Right Side: Marketing Visual */}
       <div className="hidden lg:flex flex-1 relative items-center justify-center bg-slate-50 overflow-hidden">
         {/* Abstract Pattern Background */}
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-5 mix-blend-overlay"></div>
+        <div className="absolute inset-0 bg-slate-900/5 mix-blend-overlay"></div>
         <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-gradient-to-br from-blue-400/20 to-indigo-500/20 blur-[100px] rounded-full pointer-events-none"></div>
         <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-gradient-to-tr from-cyan-300/20 to-blue-400/20 blur-[100px] rounded-full pointer-events-none"></div>
 
