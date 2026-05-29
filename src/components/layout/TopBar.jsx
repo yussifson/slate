@@ -53,17 +53,19 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
       return;
     }
     sessionStorage.setItem('optalflow_industry_override', newIndustry);
-    queryClient.invalidateQueries();
+    // Clear all cached queries so pages reload with the new industry context
+    queryClient.clear();
     toast({
       title: "Industry Switched",
       description: `Active industry changed to ${INDUSTRIES[newIndustry]?.name || newIndustry}.`,
     });
-    // Navigate back to dashboard to prevent route mismatch on specific pages
+    // Navigate to dashboard - React Query will refetch everything fresh
     navigate('/');
-    // Smooth reload of the layout
+    // Force a window-level reload to re-render the sidebar and layout for the new industry
+    // Use a small delay to let the navigate() complete first
     setTimeout(() => {
-      window.location.reload();
-    }, 100);
+      window.location.href = '/';
+    }, 50);
   };
 
   const pathKey = Object.keys(PAGE_TITLES).filter(k => k !== "/").find(k => location.pathname.startsWith(k)) || (location.pathname === "/" ? "/" : "/");
