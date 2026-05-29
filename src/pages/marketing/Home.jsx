@@ -689,10 +689,10 @@ export default function Home() {
           <FadeIn delay="delay-100">
             <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-10 md:gap-x-16">
               {firms.map((firm, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300 cursor-default select-none"
-                >
+                  <div
+                    key={idx}
+                    className="flex items-center cursor-default select-none hover:scale-105 transition-transform duration-300"
+                  >
                   {firm.logo}
                   <span className={`text-slate-900 ${firm.font}`}>
                     {firm.name}
