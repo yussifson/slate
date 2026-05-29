@@ -15,6 +15,13 @@ const updateSW = registerSW({
   },
 })
 
+// Listen for Vite chunk loading errors (e.g. when Vercel deploys a new version and old chunks are missing)
+// If this happens, force reload to fetch the new index.html and fresh bundles.
+window.addEventListener('vite:preloadError', (event) => {
+  console.warn('Vite preload error (chunk missing). Forcing hard reload...');
+  window.location.reload(true);
+});
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <ErrorBoundary>
     <App />
