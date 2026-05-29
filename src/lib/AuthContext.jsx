@@ -280,8 +280,23 @@ export const AuthProvider = ({ children }) => {
 
   // Listen to auth state changes from Supabase
   useEffect(() => {
+    // Manually trigger the check if we have cross-domain tokens in the URL
+    // This is required because onAuthStateChange will fire an INITIAL_SESSION with null 
+    // before we have a chance to read the tokens from the URL!
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('access_token') && params.get('refresh_token')) {
+      checkUserAuth(null);
+    }
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, newSession) => {
       if (!newSession) {
+        // If we are currently trying to restore from URL tokens, DO NOT immediately log out!
+        // Let the manual checkUserAuth() call finish restoring the session.
+        const currentParams = new URLSearchParams(window.location.search);
+        if (currentParams.get('access_token') && currentParams.get('refresh_token')) {
+          return;
+        }
+
         setUser(null);
         setIsAuthenticated(false);
         setIsLoadingAuth(false);
