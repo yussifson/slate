@@ -143,7 +143,7 @@ function FormatMessage({ content }) {
 }
 
 //  Main Component 
-export default function GlobalAIAssistant({ isOpen = false, onClose }) {
+export default function GlobalAIAssistant({ isOpen = false, onClose, injectedContext = null, onContextConsumed }) {
   const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -201,6 +201,32 @@ export default function GlobalAIAssistant({ isOpen = false, onClose }) {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // When Spotlight injects a record context, auto-start a new chat about it
+  useEffect(() => {
+    if (!injectedContext || !isInitialized || sessions.length === 0) return;
+
+    // Start a fresh session for this context
+    const s = newSession();
+    const label = injectedContext.label || 'this record';
+    const entityType = injectedContext.entityType || 'Record';
+    const query = injectedContext.query || '';
+    const recordJson = JSON.stringify(injectedContext.record, null, 2);
+
+    const contextMessage = query
+      ? `I searched for "${query}" and found this ${entityType}: **${label}**. Here are the full details:\n\`\`\`json\n${recordJson}\n\`\`\`\n\nPlease help me with this record. I may want to view details, make edits, or ask questions about it.`
+      : `I want to ask about this ${entityType}: **${label}**. Here are the full details:\n\`\`\`json\n${recordJson}\n\`\`\`\n\nWhat can you tell me about this record?`;
+
+    setSessions(prev => [s, ...prev]);
+    setActiveId(s.id);
+
+    // Small delay to let state settle, then fire the message
+    setTimeout(() => {
+      setInput(contextMessage);
+    }, 150);
+
+    if (onContextConsumed) onContextConsumed();
+  }, [injectedContext, isInitialized]);
 
   const addMessages = useCallback((sid, newMsgs) => {
     setSessions(prev => {

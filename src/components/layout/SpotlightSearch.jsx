@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, FileText, User, Users, Calendar, X, ShieldAlert, ArrowRight } from "lucide-react";
+import { Search, FileText, User, Users, Calendar, X, ShieldAlert, ArrowRight, Sparkles, Bot } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
 export default function SpotlightSearch() {
@@ -9,10 +9,11 @@ export default function SpotlightSearch() {
   const [results, setResults] = useState({ cases: [], clients: [], staff: [], other: [] });
   const [loading, setLoading] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [hoveredId, setHoveredId] = useState(null);
   const navigate = useNavigate();
   const inputRef = useRef(null);
 
-  // Keyboard shortcut listener to toggle Spotlight modal (CMD + K or CTRL + K)
+  // Keyboard shortcut: CMD+K / CTRL+K
   useEffect(() => {
     const handleKeyDown = (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
@@ -26,18 +27,19 @@ export default function SpotlightSearch() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  // Autofocus input when opened
+  // Autofocus & reset on open/close
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 100);
       setSelectedIndex(0);
+      setHoveredId(null);
     } else {
       setQuery("");
       setResults({ cases: [], clients: [], staff: [], other: [] });
     }
   }, [isOpen]);
 
-  // Handle dynamic multi-entity query search
+  // Debounced search across entities
   useEffect(() => {
     if (!query.trim()) {
       setResults({ cases: [], clients: [], staff: [], other: [] });
@@ -47,40 +49,28 @@ export default function SpotlightSearch() {
     const delayDebounce = setTimeout(async () => {
       setLoading(true);
       try {
-        const queryLower = query.toLowerCase();
+        const q = query.toLowerCase();
 
-        // 1. Legal Cases
-        const allCases = await base44.entities.LegalCase.list().catch(() => []);
-        const filteredCases = allCases.filter(c => 
-          c.title?.toLowerCase().includes(queryLower) || 
-          c.case_number?.toLowerCase().includes(queryLower)
-        ).slice(0, 4);
-
-        // 2. Clients (Legal/General)
-        const allClients = await base44.entities.Client.list().catch(() => []);
-        const filteredClients = allClients.filter(c => 
-          c.name?.toLowerCase().includes(queryLower) || 
-          c.email?.toLowerCase().includes(queryLower)
-        ).slice(0, 4);
-
-        // 3. Staff/Team
-        const allStaff = await base44.entities.StaffRecord.list().catch(() => []);
-        const filteredStaff = allStaff.filter(s => 
-          s.full_name?.toLowerCase().includes(queryLower) || 
-          s.user_email?.toLowerCase().includes(queryLower)
-        ).slice(0, 4);
-
-        // 4. Fallback search on other tables if needed (e.g. Invoices, Tasks)
-        const allTasks = await base44.entities.Task.list().catch(() => []);
-        const filteredTasks = allTasks.filter(t => 
-          t.title?.toLowerCase().includes(queryLower)
-        ).slice(0, 4);
+        const [allCases, allClients, allStaff, allTasks] = await Promise.all([
+          base44.entities.LegalCase.list().catch(() => []),
+          base44.entities.Client.list().catch(() => []),
+          base44.entities.StaffRecord.list().catch(() => []),
+          base44.entities.Task.list().catch(() => []),
+        ]);
 
         setResults({
-          cases: filteredCases,
-          clients: filteredClients,
-          staff: filteredStaff,
-          other: filteredTasks
+          cases: allCases.filter(c =>
+            c.title?.toLowerCase().includes(q) || c.case_number?.toLowerCase().includes(q)
+          ).slice(0, 4),
+          clients: allClients.filter(c =>
+            c.name?.toLowerCase().includes(q) || c.email?.toLowerCase().includes(q)
+          ).slice(0, 4),
+          staff: allStaff.filter(s =>
+            s.full_name?.toLowerCase().includes(q) || s.user_email?.toLowerCase().includes(q)
+          ).slice(0, 4),
+          other: allTasks.filter(t =>
+            t.title?.toLowerCase().includes(q)
+          ).slice(0, 4),
         });
       } catch (err) {
         console.error("Spotlight search failed", err);
@@ -92,18 +82,29 @@ export default function SpotlightSearch() {
     return () => clearTimeout(delayDebounce);
   }, [query]);
 
-  // Flattened list for keyboard arrow navigation
+  // Flat list for keyboard navigation
   const flatResults = [
-    ...results.cases.map(item => ({ ...item, category: "Cases", route: `/cases/${item.id}`, icon: FileText })),
-    ...results.clients.map(item => ({ ...item, category: "Contacts", route: `/clients`, icon: User })),
-    ...results.staff.map(item => ({ ...item, category: "Team", route: `/team`, icon: Users })),
-    ...results.other.map(item => ({ ...item, category: "Tasks", route: `/tasks`, icon: Calendar }))
+    ...results.cases.map(item => ({ ...item, category: "Cases", route: `/cases/${item.id}`, icon: FileText, entityType: "Case" })),
+    ...results.clients.map(item => ({ ...item, category: "Contacts", route: `/clients`, icon: User, entityType: "Client" })),
+    ...results.staff.map(item => ({ ...item, category: "Team", route: `/team`, icon: Users, entityType: "Staff Member" })),
+    ...results.other.map(item => ({ ...item, category: "Tasks", route: `/tasks`, icon: Calendar, entityType: "Task" })),
   ];
 
-  // Key navigation controller
+  // Ask AI: dispatch event to AppLayout, which opens Orbit with context
+  const handleAskAI = (item) => {
+    const context = {
+      query,
+      entityType: item.entityType,
+      record: item,
+      label: item.title || item.name || item.full_name,
+    };
+    window.dispatchEvent(new CustomEvent("orbit:inject", { detail: context }));
+    setIsOpen(false);
+  };
+
+  // Keyboard navigation
   const handleKeyNavigation = (e) => {
     if (flatResults.length === 0) return;
-
     if (e.key === "ArrowDown") {
       e.preventDefault();
       setSelectedIndex((prev) => (prev + 1) % flatResults.length);
@@ -113,37 +114,37 @@ export default function SpotlightSearch() {
     } else if (e.key === "Enter") {
       e.preventDefault();
       const selected = flatResults[selectedIndex];
-      if (selected) {
-        navigate(selected.route);
-        setIsOpen(false);
-      }
+      if (selected) { navigate(selected.route); setIsOpen(false); }
     }
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex justify-center pt-[10vh] p-4 font-sans animate-fade-in">
-      <div 
-        className="w-full max-w-2xl bg-card/85 backdrop-blur-xl border border-border/80 rounded-2xl shadow-2xl flex flex-col max-h-[60vh] overflow-hidden"
+    <div
+      className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex justify-center pt-[8vh] p-4 font-sans"
+      onClick={(e) => { if (e.target === e.currentTarget) setIsOpen(false); }}
+    >
+      <div
+        className="w-full max-w-2xl bg-background border border-border rounded-2xl shadow-[0_32px_64px_rgba(0,0,0,0.15)] flex flex-col max-h-[65vh] overflow-hidden animate-in slide-in-from-top-4 duration-200"
         onKeyDown={handleKeyNavigation}
       >
         {/* Search Input Bar */}
-        <div className="flex items-center gap-3 px-4 py-4 border-b border-border/80">
-          <Search className="w-5 h-5 text-muted-foreground shrink-0 animate-pulse" />
+        <div className="flex items-center gap-3 px-5 py-4 border-b border-border">
+          <Search className="w-5 h-5 text-primary shrink-0" />
           <input
             ref={inputRef}
             type="text"
-            placeholder="Search cases, clients, tasks, or staff members globally..."
-            className="flex-1 bg-transparent border-0 text-foreground placeholder:text-muted-foreground outline-none text-base focus:ring-0 focus:outline-none"
+            placeholder="Search cases, clients, tasks, or team members..."
+            className="flex-1 bg-transparent border-0 text-foreground placeholder:text-muted-foreground/60 outline-none text-[15px] focus:ring-0 focus:outline-none"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-          <div className="flex items-center gap-1.5 shrink-0 select-none">
-            <span className="text-[10px] bg-muted text-muted-foreground border border-border/60 rounded px-1.5 py-0.5 font-bold uppercase">ESC</span>
-            <button 
-              onClick={() => setIsOpen(false)} 
-              className="p-1 hover:bg-muted rounded-full transition-colors"
+          <div className="flex items-center gap-2 shrink-0 select-none">
+            <kbd className="text-[10px] bg-muted text-muted-foreground border border-border rounded-md px-1.5 py-0.5 font-semibold">ESC</kbd>
+            <button
+              onClick={() => setIsOpen(false)}
+              className="p-1.5 hover:bg-muted rounded-lg transition-colors"
             >
               <X className="w-4 h-4 text-muted-foreground" />
             </button>
@@ -151,65 +152,102 @@ export default function SpotlightSearch() {
         </div>
 
         {/* Results Body */}
-        <div className="flex-1 overflow-y-auto p-3.5 space-y-4">
+        <div className="flex-1 overflow-y-auto p-3 space-y-3">
           {loading ? (
-            <div className="py-12 text-center text-sm text-muted-foreground flex flex-col items-center gap-3">
-              <span className="w-8 h-8 rounded-full border-2 border-primary/20 border-t-primary animate-spin" />
-              <span>Scanning databases...</span>
+            <div className="py-14 text-center text-sm text-muted-foreground flex flex-col items-center gap-3">
+              <span className="w-7 h-7 rounded-full border-2 border-primary/30 border-t-primary animate-spin" />
+              <span>Scanning records...</span>
             </div>
           ) : flatResults.length === 0 ? (
-            <div className="py-10 text-center text-sm text-muted-foreground flex flex-col items-center gap-2">
+            <div className="py-10 text-center flex flex-col items-center gap-2.5">
               {query ? (
                 <>
-                  <ShieldAlert className="w-8 h-8 text-amber-500/80 animate-bounce" />
-                  <p className="font-semibold text-foreground">No matches found</p>
-                  <p className="text-xs text-muted-foreground/80 max-w-xs leading-relaxed">No matching legal cases, clients, or tasks exist for "{query}".</p>
+                  <ShieldAlert className="w-9 h-9 text-amber-500/70" />
+                  <p className="font-semibold text-foreground text-sm">No matches found</p>
+                  <p className="text-xs text-muted-foreground max-w-xs leading-relaxed">
+                    No records matching "{query}" were found across cases, clients, tasks, or team.
+                  </p>
                 </>
               ) : (
-                <div className="max-w-md space-y-1 mt-4">
-                  <p className="font-bold text-foreground text-md">Ecosystem Spotlight Search</p>
-                  <p className="text-xs text-muted-foreground/80 leading-relaxed">Search dynamically across different industries instantly. Try typing a name, case, or task title to begin search scan.</p>
+                <div className="max-w-sm space-y-2 mt-4 px-4">
+                  <div className="flex items-center justify-center gap-2 mb-3">
+                    <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
+                      <Search className="w-4 h-4 text-primary" />
+                    </div>
+                  </div>
+                  <p className="font-bold text-foreground text-base">Ecosystem Spotlight</p>
+                  <p className="text-xs text-muted-foreground/80 leading-relaxed">
+                    Search across all records instantly. Type a name, case number, or task title to begin. Results can be opened or sent directly to Orbit AI.
+                  </p>
                 </div>
               )}
             </div>
           ) : (
             <div className="space-y-4">
-              {/* Grouped results view */}
               {["Cases", "Contacts", "Team", "Tasks"].map(cat => {
                 const catItems = flatResults.filter(item => item.category === cat);
                 if (catItems.length === 0) return null;
                 return (
-                  <div key={cat} className="space-y-1.5">
-                    <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest px-3 select-none">{cat}</h4>
-                    <div className="space-y-1">
-                      {catItems.map((item, idx) => {
-                        const globalIndex = flatResults.findIndex(f => f.id === item.id);
+                  <div key={cat} className="space-y-0.5">
+                    <h4 className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest px-3 pb-1 select-none">
+                      {cat}
+                    </h4>
+                    <div className="space-y-0.5">
+                      {catItems.map((item) => {
+                        const globalIndex = flatResults.findIndex(f => f.id === item.id && f.category === item.category);
                         const isSelected = globalIndex === selectedIndex;
+                        const isHovered = hoveredId === item.id + item.category;
                         const IconComp = item.icon;
 
                         return (
                           <div
-                            key={item.id}
-                            onClick={() => {
-                              navigate(item.route);
-                              setIsOpen(false);
-                            }}
-                            className={`flex items-center justify-between px-3 py-3 rounded-xl cursor-pointer transition-all duration-150 select-none ${
-                              isSelected 
-                                ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20 scale-[1.01]" 
-                                : "hover:bg-muted text-foreground"
+                            key={item.id + item.category}
+                            onMouseEnter={() => setHoveredId(item.id + item.category)}
+                            onMouseLeave={() => setHoveredId(null)}
+                            className={`flex items-center justify-between px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-100 select-none group ${
+                              isSelected
+                                ? "bg-primary text-primary-foreground shadow-sm"
+                                : "hover:bg-muted/70 text-foreground"
                             }`}
                           >
-                            <div className="flex items-center gap-3 min-w-0">
-                              <IconComp className={`w-4 h-4 shrink-0 ${isSelected ? "text-primary-foreground animate-pulse" : "text-muted-foreground"}`} />
+                            {/* Left: icon + info */}
+                            <div
+                              className="flex items-center gap-3 min-w-0 flex-1"
+                              onClick={() => { navigate(item.route); setIsOpen(false); }}
+                            >
+                              <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
+                                isSelected ? "bg-white/20" : "bg-muted"
+                              }`}>
+                                <IconComp className={`w-4 h-4 ${isSelected ? "text-primary-foreground" : "text-muted-foreground"}`} />
+                              </div>
                               <div className="min-w-0">
-                                <p className="text-sm font-semibold truncate">{item.title || item.name || item.full_name}</p>
-                                <p className={`text-xs truncate ${isSelected ? "text-primary-foreground/80" : "text-muted-foreground/80"}`}>
-                                  {item.case_number || item.email || item.user_email || item.description || "Active Profile"}
+                                <p className="text-sm font-semibold truncate leading-tight">
+                                  {item.title || item.name || item.full_name}
+                                </p>
+                                <p className={`text-xs truncate leading-tight mt-0.5 ${isSelected ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
+                                  {item.case_number || item.email || item.user_email || item.description || item.status || "View details"}
                                 </p>
                               </div>
                             </div>
-                            {isSelected && <ArrowRight className="w-4 h-4 shrink-0 text-primary-foreground mr-1 animate-pulse" />}
+
+                            {/* Right: Ask AI button + arrow */}
+                            <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                              {(isHovered || isSelected) && (
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); handleAskAI(item); }}
+                                  className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-all duration-150 ${
+                                    isSelected
+                                      ? "bg-white/20 text-primary-foreground hover:bg-white/30"
+                                      : "bg-primary/10 text-primary hover:bg-primary/20"
+                                  }`}
+                                  title="Ask Orbit AI about this record"
+                                >
+                                  <Bot className="w-3 h-3" />
+                                  Ask AI
+                                </button>
+                              )}
+                              {isSelected && <ArrowRight className="w-4 h-4 text-primary-foreground/80" />}
+                            </div>
                           </div>
                         );
                       })}
@@ -221,14 +259,20 @@ export default function SpotlightSearch() {
           )}
         </div>
 
-        {/* Footer shortcuts hint */}
-        <div className="px-4 py-2.5 bg-muted/40 border-t border-border/80 text-[10px] text-muted-foreground flex items-center justify-between select-none">
-          <div className="flex items-center gap-2">
-            <span>↑↓ to navigate</span>
+        {/* Footer */}
+        <div className="px-5 py-2.5 bg-muted/30 border-t border-border text-[10px] text-muted-foreground flex items-center justify-between select-none">
+          <div className="flex items-center gap-3">
+            <span className="flex items-center gap-1">↑↓ <span className="text-foreground/60">navigate</span></span>
             <span>·</span>
-            <span>↵ to select</span>
+            <span className="flex items-center gap-1">↵ <span className="text-foreground/60">open</span></span>
+            <span>·</span>
+            <span className="flex items-center gap-1">
+              <Bot className="w-3 h-3 text-primary" />
+              <span className="text-foreground/60">Ask AI on hover</span>
+            </span>
           </div>
-          <div>
+          <div className="flex items-center gap-1">
+            <Sparkles className="w-3 h-3 text-primary/60" />
             <span>Spotlight Console</span>
           </div>
         </div>

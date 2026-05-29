@@ -20,6 +20,7 @@ export default function AppLayout() {
 
   const [isAIOpen, setIsAIOpen] = useState(false);
   const [isPrefsLoaded, setIsPrefsLoaded] = useState(false);
+  const [orbitContext, setOrbitContext] = useState(null);
 
   useEffect(() => {
     if (!user?.email || !user?.company_id || isPrefsLoaded) return;
@@ -72,11 +73,17 @@ export default function AppLayout() {
   useEffect(() => {
     const handleOnline = () => setIsOffline(false);
     const handleOffline = () => setIsOffline(true);
+    const handleOrbitInject = (e) => {
+      setOrbitContext(e.detail);
+      setIsAIOpen(true);
+    };
     window.addEventListener("online", handleOnline);
     window.addEventListener("offline", handleOffline);
+    window.addEventListener("orbit:inject", handleOrbitInject);
     return () => {
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
+      window.removeEventListener("orbit:inject", handleOrbitInject);
     };
   }, []);
 
@@ -174,7 +181,7 @@ export default function AppLayout() {
           <Outlet />
         </main>
       </div>
-      <AiAssistant isOpen={isAIOpen} onClose={toggleAI} />
+      <AiAssistant isOpen={isAIOpen} onClose={toggleAI} injectedContext={orbitContext} onContextConsumed={() => setOrbitContext(null)} />
       <SpotlightSearch />
       {isOffline && (
         <div className="fixed bottom-6 right-6 z-50 bg-red-600/90 hover:bg-red-700/90 backdrop-blur-md text-white font-semibold px-4 py-2.5 rounded-full flex items-center gap-2.5 shadow-lg border border-red-500/20 select-none animate-pulse">
