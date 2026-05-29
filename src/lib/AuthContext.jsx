@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
   const isAuthenticatedRef = useRef(false);
   const userRef = useRef(null);
   const hasInitializedRef = useRef(false);
+  const isExplicitLogoutRef = useRef(false);
 
   // Keep ref in sync with user state to prevent stale closures
   useEffect(() => {
@@ -315,6 +316,13 @@ export const AuthProvider = ({ children }) => {
       if (event === 'INITIAL_SESSION') return;
 
       if (event === 'SIGNED_OUT') {
+        if (!isExplicitLogoutRef.current) {
+          // Implicit sign out (e.g. from failed token refresh during offline mode).
+          // Ignore it to allow the offline fallback cache to work!
+          console.warn("Ignored implicit SIGNED_OUT event to preserve offline mode cache.");
+          return;
+        }
+
         setUser(null);
         setIsAuthenticated(false);
         setIsLoadingAuth(false);
@@ -342,6 +350,7 @@ export const AuthProvider = ({ children }) => {
   }, [checkUserAuth]);
 
   const logout = useCallback(async (shouldRedirect = true) => {
+    isExplicitLogoutRef.current = true;
     await supabase.auth.signOut();
     setUser(null);
     setIsAuthenticated(false);
