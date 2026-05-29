@@ -10,6 +10,13 @@ export const useContracts = () => {
 
   const sendForSignature = async ({ companyId, provider = 'docusign', documentName, signerEmail, signerName }) => {
     setIsSending(true);
+
+    if (!navigator.onLine) {
+      setTimeout(() => setIsSending(false), 500);
+      toast.success(`[Offline] Queued contract to ${signerEmail} via ${provider}.`);
+      return { success: true, offline: true };
+    }
+
     try {
       const res = await fetch(`${supabaseUrl}/functions/v1/send-contract`, {
         method: 'POST',

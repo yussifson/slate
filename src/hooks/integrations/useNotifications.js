@@ -10,6 +10,12 @@ export const useNotifications = () => {
 
   const notifyTeam = async ({ companyId, provider, message, channel, recipientPhone }) => {
     setIsNotifying(true);
+
+    if (!navigator.onLine) {
+      setTimeout(() => setIsNotifying(false), 500);
+      return { success: true, offline: true };
+    }
+
     try {
       const res = await fetch(`${supabaseUrl}/functions/v1/notify-team`, {
         method: 'POST',

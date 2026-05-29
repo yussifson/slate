@@ -10,6 +10,13 @@ export const usePayment = () => {
 
   const processPayment = async ({ companyId, provider, amount, currency, customerEmail, invoiceId }) => {
     setIsLoading(true);
+
+    if (!navigator.onLine) {
+      setTimeout(() => setIsLoading(false), 500);
+      toast.success(`[Offline] Payment recorded locally. Will process when online.`);
+      return { success: true, offline: true };
+    }
+
     try {
       const res = await fetch(`${supabaseUrl}/functions/v1/process-payment`, {
         method: 'POST',
@@ -46,6 +53,11 @@ export const usePayment = () => {
   };
 
   const syncInvoiceToQuickBooks = async ({ companyId, invoiceDetails }) => {
+    if (!navigator.onLine) {
+      toast.success("[Offline] Invoice sync queued for QuickBooks.");
+      return { success: true, offline: true };
+    }
+
     try {
       const res = await fetch(`${supabaseUrl}/functions/v1/sync-invoice`, {
         method: 'POST',

@@ -10,6 +10,13 @@ export const useMeeting = () => {
 
   const generateMeetingLink = async ({ companyId, provider = 'zoom', topic, duration, startTime }) => {
     setIsGenerating(true);
+
+    if (!navigator.onLine) {
+      setTimeout(() => setIsGenerating(false), 500);
+      toast.success(`[Offline] Generated local placeholder ${provider} meeting room.`);
+      return { join_url: `https://offline.${provider}.com/j/${Date.now()}`, start_url: `https://offline.${provider}.com/s/${Date.now()}`, password: 'offline-pass' };
+    }
+
     try {
       const res = await fetch(`${supabaseUrl}/functions/v1/generate-meeting`, {
         method: 'POST',

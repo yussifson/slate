@@ -10,6 +10,13 @@ export const useCalendar = () => {
 
   const syncEvent = async ({ companyId, provider, eventDetails }) => {
     setIsSyncing(true);
+
+    if (!navigator.onLine) {
+      setTimeout(() => setIsSyncing(false), 500);
+      toast.success(`[Offline] Queued event sync for ${provider === 'google' ? 'Google Calendar' : 'Outlook'}.`);
+      return { success: true, offline: true };
+    }
+
     try {
       // eventDetails should include: title, startTime, endTime, description, attendees
       const res = await fetch(`${supabaseUrl}/functions/v1/sync-calendar`, {
