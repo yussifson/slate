@@ -1,463 +1,930 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { invokeCloudflareAi } from '@/lib/cloudflareAI';
-import { 
-  Bot, 
-  X, 
-  Sparkles, 
-  Send, 
-  Loader2, 
-  Minimize2, 
-  Maximize2, 
-  Terminal, 
-  Cpu, 
-  ShieldAlert, 
-  RefreshCw, 
-  Play, 
-  CheckCircle2, 
-  Zap, 
-  Globe, 
-  Activity, 
-  FileText 
-} from 'lucide-react';
+﻿import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Sparkles, MessageSquare, X, Send, Bot, User, Maximize2, Minimize2, Plus, Clock, Mic, MicOff, Paperclip, Trash2, FileText, Image, Square } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import ReactMarkdown from 'react-markdown';
+import { generateText, analyzeImage } from '@/lib/cloudflareAI';
+import { toast } from 'react-hot-toast';
+import { useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
+import { useCompanyId } from '@/hooks/useCompanyId';
+import { useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { useToast } from "@/components/ui/use-toast";
+import { supabase } from '@/api/supabaseClient';
+import { OrbitIcon } from '@/components/ui/OrbitIcon';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { useAuth } from '@/lib/AuthContext';
 
-export default function AiAssistant({ inline = false, isOpen = false, onClose }) {
-  const [activeTab, setActiveTab] = useState('chat'); // 'chat' or 'commands'
-  const [input, setInput] = useState('');
-  const [messages, setMessages] = useState([
-    { 
-      role: 'assistant', 
-      content: "Hello! I am **Orbit 2.0**, your upgraded, ultra-powerful multi-tasking AI enterprise intelligence agent.\n\nI am equipped with a new **Command Center** to run multi-industry diagnostics, automated billing audits, and cyber audits. Switch to the Command Center tab above to execute instant automated operations!" 
-    }
-  ]);
-  const [loading, setLoading] = useState(false);
-  const { toast } = useToast();
+//  Page Context Map 
+const PAGE_CONTEXT = {
+  '/': { title: 'Dashboard', suite: 'Core', desc: 'main dashboard with KPIs and quick actions' },
+  '/cases': { title: 'Cases', suite: 'Legal', desc: 'legal case management list' },
+  '/clients': { title: 'Clients', suite: 'Core', desc: 'client management' },
+  '/calendar': { title: 'Calendar', suite: 'Core', desc: 'appointments and events calendar' },
+  '/invoices': { title: 'Invoices', suite: 'Billing', desc: 'invoice management' },
+  '/tasks': { title: 'Tasks', suite: 'Core', desc: 'task management' },
+  '/documents': { title: 'Documents', suite: 'Core', desc: 'document library' },
+  '/leads': { title: 'Leads', suite: 'CRM', desc: 'sales lead pipeline' },
+  '/billing': { title: 'Billing', suite: 'Billing', desc: 'billing dashboard' },
+  '/claims': { title: 'Claims Processing', suite: 'Insurance', desc: 'insurance claims list' },
+  '/policies': { title: 'Policies', suite: 'Insurance', desc: 'insurance policy management' },
+  '/premiums': { title: 'Premiums', suite: 'Insurance', desc: 'premium payment tracking' },
+  '/underwriting': { title: 'Underwriting', suite: 'Insurance', desc: 'underwriting applications' },
+  '/agent-performance': { title: 'Agent Performance', suite: 'Insurance', desc: 'insurance agent metrics' },
+  '/patients': { title: 'Patients', suite: 'Hospital', desc: 'patient records' },
+  '/appointments': { title: 'Appointments', suite: 'Hospital', desc: 'appointment scheduling' },
+  '/wards': { title: 'Wards', suite: 'Hospital', desc: 'hospital ward management' },
+  '/prescriptions': { title: 'Prescriptions', suite: 'Hospital', desc: 'prescription management' },
+  '/lab-results': { title: 'Lab Results', suite: 'Hospital', desc: 'lab results and diagnostics' },
+  '/students': { title: 'Students', suite: 'School', desc: 'student management' },
+  '/classes': { title: 'Classes', suite: 'School', desc: 'class management' },
+  '/grades': { title: 'Grades', suite: 'School', desc: 'student grades' },
+  '/attendance': { title: 'Attendance', suite: 'School', desc: 'attendance tracking' },
+  '/members': { title: 'Members', suite: 'Church', desc: 'church member directory' },
+  '/tithes': { title: 'Tithes', suite: 'Church', desc: 'tithe and offering records' },
+  '/employees': { title: 'Employees', suite: 'HR', desc: 'HR employee management' },
+  '/payroll': { title: 'Payroll', suite: 'HR', desc: 'payroll processing' },
+  '/recruitment': { title: 'Recruitment', suite: 'HR', desc: 'job applications and hiring' },
+  '/shipments': { title: 'Shipments', suite: 'Logistics', desc: 'shipment tracking' },
+  '/fleet': { title: 'Fleet', suite: 'Logistics', desc: 'vehicle fleet management' },
+  '/inventory': { title: 'Inventory', suite: 'Retail', desc: 'product inventory' },
+  '/orders': { title: 'Sales Orders', suite: 'Retail', desc: 'sales orders' },
+  '/pos': { title: 'Point of Sale', suite: 'Retail', desc: 'retail POS system' },
+};
+
+// Contextual smart suggestions per page/suite
+const PAGE_SUGGESTIONS = {
+  '/patients':    ['List all patients admitted today', 'Create a new patient record', 'Show patients with pending lab results'],
+  '/appointments':['Schedule an appointment for tomorrow', 'List today\'s appointments', 'Find upcoming appointments this week'],
+  '/wards':       ['Show all occupied beds', 'Assign patient to a bed in Ward A', 'List available beds'],
+  '/cases':       ['Show all open cases', 'Create a new case', 'Find cases assigned to me'],
+  '/tasks':       ['Show my pending tasks', 'Create an urgent task', 'Mark overdue tasks'],
+  '/employees':   ['List all active employees', 'Add a new employee', 'Show employees on leave'],
+  '/payroll':     ['Generate payroll for this month', 'Show pending payslips', 'Calculate overtime'],
+  '/students':    ['Show students with missing fees', 'Add a new student', 'Find students by class'],
+  '/inventory':   ['Show low stock items', 'Add a new product', 'Find products below reorder level'],
+  '/claims':      ['List pending claims', 'Create a new claim', 'Show high-value claims this month'],
+  '/':            ['Give me a summary of today\'s activity', 'Show key metrics', 'What needs my attention today?'],
+};
+
+//  Session Storage (Fallback/Types)
+function newSession() {
+  return {
+    id: crypto.randomUUID(),
+    title: 'New Chat',
+    createdAt: new Date().toISOString(),
+    messages: [{
+      role: 'assistant',
+      content: "Hello! I'm **Orbit** ≡ƒæï\n\nI can help you:\n  Navigate the app\n  Create, edit & manage records\n  Analyze data on any page\n  Answer any question\n\nYou can also use your **≡ƒÄÖ∩╕Å voice** or **≡ƒôÄ upload files** (images, PDFs, CSV, etc.)\n\nWhat would you like to do?"
+    }]
+  };
+}
+
+//  Parse Agent Actions 
+function parseAgentActions(text) {
+  const actions = [];
+  let cleanText = text;
+  const startRegex = /\{\s*"tool"\s*:/gi;
   
-  // Real-time Command Center Run State
-  const [runningCmd, setRunningCmd] = useState(null);
-  const [cmdLogs, setCmdLogs] = useState([]);
-  const [currentStepIdx, setCurrentStepIdx] = useState(-1);
+  let match;
+  while ((match = startRegex.exec(cleanText)) !== null) {
+    let start = match.index;
+    let braces = 0;
+    let end = -1;
+    let inString = false;
+    let escape = false;
 
-  const scrollRef = useRef(null);
+    for (let j = start; j < cleanText.length; j++) {
+      let char = cleanText[j];
+      if (char === '\\' && !escape) {
+        escape = true;
+        continue;
+      }
+      if (char === '"' && !escape) {
+        inString = !inString;
+      }
+      if (!inString) {
+        if (char === '{') braces++;
+        if (char === '}') braces--;
+      }
+      escape = false;
 
-  const quickActions = [
-    { label: "Draft Retainer", prompt: "Draft a premium retainer / services agreement template with clear clauses." },
-    { label: "Analyze Exchange Rate", prompt: "Help me calculate invoice items with custom exchange rates." },
-    { label: "Client Email Update", prompt: "Draft a polite, professional email response to a client's status request." },
-    { label: "Checklist Generator", prompt: "Generate a list of 5 critical checklist items for a new case onboard." }
-  ];
-
-  const commandCenterOperations = [
-    {
-      id: 'onboard_pipeline',
-      title: "🚀 Enterprise Onboarding & Billing Pipeline",
-      description: "Trigger a real multi-step workflow: Create a corporate client, generate their legal setup invoice ($1,500), issue welcome compliance checklists, and log tracking entries.",
-      icon: Cpu,
-      color: "from-blue-500/20 to-indigo-500/20 border-blue-500/30",
-      textColor: "text-blue-400",
-      steps: [
-        "Initializing onboarding pipelines...",
-        "Creating corporate client profile 'Apex Group Ltd'...",
-        "Generating onboarding legal setup invoice...",
-        "Initiating KYC compliance checklists...",
-        "Encrypted record transmission (E2EE active)...",
-        "Pinging Slack webhook connectors..."
-      ],
-      run: async (log) => {
-         log("Executing: Creating corporate client 'Apex Group Ltd'...");
-         const client = await base44.entities.Client.create({
-             name: "Apex Group Ltd",
-             email: "onboarding@apexgroup.com",
-             phone: "+233 20 444 8888",
-             status: "active",
-             type: "organization"
-         });
-         log(`SUCCESS: Client 'Apex Group Ltd' registered with ID: ${client.id}`);
-
-         log("Executing: Generating onboarding legal invoice...");
-         const invoice = await base44.entities.Invoice.create({
-             client_id: client.id,
-             client_name: client.name,
-             invoice_number: "INV-ONB-" + Math.floor(Math.random() * 10000),
-             total_amount: 1500,
-             currency: "USD",
-             status: "sent"
-         });
-         log(`SUCCESS: Invoice generated and sent with number: ${invoice.invoice_number}`);
-
-         log("Executing: Creating compliance checklist items...");
-         const checklist = await base44.entities.ClientChecklist.create({
-             client_id: client.id,
-             client_name: client.name,
-             title: "Collect KYC Corporate Certificate of Incorporation",
-             status: "pending",
-             description: "Review and collect Apex Group incorporation credentials."
-         });
-         log(`SUCCESS: Checklist created with ID: ${checklist.id}`);
-      },
-      report: `### 🚀 Onboarding Pipeline Execution Report
-      
-**Status:** ALL SYSTEMS COMPLETED
-**Tenant:** Active Firm
-
-| Resource Created | Details | Reference ID |
-| :--- | :--- | :--- |
-| **Corporate Client** | Apex Group Ltd | Registered |
-| **Onboarding Invoice** | $1,500.00 (Sent) | Generated |
-| **KYC Checklist** | Collect KYC Documents | Initialized |
-
-> [!NOTE]
-> All records successfully generated, encrypted (E2EE), and cached locally. Real-time synchronizer has dispatched corresponding alerts to channels.`
-    },
-    {
-      id: 'cyber_security',
-      title: "🛡️ Cyber Defense & Threat Diagnostics",
-      description: "Run advanced multi-point security diagnostic, scan system login histories, examine IP anomalies, and audit RBAC locks.",
-      icon: ShieldAlert,
-      color: "from-red-500/20 to-orange-500/20 border-red-500/30",
-      textColor: "text-red-400",
-      steps: [
-        "Initializing global security diagnostic scanner...",
-        "Auditing system role configurations: verified Staff lockout from Admin sections.",
-        "Analyzing login activity logs: fetched past 100 entries.",
-        "Cross-referencing staff sender addresses: confirmed SMTP restrictions are active.",
-        "Scanning client portal document permissions: verified file confidentiality.",
-        "Generating Cyber Defense Shield Assessment Report..."
-      ],
-      run: async (log) => {
-         log("Executing: Checking security constraints...");
-         log("SUCCESS: Staff lockout from Admin areas active.");
-         log("SUCCESS: SMTP sending locks verified.");
-      },
-      report: `### 🛡️ Orbit Cyber Security Assessment Report
- 
-**Status:** ALL SYSTEMS SECURED (SPF/DKIM Enforced)
-**Timestamp:** ${new Date().toLocaleString()}
- 
-| Diagnostic Vector | Status | Action Taken |
-| :--- | :--- | :--- |
-| **Admin Dashboard RBAC** | ✅ SECURED | Staff users locked out successfully. |
-| **SMTP Sender Lock** | ✅ ENFORCED | Staff restricted from spoofing email identities. |
-| **IP Address Analysis** | ✅ VERIFIED | Checked active logins; all IP ranges compliant. |
-| **Audit Logging** | ✅ LOGGING | Action logs are successfully syncing to DB. |
- 
-> [!TIP]
-> All systems conform to enterprise security protocols. Strict access control guarantees data insulation across all 12 industries.`
-    },
-    {
-      id: 'global_billing',
-      title: "💵 Multi-Currency Invoice & Exchange Arbitrage",
-      description: "Scan outstanding invoices, analyze exchange rate variance, apply conversion rules, and construct a financial report.",
-      icon: Globe,
-      color: "from-emerald-500/20 to-teal-500/20 border-emerald-500/30",
-      textColor: "text-emerald-400",
-      steps: [
-        "Scanning global billing records across active companies...",
-        "Querying current manual exchange rates (USD, EUR, GBP, NGN, KES)...",
-        "Calculating outstanding balances using active conversion vectors...",
-        "Auditing time-billed logs with associated case links...",
-        "Compiling consolidated currency arbitrage report..."
-      ],
-      run: async (log) => {
-         log("Executing: Auditing time billed ledgers...");
-         log("SUCCESS: Calculated converted rates.");
-      },
-      report: `### 💵 Global Multi-Currency Financial Report
- 
-**Audit Summary:** Multi-currency alignment across all billing ledgers.
-**Conversion Standard:** Manual rate override verified.
- 
-| Base Currency | conversion Target | Base Balance | Converted Value |
-| :--- | :--- | :--- | :--- |
-| **USD ($)** | NGN (₦) | $12,500.00 | ₦18,750,000.00 |
-| **EUR (€)** | KES (Sh) | €4,200.00 | KES 600,600.00 |
-| **GBP (£)** | USD ($) | £8,900.00 | $11,392.00 |
- 
-*All billing items reflect correct due date-time properties as requested.*`
+      if (braces === 0 && j > start) {
+        end = j;
+        break;
+      }
     }
-  ];
+
+    if (end !== -1) {
+      let jsonStr = cleanText.substring(start, end + 1);
+      try {
+        let obj = JSON.parse(jsonStr);
+        if (obj && obj.tool) {
+          actions.push(obj);
+          cleanText = cleanText.substring(0, start) + cleanText.substring(end + 1);
+          startRegex.lastIndex = start; 
+        }
+      } catch (e) {}
+    }
+  }
+
+  cleanText = cleanText.replace(/<\/?[a-zA-Z0-9_]+ACTION>/gi, '').trim();
+  return { cleanText, actions };
+}
+
+//  Format message with simple markdown 
+function FormatMessage({ content }) {
+  return (
+    <div className="prose prose-sm dark:prose-invert max-w-none break-words [&>p]:mb-2 [&>p:last-child]:mb-0 [&>ul]:mt-1 [&>ul]:mb-2 [&>ol]:mt-1 [&>ol]:mb-2 [&>ul]:pl-4 [&>ol]:pl-4">
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+        {content}
+      </ReactMarkdown>
+    </div>
+  );
+}
+
+//  Main Component 
+export default function GlobalAIAssistant({ onClose }) {
+  const { user } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const mutateRecord = useMutateIndustryRecord();
+  const deleteRecord = useDeleteIndustryRecord();
+  const companyId = useCompanyId();
+  const queryClient = useQueryClient();
+
+  const [sessions, setSessions] = useState([]);
+  const [activeId, setActiveId] = useState(null);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [streamingText, setStreamingText] = useState('');
+  const [isRecording, setIsRecording] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState(null);
+
+  const messagesEndRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const recognitionRef = useRef(null);
+  const manualStopRef = useRef(false);
 
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (!companyId || !user?.email || isInitialized) return;
+    const loadSessions = async () => {
+      const { data } = await supabase
+        .from('industry_records')
+        .select('*')
+        .eq('company_id', companyId)
+        .eq('record_type', 'ai_session')
+        .eq('search_text', user.email)
+        .order('created_at', { ascending: false });
+      
+      if (data && data.length > 0) {
+        setSessions(data.map(d => d.data));
+        setActiveId(data[0].data.id);
+      } else {
+        const s = newSession();
+        setSessions([s]);
+        setActiveId(s.id);
+        supabase.from('industry_records').upsert({
+          id: s.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: s
+        }).then();
+      }
+      setIsInitialized(true);
+    };
+    loadSessions();
+  }, [companyId, user?.email, isInitialized]);
+
+  const activeSession = sessions.find(s => s.id === activeId) || sessions[0];
+  const messages = activeSession?.messages || [];
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const addMessages = useCallback((sid, newMsgs) => {
+    setSessions(prev => {
+      const updated = prev.map(s => {
+        if (s.id !== sid) return s;
+        const upMsgs = [...s.messages, ...newMsgs];
+        const firstUser = upMsgs.find(m => m.role === 'user');
+        const title = firstUser
+          ? firstUser.content.replace(/\[Attached:.*?\]/g, '').trim().slice(0, 42)
+          : s.title;
+        const newS = { ...s, messages: upMsgs, title: title || 'New Chat' };
+        
+        if (companyId && user?.email) {
+          supabase.from('industry_records').upsert({
+            id: newS.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: newS
+          }).then();
+        }
+        return newS;
+      });
+      return updated;
+    });
+  }, [companyId, user?.email]);
+
+  const getPageContext = useCallback(() => {
+    const ctx = PAGE_CONTEXT[location.pathname];
+    return ctx
+      ? `The user is on the "${ctx.title}" page in the ${ctx.suite} suite (${ctx.desc}).`
+      : `The user is on the "${location.pathname}" page.`;
+  }, [location.pathname]);
+
+  const executeActionsAsync = async (actions) => {
+    const results = [];
+    for (const action of actions) {
+      try {
+        switch (action.tool) {
+          case 'search_records': {
+            const rt = (action.recordType || '').toLowerCase();
+            const entityMap = { 'case': 'LegalCase', 'client': 'Client', 'lead': 'Lead', 'staff': 'StaffRecord', 'invoice': 'Invoice', 'task': 'Task' };
+            const entityName = entityMap[rt];
+            const q = (action.query || '').toLowerCase();
+            if (entityName) {
+              const records = await base44.entities[entityName].list();
+              const found = records.filter(r => JSON.stringify(r).toLowerCase().includes(q)).slice(0, 5);
+              const simplified = found.map(r => ({ id: r.id, title: r.title, name: r.name, email: r.email, case_number: r.case_number }));
+              results.push(`Search results for ${rt} matching "${q}":\n` + JSON.stringify(simplified));
+            } else {
+              const { data: records } = await supabase
+                .from('industry_records')
+                .select('id, data, status')
+                .eq('company_id', companyId)
+                .eq('record_type', rt);
+              const found = (records || []).filter(r => JSON.stringify(r).toLowerCase().includes(q)).slice(0, 5);
+              results.push(`Search results for ${rt} matching "${q}":\n` + JSON.stringify(found));
+            }
+            break;
+          }
+          case 'remember': {
+            if (action.fact) {
+              await mutateRecord.mutateAsync({
+                id: crypto.randomUUID(),
+                recordType: 'ai_memory',
+                payload: { fact: action.fact, user: user?.email },
+                status: 'active',
+                searchText: `${user?.email} ${action.fact}`
+              });
+              results.push(`Fact successfully committed to long-term memory.`);
+            }
+            break;
+          }
+          case 'search_memory': {
+            const { data: mems } = await supabase
+              .from('industry_records')
+              .select('*')
+              .eq('company_id', companyId)
+              .eq('record_type', 'ai_memory')
+              .ilike('search_text', `%${user?.email}%`);
+            
+            if (mems && mems.length > 0) {
+              const matched = mems
+                .filter(m => m.data.fact.toLowerCase().includes((action.query || '').toLowerCase()))
+                .map(m => m.data.fact);
+              results.push(matched.length ? `Memory results:\n${matched.join('\n')}` : `No memories found matching "${action.query}".`);
+            } else {
+              results.push(`Memory is empty.`);
+            }
+            break;
+          }
+          case 'navigate_to':
+            if (action.route) {
+              const dangerousRoutes = ['/logout', '/login', '/register', '/auth'];
+              if (dangerousRoutes.some(r => action.route.includes(r))) {
+                results.push(`Security Block: Navigation to ${action.route} is prohibited for AI agents.`);
+                toast.error(`Blocked AI from navigating to ${action.route}`);
+              } else {
+                setTimeout(() => navigate(action.route), 200);
+                results.push(`Navigated to ${action.route}`);
+              }
+            }
+            break;
+          case 'show_toast':
+            toast(action.message || 'Done!', { icon: '' });
+            results.push(`Toast shown`);
+            break;
+          case 'create_record':
+          case 'update_record': {
+            if (action.recordType && action.payload) {
+              const rt = action.recordType.toLowerCase();
+              const isCore = ['case', 'client', 'lead', 'staff', 'invoice', 'task'].includes(rt);
+              if (isCore) {
+                const entityMap = { 'case': 'LegalCase', 'client': 'Client', 'lead': 'Lead', 'staff': 'StaffRecord', 'invoice': 'Invoice', 'task': 'Task' };
+                const entityName = entityMap[rt];
+                const p = { ...action.payload, company_id: companyId };
+                if (action.tool === 'create_record' && !p.status) p.status = 'open';
+
+                const res = action.id || action.tool === 'update_record'
+                  ? await base44.entities[entityName].update(action.id, p)
+                  : await base44.entities[entityName].create(p);
+
+                queryClient.invalidateQueries([rt + 's']);
+                queryClient.invalidateQueries(['cases']);
+                results.push(`Success: ${action.tool} for ${rt}. Record ID is ${res.id}`);
+              } else {
+                const res = await mutateRecord.mutateAsync({
+                  id: action.id,
+                  recordType: rt,
+                  payload: action.payload,
+                  status: action.payload.status || 'active',
+                  searchText: JSON.stringify(action.payload).toLowerCase()
+                });
+                results.push(`Success: ${action.tool} for ${rt}. Record ID is ${res.id}`);
+              }
+            }
+            break;
+          }
+          case 'delete_record': {
+            if (action.id && action.recordType) {
+              const rt = action.recordType.toLowerCase();
+              const isCore = ['case', 'client', 'lead', 'staff', 'invoice', 'task'].includes(rt);
+              if (isCore) {
+                const entityMap = { 'case': 'LegalCase', 'client': 'Client', 'lead': 'Lead', 'staff': 'StaffRecord', 'invoice': 'Invoice', 'task': 'Task' };
+                const entityName = entityMap[rt];
+                await base44.entities[entityName].delete(action.id);
+                queryClient.invalidateQueries([rt + 's']);
+                queryClient.invalidateQueries(['cases']);
+                results.push(`Success: deleted ${rt} with ID ${action.id}`);
+              } else {
+                await deleteRecord.mutateAsync({ id: action.id, recordType: rt });
+                results.push(`Success: deleted ${rt} with ID ${action.id}`);
+              }
+            }
+            break;
+          }
+          default:
+            results.push(`Error: unknown tool ${action.tool}`);
+            break;
+        }
+      } catch (err) {
+        results.push(`Error executing ${action.tool}: ${err.message}`);
+      }
     }
-  }, [messages, loading, runningCmd, cmdLogs]);
+    return results;
+  };
 
-  const handleSend = async (e, customPrompt = null) => {
-    e?.preventDefault();
-    const promptValue = customPrompt || input.trim();
-    if (!promptValue || loading) return;
+  const handleSend = useCallback(async (overrideText) => {
+    const text = (overrideText !== undefined ? overrideText : input).trim();
+    if (!text && !uploadedFile) return;
 
-    const userMessage = promptValue;
+    const sid = activeId;
+    const currentSessions = sessions;
+
+    let userContent = text;
+    if (uploadedFile) {
+      userContent = text
+        ? `${text}\n\n[Attached: ${uploadedFile.name}]`
+        : `[Attached: ${uploadedFile.name}]`;
+    }
+
+    addMessages(sid, [{ role: 'user', content: userContent }]);
     setInput('');
-    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
-    setLoading(true);
+    const fileSnap = uploadedFile;
+    setUploadedFile(null);
+    setIsLoading(true);
 
     try {
-      const historyContext = messages.slice(-4).map(m => `${m.role}: ${m.content}`).join('\n');
-      const fullPrompt = `${historyContext}\nuser: ${userMessage}\nassistant:`;
-      
-      const response = await invokeCloudflareAi(
-        fullPrompt, 
-        "You are 'Orbit 2.0', the premium, extremely powerful multi-tasking AI enterprise intelligence agent for our cloud suite. You assist teams across all industries (Legal, Hospital, School, Logistics, Retail, HR, etc.) with advanced research, high-quality document drafting, email composition, financial and exchange rate calculations, data analysis, security audits, and instant workflow automation. Use professional, markdown-formatted outputs."
-      );
-      
-      setMessages(prev => [...prev, { role: 'assistant', content: response }]);
-    } catch (error) {
-      console.error(error);
-      setMessages(prev => [...prev, { role: 'assistant', content: `**Error:** ${error.message}\n\n*Note: If you just updated the proxy configuration, please restart your Vite dev server.*` }]);
+      let responseText;
+
+      if (fileSnap?.type === 'image') {
+        const promptText = `You are an AI agent embedded in Optalflow enterprise SaaS. ${getPageContext()}\n\nUser says: ${text || 'Please analyze this image.'}\n\nDescribe the image and provide relevant business insights.`;
+        responseText = await analyzeImage(fileSnap.bytes, promptText);
+      } else {
+        const ctx = PAGE_CONTEXT[location.pathname] || { title: 'Unknown', suite: 'Unknown' };
+        const systemPrompt = `You are Orbit ΓÇö an intelligent, proactive enterprise assistant embedded in Optalflow SaaS.
+Your current context is the ${ctx.suite} suite, specifically the '${ctx.title}' page.
+
+CRITICAL INSTRUCTIONS:
+- You have Long-Term Memory. You can remember facts about the user across sessions. Always check your memory or save important details when asked.
+- The user is currently on page: ${location.pathname}
+
+EXACT VERIFIED ROUTE MAP ΓÇö ALWAYS USE THESE EXACT PATHS FOR navigate_to. NEVER GUESS OR INVENT PATHS:
+# Core / Legal Suite
+/ ΓåÆ Dashboard
+/cases ΓåÆ Cases
+/clients ΓåÆ Clients
+/calendar ΓåÆ Calendar
+/invoices ΓåÆ Invoices
+/tasks ΓåÆ Tasks
+/documents ΓåÆ Documents
+/team ΓåÆ Team
+/settings ΓåÆ Settings
+/client-portal ΓåÆ Client Portal
+/leads ΓåÆ Leads
+/billing ΓåÆ Billing
+/pipeline ΓåÆ Case Pipeline
+/research ΓåÆ Legal Research
+/audit ΓåÆ Audit Log
+/leave ΓåÆ Leave Management
+/performance ΓåÆ Performance Dashboard
+/outcomes ΓåÆ Case Outcomes
+/conflict-check ΓåÆ Conflict Checker
+/email-inbox ΓåÆ Email Inbox
+/reports ΓåÆ Reports
+/export ΓåÆ Data Export
+/whatsapp ΓåÆ WhatsApp Messenger
+/hr ΓåÆ HR Dashboard
+/my-dashboard ΓåÆ My Dashboard
+
+# School Suite
+/students ΓåÆ Students
+/classes ΓåÆ Classes
+/timetable ΓåÆ Timetable
+/attendance ΓåÆ Attendance
+/grades ΓåÆ Grades
+/exams ΓåÆ Exams
+/fees ΓåÆ Fee Management
+/library ΓåÆ Library
+/parent-portal ΓåÆ Parent Portal
+
+# Hospital Suite
+/patients ΓåÆ Patients
+/appointments ΓåÆ Appointments
+/wards ΓåÆ Wards
+/prescriptions ΓåÆ Prescriptions
+/lab-results ΓåÆ Lab Results
+/pharmacy ΓåÆ Pharmacy
+
+# Hotel Suite
+/front-desk ΓåÆ Front Desk
+/reservations ΓåÆ Reservations
+/rooms ΓåÆ Rooms
+/housekeeping ΓåÆ Housekeeping
+/restaurant ΓåÆ Restaurant
+/guest-requests ΓåÆ Guest Requests
+
+# Church Suite
+/members ΓåÆ Members
+/ministries ΓåÆ Ministries
+/events ΓåÆ Events
+/tithes ΓåÆ Tithes
+/volunteers ΓåÆ Volunteers
+/sermons ΓåÆ Sermons
+/small-groups ΓåÆ Small Groups
+/prayers ΓåÆ Prayers
+
+# Insurance Suite
+/policies ΓåÆ Policies
+/claims ΓåÆ Claims
+/premiums ΓåÆ Premiums
+/underwriting ΓåÆ Underwriting
+/agent-performance ΓåÆ Agent Performance
+
+# Retail Suite
+/pos ΓåÆ Point of Sale
+/inventory ΓåÆ Inventory
+/orders ΓåÆ Orders/Sales
+/suppliers ΓåÆ Suppliers
+/retail-customers ΓåÆ Customers
+
+# Logistics Suite
+/shipments ΓåÆ Shipments
+/fleet ΓåÆ Fleet
+/drivers ΓåÆ Drivers
+/warehouse ΓåÆ Warehouses
+
+# HR Suite
+/employees ΓåÆ Employees
+/recruitment ΓåÆ Recruitment
+/payroll ΓåÆ Payroll
+/hr-leave ΓåÆ HR Leave
+
+AGENT POWERS (return EXACTLY this JSON format inline to act):
+- Search: <AGENT_ACTION>{"tool":"search_records","recordType":"patient|case|client|student|staff","query":"John"}</AGENT_ACTION>
+- Navigate: <AGENT_ACTION>{"tool":"navigate_to","route":"/patients"}</AGENT_ACTION>
+- Create: <AGENT_ACTION>{"tool":"create_record","recordType":"patient","payload":{"name":"John Doe","age":30,"status":"active"}}</AGENT_ACTION>
+- Update: <AGENT_ACTION>{"tool":"update_record","recordType":"patient","id":"uuid","payload":{"status":"discharged"}}</AGENT_ACTION>
+- Delete: <AGENT_ACTION>{"tool":"delete_record","recordType":"patient","id":"uuid"}</AGENT_ACTION>
+- Toast: <AGENT_ACTION>{"tool":"show_toast","message":"Done!"}</AGENT_ACTION>
+- Remember: <AGENT_ACTION>{"tool":"remember","fact":"User prefers dark mode"}</AGENT_ACTION>
+- Search Memory: <AGENT_ACTION>{"tool":"search_memory","query":"preferences"}</AGENT_ACTION>
+- Request Confirmation: <AGENT_ACTION>{"tool":"ask_confirmation","actionToConfirm":{"tool":"navigate_to","route":"/classes"},"message":"Did you mean the Classes page?"}</AGENT_ACTION>
+
+RULES FOR MULTI-STEP REASONING:
+1. NEVER explain how the user can do something. YOU MUST do it for them.
+2. When asked to CREATE something, create the record first, THEN navigate to the correct page to show it.
+3. ALWAYS use the exact routes from the ROUTE MAP above. NEVER invent paths like /hospital/patients.
+4. You can chain actions: create a record, then navigate to show it.
+5. DO NOT wrap <AGENT_ACTION> in markdown code blocks. Output it raw inline.
+6. Once all tasks are complete, summarize what you did in plain language and STOP outputting <AGENT_ACTION> blocks.
+7. For 'case' records, use 'title' instead of 'name'.
+8. If the user's input has a typo, is ambiguous, or if you are unsure which page they mean, ALWAYS use the 'ask_confirmation' tool first and wait for approval.`;
+
+        const sessionMessages = currentSessions.find(s => s.id === sid)?.messages || [];
+        const allMessages = [...sessionMessages, { role: 'user', content: userContent }];
+        let apiMessages = [
+          { role: 'system', content: systemPrompt },
+          ...allMessages.slice(-20).map(m => ({ role: m.role, content: m.content }))
+        ];
+
+        let maxSteps = 5;
+        let stepCount = 0;
+        let finalCleanText = "";
+
+        while (stepCount < maxSteps) {
+          stepCount++;
+          const responseText = await generateText(apiMessages);
+          const { cleanText, actions } = parseAgentActions(responseText);
+          
+          if (cleanText) finalCleanText += (finalCleanText ? "\n\n" : "") + cleanText;
+
+          if (actions.length === 0) {
+            break; // AI is done
+          }
+
+          let confirmationAction = actions.find(a => a.tool === 'ask_confirmation');
+          if (confirmationAction) {
+             addMessages(sid, [{ 
+               role: 'assistant', 
+               content: finalCleanText || confirmationAction.message,
+               isConfirmation: true,
+               pendingAction: confirmationAction.actionToConfirm 
+             }]);
+             finalCleanText = ""; // Handled via the confirmation message
+             break; // Pause loop
+          }
+
+          const actionResults = await executeActionsAsync(actions);
+          
+          apiMessages.push({ role: 'assistant', content: responseText });
+          apiMessages.push({ role: 'system', content: `Action Results:\n${actionResults.join('\n')}` });
+        }
+
+        if (finalCleanText) {
+          addMessages(sid, [{ role: 'assistant', content: finalCleanText }]);
+        }
+      }
+    } catch (err) {
+      addMessages(sid, [{ role: 'assistant', content: "Error: " + err.message + ". Please try again." }]);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
+    }
+  }, [input, uploadedFile, activeId, sessions, addMessages, getPageContext, companyId, queryClient, navigate, location.pathname, executeActionsAsync]);
+
+  //  Action Confirmation Handlers
+  const confirmPendingAction = async (action, msgIndex) => {
+    setSessions(prev => prev.map(s => {
+      if (s.id !== activeId) return s;
+      const msgs = [...s.messages];
+      msgs[msgIndex] = { ...msgs[msgIndex], isConfirmation: false };
+      return { ...s, messages: msgs };
+    }));
+    
+    setIsLoading(true);
+    try {
+      const actionResults = await executeActionsAsync([action]);
+      addMessages(activeId, [{ role: 'system', content: `Action Confirmed & Executed. Results:\n${actionResults.join('\n')}` }]);
+      toast.success("Action confirmed");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const executeCommandOperation = async (op) => {
-    if (runningCmd) return;
-    setRunningCmd(op);
-    setCmdLogs([]);
-    setCurrentStepIdx(0);
+  const cancelPendingAction = (msgIndex) => {
+    setSessions(prev => prev.map(s => {
+      if (s.id !== activeId) return s;
+      const msgs = [...s.messages];
+      msgs[msgIndex] = { ...msgs[msgIndex], isConfirmation: false };
+      return { ...s, messages: msgs };
+    }));
+    addMessages(activeId, [{ role: 'user', content: "I cancelled that action." }]);
   };
 
-  useEffect(() => {
-    if (!runningCmd) return;
-
-    const runSteps = async () => {
-      if (currentStepIdx < runningCmd.steps.length) {
-        const stepLog = runningCmd.steps[currentStepIdx];
-        setCmdLogs(prev => [...prev, `[INFO] ${stepLog}`]);
-        
-        // Execute the custom DB mutation if applicable
-        if (currentStepIdx === 1 && runningCmd.run) {
-           try {
-             await runningCmd.run((msg) => setCmdLogs(prev => [...prev, `[DB_EXEC] ${msg}`]));
-           } catch (e) {
-             setCmdLogs(prev => [...prev, `[ERROR] Database execution failed: ${e.message}`]);
-           }
+  //  Voice 
+  const toggleVoice = () => {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) { toast.error('Voice not supported. Please use Chrome or Edge.'); return; }
+    
+    if (isRecording) { 
+      manualStopRef.current = true;
+      recognitionRef.current?.stop(); 
+      setIsRecording(false); 
+      return; 
+    }
+    
+    manualStopRef.current = false;
+    const r = new SR();
+    r.continuous = true;
+    r.interimResults = false;
+    r.lang = 'en-US';
+    
+    r.onresult = e => {
+      let t = '';
+      for (let i = e.resultIndex; i < e.results.length; ++i) {
+        if (e.results[i].isFinal) {
+          t += e.results[i][0].transcript;
         }
-
-        // Advance step index after delay
-        setTimeout(() => {
-          setCurrentStepIdx(prev => prev + 1);
-        }, 1200);
-      } else {
-        // Complete execution and transition report
-        setTimeout(() => {
-          setMessages(prev => [...prev, {
-            role: 'assistant',
-            content: `### ⚡ Orbit 2.0 Auto-Automation Finished\n\nExecuted Operation: **${runningCmd.title}**\n\n${runningCmd.report}`
-          }]);
-          toast({ title: "Operation completed!", description: runningCmd.title });
-          setRunningCmd(null);
-          setCmdLogs([]);
-          setCurrentStepIdx(-1);
-          setActiveTab('chat');
-        }, 1200);
+      }
+      if (t) {
+        setInput(prev => prev ? `${prev} ${t}` : t);
       }
     };
+    
+    r.onerror = (e) => { 
+      if (e.error !== 'no-speech') {
+        manualStopRef.current = true;
+        setIsRecording(false); 
+        toast.error('Voice error: ' + e.error); 
+      }
+    };
+    
+    r.onend = () => {
+      if (!manualStopRef.current) {
+        try { r.start(); } catch (err) { setIsRecording(false); }
+      } else {
+        setIsRecording(false);
+      }
+    };
+    
+    recognitionRef.current = r;
+    r.start();
+    setIsRecording(true);
+    toast('Listening continuously...', { icon: '≡ƒÄñ', duration: 2000 });
+  };
 
-    runSteps();
-  }, [runningCmd, currentStepIdx]);
+  //  File Upload 
+  const handleFileUpload = async e => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    e.target.value = '';
+    if (file.size > 10 * 1024 * 1024) { toast.error('File too large (max 10MB)'); return; }
 
-  // Let the width transition handle hiding when closed
+    if (file.type.startsWith('image/')) {
+      const bytes = new Uint8Array(await file.arrayBuffer());
+      setUploadedFile({ name: file.name, type: 'image', bytes });
+      toast.success(`Image ready: ${file.name}`);
+    } else {
+      const text = await file.text();
+      setUploadedFile({ name: file.name, type: 'text', content: text });
+      toast.success(`File ready: ${file.name}`);
+    }
+  };
 
-  const containerClasses = inline 
-    ? "flex flex-col h-full w-full bg-card border-l border-border" 
-    : `h-screen bg-card border-l border-border flex flex-col transition-all duration-300 shrink-0 ${isOpen ? 'w-[350px] lg:w-[400px] opacity-100' : 'w-0 border-l-0 opacity-0 overflow-hidden'}`;
+  //  Session Management 
+  const startNewChat = () => {
+    const s = newSession();
+    if (companyId && user?.email) {
+      supabase.from('industry_records').upsert({
+        id: s.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: s
+      }).then();
+    }
+    setSessions(prev => [s, ...prev]);
+    setActiveId(s.id);
+    setShowHistory(false);
+  };
 
+  const deleteSession = async (sid, e) => {
+    e.stopPropagation();
+    if (companyId) {
+      await supabase.from('industry_records').delete().eq('id', sid).eq('company_id', companyId);
+    }
+    setSessions(prev => {
+      const rest = prev.filter(s => s.id !== sid);
+      if (rest.length === 0) {
+        const fresh = newSession();
+        if (companyId && user?.email) {
+          supabase.from('industry_records').upsert({
+            id: fresh.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: fresh
+          }).then();
+        }
+        setActiveId(fresh.id);
+        return [fresh];
+      }
+      if (activeId === sid) setActiveId(rest[0].id);
+      return rest;
+    });
+  };
+
+  const ctx = PAGE_CONTEXT[location.pathname];
+
+  //  Render 
   return (
-    <div className={containerClasses}>
-      {/* Top Header */}
-      <div className="bg-background border-b border-border p-3 flex items-center justify-between shrink-0">
-        <div className="flex items-center gap-1.5 text-sm font-medium text-foreground hover:bg-muted px-2 py-1.5 rounded-md cursor-pointer transition-colors">
-          Orbit Assistant
-          <svg className="w-3.5 h-3.5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+    <div className={`flex h-full shrink-0 border-l-[3px] border-l-blue-500 bg-card shadow-[-8px_0_30px_rgba(0,0,0,0.07)] animate-in slide-in-from-right-8 duration-300 z-40 transition-all ${isExpanded ? 'w-[680px]' : 'w-[400px]'}`}>
+
+      {/*  History Sidebar  */}
+      {showHistory && (
+        <div className="w-52 shrink-0 border-r border-border bg-muted/20 flex flex-col">
+          <div className="px-3 py-2.5 border-b border-border flex items-center justify-between">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Chat History</span>
+            <button onClick={startNewChat} className="p-1 hover:bg-muted rounded text-muted-foreground hover:text-blue-600 transition-colors" title="New chat">
+              <Plus className="w-3.5 h-3.5" />
+            </button>
+          </div>
+          <div className="flex-1 overflow-y-auto p-2 space-y-1">
+            {sessions.map(s => (
+              <div
+                key={s.id}
+                onClick={() => { setActiveId(s.id); setShowHistory(false); }}
+                className={`group relative flex items-start gap-2 p-2 rounded-lg cursor-pointer text-left transition-colors ${
+                  s.id === activeId
+                    ? 'bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/50'
+                    : 'hover:bg-muted/70'
+                }`}
+              >
+                <Clock className="w-3 h-3 mt-0.5 text-muted-foreground shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-[11px] font-medium text-foreground truncate leading-tight">{s.title}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">
+                    {new Date(s.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                  </p>
+                </div>
+                <button
+                  onClick={e => deleteSession(s.id, e)}
+                  className="opacity-0 group-hover:opacity-100 p-0.5 text-muted-foreground hover:text-red-500 transition-all shrink-0"
+                >
+                  <Trash2 className="w-3 h-3" />
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
-        {!inline && (
-          <div className="flex items-center gap-0.5 text-muted-foreground">
-            <button className="p-1.5 hover:bg-muted rounded-md transition-colors" title="New conversation">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+      )}
+
+      {/*  Main Panel  */}
+      <div className="flex-1 flex flex-col min-w-0">
+
+        {/* Header */}
+        <div className="flex items-center gap-2 px-3 py-2.5 border-b border-border bg-gradient-to-r from-blue-500/8 to-indigo-500/5 shrink-0">
+          <button
+            onClick={() => setShowHistory(!showHistory)}
+            className={`p-1.5 rounded-md transition-colors shrink-0 ${showHistory ? 'bg-blue-100 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
+            title="Chat history"
+          >
+            <Clock className="w-4 h-4" />
+          </button>
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-5 h-5 rounded flex items-center justify-center bg-blue-600/20 text-blue-600 shrink-0">
+              <OrbitIcon className="w-3.5 h-3.5" />
+            </div>
+            <div className="flex items-center gap-1.5 flex-1">
+              <p className="text-[11px] font-bold text-foreground leading-none">Orbit</p>
+              <div className="flex items-center gap-1 bg-gradient-to-r from-blue-600 to-indigo-600 px-1.5 py-0.5 rounded-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse shrink-0"></span>
+                <span className="text-[9px] font-bold uppercase tracking-wider text-white truncate">Agent Active</span>
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-0.5 shrink-0">
+            <button onClick={startNewChat} className="p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground rounded-md transition-colors" title="New chat">
+              <Plus className="w-4 h-4" />
             </button>
-            <button className="p-1.5 hover:bg-muted rounded-md transition-colors" title="Expand">
-              <Maximize2 className="w-4 h-4" />
+            <button onClick={() => setIsExpanded(!isExpanded)} className="p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground rounded-md transition-colors">
+              {isExpanded ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
             </button>
-            <button onClick={onClose} className="p-1.5 hover:bg-muted rounded-md transition-colors" title="Close">
+            <button onClick={onClose} className="p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground rounded-md transition-colors">
               <X className="w-4 h-4" />
             </button>
           </div>
-        )}
-      </div>
+        </div>
 
-      {/* Tabs navigation */}
-      <div className="flex bg-muted/30 border-b border-border text-xs">
-        <button 
-          onClick={() => setActiveTab('chat')}
-          disabled={!!runningCmd}
-          className={`flex-1 py-2.5 text-center font-semibold border-b-2 transition-all ${
-            activeTab === 'chat' 
-              ? 'border-primary text-primary bg-background/50' 
-              : 'border-transparent text-muted-foreground hover:text-foreground'
-          }`}
-        >
-          💬 Interactive Chat
-        </button>
-        <button 
-          onClick={() => setActiveTab('commands')}
-          disabled={!!runningCmd}
-          className={`flex-1 py-2.5 text-center font-semibold border-b-2 transition-all ${
-            activeTab === 'commands' 
-              ? 'border-primary text-primary bg-background/50' 
-              : 'border-transparent text-muted-foreground hover:text-foreground'
-          }`}
-        >
-          ⚡ Command Center
-        </button>
-      </div>
+        {/* Page Context Bar */}
+        <div className="px-3 py-1.5 flex items-center gap-1.5 bg-blue-50/60 dark:bg-blue-950/10 border-b border-blue-100 dark:border-blue-900/20 shrink-0">
+          <div className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0"></div>
+          <span className="text-[10px] text-blue-600 dark:text-blue-400 font-semibold truncate">
+            {ctx ? `${ctx.suite}  ${ctx.title}` : location.pathname}  AI has full context
+          </span>
+        </div>
 
-      {/* Main Dynamic View */}
-      {runningCmd ? (
-        // Live running terminal screen
-        <div className="flex-1 bg-slate-950 text-slate-100 p-6 flex flex-col font-mono text-xs select-none">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
-            <div className="flex items-center gap-2 text-primary">
-              <Terminal className="w-4 h-4 animate-pulse" />
-              <span>Orbit Live Console</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span>
-              <span className="text-[10px] text-slate-400">EXECUTING MULTI-TASKING AUTOMATION</span>
-            </div>
-          </div>
-          
-          <ScrollArea className="flex-1 bg-slate-900/60 rounded-lg border border-slate-800/80 p-4 mb-4">
-            <div className="space-y-2">
-              <p className="text-slate-400">Orbit Agent Init Session ... SUCCESS</p>
-              <p className="text-slate-400">Loading module diagnostics ... OK</p>
-              {cmdLogs.map((log, i) => (
-                <div key={i} className="flex gap-2 items-start">
-                  <span className="text-primary font-bold">❯</span>
-                  <p className="text-emerald-400">{log}</p>
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 relative bg-[radial-gradient(circle,#e2e8f0_1px,transparent_1px)] dark:bg-[radial-gradient(circle,#1e293b_1px,transparent_1px)] [background-size:18px_18px]">
+          <div className="absolute inset-0 bg-card/65 pointer-events-none z-0"></div>
+          <div className="relative z-10 space-y-4">
+            {messages.filter(m => m.role !== 'system').map((msg, i) => (
+              <div key={i} className={`flex gap-2.5 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-0.5 shadow-sm ${
+                  msg.role === 'user'
+                    ? 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
+                    : 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white'
+                }`}>
+                  {msg.role === 'user' ? <User className="w-3.5 h-3.5" /> : <Sparkles className="w-3.5 h-3.5" />}
                 </div>
-              ))}
-              {currentStepIdx < runningCmd.steps.length && (
-                <div className="flex items-center gap-2 pt-2">
-                  <Loader2 className="w-3.5 h-3.5 animate-spin text-primary" />
-                  <span className="text-[10px] text-slate-500">Processing next action...</span>
+                <div className={`px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed shadow-sm max-w-[88%] ${
+                  msg.role === 'user'
+                    ? 'bg-blue-600 text-white rounded-tr-sm'
+                    : 'bg-card border border-border rounded-tl-sm text-foreground'
+                }`}>
+                  <FormatMessage content={msg.content} />
+                  
+                  {msg.isConfirmation && msg.pendingAction && (
+                    <div className="mt-3 flex gap-2 pt-3 border-t border-border">
+                      <button 
+                        onClick={() => confirmPendingAction(msg.pendingAction, i)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shadow-sm flex items-center gap-1.5"
+                      >
+                        <Sparkles className="w-3 h-3" /> Continue Action
+                      </button>
+                      <button 
+                        onClick={() => cancelPendingAction(i)}
+                        className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border border-border shadow-sm"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-            <div ref={scrollRef} />
-          </ScrollArea>
-
-          <div className="text-center text-slate-500 text-[10px] select-none">
-            Please wait while Orbit secures, calculates, and coordinates databases...
+              </div>
+            ))}
+            {isLoading && (
+              <div className="flex gap-2.5">
+                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shrink-0 shadow-sm">
+                  <Sparkles className="w-3.5 h-3.5 text-white animate-spin" />
+                </div>
+                <div className="px-4 py-3 bg-card border border-border rounded-2xl rounded-tl-sm shadow-sm">
+                  <div className="flex gap-1.5 items-center">
+                    <span className="w-2 h-2 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <span className="w-2 h-2 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <span className="w-2 h-2 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: '300ms' }} />
+                  </div>
+                  <p className="text-[10px] text-muted-foreground mt-1.5 italic">Orbit is thinking...</p>
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
           </div>
         </div>
-      ) : activeTab === 'commands' ? (
-        // Command Center Selection View
-        <ScrollArea className="flex-1 p-4 bg-muted/20">
-          <div className="space-y-4 pb-4">
-            <div className="bg-primary/5 rounded-xl border border-primary/20 p-4 text-xs leading-relaxed text-muted-foreground flex items-start gap-2.5 mb-2">
-              <Cpu className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-              <div>
-                <strong className="text-foreground block mb-0.5">Orbit Orchestrator Suite</strong>
-                Execute pre-configured enterprise command packages across marketing, billing, security, and document workflows. Runs instantly.
-              </div>
-            </div>
 
-            <div className="grid grid-cols-1 gap-3">
-              {commandCenterOperations.map((op) => {
-                const Icon = op.icon;
-                return (
-                  <div 
-                    key={op.id} 
-                    className={`bg-card border rounded-2xl p-4 transition-all duration-300 hover:scale-[1.01] hover:shadow-md flex flex-col justify-between gap-4`}
-                  >
-                    <div className="flex gap-3">
-                      <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${op.color} border flex items-center justify-center shrink-0`}>
-                        <Icon className={`w-5 h-5 ${op.textColor}`} />
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-sm text-foreground">{op.title}</h4>
-                        <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{op.description}</p>
-                      </div>
-                    </div>
-                    <Button 
-                      onClick={() => executeCommandOperation(op)}
-                      className="w-full bg-primary hover:bg-primary/95 text-primary-foreground font-medium text-xs h-9 rounded-xl flex items-center justify-center gap-1.5"
-                    >
-                      <Play className="w-3.5 h-3.5 fill-current" /> Execute Operation
-                    </Button>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </ScrollArea>
-      ) : (
-        // Standard Conversational Chat View
-        <>
-          {/* Quick Action Prompt Chips */}
-          <div className="flex gap-1.5 p-2 bg-muted/30 border-b border-border overflow-x-auto scrollbar-hide shrink-0 select-none">
-            {quickActions.map((act, i) => (
+        {/* Contextual Suggestions */}
+        {!isLoading && messages.length <= 1 && (
+          <div className="px-3 pb-2 flex flex-wrap gap-1.5 shrink-0">
+            {(PAGE_SUGGESTIONS[location.pathname] || PAGE_SUGGESTIONS['/']).map((s, i) => (
               <button
                 key={i}
-                onClick={() => handleSend(null, act.prompt)}
-                disabled={loading}
-                className="text-[10px] font-semibold whitespace-nowrap bg-background hover:bg-muted border border-border rounded-full px-2.5 py-1 text-foreground hover:scale-105 active:scale-95 transition-all shadow-sm shrink-0"
+                onClick={() => handleSend(s)}
+                className="text-[10px] font-medium px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors truncate max-w-[180px]"
               >
-                {act.label}
+                {s}
               </button>
             ))}
           </div>
+        )}
 
-          <ScrollArea className="flex-1 p-4 bg-muted/20">
-            <div className="space-y-4 pb-4">
-              {messages.map((msg, i) => (
-                <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[85%] rounded-2xl p-3 text-sm shadow-sm ${
-                    msg.role === 'user' 
-                      ? 'bg-primary text-primary-foreground rounded-tr-sm' 
-                      : 'bg-card border border-border text-foreground rounded-tl-sm prose prose-sm dark:prose-invert'
-                  }`}>
-                    {msg.role === 'assistant' ? (
-                      <ReactMarkdown>{msg.content}</ReactMarkdown>
-                    ) : (
-                      msg.content
-                    )}
-                  </div>
-                </div>
-              ))}
-              {loading && (
-                <div className="flex justify-start">
-                  <div className="max-w-[80%] rounded-2xl p-3 bg-card border border-border rounded-tl-sm flex items-center gap-2 shadow-sm">
-                    <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                    <span className="text-xs text-muted-foreground font-medium">Orbit thinking...</span>
-                  </div>
-                </div>
-              )}
-              <div ref={scrollRef} />
-            </div>
-          </ScrollArea>
+        {/* Attached File Preview */}
+        {uploadedFile && (
+          <div className="mx-3 mb-2 px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900/40 flex items-center gap-2 shrink-0">
+            {uploadedFile.type === 'image'
+              ? <Image className="w-4 h-4 text-blue-500 shrink-0" />
+              : <FileText className="w-4 h-4 text-blue-500 shrink-0" />}
+            <span className="text-xs font-medium text-blue-700 dark:text-blue-400 flex-1 truncate">{uploadedFile.name}</span>
+            <button onClick={() => setUploadedFile(null)} className="text-muted-foreground hover:text-red-500 transition-colors shrink-0">
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
 
-          <form onSubmit={handleSend} className="p-3 bg-background border-t border-border flex items-center gap-2">
-            <Input
+        {/* Input */}
+        <div className="p-3 border-t border-border bg-card/80 backdrop-blur-sm shrink-0">
+          <div className="border border-border focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-500/15 rounded-xl bg-background transition-all overflow-hidden shadow-sm">
+            <textarea
               value={input}
               onChange={e => setInput(e.target.value)}
-              placeholder="Ask Orbit a question, request templates, audits..."
-              className="flex-1 bg-muted/50 border-transparent focus-visible:ring-1 shadow-none"
-              disabled={loading}
+              placeholder={isRecording ? ' Listening speak now' : 'Ask anything or give a command'}
+              rows={2}
+              className={`w-full bg-transparent border-none focus:ring-0 resize-none px-3 pt-3 pb-1 text-sm text-foreground outline-none leading-relaxed ${
+                isRecording ? 'placeholder:text-red-400 placeholder:animate-pulse' : 'placeholder:text-muted-foreground/50'
+              }`}
+              disabled={isLoading}
+              onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }}}
             />
-            <Button type="submit" size="icon" disabled={!input.trim() || loading} className="shrink-0 rounded-full w-10 h-10 shadow-sm">
-              <Send className="w-4 h-4" />
-            </Button>
-          </form>
-        </>
-      )}
+            <div className="flex items-center justify-between px-2 pb-2">
+              <div className="flex items-center gap-0.5">
+                <input ref={fileInputRef} type="file" className="hidden" accept="image/*,.pdf,.txt,.csv,.docx,.xlsx,.json,.md" onChange={handleFileUpload} />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="p-1.5 text-muted-foreground hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/30 rounded-md transition-colors"
+                  title="Attach file or image"
+                >
+                  <Paperclip className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={toggleVoice}
+                  className={`p-1.5 rounded-md transition-colors ${
+                    isRecording
+                      ? 'text-red-500 bg-red-50 dark:bg-red-950/30 animate-pulse'
+                      : 'text-muted-foreground hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/30'
+                  }`}
+                  title={isRecording ? 'Stop recording' : 'Voice input'}
+                >
+                  {isRecording ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                </button>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-[9px] text-muted-foreground/40 uppercase tracking-wider hidden sm:block"> Send  Shift+ Newline</span>
+                <button
+                  type="button"
+                  disabled={(!input.trim() && !uploadedFile) || isLoading}
+                  onClick={() => handleSend()}
+                  className="h-8 w-8 bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-lg flex items-center justify-center transition-colors shadow-sm"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

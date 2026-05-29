@@ -116,8 +116,21 @@
     scrollbar-width: none;
   }
   
+  /* Global Scrollbar Hiding */
+  *::-webkit-scrollbar {
+    display: none;
+  }
+  * {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
   .custom-scrollbar::-webkit-scrollbar {
+    display: block;
     width: 4px;
+  }
+  .custom-scrollbar {
+    scrollbar-width: thin;
   }
   .custom-scrollbar::-webkit-scrollbar-track {
     background: transparent;
@@ -163,6 +176,8 @@
   body {
     @apply bg-background text-foreground font-inter;
   }
+
+
 
   /* Global Enterprise Table Styling */
   table {

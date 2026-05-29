@@ -58,6 +58,14 @@ const revealResults = async (data) => {
 };
 
 // --- Offline Storage Cache Helpers (IndexedDB via idb-keyval) ---
+const isNetworkError = (error) => {
+    return !navigator.onLine || 
+        error?.message?.includes('Failed to fetch') || 
+        error?.message?.includes('NetworkError') ||
+        error?.message?.includes('ERR_INTERNET_DISCONNECTED') ||
+        error?.name === 'TypeError';
+};
+
 const getLocalCache = async (tableName) => {
     try {
         const val = await get(`base44_cache_${tableName}`);
@@ -337,7 +345,7 @@ export const base44 = {
                     // Encrypt sensitive fields
                     const securedPayload = await securePayload(cleanedPayload);
 
-                    if (!navigator.onLine) {
+                    const performOfflineCreate = async () => {
                         const tempId = crypto.randomUUID();
                         const record = { id: tempId, created_date: new Date().toISOString(), ...securedPayload };
                         
@@ -348,28 +356,40 @@ export const base44 = {
                         await setOutbox([...outbox, { id: tempId, type: 'create', tableName, payload: record }]);
 
                         return revealResults(record);
+                    };
+
+                    if (!navigator.onLine) {
+                        return performOfflineCreate();
                     }
 
-                    let res;
-                    let retries = 5;
-                    while (retries > 0) {
-                        res = await supabase.from(tableName).insert(securedPayload).select().single();
-                        if (res.error && (res.error.code === '42703' || res.error.code === 'PGRST204')) {
-                            const match = res.error.message.match(/column "?([^"]+)"? of relation/i) || res.error.message.match(/Could not find the '([^']+)' column/);
-                            if (match && match[1]) {
-                                delete cleanedPayload[match[1]];
-                                retries--;
-                                continue;
+                    try {
+                        let res;
+                        let retries = 5;
+                        while (retries > 0) {
+                            res = await supabase.from(tableName).insert(securedPayload).select().single();
+                            if (res.error && (res.error.code === '42703' || res.error.code === 'PGRST204')) {
+                                const match = res.error.message.match(/column "?([^"]+)"? of relation/i) || res.error.message.match(/Could not find the '([^']+)' column/);
+                                if (match && match[1]) {
+                                    delete cleanedPayload[match[1]];
+                                    retries--;
+                                    continue;
+                                }
                             }
+                            break;
                         }
-                        break;
+                        if (res.error) throw res.error;
+
+                        const cache = await getLocalCache(tableName);
+                        await setLocalCache(tableName, [...cache.filter(c => c.id !== res.data.id), res.data]);
+
+                        return revealResults(res.data);
+                    } catch (err) {
+                        if (isNetworkError(err)) {
+                            console.warn(`[Offline Mode] Create failed, queuing offline mutation.`, err);
+                            return performOfflineCreate();
+                        }
+                        throw err;
                     }
-                    if (res.error) throw res.error;
-
-                    const cache = await getLocalCache(tableName);
-                    await setLocalCache(tableName, [...cache.filter(c => c.id !== res.data.id), res.data]);
-
-                    return revealResults(res.data);
                 },
                 update: async (id, payload) => {
                     const validCols = SCHEMA_COLUMNS[tableName];
@@ -381,7 +401,7 @@ export const base44 = {
                     // Encrypt sensitive fields
                     const securedPayload = await securePayload(cleanedPayload);
 
-                    if (!navigator.onLine) {
+                    const performOfflineUpdate = async () => {
                         const cache = await getLocalCache(tableName);
                         const recordIndex = cache.findIndex(item => item.id === id);
                         let updatedRecord = { id };
@@ -395,31 +415,43 @@ export const base44 = {
                         await setOutbox([...outbox, { id, type: 'update', tableName, payload: securedPayload }]);
 
                         return revealResults(updatedRecord);
+                    };
+
+                    if (!navigator.onLine) {
+                        return performOfflineUpdate();
                     }
 
-                    let res;
-                    let retries = 5;
-                    while (retries > 0) {
-                        res = await supabase.from(tableName).update(securedPayload).eq('id', id).select().single();
-                        if (res.error && (res.error.code === '42703' || res.error.code === 'PGRST204')) {
-                            const match = res.error.message.match(/column "?([^"]+)"? of relation/i) || res.error.message.match(/Could not find the '([^']+)' column/);
-                            if (match && match[1]) {
-                                delete cleanedPayload[match[1]];
-                                retries--;
-                                continue;
+                    try {
+                        let res;
+                        let retries = 5;
+                        while (retries > 0) {
+                            res = await supabase.from(tableName).update(securedPayload).eq('id', id).select().single();
+                            if (res.error && (res.error.code === '42703' || res.error.code === 'PGRST204')) {
+                                const match = res.error.message.match(/column "?([^"]+)"? of relation/i) || res.error.message.match(/Could not find the '([^']+)' column/);
+                                if (match && match[1]) {
+                                    delete cleanedPayload[match[1]];
+                                    retries--;
+                                    continue;
+                                }
                             }
+                            break;
                         }
-                        break;
+                        if (res.error) throw res.error;
+
+                        const cache = await getLocalCache(tableName);
+                        await setLocalCache(tableName, cache.map(item => item.id === id ? res.data : item));
+
+                        return revealResults(res.data);
+                    } catch (err) {
+                        if (isNetworkError(err)) {
+                            console.warn(`[Offline Mode] Update failed, queuing offline mutation.`, err);
+                            return performOfflineUpdate();
+                        }
+                        throw err;
                     }
-                    if (res.error) throw res.error;
-
-                    const cache = await getLocalCache(tableName);
-                    await setLocalCache(tableName, cache.map(item => item.id === id ? res.data : item));
-
-                    return revealResults(res.data);
                 },
                 delete: async (id) => {
-                    if (!navigator.onLine) {
+                    const performOfflineDelete = async () => {
                         const cache = await getLocalCache(tableName);
                         await setLocalCache(tableName, cache.filter(item => item.id !== id));
 
@@ -427,15 +459,27 @@ export const base44 = {
                         await setOutbox([...outbox, { id, type: 'delete', tableName }]);
 
                         return { id };
+                    };
+
+                    if (!navigator.onLine) {
+                        return performOfflineDelete();
                     }
 
-                    const { data, error } = await supabase.from(tableName).delete().eq('id', id).select().single();
-                    if (error) throw error;
+                    try {
+                        const { data, error } = await supabase.from(tableName).delete().eq('id', id).select().single();
+                        if (error) throw error;
 
-                    const cache = await getLocalCache(tableName);
-                    await setLocalCache(tableName, cache.filter(item => item.id !== id));
+                        const cache = await getLocalCache(tableName);
+                        await setLocalCache(tableName, cache.filter(item => item.id !== id));
 
-                    return revealResults(data);
+                        return revealResults(data);
+                    } catch (err) {
+                        if (isNetworkError(err)) {
+                            console.warn(`[Offline Mode] Delete failed, queuing offline mutation.`, err);
+                            return performOfflineDelete();
+                        }
+                        throw err;
+                    }
                 },
                 subscribe: (callback) => {
                     if (!navigator.onLine) return () => {};

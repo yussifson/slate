@@ -19,6 +19,55 @@ export default function AppLayout() {
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
   const [isAIOpen, setIsAIOpen] = useState(false);
+  const [isPrefsLoaded, setIsPrefsLoaded] = useState(false);
+
+  useEffect(() => {
+    if (!user?.email || !user?.company_id || isPrefsLoaded) return;
+    
+    // Fetch UI prefs
+    const fetchPrefs = async () => {
+      try {
+        const { supabase } = await import("@/api/supabaseClient");
+        const { data } = await supabase
+          .from('industry_records')
+          .select('data')
+          .eq('company_id', user.company_id)
+          .eq('record_type', 'ui_prefs')
+          .eq('search_text', user.email)
+          .maybeSingle();
+
+        if (data?.data) {
+          setIsAIOpen(!!data.data.isAIOpen);
+        }
+      } catch (e) {
+        console.error("Failed to fetch UI prefs", e);
+      } finally {
+        setIsPrefsLoaded(true);
+      }
+    };
+    fetchPrefs();
+  }, [user, isPrefsLoaded]);
+
+  const toggleAI = async () => {
+    const newState = !isAIOpen;
+    setIsAIOpen(newState);
+    
+    if (user?.email && user?.company_id) {
+      try {
+        const { supabase } = await import("@/api/supabaseClient");
+        await supabase.from('industry_records').upsert({
+          id: `prefs_${user.email}`,
+          company_id: user.company_id,
+          industry: 'core',
+          record_type: 'ui_prefs',
+          search_text: user.email,
+          data: { isAIOpen: newState }
+        });
+      } catch (e) {
+        console.error("Failed to save UI prefs", e);
+      }
+    }
+  };
 
   useEffect(() => {
     const handleOnline = () => setIsOffline(false);
@@ -119,13 +168,13 @@ export default function AppLayout() {
           isSidebarCollapsed={isSidebarCollapsed} 
           toggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)} 
           isAIOpen={isAIOpen}
-          toggleAI={() => setIsAIOpen(!isAIOpen)}
+          toggleAI={toggleAI}
         />
         <main className="flex-1 p-4 lg:p-6 max-w-[1400px] w-full mx-auto">
           <Outlet />
         </main>
       </div>
-      <AiAssistant isOpen={isAIOpen} onClose={() => setIsAIOpen(false)} />
+      <AiAssistant isOpen={isAIOpen} onClose={toggleAI} />
       <SpotlightSearch />
       {isOffline && (
         <div className="fixed bottom-6 right-6 z-50 bg-red-600/90 hover:bg-red-700/90 backdrop-blur-md text-white font-semibold px-4 py-2.5 rounded-full flex items-center gap-2.5 shadow-lg border border-red-500/20 select-none animate-pulse">
