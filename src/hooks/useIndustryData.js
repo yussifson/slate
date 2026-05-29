@@ -88,6 +88,10 @@ export function useIndustryRecords(recordType) {
     queryFn: async () => {
       if (!companyId || !industry || !recordType) return [];
 
+      if (!navigator.onLine) {
+        return await getIdrCache(cacheKey);
+      }
+
       try {
         const { data, error } = await supabase
           .from('industry_records')
@@ -155,6 +159,13 @@ export function useMutateIndustryRecord() {
       }
 
       // Try to persist to server
+      if (!navigator.onLine) {
+        console.warn(`[Offline Mode] useMutateIndustryRecord offline, queuing immediately.`);
+        const outbox = await getIdrOutbox();
+        await setIdrOutbox([...outbox, { op: 'upsert', record }]);
+        return record;
+      }
+
       try {
         let result;
         if (id) {
@@ -211,6 +222,13 @@ export function useDeleteIndustryRecord() {
       const cacheKey = `idr_cache_${companyId}_${recordType}`;
       const cached = await getIdrCache(cacheKey);
       await setIdrCache(cacheKey, cached.filter(r => r.id !== id));
+
+      if (!navigator.onLine) {
+        console.warn(`[Offline Mode] useDeleteIndustryRecord offline, queuing immediately.`);
+        const outbox = await getIdrOutbox();
+        await setIdrOutbox([...outbox, { op: 'delete', id, companyId }]);
+        return { id, recordType };
+      }
 
       try {
         const { error } = await supabase
