@@ -84,6 +84,7 @@ import HospitalWards from './pages/hospital/Wards';
 import HospitalPrescriptions from './pages/hospital/Prescriptions';
 import HospitalLabResults from './pages/hospital/LabResults';
 import HospitalPharmacy from './pages/hospital/Pharmacy';
+import HospitalPatientPortal from './pages/hospital/PatientPortal';
 
 // Hotel Pages
 import HotelFrontDesk from './pages/hotel/FrontDesk';
@@ -92,6 +93,7 @@ import HotelRooms from './pages/hotel/Rooms';
 import HotelHousekeeping from './pages/hotel/Housekeeping';
 import HotelRestaurant from './pages/hotel/Restaurant';
 import HotelGuestRequests from './pages/hotel/GuestRequests';
+import HotelGuestPortal from './pages/hotel/GuestPortal';
 
 // Church Pages
 import ChurchMembers from './pages/church/Members';
@@ -102,11 +104,13 @@ import ChurchVolunteers from './pages/church/Volunteers';
 import ChurchSermons from './pages/church/Sermons';
 import ChurchSmallGroups from './pages/church/SmallGroups';
 import ChurchPrayers from './pages/church/Prayers';
+import ChurchMemberPortal from './pages/church/MemberPortal';
 
 // Insurance Pages
 import InsurancePolicies from './pages/insurance/Policies';
 import InsuranceClaims from './pages/insurance/Claims';
-import InsurancePremiums from './pages/insurance/Premiums';
+import InsuranceClients from './pages/insurance/Clients';
+import InsurancePolicyholderPortal from './pages/insurance/PolicyholderPortal';
 import InsuranceUnderwriting from './pages/insurance/Underwriting';
 import InsuranceAgentPerformance from './pages/insurance/AgentPerformance';
 
@@ -116,11 +120,13 @@ import RetailPOS from './pages/retail/POS';
 import RetailSales from './pages/retail/Sales';
 import RetailSuppliers from './pages/retail/Suppliers';
 import RetailCustomers from './pages/retail/Customers';
+import RetailCustomerPortal from './pages/retail/CustomerPortal';
 
 // Logistics Pages
 import LogisticsShipments from './pages/logistics/Shipments';
 import LogisticsFleet from './pages/logistics/Fleet';
 import LogisticsDrivers from './pages/logistics/Drivers';
+import LogisticsTrackingPortal from './pages/logistics/TrackingPortal';
 import LogisticsWarehouses from './pages/logistics/Warehouses';
 
 // HR Pages
@@ -212,6 +218,7 @@ function PlatformRoutes() {
       <Route path="/prescriptions" element={<HospitalPrescriptions />} />
       <Route path="/lab-results" element={<HospitalLabResults />} />
       <Route path="/pharmacy" element={<HospitalPharmacy />} />
+      <Route path="/patient-portal" element={<HospitalPatientPortal />} />
 
       {/* Hotel Suite */}
       <Route path="/front-desk" element={<HotelFrontDesk />} />
@@ -220,6 +227,7 @@ function PlatformRoutes() {
       <Route path="/housekeeping" element={<HotelHousekeeping />} />
       <Route path="/restaurant" element={<HotelRestaurant />} />
       <Route path="/guest-requests" element={<HotelGuestRequests />} />
+      <Route path="/guest-portal" element={<HotelGuestPortal />} />
 
       {/* Church Suite */}
       <Route path="/members" element={<ChurchMembers />} />
@@ -230,25 +238,29 @@ function PlatformRoutes() {
       <Route path="/sermons" element={<ChurchSermons />} />
       <Route path="/small-groups" element={<ChurchSmallGroups />} />
       <Route path="/prayers" element={<ChurchPrayers />} />
+      <Route path="/member-portal" element={<ChurchMemberPortal />} />
 
       {/* Insurance Suite */}
       <Route path="/policies" element={<InsurancePolicies />} />
       <Route path="/claims" element={<InsuranceClaims />} />
-      <Route path="/premiums" element={<InsurancePremiums />} />
+      <Route path="/insurance-clients" element={<InsuranceClients />} />
+      <Route path="/policyholder-portal" element={<InsurancePolicyholderPortal />} />
       <Route path="/underwriting" element={<InsuranceUnderwriting />} />
       <Route path="/agent-performance" element={<InsuranceAgentPerformance />} />
 
       {/* Retail Suite */}
       <Route path="/pos" element={<RetailPOS />} />
       <Route path="/inventory" element={<RetailInventory />} />
-      <Route path="/orders" element={<RetailSales />} />
+      <Route path="/sales" element={<RetailSales />} />
       <Route path="/suppliers" element={<RetailSuppliers />} />
       <Route path="/retail-customers" element={<RetailCustomers />} />
+      <Route path="/customer-portal" element={<RetailCustomerPortal />} />
 
       {/* Logistics Suite */}
       <Route path="/shipments" element={<LogisticsShipments />} />
       <Route path="/fleet" element={<LogisticsFleet />} />
       <Route path="/drivers" element={<LogisticsDrivers />} />
+      <Route path="/tracking" element={<LogisticsTrackingPortal />} />
       <Route path="/warehouse" element={<LogisticsWarehouses />} />
 
       {/* HR Suite */}

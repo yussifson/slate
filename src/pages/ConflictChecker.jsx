@@ -28,7 +28,10 @@ export default function ConflictChecker() {
     contains(c.opposing_party, query) ||
     contains(c.opposing_counsel, query) ||
     contains(c.client_name, query) ||
-    contains(c.title, query)
+    contains(c.title, query) ||
+    contains(c.description, query) ||
+    contains(c.judge_name, query) ||
+    contains(c.notes, query)
   );
 
   const hasConflict = checked && (matchingClients.length > 0 || matchingCases.length > 0);
@@ -134,8 +137,8 @@ export default function ConflictChecker() {
         <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">What we check</h3>
         <ul className="text-xs text-muted-foreground space-y-1">
           <li>• <strong>Existing clients</strong> — name, email, and ID number</li>
-          <li>• <strong>Case parties</strong> — client names, opposing parties, and opposing counsel</li>
-          <li>• <strong>Case titles</strong> — keywords in case titles</li>
+          <li>• <strong>Case parties</strong> — client names, opposing parties, opposing counsel, and judges</li>
+          <li>• <strong>Case content</strong> — keywords in case titles, descriptions, and notes</li>
         </ul>
       </div>
     </div>

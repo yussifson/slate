@@ -11,7 +11,88 @@ const toSnakeCase = (str) => {
     return name;
 };
 
-// Custom adapter mimicking base44/sdk using supabase
+// --- Offline Storage Cache Helpers ---
+const getLocalCache = (tableName) => {
+    try {
+        const val = localStorage.getItem(`base44_cache_${tableName}`);
+        return val ? JSON.parse(val) : [];
+    } catch (e) {
+        console.error("LocalCache Read Error:", e);
+        return [];
+    }
+};
+
+const setLocalCache = (tableName, data) => {
+    try {
+        localStorage.setItem(`base44_cache_${tableName}`, JSON.stringify(data));
+    } catch (e) {
+        console.error("LocalCache Write Error:", e);
+    }
+};
+
+const getOutbox = () => {
+    try {
+        const val = localStorage.getItem('base44_offline_outbox');
+        return val ? JSON.parse(val) : [];
+    } catch (e) {
+        return [];
+    }
+};
+
+const setOutbox = (outbox) => {
+    try {
+        localStorage.setItem('base44_offline_outbox', JSON.stringify(outbox));
+    } catch (e) {}
+};
+
+// Automatic Background Sync Engine
+export const syncOfflineOutbox = async () => {
+    if (!navigator.onLine) return;
+    const outbox = getOutbox();
+    if (outbox.length === 0) return;
+
+    console.log(`[Offline Sync] Found ${outbox.length} queued mutations. Commencing synchronization...`);
+    const remaining = [];
+
+    for (const item of outbox) {
+        try {
+            const { type, tableName, id, payload } = item;
+            if (type === 'create') {
+                // If it was a mock UUID, let Supabase create a fresh one or insert
+                const cleanPayload = { ...payload };
+                // Remove temp id if desired, or keep it to maintain relationships
+                await supabase.from(tableName).insert(cleanPayload);
+            } else if (type === 'update') {
+                await supabase.from(tableName).update(payload).eq('id', id);
+            } else if (type === 'delete') {
+                await supabase.from(tableName).delete().eq('id', id);
+            }
+            console.log(`[Offline Sync] Synchronized ${type} mutation on ${tableName} successfully.`);
+        } catch (err) {
+            console.error(`[Offline Sync] Mutation failed. Re-queueing.`, err);
+            remaining.push(item);
+        }
+    }
+
+    setOutbox(remaining);
+
+    if (remaining.length === 0) {
+        console.log("[Offline Sync] Synchronized all offline operations successfully.");
+        // Custom event to notify components that updates have synchronized
+        window.dispatchEvent(new CustomEvent('base44_sync_complete'));
+    }
+};
+
+// Hook background listeners
+if (typeof window !== 'undefined') {
+    window.addEventListener('online', () => {
+        syncOfflineOutbox();
+    });
+    // Run initial sync check
+    setTimeout(syncOfflineOutbox, 1500);
+}
+
+// Custom adapter mimicking base44/sdk using supabase with Offline-First architecture
 export const base44 = {
     auth: {
         me: async () => {
@@ -43,8 +124,6 @@ export const base44 = {
             return data;
         },
         register: async ({ email, password }) => {
-            // Bypass the supabase-js client to prevent it from auto-logging out the admin
-            // when creating a new team member account.
             const url = `${import.meta.env.VITE_SUPABASE_URL}/auth/v1/signup`;
             const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
             
@@ -68,7 +147,7 @@ export const base44 = {
     },
     users: {
         inviteUser: async (email, role) => {
-            // Invited user: ${email} with role: ${role}
+            console.log(`Invited user: ${email} with role: ${role}`);
             return { email, role };
         }
     },
@@ -93,7 +172,7 @@ export const base44 = {
     integrations: {
         Core: {
             SendEmail: async (payload) => {
-                // Mock sending email
+                console.log("Mock sending email:", payload);
                 return { success: true };
             }
         }
@@ -106,30 +185,86 @@ export const base44 = {
             
             return {
                 filter: async (filter = {}, sort = []) => {
-                    let req = supabase.from(tableName).select('*');
+                    let data = [];
+                    if (navigator.onLine) {
+                        try {
+                            let req = supabase.from(tableName).select('*');
+                            for (const [k, v] of Object.entries(filter)) {
+                                req = req.eq(k, v);
+                            }
+                            for (const s of sort) {
+                                req = req.order(s.field, { ascending: s.direction === 'asc' });
+                            }
+                            const res = await req;
+                            if (res.error) throw res.error;
+                            data = res.data || [];
+                            // Update local cache with latest values
+                            const fullCache = getLocalCache(tableName);
+                            const updatedCache = [...fullCache.filter(item => !data.some(d => d.id === item.id)), ...data];
+                            setLocalCache(tableName, updatedCache);
+                        } catch (err) {
+                            console.warn(`[Offline Mode] Fetch failed, falling back to local cache.`, err);
+                            data = getLocalCache(tableName);
+                        }
+                    } else {
+                        data = getLocalCache(tableName);
+                    }
+
+                    // Perform clientside filter & sort on cached records
+                    let filtered = [...data];
                     for (const [k, v] of Object.entries(filter)) {
-                        req = req.eq(k, v);
+                        filtered = filtered.filter(item => item[k] == v);
                     }
                     for (const s of sort) {
-                        req = req.order(s.field, { ascending: s.direction === 'asc' });
+                        filtered.sort((a, b) => {
+                            let valA = a[s.field];
+                            let valB = b[s.field];
+                            if (valA === undefined || valB === undefined) return 0;
+                            if (typeof valA === 'string') {
+                                return s.direction === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                            }
+                            return s.direction === 'asc' ? valA - valB : valB - valA;
+                        });
                     }
-                    const { data, error } = await req;
-                    if (error) throw error;
-                    return data;
+                    return filtered;
                 },
                 list: async () => {
-                    const { data, error } = await supabase.from(tableName).select('*');
-                    if (error) throw error;
+                    let data = [];
+                    if (navigator.onLine) {
+                        try {
+                            const res = await supabase.from(tableName).select('*');
+                            if (res.error) throw res.error;
+                            data = res.data || [];
+                            setLocalCache(tableName, data);
+                        } catch (err) {
+                            console.warn(`[Offline Mode] List failed, using local cache.`, err);
+                            data = getLocalCache(tableName);
+                        }
+                    } else {
+                        data = getLocalCache(tableName);
+                    }
                     return data;
                 },
                 findUnique: async (query) => {
-                    let req = supabase.from(tableName).select('*');
-                    for (const [k, v] of Object.entries(query.filter)) {
-                        req = req.eq(k, v);
+                    if (navigator.onLine) {
+                        try {
+                            let req = supabase.from(tableName).select('*');
+                            for (const [k, v] of Object.entries(query.filter)) {
+                                req = req.eq(k, v);
+                            }
+                            const { data, error } = await req.single();
+                            if (error) throw error;
+                            return data;
+                        } catch (err) {
+                            console.warn(`[Offline Mode] FindUnique failed, falling back to cache.`, err);
+                        }
                     }
-                    const { data, error } = await req.single();
-                    if (error) throw error;
-                    return data;
+                    const cached = getLocalCache(tableName);
+                    const record = cached.find(item => {
+                        return Object.entries(query.filter).every(([k, v]) => item[k] == v);
+                    });
+                    if (!record) throw new Error("Record not found offline");
+                    return record;
                 },
                 create: async (payload) => {
                     const validCols = SCHEMA_COLUMNS[tableName];
@@ -137,6 +272,23 @@ export const base44 = {
                     if (validCols) {
                         cleanedPayload = Object.fromEntries(Object.entries(cleanedPayload).filter(([k]) => validCols.includes(k)));
                     }
+
+                    if (!navigator.onLine) {
+                        // Offline creation mode
+                        const tempId = crypto.randomUUID();
+                        const record = { id: tempId, created_date: new Date().toISOString(), ...cleanedPayload };
+                        
+                        // Update cache
+                        const cache = getLocalCache(tableName);
+                        setLocalCache(tableName, [...cache, record]);
+
+                        // Queue mutation
+                        const outbox = getOutbox();
+                        setOutbox([...outbox, { id: tempId, type: 'create', tableName, payload: record }]);
+
+                        return record;
+                    }
+
                     let res;
                     let retries = 5;
                     while (retries > 0) {
@@ -152,6 +304,11 @@ export const base44 = {
                         break;
                     }
                     if (res.error) throw res.error;
+
+                    // Update Cache
+                    const cache = getLocalCache(tableName);
+                    setLocalCache(tableName, [...cache.filter(c => c.id !== res.data.id), res.data]);
+
                     return res.data;
                 },
                 update: async (id, payload) => {
@@ -160,13 +317,30 @@ export const base44 = {
                     if (validCols) {
                         cleanedPayload = Object.fromEntries(Object.entries(cleanedPayload).filter(([k]) => validCols.includes(k)));
                     }
+
+                    if (!navigator.onLine) {
+                        // Offline update mode
+                        const cache = getLocalCache(tableName);
+                        const recordIndex = cache.findIndex(item => item.id === id);
+                        let updatedRecord = { id };
+                        if (recordIndex !== -1) {
+                            updatedRecord = { ...cache[recordIndex], ...cleanedPayload };
+                            cache[recordIndex] = updatedRecord;
+                            setLocalCache(tableName, cache);
+                        }
+
+                        // Queue mutation
+                        const outbox = getOutbox();
+                        setOutbox([...outbox, { id, type: 'update', tableName, payload: cleanedPayload }]);
+
+                        return updatedRecord;
+                    }
+
                     let res;
                     let retries = 5;
                     while (retries > 0) {
                         res = await supabase.from(tableName).update(cleanedPayload).eq('id', id).select().single();
-                        // 42703 is the Postgres error code for undefined_column
                         if (res.error && (res.error.code === '42703' || res.error.code === 'PGRST204')) {
-                            // Extract column name from error message (e.g., "column logo_light_url of relation companies does not exist")
                             const match = res.error.message.match(/column "?([^"]+)"? of relation/i) || res.error.message.match(/Could not find the '([^']+)' column/);
                             if (match && match[1]) {
                                 delete cleanedPayload[match[1]];
@@ -177,14 +351,37 @@ export const base44 = {
                         break;
                     }
                     if (res.error) throw res.error;
+
+                    // Update Cache
+                    const cache = getLocalCache(tableName);
+                    setLocalCache(tableName, cache.map(item => item.id === id ? res.data : item));
+
                     return res.data;
                 },
                 delete: async (id) => {
+                    if (!navigator.onLine) {
+                        // Offline delete mode
+                        const cache = getLocalCache(tableName);
+                        setLocalCache(tableName, cache.filter(item => item.id !== id));
+
+                        // Queue mutation
+                        const outbox = getOutbox();
+                        setOutbox([...outbox, { id, type: 'delete', tableName }]);
+
+                        return { id };
+                    }
+
                     const { data, error } = await supabase.from(tableName).delete().eq('id', id).select().single();
                     if (error) throw error;
+
+                    // Update Cache
+                    const cache = getLocalCache(tableName);
+                    setLocalCache(tableName, cache.filter(item => item.id !== id));
+
                     return data;
                 },
                 subscribe: (callback) => {
+                    if (!navigator.onLine) return () => {};
                     const channel = supabase.channel(`public:${tableName}`)
                         .on('postgres_changes', { event: '*', schema: 'public', table: tableName }, payload => {
                             let type = payload.eventType.toLowerCase();

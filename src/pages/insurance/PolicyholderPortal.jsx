@@ -1,0 +1,215 @@
+import { useState } from 'react';
+import { Shield, FileWarning, CheckCircle, Search, Plus, CreditCard, Activity } from 'lucide-react';
+import { useIndustryRecords, useMutateIndustryRecord } from '@/hooks/useIndustryData';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { toast } from 'react-hot-toast';
+import { useAuth } from '@/lib/AuthContext';
+import { Badge } from "@/components/ui/badge";
+
+export default function PolicyholderPortal() {
+  const { user } = useAuth();
+  
+  // Real Database Hooks
+  const { data: dbPolicies = [], isLoading: isPolLoading } = useIndustryRecords('policy');
+  const { data: dbClaims = [], isLoading: isClaimsLoading } = useIndustryRecords('claim');
+  const mutateRecord = useMutateIndustryRecord();
+  
+  const [showClaimModal, setShowClaimModal] = useState(false);
+  const [claimData, setClaimData] = useState({ policyNumber: '', claimType: 'Auto', description: '', amount: '' });
+
+  // For demo, we just map everything (in real world, filtering by user.id/email happens in hook/backend)
+  const policies = dbPolicies.map(r => ({ id: r.id, status: r.status, ...r.data }));
+  const claims = dbClaims.map(r => ({ id: r.id, status: r.status, ...r.data }));
+  
+  const handleFileClaim = () => {
+    if (!claimData.policyNumber.trim() || !claimData.description.trim()) {
+      return toast.error("Please provide policy number and description");
+    }
+
+    const claimNumber = `CLM-${Math.floor(1000 + Math.random() * 9000)}`;
+
+    mutateRecord.mutate({
+      recordType: 'claim',
+      payload: {
+        claimNumber,
+        policyNumber: claimData.policyNumber,
+        claimantName: user?.name || 'Policyholder',
+        claimType: claimData.claimType,
+        incidentDate: new Date().toISOString().split('T')[0],
+        claimAmount: parseFloat(claimData.amount) || 0,
+        description: claimData.description
+      },
+      status: 'Submitted',
+      searchText: `${claimData.policyNumber} ${claimData.claimType} ${claimData.description}`
+    }, {
+      onSuccess: () => {
+        toast.success(`Claim ${claimNumber} submitted successfully!`);
+        setShowClaimModal(false);
+        setClaimData({ policyNumber: '', claimType: 'Auto', description: '', amount: '' });
+      }
+    });
+  };
+
+  const isLoading = isPolLoading || isClaimsLoading;
+
+  if (isLoading) {
+    return <div className="py-12 text-center text-muted-foreground">Loading your coverage details...</div>;
+  }
+
+  return (
+    <div className="space-y-6 max-w-5xl mx-auto">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-indigo-700 to-blue-800 rounded-2xl p-6 md:p-8 text-white shadow-md relative overflow-hidden">
+        <div className="relative z-10">
+          <h1 className="text-2xl md:text-3xl font-bold mb-2">My Coverage Portal</h1>
+          <p className="text-indigo-100 max-w-xl">Welcome back. View your active policies, file new claims, and track your claim status instantly.</p>
+        </div>
+        <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none transform translate-x-1/4 translate-y-1/4">
+          <Shield className="w-64 h-64" />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Column (Policies) */}
+        <div className="col-span-1 lg:col-span-2 space-y-6">
+          <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+            <div className="p-4 md:p-5 border-b border-border bg-muted/50 flex justify-between items-center">
+              <h3 className="font-bold text-card-foreground flex items-center gap-2"><Shield className="w-5 h-5 text-indigo-600" /> Active Policies</h3>
+            </div>
+            <div className="p-0">
+               {policies.length === 0 ? (
+                 <div className="py-8 text-center text-muted-foreground">No active policies found.</div>
+               ) : (
+                 <div className="divide-y divide-border">
+                   {policies.map(policy => (
+                     <div key={policy.id} className="p-5 hover:bg-muted/30 transition-colors">
+                        <div className="flex justify-between items-start mb-3">
+                           <div>
+                             <div className="flex items-center gap-2 mb-1">
+                               <h4 className="font-bold text-lg text-foreground">{policy.policyType} Insurance</h4>
+                               <Badge variant="outline" className={`${policy.status === 'Active' ? 'bg-green-100 text-green-700 border-green-200' : 'bg-red-100 text-red-700 border-red-200'}`}>{policy.status}</Badge>
+                             </div>
+                             <p className="text-xs text-muted-foreground font-mono">{policy.policyNumber}</p>
+                           </div>
+                           <div className="text-right">
+                             <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider">Premium</p>
+                             <p className="font-bold text-indigo-600">${Number(policy.premium).toLocaleString()}</p>
+                           </div>
+                        </div>
+                        <div className="bg-muted/50 rounded-lg p-3 grid grid-cols-2 gap-4 text-sm">
+                           <div>
+                             <p className="text-muted-foreground text-xs">Coverage Period</p>
+                             <p className="font-medium">{policy.startDate} to {policy.endDate}</p>
+                           </div>
+                           <div>
+                             <p className="text-muted-foreground text-xs">Sum Insured</p>
+                             <p className="font-medium">${Number(policy.sumInsured).toLocaleString()}</p>
+                           </div>
+                        </div>
+                     </div>
+                   ))}
+                 </div>
+               )}
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column (Claims Info) */}
+        <div className="space-y-6">
+          <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+            <div className="p-4 border-b border-border bg-muted/50">
+              <h3 className="font-bold text-card-foreground flex items-center gap-2"><FileWarning className="w-5 h-5 text-amber-600" /> Claim Center</h3>
+            </div>
+            <div className="p-4 space-y-4">
+               <Button onClick={() => setShowClaimModal(true)} className="w-full bg-red-600 hover:bg-red-700 text-white shadow-sm flex items-center justify-center gap-2 h-12">
+                 <Plus className="w-5 h-5" /> File a New Claim
+               </Button>
+               
+               <div className="pt-2">
+                 <h4 className="font-semibold text-sm mb-3 text-muted-foreground uppercase tracking-wider">Recent Claims</h4>
+                 {claims.length === 0 ? (
+                   <p className="text-xs text-muted-foreground text-center py-4 bg-muted/50 rounded-lg">No claims history.</p>
+                 ) : (
+                   <div className="space-y-3">
+                     {claims.slice(0, 4).map(claim => (
+                       <div key={claim.id} className="flex justify-between items-center p-3 rounded-lg border border-border hover:border-indigo-200 transition-colors bg-card">
+                         <div>
+                           <p className="font-bold text-sm text-foreground">{claim.claimType} Claim</p>
+                           <p className="text-[10px] text-muted-foreground mt-0.5">{claim.incidentDate}</p>
+                         </div>
+                         <div className="text-right">
+                           <p className="font-bold text-xs">${Number(claim.claimAmount).toLocaleString()}</p>
+                           <span className={`text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full mt-1 inline-block ${claim.status === 'Paid' || claim.status === 'Approved' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+                             {claim.status}
+                           </span>
+                         </div>
+                       </div>
+                     ))}
+                   </div>
+                 )}
+               </div>
+            </div>
+          </div>
+          
+          <div className="bg-gradient-to-br from-card to-muted rounded-xl border border-border p-5 shadow-sm text-center">
+             <CreditCard className="w-8 h-8 text-indigo-600 mx-auto mb-2" />
+             <h4 className="font-bold text-sm">Need to pay your premium?</h4>
+             <p className="text-xs text-muted-foreground mt-1 mb-3">Keep your coverage active by settling your upcoming bills.</p>
+             <Button variant="outline" className="w-full text-indigo-600 border-indigo-200 hover:bg-indigo-50">Make a Payment</Button>
+          </div>
+        </div>
+      </div>
+
+      {showClaimModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4">
+            <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
+              <FileWarning className="w-5 h-5 text-red-600"/> File a Claim
+            </h2>
+            <div className="space-y-3">
+               <div>
+                 <label className="text-xs font-bold text-muted-foreground uppercase">Policy Number</label>
+                 <select value={claimData.policyNumber} onChange={e => setClaimData({ ...claimData, policyNumber: e.target.value })} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground">
+                   <option value="">Select a policy...</option>
+                   {policies.map(p => (
+                     <option key={p.id} value={p.policyNumber}>{p.policyType} - {p.policyNumber}</option>
+                   ))}
+                 </select>
+               </div>
+               <div className="grid grid-cols-2 gap-3">
+                 <div>
+                   <label className="text-xs font-bold text-muted-foreground uppercase">Claim Type</label>
+                   <select value={claimData.claimType} onChange={e => setClaimData({...claimData, claimType: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground">
+                     <option>Auto</option>
+                     <option>Health</option>
+                     <option>Property</option>
+                     <option>Life</option>
+                     <option>Business</option>
+                   </select>
+                 </div>
+                 <div>
+                   <label className="text-xs font-bold text-muted-foreground uppercase">Est. Amount ($)</label>
+                   <Input type="number" value={claimData.amount} onChange={e => setClaimData({...claimData, amount: e.target.value})} className="mt-1" placeholder="1500" />
+                 </div>
+               </div>
+               <div>
+                 <label className="text-xs font-bold text-muted-foreground uppercase">Incident Description</label>
+                 <textarea 
+                    value={claimData.description} 
+                    onChange={e => setClaimData({ ...claimData, description: e.target.value })} 
+                    className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground min-h-[80px]" 
+                    placeholder="Briefly describe what happened..." 
+                 />
+               </div>
+            </div>
+            <div className="flex gap-3 pt-4">
+              <Button variant="outline" className="flex-1" onClick={() => setShowClaimModal(false)}>Cancel</Button>
+              <Button className="flex-1 bg-red-600 hover:bg-red-700 text-white" onClick={handleFileClaim}>Submit Claim</Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

@@ -2,10 +2,18 @@ import { useState } from 'react';
 import { Calendar, Bell, FileText, CheckCircle, Clock, BookOpen, User, CreditCard, Download } from 'lucide-react';
 import { useIndustryRecords } from '@/hooks/useIndustryData';
 import { Link } from 'react-router-dom';
+import { base44 } from '@/api/base44Client';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { UploadDocumentDialog } from "@/components/cases/CaseDocumentRepo";
+import { Button } from "@/components/ui/button";
+import { toast } from 'react-hot-toast';
+import { format } from "date-fns";
 export default function ParentPortal() {
   // Real Database Hooks
   const { data: students = [], isLoading: isStudentsLoading } = useIndustryRecords('student');
   const { data: exams = [], isLoading: isExamsLoading } = useIndustryRecords('exam');
+  const queryClient = useQueryClient();
+  const [showUpload, setShowUpload] = useState(false);
 
   const mappedStudents = students.map(r => ({
     id: r.id,
@@ -13,6 +21,32 @@ export default function ParentPortal() {
   }));
 
   const activeStudent = mappedStudents[0];
+
+  const { data: documents = [] } = useQuery({
+    queryKey: ["student-docs", activeStudent?.id],
+    queryFn: () => base44.entities.Document.filter({ client_id: activeStudent?.id }),
+    enabled: !!activeStudent?.id,
+  });
+
+  const createDocMutation = useMutation({
+    mutationFn: (data) => base44.entities.Document.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["student-docs", activeStudent?.id] });
+      toast.success("Document uploaded successfully");
+      setShowUpload(false);
+    },
+  });
+
+  const handleUploadSubmit = (docData) => {
+    createDocMutation.mutate({
+      ...docData,
+      company_id: activeStudent?.company_id,
+      client_id: activeStudent?.id,
+      client_name: activeStudent?.name,
+      uploaded_by: 'Parent/Guardian',
+      shared_with_client: true, // uploaded by parent, so shared automatically
+    });
+  };
 
   const mappedExams = exams.map(r => ({
     id: r.id,
@@ -118,27 +152,46 @@ export default function ParentPortal() {
           </div>
         </div>
 
-        {/* Right Column (Notices & Bills) */}
-        <div className="space-y-6">
+          {/* Documents Section */}
           <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
-            <div className="p-4 border-b border-border bg-muted/50">
-              <h3 className="font-bold text-card-foreground flex items-center gap-2"><Bell className="w-5 h-5 text-muted-foreground" /> Recent Notices</h3>
+            <div className="p-4 border-b border-border bg-muted/50 flex justify-between items-center">
+              <h3 className="font-bold text-card-foreground flex items-center gap-2"><FileText className="w-5 h-5 text-muted-foreground" /> Documents & Forms</h3>
+              <Button size="sm" variant="outline" className="h-8 gap-1" onClick={() => setShowUpload(true)}>
+                <CheckCircle className="w-3.5 h-3.5" /> Upload Form
+              </Button>
             </div>
             <div className="divide-y divide-border p-2">
-               <div className="p-3">
-                  <p className="text-xs font-semibold text-blue-600 mb-1">Today</p>
-                  <p className="text-sm font-medium text-card-foreground mb-1">Science Fair Registration Open</p>
-                  <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">Please register your ward for the upcoming annual science fair by next week Friday.</p>
-               </div>
-               <div className="p-3">
-                  <p className="text-xs font-semibold text-muted-foreground mb-1">May 20, 2026</p>
-                  <p className="text-sm font-medium text-card-foreground mb-1">Midterm Break Notice</p>
-                  <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">The school will observe a mid-term break starting next Wednesday.</p>
-               </div>
+              {documents.length === 0 ? (
+                <div className="py-6 text-center text-xs text-muted-foreground">No documents found.</div>
+              ) : documents.map(doc => (
+                <div key={doc.id} className="p-3 flex items-center justify-between hover:bg-muted dark:hover:bg-muted/30 rounded-lg transition-colors">
+                  <div>
+                    <p className="text-sm font-medium text-card-foreground mb-0.5">{doc.name}</p>
+                    <p className="text-xs text-muted-foreground">{format(new Date(doc.created_date), "MMM d, yyyy")} • {doc.category?.replace('_', ' ')}</p>
+                  </div>
+                  {doc.file_url && (
+                    <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50">
+                        <Download className="w-4 h-4" />
+                      </Button>
+                    </a>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </div>
+
+      {showUpload && (
+        <UploadDocumentDialog
+          onClose={() => setShowUpload(false)}
+          onSubmit={handleUploadSubmit}
+          isUploading={createDocMutation.isPending}
+          companyId={activeStudent?.company_id}
+          caseId={activeStudent?.id} // Use student ID as case ID for storage path
+        />
+      )}
     </div>
   );
 }

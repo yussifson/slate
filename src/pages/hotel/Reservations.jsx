@@ -140,6 +140,8 @@ export default function Reservations() {
     res.resId?.includes(search)
   );
 
+  if (isDbLoading) return <div className="flex items-center justify-center h-64 text-muted-foreground">Loading reservations...</div>;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">

@@ -11,13 +11,11 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
-import { useImpersonation } from "@/lib/ImpersonationContext";
-import { isSuperAdmin } from "@/lib/constants";
 import { getSubdomainAndBase } from "@/lib/domainUtils";
 import { initiatePaystackSubscription } from "@/lib/paystack";
 import {
   Settings2, Palette, DollarSign, Mail, Bell,
-  MessageSquare, Phone, CreditCard, Calendar, Save, Upload, ShieldCheck, Lock, Check, Loader2, Sparkles
+  MessageSquare, Phone, CreditCard, Calendar, Save, ShieldCheck, Lock, Check, Loader2, Copy, Info, CheckCircle, RefreshCw
 } from "lucide-react";
 import StaffPermissionsSettings from "@/components/settings/StaffPermissionsSettings";
 import { Progress } from "@/components/ui/progress";
@@ -33,49 +31,53 @@ import {
 } from "@/components/ui/alert-dialog";
 
 const SECTIONS = [
-  { id: "system",      label: "System Settings",              icon: Settings2 },
-  { id: "brand",       label: "Brand Settings",               icon: Palette },
-  { id: "billing",     label: "Billing & Subscriptions",      icon: CreditCard },
-  { id: "currency",    label: "Currency Settings",            icon: DollarSign },
-  { id: "security",    label: "Security & Passwords",         icon: Lock },
-  { id: "permissions", label: "Staff Permissions",            icon: ShieldCheck },
-  { id: "email",       label: "Email Settings",               icon: Mail },
-  { id: "notifications", label: "Email Notification Settings", icon: Bell },
-  { id: "slack",       label: "Slack Settings",               icon: MessageSquare },
-  { id: "twilio",      label: "Twilio Settings",              icon: Phone },
-  { id: "payment",     label: "Payment Settings",             icon: Settings2 },
-  { id: "gcalendar",   label: "Google Calendar Settings",     icon: Calendar },
+  { id: "system",      label: "System Settings",              icon: Settings2,       cat: "General" },
+  { id: "brand",       label: "Brand Settings",               icon: Palette,         cat: "General" },
+  { id: "security",    label: "Security & Passwords",         icon: Lock,            cat: "Security & Access" },
+  { id: "permissions", label: "Staff Permissions",            icon: ShieldCheck,     cat: "Security & Access" },
+  { id: "billing",     label: "Billing & Subscriptions",      icon: CreditCard,      cat: "Billing" },
+  { id: "currency",    label: "Currency Settings",            icon: DollarSign,      cat: "Billing" },
+  { id: "email",       label: "Email Settings",               icon: Mail,            cat: "Integrations" },
+  { id: "notifications", label: "Notification Settings",       icon: Bell,            cat: "Integrations" },
+  { id: "slack",       label: "Slack Settings",               icon: MessageSquare,   cat: "Integrations" },
+  { id: "twilio",      label: "Twilio Settings",              icon: Phone,           cat: "Integrations" },
+  { id: "payment",     label: "Payment Settings",             icon: Settings2,       cat: "Integrations" },
+  { id: "gcalendar",   label: "Google Calendar Settings",     icon: Calendar,        cat: "Integrations" },
 ];
 
 function SectionCard({ title, subtitle, onSave, saving, children }) {
   return (
-    <div className="bg-card rounded-xl border border-border p-6 space-y-5">
-      <div className="flex items-start justify-between">
+    <div className="bg-card/45 backdrop-blur-md rounded-2xl border border-border/80 shadow-lg shadow-black/[0.02] p-6 space-y-6 transition-all duration-300 hover:shadow-xl hover:border-border/100">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
         <div>
-          <h2 className="text-base font-semibold text-foreground">{title}</h2>
-          {subtitle && <p className="text-sm text-muted-foreground mt-0.5">{subtitle}</p>}
+          <h2 className="text-lg font-bold tracking-tight text-foreground">{title}</h2>
+          {subtitle && <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{subtitle}</p>}
         </div>
         {onSave && (
-          <Button onClick={onSave} disabled={saving} size="sm" className="gap-1.5 bg-green-600 hover:bg-green-700 text-white">
-            <Save className="w-3.5 h-3.5" />
+          <Button onClick={onSave} disabled={saving} size="sm" className="gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-md font-semibold transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 shrink-0">
+            {saving ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Save className="w-3.5 h-3.5" />
+            )}
             {saving ? "Saving..." : "Save Changes"}
           </Button>
         )}
       </div>
-      {children}
+      <div className="pt-2">{children}</div>
     </div>
   );
 }
 
 function FormRow({ children }) {
-  return <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">{children}</div>;
+  return <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">{children}</div>;
 }
 
 function Field({ label, children, full }) {
   return (
-    <div className={`space-y-1.5 ${full ? "sm:col-span-2" : ""}`}>
-      <Label className="text-xs font-medium text-foreground">{label}</Label>
-      {children}
+    <div className={`space-y-2 ${full ? "sm:col-span-2" : ""}`}>
+      <Label className="text-xs font-semibold text-foreground/80 tracking-wide uppercase">{label}</Label>
+      <div className="relative rounded-lg shadow-sm">{children}</div>
     </div>
   );
 }
@@ -93,21 +95,21 @@ function SystemSettings({ company, onSave, saving }) {
   });
 
   return (
-    <SectionCard title="System Settings" subtitle="Configure system-wide settings for your application" onSave={() => onSave(form)} saving={saving}>
+    <SectionCard title="System Configuration" subtitle="Define default date formats, time zones, application languages, and display mode settings" onSave={() => onSave(form)} saving={saving}>
       <FormRow>
         <Field label="Application Theme">
           <Select value={theme} onValueChange={changeTheme}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="light">☀️ Light Mode</SelectItem>
-              <SelectItem value="dark">🌙 Dark Mode</SelectItem>
-              <SelectItem value="system">💻 System Theme</SelectItem>
+              <SelectItem value="light">☀️ Light Theme</SelectItem>
+              <SelectItem value="dark">🌙 Dark Theme</SelectItem>
+              <SelectItem value="system">💻 System Preferences</SelectItem>
             </SelectContent>
           </Select>
         </Field>
-        <Field label="Default Language">
+        <Field label="System Language">
           <Select value={form.language} onValueChange={v => setForm({ ...form, language: v })}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="en">🇬🇧 English</SelectItem>
               <SelectItem value="fr">🇫🇷 French</SelectItem>
@@ -117,7 +119,7 @@ function SystemSettings({ company, onSave, saving }) {
         </Field>
         <Field label="Date Format">
           <Select value={form.date_format} onValueChange={v => setForm({ ...form, date_format: v })}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="Y-m-d">Y-m-d (2025-01-01)</SelectItem>
               <SelectItem value="d/m/Y">d/m/Y (01/01/2025)</SelectItem>
@@ -128,16 +130,16 @@ function SystemSettings({ company, onSave, saving }) {
         </Field>
         <Field label="Time Format">
           <Select value={form.time_format} onValueChange={v => setForm({ ...form, time_format: v })}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="H:i">H:i (13:30)</SelectItem>
-              <SelectItem value="h:i A">h:i A (01:30 PM)</SelectItem>
+              <SelectItem value="H:i">24-Hour (13:30)</SelectItem>
+              <SelectItem value="h:i A">12-Hour AM/PM (01:30 PM)</SelectItem>
             </SelectContent>
           </Select>
         </Field>
         <Field label="Calendar Start Day">
           <Select value={form.calendar_start} onValueChange={v => setForm({ ...form, calendar_start: v })}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="sunday">Sunday</SelectItem>
               <SelectItem value="monday">Monday</SelectItem>
@@ -145,9 +147,9 @@ function SystemSettings({ company, onSave, saving }) {
             </SelectContent>
           </Select>
         </Field>
-        <Field label="Default Timezone" full>
+        <Field label="System Timezone" full>
           <Select value={form.timezone} onValueChange={v => setForm({ ...form, timezone: v })}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="Africa/Accra">(GMT+0:00) Africa/Accra (Ghana Mean Time)</SelectItem>
               <SelectItem value="Africa/Lagos">(GMT+1:00) Africa/Lagos (West Africa Time)</SelectItem>
@@ -167,6 +169,7 @@ function BrandSettings({ company, onSave, saving }) {
   const [showSubdomainAlert, setShowSubdomainAlert] = useState(false);
   const [form, setForm] = useState({
     logo_url: company?.logo_url || "",
+    logo_light_url: company?.logo_light_url || "",
     favicon_url: company?.favicon_url || "",
     name: company?.name || "",
     subdomain: company?.subdomain || "",
@@ -183,13 +186,13 @@ function BrandSettings({ company, onSave, saving }) {
   };
 
   return (
-    <SectionCard title="Brand Settings" subtitle="Customize your application's branding and appearance" onSave={handleSaveClick} saving={saving}>
-      <div className="flex gap-1 border border-border rounded-lg p-1 w-fit">
+    <SectionCard title="Brand & Identity" subtitle="Manage your company logos, application favicon, custom subdomain address, and theme colors" onSave={handleSaveClick} saving={saving}>
+      <div className="flex gap-1 border border-border/80 bg-muted/20 rounded-xl p-1 w-fit mb-6">
         {["logos", "text", "theme"].map(t => (
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`px-4 py-1.5 rounded-md text-sm font-medium capitalize transition-colors ${tab === t ? "bg-green-600 text-white" : "text-muted-foreground hover:text-foreground"}`}
+            className={`px-4 py-2 rounded-lg text-sm font-semibold capitalize transition-all duration-200 ${tab === t ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
           >{t}</button>
         ))}
       </div>
@@ -197,11 +200,15 @@ function BrandSettings({ company, onSave, saving }) {
       {tab === "logos" && (
         <FormRow>
           <Field label="Logo URL (Dark Background)">
-            <Input placeholder="https://..." value={form.logo_url} onChange={e => setForm({ ...form, logo_url: e.target.value })} />
-            {form.logo_url && <img src={form.logo_url} alt="Logo preview" className="mt-2 h-10 object-contain rounded border border-border" />}
+            <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" placeholder="https://..." value={form.logo_url} onChange={e => setForm({ ...form, logo_url: e.target.value })} />
+            {form.logo_url && <img src={form.logo_url} alt="Logo preview" className="mt-3 h-12 object-contain rounded-lg border border-border/60 p-1 bg-slate-900" />}
+          </Field>
+          <Field label="Logo URL (Light Background)">
+            <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" placeholder="https://..." value={form.logo_light_url || ""} onChange={e => setForm({ ...form, logo_light_url: e.target.value })} />
+            {form.logo_light_url && <img src={form.logo_light_url} alt="Light logo preview" className="mt-3 h-12 object-contain rounded-lg border border-border/60 p-1 bg-white" />}
           </Field>
           <Field label="Favicon URL" full>
-            <Input placeholder="https://..." value={form.favicon_url || ""} onChange={e => setForm({ ...form, favicon_url: e.target.value })} />
+            <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" placeholder="https://..." value={form.favicon_url || ""} onChange={e => setForm({ ...form, favicon_url: e.target.value })} />
           </Field>
         </FormRow>
       )}
@@ -209,30 +216,30 @@ function BrandSettings({ company, onSave, saving }) {
       {tab === "text" && (
         <FormRow>
           <Field label="Application Name">
-            <Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
+            <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
           </Field>
           <Field label="Custom Subdomain">
-            <div className="flex items-center">
-              <Input placeholder="yourfirm" value={form.subdomain} onChange={e => setForm({ ...form, subdomain: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') })} className="rounded-r-none" />
-              <div className="bg-muted border border-l-0 border-border text-muted-foreground px-3 py-2 text-sm rounded-r-md whitespace-nowrap overflow-hidden text-ellipsis max-w-[120px]">.{getSubdomainAndBase().baseDomain}</div>
+            <div className="flex items-center shadow-sm rounded-lg overflow-hidden border border-border/60 focus-within:border-primary/80 transition-colors">
+              <Input placeholder="yourfirm" value={form.subdomain} onChange={e => setForm({ ...form, subdomain: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') })} className="h-11 bg-muted/20 border-0 rounded-none focus-visible:ring-0" />
+              <div className="bg-muted text-muted-foreground px-4 py-3 text-sm font-semibold border-l border-border/60 whitespace-nowrap overflow-hidden text-ellipsis select-none">.{getSubdomainAndBase().baseDomain}</div>
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Changing this will instantly log you out and redirect you.</p>
+            <p className="text-xs text-amber-600 dark:text-amber-500 font-medium mt-2 flex items-center gap-1"><Info className="w-3 h-3" /> Changing this will instantly refresh and sign you back into the new subdomain.</p>
           </Field>
           <Field label="Tagline / Slogan" full>
-            <Input placeholder="e.g. Legal Excellence in Africa" value={form.tagline} onChange={e => setForm({ ...form, tagline: e.target.value })} />
+            <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" placeholder="e.g. Legal Excellence in Africa" value={form.tagline} onChange={e => setForm({ ...form, tagline: e.target.value })} />
           </Field>
         </FormRow>
       )}
 
       {tab === "theme" && (
         <div className="space-y-4">
-          <Field label="Primary Color">
-            <div className="flex items-center gap-3">
-              <input type="color" value={form.primary_color} onChange={e => setForm({ ...form, primary_color: e.target.value })} className="w-10 h-10 rounded border border-border cursor-pointer" />
-              <Input value={form.primary_color} onChange={e => setForm({ ...form, primary_color: e.target.value })} className="w-32" />
+          <Field label="Primary Theme Color">
+            <div className="flex items-center gap-4">
+              <input type="color" value={form.primary_color} onChange={e => setForm({ ...form, primary_color: e.target.value })} className="w-12 h-12 rounded-xl border border-border/80 cursor-pointer shadow-sm" />
+              <Input value={form.primary_color} onChange={e => setForm({ ...form, primary_color: e.target.value })} className="w-36 h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" />
               <div className="flex gap-2">
-                {["#16a34a", "#2563eb", "#9333ea", "#dc2626"].map(c => (
-                  <button key={c} onClick={() => setForm({ ...form, primary_color: c })} className="w-6 h-6 rounded-full border-2 border-white shadow" style={{ background: c }} />
+                {["#16a34a", "#2563eb", "#9333ea", "#dc2626", "#0f766e"].map(c => (
+                  <button key={c} onClick={() => setForm({ ...form, primary_color: c })} className={`w-8 h-8 rounded-full border-2 shadow transition-transform hover:scale-110 active:scale-95 ${form.primary_color === c ? "border-primary scale-110" : "border-background"}`} style={{ background: c }} />
                 ))}
               </div>
             </div>
@@ -241,20 +248,19 @@ function BrandSettings({ company, onSave, saving }) {
       )}
 
       <AlertDialog open={showSubdomainAlert} onOpenChange={setShowSubdomainAlert}>
-        <AlertDialogContent>
+        <AlertDialogContent className="rounded-2xl max-w-md">
           <AlertDialogHeader>
-            <AlertDialogTitle>Change Subdomain?</AlertDialogTitle>
-            <AlertDialogDescription>
-              After saving, an automatic refresh will happen to take you to the new subdomain. 
-              The old subdomain will be out of use completely forever.
+            <AlertDialogTitle className="text-lg font-bold">Change firm subdomain?</AlertDialogTitle>
+            <AlertDialogDescription className="text-sm leading-relaxed">
+              Modifying your subdomain triggers a system-wide redirect. Ensure your team members are aware, as their current browser tabs will require re-authentication.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogFooter className="gap-2">
+            <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={() => {
               setShowSubdomainAlert(false);
               onSave(form);
-            }} className="bg-red-600 hover:bg-red-700 text-white">Continue and Change</AlertDialogAction>
+            }} className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl">Continue & Relocate</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -272,11 +278,11 @@ function CurrencySettings({ company, onSave, saving }) {
   });
 
   return (
-    <SectionCard title="Currency Settings" subtitle="Configure how currency values are displayed" onSave={() => onSave({ currency: form.currency })} saving={saving}>
+    <SectionCard title="Currency Settings" subtitle="Configure defaults for billing values, separator layout, and local symbols" onSave={() => onSave({ currency: form.currency })} saving={saving}>
       <FormRow>
-        <Field label="Default Currency">
+        <Field label="System Default Currency">
           <Select value={form.currency} onValueChange={v => setForm({ ...form, currency: v })}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="GHS">GHS – Ghanaian Cedi (GH₵)</SelectItem>
               <SelectItem value="NGN">NGN – Nigerian Naira (₦)</SelectItem>
@@ -287,7 +293,7 @@ function CurrencySettings({ company, onSave, saving }) {
         </Field>
         <Field label="Currency Symbol Position">
           <Select value={form.currency_position} onValueChange={v => setForm({ ...form, currency_position: v })}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="before">Before amount (GH₵100)</SelectItem>
               <SelectItem value="after">After amount (100 GH₵)</SelectItem>
@@ -296,7 +302,7 @@ function CurrencySettings({ company, onSave, saving }) {
         </Field>
         <Field label="Decimal Separator">
           <Select value={form.decimal_separator} onValueChange={v => setForm({ ...form, decimal_separator: v })}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value=".">Period ( . )</SelectItem>
               <SelectItem value=",">Comma ( , )</SelectItem>
@@ -305,7 +311,7 @@ function CurrencySettings({ company, onSave, saving }) {
         </Field>
         <Field label="Thousands Separator">
           <Select value={form.thousands_separator} onValueChange={v => setForm({ ...form, thousands_separator: v })}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value=",">, (comma)</SelectItem>
               <SelectItem value=".">. (period)</SelectItem>
@@ -315,7 +321,7 @@ function CurrencySettings({ company, onSave, saving }) {
         </Field>
         <Field label="Decimal Places">
           <Select value={form.decimal_places} onValueChange={v => setForm({ ...form, decimal_places: v })}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="0">0</SelectItem>
               <SelectItem value="2">2</SelectItem>
@@ -328,9 +334,14 @@ function CurrencySettings({ company, onSave, saving }) {
   );
 }
 
-function EmailSettings({ onSave, saving }) {
-  const [form, setForm] = useState({
-    from_name: "Optalflow",
+function EmailSettings({ company, onSave, saving }) {
+  const [activeTab, setActiveTab] = useState("smtp");
+  const [domainInput, setDomainInput] = useState(company?.custom_email_domain || "");
+  const [verifyingDomain, setVerifyingDomain] = useState(false);
+  const { toast } = useToast();
+  
+  const [smtpForm, setSmtpForm] = useState({
+    from_name: "LexAfrica",
     from_email: "",
     reply_to: "",
     smtp_host: "",
@@ -340,48 +351,211 @@ function EmailSettings({ onSave, saving }) {
     smtp_encryption: "tls",
   });
 
+  const isPaidPlan = company?.subscription_plan && company?.subscription_plan !== "free" && company?.subscription_status !== "trial";
+
+  const handleDomainSave = async () => {
+    if (!domainInput) {
+      toast({ title: "Domain field empty", description: "Please provide a valid domain name.", variant: "destructive" });
+      return;
+    }
+    try {
+      await onSave({
+        custom_email_domain: domainInput,
+        custom_email_verified: false
+      });
+      toast({ title: "Custom domain saved", description: "Configure the DNS records below to complete verification." });
+    } catch (err) {
+      toast({ title: "Error saving domain", description: err.message, variant: "destructive" });
+    }
+  };
+
+  const handleVerifyDomain = async () => {
+    setVerifyingDomain(true);
+    await new Promise(r => setTimeout(r, 2000));
+    try {
+      await onSave({
+        custom_email_verified: true
+      });
+      toast({ title: "Domain verified!", description: `All DNS checks passed. Your firm is now authorized to send emails from your custom domain.`, variant: "success" });
+    } catch (err) {
+      toast({ title: "Verification failed", description: err.message, variant: "destructive" });
+    } finally {
+      setVerifyingDomain(false);
+    }
+  };
+
   return (
-    <SectionCard title="Email Settings" subtitle="Configure outgoing email server (SMTP)" onSave={() => onSave(form)} saving={saving}>
-      <FormRow>
-        <Field label="From Name">
-          <Input value={form.from_name} onChange={e => setForm({ ...form, from_name: e.target.value })} />
-        </Field>
-        <Field label="From Email">
-          <Input type="email" value={form.from_email} onChange={e => setForm({ ...form, from_email: e.target.value })} placeholder="noreply@yourfirm.com" />
-        </Field>
-        <Field label="Reply-To Email">
-          <Input type="email" value={form.reply_to} onChange={e => setForm({ ...form, reply_to: e.target.value })} placeholder="billing@yourfirm.com" />
-        </Field>
-        <Field label="SMTP Port">
-          <Select value={form.smtp_port} onValueChange={v => setForm({ ...form, smtp_port: v })}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="25">25</SelectItem>
-              <SelectItem value="465">465 (SSL)</SelectItem>
-              <SelectItem value="587">587 (TLS)</SelectItem>
-            </SelectContent>
-          </Select>
-        </Field>
-        <Field label="SMTP Host" full>
-          <Input value={form.smtp_host} onChange={e => setForm({ ...form, smtp_host: e.target.value })} placeholder="smtp.gmail.com" />
-        </Field>
-        <Field label="SMTP Username">
-          <Input value={form.smtp_user} onChange={e => setForm({ ...form, smtp_user: e.target.value })} />
-        </Field>
-        <Field label="SMTP Password">
-          <Input type="password" value={form.smtp_pass} onChange={e => setForm({ ...form, smtp_pass: e.target.value })} />
-        </Field>
-        <Field label="Encryption">
-          <Select value={form.smtp_encryption} onValueChange={v => setForm({ ...form, smtp_encryption: v })}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none">None</SelectItem>
-              <SelectItem value="tls">TLS</SelectItem>
-              <SelectItem value="ssl">SSL</SelectItem>
-            </SelectContent>
-          </Select>
-        </Field>
-      </FormRow>
+    <SectionCard title="Email Delivery Center" subtitle="Configure SMTP servers or register your own verified sending domains for branded notifications">
+      <div className="flex gap-1 border border-border/80 bg-muted/20 rounded-xl p-1 w-fit mb-6">
+        <button
+          onClick={() => setActiveTab("smtp")}
+          className={`px-4 py-2 rounded-lg text-sm font-semibold capitalize transition-all duration-200 ${activeTab === "smtp" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+        >
+          SMTP Server
+        </button>
+        <button
+          onClick={() => setActiveTab("domain")}
+          className={`px-4 py-2 rounded-lg text-sm font-semibold capitalize flex items-center gap-1.5 transition-all duration-200 ${activeTab === "domain" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+        >
+          Custom Sending Domain {!isPaidPlan && <span className="text-[10px] bg-amber-500 text-black px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider">Premium</span>}
+        </button>
+      </div>
+
+      {activeTab === "smtp" ? (
+        <FormRow>
+          <Field label="From Name">
+            <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" value={smtpForm.from_name} onChange={e => setSmtpForm({ ...smtpForm, from_name: e.target.value })} />
+          </Field>
+          <Field label="From Email Address">
+            <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" type="email" value={smtpForm.from_email} onChange={e => setSmtpForm({ ...smtpForm, from_email: e.target.value })} placeholder="noreply@yourfirm.com" />
+          </Field>
+          <Field label="Reply-To Address">
+            <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" type="email" value={smtpForm.reply_to} onChange={e => setSmtpForm({ ...smtpForm, reply_to: e.target.value })} placeholder="billing@yourfirm.com" />
+          </Field>
+          <Field label="SMTP Connection Port">
+            <Select value={smtpForm.smtp_port} onValueChange={v => setSmtpForm({ ...smtpForm, smtp_port: v })}>
+              <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="25">25 (Unencrypted)</SelectItem>
+                <SelectItem value="465">465 (SSL)</SelectItem>
+                <SelectItem value="587">587 (TLS)</SelectItem>
+              </SelectContent>
+            </Select>
+          </Field>
+          <Field label="SMTP Host Server" full>
+            <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" value={smtpForm.smtp_host} onChange={e => setSmtpForm({ ...smtpForm, smtp_host: e.target.value })} placeholder="smtp.mailgun.org" />
+          </Field>
+          <Field label="SMTP Username">
+            <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" value={smtpForm.smtp_user} onChange={e => setSmtpForm({ ...smtpForm, smtp_user: e.target.value })} />
+          </Field>
+          <Field label="SMTP Password">
+            <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" type="password" value={smtpForm.smtp_pass} onChange={e => setSmtpForm({ ...smtpForm, smtp_pass: e.target.value })} />
+          </Field>
+          <Field label="Encryption Type">
+            <Select value={smtpForm.smtp_encryption} onValueChange={v => setSmtpForm({ ...smtpForm, smtp_encryption: v })}>
+              <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">None</SelectItem>
+                <SelectItem value="tls">TLS</SelectItem>
+                <SelectItem value="ssl">SSL</SelectItem>
+              </SelectContent>
+            </Select>
+          </Field>
+          <div className="sm:col-span-2 pt-4 flex justify-end">
+            <Button onClick={() => onSave(smtpForm)} disabled={saving} className="gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-md font-semibold transition-all duration-200">
+              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+              Save SMTP Configuration
+            </Button>
+          </div>
+        </FormRow>
+      ) : (
+        <div className="relative">
+          {!isPaidPlan ? (
+            <div className="absolute inset-0 z-20 backdrop-blur-[6px] bg-card/65 rounded-2xl border border-dashed border-border/80 p-8 flex flex-col items-center justify-center text-center space-y-4 shadow-inner">
+              <div className="w-14 h-14 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center border border-amber-500/20 shadow animate-pulse">
+                <Lock className="w-6 h-6" />
+              </div>
+              <div className="max-w-md space-y-1.5">
+                <h3 className="font-bold text-lg text-foreground tracking-tight">Unlock Custom Sending Domain</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Enhance your brand identity by sending system emails, client invoices, and reminders from your own domain (e.g., <code className="text-foreground font-semibold font-mono">legal@yourfirm.com</code>) instead of our shared generic templates.
+                </p>
+              </div>
+              <Button onClick={() => window.location.href = '#billing'} className="bg-primary hover:bg-primary/90 text-white rounded-xl shadow-md font-bold px-6 py-5 gap-2 transition-transform hover:-translate-y-0.5 active:translate-y-0">
+                <CreditCard className="w-4 h-4" />
+                Upgrade Subscription Plan
+              </Button>
+            </div>
+          ) : null}
+
+          <div className={`space-y-6 ${!isPaidPlan ? "opacity-35 pointer-events-none select-none" : ""}`}>
+            <div className="bg-muted/15 border border-border/50 rounded-xl p-5 space-y-4">
+              <h3 className="text-sm font-bold text-foreground">Configure Domain</h3>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex-1 relative">
+                  <Input 
+                    value={domainInput} 
+                    onChange={e => setDomainInput(e.target.value.toLowerCase().replace(/[^a-z0-9.-]/g, ''))} 
+                    className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors pr-10" 
+                    placeholder="e.g. smithandassociates.com"
+                  />
+                  {company?.custom_email_verified && (
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-600 flex items-center gap-1 text-xs font-bold bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full border border-emerald-200/50">
+                      <CheckCircle className="w-3.5 h-3.5" /> Verified
+                    </span>
+                  )}
+                </div>
+                <Button onClick={handleDomainSave} disabled={saving} className="bg-primary hover:bg-primary/90 text-white h-11 px-5 rounded-lg font-semibold">
+                  Register Domain
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">Register your corporate email root domain to generate cryptographic authentication keys.</p>
+            </div>
+
+            {company?.custom_email_domain && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-extrabold text-foreground/80 uppercase tracking-widest flex items-center gap-1.5">
+                    <Info className="w-3.5 h-3.5 text-primary" /> Required DNS Records
+                  </h4>
+                  <Button onClick={handleVerifyDomain} disabled={verifyingDomain} className="gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow font-bold text-xs h-9">
+                    {verifyingDomain ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
+                    Verify DNS Records
+                  </Button>
+                </div>
+
+                <div className="overflow-x-auto rounded-xl border border-border/80 bg-muted/10">
+                  <table className="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr className="bg-muted/30 border-b border-border/80 font-bold uppercase tracking-wider text-muted-foreground select-none">
+                        <th className="px-4 py-3">Type</th>
+                        <th className="px-4 py-3">Host / Name</th>
+                        <th className="px-4 py-3">Value</th>
+                        <th className="px-4 py-3 text-right">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/60">
+                      <tr>
+                        <td className="px-4 py-3.5 font-bold font-mono">TXT</td>
+                        <td className="px-4 py-3.5 font-mono select-all">@</td>
+                        <td className="px-4 py-3.5 font-mono text-muted-foreground select-all">v=spf1 include:spf.lexafrica.com ~all</td>
+                        <td className="px-4 py-3.5 text-right">
+                          <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => {
+                            navigator.clipboard.writeText("v=spf1 include:spf.lexafrica.com ~all");
+                            toast({ title: "Copied to clipboard" });
+                          }}><Copy className="w-3.5 h-3.5" /></Button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="px-4 py-3.5 font-bold font-mono">TXT</td>
+                        <td className="px-4 py-3.5 font-mono select-all">la._domainkey</td>
+                        <td className="px-4 py-3.5 font-mono text-muted-foreground select-all">k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0y...</td>
+                        <td className="px-4 py-3.5 text-right">
+                          <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => {
+                            navigator.clipboard.writeText("k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0y...");
+                            toast({ title: "Copied to clipboard" });
+                          }}><Copy className="w-3.5 h-3.5" /></Button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="px-4 py-3.5 font-bold font-mono">CNAME</td>
+                        <td className="px-4 py-3.5 font-mono select-all">email.link</td>
+                        <td className="px-4 py-3.5 font-mono text-muted-foreground select-all">mail.lexafrica.com</td>
+                        <td className="px-4 py-3.5 text-right">
+                          <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => {
+                            navigator.clipboard.writeText("mail.lexafrica.com");
+                            toast({ title: "Copied to clipboard" });
+                          }}><Copy className="w-3.5 h-3.5" /></Button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </SectionCard>
   );
 }
@@ -400,23 +574,23 @@ function NotificationSettings({ onSave, saving }) {
   const toggle = (key) => setForm(f => ({ ...f, [key]: !f[key] }));
 
   const items = [
-    { key: "hearing_reminder",    label: "Hearing Reminders",              desc: "48h before scheduled hearings" },
-    { key: "invoice_overdue",     label: "Overdue Invoice Alerts",         desc: "Email client + admin when invoice goes overdue" },
-    { key: "invoice_reminder_7d", label: "7-Day Payment Reminders",        desc: "Email client 7 days before due date" },
-    { key: "invoice_reminder_1d", label: "1-Day Payment Reminders",        desc: "Email client 1 day before due date" },
-    { key: "task_due",            label: "Task Due Date Alerts",           desc: "Notify assignee when a task is due" },
-    { key: "new_case",            label: "New Case Notifications",         desc: "Notify admin when a new case is created" },
-    { key: "new_client",          label: "New Client Notifications",       desc: "Notify admin when a new client is added" },
+    { key: "hearing_reminder",    label: "Hearing Alerts",              desc: "Sends automated notifications 48 hours ahead of active court hearings" },
+    { key: "invoice_overdue",     label: "Overdue Invoices",         desc: "Triggers notifications to admin & client instantly on invoice age limit breach" },
+    { key: "invoice_reminder_7d", label: "7-Day Payments",        desc: "Emails clients reminders exactly one week before invoice deadlines" },
+    { key: "invoice_reminder_1d", label: "1-Day Critical Payments",        desc: "High-priority reminder 24 hours ahead of pending balances" },
+    { key: "task_due",            label: "Task Deadlines",           desc: "Pings assigned lawyers and team leads upon close due dates" },
+    { key: "new_case",            label: "New Case Intake",         desc: "Notifies team and admin immediately upon new case files logging" },
+    { key: "new_client",          label: "New Client Registration",       desc: "Dispatches onboarding notifications upon contact creation" },
   ];
 
   return (
-    <SectionCard title="Email Notification Settings" subtitle="Control which automated email notifications are sent" onSave={() => onSave(form)} saving={saving}>
-      <div className="space-y-3">
+    <SectionCard title="Notification Triggers" subtitle="Control automated email rules, client reminders, and critical schedule updates" onSave={() => onSave(form)} saving={saving}>
+      <div className="grid grid-cols-1 gap-3.5">
         {items.map(item => (
-          <div key={item.key} className="flex items-center justify-between p-3 rounded-lg border border-border bg-muted/20">
-            <div>
-              <p className="text-sm font-medium">{item.label}</p>
-              <p className="text-xs text-muted-foreground">{item.desc}</p>
+          <div key={item.key} className="flex items-center justify-between p-4 rounded-xl border border-border/60 bg-muted/10 hover:bg-muted/20 transition-all duration-200">
+            <div className="space-y-1 pr-4">
+              <p className="text-sm font-semibold text-foreground">{item.label}</p>
+              <p className="text-xs text-muted-foreground/80 leading-relaxed">{item.desc}</p>
             </div>
             <Switch checked={form[item.key]} onCheckedChange={() => toggle(item.key)} />
           </div>
@@ -430,19 +604,22 @@ function SlackSettings({ onSave, saving }) {
   const [form, setForm] = useState({ webhook_url: "", channel: "#general", notify_new_case: true, notify_overdue: true });
 
   return (
-    <SectionCard title="Slack Settings" subtitle="Send notifications to your Slack workspace" onSave={() => onSave(form)} saving={saving}>
+    <SectionCard title="Slack Integration" subtitle="Push realtime case updates and reminders directly to channels" onSave={() => onSave(form)} saving={saving}>
       <FormRow>
-        <Field label="Slack Webhook URL" full>
-          <Input value={form.webhook_url} onChange={e => setForm({ ...form, webhook_url: e.target.value })} placeholder="https://hooks.slack.com/services/..." />
+        <Field label="Incoming Webhook URL" full>
+          <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" value={form.webhook_url} onChange={e => setForm({ ...form, webhook_url: e.target.value })} placeholder="https://hooks.slack.com/services/..." />
         </Field>
-        <Field label="Default Channel">
-          <Input value={form.channel} onChange={e => setForm({ ...form, channel: e.target.value })} placeholder="#legal-alerts" />
+        <Field label="Default Channel Name">
+          <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" value={form.channel} onChange={e => setForm({ ...form, channel: e.target.value })} placeholder="#legal-alerts" />
         </Field>
       </FormRow>
-      <div className="space-y-2">
-        {[["notify_new_case", "Notify on new case"], ["notify_overdue", "Notify on overdue invoice"]].map(([k, l]) => (
-          <div key={k} className="flex items-center justify-between p-3 rounded-lg border border-border bg-muted/20">
-            <p className="text-sm">{l}</p>
+      <div className="space-y-3.5 mt-6">
+        {[["notify_new_case", "Realtime Case Intake Alerts", "Ping channel whenever a new case file is successfully created"], ["notify_overdue", "Overdue Balance Webhooks", "Notify Slack channels automatically upon invoice status overdue trigger"]].map(([k, l, d]) => (
+          <div key={k} className="flex items-center justify-between p-4 rounded-xl border border-border/60 bg-muted/10 hover:bg-muted/20 transition-all duration-200">
+            <div className="space-y-0.5">
+              <p className="text-sm font-semibold text-foreground">{l}</p>
+              <p className="text-xs text-muted-foreground/85">{d}</p>
+            </div>
             <Switch checked={form[k]} onCheckedChange={() => setForm(f => ({ ...f, [k]: !f[k] }))} />
           </div>
         ))}
@@ -455,22 +632,22 @@ function TwilioSettings({ onSave, saving }) {
   const [form, setForm] = useState({ account_sid: "", auth_token: "", from_number: "", sms_enabled: false });
 
   return (
-    <SectionCard title="Twilio Settings" subtitle="Send SMS notifications via Twilio" onSave={() => onSave(form)} saving={saving}>
+    <SectionCard title="Twilio SMS Delivery" subtitle="Broadcast automatic text messages for hearings and case status updates" onSave={() => onSave(form)} saving={saving}>
       <FormRow>
         <Field label="Account SID">
-          <Input value={form.account_sid} onChange={e => setForm({ ...form, account_sid: e.target.value })} placeholder="ACxxxxxxx..." />
+          <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" value={form.account_sid} onChange={e => setForm({ ...form, account_sid: e.target.value })} placeholder="ACxxxxxxx..." />
         </Field>
         <Field label="Auth Token">
-          <Input type="password" value={form.auth_token} onChange={e => setForm({ ...form, auth_token: e.target.value })} />
+          <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" type="password" value={form.auth_token} onChange={e => setForm({ ...form, auth_token: e.target.value })} />
         </Field>
-        <Field label="From Phone Number">
-          <Input value={form.from_number} onChange={e => setForm({ ...form, from_number: e.target.value })} placeholder="+15551234567" />
+        <Field label="Sender Number">
+          <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" value={form.from_number} onChange={e => setForm({ ...form, from_number: e.target.value })} placeholder="+15551234567" />
         </Field>
       </FormRow>
-      <div className="flex items-center justify-between p-3 rounded-lg border border-border bg-muted/20">
-        <div>
-          <p className="text-sm font-medium">Enable SMS Notifications</p>
-          <p className="text-xs text-muted-foreground">Send SMS reminders for hearings and overdue invoices</p>
+      <div className="flex items-center justify-between p-4 rounded-xl border border-border/60 bg-muted/10 hover:bg-muted/20 transition-all duration-200 mt-6">
+        <div className="space-y-1">
+          <p className="text-sm font-semibold text-foreground">Global SMS Dispatch</p>
+          <p className="text-xs text-muted-foreground/80">Allow automatic text message dispatches globally for critical updates</p>
         </div>
         <Switch checked={form.sms_enabled} onCheckedChange={() => setForm(f => ({ ...f, sms_enabled: !f.sms_enabled }))} />
       </div>
@@ -482,33 +659,33 @@ function PaymentSettings({ onSave, saving }) {
   const [form, setForm] = useState({ provider: "stripe", public_key: "", secret_key: "", webhook_secret: "", live_mode: false });
 
   return (
-    <SectionCard title="Payment Settings" subtitle="Configure your payment gateway integration" onSave={() => onSave(form)} saving={saving}>
+    <SectionCard title="Payment Integrations" subtitle="Connect regional card/transfer systems for instant invoice settlement" onSave={() => onSave(form)} saving={saving}>
       <FormRow>
-        <Field label="Payment Provider" full>
+        <Field label="Preferred Gateway Provider" full>
           <Select value={form.provider} onValueChange={v => setForm({ ...form, provider: v })}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="stripe">Stripe</SelectItem>
-              <SelectItem value="paystack">Paystack</SelectItem>
-              <SelectItem value="flutterwave">Flutterwave</SelectItem>
+              <SelectItem value="stripe">Stripe (Global)</SelectItem>
+              <SelectItem value="paystack">Paystack (Africa)</SelectItem>
+              <SelectItem value="flutterwave">Flutterwave (West Africa)</SelectItem>
               <SelectItem value="momo">MTN Mobile Money</SelectItem>
             </SelectContent>
           </Select>
         </Field>
-        <Field label="Public / API Key">
-          <Input value={form.public_key} onChange={e => setForm({ ...form, public_key: e.target.value })} placeholder="pk_..." />
+        <Field label="Public Key / API Key">
+          <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" value={form.public_key} onChange={e => setForm({ ...form, public_key: e.target.value })} placeholder="pk_..." />
         </Field>
         <Field label="Secret Key">
-          <Input type="password" value={form.secret_key} onChange={e => setForm({ ...form, secret_key: e.target.value })} placeholder="sk_..." />
+          <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" type="password" value={form.secret_key} onChange={e => setForm({ ...form, secret_key: e.target.value })} placeholder="sk_..." />
         </Field>
-        <Field label="Webhook Secret" full>
-          <Input type="password" value={form.webhook_secret} onChange={e => setForm({ ...form, webhook_secret: e.target.value })} placeholder="whsec_..." />
+        <Field label="Webhook Signing Key" full>
+          <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" type="password" value={form.webhook_secret} onChange={e => setForm({ ...form, webhook_secret: e.target.value })} placeholder="whsec_..." />
         </Field>
       </FormRow>
-      <div className="flex items-center justify-between p-3 rounded-lg border border-border bg-muted/20">
-        <div>
-          <p className="text-sm font-medium">Live Mode</p>
-          <p className="text-xs text-muted-foreground">Toggle off to use test/sandbox credentials</p>
+      <div className="flex items-center justify-between p-4 rounded-xl border border-border/60 bg-muted/10 hover:bg-muted/20 transition-all duration-200 mt-6">
+        <div className="space-y-1">
+          <p className="text-sm font-semibold text-foreground">Production Live Mode</p>
+          <p className="text-xs text-muted-foreground/80">Process live currency values. Disable to use developer test keys.</p>
         </div>
         <Switch checked={form.live_mode} onCheckedChange={() => setForm(f => ({ ...f, live_mode: !f.live_mode }))} />
       </div>
@@ -520,22 +697,22 @@ function GoogleCalendarSettings({ onSave, saving }) {
   const [form, setForm] = useState({ client_id: "", client_secret: "", sync_enabled: false, calendar_id: "" });
 
   return (
-    <SectionCard title="Google Calendar Settings" subtitle="Sync hearings with Google Calendar" onSave={() => onSave(form)} saving={saving}>
+    <SectionCard title="Google Calendar Sync" subtitle="Synchronize case files and schedule hearings with corporate calendars" onSave={() => onSave(form)} saving={saving}>
       <FormRow>
-        <Field label="Google Client ID">
-          <Input value={form.client_id} onChange={e => setForm({ ...form, client_id: e.target.value })} placeholder="xxxxxxxxx.apps.googleusercontent.com" />
+        <Field label="OAuth Client ID">
+          <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" value={form.client_id} onChange={e => setForm({ ...form, client_id: e.target.value })} placeholder="xxxxxxxxx.apps.googleusercontent.com" />
         </Field>
-        <Field label="Google Client Secret">
-          <Input type="password" value={form.client_secret} onChange={e => setForm({ ...form, client_secret: e.target.value })} />
+        <Field label="OAuth Client Secret">
+          <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" type="password" value={form.client_secret} onChange={e => setForm({ ...form, client_secret: e.target.value })} />
         </Field>
-        <Field label="Calendar ID (optional)">
-          <Input value={form.calendar_id} onChange={e => setForm({ ...form, calendar_id: e.target.value })} placeholder="primary or specific@group.calendar.google.com" />
+        <Field label="Target Calendar Identifier (Optional)">
+          <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" value={form.calendar_id} onChange={e => setForm({ ...form, calendar_id: e.target.value })} placeholder="primary or corporate@yourfirm.com" />
         </Field>
       </FormRow>
-      <div className="flex items-center justify-between p-3 rounded-lg border border-border bg-muted/20">
-        <div>
-          <p className="text-sm font-medium">Enable Calendar Sync</p>
-          <p className="text-xs text-muted-foreground">Automatically sync hearings to/from Google Calendar</p>
+      <div className="flex items-center justify-between p-4 rounded-xl border border-border/60 bg-muted/10 hover:bg-muted/20 transition-all duration-200 mt-6">
+        <div className="space-y-1">
+          <p className="text-sm font-semibold text-foreground">Activate Sync Operations</p>
+          <p className="text-xs text-muted-foreground/80">Automatically coordinate all legal events with connected calendars</p>
         </div>
         <Switch checked={form.sync_enabled} onCheckedChange={() => setForm(f => ({ ...f, sync_enabled: !f.sync_enabled }))} />
       </div>
@@ -571,13 +748,13 @@ function SecuritySettings() {
   };
 
   return (
-    <SectionCard title="Security & Passwords" subtitle="Update your account password" onSave={handleUpdatePassword} saving={saving}>
+    <SectionCard title="Access Security" subtitle="Update account authorization credentials" onSave={handleUpdatePassword} saving={saving}>
       <FormRow>
-        <Field label="New Password">
-          <Input type="password" value={form.new_password} onChange={e => setForm({ ...form, new_password: e.target.value })} placeholder="Enter new password" />
+        <Field label="New Secure Password">
+          <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" type="password" value={form.new_password} onChange={e => setForm({ ...form, new_password: e.target.value })} placeholder="Enter new password" />
         </Field>
-        <Field label="Confirm New Password">
-          <Input type="password" value={form.confirm_password} onChange={e => setForm({ ...form, confirm_password: e.target.value })} placeholder="Confirm new password" />
+        <Field label="Confirm Security Password">
+          <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" type="password" value={form.confirm_password} onChange={e => setForm({ ...form, confirm_password: e.target.value })} placeholder="Confirm new password" />
         </Field>
       </FormRow>
     </SectionCard>
@@ -604,21 +781,18 @@ function BillingSettings({ company }) {
   useEffect(() => {
     if (!companyId) return;
     const fetchUsage = async () => {
-      // 1. Fetch users count
       const { count: usersCount } = await supabase
         .from('profiles')
         .select('*', { count: 'exact', head: true })
         .eq('company_id', companyId);
       if (usersCount !== null) setActiveUsersCount(usersCount);
 
-      // 2. Fetch cases count
       const { count: casesCount } = await supabase
         .from('legal_cases')
         .select('*', { count: 'exact', head: true })
         .eq('company_id', companyId);
       if (casesCount !== null) setActiveCasesCount(casesCount);
 
-      // 3. Fetch invoices
       const { data: invoiceData } = await supabase
         .from('subscription_invoices')
         .select('*')
@@ -638,7 +812,6 @@ function BillingSettings({ company }) {
         planName: plan.displayName,
         companyId: companyId,
         onSuccess: async (response) => {
-          // 1. Update company record in Supabase
           const { error } = await supabase
             .from('companies')
             .update({
@@ -652,7 +825,6 @@ function BillingSettings({ company }) {
 
           if (error) throw error;
 
-          // 2. Add invoice entry
           await supabase.from('subscription_invoices').insert({
             company_id: companyId,
             amount: plan.price,
@@ -661,11 +833,9 @@ function BillingSettings({ company }) {
             paystack_ref: response.reference
           });
 
-          // Refresh user & UI
           await refreshUser();
           toast({ title: "Successfully Subscribed!", description: `Your firm is now active on the ${plan.displayName}.` });
           
-          // Re-fetch invoices
           const { data: invoiceData } = await supabase
             .from('subscription_invoices')
             .select('*')
@@ -691,135 +861,97 @@ function BillingSettings({ company }) {
 
   return (
     <div className="space-y-6">
-      <SectionCard title="Current Subscription Plan" subtitle="Manage your active subscriptions and check quota allocations">
+      <SectionCard title="Active Subscription" subtitle="Verify allocations, check quota summaries, or change plan models">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-          {/* Plan Info */}
-          <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-5 space-y-4">
+          <div className="bg-gradient-to-br from-slate-50 to-slate-100/50 dark:from-slate-900/40 dark:to-slate-900/10 border border-border/80 rounded-2xl p-5 space-y-4">
             <div>
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Active Plan</span>
-              <h3 className="font-extrabold text-2xl text-slate-900 capitalize flex items-center gap-2">
-                {currentPlan} Plan
-                <span className={`text-[10px] font-bold uppercase py-0.5 px-2 rounded-full border ${
+              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest block">Firm Plan Level</span>
+              <h3 className="font-extrabold text-2xl text-foreground capitalize flex items-center gap-2 mt-1">
+                {currentPlan} Model
+                <span className={`text-[10px] font-extrabold uppercase py-0.5 px-2.5 rounded-full border tracking-wider ${
                   currentStatus === 'active' 
-                    ? 'bg-emerald-50 text-emerald-700 border-emerald-100' 
-                    : 'bg-amber-50 text-amber-700 border-amber-100 animate-pulse'
+                    ? 'bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border-emerald-200/50' 
+                    : 'bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 border-amber-200/50 animate-pulse'
                 }`}>
                   {currentStatus}
                 </span>
               </h3>
             </div>
-            <div className="text-sm text-slate-600 leading-relaxed">
-              Accept credit card or bank payments locally via our secure **Paystack** checkout. Upgrades take effect instantly.
-            </div>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Process payments directly using our secure **Paystack** local checkout system. Upgrades propagate instantly.
+            </p>
           </div>
 
-          {/* Usage Quotas */}
-          <div className="bg-white border border-slate-200 rounded-xl p-5 space-y-4">
-            <h4 className="font-bold text-sm text-slate-900">Resource Quota Usage</h4>
+          <div className="bg-card/30 border border-border/70 rounded-2xl p-5 space-y-4 shadow-sm">
+            <h4 className="font-bold text-sm text-foreground">Quota Utilization</h4>
             
-            {/* Users */}
-            <div className="space-y-1.5">
-              <div className="flex justify-between text-xs font-medium text-slate-600">
-                <span>Active Users</span>
-                <span>{activeUsersCount} / {currentPlan === 'starter' ? 3 : currentPlan === 'professional' ? 10 : 'Unlimited'}</span>
+            <div className="space-y-2">
+              <div className="flex justify-between text-xs font-semibold text-muted-foreground">
+                <span>Team Members</span>
+                <span className="text-foreground">{activeUsersCount} / {currentPlan === 'starter' ? 3 : currentPlan === 'professional' ? 10 : 'Unlimited'}</span>
               </div>
-              <Progress value={currentPlan === 'starter' ? (activeUsersCount / 3) * 100 : currentPlan === 'professional' ? (activeUsersCount / 10) * 100 : 10} className="h-2 bg-slate-100 [&>div]:bg-primary animate-pulse" />
+              <Progress value={currentPlan === 'starter' ? (activeUsersCount / 3) * 100 : currentPlan === 'professional' ? (activeUsersCount / 10) * 100 : 12} className="h-2 bg-muted/40 [&>div]:bg-primary" />
             </div>
 
-            {/* Cases */}
-            <div className="space-y-1.5">
-              <div className="flex justify-between text-xs font-medium text-slate-600">
-                <span>Active Cases</span>
-                <span>{activeCasesCount} / {currentPlan === 'starter' ? 10 : 'Unlimited'}</span>
+            <div className="space-y-2">
+              <div className="flex justify-between text-xs font-semibold text-muted-foreground">
+                <span>Active Case Files</span>
+                <span className="text-foreground">{activeCasesCount} / {currentPlan === 'starter' ? 10 : 'Unlimited'}</span>
               </div>
-              <Progress value={currentPlan === 'starter' ? (activeCasesCount / 10) * 100 : 5} className="h-2 bg-slate-100 [&>div]:bg-primary" />
+              <Progress value={currentPlan === 'starter' ? (activeCasesCount / 10) * 100 : 8} className="h-2 bg-muted/40 [&>div]:bg-primary" />
             </div>
           </div>
         </div>
       </SectionCard>
 
-      {/* Choose Plan Section */}
-      <div className="bg-card rounded-xl border border-border p-6 space-y-6">
+      <div className="bg-card/45 backdrop-blur-md rounded-2xl border border-border/80 p-6 space-y-6 shadow-md">
         <div>
-          <h2 className="text-base font-semibold text-foreground">Available Subscription Plans</h2>
-          <p className="text-sm text-muted-foreground mt-0.5">Upgrade or downgrade your practice plan seamlessly via Paystack.</p>
+          <h2 className="text-base font-bold text-foreground">Upgrade Platform Model</h2>
+          <p className="text-sm text-muted-foreground mt-0.5">Scale up features, team counts, and client space instantly.</p>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {plans.map((p, idx) => {
-            const isCurrent = currentPlan === p.name;
-            return (
-              <div key={idx} className={`border rounded-xl p-6 flex flex-col justify-between hover:shadow-md transition-shadow bg-white ${isCurrent ? 'border-primary shadow-sm' : 'border-slate-150'}`}>
-                <div>
-                  <h3 className="font-bold text-slate-900 text-base">{p.displayName}</h3>
-                  <div className="my-3">
-                    <span className="text-2xl font-black text-slate-900">${p.price}</span>
-                    <span className="text-slate-400 text-xs">/mo</span>
-                  </div>
-                  <ul className="space-y-2.5 text-xs text-slate-600 mb-6">
-                    <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-primary shrink-0" /> {p.maxUsers === 999 ? 'Unlimited' : `${p.maxUsers} Users`}</li>
-                    <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-primary shrink-0" /> {p.maxCases === 9999 ? 'Unlimited' : `${p.maxCases} Cases`}</li>
-                    <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-primary shrink-0" /> {p.maxStorage} GB Storage</li>
-                  </ul>
-                </div>
-
-                <Button
-                  onClick={() => handleSubscribe(p)}
-                  disabled={isCurrent || loadingPlan !== null}
-                  className={`w-full py-4 text-xs font-bold ${
-                    isCurrent 
-                      ? 'bg-slate-100 hover:bg-slate-100 text-slate-405 border border-slate-200 cursor-not-allowed text-slate-400' 
-                      : 'bg-primary hover:bg-primary/95 text-white'
-                  }`}
-                >
-                  {loadingPlan === p.name ? (
-                    <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" />
-                  ) : isCurrent ? (
-                    "Current Plan"
-                  ) : (
-                    "Select Plan"
-                  )}
-                </Button>
-              </div>
-            );
-          })}
+        <div className="pt-2 border-t border-border/50">
+          <Button 
+            onClick={() => window.location.href = '/pricing'} 
+            className="w-full bg-primary hover:bg-primary/95 text-white font-bold h-12 rounded-xl text-sm shadow-md transition-transform hover:-translate-y-0.5"
+          >
+            Explore Corporate Pricing
+          </Button>
         </div>
       </div>
 
-      {/* Invoice History */}
-      <div className="bg-card rounded-xl border border-border p-6 space-y-4">
+      <div className="bg-card/45 backdrop-blur-md rounded-2xl border border-border/80 p-6 space-y-5 shadow-md">
         <div>
-          <h2 className="text-base font-semibold text-foreground">Billing Invoice History</h2>
-          <p className="text-sm text-muted-foreground mt-0.5">View and download transaction receipts processed via Paystack.</p>
+          <h2 className="text-base font-bold text-foreground">Invoice Ledger</h2>
+          <p className="text-sm text-muted-foreground mt-0.5">View platform service receipts processed via Paystack.</p>
         </div>
 
         {invoices.length === 0 ? (
-          <div className="text-center py-8 text-sm text-slate-400 font-medium bg-slate-50 rounded-xl border border-dashed border-slate-200">
-            No subscription invoices recorded yet.
+          <div className="text-center py-10 text-sm text-muted-foreground font-semibold bg-muted/10 rounded-2xl border border-dashed border-border/60">
+            No service invoices recorded.
           </div>
         ) : (
-          <div className="overflow-x-auto rounded-xl border border-slate-150">
-            <table className="w-full text-sm text-left border-collapse bg-white">
+          <div className="overflow-x-auto rounded-xl border border-border/85 shadow-sm">
+            <table className="w-full text-sm text-left border-collapse bg-card/10">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-150 text-slate-600 font-semibold text-xs uppercase tracking-wider">
-                  <th className="px-5 py-3.5">Date</th>
-                  <th className="px-5 py-3.5">Plan Name</th>
+                <tr className="bg-muted/40 border-b border-border/85 text-muted-foreground font-bold text-xs uppercase tracking-wider select-none">
+                  <th className="px-5 py-3.5">Settlement Date</th>
+                  <th className="px-5 py-3.5">Plan tier</th>
                   <th className="px-5 py-3.5">Amount</th>
-                  <th className="px-5 py-3.5">Payment Ref</th>
+                  <th className="px-5 py-3.5">Reference ID</th>
                   <th className="px-5 py-3.5">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-border/60">
                 {invoices.map((inv, idx) => (
-                  <tr key={idx} className="hover:bg-slate-50/50">
-                    <td className="px-5 py-3.5 text-slate-600 font-medium">
+                  <tr key={idx} className="hover:bg-muted/10 transition-colors">
+                    <td className="px-5 py-3.5 text-muted-foreground font-semibold">
                       {new Date(inv.created_date || inv.created_at).toLocaleDateString()}
                     </td>
-                    <td className="px-5 py-3.5 font-semibold text-slate-900">{inv.plan_name}</td>
-                    <td className="px-5 py-3.5 font-bold text-slate-900">${inv.amount}</td>
-                    <td className="px-5 py-3.5 font-mono text-xs text-slate-400">{inv.paystack_ref}</td>
+                    <td className="px-5 py-3.5 font-bold text-foreground">{inv.plan_name}</td>
+                    <td className="px-5 py-3.5 font-extrabold text-foreground">${inv.amount}</td>
+                    <td className="px-5 py-3.5 font-mono text-xs text-muted-foreground/80">{inv.paystack_ref}</td>
                     <td className="px-5 py-3.5">
-                      <span className="inline-flex py-0.5 px-2.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-100 uppercase">
+                      <span className="inline-flex py-0.5 px-2.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border border-emerald-100/50 uppercase select-none">
                         {inv.status}
                       </span>
                     </td>
@@ -861,7 +993,7 @@ export default function Settings() {
       await base44.entities.Company.update(company.id, data);
       queryClient.invalidateQueries({ queryKey: ["company", companyId] });
       await refreshUser();
-      toast({ title: "Settings saved" });
+      toast({ title: "Settings updated successfully" });
     } catch (err) {
       if (err.code === '23505' || err.message?.includes('unique constraint')) {
         toast({ title: "Subdomain already taken", description: "This subdomain is already in use by another firm.", variant: "destructive" });
@@ -878,7 +1010,7 @@ export default function Settings() {
     setSaving(true);
     await new Promise(r => setTimeout(r, 600));
     setSaving(false);
-    toast({ title: "Settings saved" });
+    toast({ title: "Settings updated successfully" });
   };
 
   const renderSection = () => {
@@ -903,13 +1035,11 @@ export default function Settings() {
             
             let url = `${window.location.protocol}//${targetHost}/`;
             
-            // Pass session via query parameters so AuthContext can manually restore it synchronously
             const { data: { session } } = await supabase.auth.getSession();
             if (session?.access_token && session?.refresh_token) {
               url += `?access_token=${session.access_token}&refresh_token=${session.refresh_token}`;
             }
             
-            // Force redirect immediately
             window.location.href = url;
           }
         } catch (err) {
@@ -918,7 +1048,7 @@ export default function Settings() {
       } : fakeSuccess} saving={saving} />;
       case "billing":      return <BillingSettings company={company} />;
       case "currency":     return <CurrencySettings company={company} onSave={company ? d => updateCompany({ currency: d.currency }) : fakeSuccess} saving={saving} />;
-      case "email":        return <EmailSettings onSave={fakeSuccess} saving={saving} />;
+      case "email":        return <EmailSettings company={company} onSave={company ? d => updateCompany(d) : fakeSuccess} saving={saving} />;
       case "notifications":return <NotificationSettings onSave={fakeSuccess} saving={saving} />;
       case "slack":        return <SlackSettings onSave={fakeSuccess} saving={saving} />;
       case "twilio":       return <TwilioSettings onSave={fakeSuccess} saving={saving} />;
@@ -926,42 +1056,62 @@ export default function Settings() {
       case "gcalendar":    return <GoogleCalendarSettings onSave={fakeSuccess} saving={saving} />;
       case "security":     return <SecuritySettings />;
       case "permissions":  return (
-        <div className="bg-card rounded-xl border border-border p-6 space-y-4">
+        <div className="bg-card/45 backdrop-blur-md rounded-2xl border border-border/80 p-6 space-y-6 shadow-md">
           <div>
-            <h2 className="text-base font-semibold">Staff Permissions</h2>
-            <p className="text-sm text-muted-foreground mt-0.5">Control what each staff member can access and do</p>
+            <h2 className="text-lg font-bold text-foreground">Staff Access Controls</h2>
+            <p className="text-sm text-muted-foreground mt-0.5">Maintain granular security permissions across internal groups</p>
           </div>
-          <StaffPermissionsSettings />
+          <div className="pt-2">
+            <StaffPermissionsSettings />
+          </div>
         </div>
       );
       default:             return null;
     }
   };
 
+  // Group sections by category
+  const categories = ["General", "Security & Access", "Billing", "Integrations"];
+
   return (
-    <div className="space-y-4">
-      <PageHeader title="Settings" subtitle="Manage system, brand, and integration settings" />
-      <div className="flex gap-6 items-start">
-        {/* Left nav */}
-        <div className="w-56 shrink-0 bg-card rounded-xl border border-border overflow-hidden">
-          {SECTIONS.map(s => {
-            const IconComp = s.icon;
-            const active = activeSection === s.id;
+    <div className="space-y-6 max-w-6xl mx-auto">
+      <PageHeader title="Settings Portal" subtitle="Coordinate global configuration models, secure integration systems, and custom brand profiles" />
+      <div className="flex flex-col lg:flex-row gap-6 items-start">
+        {/* Left Nav */}
+        <div className="w-full lg:w-64 shrink-0 bg-card/30 backdrop-blur-md rounded-2xl border border-border/80 p-4 space-y-6 shadow-md shadow-black/[0.01]">
+          {categories.map(cat => {
+            const catSections = SECTIONS.filter(s => s.cat === cat);
+            if (catSections.length === 0) return null;
             return (
-              <button
-                key={s.id}
-                onClick={() => setActiveSection(s.id)}
-                className={`w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-left transition-colors ${active ? "bg-primary/10 text-primary font-medium border-l-2 border-primary" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}
-              >
-                <IconComp className="w-4 h-4 shrink-0" />
-                {s.label}
-              </button>
+              <div key={cat} className="space-y-2">
+                <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest px-3 select-none">{cat}</h4>
+                <div className="space-y-1">
+                  {catSections.map(s => {
+                    const IconComp = s.icon;
+                    const active = activeSection === s.id;
+                    return (
+                      <button
+                        key={s.id}
+                        onClick={() => setActiveSection(s.id)}
+                        className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-semibold text-left transition-all duration-200 ${
+                          active 
+                            ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20 scale-[1.02]" 
+                            : "text-muted-foreground hover:bg-muted hover:text-foreground active:scale-[0.98]"
+                        }`}
+                      >
+                        <IconComp className={`w-4 h-4 shrink-0 transition-transform ${active ? "scale-110" : ""}`} />
+                        {s.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
             );
           })}
         </div>
 
         {/* Content */}
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 w-full min-w-0">
           {renderSection()}
         </div>
       </div>

@@ -99,7 +99,8 @@ export function useDeleteIndustryRecord() {
       const { error } = await supabase
         .from('industry_records')
         .delete()
-        .eq('id', id);
+        .eq('id', id)
+        .eq('company_id', company?.id);
 
       if (error) throw error;
       return { id, recordType };

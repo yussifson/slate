@@ -10,6 +10,7 @@ import { format, isAfter } from "date-fns";
 import { CASE_STATUS_COLORS, INVOICE_STATUS_COLORS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import ClientMessaging from "@/components/portal/ClientMessaging";
+import { UploadDocumentDialog } from "@/components/cases/CaseDocumentRepo";
 import ClientBillingReport from "@/components/portal/ClientBillingReport";
 import ClientChecklistPanel from "@/components/portal/ClientChecklistPanel";
 import ClientAtAGlance from "@/components/portal/ClientAtAGlance";
@@ -32,6 +33,9 @@ function StatCard({ icon: IconComp, label, value, color }) {
 export default function ClientPortal() {
   const { user } = useAuth();
   const [selectedCase, setSelectedCase] = useState(null);
+  const [showUpload, setShowUpload] = useState(false);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: clients = [] } = useQuery({
     queryKey: ["my-client", user?.email],
@@ -89,6 +93,30 @@ export default function ClientPortal() {
     .sort((a, b) => new Date(a.date) - new Date(b.date));
 
   const getPipelineState = (caseId) => pipelineStates.find(ps => ps.case_id === caseId);
+
+  const createMutation = useMutation({
+    mutationFn: (data) => base44.entities.Document.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["client-docs", client?.id] });
+      toast({ title: "Document uploaded successfully" });
+      setShowUpload(false);
+    },
+  });
+
+  const handleUploadSubmit = (docData) => {
+    // If no case is selected, assign it to the first active case, or just leave it null
+    const targetCase = selectedCase || cases[0];
+    createMutation.mutate({
+      ...docData,
+      company_id: client?.company_id,
+      client_id: client?.id,
+      client_name: client?.name,
+      case_id: targetCase?.id,
+      case_title: targetCase?.title,
+      uploaded_by: user?.email,
+      shared_with_client: true, // uploaded by client, so it's inherently shared
+    });
+  };
 
   if (!client) {
     return (
@@ -207,6 +235,12 @@ export default function ClientPortal() {
 
         {/* Documents tab */}
         <TabsContent value="documents" className="mt-4">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-sm font-semibold">My Documents</h3>
+            <Button size="sm" onClick={() => setShowUpload(true)} className="gap-1.5">
+              <Upload className="w-4 h-4" /> Upload Document
+            </Button>
+          </div>
           <div className="bg-card rounded-xl border border-border divide-y divide-border">
             {sharedDocs.length === 0 ? (
               <div className="p-10 text-center text-sm text-muted-foreground">No documents shared with you yet</div>
@@ -305,6 +339,17 @@ export default function ClientPortal() {
           )}
         </TabsContent>
       </Tabs>
+
+      {/* Upload document dialog */}
+      {showUpload && (
+        <UploadDocumentDialog
+          onClose={() => setShowUpload(false)}
+          onSubmit={handleUploadSubmit}
+          isUploading={createMutation.isPending}
+          companyId={client?.company_id}
+          caseId={selectedCase?.id || cases[0]?.id}
+        />
+      )}
     </div>
   );
 }

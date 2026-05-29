@@ -80,9 +80,18 @@ export default function Timetable() {
     const period = parseInt(formData.period);
     if (isNaN(period) || period < 1 || period > 8) return toast.error('Period must be 1–8.');
 
-    // Check for conflict
-    const conflict = classSlots.find(s => s.day === formData.day && String(s.period) === String(formData.period) && s.id !== editingId);
-    if (conflict) return toast.error(`A slot already exists for ${formData.day} Period ${formData.period} in ${formData.className}.`);
+    // Check for class conflict
+    const classConflict = classSlots.find(s => s.day === formData.day && String(s.period) === String(formData.period) && s.id !== editingId);
+    if (classConflict) return toast.error(`A slot already exists for ${formData.day} Period ${formData.period} in ${formData.className}.`);
+
+    // Check for teacher double-booking
+    const teacherConflict = slots.find(s => 
+      s.day === formData.day && 
+      String(s.period) === String(formData.period) && 
+      s.teacher === formData.teacher && 
+      s.id !== editingId
+    );
+    if (teacherConflict) return toast.error(`Conflict! ${formData.teacher} is already teaching ${teacherConflict.subject} in ${teacherConflict.className} on ${formData.day} Period ${formData.period}.`);
 
     const payload = {
       className: formData.className,

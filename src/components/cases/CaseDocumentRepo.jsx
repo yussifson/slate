@@ -215,6 +215,8 @@ export default function CaseDocumentRepo({ caseData, user }) {
           onClose={() => setShowUpload(false)}
           onSubmit={handleUploadSubmit}
           isUploading={createMutation.isPending}
+          companyId={user?.company_id}
+          caseId={caseData?.id}
         />
       )}
 
@@ -304,7 +306,7 @@ function DocRow({ doc, canManage, onDelete, onToggleShare, onPreview, highlighte
   );
 }
 
-function UploadDocumentDialog({ onClose, onSubmit, isUploading: saving }) {
+export function UploadDocumentDialog({ onClose, onSubmit, isUploading: saving, companyId, caseId }) {
   const [form, setForm] = useState({ name: "", category: "court_filing", notes: "", shared_with_client: false, filing_date: "" });
   const [uploading, setUploading] = useState(false);
   const [files, setFiles] = useState([]); // [{ file, url, size, type, name }]
@@ -316,7 +318,8 @@ function UploadDocumentDialog({ onClose, onSubmit, isUploading: saving }) {
     const results = [];
     for (const file of selectedFiles) {
       try {
-        const path = `${Date.now()}_${file.name}`;
+        const safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+        const path = `${companyId || 'unassigned'}/${caseId || 'general'}/${Date.now()}_${safeName}`;
         await base44.storage.upload('documents', path, file);
         const file_url = base44.storage.getPublicUrl('documents', path);
         results.push({ file, url: file_url, size: file.size, type: file.type, name: file.name });

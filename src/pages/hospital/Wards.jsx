@@ -183,15 +183,29 @@ export default function Wards() {
       </div>
 
       <div className="space-y-8">
-        {wards.map((ward, wIdx) => (
-           <div key={wIdx} className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
-              <div className="p-4 border-b border-border bg-muted/50 flex items-center justify-between">
-                 <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><BedDouble className="w-5 h-5 text-blue-500"/> {ward.name}</h2>
-                 <span className="text-sm font-semibold text-muted-foreground">
-                   {(ward.beds || []).filter(b => b.status === 'Available').length} / {(ward.beds || []).length} Available
-                 </span>
-              </div>
-              <div className="p-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        {wards.map((ward, wIdx) => {
+           const totalBeds = (ward.beds || []).length;
+           const occupiedBeds = (ward.beds || []).filter(b => b.status === 'Occupied').length;
+           const occupancyRate = totalBeds > 0 ? (occupiedBeds / totalBeds) * 100 : 0;
+           const isCritical = occupancyRate >= 90;
+
+           return (
+             <div key={wIdx} className={`bg-card rounded-xl border shadow-sm overflow-hidden transition-colors ${isCritical ? 'border-red-300' : 'border-border'}`}>
+                <div className={`p-4 border-b flex items-center justify-between transition-colors ${isCritical ? 'bg-red-50/80 border-red-200' : 'bg-muted/50 border-border'}`}>
+                   <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
+                     <BedDouble className={`w-5 h-5 ${isCritical ? 'text-red-500' : 'text-blue-500'}`}/> 
+                     {ward.name}
+                     {isCritical && (
+                       <span className="ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-700 uppercase tracking-wider">
+                         <AlertTriangle className="w-3 h-3" /> Near Capacity
+                       </span>
+                     )}
+                   </h2>
+                   <span className="text-sm font-semibold text-muted-foreground">
+                     {totalBeds - occupiedBeds} / {totalBeds} Available
+                   </span>
+                </div>
+                <div className="p-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                  {(ward.beds || []).map((bed, bIdx) => (
                     <div key={bed.id} onClick={() => handleBedClick(wIdx, bIdx, bed, ward.id)} className={`p-4 rounded-xl border-2 flex flex-col items-center justify-center text-center hover:shadow-md transition-all cursor-pointer ${bedColors[bed.status]}`}>
                        {bedIcons[bed.status]}
@@ -204,9 +218,10 @@ export default function Wards() {
                        )}
                     </div>
                  ))}
-              </div>
-           </div>
-        ))}
+                  </div>
+               </div>
+             );
+        })}
       </div>
 
       {showModal && (

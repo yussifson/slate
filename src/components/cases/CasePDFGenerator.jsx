@@ -5,6 +5,7 @@ import { FileText, Download, Loader2, Eye, BarChart2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { format } from "date-fns";
 import jsPDF from "jspdf";
@@ -158,6 +159,15 @@ function buildPDF(template, caseData, client, additionalNotes) {
   const margin = 20;
   let y = margin;
 
+  const parsedNotes = additionalNotes ? additionalNotes
+    .replace(/{client_name}/g, client?.name || caseData.client_name || "[Client Name]")
+    .replace(/{case_number}/g, caseData.case_number || "[Case Number]")
+    .replace(/{case_title}/g, caseData.title || "[Case Title]")
+    .replace(/{lawyer_name}/g, caseData.assigned_lawyer_name || "[Lawyer Name]")
+    .replace(/{opposing_party}/g, caseData.opposing_party || "[Opposing Party]")
+    .replace(/{court_name}/g, caseData.court_name || "[Court Name]")
+    .replace(/{today}/g, today) : "";
+
   const lineHeight = 7;
 
   const addLine = (text, options = {}) => {
@@ -213,10 +223,10 @@ function buildPDF(template, caseData, client, additionalNotes) {
     addLine(`Court: ${caseData.court_name || "—"}`, { indent: 4 });
     addLine(`Assigned Lawyer: ${caseData.assigned_lawyer_name || "—"}`, { indent: 4 });
     addSpacer();
-    if (additionalNotes) {
+    if (parsedNotes) {
       addLine("NOTICE CONTENT", { bold: true, size: 11 });
       addDivider();
-      addLine(additionalNotes, { size: 10, indent: 4 });
+      addLine(parsedNotes, { size: 10, indent: 4 });
       addSpacer();
     }
     addLine("You are hereby formally notified and required to take appropriate action within the legally prescribed timeframe.", { size: 10 });
@@ -252,10 +262,10 @@ function buildPDF(template, caseData, client, additionalNotes) {
     addDivider();
     addLine(`Attorney: ${caseData.assigned_lawyer_name || "—"}`, { indent: 4 });
     addSpacer();
-    if (additionalNotes) {
+    if (parsedNotes) {
       addLine("NOTES / DESCRIPTION", { bold: true, size: 11 });
       addDivider();
-      addLine(additionalNotes, { size: 10, indent: 4 });
+      addLine(parsedNotes, { size: 10, indent: 4 });
     }
 
   } else if (template === "client_summary") {
@@ -290,10 +300,10 @@ function buildPDF(template, caseData, client, additionalNotes) {
       addLine(caseData.notes, { size: 10, indent: 4 });
       addSpacer();
     }
-    if (additionalNotes) {
+    if (parsedNotes) {
       addLine("ADDITIONAL UPDATES", { bold: true, size: 11 });
       addDivider();
-      addLine(additionalNotes, { size: 10, indent: 4 });
+      addLine(parsedNotes, { size: 10, indent: 4 });
       addSpacer();
     }
     addLine(`Your assigned attorney is ${caseData.assigned_lawyer_name || "our team"}, who remains committed to vigorously representing your interests.`, { size: 10 });
@@ -320,10 +330,10 @@ function buildPDF(template, caseData, client, additionalNotes) {
     addLine(`Case Type: ${caseData.case_type?.replace("_", " ") || "—"}`, { indent: 4 });
     addLine(`Lead Attorney: ${caseData.assigned_lawyer_name || "—"}`, { indent: 4 });
     addSpacer();
-    if (additionalNotes) {
+    if (parsedNotes) {
       addLine("SPECIFIC TERMS", { bold: true, size: 11 });
       addDivider();
-      addLine(additionalNotes, { size: 10, indent: 4 });
+      addLine(parsedNotes, { size: 10, indent: 4 });
       addSpacer();
     }
     addLine("AGREEMENT", { bold: true, size: 11 });
@@ -459,9 +469,18 @@ export default function CasePDFGenerator({ caseData, user }) {
 
       {/* Additional notes */}
       <div className="space-y-1.5">
-        <Label className="text-xs">Additional Notes / Custom Content (optional)</Label>
+        <div className="flex items-center justify-between">
+          <Label className="text-xs">Additional Notes / Custom Content (optional)</Label>
+          <div className="flex gap-1.5 overflow-x-auto pb-1">
+            {["{client_name}", "{case_number}", "{case_title}", "{lawyer_name}", "{today}"].map(tag => (
+              <Badge key={tag} variant="outline" className="text-[10px] cursor-pointer hover:bg-muted" onClick={() => setNotes(prev => prev + " " + tag)}>
+                {tag}
+              </Badge>
+            ))}
+          </div>
+        </div>
         <Textarea
-          placeholder="Add specific content to be included in the document body..."
+          placeholder="Add specific content. You can use dynamic variables above which will be auto-replaced..."
           value={notes}
           onChange={e => setNotes(e.target.value)}
           className="h-24 text-sm"

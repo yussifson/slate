@@ -248,7 +248,9 @@ CREATE TABLE IF NOT EXISTS public.companies (
   max_storage_gb NUMERIC,
   currency TEXT CHECK (currency IN ('GHS', 'NGN', 'SLL', 'USD')),
   admin_email TEXT,
-  status TEXT CHECK (status IN ('active', 'suspended', 'pending'))
+  status TEXT CHECK (status IN ('active', 'suspended', 'pending')),
+  custom_email_domain TEXT,
+  custom_email_verified BOOLEAN DEFAULT FALSE
 );
 
 ALTER TABLE public.companies ENABLE ROW LEVEL SECURITY;
@@ -394,10 +396,8 @@ CREATE TABLE IF NOT EXISTS public.invoices (
   tax_amount NUMERIC,
   total_amount NUMERIC,
   currency TEXT CHECK (currency IN ('GHS', 'NGN', 'SLL', 'USD')),
-  exchange_rate NUMERIC DEFAULT 1.0,
   status TEXT CHECK (status IN ('draft', 'sent', 'paid', 'overdue', 'cancelled')),
   due_date DATE,
-  due_time TEXT,
   paid_date DATE,
   payment_method TEXT CHECK (payment_method IN ('bank_transfer', 'mobile_money', 'cash', 'card', 'other')),
   notes TEXT
@@ -732,7 +732,6 @@ CREATE TABLE IF NOT EXISTS public.tasks (
   case_title TEXT,
   assigned_to TEXT,
   assigned_to_name TEXT,
-  assignees JSONB, -- Array of objects: [{id, name}]
   assigned_by TEXT,
   priority TEXT CHECK (priority IN ('low', 'medium', 'high', 'urgent')),
   status TEXT CHECK (status IN ('pending', 'in_progress', 'completed', 'cancelled')),
@@ -792,22 +791,4 @@ CREATE TABLE IF NOT EXISTS public.profiles (
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Enable all for authenticated users" ON public.profiles;
 CREATE POLICY "Enable all for authenticated users" ON public.profiles FOR ALL USING (auth.role() = 'authenticated');
-
-CREATE TABLE IF NOT EXISTS public.case_timeline (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  created_date TIMESTAMPTZ DEFAULT now(),
-  updated_date TIMESTAMPTZ DEFAULT now(),
-  created_by TEXT,
-  company_id TEXT,
-  case_id TEXT,
-  case_title TEXT,
-  title TEXT,
-  description TEXT,
-  activity_type TEXT,
-  logged_by_name TEXT
-);
-
-ALTER TABLE public.case_timeline ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "Enable all for authenticated users" ON public.case_timeline;
-CREATE POLICY "Enable all for authenticated users" ON public.case_timeline FOR ALL USING (auth.role() = 'authenticated');
 

@@ -157,6 +157,8 @@ export default function Appointments() {
 
   const filteredAppts = appointments.filter(appt => appt.date === date);
 
+  if (isDbLoading) return <div className="flex items-center justify-center h-64 text-muted-foreground">Loading appointments...</div>;
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

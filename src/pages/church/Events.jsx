@@ -54,6 +54,18 @@ export default function Events() {
       return toast.error("Please enter a title and venue for the event");
     }
 
+    // Smart Event Conflict Checking
+    const isConflict = events.some(e => 
+      e.date === formData.date && 
+      e.time === formData.time && 
+      e.venue?.toLowerCase() === formData.venue.trim().toLowerCase() &&
+      (!editRecord || e.id !== editRecord.id)
+    );
+
+    if (isConflict) {
+      return toast.error(`Conflict Warning: ${formData.venue} is already booked on ${formData.date} at ${formData.time}`);
+    }
+
     const payload = {
       title: formData.title,
       date: formData.date,

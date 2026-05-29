@@ -141,6 +141,14 @@ export default function Claims() {
   const totalAmount = claims.reduce((sum, c) => sum + (Number(c.claimAmount) || 0), 0);
   const viewRecord = claims.find(r => r.id === viewDetailsId);
 
+  const isStaleClaim = (claim) => {
+    if (claim.status !== 'Submitted' && claim.status !== 'Under Review') return false;
+    if (!claim.incidentDate) return false;
+    const diffTime = new Date() - new Date(claim.incidentDate);
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)); 
+    return diffDays > 30;
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -230,17 +238,24 @@ export default function Claims() {
                       <p className="font-bold text-card-foreground">${Number(claim.claimAmount).toLocaleString()}</p>
                     </td>
                     <td className="px-6 py-4 text-center">
-                      <select
-                        value={claim.status}
-                        onChange={e => handleUpdateStatus(claim, e.target.value)}
-                        className={`rounded-md border border-input px-2 py-1 text-xs font-bold ${statusColors[claim.status] || 'bg-muted text-muted-foreground'}`}
-                      >
-                        <option value="Submitted">Submitted</option>
-                        <option value="Under Review">Under Review</option>
-                        <option value="Approved">Approved</option>
-                        <option value="Rejected">Rejected</option>
-                        <option value="Paid">Paid</option>
-                      </select>
+                      <div className="flex flex-col items-center gap-1.5">
+                        <select
+                          value={claim.status}
+                          onChange={e => handleUpdateStatus(claim, e.target.value)}
+                          className={`rounded-md border border-input px-2 py-1 text-xs font-bold w-full ${statusColors[claim.status] || 'bg-muted text-muted-foreground'}`}
+                        >
+                          <option value="Submitted">Submitted</option>
+                          <option value="Under Review">Under Review</option>
+                          <option value="Approved">Approved</option>
+                          <option value="Rejected">Rejected</option>
+                          <option value="Paid">Paid</option>
+                        </select>
+                        {isStaleClaim(claim) && (
+                           <span className="text-[10px] font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded-full animate-pulse w-full text-center">
+                             SLA Breach (&gt;30d)
+                           </span>
+                        )}
+                      </div>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <DropdownMenu>

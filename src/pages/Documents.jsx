@@ -143,6 +143,7 @@ export default function Documents() {
         cases={cases}
         docCategories={docCategories}
         addDocCategory={addDocCategory}
+        companyId={companyId}
       />
 
       {previewDoc && (
@@ -157,7 +158,7 @@ export default function Documents() {
   );
 }
 
-function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, addDocCategory }) {
+function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, addDocCategory, companyId }) {
   const [form, setForm] = useState({ name: "", category: "other", case_id: "", case_title: "", notes: "" });
   const [uploading, setUploading] = useState(false);
   const [fileUrl, setFileUrl] = useState("");
@@ -169,7 +170,8 @@ function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, a
     if (!file) return;
     setUploading(true);
     try {
-      const path = `${Date.now()}_${file.name}`;
+      const safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+      const path = `${companyId || 'unassigned'}/${form.case_id || 'general'}/${Date.now()}_${safeName}`;
       await base44.storage.upload('documents', path, file);
       const file_url = base44.storage.getPublicUrl('documents', path);
       setFileUrl(file_url);

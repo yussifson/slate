@@ -265,9 +265,21 @@ export default function Inventory() {
                       <p className="text-[10px] text-muted-foreground uppercase font-bold">Min: {item.reorderLevel}</p>
                     </td>
                     <td className="px-5 py-4 text-center">
-                      <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${statusColors[item.status] || 'bg-muted'}`}>
-                        {item.status}
-                      </span>
+                      <div className="flex flex-col items-center gap-1.5">
+                        <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${statusColors[item.status] || 'bg-muted'}`}>
+                          {item.status}
+                        </span>
+                        {item.status === 'Low Stock' && (
+                          <span className="text-[10px] font-bold text-amber-600 bg-amber-100 px-2 py-0.5 rounded-full animate-pulse w-full text-center">
+                            Reorder Needed
+                          </span>
+                        )}
+                        {item.status === 'Out of Stock' && (
+                          <span className="text-[10px] font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded-full animate-pulse w-full text-center">
+                            Critical Alert
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className="px-5 py-4 text-right">
                       <DropdownMenu>

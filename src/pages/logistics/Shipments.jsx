@@ -235,9 +235,16 @@ export default function Shipments() {
                       {ship.estimatedDelivery || '—'}
                     </td>
                     <td className="px-5 py-4">
-                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${STATUS_COLORS[ship.status] || 'bg-muted text-muted-foreground'}`}>
-                        {ship.status}
-                      </span>
+                      <div className="flex flex-col items-start gap-1.5">
+                        <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${STATUS_COLORS[ship.status] || 'bg-muted text-muted-foreground'}`}>
+                          {ship.status}
+                        </span>
+                        {ship.status === 'In Transit' && ship.estimatedDelivery && new Date(ship.estimatedDelivery) < new Date(new Date().setHours(0,0,0,0)) && (
+                          <span className="text-[10px] font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded-full animate-pulse flex items-center gap-1">
+                            <AlertCircle className="w-3 h-3"/> SLA Delayed
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className="px-5 py-4 pr-6">
                       <div className="flex items-center justify-end gap-1.5">

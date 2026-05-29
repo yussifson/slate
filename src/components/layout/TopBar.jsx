@@ -7,6 +7,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/components/ui/use-toast";
 import ThemeToggle from "./ThemeToggle";
 import NotificationBell from "./NotificationBell";
+import TimeTracker from "../shared/TimeTracker";
 import { useCompany } from "@/hooks/useCompanyId";
 import { INDUSTRIES } from "@/config/industries";
 
@@ -128,6 +129,9 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
             <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
           </span>
         </Button>
+
+        {/* Global Time Tracker */}
+        {currentIndustry === 'law' && <TimeTracker />}
 
         {/* Premium Theme Toggle & Notifications */}
         <ThemeToggle />

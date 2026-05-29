@@ -103,6 +103,8 @@ export default function Rooms() {
     room.type?.toLowerCase().includes(search.toLowerCase())
   );
 
+  if (isDbLoading) return <div className="flex items-center justify-center h-64 text-muted-foreground">Loading room data...</div>;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -129,6 +131,7 @@ export default function Rooms() {
                 <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Room Number</th>
                 <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Type & Floor</th>
                 <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Rate/Night</th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Status</th>
                 <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Amenities</th>
                 <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">Action</th>
               </tr>
@@ -136,12 +139,26 @@ export default function Rooms() {
             <tbody className="divide-y divide-border">
               {filtered.map(room => (
                 <tr key={room.id} className="hover:bg-muted/50 transition-colors">
-                  <td className="px-6 py-4 font-bold text-card-foreground text-lg flex items-center gap-2"><Bed className="w-5 h-5 text-amber-500"/> {room.roomNumber}</td>
+                  <td className="px-6 py-4 font-bold text-card-foreground text-lg flex items-center gap-2">
+                     <Bed className={`w-5 h-5 ${room.status === 'Maintenance' ? 'text-red-500' : 'text-amber-500'}`}/> 
+                     {room.roomNumber}
+                  </td>
                   <td className="px-6 py-4">
                      <p className="font-semibold text-card-foreground">{room.type}</p>
                      <p className="text-xs text-muted-foreground">{room.floor}</p>
                   </td>
                   <td className="px-6 py-4 font-bold text-card-foreground">${room.rate}</td>
+                  <td className="px-6 py-4">
+                    {room.status === 'Maintenance' ? (
+                       <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-700 uppercase tracking-wider animate-pulse">
+                         <Activity className="w-3 h-3 mr-1" /> Maintenance Alert
+                       </span>
+                    ) : (
+                       <span className={`inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${room.status === 'Available' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
+                         {room.status}
+                       </span>
+                    )}
+                  </td>
                   <td className="px-6 py-4">
                     <div className="flex gap-1.5 flex-wrap">
                       {room.amenities?.map(a => (
@@ -162,6 +179,11 @@ export default function Rooms() {
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleEdit(room)}>
                           <Edit className="w-4 h-4 mr-2" /> Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => {
+                          mutateRecord.mutate({ id: room.id, recordType: 'room', payload: room, status: room.status === 'Maintenance' ? 'Available' : 'Maintenance' })
+                        }}>
+                          <Activity className="w-4 h-4 mr-2" /> Toggle Maintenance
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setDeleteTargetId(room.id)} className="text-red-600">
                           <Trash2 className="w-4 h-4 mr-2" /> Delete

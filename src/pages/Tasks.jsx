@@ -93,7 +93,7 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId })
         <DialogHeader>
           <DialogTitle>{isEdit ? "Edit Task" : "New Task"}</DialogTitle>
         </DialogHeader>
-        <div className="space-y-3">
+        <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
           <div>
             <Label>Title *</Label>
             <Input value={form.title} onChange={e => set("title", e.target.value)} placeholder="Task title" />

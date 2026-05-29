@@ -510,7 +510,7 @@ RULES FOR MULTI-STEP REASONING:
 6. Once all tasks are complete, summarize what you did in plain language and STOP outputting <AGENT_ACTION> blocks.
 7. For 'case' records, use 'title' instead of 'name'.
 8. If the user's input has a typo, is ambiguous, or if you are unsure which page they mean, ALWAYS use the 'ask_confirmation' tool first and wait for approval.
-9. IGNORE any previously executed actions in the chat history. Only focus on the latest user request and execute new actions using new <AGENT_ACTION> tags as needed. Do NOT copy or re-run old tools unless asked again.`;
+9. If the user asks for multiple distinct actions (e.g. "create a task and a lead"), ensure you output an <AGENT_ACTION> block for EACH request before summarizing.`;
 
         const sessionMessages = currentSessions.find(s => s.id === sid)?.messages || [];
         const allMessages = [...sessionMessages, { role: 'user', content: userContent }];

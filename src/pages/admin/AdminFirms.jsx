@@ -45,7 +45,7 @@ export default function AdminFirms() {
       const { data: profData } = await supabase.from('profiles').select('company_id');
       if (profData) setProfiles(profData);
 
-      const { data: caseData } = await supabase.from('legal_cases').select('company_id');
+      const { data: caseData } = await supabase.from('industry_records').select('company_id').eq('record_type', 'case');
       if (caseData) setCases(caseData);
     } catch (err) {
       console.error("Failed to load platform stats:", err);

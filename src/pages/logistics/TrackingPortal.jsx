@@ -1,0 +1,147 @@
+import { useState } from 'react';
+import { Search, MapPin, Truck, CheckCircle2, Box, Package, ArrowRight, Clock } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useIndustryRecords } from '@/hooks/useIndustryData';
+
+export default function TrackingPortal() {
+  const [trackingId, setTrackingId] = useState('');
+  const [searchedId, setSearchedId] = useState('');
+  
+  // Real Database Hook for shipments
+  const { data: dbShipments = [], isLoading } = useIndustryRecords('shipment');
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (trackingId.trim()) {
+      setSearchedId(trackingId.trim());
+    }
+  };
+
+  // Find the requested shipment. We ignore companyId filtering here visually because 
+  // useIndustryRecords automatically scopes data to the current tenant. 
+  const shipment = searchedId 
+    ? dbShipments.find(r => r.data?.trackingNumber?.toLowerCase() === searchedId.toLowerCase()) 
+    : null;
+
+  return (
+    <div className="space-y-6 max-w-4xl mx-auto">
+      {/* Header Profile */}
+      <div className="bg-gradient-to-r from-blue-800 to-indigo-900 rounded-2xl p-8 md:p-12 text-white shadow-md relative overflow-hidden text-center">
+        <div className="relative z-10 max-w-2xl mx-auto">
+          <Truck className="w-12 h-12 mx-auto mb-4 text-blue-200" />
+          <h1 className="text-3xl md:text-4xl font-bold mb-3">Track Your Shipment</h1>
+          <p className="text-blue-100 text-sm mb-8">Enter your tracking number to get real-time updates on your freight.</p>
+          
+          <form onSubmit={handleSearch} className="flex gap-2 max-w-lg mx-auto">
+            <div className="relative flex-1">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <Input 
+                value={trackingId}
+                onChange={e => setTrackingId(e.target.value)}
+                placeholder="e.g. SHIP-1234" 
+                className="pl-12 h-14 bg-white/10 backdrop-blur-md border-white/20 text-white placeholder:text-white/60 focus-visible:ring-white/30 text-lg rounded-xl"
+              />
+            </div>
+            <Button type="submit" className="h-14 px-8 bg-blue-500 hover:bg-blue-600 text-white rounded-xl text-lg font-bold shadow-lg transition-all active:scale-95">
+              Track
+            </Button>
+          </form>
+        </div>
+        <div className="absolute right-[-10%] top-[-20%] opacity-5 pointer-events-none">
+          <Package className="w-96 h-96" />
+        </div>
+      </div>
+
+      {searchedId && (
+        <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+          {isLoading ? (
+             <div className="p-16 text-center text-muted-foreground flex flex-col items-center">
+               <Truck className="w-10 h-10 animate-bounce mb-4 text-blue-500" />
+               <p>Locating shipment...</p>
+             </div>
+          ) : !shipment ? (
+             <div className="p-16 text-center text-muted-foreground">
+               <Box className="w-16 h-16 mx-auto mb-4 opacity-20" />
+               <h3 className="text-xl font-bold text-card-foreground mb-1">Shipment Not Found</h3>
+               <p>We couldn't find a shipment matching "<span className="font-mono font-bold text-foreground">{searchedId}</span>".</p>
+               <p className="text-xs mt-1">Please check the number and try again.</p>
+             </div>
+          ) : (
+            <div>
+              <div className="p-6 md:p-8 border-b border-border bg-muted/20">
+                 <div className="flex flex-col md:flex-row justify-between md:items-start gap-4">
+                   <div>
+                     <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Tracking Number</p>
+                     <h2 className="text-2xl font-black text-blue-600 font-mono">{shipment.data.trackingNumber}</h2>
+                     <p className="text-sm text-muted-foreground mt-2 flex items-center gap-2">
+                       <MapPin className="w-4 h-4" /> {shipment.data.origin} <ArrowRight className="w-3 h-3" /> {shipment.data.destination}
+                     </p>
+                   </div>
+                   <div className="text-left md:text-right">
+                     <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Current Status</p>
+                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900">
+                        {shipment.status === 'Delivered' ? <CheckCircle2 className="w-5 h-5 text-green-500" /> : 
+                         shipment.status === 'In Transit' ? <Truck className="w-5 h-5 text-blue-500" /> :
+                         <Clock className="w-5 h-5 text-amber-500" />}
+                        <span className="font-bold text-lg text-foreground uppercase tracking-wide">{shipment.status || 'Pending'}</span>
+                     </div>
+                   </div>
+                 </div>
+              </div>
+              
+              <div className="p-6 md:p-8 bg-card grid grid-cols-1 md:grid-cols-2 gap-8">
+                 <div className="space-y-6">
+                    <h3 className="font-bold text-card-foreground border-b pb-2">Shipment Details</h3>
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                       <div>
+                         <p className="text-xs text-muted-foreground mb-1">Carrier</p>
+                         <p className="font-medium">{shipment.data.carrier || 'Standard Freight'}</p>
+                       </div>
+                       <div>
+                         <p className="text-xs text-muted-foreground mb-1">Weight</p>
+                         <p className="font-medium">{shipment.data.weight ? `${shipment.data.weight} kg` : 'N/A'}</p>
+                       </div>
+                       <div>
+                         <p className="text-xs text-muted-foreground mb-1">Estimated Delivery</p>
+                         <p className="font-medium text-blue-600 font-semibold">{shipment.data.estimatedDelivery || 'Pending Dispatch'}</p>
+                       </div>
+                       <div>
+                         <p className="text-xs text-muted-foreground mb-1">Customer Ref</p>
+                         <p className="font-medium">{shipment.data.customer || 'N/A'}</p>
+                       </div>
+                    </div>
+                 </div>
+                 
+                 <div className="space-y-6">
+                    <h3 className="font-bold text-card-foreground border-b pb-2">Transit Updates</h3>
+                    <div className="relative border-l-2 border-muted pl-4 space-y-6 ml-2">
+                       {shipment.status === 'Delivered' && (
+                         <div className="relative">
+                           <div className="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-green-500 ring-4 ring-card"></div>
+                           <p className="font-bold text-sm">Delivered Successfully</p>
+                           <p className="text-xs text-muted-foreground">Shipment has reached its final destination.</p>
+                         </div>
+                       )}
+                       {(shipment.status === 'In Transit' || shipment.status === 'Delivered') && (
+                         <div className="relative">
+                           <div className={`absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full ${shipment.status === 'In Transit' ? 'bg-blue-500 ring-4 ring-blue-100' : 'bg-muted'} ring-4 ring-card`}></div>
+                           <p className={`font-bold text-sm ${shipment.status === 'In Transit' ? 'text-blue-600' : ''}`}>In Transit to {shipment.data.destination}</p>
+                           <p className="text-xs text-muted-foreground">Shipment is moving through the logistics network.</p>
+                         </div>
+                       )}
+                       <div className="relative">
+                         <div className={`absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full ${shipment.status === 'Pending' ? 'bg-amber-500 ring-4 ring-amber-100' : 'bg-muted'} ring-4 ring-card`}></div>
+                         <p className="font-bold text-sm">Label Created</p>
+                         <p className="text-xs text-muted-foreground">Origin: {shipment.data.origin}</p>
+                       </div>
+                    </div>
+                 </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}

@@ -4,34 +4,29 @@ import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
 import { useAuth } from "@/lib/AuthContext";
 import { useImpersonation } from "@/lib/ImpersonationContext";
-import { Building2, X, Clock, CreditCard } from "lucide-react";
+import { Building2, X, Clock, CreditCard, WifiOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Paywall from "@/pages/Paywall";
-import GlobalAIAssistant from "./GlobalAIAssistant";
+import AiAssistant from "@/components/AiAssistant";
 
 export default function AppLayout() {
   const { user } = useAuth();
   const { impersonatedCompany, stopImpersonation } = useImpersonation();
   const navigate = useNavigate();
   const [hideTrialBanner, setHideTrialBanner] = useState(false);
-  const [isAIOpen, setIsAIOpen] = useState(() => {
-    try { return localStorage.getItem('optalflow_ai_open') === 'true'; } catch { return false; }
-  });
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
-    try { return localStorage.getItem('optalflow_sidebar_collapsed') === 'true'; } catch { return false; }
-  });
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
   useEffect(() => {
-    try { localStorage.setItem('optalflow_ai_open', isAIOpen); } catch {}
-  }, [isAIOpen]);
-
-  const toggleSidebar = () => {
-    setIsSidebarCollapsed(prev => {
-      const next = !prev;
-      try { localStorage.setItem('optalflow_sidebar_collapsed', next); } catch {}
-      return next;
-    });
-  };
+    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => setIsOffline(true);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
 
   const handleStopImpersonation = () => {
     stopImpersonation();
@@ -44,12 +39,12 @@ export default function AppLayout() {
   const isSuperAdmin = user?.role === 'super_admin';
 
   let isExpired = false;
-  let trialDaysLeft = 14;
+  let trialDaysLeft = user?.company_trial_days || 14;
 
   if (subscriptionStatus === 'trial' && companyCreatedDate) {
     const createdTime = new Date(companyCreatedDate).getTime();
     const elapsedDays = Math.floor((Date.now() - createdTime) / (1000 * 60 * 60 * 24));
-    trialDaysLeft = 14 - elapsedDays;
+    trialDaysLeft = (user?.company_trial_days || 14) - elapsedDays;
     if (trialDaysLeft <= 0) {
       isExpired = true;
     }
@@ -68,22 +63,22 @@ export default function AppLayout() {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-background">
+    <div className="flex h-screen bg-background overflow-hidden">
       <Sidebar user={user} isCollapsed={isSidebarCollapsed} setIsCollapsed={setIsSidebarCollapsed} />
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-x-hidden overflow-y-auto h-screen">
         {/* Trial Countdown Banner */}
         {subscriptionStatus === 'trial' && !hideTrialBanner && !isSuperAdmin && (
-          <div className={`px-4 py-2 flex items-center justify-between gap-3 text-xs md:text-sm shrink-0 shadow-sm font-sans text-white ${trialDaysLeft <= 3 ? 'bg-gradient-to-r from-red-600 to-red-800' : 'bg-gradient-to-r from-amber-500 to-orange-600'}`}>
+          <div className="bg-gradient-to-r from-amber-500 to-orange-600 text-white px-4 py-2 flex items-center justify-between gap-3 text-xs md:text-sm shrink-0 shadow-sm font-sans">
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4 shrink-0 animate-pulse" />
               <span className="font-semibold">Free Trial Active:</span>
-               <span>You have <strong className="font-extrabold">{trialDaysLeft} days</strong> remaining on your Optalflow trial. {trialDaysLeft <= 3 && "Upgrade now to prevent service interruption."}</span>
+              <span>You have <strong className="font-extrabold">{trialDaysLeft} days</strong> remaining on your LexAfrica trial.</span>
             </div>
             <div className="flex items-center gap-3">
               <Link to="/settings">
                 <Button
                   size="sm"
-                  className={`h-7 bg-white font-bold text-[11px] gap-1 shrink-0 rounded-lg shadow-sm ${trialDaysLeft <= 3 ? 'text-red-700 hover:text-red-800 hover:bg-slate-50' : 'text-orange-700 hover:text-orange-850 hover:bg-slate-50'}`}
+                  className="h-7 bg-white hover:bg-slate-50 text-orange-700 hover:text-orange-850 font-bold text-[11px] gap-1 shrink-0 rounded-lg shadow-sm"
                 >
                   <CreditCard className="w-3.5 h-3.5" /> Upgrade Plan
                 </Button>
@@ -118,20 +113,24 @@ export default function AppLayout() {
         )}
         <TopBar 
           user={user} 
-          isAIOpen={isAIOpen} 
-          toggleAI={() => setIsAIOpen(!isAIOpen)} 
           isSidebarCollapsed={isSidebarCollapsed} 
-          toggleSidebar={toggleSidebar} 
+          toggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)} 
         />
-        <div className="flex-1 flex overflow-hidden relative">
-          <main className="flex-1 overflow-y-auto p-4 lg:p-6">
-            <div className="max-w-[1400px] w-full mx-auto">
-              <Outlet />
-            </div>
-          </main>
-          {isAIOpen && <GlobalAIAssistant onClose={() => setIsAIOpen(false)} />}
-        </div>
+        <main className="flex-1 p-4 lg:p-6 max-w-[1400px] w-full mx-auto">
+          <Outlet />
+        </main>
       </div>
+      <AiAssistant />
+      {isOffline && (
+        <div className="fixed bottom-6 right-6 z-50 bg-red-600/90 hover:bg-red-700/90 backdrop-blur-md text-white font-semibold px-4 py-2.5 rounded-full flex items-center gap-2.5 shadow-lg border border-red-500/20 select-none animate-pulse">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+          </span>
+          <WifiOff className="w-4 h-4 shrink-0" />
+          <span className="text-xs tracking-wider uppercase font-bold">Offline Mode Active</span>
+        </div>
+      )}
     </div>
   );
 }
