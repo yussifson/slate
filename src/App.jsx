@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes, Outlet } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Outlet, Navigate } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import { ThemeProvider } from '@/lib/ThemeContext';
@@ -273,9 +273,10 @@ function PlatformRoutes() {
 }
 
 function ProtectedRoute() {
-  const { isAuthenticated, isLoadingAuth, authStep } = useAuth();
+  const { isAuthenticated, isLoadingAuth, authChecked } = useAuth();
   
-  if (isLoadingAuth) {
+  // Show spinner while auth is loading OR while auth hasn't been checked yet
+  if (isLoadingAuth || !authChecked) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
         <div className="relative flex items-center justify-center">
@@ -287,8 +288,9 @@ function ProtectedRoute() {
   }
   
   if (!isAuthenticated) {
-    window.location.href = '/login';
-    return null;
+    // Use React Router Navigate instead of window.location.href to avoid
+    // an irreversible hard page reload that cannot be cancelled
+    return <Navigate to="/login" replace />;
   }
   
   return <Outlet />;

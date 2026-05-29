@@ -17,6 +17,7 @@ export const AuthProvider = ({ children }) => {
   const isCheckingRef = useRef(false);
   const isAuthenticatedRef = useRef(false);
   const userRef = useRef(null);
+  const hasInitializedRef = useRef(false);
 
   // Keep ref in sync with user state to prevent stale closures
   useEffect(() => {
@@ -250,8 +251,16 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error('User auth check failed:', error);
       
-      // OFFLINE FALLBACK: If network fails during session fetch (e.g. token refresh fails offline)
-      if (!navigator.onLine || error.message?.includes('Failed to fetch') || error.name === 'AuthRetryableFetchError') {
+      // OFFLINE FALLBACK: If we are offline OR any network error occurred,
+      // try to use the cached user profile so the app doesn't kick to login
+      const isNetworkError = !navigator.onLine || 
+        error.message?.includes('Failed to fetch') || 
+        error.message?.includes('NetworkError') ||
+        error.message?.includes('ERR_INTERNET_DISCONNECTED') ||
+        error.name === 'AuthRetryableFetchError' ||
+        error.name === 'TypeError';
+        
+      if (isNetworkError) {
         try {
           const cachedUserRaw = localStorage.getItem('optalflow_cached_user');
           if (cachedUserRaw) {
@@ -280,33 +289,44 @@ export const AuthProvider = ({ children }) => {
 
   // Listen to auth state changes from Supabase
   useEffect(() => {
-    // Manually trigger the check if we have cross-domain tokens in the URL
-    // This is required because onAuthStateChange will fire an INITIAL_SESSION with null 
-    // before we have a chance to read the tokens from the URL!
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('access_token') && params.get('refresh_token')) {
-      checkUserAuth(null);
-    }
+    let isMounted = true;
 
+    // Step 1: Perform the initial auth check ourselves.
+    // We do NOT rely on onAuthStateChange's INITIAL_SESSION event because
+    // it fires with null when there are cross-domain URL tokens that haven't
+    // been processed yet, causing a flash redirect to /login.
+    const initAuth = async () => {
+      if (hasInitializedRef.current) return;
+      hasInitializedRef.current = true;
+      await checkUserAuth(null);
+    };
+    initAuth();
+
+    // Step 2: Listen to SUBSEQUENT auth changes (sign in, sign out, token refresh)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, newSession) => {
-      if (!newSession) {
-        // If we are currently trying to restore from URL tokens, DO NOT immediately log out!
-        // Let the manual checkUserAuth() call finish restoring the session.
-        const currentParams = new URLSearchParams(window.location.search);
-        if (currentParams.get('access_token') && currentParams.get('refresh_token')) {
-          return;
-        }
+      if (!isMounted) return;
+      
+      // Skip the INITIAL_SESSION event - we handle init ourselves above
+      if (event === 'INITIAL_SESSION') return;
 
+      if (event === 'SIGNED_OUT') {
         setUser(null);
         setIsAuthenticated(false);
         setIsLoadingAuth(false);
-      } else {
-        // Direct-call checkUserAuth with the new session
+        setAuthChecked(true);
+        // Clear cached user on explicit sign out
+        try { localStorage.removeItem('optalflow_cached_user'); } catch(e) {}
+        return;
+      }
+
+      if (newSession) {
+        // For SIGNED_IN, TOKEN_REFRESHED events
         checkUserAuth(newSession);
       }
     });
 
     return () => {
+      isMounted = false;
       subscription?.unsubscribe();
     };
   }, [checkUserAuth]);
