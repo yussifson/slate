@@ -44,6 +44,17 @@ serve(async (req) => {
         authUrl = `https://zoom.us/oauth/authorize?response_type=code&client_id=${zoomClientId}&redirect_uri=${redirectUri}&state=${state}`
         break;
 
+      case 'stripe':
+      case 'twilio':
+      case 'paystack':
+      case 'quickbooks':
+      case 'docusign':
+      case 'whatsapp':
+        // Mock authorization flow
+        const mockCode = `mock_code_${provider}_${Date.now()}`
+        authUrl = `${redirectUri}?code=${mockCode}&state=${state}`
+        break;
+
       default:
         const errUrl = new URL(return_url)
         errUrl.searchParams.set('status', 'error')
