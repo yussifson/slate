@@ -39,7 +39,7 @@ export default defineConfig({
         maximumFileSizeToCacheInBytes: 5000000,
         navigateFallback: '/index.html',
         cleanupOutdatedCaches: true,
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2,wasm}'],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/api\.cloudflare\.com\/.*/i,
