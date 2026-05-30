@@ -833,7 +833,7 @@ export default function Home() {
           </FadeIn>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((t, idx) => {
+            {testimonials.map((item, idx) => {
               return (
                 <FadeIn key={idx} delay={`delay-[${idx * 120}ms]`}>
                   <div className="bg-white border border-slate-200 rounded-[2rem] p-10 flex flex-col justify-between hover:border-blue-300 hover:shadow-2xl hover:shadow-blue-900/5 transition-all duration-300 h-full group relative overflow-hidden">
