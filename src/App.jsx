@@ -7,8 +7,9 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import { ThemeProvider } from '@/lib/ThemeContext';
 import { ImpersonationProvider } from '@/lib/ImpersonationContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
-import React from 'react';
-
+import React, { useEffect } from 'react';
+import { PowerSyncContext } from '@powersync/react';
+import { powerSync, initPowerSync } from './api/PowerSyncConnector';
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -300,7 +301,12 @@ function App() {
   const { currentSubdomain } = getSubdomainAndBase();
   const isBaseDomain = currentSubdomain === null;
 
+  useEffect(() => {
+    initPowerSync().catch(console.error);
+  }, []);
+
   return (
+    <PowerSyncContext.Provider value={powerSync}>
     <AuthProvider>
       <ThemeProvider>
         <ImpersonationProvider>
@@ -378,6 +384,7 @@ function App() {
         </ImpersonationProvider>
       </ThemeProvider>
     </AuthProvider>
+    </PowerSyncContext.Provider>
   );
 }
 
