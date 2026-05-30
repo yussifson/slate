@@ -124,6 +124,30 @@ serve(async (req) => {
         accessToken = data.authed_user?.access_token || data.access_token
         refreshToken = data.authed_user?.refresh_token || data.refresh_token || ''
         expiresIn = data.authed_user?.expires_in || data.expires_in || 3600
+      } else if (provider === 'zoom') {
+        const clientId = Deno.env.get('ZOOM_CLIENT_ID')
+        const clientSecret = Deno.env.get('ZOOM_CLIENT_SECRET')
+        if (!clientId || !clientSecret) throw new Error("Missing Zoom Client ID/Secret in Edge Function Env")
+
+        const basicAuth = btoa(`${clientId}:${clientSecret}`)
+
+        const tokenResponse = await fetch('https://zoom.us/oauth/token', {
+          method: 'POST',
+          headers: { 
+            'Authorization': `Basic ${basicAuth}`,
+            'Content-Type': 'application/x-www-form-urlencoded' 
+          },
+          body: new URLSearchParams({
+            code,
+            grant_type: 'authorization_code',
+            redirect_uri: redirectUri
+          })
+        })
+        const data = await tokenResponse.json()
+        if (data.error || data.reason) throw new Error(data.reason || data.error_description || data.error)
+        accessToken = data.access_token
+        refreshToken = data.refresh_token || ''
+        expiresIn = data.expires_in || 3600
       } else {
         throw new Error(`Unsupported provider for real exchange: ${provider}`)
       }
