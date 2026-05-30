@@ -36,7 +36,6 @@ const LANGUAGES = {
 };
 
 export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOpen, toggleAI }) {
-  const { t } = useTranslation();
   const { t, i18n } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
