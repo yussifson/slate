@@ -442,6 +442,13 @@ export default function Integrations() {
             // Check connected status via the `provider` key, not `id`
             const isConnected = !!connectedApps[app.provider];
             const isLoading = loadingAppId === app.id;
+            
+            let appDescription = app.description;
+            if (app.id === 'docusign') {
+              appDescription = "Send contracts, agreements, and forms for legally binding e-signatures directly from " + getTerm(activeIndustry, "case").toLowerCase() + " records.";
+            } else if (app.id === 'whatsapp_business') {
+              appDescription = "Send automated SMS and WhatsApp reminders for " + getTerm(activeIndustry, "hearing").toLowerCase() + "s and billing notifications.";
+            }
 
             return (
               <div 
