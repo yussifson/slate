@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
+import { getTerm } from "@/config/industries";
 import { Building2, Settings2, UserCog, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,6 +20,7 @@ export default function SuperAdminDashboard() {
   const [showForm, setShowForm] = useState(false);
   const [managingStaff, setManagingStaff] = useState(false);
   const { user, refreshUser } = useAuth();
+  const activeIndustry = user?.company_industry || "law";
   const createMutation = useMutation({
     mutationFn: async ({ form, adminName }) => {
       const created = await base44.entities.Company.create(form);
@@ -79,7 +81,7 @@ export default function SuperAdminDashboard() {
     <div className="space-y-6 max-w-2xl">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold">{t("firm_setup", "Firm Setup")}</h1>
+          <h1 className="text-xl font-bold">{t("firm_setup", (getTerm(activeIndustry, "venue") || "Firm") + " Setup")}</h1>
           <p className="text-sm text-muted-foreground">{t(
             "configure_your_law_firm_and_ma",
             "Configure your law firm and manage team members."
@@ -87,7 +89,7 @@ export default function SuperAdminDashboard() {
         </div>
         {!company && (
           <Button onClick={() => setShowForm(true)} size="sm" className="gap-1.5">
-            <Plus className="w-4 h-4" /> {t("setup_firm", "Setup Firm")}
+            <Plus className="w-4 h-4" /> {t("setup_firm", "Setup " + (getTerm(activeIndustry, "venue") || "Firm"))}
           </Button>
         )}
       </div>
@@ -121,14 +123,14 @@ export default function SuperAdminDashboard() {
               <p className="font-medium mt-0.5">{company.max_users}</p>
             </div>
             <div className="bg-muted/40 rounded-lg p-3">
-              <p className="text-xs text-muted-foreground">{t("max_cases", "Max Cases")}</p>
+              <p className="text-xs text-muted-foreground">{t("max_cases", "Max " + (getTerm(activeIndustry, "cases") || "Cases"))}</p>
               <p className="font-medium mt-0.5">{company.max_cases}</p>
             </div>
           </div>
 
           <div className="flex gap-2 pt-1">
             <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setShowForm(true)}>
-              <Settings2 className="w-3.5 h-3.5" /> {t("edit_firm_details", "Edit Firm Details")}
+              <Settings2 className="w-3.5 h-3.5" /> {t("edit_firm_details", "Edit " + (getTerm(activeIndustry, "venue") || "Firm") + " Details")}
             </Button>
             <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setManagingStaff(true)}>
               <UserCog className="w-3.5 h-3.5" /> {t("manage_team", "Manage Team")}
@@ -138,8 +140,8 @@ export default function SuperAdminDashboard() {
       ) : (
         <div className="bg-card border border-dashed border-border rounded-xl p-10 text-center space-y-3">
           <Building2 className="w-10 h-10 text-muted-foreground/40 mx-auto" />
-          <p className="text-sm text-muted-foreground">{t("no_firm_configured_yet", "No firm configured yet.")}</p>
-          <Button onClick={() => setShowForm(true)} size="sm">{t("setup_your_firm", "Setup Your Firm")}</Button>
+          <p className="text-sm text-muted-foreground">{t("no_firm_configured_yet", "No " + (getTerm(activeIndustry, "venue") || "firm").toLowerCase() + " configured yet.")}</p>
+          <Button onClick={() => setShowForm(true)} size="sm">{t("setup_your_firm", "Setup Your " + (getTerm(activeIndustry, "venue") || "Firm"))}</Button>
         </div>
       )}
       <CompanyFormDialog

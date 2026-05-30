@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { getTerm } from "@/config/industries";
 import React, { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
@@ -85,7 +86,7 @@ function Field({ label, children, full }) {
 
 // ── Sections ────────────────────────────────────────────────
 
-function SystemSettings({ company, onSave, saving }) {
+function SystemSettings({ activeIndustry, company, onSave, saving }) {
   const { t } = useTranslation();
   const { theme, changeTheme } = useTheme();
   const [form, setForm] = useState({
@@ -172,7 +173,7 @@ function SystemSettings({ company, onSave, saving }) {
   );
 }
 
-function BrandSettings({ company, onSave, saving }) {
+function BrandSettings({ activeIndustry, company, onSave, saving }) {
   const [tab, setTab] = useState("logos");
   const [showSubdomainAlert, setShowSubdomainAlert] = useState(false);
   const [form, setForm] = useState({
@@ -280,7 +281,7 @@ function BrandSettings({ company, onSave, saving }) {
   );
 }
 
-function CurrencySettings({ company, onSave, saving }) {
+function CurrencySettings({ activeIndustry, company, onSave, saving }) {
   const [form, setForm] = useState({
     currency: company?.currency || "GHS",
     currency_position: "before",
@@ -346,7 +347,7 @@ function CurrencySettings({ company, onSave, saving }) {
   );
 }
 
-function EmailSettings({ company, onSave, saving }) {
+function EmailSettings({ activeIndustry, company, onSave, saving }) {
   const [activeTab, setActiveTab] = useState("smtp");
   const [domainInput, setDomainInput] = useState(company?.custom_email_domain || "");
   const [verifyingDomain, setVerifyingDomain] = useState(false);
@@ -583,7 +584,7 @@ function EmailSettings({ company, onSave, saving }) {
   );
 }
 
-function NotificationSettings({ onSave, saving }) {
+function NotificationSettings({ activeIndustry, onSave, saving }) {
   const [form, setForm] = useState({
     hearing_reminder: true,
     invoice_overdue: true,
@@ -625,7 +626,7 @@ function NotificationSettings({ onSave, saving }) {
   );
 }
 
-function SlackSettings({ onSave, saving }) {
+function SlackSettings({ activeIndustry, onSave, saving }) {
   const [form, setForm] = useState({ webhook_url: "", channel: "#general", notify_new_case: true, notify_overdue: true });
 
   return (
@@ -639,7 +640,7 @@ function SlackSettings({ onSave, saving }) {
         </Field>
       </FormRow>
       <div className="space-y-3.5 mt-6">
-        {[["notify_new_case", "Realtime Case Intake Alerts", "Ping channel whenever a new case file is successfully created"], ["notify_overdue", "Overdue Balance Webhooks", "Notify Slack channels automatically upon invoice status overdue trigger"]].map(([k, l, d]) => {
+        {[["notify_new_case", "Realtime " + getTerm(activeIndustry, "case") + " Intake Alerts", "Ping channel whenever a new " + getTerm(activeIndustry, "case").toLowerCase() + " file is successfully created"], ["notify_overdue", "Overdue Balance Webhooks", "Notify Slack channels automatically upon invoice status overdue trigger"]].map(([k, l, d]) => {
           return (
             <div key={k} className="flex items-center justify-between p-4 rounded-xl border border-border/60 bg-muted/10 hover:bg-muted/20 transition-all duration-200">
               <div className="space-y-0.5">
@@ -655,11 +656,11 @@ function SlackSettings({ onSave, saving }) {
   );
 }
 
-function TwilioSettings({ onSave, saving }) {
+function TwilioSettings({ activeIndustry, onSave, saving }) {
   const [form, setForm] = useState({ account_sid: "", auth_token: "", from_number: "", sms_enabled: false });
 
   return (
-    <SectionCard title="Twilio SMS Delivery" subtitle="Broadcast automatic text messages for hearings and case status updates" onSave={() => onSave(form)} saving={saving}>
+    <SectionCard title="Twilio SMS Delivery" subtitle={"Broadcast automatic text messages for " + getTerm(activeIndustry, "hearing").toLowerCase() + "s and " + getTerm(activeIndustry, "case").toLowerCase() + " status updates"} onSave={() => onSave(form)} saving={saving}>
       <FormRow>
         <Field label="Account SID">
           <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" value={form.account_sid} onChange={e => setForm({ ...form, account_sid: e.target.value })} placeholder="ACxxxxxxx..." />
@@ -685,7 +686,7 @@ function TwilioSettings({ onSave, saving }) {
   );
 }
 
-function PaymentSettings({ onSave, saving }) {
+function PaymentSettings({ activeIndustry, onSave, saving }) {
   const [form, setForm] = useState({ provider: "stripe", public_key: "", secret_key: "", webhook_secret: "", live_mode: false });
 
   return (
@@ -726,11 +727,11 @@ function PaymentSettings({ onSave, saving }) {
   );
 }
 
-function GoogleCalendarSettings({ onSave, saving }) {
+function GoogleCalendarSettings({ activeIndustry, onSave, saving }) {
   const [form, setForm] = useState({ client_id: "", client_secret: "", sync_enabled: false, calendar_id: "" });
 
   return (
-    <SectionCard title="Google Calendar Sync" subtitle="Synchronize case files and schedule hearings with corporate calendars" onSave={() => onSave(form)} saving={saving}>
+    <SectionCard title="Google Calendar Sync" subtitle={"Synchronize files and schedule " + getTerm(activeIndustry, "hearing").toLowerCase() + "s with corporate calendars"} onSave={() => onSave(form)} saving={saving}>
       <FormRow>
         <Field label="OAuth Client ID">
           <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" value={form.client_id} onChange={e => setForm({ ...form, client_id: e.target.value })} placeholder="xxxxxxxxx.apps.googleusercontent.com" />
@@ -832,7 +833,7 @@ function SecuritySettings() {
 
 // ── Billing & Subscriptions Settings ──────────────────────────
 
-function BillingSettings({ company }) {
+function BillingSettings({ company, activeIndustry }) {
   const { user, refreshUser } = useAuth();
   const companyId = user?.company_id;
   const [activeUsersCount, setActiveUsersCount] = useState(0);
@@ -842,7 +843,7 @@ function BillingSettings({ company }) {
   const { toast } = useToast();
 
   const plans = [
-    { name: "starter", displayName: "Starter Plan", price: 29, maxUsers: 3, maxCases: 10, maxStorage: 5 },
+    { name: "starter", displayName: "Starter Plan", price: 29, maxUsers: 3, maxCases: 10, /* Dynamic terms applied */ maxStorage: 5 },
     { name: "professional", displayName: "Professional Plan", price: 79, maxUsers: 10, maxCases: 9999, maxStorage: 25 },
     { name: "enterprise", displayName: "Enterprise Plan", price: 199, maxUsers: 999, maxCases: 9999, maxStorage: 250 }
   ];
@@ -934,7 +935,7 @@ function BillingSettings({ company }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
           <div className="bg-gradient-to-br from-slate-50 to-slate-100/50 dark:from-slate-900/40 dark:to-slate-900/10 border border-border/80 rounded-2xl p-5 space-y-4">
             <div>
-              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest block">{t("firm_plan_level", "Firm Plan Level")}</span>
+              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest block">{t("firm_plan_level", (getTerm(activeIndustry, "venue") || "Firm") + " Plan Level")}</span>
               <h3 className="font-extrabold text-2xl text-foreground capitalize flex items-center gap-2 mt-1">
                 {currentPlan} {t("model", "Model")}
                 <span className={`text-[10px] font-extrabold uppercase py-0.5 px-2.5 rounded-full border tracking-wider ${
@@ -967,7 +968,7 @@ function BillingSettings({ company }) {
 
             <div className="space-y-2">
               <div className="flex justify-between text-xs font-semibold text-muted-foreground">
-                <span>{t("active_case_files", "Active Case Files")}</span>
+                <span>{t("active_case_files", "Active " + getTerm(activeIndustry, "cases"))}</span>
                 <span className="text-foreground">{activeCasesCount} / {currentPlan === 'starter' ? 10 : 'Unlimited'}</span>
               </div>
               <Progress value={currentPlan === 'starter' ? (activeCasesCount / 10) * 100 : 8} className="h-2 bg-muted/40 [&>div]:bg-primary" />
@@ -1052,6 +1053,7 @@ export default function Settings() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const companyId = user?.company_id || null;
+  const activeIndustry = user?.company_industry || "law";
   const [activeSection, setActiveSection] = useState("system");
   const [saving, setSaving] = useState(false);
 
@@ -1094,8 +1096,8 @@ export default function Settings() {
 
   const renderSection = () => {
     switch (activeSection) {
-      case "system":       return <SystemSettings company={company} onSave={fakeSuccess} saving={saving} />;
-      case "brand":        return <BrandSettings company={company} onSave={company ? async d => { 
+      case "system":       return <SystemSettings activeIndustry={activeIndustry} company={company} onSave={fakeSuccess} saving={saving} />;
+      case "brand":        return <BrandSettings activeIndustry={activeIndustry} company={company} onSave={company ? async d => { 
         try {
           await updateCompany({ 
             name: d.name, 
@@ -1125,14 +1127,14 @@ export default function Settings() {
           console.error("Failed to save brand settings", err);
         }
       } : fakeSuccess} saving={saving} />;
-      case "billing":      return <BillingSettings company={company} />;
-      case "currency":     return <CurrencySettings company={company} onSave={company ? d => updateCompany({ currency: d.currency }) : fakeSuccess} saving={saving} />;
-      case "email":        return <EmailSettings company={company} onSave={company ? d => updateCompany(d) : fakeSuccess} saving={saving} />;
-      case "notifications":return <NotificationSettings onSave={fakeSuccess} saving={saving} />;
-      case "slack":        return <SlackSettings onSave={fakeSuccess} saving={saving} />;
-      case "twilio":       return <TwilioSettings onSave={fakeSuccess} saving={saving} />;
-      case "payment":      return <PaymentSettings onSave={fakeSuccess} saving={saving} />;
-      case "gcalendar":    return <GoogleCalendarSettings onSave={fakeSuccess} saving={saving} />;
+      case "billing":      return <BillingSettings activeIndustry={activeIndustry} company={company} />;
+      case "currency":     return <CurrencySettings activeIndustry={activeIndustry} company={company} onSave={company ? d => updateCompany({ currency: d.currency }) : fakeSuccess} saving={saving} />;
+      case "email":        return <EmailSettings activeIndustry={activeIndustry} company={company} onSave={company ? d => updateCompany(d) : fakeSuccess} saving={saving} />;
+      case "notifications": return <NotificationSettings activeIndustry={activeIndustry} onSave={fakeSuccess} saving={saving} />;
+      case "slack":        return <SlackSettings activeIndustry={activeIndustry} onSave={fakeSuccess} saving={saving} />;
+      case "twilio":       return <TwilioSettings activeIndustry={activeIndustry} onSave={fakeSuccess} saving={saving} />;
+      case "payment":      return <PaymentSettings activeIndustry={activeIndustry} onSave={fakeSuccess} saving={saving} />;
+      case "gcalendar":    return <GoogleCalendarSettings activeIndustry={activeIndustry} onSave={fakeSuccess} saving={saving} />;
       case "security":     return <SecuritySettings />;
       case "permissions":  return (
         <div className="bg-card/45 backdrop-blur-md rounded-2xl border border-border/80 p-6 space-y-6 shadow-md">

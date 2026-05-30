@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/AuthContext';
+import { getTerm } from "@/config/industries";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -123,6 +124,7 @@ const INTEGRATION_CATALOG = [
 export default function Integrations() {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const activeIndustry = user?.company_industry || "law";
   const companyId = useCompanyId();
   const { toast } = useToast();
 
@@ -477,7 +479,7 @@ export default function Integrations() {
                   
                   <h3 className="text-xl font-extrabold text-slate-900 dark:text-white mb-1.5">{app.name}</h3>
                   <p className="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3.5">{app.category}</p>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{app.description}</p>
+                  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{appDescription}</p>
                 </div>
                 <div className="px-6 py-5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/50 flex items-center justify-between">
                   <a 
