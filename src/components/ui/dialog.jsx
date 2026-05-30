@@ -30,6 +30,7 @@ const DialogOverlay = React.forwardRef(({ className, ...props }, ref) => {
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
 
 const DialogContent = React.forwardRef(({ className, children, ...props }, ref) => {
+  const { t } = useTranslation();
   return (
     <DialogPortal>
       <DialogOverlay />
