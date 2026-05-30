@@ -159,6 +159,7 @@ import Partners from './pages/marketing/Partners';
 import LegalDocs from './pages/marketing/LegalDocs';
 import OnboardingWizard from './pages/OnboardingWizard';
 import AppIntegrations from './pages/Integrations';
+import GenericModulePage from './pages/GenericModulePage';
 
 // Admin Ecosystem Pages
 import AdminOverview from './pages/admin/AdminOverview';
@@ -271,6 +272,19 @@ function PlatformRoutes() {
       <Route path="/recruitment" element={<HRRecruitment />} />
       <Route path="/payroll" element={<HRPayroll />} />
       <Route path="/hr-leave" element={<HRLeave />} />
+
+      {/* Missing Industry Pages mapped to GenericModulePage */}
+      <Route path="/products" element={<GenericModulePage />} />
+      <Route path="/org-chart" element={<GenericModulePage />} />
+      <Route path="/disciplinary" element={<GenericModulePage />} />
+      <Route path="/dispatch" element={<GenericModulePage />} />
+      <Route path="/shifts" element={<GenericModulePage />} />
+      <Route path="/benefits" element={<GenericModulePage />} />
+      <Route path="/routes" element={<GenericModulePage />} />
+      <Route path="/training" element={<GenericModulePage />} />
+      <Route path="/loyalty" element={<GenericModulePage />} />
+      <Route path="/pickups" element={<GenericModulePage />} />
+      <Route path="/orders" element={<GenericModulePage />} />
     </>
   );
 }
