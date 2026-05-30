@@ -48,6 +48,7 @@ const sheetVariants = cva(
 )
 
 const SheetContent = React.forwardRef(({ side = "right", className, children, ...props }, ref) => {
+  const { t } = useTranslation();
   return (
     <SheetPortal>
       <SheetOverlay />

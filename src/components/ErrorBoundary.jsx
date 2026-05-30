@@ -1,6 +1,7 @@
 import React from 'react';
 import { AlertTriangle, RefreshCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import i18n from '../i18n/config';
 
 export class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -29,10 +30,10 @@ export class ErrorBoundary extends React.Component {
               <AlertTriangle className="w-10 h-10" />
             </div>
             <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-4">
-              {t("oops_something_went_wrong", "Oops! Something went wrong.")}
+              {i18n.t("oops_something_went_wrong", "Oops! Something went wrong.")}
             </h1>
             <p className="text-slate-600 font-medium leading-relaxed mb-8">
-              {t(
+              {i18n.t(
                 "we_encountered_an_unexpected_e",
                 "We encountered an unexpected error. Please refresh the page or try again later."
               )}
@@ -51,7 +52,7 @@ export class ErrorBoundary extends React.Component {
               className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-6 font-bold text-lg shadow-lg shadow-blue-600/20"
             >
               <RefreshCcw className="w-5 h-5 mr-2" />
-              {t("refresh_page", "Refresh Page")}
+              {i18n.t("refresh_page", "Refresh Page")}
             </Button>
           </div>
         </div>
