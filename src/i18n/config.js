@@ -45,9 +45,9 @@ i18n
         LocizeBackend         // Fallback (fetch from locize)
       ],
       backendOptions: [{
-        // LocalStorage backend options
-        expirationTime: 7 * 24 * 60 * 60 * 1000, // 7 days
-        prefix: 'i18next_res_',
+        // LocalStorage backend options - v2 busts old empty caches
+        expirationTime: 60 * 60 * 1000, // 1 hour (so new translations load quickly)
+        prefix: 'i18next_res_v2_',
       }, {
         // Locize backend options
         projectId: import.meta.env.VITE_LOCIZE_PROJECT_ID || 'demo-project-id',
