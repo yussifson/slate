@@ -80,12 +80,8 @@ const BreadcrumbSeparator = (
 }
 BreadcrumbSeparator.displayName = "BreadcrumbSeparator"
 
-const BreadcrumbEllipsis = (
-  {
-    className,
-    ...props
-  }
-) => {
+const BreadcrumbEllipsis = ({ className, ...props }) => {
+  const { t } = useTranslation();
   return (
     <span
       role="presentation"

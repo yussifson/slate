@@ -57,12 +57,8 @@ const PaginationLink = (
 }
 PaginationLink.displayName = "PaginationLink"
 
-const PaginationPrevious = (
-  {
-    className,
-    ...props
-  }
-) => {
+const PaginationPrevious = ({ className, ...props }) => {
+  const { t } = useTranslation();
   return (
     <PaginationLink
       aria-label="Go to previous page"
@@ -76,12 +72,8 @@ const PaginationPrevious = (
 }
 PaginationPrevious.displayName = "PaginationPrevious"
 
-const PaginationNext = (
-  {
-    className,
-    ...props
-  }
-) => {
+const PaginationNext = ({ className, ...props }) => {
+  const { t } = useTranslation();
   return (
     <PaginationLink
       aria-label="Go to next page"
@@ -95,12 +87,8 @@ const PaginationNext = (
 }
 PaginationNext.displayName = "PaginationNext"
 
-const PaginationEllipsis = (
-  {
-    className,
-    ...props
-  }
-) => {
+const PaginationEllipsis = ({ className, ...props }) => {
+  const { t } = useTranslation();
   return (
     <span
       aria-hidden
