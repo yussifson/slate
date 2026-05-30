@@ -11,6 +11,7 @@ const toSnakeCase = (str) => {
         else name += 's';
     }
     return name;
+};
 let hasActiveSession = false;
 // Initialize session state passively
 if (typeof window !== 'undefined') {
