@@ -33,6 +33,7 @@ i18n
     fallbackLng: 'en',
     supportedLngs: ['en', 'es', 'fr', 'ar', 'he', 'de', 'pt', 'zh', 'ja'], // Extend as needed
     debug: !isProduction,
+    saveMissing: !isProduction,
     
     interpolation: {
       escapeValue: false, // React already safeguards from XSS
