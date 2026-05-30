@@ -1,0 +1,362 @@
+commit aed96d22f05c3d7c9a25153cf31cce5f70d655f8
+Author: unknown <yussifabduljalil601@gmail.com>
+Date:   Sat May 30 16:48:01 2026 +0000
+
+    Fix IDR offline sync logic
+
+src/hooks/useIndustryData.js
+
+commit 185ceab51f0658069704190b82fa544b772403b8
+Author: unknown <yussifabduljalil601@gmail.com>
+Date:   Sat May 30 16:23:19 2026 +0000
+
+    fix: cache .wasm files in PWA to enable offline SQLite database initialization
+
+vite.config.js
+
+commit e3477b0276eb46157bfd39bbce81dedfac64f463
+Author: unknown <yussifabduljalil601@gmail.com>
+Date:   Sat May 30 14:54:06 2026 +0000
+
+    chore: update PowerSyncConnector
+
+src/api/PowerSyncConnector.js
+
+commit 14bca6b4f550d01a72716efc026f787ed57d32aa
+Author: unknown <yussifabduljalil601@gmail.com>
+Date:   Sat May 30 13:53:51 2026 +0000
+
+    fix: safely handle null exceptions in PowerSync offline logic to prevent blackout crashes
+
+src/api/PowerSyncConnector.js
+
+commit 5e839c7e20cbcdea6fa2f3e55d1c8265ef4ebb15
+Author: unknown <yussifabduljalil601@gmail.com>
+Date:   Sat May 30 13:31:52 2026 +0000
+
+    fix: ensure PowerSync offline queues aren't discarded on unhandled network errors
+
+src/api/PowerSyncConnector.js
+
+commit d0c7c1ac9f258258c63641689cb671236b1c80f2
+Author: unknown <yussifabduljalil601@gmail.com>
+Date:   Sat May 30 12:53:41 2026 +0000
+
+    fix: bust stale LocalStorage translation cache with v2 prefix
+
+src/i18n/config.js
+
+commit a28d8f5e9eff982cf0b1ba4a851280c6712e1f8b
+Author: unknown <yussifabduljalil601@gmail.com>
+Date:   Sat May 30 11:35:42 2026 +0000
+
+    chore: inject locize api key and enable saveMissing for development
+
+src/i18n/config.js
+
+commit f11e53dd3abde72851f38fd80e3fb0035d2914fe
+Author: unknown <yussifabduljalil601@gmail.com>
+Date:   Sat May 30 11:19:22 2026 +0000
+
+    fix: resolve remaining t is not defined errors in breadcrumb and pagination components
+
+src/components/ui/breadcrumb.jsx
+src/components/ui/pagination.jsx
+
+commit c2c73bc4fcfacb238f8f7687403082efbcf9efb3
+Author: unknown <yussifabduljalil601@gmail.com>
+Date:   Sat May 30 11:17:09 2026 +0000
+
+    fix: resolve t is not defined in dialog.jsx
+
+src/components/ui/dialog.jsx
+
+commit bbbcd4209f8f5ad73583a8455c4d3cc8e7056674
+Author: unknown <yussifabduljalil601@gmail.com>
+Date:   Sat May 30 11:00:50 2026 +0000
+
+    fix: resolve t is not defined in ErrorBoundary and sheet by injecting useTranslation hook
+
+src/components/ErrorBoundary.jsx
+src/components/ui/sheet.jsx
+
+commit c1967088ba952b0a81a84fa274737b943af9e9d0
+Author: unknown <yussifabduljalil601@gmail.com>
+Date:   Sat May 30 10:53:27 2026 +0000
+
+    feat: add RTL layout support for sidebar and expand TopBar languages
+
+src/components/layout/Sidebar.jsx
+src/components/layout/TopBar.jsx
+
+commit bb261cb4f6cfd056a644ddb549a4487dd9506aa0
+Author: unknown <yussifabduljalil601@gmail.com>
+Date:   Sat May 30 10:48:58 2026 +0000
+
+    fix: remove duplicate t declaration in TopBar.jsx
+
+dev-dist/sw.js
+src/components/layout/TopBar.jsx
+src/components/ui/carousel.jsx
+
+commit 9d6bedf959cf957c55236bdd4b498d123e6509c0
+Author: unknown <yussifabduljalil601@gmail.com>
+Date:   Sat May 30 10:36:36 2026 +0000
+
+    fix: resolve all useTranslation hook errors + add missing /premiums route
+
+dev-dist/sw.js
+dev-dist/workbox-970124e6.js
+gen.py
+generate_schema.mjs
+index.html
+package-lock.json
+package.json
+src/App.jsx
+src/api/AppSchema.js
+src/api/base44Client.js
+src/api/base44Client_old.js
+src/api/schemaColumns.js
+src/components/AiAssistant.jsx
+src/components/ConfirmationModal.jsx
+src/components/ErrorBoundary.jsx
+src/components/UserNotRegisteredError.jsx
+src/components/billing/ExpenseForm.jsx
+src/components/cases/AIDocumentReview.jsx
+src/components/cases/CaseCommunications.jsx
+src/components/cases/CaseDocumentRepo.jsx
+src/components/cases/CaseExpenses.jsx
+src/components/cases/CaseForm.jsx
+src/components/cases/CaseMessaging.jsx
+src/components/cases/CasePDFGenerator.jsx
+src/components/cases/CasePipelineKanban.jsx
+src/components/cases/CaseTimeTracker.jsx
+src/components/cases/CaseTimeline.jsx
+src/components/cases/CasesKanban.jsx
+src/components/cases/ClientChecklistManager.jsx
+src/components/cases/ESignaturePanel.jsx
+src/components/cases/RetainerPanel.jsx
+src/components/dashboard/CaseDistributionChart.jsx
+src/components/dashboard/GenericDashboard.jsx
+src/components/dashboard/HearingReminders.jsx
+src/components/dashboard/HospitalDashboard.jsx
+src/components/dashboard/LawDashboard.jsx
+src/components/dashboard/RevenueChart.jsx
+src/components/dashboard/SchoolDashboard.jsx
+src/components/hr/HRComplaintsPanel.jsx
+src/components/hr/HRLeavePanel.jsx
+src/components/hr/HRPayrollPanel.jsx
+src/components/hr/HRPromotionsPanel.jsx
+src/components/hr/HRSalaryPanel.jsx
+src/components/hr/HRStaffPanel.jsx
+src/components/invoices/InvoiceForm.jsx
+src/components/layout/AppLayout.jsx
+src/components/layout/GlobalAIAssistant.jsx
+src/components/layout/MarketingLayout.jsx
+src/components/layout/NotificationBell.jsx
+src/components/layout/Sidebar.jsx
+src/components/layout/SpotlightSearch.jsx
+src/components/layout/TopBar.jsx
+src/components/portal/ClientAtAGlance.jsx
+src/components/portal/ClientBillingReport.jsx
+src/components/portal/ClientChecklistPanel.jsx
+src/components/portal/ClientMessaging.jsx
+src/components/settings/StaffPermissionsSettings.jsx
+src/components/shared/AIDocumentParser.jsx
+src/components/shared/AIEmailDrafter.jsx
+src/components/shared/AIRiskAnalyzer.jsx
+src/components/shared/AIScheduleSuggester.jsx
+src/components/shared/ActivityHistory.jsx
+src/components/shared/AddOptionInline.jsx
+src/components/shared/BulkActionBar.jsx
+src/components/shared/CSVImportModal.jsx
+src/components/shared/CustomFieldsRenderer.jsx
+src/components/shared/DocumentPreviewModal.jsx
+src/components/shared/ExportButton.jsx
+src/components/shared/QueryBuilder.jsx
+src/components/shared/SavedViewsTabs.jsx
+src/components/shared/StatCard.jsx
+src/components/shared/TimeTracker.jsx
+src/components/superadmin/CompanyFormDialog.jsx
+src/components/superadmin/FirmStaffManager.jsx
+src/components/ui/breadcrumb.jsx
+src/components/ui/carousel.jsx
+src/components/ui/dialog.jsx
+src/components/ui/pagination.jsx
+src/components/ui/sheet.jsx
+src/components/ui/sidebar.jsx
+src/config/industries.js
+src/i18n/config.js
+src/main.jsx
+src/pages/BillingDashboard.jsx
+src/pages/CalendarPage.jsx
+src/pages/CaseDetail.jsx
+src/pages/CaseOutcomes.jsx
+src/pages/CasePipelinePage.jsx
+src/pages/Cases.jsx
+src/pages/ClientPortal.jsx
+src/pages/Clients.jsx
+src/pages/Companies.jsx
+src/pages/CompanyDashboard.jsx
+src/pages/ConflictChecker.jsx
+src/pages/DataExport.jsx
+src/pages/Documents.jsx
+src/pages/EmailInbox.jsx
+src/pages/ForgotPassword.jsx
+src/pages/HRDashboard.jsx
+src/pages/IntakeForm.jsx
+src/pages/Integrations.jsx
+src/pages/Invoices.jsx
+src/pages/Leads.jsx
+src/pages/LeaveManagement.jsx
+src/pages/LegalResearch.jsx
+src/pages/Login.jsx
+src/pages/NotFound.jsx
+src/pages/OnboardingWizard.jsx
+src/pages/Paywall.jsx
+src/pages/PerformanceDashboard.jsx
+src/pages/ReportsDashboard.jsx
+src/pages/ResetPassword.jsx
+src/pages/Settings.jsx
+src/pages/SignUp.jsx
+src/pages/StaffDashboard.jsx
+src/pages/Subscriptions.jsx
+src/pages/SuperAdminDashboard.jsx
+src/pages/Tasks.jsx
+src/pages/Team.jsx
+src/pages/WhatsAppMessenger.jsx
+src/pages/admin/AdminBilling.jsx
+src/pages/admin/AdminBroadcasts.jsx
+src/pages/admin/AdminFirms.jsx
+src/pages/admin/AdminOverview.jsx
+src/pages/admin/AdminSecurity.jsx
+src/pages/admin/AdminUsers.jsx
+src/pages/church/Events.jsx
+src/pages/church/MemberPortal.jsx
+src/pages/church/Members.jsx
+src/pages/church/Ministries.jsx
+src/pages/church/Prayers.jsx
+src/pages/church/Sermons.jsx
+src/pages/church/SmallGroups.jsx
+src/pages/church/Tithes.jsx
+src/pages/church/Volunteers.jsx
+src/pages/hospital/Appointments.jsx
+src/pages/hospital/LabResults.jsx
+src/pages/hospital/PatientPortal.jsx
+src/pages/hospital/Patients.jsx
+src/pages/hospital/Pharmacy.jsx
+src/pages/hospital/Prescriptions.jsx
+src/pages/hospital/Wards.jsx
+src/pages/hotel/FrontDesk.jsx
+src/pages/hotel/GuestPortal.jsx
+src/pages/hotel/GuestRequests.jsx
+src/pages/hotel/Housekeeping.jsx
+src/pages/hotel/Reservations.jsx
+src/pages/hotel/Restaurant.jsx
+src/pages/hotel/Rooms.jsx
+src/pages/hr/Employees.jsx
+src/pages/hr/Leave.jsx
+src/pages/hr/Payroll.jsx
+src/pages/hr/Recruitment.jsx
+src/pages/insurance/AgentPerformance.jsx
+src/pages/insurance/Claims.jsx
+src/pages/insurance/Clients.jsx
+src/pages/insurance/Policies.jsx
+src/pages/insurance/PolicyholderPortal.jsx
+src/pages/insurance/Premiums.jsx
+src/pages/insurance/Underwriting.jsx
+src/pages/logistics/Drivers.jsx
+src/pages/logistics/Fleet.jsx
+src/pages/logistics/Shipments.jsx
+src/pages/logistics/TrackingPortal.jsx
+src/pages/logistics/Warehouses.jsx
+src/pages/marketing/About.jsx
+src/pages/marketing/Careers.jsx
+src/pages/marketing/Changelog.jsx
+src/pages/marketing/Contact.jsx
+src/pages/marketing/EnterpriseContact.jsx
+src/pages/marketing/Features.jsx
+src/pages/marketing/Home.jsx
+src/pages/marketing/Integrations.jsx
+src/pages/marketing/LegalDocs.jsx
+src/pages/marketing/Partners.jsx
+src/pages/marketing/Pricing.jsx
+src/pages/retail/CustomerPortal.jsx
+src/pages/retail/Customers.jsx
+src/pages/retail/Inventory.jsx
+src/pages/retail/POS.jsx
+src/pages/retail/Sales.jsx
+src/pages/retail/Suppliers.jsx
+src/pages/school/Attendance.jsx
+src/pages/school/Classes.jsx
+src/pages/school/Exams.jsx
+src/pages/school/FeeManagement.jsx
+src/pages/school/Grades.jsx
+src/pages/school/Library.jsx
+src/pages/school/ParentPortal.jsx
+src/pages/school/Students.jsx
+src/pages/school/Timetable.jsx
+src/pages/settings/CustomFields.jsx
+src/pages/settings/Workflows.jsx
+supabase/schema.sql
+
+commit c2a9489a634eb8ea22fcfa6e51cbea8fbcedf702
+Author: unknown <yussifabduljalil601@gmail.com>
+Date:   Sat May 30 09:12:39 2026 +0000
+
+    fix(sync): make uploadData and fetchCredentials resilient to hard validation errors and network drops to prevent database locks and infinite crash loops
+
+src/api/PowerSyncConnector.js
+
+commit 2352426f4606137255ac9db182039700ab76012c
+Author: unknown <yussifabduljalil601@gmail.com>
+Date:   Sat May 30 08:44:38 2026 +0000
+
+    fix(sync): include all schema tables in local SQLite AppSchema to prevent read errors
+
+src/api/AppSchema.js
+
+commit 2c2cf94cee745b6fae9996b4155e5d23f3de3d01
+Author: unknown <yussifabduljalil601@gmail.com>
+Date:   Sat May 30 08:42:06 2026 +0000
+
+    fix(sync): restore base44 proxy structure with auth and entities to fix undefined errors
+
+src/api/base44Client.js
+
+commit 8615dcc10cd4d676edf60a981ad51608c9c2e156
+Author: unknown <yussifabduljalil601@gmail.com>
+Date:   Sat May 30 08:24:11 2026 +0000
+
+    fix(build): configure vite worker format for powersync SQLite WASM
+
+vite.config.js
+
+commit e68f56c614bf71d2cf483b9ab8e3aed58960724e
+Author: unknown <yussifabduljalil601@gmail.com>
+Date:   Sat May 30 08:21:05 2026 +0000
+
+    feat: migrate custom sync engine to PowerSync local-first SQLite DB
+
+package-lock.json
+package.json
+src/App.jsx
+src/api/AppSchema.js
+src/api/PowerSyncConnector.js
+src/api/base44Client.js
+
+commit 39112fc5dbe2c7cb0bf6a50bd38c4da863a9be9b
+Author: unknown <yussifabduljalil601@gmail.com>
+Date:   Sat May 30 07:11:01 2026 +0000
+
+    fix: resolve missing closing brace syntax error
+
+src/api/base44Client.js
+
+commit 06286611a48a2716a9df303907f795068f685e43
+Author: unknown <yussifabduljalil601@gmail.com>
+Date:   Sat May 30 07:07:45 2026 +0000
+
+    fix: change session validation in base44Client to passive tracking to prevent login race conditions
+
+src/api/base44Client.js

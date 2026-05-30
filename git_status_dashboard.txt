@@ -1,0 +1,31 @@
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   src/pages/Settings.jsx
+	modified:   src/pages/SuperAdminDashboard.jsx
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	eslint_out.txt
+	git_diff.txt
+	git_diff_2.txt
+	git_log.txt
+	git_log_utf8.txt
+	git_status.txt
+	git_status_final.txt
+	git_status_final_2.txt
+	git_status_final_3.txt
+	git_status_final_4.txt
+	git_status_patch.txt
+	git_status_patch_2.txt
+	git_status_utf8.txt
+	scratch/patch_dashboard.cjs
+	scratch/patch_settings.cjs
+	scratch/patch_settings.js
+	task_15140_utf8.txt
+	task_15348_out.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")

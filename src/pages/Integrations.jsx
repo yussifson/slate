@@ -10,6 +10,8 @@ import { Search, Loader2, CheckCircle2, Link2, ExternalLink, ShieldCheck, HelpCi
 import PageHeader from '@/components/shared/PageHeader';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/api/supabaseClient';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 
 // Import local SVGs to guarantee loading
 import googleLogo from '@/assets/integrations/google.svg';
@@ -133,6 +135,8 @@ export default function Integrations() {
   const [connectedApps, setConnectedApps] = useState({});
   const [loadingAppId, setLoadingAppId] = useState(null);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [modalApp, setModalApp] = useState(null);
+  const [modalForm, setModalForm] = useState({});
 
   useEffect(() => {
     const fetchConnections = async () => {
@@ -202,6 +206,35 @@ export default function Integrations() {
 
   const handleConnect = async (app) => {
     if (!companyId) return;
+    
+    const CREDENTIALS_PROVIDERS = ['stripe', 'paystack', 'twilio', 'docusign'];
+    if (CREDENTIALS_PROVIDERS.includes(app.provider)) {
+      setModalApp(app);
+      try {
+        const { data } = await supabase
+          .from('connected_apps')
+          .select('access_token')
+          .eq('company_id', companyId)
+          .eq('provider', app.provider)
+          .eq('status', 'active')
+          .maybeSingle();
+
+        if (data?.access_token) {
+          try {
+            setModalForm(JSON.parse(data.access_token));
+          } catch (e) {
+            setModalForm({ secret_key: data.access_token || "" });
+          }
+        } else {
+          setModalForm({});
+        }
+      } catch (err) {
+        console.error("Failed to load existing keys:", err);
+        setModalForm({});
+      }
+      return;
+    }
+
     setLoadingAppId(app.id);
     
     toast({
@@ -209,16 +242,50 @@ export default function Integrations() {
       description: "Redirecting you to the secure authorization portal...",
     });
 
-    // In production, we redirect to our Edge Function which handles the OAuth Init flow
-    // Replace YOUR_SUPABASE_URL with your actual project URL when deployed
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://your-project.supabase.co';
     const returnUrl = encodeURIComponent(window.location.href);
     const edgeFunctionUrl = `${supabaseUrl}/functions/v1/oauth-init?provider=${app.provider}&company_id=${companyId}&return_url=${returnUrl}`;
     
-    // Redirect the user
     setTimeout(() => {
       window.location.href = edgeFunctionUrl;
     }, 1500);
+  };
+
+  const handleSaveCredentials = async () => {
+    if (!companyId || !modalApp) return;
+    setLoadingAppId(modalApp.id);
+    try {
+      const { error } = await supabase
+        .from('connected_apps')
+        .upsert({
+          company_id: companyId,
+          provider: modalApp.provider,
+          access_token: JSON.stringify(modalForm),
+          status: 'active',
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'company_id,provider' });
+
+      if (error) throw error;
+
+      setConnectedApps(prev => ({
+        ...prev,
+        [modalApp.provider]: true
+      }));
+
+      toast({
+        title: "Integration Connected",
+        description: `Successfully configured production API credentials for ${modalApp.name}.`,
+      });
+      setModalApp(null);
+    } catch (err) {
+      toast({
+        title: "Connection Failed",
+        description: err.message,
+        variant: "destructive"
+      });
+    } finally {
+      setLoadingAppId(null);
+    }
   };
 
   const handleDisconnect = async (app) => {
@@ -562,6 +629,139 @@ export default function Integrations() {
           )}</p>
         </div>
       )}
+      <Dialog open={!!modalApp} onOpenChange={(open) => !open && setModalApp(null)}>
+        <DialogContent className="max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl p-6">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-slate-950 dark:text-white">
+              Connect {modalApp?.name}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4 text-slate-950 dark:text-white">
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              Configure your production credentials to securely integrate {modalApp?.name} into your active workflow.
+            </p>
+
+            {modalApp?.provider === 'stripe' && (
+              <>
+                <div className="space-y-1.5">
+                  <Label>Stripe Publishable Key</Label>
+                  <Input 
+                    placeholder="pk_live_..." 
+                    value={modalForm.public_key || ""} 
+                    onChange={e => setModalForm(p => ({ ...p, public_key: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Stripe Secret Key</Label>
+                  <Input 
+                    type="password"
+                    placeholder="sk_live_..." 
+                    value={modalForm.secret_key || ""} 
+                    onChange={e => setModalForm(p => ({ ...p, secret_key: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Stripe Webhook Secret (Optional)</Label>
+                  <Input 
+                    type="password"
+                    placeholder="whsec_..." 
+                    value={modalForm.webhook_secret || ""} 
+                    onChange={e => setModalForm(p => ({ ...p, webhook_secret: e.target.value }))}
+                  />
+                </div>
+              </>
+            )}
+
+            {modalApp?.provider === 'paystack' && (
+              <>
+                <div className="space-y-1.5">
+                  <Label>Paystack Public Key</Label>
+                  <Input 
+                    placeholder="pk_live_..." 
+                    value={modalForm.public_key || ""} 
+                    onChange={e => setModalForm(p => ({ ...p, public_key: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Paystack Secret Key</Label>
+                  <Input 
+                    type="password"
+                    placeholder="sk_live_..." 
+                    value={modalForm.secret_key || ""} 
+                    onChange={e => setModalForm(p => ({ ...p, secret_key: e.target.value }))}
+                  />
+                </div>
+              </>
+            )}
+
+            {modalApp?.provider === 'twilio' && (
+              <>
+                <div className="space-y-1.5">
+                  <Label>Twilio Account SID</Label>
+                  <Input 
+                    placeholder="AC..." 
+                    value={modalForm.account_sid || ""} 
+                    onChange={e => setModalForm(p => ({ ...p, account_sid: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Twilio Auth Token</Label>
+                  <Input 
+                    type="password"
+                    placeholder="Auth Token" 
+                    value={modalForm.auth_token || ""} 
+                    onChange={e => setModalForm(p => ({ ...p, auth_token: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Twilio Phone Number / Sender ID</Label>
+                  <Input 
+                    placeholder="+15551234567" 
+                    value={modalForm.from_number || ""} 
+                    onChange={e => setModalForm(p => ({ ...p, from_number: e.target.value }))}
+                  />
+                </div>
+              </>
+            )}
+
+            {modalApp?.provider === 'docusign' && (
+              <>
+                <div className="space-y-1.5">
+                  <Label>DocuSign Integration Key (Client ID)</Label>
+                  <Input 
+                    placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" 
+                    value={modalForm.client_id || ""} 
+                    onChange={e => setModalForm(p => ({ ...p, client_id: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>DocuSign API Username (User ID)</Label>
+                  <Input 
+                    placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" 
+                    value={modalForm.user_id || ""} 
+                    onChange={e => setModalForm(p => ({ ...p, user_id: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>DocuSign RSA Private Key</Label>
+                  <Input 
+                    type="password"
+                    placeholder="-----BEGIN RSA PRIVATE KEY-----" 
+                    value={modalForm.private_key || ""} 
+                    onChange={e => setModalForm(p => ({ ...p, private_key: e.target.value }))}
+                  />
+                </div>
+              </>
+            )}
+          </div>
+          <div className="flex justify-end gap-2.5 mt-4">
+            <Button variant="ghost" onClick={() => setModalApp(null)}>Cancel</Button>
+            <Button onClick={handleSaveCredentials} disabled={loadingAppId === modalApp?.id} className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-5">
+              {loadingAppId === modalApp?.id ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save Connection"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

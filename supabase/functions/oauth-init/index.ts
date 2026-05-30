@@ -50,15 +50,7 @@ serve(async (req) => {
         authUrl = `https://appcenter.intuit.com/connect/oauth2?client_id=${qbClientId}&response_type=code&scope=com.intuit.quickbooks.accounting&redirect_uri=${redirectUri}&state=${state}`
         break;
 
-      case 'stripe':
-      case 'twilio':
-      case 'paystack':
-      case 'docusign':
-      case 'whatsapp':
-        // Mock authorization flow
-        const mockCode = `mock_code_${provider}_${Date.now()}`
-        authUrl = `${redirectUri}?code=${mockCode}&state=${state}`
-        break;
+
 
       default:
         const errUrl = new URL(return_url)

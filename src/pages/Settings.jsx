@@ -1133,7 +1133,7 @@ export default function Settings() {
       case "notifications": return <NotificationSettings activeIndustry={activeIndustry} onSave={fakeSuccess} saving={saving} />;
       case "slack":        return <SlackSettings activeIndustry={activeIndustry} onSave={fakeSuccess} saving={saving} />;
       case "twilio":       return <TwilioSettings activeIndustry={activeIndustry} onSave={fakeSuccess} saving={saving} />;
-      case "payment":      return <PaymentSettings activeIndustry={activeIndustry} onSave={fakeSuccess} saving={saving} />;
+      case "payment":      return <PaymentSettings activeIndustry={activeIndustry} companyId={companyId} />;
       case "gcalendar":    return <GoogleCalendarSettings activeIndustry={activeIndustry} onSave={fakeSuccess} saving={saving} />;
       case "security":     return <SecuritySettings />;
       case "permissions":  return (

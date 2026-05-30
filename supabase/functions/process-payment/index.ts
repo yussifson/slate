@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
 import { getValidAccessToken } from '../_shared/token-manager.ts'
 
 console.log("Process Payment Function Started!")
@@ -24,13 +25,39 @@ serve(async (req) => {
     const successUrl = returnUrl || `${appUrl}/payment/success`
     const cancelUrl = `${appUrl}/payment/cancel`
 
+    // Initialize Supabase Admin Client to fetch tenant keys
+    const supabaseUrl = Deno.env.get('SUPABASE_URL') || ''
+    const supabaseServiceKey = Deno.env.get('SERVICE_ROLE_KEY') || ''
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
+
+    // Fetch this company's active custom configurations
+    const { data: connectedApp } = await supabaseAdmin
+      .from('connected_apps')
+      .select('access_token')
+      .eq('company_id', companyId)
+      .eq('provider', provider)
+      .eq('status', 'active')
+      .maybeSingle()
+
+    let customSecretKey = ''
+    if (connectedApp?.access_token) {
+      try {
+        const credentials = JSON.parse(connectedApp.access_token)
+        customSecretKey = credentials.secret_key || ''
+      } catch (e) {
+        if (connectedApp.access_token && !connectedApp.access_token.startsWith('mock_')) {
+          customSecretKey = connectedApp.access_token
+        }
+      }
+    }
+
     // =====================================
     // STRIPE CHECKOUT
     // =====================================
     if (provider === 'stripe') {
-      const stripeSecretKey = Deno.env.get('STRIPE_SECRET_KEY')
+      const stripeSecretKey = customSecretKey || Deno.env.get('STRIPE_SECRET_KEY')
       if (!stripeSecretKey) throw new Error("Missing STRIPE_SECRET_KEY in environment")
-
+      
       // Stripe API expects amount in cents
       const amountInCents = Math.round(amount * 100)
 
@@ -67,7 +94,7 @@ serve(async (req) => {
     // PAYSTACK CHECKOUT
     // =====================================
     else if (provider === 'paystack') {
-      const paystackSecretKey = Deno.env.get('PAYSTACK_SECRET_KEY')
+      const paystackSecretKey = customSecretKey || Deno.env.get('PAYSTACK_SECRET_KEY')
       if (!paystackSecretKey) throw new Error("Missing PAYSTACK_SECRET_KEY in environment")
 
       // Paystack expects amount in lowest denomination (e.g. kobo for NGN, pesewas for GHS)
