@@ -5,11 +5,13 @@ import { toast } from 'react-hot-toast';
 
 export const useMeeting = () => {
   const [isGenerating, setIsGenerating] = useState(false);
-  const { session } = useAuth();
+  const { session, user } = useAuth();
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://your-project.supabase.co';
 
   const generateMeetingLink = async ({ companyId, provider = 'zoom', topic, duration, startTime }) => {
     setIsGenerating(true);
+
+    const resolvedCompanyId = companyId || user?.company_id;
 
     if (!navigator.onLine) {
       setTimeout(() => setIsGenerating(false), 500);
@@ -25,7 +27,7 @@ export const useMeeting = () => {
           'Authorization': `Bearer ${session?.access_token || import.meta.env.VITE_SUPABASE_ANON_KEY}`
         },
         body: JSON.stringify({
-          companyId,
+          companyId: resolvedCompanyId,
           provider, 
           topic,
           duration,
