@@ -8,11 +8,28 @@ import { getSubdomainAndBase } from '@/lib/domainUtils';
 import { Logo } from '@/components/ui/Logo';
 
 export default function MarketingLayout({ children }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { isAuthenticated, user, isLoadingAuth } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+
+  const [langDropdownOpen, setLangDropdownOpen] = useState(false);
+  const [geoPopup, setGeoPopup] = useState(null);
+
+  const languages = [
+    { code: 'en', name: 'English', flag: '🇺🇸' },
+    { code: 'es', name: 'Español', flag: '🇪🇸' },
+    { code: 'fr', name: 'Français', flag: '🇫🇷' },
+    { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+    { code: 'pt', name: 'Português', flag: '🇵🇹' },
+    { code: 'zh', name: '中文', flag: '🇨🇳' },
+    { code: 'ja', name: '日本語', flag: '🇯🇵' },
+    { code: 'ar', name: 'العربية', flag: '🇸🇦' },
+    { code: 'he', name: 'עברית', flag: '🇮🇱' }
+  ];
+
+  const currentLanguage = languages.find(l => l.code === (i18n.language || 'en').split('-')[0]) || languages[0];
 
   const { baseDomain } = getSubdomainAndBase();
   const companySubdomain = user?.subdomain || user?.company_name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
@@ -29,6 +46,76 @@ export default function MarketingLayout({ children }) {
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
+
+  // First-time location country language detection
+  useEffect(() => {
+    const checkLocationAndLanguage = async () => {
+      const storedPref = localStorage.getItem('optalflow_lang_pref');
+      if (storedPref) {
+        i18n.changeLanguage(storedPref);
+        return;
+      }
+
+      try {
+        const res = await fetch('https://ipapi.co/json/');
+        if (!res.ok) return;
+        const data = await res.json();
+        
+        const countryCode = data.country_code;
+        const countryName = data.country_name || 'your country';
+        
+        const englishCountries = ['US', 'GB', 'CA', 'AU', 'NZ', 'IE', 'ZA', 'SG', 'JM', 'BS', 'GH', 'KE', 'NG', 'IN'];
+        if (englishCountries.includes(countryCode)) {
+          localStorage.setItem('optalflow_lang_pref', 'en');
+          i18n.changeLanguage('en');
+          return;
+        }
+        
+        const langMapping = {
+          'ES': 'es', 'MX': 'es', 'AR': 'es', 'CO': 'es', 'CL': 'es', 'PE': 'es', 'VE': 'es', 'EC': 'es', 'GT': 'es', 'CU': 'es', 'BO': 'es', 'DOM': 'es', 'HN': 'es', 'PY': 'es', 'SV': 'es', 'NI': 'es', 'CR': 'es', 'UY': 'es', 'PA': 'es',
+          'FR': 'fr', 'BE': 'fr', 'CH': 'fr', 'MC': 'fr', 'SN': 'fr', 'CI': 'fr', 'CM': 'fr',
+          'DE': 'de', 'AT': 'de', 'LI': 'de', 'LU': 'de',
+          'PT': 'pt', 'BR': 'pt', 'AO': 'pt', 'MZ': 'pt',
+          'CN': 'zh', 'TW': 'zh', 'HK': 'zh',
+          'JP': 'ja',
+          'AE': 'ar', 'SA': 'ar', 'EG': 'ar', 'DZ': 'ar', 'MA': 'ar', 'IQ': 'ar', 'JO': 'ar', 'KW': 'ar', 'LB': 'ar', 'LY': 'ar', 'OM': 'ar', 'QA': 'ar', 'SY': 'ar', 'TN': 'ar', 'YE': 'ar', 'BH': 'ar', 'SD': 'ar',
+          'IL': 'he'
+        };
+        
+        const targetLangCode = langMapping[countryCode];
+        if (targetLangCode) {
+          const langNames = {
+            'es': 'Español',
+            'fr': 'Français',
+            'de': 'Deutsch',
+            'pt': 'Português',
+            'zh': '中文',
+            'ja': '日本語',
+            'ar': 'العربية',
+            'he': 'עברית'
+          };
+          setGeoPopup({
+            country: countryName,
+            langCode: targetLangCode,
+            langName: langNames[targetLangCode]
+          });
+        } else {
+          localStorage.setItem('optalflow_lang_pref', 'en');
+          i18n.changeLanguage('en');
+        }
+      } catch (err) {
+        console.error('Failed to detect location:', err);
+      }
+    };
+    
+    checkLocationAndLanguage();
+  }, []);
+
+  const handleLanguageChange = (code) => {
+    i18n.changeLanguage(code);
+    localStorage.setItem('optalflow_lang_pref', code);
+    setLangDropdownOpen(false);
+  };
 
   const navItems = [
     { name: 'Home', path: '/', icon: Home },
@@ -79,6 +166,36 @@ export default function MarketingLayout({ children }) {
 
           {/* Desktop CTA Buttons */}
           <div className="hidden lg:flex items-center gap-3">
+            {/* Language Selector Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setLangDropdownOpen(!langDropdownOpen)}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-all select-none border border-slate-200 bg-white/80 shadow-sm"
+              >
+                <Globe className="w-4 h-4 text-primary" />
+                <span>{currentLanguage.flag}</span>
+                <span>{currentLanguage.name}</span>
+                <svg className={`w-3.5 h-3.5 transition-transform duration-200 ${langDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              {langDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-2xl shadow-xl py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
+                  {languages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => handleLanguageChange(lang.code)}
+                      className={`w-full text-left px-4 py-2 text-sm font-semibold hover:bg-slate-50 transition-colors flex items-center gap-2.5 ${currentLanguage.code === lang.code ? 'text-primary bg-primary/5' : 'text-slate-700'}`}
+                    >
+                      <span className="text-base leading-none">{lang.flag}</span>
+                      <span>{lang.name}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
             {isLoadingAuth ? (
               <div className="w-24 h-10 rounded-full animate-pulse bg-muted/60"></div>
             ) : isAuthenticated ? (
@@ -140,6 +257,26 @@ export default function MarketingLayout({ children }) {
               })}
 
               <hr className="border-border/60 my-2" />
+
+              {/* Mobile Language Selector */}
+              <div className="flex flex-col gap-2 my-2 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                <span className="text-xs font-bold text-slate-500 flex items-center gap-1.5 px-1 uppercase tracking-wider">
+                  <Globe className="w-3.5 h-3.5 text-primary" />
+                  {t("choose_language", "Choose Language")}
+                </span>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  {languages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => handleLanguageChange(lang.code)}
+                      className={`text-left px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 border ${currentLanguage.code === lang.code ? 'text-primary bg-primary/5 border-primary/20' : 'text-slate-700 bg-white border-slate-200'}`}
+                    >
+                      <span>{lang.flag}</span>
+                      <span>{lang.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
 
               <div className="flex flex-col gap-2.5 pt-1">
                 {isLoadingAuth ? (
@@ -303,6 +440,50 @@ export default function MarketingLayout({ children }) {
           </div>
         </div>
       </footer>
+
+      {/* Geolocation Language Recommendation Modal */}
+      {geoPopup && (
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="relative bg-white w-full max-w-md rounded-[2rem] shadow-2xl p-8 sm:p-10 border border-slate-100 flex flex-col items-center text-center transform transition-all animate-in zoom-in-95 duration-200">
+            <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-6 shadow-inner">
+              <Globe className="w-8 h-8 animate-pulse" />
+            </div>
+            
+            <h3 className="text-2xl font-black text-slate-900 tracking-tight mb-4">
+              {t("choose_your_language", "Choose Your Language")}
+            </h3>
+            
+            <p className="text-slate-500 font-semibold text-sm leading-relaxed mb-8">
+              We noticed you are visiting from <span className="font-bold text-slate-800">{geoPopup.country}</span>. Would you like to view Optalflow in your local language or continue in English?
+            </p>
+            
+            <div className="flex flex-col w-full gap-3">
+              <Button 
+                onClick={() => {
+                  i18n.changeLanguage(geoPopup.langCode);
+                  localStorage.setItem('optalflow_lang_pref', geoPopup.langCode);
+                  setGeoPopup(null);
+                }}
+                className="bg-primary hover:bg-primary/90 text-white font-bold py-6 rounded-xl shadow-lg shadow-primary/20 transition-all w-full"
+              >
+                Use {geoPopup.langName}
+              </Button>
+              
+              <Button 
+                onClick={() => {
+                  i18n.changeLanguage('en');
+                  localStorage.setItem('optalflow_lang_pref', 'en');
+                  setGeoPopup(null);
+                }}
+                variant="outline"
+                className="border-slate-200 hover:bg-slate-50 text-slate-600 font-bold py-6 rounded-xl transition-all w-full bg-transparent"
+              >
+                Continue in English
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
