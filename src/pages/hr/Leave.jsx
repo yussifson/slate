@@ -11,9 +11,12 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { Link } from 'react-router-dom';
 import { useNotifications } from '@/hooks/integrations/useNotifications';
 import { useAuth } from '@/lib/AuthContext';
+import { useCompanyId } from "@/hooks/useCompanyId";
+import { Bell } from "lucide-react";
 
 export default function Leave() {
   const { t } = useTranslation();
+  const companyId = useCompanyId();
   const { user } = useAuth();
   const { notifyTeam } = useNotifications();
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('leave_request');

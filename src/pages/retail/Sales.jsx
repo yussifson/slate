@@ -12,6 +12,7 @@ import { useCompanyId } from '@/hooks/useCompanyId';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
+import { RefreshCcw } from "lucide-react";
 
 export default function Sales() {
   const { t } = useTranslation();

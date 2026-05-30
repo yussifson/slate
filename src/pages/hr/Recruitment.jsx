@@ -12,9 +12,14 @@ import { Link } from 'react-router-dom';
 import { useMeeting } from '@/hooks/integrations/useMeeting';
 import { useCalendar } from '@/hooks/integrations/useCalendar';
 import { useAuth } from '@/lib/AuthContext';
+import { useContracts } from "@/hooks/integrations/useContracts";
+import { useCompanyId } from "@/hooks/useCompanyId";
+import { Video, FileSignature } from "lucide-react";
 
 export default function Recruitment() {
   const { t } = useTranslation();
+  const companyId = useCompanyId();
+  const { sendContract } = useContracts();
   const { user } = useAuth();
   const { generateMeetingLink } = useMeeting();
   const { syncEvent } = useCalendar();

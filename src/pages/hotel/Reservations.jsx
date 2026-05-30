@@ -11,6 +11,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { MoreVertical, FileText, Edit, Activity, User, CreditCard } from 'lucide-react';
 import { usePayment } from '@/hooks/integrations/usePayment';
 import { useCompanyId } from '@/hooks/useCompanyId';
+import { useNotifications } from "@/hooks/integrations/useNotifications";
+import { CreditCard, MessageSquare } from "lucide-react";
 
 const statusColors = {
   'Checked-in': 'bg-blue-100 text-blue-700',
@@ -21,6 +23,7 @@ const statusColors = {
 
 export default function Reservations() {
   const { t } = useTranslation();
+  const { notifyTeam } = useNotifications();
   // Supabase Real-time Sync Hooks
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('reservation');
   const mutateRecord = useMutateIndustryRecord();

@@ -11,6 +11,8 @@ import { useCompanyId } from "@/hooks/useCompanyId";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RefreshCw } from "lucide-react";
 import { toast } from 'react-hot-toast';
+import { useNotifications } from "@/hooks/integrations/useNotifications";
+import { MessageSquare, Bell } from "lucide-react";
 
 const typeColors = {
   Consultation: 'bg-blue-50 text-blue-700 border-blue-200',
@@ -26,6 +28,7 @@ const statusColors = {
 
 export default function Appointments() {
   const { t } = useTranslation();
+  const { notifyTeam } = useNotifications();
   // Supabase Real-time Sync Hooks
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('appt');
   const mutateRecord = useMutateIndustryRecord();
@@ -236,6 +239,9 @@ export default function Appointments() {
                 </div>
 
                 <div className="flex gap-3">
+                  <Button variant="outline" onClick={(e) => { e.stopPropagation(); notifyTeam({ companyId, provider: 'twilio', message: `Reminder: You have an appointment at ${selectedAppt.time}.`, recipientPhone: '+1234567890' }).then(()=>toast.success("SMS Sent!")).catch(()=>{}) }} className="gap-2 bg-slate-50 text-slate-700 hover:bg-slate-100 flex-1">
+                      <MessageSquare className="w-4 h-4" /> SMS Reminder
+                    </Button>
                   {selectedAppt.status === 'Scheduled' && (
                     <Button onClick={() => handleStatusChange(selectedAppt, 'In Progress')} className="gap-2 bg-amber-500 hover:bg-amber-600 text-white flex-1">
                       <Play className="w-4 h-4" /> {t("start_consultation", "Start Consultation")}

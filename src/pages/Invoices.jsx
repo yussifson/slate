@@ -15,9 +15,12 @@ import DataTable from "@/components/shared/DataTable";
 import InvoiceForm from "@/components/invoices/InvoiceForm";
 import { INVOICE_STATUS_COLORS, formatCurrency } from "@/lib/constants";
 import { format } from "date-fns";
+import { usePayment } from "@/hooks/integrations/usePayment";
+import { RefreshCcw, CreditCard } from "lucide-react";
 
 export default function Invoices() {
   const { t } = useTranslation();
+  const { processPayment } = usePayment();
   const { user } = useAuth();
   const companyId = useCompanyId();
   const queryClient = useQueryClient();

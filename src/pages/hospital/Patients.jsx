@@ -9,6 +9,9 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
+import { useContracts } from "@/hooks/integrations/useContracts";
+import { FileSignature } from "lucide-react";
+import { useCompanyId } from "@/hooks/useCompanyId";
 
 const statusColors = {
   Admitted: 'bg-red-100 text-red-700',
@@ -29,6 +32,8 @@ const BLANK_FORM = {
 
 export default function Patients() {
   const { t } = useTranslation();
+  const companyId = useCompanyId();
+  const { sendContract } = useContracts();
   const { data: dbRecords = [], isLoading } = useIndustryRecords('patient');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();

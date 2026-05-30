@@ -9,9 +9,14 @@ import { Input } from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
+import { useContracts } from "@/hooks/integrations/useContracts";
+import { useCompanyId } from "@/hooks/useCompanyId";
+import { FileSignature } from "lucide-react";
 
 export default function Policies() {
   const { t } = useTranslation();
+  const companyId = useCompanyId();
+  const { sendContract } = useContracts();
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('policy');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();

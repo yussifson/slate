@@ -10,9 +10,13 @@ import ConfirmationModal from '@/components/ConfirmationModal';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Link } from 'react-router-dom';
+import { useCompanyId } from "@/hooks/useCompanyId";
+import { CreditCard } from "lucide-react";
 
 export default function Tithes() {
   const { t } = useTranslation();
+  const companyId = useCompanyId();
+  const { processPayment } = usePayment();
   const { processPayment, isProcessing } = usePayment();
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('tithe');
   const mutateRecord = useMutateIndustryRecord();

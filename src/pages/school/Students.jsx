@@ -10,12 +10,17 @@ import { useAuth } from '@/lib/AuthContext';
 
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import { toast } from 'react-hot-toast';
+import { useNotifications } from "@/hooks/integrations/useNotifications";
+import { useCompanyId } from "@/hooks/useCompanyId";
+import { MessageSquare } from "lucide-react";
 
 const feeColors = { Paid: 'bg-green-100 text-green-700', Owing: 'bg-red-100 text-red-700', Partial: 'bg-amber-100 text-amber-700' };
 const statusColors = { Active: 'bg-blue-100 text-blue-700', Suspended: 'bg-red-100 text-red-700', Graduated: 'bg-purple-100 text-purple-700' };
 
 export default function Students() {
   const { t } = useTranslation();
+  const companyId = useCompanyId();
+  const { notifyTeam } = useNotifications();
   const { user } = useAuth();
   const [search, setSearch] = useState('');
   const [filterClass, setFilterClass] = useState('All');
@@ -118,7 +123,10 @@ export default function Students() {
           <h1 className="text-2xl font-bold text-card-foreground">{t("students", "Students")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("manage_student_enrollment_and_", "Manage student enrollment and records")}</p>
         </div>
-        <Button onClick={() => setShowModal(true)} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+        <Button variant="outline" onClick={() => { notifyTeam({ companyId, provider: 'twilio', message: 'School announcement for all parents.', recipientPhone: '+1234567890' }).then(()=>toast.success("SMS Sent to Parents!")).catch(()=>{}) }} className="gap-2 border-blue-200 text-blue-700 hover:bg-blue-50">
+             <MessageSquare className="w-4 h-4 text-blue-500" /> Message Parents
+           </Button>
+           <Button onClick={() => setShowModal(true)} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
           <Plus className="w-4 h-4" /> {t("enroll_student", "Enroll Student")}
         </Button>
       </div>

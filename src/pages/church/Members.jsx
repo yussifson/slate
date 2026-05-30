@@ -9,9 +9,14 @@ import ConfirmationModal from '@/components/ConfirmationModal';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Link } from 'react-router-dom';
+import { useNotifications } from "@/hooks/integrations/useNotifications";
+import { useCompanyId } from "@/hooks/useCompanyId";
+import { MessageCircle } from "lucide-react";
 
 export default function Members() {
   const { t } = useTranslation();
+  const companyId = useCompanyId();
+  const { notifyTeam } = useNotifications();
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('member');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();

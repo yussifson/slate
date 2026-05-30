@@ -5,9 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord } from '@/hooks/useIndustryData';
 import { toast } from 'react-hot-toast';
+import { usePayment } from "@/hooks/integrations/usePayment";
+import { useCompanyId } from "@/hooks/useCompanyId";
 
 export default function POS() {
   const { t } = useTranslation();
+  const companyId = useCompanyId();
+  const { processPayment } = usePayment();
   // Supabase Real-time Sync Hooks
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('product');
   const mutateRecord = useMutateIndustryRecord();

@@ -20,9 +20,12 @@ import DocumentPreviewModal from "@/components/shared/DocumentPreviewModal";
 import { format } from "date-fns";
 
 import { useToast } from "@/components/ui/use-toast";
+import { useContracts } from "@/hooks/integrations/useContracts";
+import { FileSignature } from "lucide-react";
 
 export default function Documents() {
   const { t } = useTranslation();
+  const { sendContract } = useContracts();
   const { user } = useAuth();
   const companyId = useCompanyId();
   const queryClient = useQueryClient();

@@ -13,6 +13,9 @@ import { Link } from 'react-router-dom';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { MoreVertical, Eye } from 'lucide-react';
+import { useNotifications } from "@/hooks/integrations/useNotifications";
+import { useCompanyId } from "@/hooks/useCompanyId";
+import { MessageSquare, Bell } from "lucide-react";
 
 const STATUS_COLORS = {
   'Pending':     'bg-amber-100 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400',
@@ -42,6 +45,8 @@ function generateTrackingNumber() {
 
 export default function Shipments() {
   const { t } = useTranslation();
+  const companyId = useCompanyId();
+  const { notifyTeam } = useNotifications();
   const { data: dbRecords = [], isLoading } = useIndustryRecords('shipment');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();

@@ -8,9 +8,14 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import { toast } from 'react-hot-toast';
+import { useNotifications } from "@/hooks/integrations/useNotifications";
+import { MessageCircle } from "lucide-react";
+import { useCompanyId } from "@/hooks/useCompanyId";
 
 export default function Prescriptions() {
   const { t } = useTranslation();
+  const companyId = useCompanyId();
+  const { notifyTeam } = useNotifications();
   // Supabase Real-time Sync Hooks
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('prescription');
   const mutateRecord = useMutateIndustryRecord();
