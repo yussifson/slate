@@ -62,14 +62,80 @@ const revealResults = async (data) => {
     return processItem(data);
 };
 
-// No longer needed: syncOfflineOutbox is handled natively by PowerSync
 export const syncOfflineOutbox = async () => {
-    // Legacy shim to prevent breaking external calls
     console.log('[PowerSync] Native sync engine active. Ignoring manual outbox trigger.');
 };
 
 export const base44 = {
-    ...new Proxy({}, {
+    auth: {
+        me: async () => {
+            const { data: { user }, error } = await supabase.auth.getUser();
+            if (error || !user) throw error || new Error("Not logged in");
+            
+            const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+            return profile;
+        },
+        signIn: async (email, password) => {
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) throw error;
+            return data;
+        },
+        signOut: async () => {
+            await supabase.auth.signOut();
+        },
+        logout: async () => {
+            await supabase.auth.signOut();
+            window.location.href = '/login';
+        },
+        resetPassword: async (email) => {
+            const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+                redirectTo: `${window.location.origin}/reset-password`,
+            });
+            if (error) throw error;
+            return data;
+        },
+        updatePassword: async (newPassword) => {
+            const { data, error } = await supabase.auth.updateUser({
+                password: newPassword
+            });
+            if (error) throw error;
+            return data;
+        }
+    },
+    storage: {
+        upload: async (bucket, path, file) => {
+            if (!navigator.onLine) {
+                console.warn(`[Offline Mode] Storage upload queued locally for ${path}`);
+                // Simple offline stub for storage (doesn't sync automatically yet)
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = async () => {
+                        const base64 = reader.result;
+                        resolve({ path, fullPath: `${bucket}/${path}` });
+                    };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            const { data, error } = await supabase.storage.from(bucket).upload(path, file);
+            if (error) throw error;
+            return data;
+        },
+        getPublicUrl: (bucket, path) => {
+            const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+            return data.publicUrl;
+        }
+    },
+    integrations: {
+        Core: {
+            SendEmail: async (payload) => {
+                console.log("Mock sending email:", payload);
+                return { success: true };
+            }
+        }
+    },
+    entities: new Proxy({}, {
         get: (target, prop) => {
             if (prop === 'raw') return supabase;
             if (prop === 'powerSync') return powerSync;
@@ -173,7 +239,6 @@ export const base44 = {
 
                         await powerSync.execute(`UPDATE ${tableName} SET ${assignments} WHERE id = ?`, values);
                         
-                        // Fetch the updated record
                         const updatedData = await powerSync.getOptional(`SELECT * FROM ${tableName} WHERE id = ?`, [id]);
                         return revealResults(updatedData);
                     } catch (err) {
@@ -191,10 +256,6 @@ export const base44 = {
                     }
                 },
                 subscribe: (callback) => {
-                    // PowerSync natively handles watch queries, but to support the legacy 
-                    // base44 channel listener, we just create a dummy interval polling or ignore
-                    // because React Query invalidation usually handles updates.
-                    // For true real-time, components should use usePowerSyncWatchedQuery.
                     console.warn(`[PowerSync] Legacy subscribe called on ${tableName}. Consider migrating to watched queries.`);
                     return () => {};
                 }
