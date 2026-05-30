@@ -16,7 +16,14 @@ class SupabaseConnector {
         token: session.access_token
       };
     } catch (ex) {
-      if (ex.message && (ex.message.includes('Failed to fetch') || ex.message.includes('timeout') || ex.message.includes('Offline'))) {
+      const isNetworkError = 
+        !navigator.onLine || 
+        (ex.message && /failed to fetch|networkerror|load failed|timeout|offline|fetch|network/i.test(ex.message)) ||
+        ex.name === 'TypeError' ||
+        ex.name === 'FetchError' ||
+        (ex.code && (ex.code === 'ENOTFOUND' || ex.code === 'ECONNREFUSED'));
+
+      if (isNetworkError) {
         console.warn("[PowerSync] Offline during fetchCredentials. PowerSync will retry later.");
         throw ex; // Let PowerSync's backoff handle this
       }
@@ -51,12 +58,21 @@ class SupabaseConnector {
           }
         } catch (opEx) {
           // If the error is a network error, rethrow it so PowerSync can retry the transaction later
-          if (opEx.message && (opEx.message.includes('Failed to fetch') || opEx.message.includes('timeout') || opEx.message.includes('Offline'))) {
-            throw opEx;
+          const isNetworkError = 
+            !navigator.onLine || 
+            (opEx.message && /failed to fetch|networkerror|load failed|timeout|offline|fetch|network/i.test(opEx.message)) ||
+            opEx.name === 'TypeError' ||
+            opEx.name === 'FetchError' ||
+            (opEx.code && (opEx.code === 'ENOTFOUND' || opEx.code === 'ECONNREFUSED'));
+
+          if (isNetworkError) {
+            console.warn(`[PowerSync] Network error uploading operation ${op.op} on ${op.table}, will retry later:`, opEx);
+            throw opEx; // Rethrow to keep the transaction in the queue
           }
+          
           // Otherwise, it's a hard Supabase error (like RLS violation or missing table).
           // We log it and swallow it so the rest of the local operations can still upload.
-          console.error(`[PowerSync] Hard error uploading operation ${op.op} on ${op.table}:`, opEx);
+          console.error(`[PowerSync] Hard error uploading operation ${op.op} on ${op.table} (discarding from queue):`, opEx);
         }
       }
       await transaction.complete();
