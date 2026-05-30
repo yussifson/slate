@@ -42,7 +42,7 @@ export const useCalendar = () => {
       return data;
     } catch (error) {
       toast.error(`Sync Error: ${error.message}`);
-      throw error;
+      return { error: error.message };
     } finally {
       setIsSyncing(false);
     }
