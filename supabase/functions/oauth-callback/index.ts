@@ -155,6 +155,31 @@ serve(async (req) => {
           accessToken = data.access_token
           refreshToken = data.refresh_token || ''
           expiresIn = data.expires_in || 3600
+        } else if (provider === 'quickbooks') {
+          const clientId = Deno.env.get('QUICKBOOKS_CLIENT_ID')
+          const clientSecret = Deno.env.get('QUICKBOOKS_CLIENT_SECRET')
+          if (!clientId || !clientSecret) throw new Error("Missing QuickBooks Client ID/Secret")
+
+          const basicAuth = btoa(`${clientId}:${clientSecret}`)
+
+          const tokenResponse = await fetch('https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer', {
+            method: 'POST',
+            headers: { 
+              'Authorization': `Basic ${basicAuth}`,
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'Accept': 'application/json'
+            },
+            body: new URLSearchParams({
+              code,
+              grant_type: 'authorization_code',
+              redirect_uri: redirectUri
+            })
+          })
+          const data = await tokenResponse.json()
+          if (!tokenResponse.ok || data.error) throw new Error(data.error || "QuickBooks token exchange failed")
+          accessToken = data.access_token
+          refreshToken = data.refresh_token || ''
+          expiresIn = data.expires_in || 3600
         } else {
           throw new Error(`Unsupported provider: ${provider}`)
         }

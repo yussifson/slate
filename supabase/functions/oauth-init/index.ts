@@ -44,10 +44,15 @@ serve(async (req) => {
         authUrl = `https://zoom.us/oauth/authorize?response_type=code&client_id=${zoomClientId}&redirect_uri=${redirectUri}&state=${state}`
         break;
 
+      case 'quickbooks':
+        const qbClientId = Deno.env.get('QUICKBOOKS_CLIENT_ID')
+        if (!qbClientId) throw new Error("Missing QUICKBOOKS_CLIENT_ID")
+        authUrl = `https://appcenter.intuit.com/connect/oauth2?client_id=${qbClientId}&response_type=code&scope=com.intuit.quickbooks.accounting&redirect_uri=${redirectUri}&state=${state}`
+        break;
+
       case 'stripe':
       case 'twilio':
       case 'paystack':
-      case 'quickbooks':
       case 'docusign':
       case 'whatsapp':
         // Mock authorization flow
