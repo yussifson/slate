@@ -18,10 +18,10 @@ class SupabaseConnector {
     } catch (ex) {
       const isNetworkError = 
         !navigator.onLine || 
-        (ex.message && /failed to fetch|networkerror|load failed|timeout|offline|fetch|network/i.test(ex.message)) ||
-        ex.name === 'TypeError' ||
-        ex.name === 'FetchError' ||
-        (ex.code && (ex.code === 'ENOTFOUND' || ex.code === 'ECONNREFUSED'));
+        (ex && ex.message && /failed to fetch|networkerror|load failed|timeout|offline|fetch|network/i.test(ex.message)) ||
+        (ex && ex.name === 'TypeError') ||
+        (ex && ex.name === 'FetchError') ||
+        (ex && ex.code && (ex.code === 'ENOTFOUND' || ex.code === 'ECONNREFUSED'));
 
       if (isNetworkError) {
         console.warn("[PowerSync] Offline during fetchCredentials. PowerSync will retry later.");
@@ -60,10 +60,10 @@ class SupabaseConnector {
           // If the error is a network error, rethrow it so PowerSync can retry the transaction later
           const isNetworkError = 
             !navigator.onLine || 
-            (opEx.message && /failed to fetch|networkerror|load failed|timeout|offline|fetch|network/i.test(opEx.message)) ||
-            opEx.name === 'TypeError' ||
-            opEx.name === 'FetchError' ||
-            (opEx.code && (opEx.code === 'ENOTFOUND' || opEx.code === 'ECONNREFUSED'));
+            (opEx && opEx.message && /failed to fetch|networkerror|load failed|timeout|offline|fetch|network/i.test(opEx.message)) ||
+            (opEx && opEx.name === 'TypeError') ||
+            (opEx && opEx.name === 'FetchError') ||
+            (opEx && opEx.code && (opEx.code === 'ENOTFOUND' || opEx.code === 'ECONNREFUSED'));
 
           if (isNetworkError) {
             console.warn(`[PowerSync] Network error uploading operation ${op.op} on ${op.table}, will retry later:`, opEx);
