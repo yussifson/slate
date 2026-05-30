@@ -11,12 +11,13 @@ const toSnakeCase = (str) => {
         else name += 's';
     }
     return name;
-};
-
-const isSessionValid = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    return !!session;
-};
+let hasActiveSession = false;
+// Initialize session state passively
+if (typeof window !== 'undefined') {
+    supabase.auth.getSession().then(({ data }) => {
+        hasActiveSession = !!data.session;
+    }).catch(() => {});
+}
 
 // --- E2EE Configuration & Passphrase Accessor ---
 const SENSITIVE_FIELDS = ['notes', 'description', 'details', 'outcome_summary', 'content', 'resolution_notes'];
@@ -135,7 +136,7 @@ const setOutbox = async (outbox) => {
 // Automatic Background Sync Engine
 export const syncOfflineOutbox = async () => {
     if (!navigator.onLine) return;
-    if (!(await isSessionValid())) return;
+    if (!hasActiveSession) return;
     const outbox = await getOutbox();
     if (outbox.length === 0) return;
 
@@ -181,6 +182,7 @@ if (typeof window !== 'undefined') {
 
     // Sync outbox when auth session recovers
     supabase.auth.onAuthStateChange((event, session) => {
+        hasActiveSession = !!session;
         if (session && (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
             syncOfflineOutbox();
             window.dispatchEvent(new CustomEvent('base44_sync_complete'));
@@ -302,7 +304,7 @@ export const base44 = {
                         data = await getLocalCache(tableName);
                     } else {
                         try {
-                            if (!(await isSessionValid())) throw new Error("No active session");
+                            if (!hasActiveSession) throw new Error("No active session");
                             let req = supabase.from(tableName).select('*');
                             for (const [k, v] of Object.entries(filter)) {
                                 req = req.eq(k, v);
@@ -346,7 +348,7 @@ export const base44 = {
                         return revealResults(data);
                     }
                     try {
-                        if (!(await isSessionValid())) throw new Error("No active session");
+                        if (!hasActiveSession) throw new Error("No active session");
                         const res = await supabase.from(tableName).select('*');
                         if (res.error) throw res.error;
                         let serverData = res.data || [];
@@ -361,7 +363,7 @@ export const base44 = {
                 findUnique: async (query) => {
                     if (navigator.onLine) {
                         try {
-                            if (!(await isSessionValid())) throw new Error("No active session");
+                            if (!hasActiveSession) throw new Error("No active session");
                             let req = supabase.from(tableName).select('*');
                             for (const [k, v] of Object.entries(query.filter)) {
                                 req = req.eq(k, v);
