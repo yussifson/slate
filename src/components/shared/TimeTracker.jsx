@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState, useEffect, useRef } from "react";
 import { Play, Square, Clock, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,12 +12,13 @@ import { useQuery } from "@tanstack/react-query";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function TimeTracker() {
+  const { t } = useTranslation();
   const [isRunning, setIsRunning] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const [description, setDescription] = useState("");
   const [selectedCase, setSelectedCase] = useState("general");
   const [isOpen, setIsOpen] = useState(false);
-  
+
   const timerRef = useRef(null);
   const { toast } = useToast();
   const companyId = useCompanyId();
@@ -142,7 +144,7 @@ export default function TimeTracker() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h4 className="font-semibold text-sm flex items-center gap-2">
-              <Clock className="w-4 h-4 text-primary" /> Time Tracker
+              <Clock className="w-4 h-4 text-primary" /> {t("time_tracker", "Time Tracker")}
             </h4>
             <div className="text-2xl font-mono font-bold tracking-tight text-primary">
               {formatTime(seconds)}
@@ -162,10 +164,10 @@ export default function TimeTracker() {
                 <SelectValue placeholder="Select Case" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="general">No Case (General)</SelectItem>
-                {cases.map(c => (
-                  <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>
-                ))}
+                <SelectItem value="general">{t("no_case_general", "No Case (General)")}</SelectItem>
+                {cases.map(c => {
+                  return (<SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>);
+                })}
               </SelectContent>
             </Select>
           </div>
@@ -175,12 +177,12 @@ export default function TimeTracker() {
               onClick={toggleTimer} 
               className={`flex-1 gap-2 ${isRunning ? 'bg-amber-500 hover:bg-amber-600' : 'bg-primary'}`}
             >
-              {isRunning ? <><Square className="w-4 h-4" /> Pause</> : <><Play className="w-4 h-4" /> Start</>}
+              {isRunning ? <><Square className="w-4 h-4" /> {t("pause", "Pause")}</> : <><Play className="w-4 h-4" /> {t("start", "Start")}</>}
             </Button>
             
             {seconds > 0 && (
               <Button onClick={handleSave} variant="secondary" className="flex-1">
-                Save Time
+                {t("save_time", "Save Time")}
               </Button>
             )}
             

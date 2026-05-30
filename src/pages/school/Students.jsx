@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Users, Search, Plus, GraduationCap, Phone, Mail, Filter, MoreVertical, CheckCircle, XCircle, Clock } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -14,11 +15,12 @@ const feeColors = { Paid: 'bg-green-100 text-green-700', Owing: 'bg-red-100 text
 const statusColors = { Active: 'bg-blue-100 text-blue-700', Suspended: 'bg-red-100 text-red-700', Graduated: 'bg-purple-100 text-purple-700' };
 
 export default function Students() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [search, setSearch] = useState('');
   const [filterClass, setFilterClass] = useState('All');
   const [showModal, setShowModal] = useState(false);
-  
+
   // Real Database Hooks
   const { data: records = [], isLoading } = useIndustryRecords('student');
   const mutateStudent = useMutateIndustryRecord();
@@ -113,29 +115,29 @@ export default function Students() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground">Students</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Manage student enrollment and records</p>
+          <h1 className="text-2xl font-bold text-card-foreground">{t("students", "Students")}</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{t("manage_student_enrollment_and_", "Manage student enrollment and records")}</p>
         </div>
         <Button onClick={() => setShowModal(true)} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
-          <Plus className="w-4 h-4" /> Enroll Student
+          <Plus className="w-4 h-4" /> {t("enroll_student", "Enroll Student")}
         </Button>
       </div>
-
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((s, i) => (
-          <div key={i} className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 shadow-sm">
-            <div className={`w-10 h-10 rounded-xl ${s.color} flex items-center justify-center`}>
-              <s.icon className="w-5 h-5 text-white" />
+        {stats.map((s, i) => {
+          return (
+            <div key={i} className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 shadow-sm">
+              <div className={`w-10 h-10 rounded-xl ${s.color} flex items-center justify-center`}>
+                <s.icon className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-card-foreground">{s.value}</p>
+                <p className="text-xs text-muted-foreground">{s.label}</p>
+              </div>
             </div>
-            <div>
-              <p className="text-2xl font-bold text-card-foreground">{s.value}</p>
-              <p className="text-xs text-muted-foreground">{s.label}</p>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
-
       {/* Filters */}
       <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
         <div className="flex flex-col sm:flex-row gap-3">
@@ -144,113 +146,117 @@ export default function Students() {
             <Input placeholder="Search by name or ID..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
           </div>
           <div className="flex gap-2 flex-wrap">
-            {classes.map(c => (
-              <button key={c} onClick={() => setFilterClass(c)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${filterClass === c ? 'bg-blue-600 text-white' : 'bg-muted text-muted-foreground hover:bg-slate-200'}`}>
-                {c}
-              </button>
-            ))}
+            {classes.map(c => {
+              return (
+                <button key={c} onClick={() => setFilterClass(c)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${filterClass === c ? 'bg-blue-600 text-white' : 'bg-muted text-muted-foreground hover:bg-slate-200'}`}>
+                  {c}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
-
       {/* Student Table */}
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-muted border-b border-border">
               <tr>
-                {['Student', 'ID', 'Class', 'Age', 'Parent / Guardian', 'Fee Status', 'Status', 'Actions'].map(h => (
-                  <th key={h} className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{h}</th>
-                ))}
+                {['Student', 'ID', 'Class', 'Age', 'Parent / Guardian', 'Fee Status', 'Status', 'Actions'].map(h => {
+                  return (<th key={h} className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{h}</th>);
+                })}
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {filtered.map(s => (
-                <tr key={s.id} className="hover:bg-muted/50 transition-colors">
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-xs flex-shrink-0">
-                        {s.avatar}
+              {filtered.map(s => {
+                return (
+                  <tr key={s.id} className="hover:bg-muted/50 transition-colors">
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-xs flex-shrink-0">
+                          {s.avatar}
+                        </div>
+                        <div>
+                          <p className="font-semibold text-card-foreground">{s.name}</p>
+                          <p className="text-xs text-muted-foreground">{s.gender}</p>
+                        </div>
                       </div>
+                    </td>
+                    <td className="px-4 py-3 text-muted-foreground font-mono text-xs">{s.studentId}</td>
+                    <td className="px-4 py-3"><Link to={`/classes`} className="bg-blue-50 text-blue-700 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{s.class}</Link></td>
+                    <td className="px-4 py-3 text-foreground">{s.age} {t("yrs", "yrs")}</td>
+                    <td className="px-4 py-3">
                       <div>
-                        <p className="font-semibold text-card-foreground">{s.name}</p>
-                        <p className="text-xs text-muted-foreground">{s.gender}</p>
+                        <p className="text-foreground font-medium">{s.parent}</p>
+                        <p className="text-xs text-muted-foreground">{s.phone}</p>
                       </div>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 text-muted-foreground font-mono text-xs">{s.studentId}</td>
-                  <td className="px-4 py-3"><Link to={`/classes`} className="bg-blue-50 text-blue-700 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{s.class}</Link></td>
-                  <td className="px-4 py-3 text-foreground">{s.age} yrs</td>
-                  <td className="px-4 py-3">
-                    <div>
-                      <p className="text-foreground font-medium">{s.parent}</p>
-                      <p className="text-xs text-muted-foreground">{s.phone}</p>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3"><span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${feeColors[s.feeStatus]}`}>{s.feeStatus}</span></td>
-                  <td className="px-4 py-3"><span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${statusColors[s.status] || 'bg-blue-100 text-blue-700'}`}>{s.status}</span></td>
-                  <td className="px-4 py-3">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <MoreVertical className="h-4 w-4 text-muted-foreground" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-40">
-                        <DropdownMenuItem onClick={() => setViewDetails(s)}>View Details</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => {
-                          setEditingId(s.id);
-                          setFormData({ 
-                            ...s, 
-                            firstName: s.name?.split(' ')[0] || '', 
-                            lastName: s.name?.split(' ').slice(1).join(' ') || '',
-                            parentName: s.parent,
-                            parentPhone: s.phone
-                          });
-                          setShowModal(true);
-                        }}>Edit</DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-600 font-medium" onClick={() => handleDelete(s.id)}>Delete</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td className="px-4 py-3"><span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${feeColors[s.feeStatus]}`}>{s.feeStatus}</span></td>
+                    <td className="px-4 py-3"><span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${statusColors[s.status] || 'bg-blue-100 text-blue-700'}`}>{s.status}</span></td>
+                    <td className="px-4 py-3">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0">
+                            <MoreVertical className="h-4 w-4 text-muted-foreground" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-40">
+                          <DropdownMenuItem onClick={() => setViewDetails(s)}>{t("view_details", "View Details")}</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => {
+                            setEditingId(s.id);
+                            setFormData({ 
+                              ...s, 
+                              firstName: s.name?.split(' ')[0] || '', 
+                              lastName: s.name?.split(' ').slice(1).join(' ') || '',
+                              parentName: s.parent,
+                              parentPhone: s.phone
+                            });
+                            setShowModal(true);
+                          }}>{t("edit", "Edit")}</DropdownMenuItem>
+                          <DropdownMenuItem className="text-red-600 font-medium" onClick={() => handleDelete(s.id)}>{t("delete", "Delete")}</DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
           {filtered.length === 0 && (
             <div className="text-center py-12 text-muted-foreground">
               <Users className="w-10 h-10 mx-auto mb-3 opacity-30" />
-              <p>No students found</p>
+              <p>{t("no_students_found", "No students found")}</p>
             </div>
           )}
         </div>
       </div>
-
       {/* Add Student Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4">
             <h2 className="text-lg font-bold text-card-foreground">{editingId ? 'Edit Student' : 'Enroll New Student'}</h2>
             <div className="grid grid-cols-2 gap-3">
-              <div><label className="text-xs font-bold text-muted-foreground uppercase">First Name</label><Input value={formData.firstName} onChange={e => setFormData({...formData, firstName: e.target.value})} className="mt-1" placeholder="Ama" /></div>
-              <div><label className="text-xs font-bold text-muted-foreground uppercase">Last Name</label><Input value={formData.lastName} onChange={e => setFormData({...formData, lastName: e.target.value})} className="mt-1" placeholder="Owusu" /></div>
-              <div><label className="text-xs font-bold text-muted-foreground uppercase">Date of Birth</label><Input value={formData.dateOfBirth} onChange={e => setFormData({...formData, dateOfBirth: e.target.value})} className="mt-1" type="date" /></div>
-              <div><label className="text-xs font-bold text-muted-foreground uppercase">Gender</label>
+              <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("first_name", "First Name")}</label><Input value={formData.firstName} onChange={e => setFormData({...formData, firstName: e.target.value})} className="mt-1" placeholder="Ama" /></div>
+              <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("last_name", "Last Name")}</label><Input value={formData.lastName} onChange={e => setFormData({...formData, lastName: e.target.value})} className="mt-1" placeholder="Owusu" /></div>
+              <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("date_of_birth", "Date of Birth")}</label><Input value={formData.dateOfBirth} onChange={e => setFormData({...formData, dateOfBirth: e.target.value})} className="mt-1" type="date" /></div>
+              <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("gender", "Gender")}</label>
                 <select value={formData.gender} onChange={e => setFormData({...formData, gender: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-                  <option>Female</option><option>Male</option>
+                  <option>{t("female", "Female")}</option><option>{t("male", "Male")}</option>
                 </select>
               </div>
-              <div className="col-span-2"><label className="text-xs font-bold text-muted-foreground uppercase">Class</label>
+              <div className="col-span-2"><label className="text-xs font-bold text-muted-foreground uppercase">{t("class", "Class")}</label>
                 <select value={formData.class} onChange={e => setFormData({...formData, class: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-                  {classes.slice(1).map(c => <option key={c}>{c}</option>)}
+                  {classes.slice(1).map(c => {
+                    return <option key={c}>{c}</option>;
+                  })}
                 </select>
               </div>
-              <div><label className="text-xs font-bold text-muted-foreground uppercase">Parent Name</label><Input value={formData.parentName} onChange={e => setFormData({...formData, parentName: e.target.value})} className="mt-1" placeholder="Kwame Owusu" /></div>
-              <div><label className="text-xs font-bold text-muted-foreground uppercase">Parent Phone</label><Input value={formData.parentPhone} onChange={e => setFormData({...formData, parentPhone: e.target.value})} className="mt-1" placeholder="+233 24..." /></div>
+              <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("parent_name", "Parent Name")}</label><Input value={formData.parentName} onChange={e => setFormData({...formData, parentName: e.target.value})} className="mt-1" placeholder="Kwame Owusu" /></div>
+              <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("parent_phone", "Parent Phone")}</label><Input value={formData.parentPhone} onChange={e => setFormData({...formData, parentPhone: e.target.value})} className="mt-1" placeholder="+233 24..." /></div>
             </div>
             <div className="flex gap-3 pt-2">
-              <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)} disabled={mutateStudent.isPending}>Cancel</Button>
+              <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)} disabled={mutateStudent.isPending}>{t("cancel", "Cancel")}</Button>
               <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleEnroll} disabled={mutateStudent.isPending}>
                 {mutateStudent.isPending ? 'Saving...' : (editingId ? 'Save Changes' : 'Enroll Student')}
               </Button>
@@ -262,8 +268,8 @@ export default function Students() {
       <Sheet open={!!viewDetails} onOpenChange={(open) => !open && setViewDetails(null)}>
         <SheetContent className="overflow-y-auto w-full sm:max-w-md">
           <SheetHeader>
-            <SheetTitle>Student Details</SheetTitle>
-            <SheetDescription>Comprehensive view of student records.</SheetDescription>
+            <SheetTitle>{t("student_details", "Student Details")}</SheetTitle>
+            <SheetDescription>{t("comprehensive_view_of_student_", "Comprehensive view of student records.")}</SheetDescription>
           </SheetHeader>
           {viewDetails && (
             <div className="mt-6 space-y-6">
@@ -282,19 +288,19 @@ export default function Students() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-muted/50 p-3 rounded-lg">
-                  <p className="text-xs text-muted-foreground uppercase font-semibold">Class</p>
+                  <p className="text-xs text-muted-foreground uppercase font-semibold">{t("class", "Class")}</p>
                   <Link to="/classes" className="text-primary hover:underline font-medium">{viewDetails.class}</Link>
                 </div>
                 <div className="bg-muted/50 p-3 rounded-lg">
-                  <p className="text-xs text-muted-foreground uppercase font-semibold">Age</p>
-                  <p className="font-medium text-foreground">{viewDetails.age} yrs</p>
+                  <p className="text-xs text-muted-foreground uppercase font-semibold">{t("age", "Age")}</p>
+                  <p className="font-medium text-foreground">{viewDetails.age} {t("yrs", "yrs")}</p>
                 </div>
                 <div className="bg-muted/50 p-3 rounded-lg">
-                  <p className="text-xs text-muted-foreground uppercase font-semibold">Gender</p>
+                  <p className="text-xs text-muted-foreground uppercase font-semibold">{t("gender", "Gender")}</p>
                   <p className="font-medium text-foreground">{viewDetails.gender}</p>
                 </div>
                 <div className="bg-muted/50 p-3 rounded-lg">
-                  <p className="text-xs text-muted-foreground uppercase font-semibold">Fee Status</p>
+                  <p className="text-xs text-muted-foreground uppercase font-semibold">{t("fee_status", "Fee Status")}</p>
                   <span className={`inline-block text-xs font-semibold px-2 py-0.5 rounded-full mt-1 ${feeColors[viewDetails.feeStatus]}`}>
                     {viewDetails.feeStatus}
                   </span>
@@ -302,10 +308,10 @@ export default function Students() {
               </div>
 
               <div className="bg-muted/30 p-4 rounded-xl border border-border">
-                <h4 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2"><Phone className="w-4 h-4"/> Guardian Info</h4>
+                <h4 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2"><Phone className="w-4 h-4"/> {t("guardian_info", "Guardian Info")}</h4>
                 <div className="space-y-2 text-sm">
-                  <p><span className="text-muted-foreground">Name:</span> {viewDetails.parent}</p>
-                  <p><span className="text-muted-foreground">Phone:</span> {viewDetails.phone}</p>
+                  <p><span className="text-muted-foreground">{t("name", "Name:")}</span> {viewDetails.parent}</p>
+                  <p><span className="text-muted-foreground">{t("phone", "Phone:")}</span> {viewDetails.phone}</p>
                 </div>
               </div>
             </div>

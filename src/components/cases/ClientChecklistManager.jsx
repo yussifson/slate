@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
@@ -36,6 +37,7 @@ const DEFAULT_TEMPLATES = [
 ];
 
 export default function ClientChecklistManager({ caseData, client, user }) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ title: "", description: "", due_date: "" });
@@ -86,15 +88,17 @@ export default function ClientChecklistManager({ caseData, client, user }) {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <p className="text-sm font-semibold">Client Checklist</p>
+        <p className="text-sm font-semibold">{t("client_checklist", "Client Checklist")}</p>
         <Button size="sm" variant="outline" className="h-7 text-xs gap-1" onClick={() => setShowForm(true)}>
-          <Plus className="w-3 h-3" /> Add Item
+          <Plus className="w-3 h-3" /> {t("add_item", "Add Item")}
         </Button>
       </div>
-
       {items.length === 0 ? (
         <div className="bg-muted/40 rounded-lg p-4 text-center text-xs text-muted-foreground">
-          No checklist items yet. Add items to request documents or actions from the client.
+          {t(
+            "no_checklist_items_yet_add_ite",
+            "No checklist items yet. Add items to request documents or actions from the client."
+          )}
         </div>
       ) : (
         <div className="space-y-2">
@@ -108,7 +112,7 @@ export default function ClientChecklistManager({ caseData, client, user }) {
                   {item.description && <p className="text-xs text-muted-foreground mt-0.5">{item.description}</p>}
                   <div className="flex items-center gap-2 mt-1">
                     <Badge className={cn("text-[10px]", STATUS_COLORS[item.status])}>{item.status}</Badge>
-                    {item.due_date && <span className="text-[10px] text-muted-foreground">Due {format(new Date(item.due_date), "MMM d")}</span>}
+                    {item.due_date && <span className="text-[10px] text-muted-foreground">{t("due", "Due")} {format(new Date(item.due_date), "MMM d")}</span>}
                   </div>
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
@@ -117,10 +121,10 @@ export default function ClientChecklistManager({ caseData, client, user }) {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="pending">Pending</SelectItem>
-                      <SelectItem value="in_progress">In Progress</SelectItem>
-                      <SelectItem value="completed">Completed</SelectItem>
-                      <SelectItem value="waived">Waived</SelectItem>
+                      <SelectItem value="pending">{t("pending", "Pending")}</SelectItem>
+                      <SelectItem value="in_progress">{t("in_progress", "In Progress")}</SelectItem>
+                      <SelectItem value="completed">{t("completed", "Completed")}</SelectItem>
+                      <SelectItem value="waived">{t("waived", "Waived")}</SelectItem>
                     </SelectContent>
                   </Select>
                   <Button size="icon" variant="ghost" className="h-6 w-6 text-destructive hover:text-destructive" onClick={() => deleteMutation.mutate(item.id)}>
@@ -132,44 +136,45 @@ export default function ClientChecklistManager({ caseData, client, user }) {
           })}
         </div>
       )}
-
       <Dialog open={showForm} onOpenChange={setShowForm}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Add Checklist Item</DialogTitle>
+            <DialogTitle>{t("add_checklist_item", "Add Checklist Item")}</DialogTitle>
           </DialogHeader>
           <div className="space-y-3">
             {/* Quick templates */}
             <div>
-              <Label className="text-xs text-muted-foreground mb-1 block">Quick templates</Label>
+              <Label className="text-xs text-muted-foreground mb-1 block">{t("quick_templates", "Quick templates")}</Label>
               <div className="flex flex-wrap gap-1.5">
-                {DEFAULT_TEMPLATES.map(t => (
-                  <button
-                    key={t}
-                    onClick={() => setForm(f => ({ ...f, title: t }))}
-                    className="text-[11px] px-2 py-1 rounded-full border border-border bg-muted hover:bg-muted/80 text-muted-foreground transition-colors"
-                  >
-                    {t}
-                  </button>
-                ))}
+                {DEFAULT_TEMPLATES.map(item => {
+                  return (
+                    <button
+                      key={item}
+                      onClick={() => setForm(f => ({ ...f, title: t }))}
+                      className="text-[11px] px-2 py-1 rounded-full border border-border bg-muted hover:bg-muted/80 text-muted-foreground transition-colors"
+                    >
+                      {t}
+                    </button>
+                  );
+                })}
               </div>
             </div>
             <div>
-              <Label className="text-xs mb-1 block">Title *</Label>
+              <Label className="text-xs mb-1 block">{t("title", "Title *")}</Label>
               <Input value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} placeholder="e.g. Submit national ID document" />
             </div>
             <div>
-              <Label className="text-xs mb-1 block">Description</Label>
+              <Label className="text-xs mb-1 block">{t("description", "Description")}</Label>
               <Textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder="Additional instructions for the client..." className="h-20" />
             </div>
             <div>
-              <Label className="text-xs mb-1 block">Due Date</Label>
+              <Label className="text-xs mb-1 block">{t("due_date", "Due Date")}</Label>
               <Input type="date" value={form.due_date} onChange={e => setForm(f => ({ ...f, due_date: e.target.value }))} />
             </div>
             <div className="flex justify-end gap-2 pt-1">
-              <Button variant="outline" size="sm" onClick={() => setShowForm(false)}>Cancel</Button>
+              <Button variant="outline" size="sm" onClick={() => setShowForm(false)}>{t("cancel", "Cancel")}</Button>
               <Button size="sm" onClick={handleCreate} disabled={!form.title.trim() || createMutation.isPending}>
-                Add Item
+                {t("add_item", "Add Item")}
               </Button>
             </div>
           </div>

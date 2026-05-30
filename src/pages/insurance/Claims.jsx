@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Search, Plus, Trash2, FileWarning, CheckCircle, Clock, MoreVertical, Edit, Eye, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -30,6 +31,7 @@ const statusColors = {
 };
 
 export default function Claims() {
+  const { t } = useTranslation();
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('claim');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
@@ -153,45 +155,45 @@ export default function Claims() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground">Claims Processing</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Manage and evaluate policyholder claims</p>
+          <h1 className="text-2xl font-bold text-card-foreground">{t("claims_processing", "Claims Processing")}</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{t(
+            "manage_and_evaluate_policyhold",
+            "Manage and evaluate policyholder claims"
+          )}</p>
         </div>
         <div className="flex gap-2">
           <Button onClick={() => setShowRiskAnalyzer(true)} variant="outline" className="gap-2 border-amber-300 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/20">
-            <Sparkles className="w-4 h-4" /> AI Risk Scan
+            <Sparkles className="w-4 h-4" /> {t("ai_risk_scan", "AI Risk Scan")}
           </Button>
           <Button onClick={openNewModal} className="gap-2 bg-red-600 hover:bg-red-700 text-white">
-            <Plus className="w-4 h-4" /> File New Claim
+            <Plus className="w-4 h-4" /> {t("file_new_claim", "File New Claim")}
           </Button>
         </div>
       </div>
-
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
-          <div className="flex items-center gap-2 mb-2 text-muted-foreground"><FileWarning className="w-4 h-4"/> Total Claims</div>
+          <div className="flex items-center gap-2 mb-2 text-muted-foreground"><FileWarning className="w-4 h-4"/> {t("total_claims", "Total Claims")}</div>
           <p className="text-2xl font-bold text-card-foreground">{claims.length}</p>
         </div>
         <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
-          <div className="flex items-center gap-2 mb-2 text-amber-600"><Clock className="w-4 h-4"/> Under Review</div>
+          <div className="flex items-center gap-2 mb-2 text-amber-600"><Clock className="w-4 h-4"/> {t("under_review", "Under Review")}</div>
           <p className="text-2xl font-bold text-card-foreground">{claims.filter(c => c.status === 'Under Review').length}</p>
         </div>
         <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
-          <div className="flex items-center gap-2 mb-2 text-green-600"><CheckCircle className="w-4 h-4"/> Approved</div>
+          <div className="flex items-center gap-2 mb-2 text-green-600"><CheckCircle className="w-4 h-4"/> {t("approved", "Approved")}</div>
           <p className="text-2xl font-bold text-card-foreground">{claims.filter(c => c.status === 'Approved' || c.status === 'Paid').length}</p>
         </div>
         <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
-          <div className="flex items-center gap-2 mb-2 text-blue-600"><span className="font-bold text-sm">$</span> Total Claimed</div>
+          <div className="flex items-center gap-2 mb-2 text-blue-600"><span className="font-bold text-sm">$</span> {t("total_claimed", "Total Claimed")}</div>
           <p className="text-2xl font-bold text-card-foreground">${totalAmount.toLocaleString()}</p>
         </div>
       </div>
-
       {/* AI Search */}
       <AISearchBar
         fields={CLAIM_FIELDS}
         onApplyFilters={(f) => setAiFilters(f)}
       />
-
       {/* Table */}
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         <div className="p-4 border-b border-border bg-muted/50">
@@ -202,109 +204,112 @@ export default function Claims() {
         </div>
         <div className="overflow-x-auto">
           {isDbLoading ? (
-            <div className="py-12 text-center text-muted-foreground">Loading claims...</div>
+            <div className="py-12 text-center text-muted-foreground">{t("loading_claims", "Loading claims...")}</div>
           ) : filtered.length === 0 ? (
             <div className="py-12 text-center text-muted-foreground">
               <FileWarning className="w-12 h-12 mx-auto mb-3 opacity-30 text-red-600" />
-              <p className="font-semibold text-lg text-card-foreground">No claims found</p>
-              <p className="text-xs mt-1">File a new claim or adjust your filters.</p>
+              <p className="font-semibold text-lg text-card-foreground">{t("no_claims_found", "No claims found")}</p>
+              <p className="text-xs mt-1">{t(
+                "file_a_new_claim_or_adjust_you",
+                "File a new claim or adjust your filters."
+              )}</p>
             </div>
           ) : (
             <table className="w-full text-sm">
               <thead className="bg-card border-b border-border">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Claim Info</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Claimant</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Description</th>
-                  <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">Amount</th>
-                  <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">Status</th>
-                  <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">Action</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("claim_info", "Claim Info")}</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("claimant", "Claimant")}</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("description", "Description")}</th>
+                  <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("amount", "Amount")}</th>
+                  <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("status", "Status")}</th>
+                  <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("action", "Action")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {filtered.map(claim => (
-                  <tr key={claim.id} className="hover:bg-muted/50 transition-colors">
-                    <td className="px-6 py-4">
-                      <p className="font-mono font-bold text-red-600">{claim.claimNumber}</p>
-                      <Link to="/insurance/policies" className="text-primary hover:underline text-xs mt-0.5 font-medium block">{claim.policyNumber}</Link>
-                      <p className="text-[10px] text-muted-foreground mt-0.5">{claim.incidentDate}</p>
-                    </td>
-                    <td className="px-6 py-4">
-                      <p className="font-bold text-card-foreground">{claim.claimantName}</p>
-                      <p className="text-xs text-muted-foreground">{claim.claimType} Claim</p>
-                    </td>
-                    <td className="px-6 py-4 text-muted-foreground font-medium max-w-xs truncate">{claim.description}</td>
-                    <td className="px-6 py-4 text-right">
-                      <p className="font-bold text-card-foreground">${Number(claim.claimAmount).toLocaleString()}</p>
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <div className="flex flex-col items-center gap-1.5">
-                        <select
-                          value={claim.status}
-                          onChange={e => handleUpdateStatus(claim, e.target.value)}
-                          className={`rounded-md border border-input px-2 py-1 text-xs font-bold w-full ${statusColors[claim.status] || 'bg-muted text-muted-foreground'}`}
-                        >
-                          <option value="Submitted">Submitted</option>
-                          <option value="Under Review">Under Review</option>
-                          <option value="Approved">Approved</option>
-                          <option value="Rejected">Rejected</option>
-                          <option value="Paid">Paid</option>
-                        </select>
-                        {isStaleClaim(claim) && (
-                           <span className="text-[10px] font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded-full animate-pulse w-full text-center">
-                             SLA Breach (&gt;30d)
-                           </span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => setViewDetailsId(claim.id)}>
-                            <Eye className="mr-2 h-4 w-4" /> View Details
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => {
-                            setFormData({ policyNumber: claim.policyNumber || '', claimantName: claim.claimantName || '', claimType: claim.claimType || 'Auto', incidentDate: claim.incidentDate || '', claimAmount: claim.claimAmount || '', description: claim.description || '' });
-                            setEditTargetId(claim.id);
-                            setShowModal(true);
-                          }}>
-                            <Edit className="mr-2 h-4 w-4" /> Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => setDeleteTargetId(claim.id)} className="text-red-600 focus:text-red-600">
-                            <Trash2 className="mr-2 h-4 w-4" /> Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </td>
-                  </tr>
-                ))}
+                {filtered.map(claim => {
+                  return (
+                    <tr key={claim.id} className="hover:bg-muted/50 transition-colors">
+                      <td className="px-6 py-4">
+                        <p className="font-mono font-bold text-red-600">{claim.claimNumber}</p>
+                        <Link to="/insurance/policies" className="text-primary hover:underline text-xs mt-0.5 font-medium block">{claim.policyNumber}</Link>
+                        <p className="text-[10px] text-muted-foreground mt-0.5">{claim.incidentDate}</p>
+                      </td>
+                      <td className="px-6 py-4">
+                        <p className="font-bold text-card-foreground">{claim.claimantName}</p>
+                        <p className="text-xs text-muted-foreground">{claim.claimType} {t("claim", "Claim")}</p>
+                      </td>
+                      <td className="px-6 py-4 text-muted-foreground font-medium max-w-xs truncate">{claim.description}</td>
+                      <td className="px-6 py-4 text-right">
+                        <p className="font-bold text-card-foreground">${Number(claim.claimAmount).toLocaleString()}</p>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <div className="flex flex-col items-center gap-1.5">
+                          <select
+                            value={claim.status}
+                            onChange={e => handleUpdateStatus(claim, e.target.value)}
+                            className={`rounded-md border border-input px-2 py-1 text-xs font-bold w-full ${statusColors[claim.status] || 'bg-muted text-muted-foreground'}`}
+                          >
+                            <option value="Submitted">{t("submitted", "Submitted")}</option>
+                            <option value="Under Review">{t("under_review", "Under Review")}</option>
+                            <option value="Approved">{t("approved", "Approved")}</option>
+                            <option value="Rejected">{t("rejected", "Rejected")}</option>
+                            <option value="Paid">{t("paid", "Paid")}</option>
+                          </select>
+                          {isStaleClaim(claim) && (
+                             <span className="text-[10px] font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded-full animate-pulse w-full text-center">
+                               {t("sla_breach_30d", "SLA Breach (>30d)")}
+                             </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <span className="sr-only">{t("open_menu", "Open menu")}</span>
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => setViewDetailsId(claim.id)}>
+                              <Eye className="mr-2 h-4 w-4" /> {t("view_details", "View Details")}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => {
+                              setFormData({ policyNumber: claim.policyNumber || '', claimantName: claim.claimantName || '', claimType: claim.claimType || 'Auto', incidentDate: claim.incidentDate || '', claimAmount: claim.claimAmount || '', description: claim.description || '' });
+                              setEditTargetId(claim.id);
+                              setShowModal(true);
+                            }}>
+                              <Edit className="mr-2 h-4 w-4" /> {t("edit", "Edit")}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setDeleteTargetId(claim.id)} className="text-red-600 focus:text-red-600">
+                              <Trash2 className="mr-2 h-4 w-4" /> {t("delete", "Delete")}
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           )}
         </div>
       </div>
-
       {/* AI Risk Analyzer Modal */}
       {showRiskAnalyzer && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-2xl border border-border p-6 space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-amber-500" /> AI Risk Analyzer — Claims
+                <Sparkles className="w-5 h-5 text-amber-500" /> {t("ai_risk_analyzer_claims", "AI Risk Analyzer — Claims")}
               </h2>
-              <Button variant="ghost" size="sm" onClick={() => setShowRiskAnalyzer(false)}>Close</Button>
+              <Button variant="ghost" size="sm" onClick={() => setShowRiskAnalyzer(false)}>{t("close", "Close")}</Button>
             </div>
             <AIRiskAnalyzer records={claims} recordType="insurance claims" />
           </div>
         </div>
       )}
-
       {/* Add/Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
@@ -321,52 +326,51 @@ export default function Claims() {
 
             <div className="space-y-3">
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">Policy Number</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("policy_number", "Policy Number")}</label>
                 <Input value={formData.policyNumber} onChange={e => setFormData({...formData, policyNumber: e.target.value})} placeholder="POL-12345" className="mt-1" />
               </div>
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">Claimant Name</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("claimant_name", "Claimant Name")}</label>
                 <Input value={formData.claimantName} onChange={e => setFormData({...formData, claimantName: e.target.value})} placeholder="Jane Doe" className="mt-1" />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-bold text-muted-foreground uppercase">Claim Type</label>
+                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("claim_type", "Claim Type")}</label>
                   <select value={formData.claimType} onChange={e => setFormData({...formData, claimType: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground">
-                    <option>Auto</option>
-                    <option>Health</option>
-                    <option>Property</option>
-                    <option>Life</option>
-                    <option>Business</option>
+                    <option>{t("auto", "Auto")}</option>
+                    <option>{t("health", "Health")}</option>
+                    <option>{t("property", "Property")}</option>
+                    <option>{t("life", "Life")}</option>
+                    <option>{t("business", "Business")}</option>
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-muted-foreground uppercase">Incident Date</label>
+                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("incident_date", "Incident Date")}</label>
                   <Input type="date" value={formData.incidentDate} onChange={e => setFormData({...formData, incidentDate: e.target.value})} className="mt-1" />
                 </div>
               </div>
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">Claim Amount ($)</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("claim_amount", "Claim Amount ($)")}</label>
                 <Input type="number" value={formData.claimAmount} onChange={e => setFormData({...formData, claimAmount: e.target.value})} placeholder="1500" className="mt-1" />
               </div>
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">Description / Details</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("description_details", "Description / Details")}</label>
                 <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} placeholder="Describe the incident..." className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm h-20 resize-none text-foreground" />
               </div>
             </div>
             <div className="flex gap-3 pt-4">
-              <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditTargetId(null); }}>Cancel</Button>
+              <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditTargetId(null); }}>{t("cancel", "Cancel")}</Button>
               <Button className="flex-1 bg-red-600 hover:bg-red-700 text-white" onClick={handleCreateClaim}>{editTargetId ? 'Save Changes' : 'Submit Claim'}</Button>
             </div>
           </div>
         </div>
       )}
-
       {/* View Details Sheet */}
       <Sheet open={viewDetailsId !== null} onOpenChange={(open) => !open && setViewDetailsId(null)}>
         <SheetContent className="bg-card text-card-foreground overflow-y-auto">
           <SheetHeader>
-            <SheetTitle>Claim Details</SheetTitle>
-            <SheetDescription>Full record for claim {viewRecord?.claimNumber}</SheetDescription>
+            <SheetTitle>{t("claim_details", "Claim Details")}</SheetTitle>
+            <SheetDescription>{t("full_record_for_claim", "Full record for claim")} {viewRecord?.claimNumber}</SheetDescription>
           </SheetHeader>
           <div className="mt-6 space-y-4">
             {viewRecord && Object.entries(viewRecord).map(([key, value]) => {
@@ -387,7 +391,6 @@ export default function Claims() {
           </div>
         </SheetContent>
       </Sheet>
-
       <ConfirmationModal
         isOpen={deleteTargetId !== null}
         onClose={() => setDeleteTargetId(null)}

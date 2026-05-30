@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Package, Search, Plus, AlertTriangle, Trash2, Edit2, X, DollarSign, ShoppingBag, TrendingDown, MoreVertical, Eye, Edit, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -37,6 +38,7 @@ const emptyForm = {
 };
 
 export default function Inventory() {
+  const { t } = useTranslation();
   const { data: dbRecords = [], isLoading } = useIndustryRecords('inventory_item');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
@@ -142,31 +144,35 @@ export default function Inventory() {
     i.supplier.toLowerCase().includes(search.toLowerCase())
   );
 
-  const field = (label, key, props = {}) => (
-    <div>
-      <label className="text-xs font-bold text-muted-foreground uppercase">{label}</label>
-      <Input
-        className="mt-1"
-        value={formData[key]}
-        onChange={e => setFormData(prev => ({ ...prev, [key]: e.target.value }))}
-        {...props}
-      />
-    </div>
-  );
+  const field = (label, key, props = {}) => {
+    return (
+      <div>
+        <label className="text-xs font-bold text-muted-foreground uppercase">{label}</label>
+        <Input
+          className="mt-1"
+          value={formData[key]}
+          onChange={e => setFormData(prev => ({ ...prev, [key]: e.target.value }))}
+          {...props}
+        />
+      </div>
+    );
+  };
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground">Inventory Management</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Track stock levels, SKUs, pricing and suppliers</p>
+          <h1 className="text-2xl font-bold text-card-foreground">{t("inventory_management", "Inventory Management")}</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{t(
+            "track_stock_levels_skus_pricin",
+            "Track stock levels, SKUs, pricing and suppliers"
+          )}</p>
         </div>
         <Button onClick={openAdd} className="gap-2 bg-purple-600 hover:bg-purple-700 text-white">
-          <Plus className="w-4 h-4" /> Add Item
+          <Plus className="w-4 h-4" /> {t("add_item", "Add Item")}
         </Button>
       </div>
-
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
@@ -175,7 +181,7 @@ export default function Inventory() {
           </div>
           <div>
             <p className="text-2xl font-black text-card-foreground">{stats.total}</p>
-            <p className="text-xs text-muted-foreground">Total Items</p>
+            <p className="text-xs text-muted-foreground">{t("total_items", "Total Items")}</p>
           </div>
         </div>
         <div className="stat-card-premium bg-card rounded-xl border border-border border-l-4 border-l-amber-500 p-4 shadow-sm flex items-center gap-4">
@@ -184,7 +190,7 @@ export default function Inventory() {
           </div>
           <div>
             <p className="text-2xl font-black text-amber-600">{stats.lowStock}</p>
-            <p className="text-xs text-muted-foreground">Low Stock</p>
+            <p className="text-xs text-muted-foreground">{t("low_stock", "Low Stock")}</p>
           </div>
         </div>
         <div className="stat-card-premium bg-card rounded-xl border border-border border-l-4 border-l-red-500 p-4 shadow-sm flex items-center gap-4">
@@ -193,7 +199,7 @@ export default function Inventory() {
           </div>
           <div>
             <p className="text-2xl font-black text-red-600">{stats.outOfStock}</p>
-            <p className="text-xs text-muted-foreground">Out of Stock</p>
+            <p className="text-xs text-muted-foreground">{t("out_of_stock", "Out of Stock")}</p>
           </div>
         </div>
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
@@ -202,11 +208,10 @@ export default function Inventory() {
           </div>
           <div>
             <p className="text-2xl font-black text-card-foreground">${stats.totalValue.toFixed(2)}</p>
-            <p className="text-xs text-muted-foreground">Total Stock Value</p>
+            <p className="text-xs text-muted-foreground">{t("total_stock_value", "Total Stock Value")}</p>
           </div>
         </div>
       </div>
-
       {/* Table */}
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         <div className="p-4 border-b border-border bg-muted/50 flex gap-4 justify-between items-center">
@@ -219,143 +224,150 @@ export default function Inventory() {
               className="pl-9 bg-card"
             />
           </div>
-          <span className="text-xs text-muted-foreground whitespace-nowrap">{filtered.length} item(s)</span>
+          <span className="text-xs text-muted-foreground whitespace-nowrap">{filtered.length} {t("item_s", "item(s)")}</span>
         </div>
         <div className="overflow-x-auto">
           {isLoading ? (
-            <div className="py-16 text-center text-muted-foreground">Loading inventory...</div>
+            <div className="py-16 text-center text-muted-foreground">{t("loading_inventory", "Loading inventory...")}</div>
           ) : filtered.length === 0 ? (
             <div className="py-16 text-center text-muted-foreground">
               <Package className="w-14 h-14 mx-auto mb-3 opacity-25" />
-              <p className="font-semibold text-base">No inventory items found.</p>
-              <p className="text-xs mt-1">Click "Add Item" to configure your first stock entry.</p>
+              <p className="font-semibold text-base">{t("no_inventory_items_found", "No inventory items found.")}</p>
+              <p className="text-xs mt-1">{t(
+                "click_add_item_to_configure_yo",
+                "Click \"Add Item\" to configure your first stock entry."
+              )}</p>
             </div>
           ) : (
             <table className="w-full text-sm">
               <thead className="bg-muted/30 border-b border-border">
                 <tr>
-                  <th className="px-5 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Item</th>
-                  <th className="px-5 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Category</th>
-                  <th className="px-5 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Supplier</th>
-                  <th className="px-5 py-3 text-right text-xs font-bold text-muted-foreground uppercase">Price</th>
-                  <th className="px-5 py-3 text-right text-xs font-bold text-muted-foreground uppercase">Cost</th>
-                  <th className="px-5 py-3 text-center text-xs font-bold text-muted-foreground uppercase">Qty / Reorder</th>
-                  <th className="px-5 py-3 text-center text-xs font-bold text-muted-foreground uppercase">Status</th>
-                  <th className="px-5 py-3 text-right text-xs font-bold text-muted-foreground uppercase">Actions</th>
+                  <th className="px-5 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{t("item", "Item")}</th>
+                  <th className="px-5 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{t("category", "Category")}</th>
+                  <th className="px-5 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{t("supplier", "Supplier")}</th>
+                  <th className="px-5 py-3 text-right text-xs font-bold text-muted-foreground uppercase">{t("price", "Price")}</th>
+                  <th className="px-5 py-3 text-right text-xs font-bold text-muted-foreground uppercase">{t("cost", "Cost")}</th>
+                  <th className="px-5 py-3 text-center text-xs font-bold text-muted-foreground uppercase">{t("qty_reorder", "Qty / Reorder")}</th>
+                  <th className="px-5 py-3 text-center text-xs font-bold text-muted-foreground uppercase">{t("status", "Status")}</th>
+                  <th className="px-5 py-3 text-right text-xs font-bold text-muted-foreground uppercase">{t("actions", "Actions")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {filtered.map(item => (
-                  <tr key={item.id} className="hover:bg-muted/40 transition-colors">
-                    <td className="px-5 py-4">
-                      <p className="font-bold text-card-foreground">{item.name}</p>
-                      <p className="text-xs text-muted-foreground font-mono">{item.sku}</p>
-                      {item.expiryDate && (
-                        <p className="text-[10px] text-amber-600 font-semibold mt-0.5">Exp: {item.expiryDate}</p>
-                      )}
-                    </td>
-                    <td className="px-5 py-4 text-muted-foreground">{item.category}</td>
-                    <td className="px-5 py-4 text-muted-foreground">
-                      {item.supplier ? <Link to="/retail/suppliers" className="text-primary hover:underline">{item.supplier}</Link> : '—'}
-                    </td>
-                    <td className="px-5 py-4 text-right font-bold text-card-foreground">${item.price.toFixed(2)}</td>
-                    <td className="px-5 py-4 text-right text-muted-foreground">${item.costPrice.toFixed(2)}</td>
-                    <td className="px-5 py-4 text-center">
-                      <span className="font-black text-lg text-card-foreground">{item.quantity}</span>
-                      <p className="text-[10px] text-muted-foreground uppercase font-bold">Min: {item.reorderLevel}</p>
-                    </td>
-                    <td className="px-5 py-4 text-center">
-                      <div className="flex flex-col items-center gap-1.5">
-                        <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${statusColors[item.status] || 'bg-muted'}`}>
-                          {item.status}
-                        </span>
-                        {item.status === 'Low Stock' && (
-                          <span className="text-[10px] font-bold text-amber-600 bg-amber-100 px-2 py-0.5 rounded-full animate-pulse w-full text-center">
-                            Reorder Needed
-                          </span>
+                {filtered.map(item => {
+                  return (
+                    <tr key={item.id} className="hover:bg-muted/40 transition-colors">
+                      <td className="px-5 py-4">
+                        <p className="font-bold text-card-foreground">{item.name}</p>
+                        <p className="text-xs text-muted-foreground font-mono">{item.sku}</p>
+                        {item.expiryDate && (
+                          <p className="text-[10px] text-amber-600 font-semibold mt-0.5">{t("exp", "Exp:")} {item.expiryDate}</p>
                         )}
-                        {item.status === 'Out of Stock' && (
-                          <span className="text-[10px] font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded-full animate-pulse w-full text-center">
-                            Critical Alert
+                      </td>
+                      <td className="px-5 py-4 text-muted-foreground">{item.category}</td>
+                      <td className="px-5 py-4 text-muted-foreground">
+                        {item.supplier ? <Link to="/retail/suppliers" className="text-primary hover:underline">{item.supplier}</Link> : '—'}
+                      </td>
+                      <td className="px-5 py-4 text-right font-bold text-card-foreground">${item.price.toFixed(2)}</td>
+                      <td className="px-5 py-4 text-right text-muted-foreground">${item.costPrice.toFixed(2)}</td>
+                      <td className="px-5 py-4 text-center">
+                        <span className="font-black text-lg text-card-foreground">{item.quantity}</span>
+                        <p className="text-[10px] text-muted-foreground uppercase font-bold">{t("min", "Min:")} {item.reorderLevel}</p>
+                      </td>
+                      <td className="px-5 py-4 text-center">
+                        <div className="flex flex-col items-center gap-1.5">
+                          <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${statusColors[item.status] || 'bg-muted'}`}>
+                            {item.status}
                           </span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-5 py-4 text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => { setSelectedItem(item); setIsSheetOpen(true); }}>
-                            <Eye className="mr-2 h-4 w-4" /> View Details
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => openEdit(item)}>
-                            <Edit2 className="mr-2 h-4 w-4" /> Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => setDeleteTargetId(item.id)} className="text-red-600">
-                            <Trash2 className="mr-2 h-4 w-4" /> Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </td>
-                  </tr>
-                ))}
+                          {item.status === 'Low Stock' && (
+                            <span className="text-[10px] font-bold text-amber-600 bg-amber-100 px-2 py-0.5 rounded-full animate-pulse w-full text-center">
+                              {t("reorder_needed", "Reorder Needed")}
+                            </span>
+                          )}
+                          {item.status === 'Out of Stock' && (
+                            <span className="text-[10px] font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded-full animate-pulse w-full text-center">
+                              {t("critical_alert", "Critical Alert")}
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-5 py-4 text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <span className="sr-only">{t("open_menu", "Open menu")}</span>
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => { setSelectedItem(item); setIsSheetOpen(true); }}>
+                              <Eye className="mr-2 h-4 w-4" /> {t("view_details", "View Details")}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => openEdit(item)}>
+                              <Edit2 className="mr-2 h-4 w-4" /> {t("edit", "Edit")}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setDeleteTargetId(item.id)} className="text-red-600">
+                              <Trash2 className="mr-2 h-4 w-4" /> {t("delete", "Delete")}
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           )}
         </div>
       </div>
-
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
         <SheetContent className="overflow-y-auto w-[400px]">
           <SheetHeader>
-            <SheetTitle>Inventory Details</SheetTitle>
-            <SheetDescription>View detailed information for this item.</SheetDescription>
+            <SheetTitle>{t("inventory_details", "Inventory Details")}</SheetTitle>
+            <SheetDescription>{t(
+              "view_detailed_information_for_",
+              "View detailed information for this item."
+            )}</SheetDescription>
           </SheetHeader>
           {selectedItem && (
             <div className="mt-6 space-y-4 text-sm">
               <div className="grid grid-cols-3 gap-4 border-b pb-4">
-                <div className="col-span-1 font-semibold text-muted-foreground">SKU</div>
+                <div className="col-span-1 font-semibold text-muted-foreground">{t("sku", "SKU")}</div>
                 <div className="col-span-2 font-mono">{selectedItem.sku}</div>
               </div>
               <div className="grid grid-cols-3 gap-4 border-b pb-4">
-                <div className="col-span-1 font-semibold text-muted-foreground">Name</div>
+                <div className="col-span-1 font-semibold text-muted-foreground">{t("name", "Name")}</div>
                 <div className="col-span-2 font-medium">{selectedItem.name}</div>
               </div>
               <div className="grid grid-cols-3 gap-4 border-b pb-4">
-                <div className="col-span-1 font-semibold text-muted-foreground">Category</div>
+                <div className="col-span-1 font-semibold text-muted-foreground">{t("category", "Category")}</div>
                 <div className="col-span-2">{selectedItem.category}</div>
               </div>
               <div className="grid grid-cols-3 gap-4 border-b pb-4">
-                <div className="col-span-1 font-semibold text-muted-foreground">Supplier</div>
+                <div className="col-span-1 font-semibold text-muted-foreground">{t("supplier", "Supplier")}</div>
                 <div className="col-span-2">{selectedItem.supplier ? <Link to="/retail/suppliers" className="text-primary hover:underline">{selectedItem.supplier}</Link> : '—'}</div>
               </div>
               <div className="grid grid-cols-3 gap-4 border-b pb-4">
-                <div className="col-span-1 font-semibold text-muted-foreground">Price</div>
+                <div className="col-span-1 font-semibold text-muted-foreground">{t("price", "Price")}</div>
                 <div className="col-span-2">${selectedItem.price.toFixed(2)}</div>
               </div>
               <div className="grid grid-cols-3 gap-4 border-b pb-4">
-                <div className="col-span-1 font-semibold text-muted-foreground">Cost Price</div>
+                <div className="col-span-1 font-semibold text-muted-foreground">{t("cost_price", "Cost Price")}</div>
                 <div className="col-span-2">${selectedItem.costPrice.toFixed(2)}</div>
               </div>
               <div className="grid grid-cols-3 gap-4 border-b pb-4">
-                <div className="col-span-1 font-semibold text-muted-foreground">Quantity</div>
+                <div className="col-span-1 font-semibold text-muted-foreground">{t("quantity", "Quantity")}</div>
                 <div className="col-span-2">{selectedItem.quantity}</div>
               </div>
               <div className="grid grid-cols-3 gap-4 border-b pb-4">
-                <div className="col-span-1 font-semibold text-muted-foreground">Reorder Level</div>
+                <div className="col-span-1 font-semibold text-muted-foreground">{t("reorder_level", "Reorder Level")}</div>
                 <div className="col-span-2">{selectedItem.reorderLevel}</div>
               </div>
               <div className="grid grid-cols-3 gap-4 border-b pb-4">
-                <div className="col-span-1 font-semibold text-muted-foreground">Expiry Date</div>
+                <div className="col-span-1 font-semibold text-muted-foreground">{t("expiry_date", "Expiry Date")}</div>
                 <div className="col-span-2">{selectedItem.expiryDate || '—'}</div>
               </div>
               <div className="grid grid-cols-3 gap-4">
-                <div className="col-span-1 font-semibold text-muted-foreground">Status</div>
+                <div className="col-span-1 font-semibold text-muted-foreground">{t("status", "Status")}</div>
                 <div className="col-span-2">
                   <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${statusColors[selectedItem.status] || 'bg-muted'}`}>
                     {selectedItem.status}
@@ -366,7 +378,6 @@ export default function Inventory() {
           )}
         </SheetContent>
       </Sheet>
-
       {/* Add / Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
@@ -384,13 +395,15 @@ export default function Inventory() {
               {field('SKU / Barcode', 'sku', { placeholder: 'SKU-1001' })}
               {field('Item Name *', 'name', { placeholder: 'e.g. Wireless Mouse' })}
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">Category</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("category", "Category")}</label>
                 <select
                   value={formData.category}
                   onChange={e => setFormData(p => ({ ...p, category: e.target.value }))}
                   className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                 >
-                  {CATEGORIES.map(c => <option key={c}>{c}</option>)}
+                  {CATEGORIES.map(c => {
+                    return <option key={c}>{c}</option>;
+                  })}
                 </select>
               </div>
               {field('Supplier', 'supplier', { placeholder: 'e.g. Acme Wholesale' })}
@@ -403,7 +416,7 @@ export default function Inventory() {
               </div>
             </div>
             <div className="flex gap-3 pt-2">
-              <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>Cancel</Button>
+              <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
               <Button
                 className="flex-1 bg-purple-600 hover:bg-purple-700 text-white"
                 onClick={handleSave}
@@ -415,7 +428,6 @@ export default function Inventory() {
           </div>
         </div>
       )}
-
       <ConfirmationModal
         isOpen={deleteTargetId !== null}
         onClose={() => setDeleteTargetId(null)}
@@ -423,10 +435,6 @@ export default function Inventory() {
         title="Delete Inventory Item"
         message="Are you sure you want to delete this item? This will remove it from inventory and the POS register permanently."
       />
-
-      
-
-      
     </div>
   );
 }

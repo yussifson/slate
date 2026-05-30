@@ -1,9 +1,11 @@
+import { useTranslation } from "react-i18next";
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, FileText, User, Users, Calendar, X, ShieldAlert, ArrowRight, Sparkles, Bot } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
 export default function SpotlightSearch() {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState({ cases: [], clients: [], staff: [], other: [] });
@@ -68,8 +70,8 @@ export default function SpotlightSearch() {
           staff: allStaff.filter(s =>
             s.full_name?.toLowerCase().includes(q) || s.user_email?.toLowerCase().includes(q)
           ).slice(0, 4),
-          other: allTasks.filter(t =>
-            t.title?.toLowerCase().includes(q)
+          other: allTasks.filter(item =>
+            item.title?.toLowerCase().includes(q)
           ).slice(0, 4),
         });
       } catch (err) {
@@ -141,7 +143,7 @@ export default function SpotlightSearch() {
             onChange={(e) => setQuery(e.target.value)}
           />
           <div className="flex items-center gap-2 shrink-0 select-none">
-            <kbd className="text-[10px] bg-muted text-muted-foreground border border-border rounded-md px-1.5 py-0.5 font-semibold">ESC</kbd>
+            <kbd className="text-[10px] bg-muted text-muted-foreground border border-border rounded-md px-1.5 py-0.5 font-semibold">{t("esc", "ESC")}</kbd>
             <button
               onClick={() => setIsOpen(false)}
               className="p-1.5 hover:bg-muted rounded-lg transition-colors"
@@ -156,16 +158,19 @@ export default function SpotlightSearch() {
           {loading ? (
             <div className="py-14 text-center text-sm text-muted-foreground flex flex-col items-center gap-3">
               <span className="w-7 h-7 rounded-full border-2 border-primary/30 border-t-primary animate-spin" />
-              <span>Scanning records...</span>
+              <span>{t("scanning_records", "Scanning records...")}</span>
             </div>
           ) : flatResults.length === 0 ? (
             <div className="py-10 text-center flex flex-col items-center gap-2.5">
               {query ? (
                 <>
                   <ShieldAlert className="w-9 h-9 text-amber-500/70" />
-                  <p className="font-semibold text-foreground text-sm">No matches found</p>
+                  <p className="font-semibold text-foreground text-sm">{t("no_matches_found", "No matches found")}</p>
                   <p className="text-xs text-muted-foreground max-w-xs leading-relaxed">
-                    No records matching "{query}" were found across cases, clients, tasks, or team.
+                    {t("no_records_matching", "No records matching \"")}{query}{t(
+                      "were_found_across_cases_client",
+                      "\" were found across cases, clients, tasks, or team."
+                    )}
                   </p>
                 </>
               ) : (
@@ -175,9 +180,12 @@ export default function SpotlightSearch() {
                       <Search className="w-4 h-4 text-primary" />
                     </div>
                   </div>
-                  <p className="font-bold text-foreground text-base">Ecosystem Spotlight</p>
+                  <p className="font-bold text-foreground text-base">{t("ecosystem_spotlight", "Ecosystem Spotlight")}</p>
                   <p className="text-xs text-muted-foreground/80 leading-relaxed">
-                    Search across all records instantly. Type a name, case number, or task title to begin. Results can be opened or sent directly to Orbit AI.
+                    {t(
+                      "search_across_all_records_inst",
+                      "Search across all records instantly. Type a name, case number, or task title to begin. Results can be opened or sent directly to Orbit AI."
+                    )}
                   </p>
                 </div>
               )}
@@ -229,7 +237,6 @@ export default function SpotlightSearch() {
                                 </p>
                               </div>
                             </div>
-
                             {/* Right: Ask AI button + arrow */}
                             <div className="flex items-center gap-1.5 shrink-0 ml-2">
                               {(isHovered || isSelected) && (
@@ -243,7 +250,7 @@ export default function SpotlightSearch() {
                                   title="Ask Orbit AI about this record"
                                 >
                                   <Bot className="w-3 h-3" />
-                                  Ask AI
+                                  {t("ask_ai", "Ask AI")}
                                 </button>
                               )}
                               {isSelected && <ArrowRight className="w-4 h-4 text-primary-foreground/80" />}
@@ -262,18 +269,18 @@ export default function SpotlightSearch() {
         {/* Footer */}
         <div className="px-5 py-2.5 bg-muted/30 border-t border-border text-[10px] text-muted-foreground flex items-center justify-between select-none">
           <div className="flex items-center gap-3">
-            <span className="flex items-center gap-1">↑↓ <span className="text-foreground/60">navigate</span></span>
+            <span className="flex items-center gap-1">↑↓ <span className="text-foreground/60">{t("navigate", "navigate")}</span></span>
             <span>·</span>
-            <span className="flex items-center gap-1">↵ <span className="text-foreground/60">open</span></span>
+            <span className="flex items-center gap-1">↵ <span className="text-foreground/60">{t("open", "open")}</span></span>
             <span>·</span>
             <span className="flex items-center gap-1">
               <Bot className="w-3 h-3 text-primary" />
-              <span className="text-foreground/60">Ask AI on hover</span>
+              <span className="text-foreground/60">{t("ask_ai_on_hover", "Ask AI on hover")}</span>
             </span>
           </div>
           <div className="flex items-center gap-1">
             <Sparkles className="w-3 h-3 text-primary/60" />
-            <span>Spotlight Console</span>
+            <span>{t("spotlight_console", "Spotlight Console")}</span>
           </div>
         </div>
       </div>

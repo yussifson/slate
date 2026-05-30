@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Book, Search, Plus, BookOpen, Trash2, Clock, AlertCircle, MoreVertical } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -10,6 +11,7 @@ import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
 
 export default function Library() {
+  const { t } = useTranslation();
   // Supabase Real-time Sync Hooks
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('book');
   const mutateRecord = useMutateIndustryRecord();
@@ -142,14 +144,16 @@ export default function Library() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground">Library Catalog</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Manage school library books and inventory</p>
+          <h1 className="text-2xl font-bold text-card-foreground">{t("library_catalog", "Library Catalog")}</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{t(
+            "manage_school_library_books_an",
+            "Manage school library books and inventory"
+          )}</p>
         </div>
         <Button onClick={() => setShowModal(true)} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
-          <Plus className="w-4 h-4" /> Add Book
+          <Plus className="w-4 h-4" /> {t("add_book", "Add Book")}
         </Button>
       </div>
-
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
           <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-950/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
@@ -157,7 +161,7 @@ export default function Library() {
           </div>
           <div>
             <p className="text-2xl font-bold text-card-foreground">{totalCopies}</p>
-            <p className="text-xs text-muted-foreground">Total Books</p>
+            <p className="text-xs text-muted-foreground">{t("total_books", "Total Books")}</p>
           </div>
         </div>
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
@@ -166,7 +170,7 @@ export default function Library() {
           </div>
           <div>
             <p className="text-2xl font-bold text-card-foreground">{totalAvailable}</p>
-            <p className="text-xs text-muted-foreground">Available</p>
+            <p className="text-xs text-muted-foreground">{t("available", "Available")}</p>
           </div>
         </div>
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
@@ -175,11 +179,10 @@ export default function Library() {
           </div>
           <div>
             <p className="text-2xl font-bold text-card-foreground">{totalBorrowed}</p>
-            <p className="text-xs text-muted-foreground">Borrowed</p>
+            <p className="text-xs text-muted-foreground">{t("borrowed", "Borrowed")}</p>
           </div>
         </div>
       </div>
-
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         <div className="p-4 border-b border-border bg-muted/50">
           <div className="relative max-w-md">
@@ -189,77 +192,81 @@ export default function Library() {
         </div>
         <div className="overflow-x-auto">
           {isDbLoading ? (
-            <div className="py-12 text-center text-muted-foreground">Loading catalog...</div>
+            <div className="py-12 text-center text-muted-foreground">{t("loading_catalog", "Loading catalog...")}</div>
           ) : filtered.length === 0 ? (
             <div className="py-12 text-center text-muted-foreground bg-card">
               <Book className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-blue-600" />
-              <p className="font-semibold text-lg text-card-foreground">Library catalog is empty</p>
-              <p className="text-xs mt-1 font-medium">Record textbooks, reference dictionaries, or science manuals using the button above.</p>
+              <p className="font-semibold text-lg text-card-foreground">{t("library_catalog_is_empty", "Library catalog is empty")}</p>
+              <p className="text-xs mt-1 font-medium">{t(
+                "record_textbooks_reference_dic",
+                "Record textbooks, reference dictionaries, or science manuals using the button above."
+              )}</p>
             </div>
           ) : (
             <table className="w-full text-sm">
               <thead className="bg-card border-b border-border">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Book Title</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Author</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Category</th>
-                  <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">Total Copies</th>
-                  <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">Available</th>
-                  <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">Action</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("book_title", "Book Title")}</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("author", "Author")}</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("category", "Category")}</th>
+                  <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("total_copies", "Total Copies")}</th>
+                  <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("available", "Available")}</th>
+                  <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("action", "Action")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {filtered.map(b => (
-                  <tr key={b.id} className="hover:bg-muted/50 transition-colors">
-                    <td className="px-6 py-4">
-                      <p className="font-semibold text-card-foreground">{b.title}</p>
-                      <p className="text-xs text-muted-foreground font-mono">ISBN: {b.isbn}</p>
-                    </td>
-                    <td className="px-6 py-4 text-muted-foreground">{b.author}</td>
-                    <td className="px-6 py-4">
-                      <span className="bg-muted text-muted-foreground px-2.5 py-1 rounded-md text-xs font-medium">
-                        {b.category}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-center text-foreground font-medium">{b.total}</td>
-                    <td className="px-6 py-4 text-center">
-                      <span className={`font-bold px-2.5 py-1 rounded-full text-xs ${b.available > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                        {b.available}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 p-0">
-                            <MoreVertical className="h-4 w-4 text-muted-foreground" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-40">
-                          <DropdownMenuItem onClick={() => setViewDetails(b)}>View Details</DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleIssueBook(b)} disabled={b.available === 0}>Issue Book</DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => {
-                            setEditingId(b.id);
-                            setFormData({
-                              title: b.title,
-                              author: b.author,
-                              isbn: b.isbn,
-                              category: b.category,
-                              total: b.total
-                            });
-                            setShowModal(true);
-                          }}>Edit</DropdownMenuItem>
-                          <DropdownMenuItem className="text-red-600 font-medium" onClick={() => setDeleteTargetId(b.id)}>Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </td>
-                  </tr>
-                ))}
+                {filtered.map(b => {
+                  return (
+                    <tr key={b.id} className="hover:bg-muted/50 transition-colors">
+                      <td className="px-6 py-4">
+                        <p className="font-semibold text-card-foreground">{b.title}</p>
+                        <p className="text-xs text-muted-foreground font-mono">{t("isbn", "ISBN:")} {b.isbn}</p>
+                      </td>
+                      <td className="px-6 py-4 text-muted-foreground">{b.author}</td>
+                      <td className="px-6 py-4">
+                        <span className="bg-muted text-muted-foreground px-2.5 py-1 rounded-md text-xs font-medium">
+                          {b.category}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-center text-foreground font-medium">{b.total}</td>
+                      <td className="px-6 py-4 text-center">
+                        <span className={`font-bold px-2.5 py-1 rounded-full text-xs ${b.available > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                          {b.available}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <MoreVertical className="h-4 w-4 text-muted-foreground" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-40">
+                            <DropdownMenuItem onClick={() => setViewDetails(b)}>{t("view_details", "View Details")}</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleIssueBook(b)} disabled={b.available === 0}>{t("issue_book", "Issue Book")}</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => {
+                              setEditingId(b.id);
+                              setFormData({
+                                title: b.title,
+                                author: b.author,
+                                isbn: b.isbn,
+                                category: b.category,
+                                total: b.total
+                              });
+                              setShowModal(true);
+                            }}>{t("edit", "Edit")}</DropdownMenuItem>
+                            <DropdownMenuItem className="text-red-600 font-medium" onClick={() => setDeleteTargetId(b.id)}>{t("delete", "Delete")}</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           )}
         </div>
       </div>
-
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-border">
@@ -268,7 +275,7 @@ export default function Library() {
             </h2>
             <div className="space-y-3">
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">Book Title</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("book_title", "Book Title")}</label>
                 <Input
                   value={formData.title}
                   onChange={e => setFormData({ ...formData, title: e.target.value })}
@@ -277,7 +284,7 @@ export default function Library() {
                 />
               </div>
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">Author</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("author", "Author")}</label>
                 <Input
                   value={formData.author}
                   onChange={e => setFormData({ ...formData, author: e.target.value })}
@@ -286,7 +293,7 @@ export default function Library() {
                 />
               </div>
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">ISBN Number</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("isbn_number", "ISBN Number")}</label>
                 <Input
                   value={formData.isbn}
                   onChange={e => setFormData({ ...formData, isbn: e.target.value })}
@@ -296,22 +303,22 @@ export default function Library() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-bold text-muted-foreground uppercase">Category</label>
+                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("category", "Category")}</label>
                   <select
                     value={formData.category}
                     onChange={e => setFormData({ ...formData, category: e.target.value })}
                     className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
                   >
-                    <option>Science</option>
-                    <option>Literature</option>
-                    <option>Mathematics</option>
-                    <option>History</option>
-                    <option>Technology</option>
-                    <option>Geography</option>
+                    <option>{t("science", "Science")}</option>
+                    <option>{t("literature", "Literature")}</option>
+                    <option>{t("mathematics", "Mathematics")}</option>
+                    <option>{t("history", "History")}</option>
+                    <option>{t("technology", "Technology")}</option>
+                    <option>{t("geography", "Geography")}</option>
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-muted-foreground uppercase">Total Copies Stocked</label>
+                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("total_copies_stocked", "Total Copies Stocked")}</label>
                   <Input
                     type="number"
                     value={formData.total}
@@ -323,13 +330,12 @@ export default function Library() {
               </div>
             </div>
             <div className="flex gap-3 pt-4">
-              <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditingId(null); setFormData({ title: '', author: '', isbn: '', category: 'Science', total: 10 }); }}>Cancel</Button>
+              <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditingId(null); setFormData({ title: '', author: '', isbn: '', category: 'Science', total: 10 }); }}>{t("cancel", "Cancel")}</Button>
               <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleCreateBook}>{editingId ? 'Save Changes' : 'Catalog Book'}</Button>
             </div>
           </div>
         </div>
       )}
-
       <ConfirmationModal
         isOpen={deleteTargetId !== null}
         onClose={() => setDeleteTargetId(null)}
@@ -337,12 +343,14 @@ export default function Library() {
         title="Retract Library Book"
         message="Are you sure you want to completely remove this book from the catalog listing? All dynamic counts will adjust immediately."
       />
-
       <Sheet open={!!viewDetails} onOpenChange={(open) => !open && setViewDetails(null)}>
         <SheetContent className="overflow-y-auto w-full sm:max-w-md">
           <SheetHeader>
-            <SheetTitle>Book Details</SheetTitle>
-            <SheetDescription>Detailed catalog information for this book.</SheetDescription>
+            <SheetTitle>{t("book_details", "Book Details")}</SheetTitle>
+            <SheetDescription>{t(
+              "detailed_catalog_information_f",
+              "Detailed catalog information for this book."
+            )}</SheetDescription>
           </SheetHeader>
           {viewDetails && (
             <div className="mt-6 space-y-6">
@@ -358,29 +366,29 @@ export default function Library() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-muted/50 p-3 rounded-lg">
-                  <p className="text-xs text-muted-foreground uppercase font-semibold">ISBN</p>
+                  <p className="text-xs text-muted-foreground uppercase font-semibold">{t("isbn", "ISBN")}</p>
                   <p className="font-mono text-sm text-foreground mt-1">{viewDetails.isbn}</p>
                 </div>
                 <div className="bg-muted/50 p-3 rounded-lg">
-                  <p className="text-xs text-muted-foreground uppercase font-semibold">Category</p>
+                  <p className="text-xs text-muted-foreground uppercase font-semibold">{t("category", "Category")}</p>
                   <p className="font-medium text-foreground mt-1">{viewDetails.category}</p>
                 </div>
                 <div className="bg-muted/50 p-3 rounded-lg">
-                  <p className="text-xs text-muted-foreground uppercase font-semibold">Total Copies</p>
+                  <p className="text-xs text-muted-foreground uppercase font-semibold">{t("total_copies", "Total Copies")}</p>
                   <p className="font-medium text-foreground mt-1">{viewDetails.total}</p>
                 </div>
                 <div className="bg-muted/50 p-3 rounded-lg">
-                  <p className="text-xs text-muted-foreground uppercase font-semibold">Status</p>
+                  <p className="text-xs text-muted-foreground uppercase font-semibold">{t("status", "Status")}</p>
                   <span className={`inline-block mt-1 font-bold px-2.5 py-0.5 rounded-full text-xs ${viewDetails.available > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                     {viewDetails.available > 0 ? 'Available' : 'Out of Stock'}
                   </span>
                 </div>
                 <div className="bg-muted/50 p-3 rounded-lg flex flex-col justify-center">
-                  <p className="text-xs text-muted-foreground uppercase font-semibold">Available Copies</p>
+                  <p className="text-xs text-muted-foreground uppercase font-semibold">{t("available_copies", "Available Copies")}</p>
                   <p className="font-bold text-2xl text-green-600 mt-1">{viewDetails.available}</p>
                 </div>
                 <div className="bg-muted/50 p-3 rounded-lg flex flex-col justify-center">
-                  <p className="text-xs text-muted-foreground uppercase font-semibold">Borrowed</p>
+                  <p className="text-xs text-muted-foreground uppercase font-semibold">{t("borrowed", "Borrowed")}</p>
                   <p className="font-bold text-2xl text-orange-600 mt-1">{viewDetails.borrowed}</p>
                 </div>
               </div>

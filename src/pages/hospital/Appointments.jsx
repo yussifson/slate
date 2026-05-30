@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar as CalendarIcon, Clock, User, Stethoscope, Plus, Video, Trash2, CheckCircle, Play } from 'lucide-react';
@@ -24,6 +25,7 @@ const statusColors = {
 };
 
 export default function Appointments() {
+  const { t } = useTranslation();
   // Supabase Real-time Sync Hooks
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('appt');
   const mutateRecord = useMutateIndustryRecord();
@@ -157,28 +159,31 @@ export default function Appointments() {
 
   const filteredAppts = appointments.filter(appt => appt.date === date);
 
-  if (isDbLoading) return <div className="flex items-center justify-center h-64 text-muted-foreground">Loading appointments...</div>;
+  if (isDbLoading) return <div className="flex items-center justify-center h-64 text-muted-foreground">{t("loading_appointments", "Loading appointments...")}</div>;
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground">Appointments</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Manage doctor schedules and patient visits</p>
+          <h1 className="text-2xl font-bold text-card-foreground">{t("appointments", "Appointments")}</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{t(
+            "manage_doctor_schedules_and_pa",
+            "Manage doctor schedules and patient visits"
+          )}</p>
         </div>
         <div className="flex items-center gap-3">
            <Input type="date" value={date} onChange={e => setDate(e.target.value)} className="w-auto bg-card" />
-           <Button onClick={() => setShowModal(true)} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white"><Plus className="w-4 h-4"/> Book Appointment</Button>
+           <Button onClick={() => setShowModal(true)} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white"><Plus className="w-4 h-4"/> {t("book_appointment", "Book Appointment")}</Button>
         </div>
       </div>
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
          {/* Sidebar Calendar List */}
          <div className="col-span-1 bg-card rounded-xl border border-border p-4 shadow-sm h-[600px] overflow-y-auto space-y-4">
-            <h3 className="font-bold text-card-foreground flex items-center gap-2 border-b border-border pb-3"><CalendarIcon className="w-4 h-4 text-blue-500"/> Scheduled Visits ({filteredAppts.length})</h3>
+            <h3 className="font-bold text-card-foreground flex items-center gap-2 border-b border-border pb-3"><CalendarIcon className="w-4 h-4 text-blue-500"/> {t("scheduled_visits", "Scheduled Visits (")}{filteredAppts.length})</h3>
             <div className="space-y-3">
-               {filteredAppts.map(appt => (
-                  <div key={appt.id} onClick={() => setSelectedAppt(appt)} className={`p-3 rounded-lg border cursor-pointer hover:shadow-md transition-all flex flex-col gap-2 ${selectedAppt?.id === appt.id ? 'ring-2 ring-blue-500 border-transparent bg-blue-50/20' : 'border-border'}`}>
+               {filteredAppts.map(appt => {
+                 return (
+                   <div key={appt.id} onClick={() => setSelectedAppt(appt)} className={`p-3 rounded-lg border cursor-pointer hover:shadow-md transition-all flex flex-col gap-2 ${selectedAppt?.id === appt.id ? 'ring-2 ring-blue-500 border-transparent bg-blue-50/20' : 'border-border'}`}>
                      <div className="flex justify-between items-start">
                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${typeColors[appt.type]}`}>{appt.type}</span>
                         <span className={`text-[10px] font-semibold px-2 py-0.5 rounded border ${statusColors[appt.status]}`}>{appt.status}</span>
@@ -195,12 +200,13 @@ export default function Appointments() {
                           <Trash2 className="w-3.5 h-3.5" />
                         </Button>
                      </div>
-                  </div>
-               ))}
+                   </div>
+                 );
+               })}
                {filteredAppts.length === 0 && (
                  <div className="text-center py-12 text-muted-foreground">
                    <CalendarIcon className="w-8 h-8 mx-auto mb-2 opacity-30" />
-                   <p className="text-xs">No appointments booked for this day.</p>
+                   <p className="text-xs">{t("no_appointments_booked_for_thi", "No appointments booked for this day.")}</p>
                  </div>
                )}
             </div>
@@ -213,18 +219,18 @@ export default function Appointments() {
                 <div className="flex justify-between items-start">
                   <div>
                     <Link to="/hospital/patients" className="text-xl font-bold text-blue-600 hover:underline">{selectedAppt.patient}</Link>
-                    <p className="text-sm text-muted-foreground mt-0.5">Assigned: <strong>{selectedAppt.doctor}</strong></p>
+                    <p className="text-sm text-muted-foreground mt-0.5">{t("assigned", "Assigned:")} <strong>{selectedAppt.doctor}</strong></p>
                   </div>
                   <span className={`text-xs font-bold px-3 py-1 rounded-full border ${statusColors[selectedAppt.status]}`}>{selectedAppt.status}</span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 border-y border-border py-4 my-4">
                   <div>
-                    <p className="text-xs text-muted-foreground uppercase font-bold">Appointment Type</p>
+                    <p className="text-xs text-muted-foreground uppercase font-bold">{t("appointment_type", "Appointment Type")}</p>
                     <p className="font-semibold text-foreground">{selectedAppt.type}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-muted-foreground uppercase font-bold">Schedule Time</p>
+                    <p className="text-xs text-muted-foreground uppercase font-bold">{t("schedule_time", "Schedule Time")}</p>
                     <p className="font-semibold text-foreground flex items-center gap-1.5"><Clock className="w-4 h-4 text-blue-500" /> {selectedAppt.time}</p>
                   </div>
                 </div>
@@ -232,17 +238,20 @@ export default function Appointments() {
                 <div className="flex gap-3">
                   {selectedAppt.status === 'Scheduled' && (
                     <Button onClick={() => handleStatusChange(selectedAppt, 'In Progress')} className="gap-2 bg-amber-500 hover:bg-amber-600 text-white flex-1">
-                      <Play className="w-4 h-4" /> Start Consultation
+                      <Play className="w-4 h-4" /> {t("start_consultation", "Start Consultation")}
                     </Button>
                   )}
                   {selectedAppt.status === 'In Progress' && (
                     <Button onClick={() => handleStatusChange(selectedAppt, 'Completed')} className="gap-2 bg-green-600 hover:bg-green-700 text-white flex-1">
-                      <CheckCircle className="w-4 h-4" /> Complete Consultation
+                      <CheckCircle className="w-4 h-4" /> {t("complete_consultation", "Complete Consultation")}
                     </Button>
                   )}
                   {selectedAppt.status === 'Completed' && (
                     <div className="bg-green-50 border border-green-200 text-green-700 text-sm p-4 rounded-xl flex items-center gap-2 w-full justify-center font-semibold">
-                      <CheckCircle className="w-5 h-5" /> Visit completed successfully. Clinical chart created.
+                      <CheckCircle className="w-5 h-5" /> {t(
+                        "visit_completed_successfully_c",
+                        "Visit completed successfully. Clinical chart created."
+                      )}
                     </div>
                   )}
                 </div>
@@ -252,46 +261,48 @@ export default function Appointments() {
                  <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-4">
                     <Stethoscope className="w-8 h-8 text-blue-500" />
                  </div>
-                 <h2 className="text-lg font-bold text-card-foreground mb-2">Select an appointment</h2>
-                 <p className="text-sm text-muted-foreground max-w-sm">Click on an appointment from the schedule to view details, begin consultation, or update status.</p>
+                 <h2 className="text-lg font-bold text-card-foreground mb-2">{t("select_an_appointment", "Select an appointment")}</h2>
+                 <p className="text-sm text-muted-foreground max-w-sm">{t(
+                   "click_on_an_appointment_from_t",
+                   "Click on an appointment from the schedule to view details, begin consultation, or update status."
+                 )}</p>
               </div>
             )}
          </div>
       </div>
-
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4">
-            <h2 className="text-lg font-bold text-card-foreground">Book Appointment</h2>
+            <h2 className="text-lg font-bold text-card-foreground">{t("book_appointment", "Book Appointment")}</h2>
             <div className="space-y-3">
                <div>
-                 <label className="text-xs font-bold text-muted-foreground uppercase">Patient Name</label>
+                 <label className="text-xs font-bold text-muted-foreground uppercase">{t("patient_name", "Patient Name")}</label>
                  <Input value={formData.patient} onChange={e => setFormData({ ...formData, patient: e.target.value })} className="mt-1" placeholder="e.g. Kwesi Asante" />
                </div>
                <div>
-                 <label className="text-xs font-bold text-muted-foreground uppercase">Doctor</label>
+                 <label className="text-xs font-bold text-muted-foreground uppercase">{t("doctor", "Doctor")}</label>
                  <select value={formData.doctor} onChange={e => setFormData({ ...formData, doctor: e.target.value })} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-                   <option>Dr. John Mensah</option>
-                   <option>Dr. Jane Doe</option>
-                   <option>Dr. Sarah Connor</option>
+                   <option>{t("dr_john_mensah", "Dr. John Mensah")}</option>
+                   <option>{t("dr_jane_doe", "Dr. Jane Doe")}</option>
+                   <option>{t("dr_sarah_connor", "Dr. Sarah Connor")}</option>
                  </select>
                </div>
                <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-xs font-bold text-muted-foreground uppercase">Date</label>
+                    <label className="text-xs font-bold text-muted-foreground uppercase">{t("date", "Date")}</label>
                     <Input type="date" value={formData.date} onChange={e => setFormData({ ...formData, date: e.target.value })} className="mt-1" />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-muted-foreground uppercase">Time</label>
+                    <label className="text-xs font-bold text-muted-foreground uppercase">{t("time", "Time")}</label>
                     <Input type="time" value={formData.time} onChange={e => setFormData({ ...formData, time: e.target.value })} className="mt-1" />
                   </div>
                </div>
                <div>
-                 <label className="text-xs font-bold text-muted-foreground uppercase">Type</label>
+                 <label className="text-xs font-bold text-muted-foreground uppercase">{t("type", "Type")}</label>
                  <select value={formData.type} onChange={e => setFormData({ ...formData, type: e.target.value })} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-                   <option>Consultation</option>
-                   <option>Follow-up</option>
-                   <option>Emergency</option>
+                   <option>{t("consultation", "Consultation")}</option>
+                   <option>{t("follow_up", "Follow-up")}</option>
+                   <option>{t("emergency", "Emergency")}</option>
                  </select>
                </div>
             </div>
@@ -299,21 +310,21 @@ export default function Appointments() {
               <div className="flex items-center space-x-2">
                 <Checkbox id="generateZoom" checked={generateZoom} onCheckedChange={setGenerateZoom} />
                 <label htmlFor="generateZoom" className="text-sm font-medium leading-none cursor-pointer">
-                  Generate Zoom Meeting Link
+                  {t("generate_zoom_meeting_link", "Generate Zoom Meeting Link")}
                 </label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox id="syncGoogle" checked={syncGoogle} onCheckedChange={setSyncGoogle} />
                 <label htmlFor="syncGoogle" className="text-sm font-medium leading-none cursor-pointer">
-                  Sync to Google Calendar
+                  {t("sync_to_google_calendar", "Sync to Google Calendar")}
                 </label>
               </div>
             </div>
             <div className="flex gap-3 pt-4">
-              <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>Cancel</Button>
+              <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
               <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleSaveToDb} disabled={isGenerating || isSyncing}>
                 {(isGenerating || isSyncing) ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : null}
-                Book Visit
+                {t("book_visit", "Book Visit")}
               </Button>
             </div>
           </div>

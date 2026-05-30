@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Link } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -300,21 +301,24 @@ const suites = [
 ];
 
 function SuitesSection() {
+  const { t } = useTranslation();
   const [activeSuite, setActiveSuite] = useState(suites[0]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <section className="py-24 md:py-32 bg-white relative overflow-hidden">
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-500/10 blur-[120px] rounded-full pointer-events-none transform translate-x-1/3 -translate-y-1/3"></div>
-      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <FadeIn>
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 mb-6">
-              Tailored suites for your industry
+              {t("tailored_suites_for_your_indus", "Tailored suites for your industry")}
             </h2>
             <p className="text-lg text-slate-600 leading-relaxed font-medium">
-              We've built specialized operational systems that adapt to your specific business model and workflows.
+              {t(
+                "we_ve_built_specialized_operat",
+                "We've built specialized operational systems that adapt to your specific business model and workflows."
+              )}
             </p>
           </div>
         </FadeIn>
@@ -323,49 +327,53 @@ function SuitesSection() {
           {/* Left Tabs Column (Navigation) */}
           <div className="lg:col-span-4 relative z-10 lg:pr-6">
             <div className="mb-10">
-              <h3 className="text-slate-900 font-extrabold text-2xl md:text-3xl mb-3 tracking-tight">Select your sector</h3>
+              <h3 className="text-slate-900 font-extrabold text-2xl md:text-3xl mb-3 tracking-tight">{t("select_your_sector", "Select your sector")}</h3>
               <p className="text-slate-500 text-sm font-medium leading-relaxed">
-                Explore how our unified workspace adapts to your specific operational needs and scales with your business.
+                {t(
+                  "explore_how_our_unified_worksp",
+                  "Explore how our unified workspace adapts to your specific operational needs and scales with your business."
+                )}
               </p>
             </div>
             
             <div className="flex flex-col relative border-l border-slate-200">
-              {suites.map((suite) => (
-                <button
-                  key={suite.id}
-                  onClick={() => setActiveSuite(suite)}
-                  className={`w-full text-left px-6 py-4 md:py-5 transition-all duration-300 relative group overflow-hidden ${
-                    activeSuite.id === suite.id
-                      ? 'bg-gradient-to-r from-blue-50/80 to-transparent'
-                      : 'bg-transparent hover:bg-slate-50'
-                  }`}
-                >
-                  {/* Active Indicator Line */}
-                  {activeSuite.id === suite.id ? (
-                    <div className="absolute top-0 left-[-1px] w-[3px] h-full bg-blue-600 rounded-r-full shadow-[0_0_10px_rgba(37,99,235,0.4)]"></div>
-                  ) : (
-                    <div className="absolute top-0 left-[-1px] w-[3px] h-full bg-slate-300 scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-center rounded-r-full"></div>
-                  )}
-                  
-                  <div className="relative z-10 flex items-center justify-between">
-                    <div>
-                      <div className={`font-bold text-base transition-colors ${activeSuite.id === suite.id ? 'text-blue-700' : 'text-slate-700 group-hover:text-slate-900'}`}>
-                        {suite.name}
+              {suites.map(suite => {
+                return (
+                  <button
+                    key={suite.id}
+                    onClick={() => setActiveSuite(suite)}
+                    className={`w-full text-left px-6 py-4 md:py-5 transition-all duration-300 relative group overflow-hidden ${
+                      activeSuite.id === suite.id
+                        ? 'bg-gradient-to-r from-blue-50/80 to-transparent'
+                        : 'bg-transparent hover:bg-slate-50'
+                    }`}
+                  >
+                    {/* Active Indicator Line */}
+                    {activeSuite.id === suite.id ? (
+                      <div className="absolute top-0 left-[-1px] w-[3px] h-full bg-blue-600 rounded-r-full shadow-[0_0_10px_rgba(37,99,235,0.4)]"></div>
+                    ) : (
+                      <div className="absolute top-0 left-[-1px] w-[3px] h-full bg-slate-300 scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-center rounded-r-full"></div>
+                    )}
+                    <div className="relative z-10 flex items-center justify-between">
+                      <div>
+                        <div className={`font-bold text-base transition-colors ${activeSuite.id === suite.id ? 'text-blue-700' : 'text-slate-700 group-hover:text-slate-900'}`}>
+                          {suite.name}
+                        </div>
+                        <div className={`text-[13px] font-medium mt-1 transition-colors ${activeSuite.id === suite.id ? 'text-blue-600/80' : 'text-slate-500'}`}>
+                          {suite.tagline}
+                        </div>
                       </div>
-                      <div className={`text-[13px] font-medium mt-1 transition-colors ${activeSuite.id === suite.id ? 'text-blue-600/80' : 'text-slate-500'}`}>
-                        {suite.tagline}
+                      
+                      {/* Arrow Icon on Active */}
+                      <div className={`transition-all duration-300 ${activeSuite.id === suite.id ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}>
+                        <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
                       </div>
                     </div>
-                    
-                    {/* Arrow Icon on Active */}
-                    <div className={`transition-all duration-300 ${activeSuite.id === suite.id ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}>
-                      <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </div>
-                </button>
-              ))}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -387,7 +395,7 @@ function SuitesSection() {
                       {activeSuite.name}
                     </div>
                     <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-bold uppercase tracking-widest">
-                      <Sparkles className="w-3.5 h-3.5" /> Orbit AI Powered
+                      <Sparkles className="w-3.5 h-3.5" /> {t("orbit_ai_powered", "Orbit AI Powered")}
                     </div>
                   </div>
                   
@@ -401,16 +409,18 @@ function SuitesSection() {
                   
                   {/* Features List */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {activeSuite.features.map((feat, idx) => (
-                      <div key={idx} className="flex items-start gap-3 bg-white border border-slate-100 p-4 rounded-xl shadow-sm hover:shadow-md hover:border-blue-100 transition-all">
-                        <div className="mt-0.5 w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
-                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                          </svg>
+                    {activeSuite.features.map((feat, idx) => {
+                      return (
+                        <div key={idx} className="flex items-start gap-3 bg-white border border-slate-100 p-4 rounded-xl shadow-sm hover:shadow-md hover:border-blue-100 transition-all">
+                          <div className="mt-0.5 w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                          </div>
+                          <span className="font-bold text-slate-700 text-sm leading-snug">{feat}</span>
                         </div>
-                        <span className="font-bold text-slate-700 text-sm leading-snug">{feat}</span>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                   
                   <div className="mt-12 pt-8 border-t border-slate-100 flex items-center">
@@ -418,7 +428,7 @@ function SuitesSection() {
                       onClick={() => setIsModalOpen(true)}
                       className="bg-blue-600 text-white hover:bg-blue-700 font-bold py-6 px-10 rounded-full shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5"
                     >
-                      Explore {activeSuite.name} details
+                      {t("explore", "Explore")} {activeSuite.name} {t("details", "details")}
                     </Button>
                   </div>
                 </FadeIn>
@@ -427,7 +437,6 @@ function SuitesSection() {
           </div>
         </div>
       </div>
-
       {/* Modal / Popup for Workspace Details */}
       {isModalOpen && typeof document !== 'undefined' && createPortal(
         <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6">
@@ -441,7 +450,7 @@ function SuitesSection() {
             <div className="flex-none p-6 sm:p-8 border-b border-slate-100 flex justify-between items-start bg-slate-50/50">
               <div>
                 <div className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-[10px] font-bold uppercase tracking-widest mb-3">
-                  Workspace Module
+                  {t("workspace_module", "Workspace Module")}
                 </div>
                 <h3 className="text-3xl font-extrabold text-slate-900 tracking-tight">{activeSuite.name}</h3>
                 <p className="text-slate-500 font-medium mt-2 max-w-2xl">{activeSuite.description}</p>
@@ -465,28 +474,36 @@ function SuitesSection() {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                   </div>
-                  Core Features & Capabilities
+                  {t("core_features_capabilities", "Core Features & Capabilities")}
                 </h4>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-                  {activeSuite.features.map((feat, idx) => (
-                    <div key={idx} className="bg-slate-50 rounded-2xl p-6 border border-slate-100 hover:border-blue-100 transition-colors">
-                      <h5 className="font-bold text-slate-900 text-lg mb-2">{feat}</h5>
-                      <p className="text-slate-500 text-sm leading-relaxed font-medium">
-                        Powerful tools to automate this aspect of your business, integrating seamlessly with your broader operations.
-                      </p>
-                    </div>
-                  ))}
+                  {activeSuite.features.map((feat, idx) => {
+                    return (
+                      <div key={idx} className="bg-slate-50 rounded-2xl p-6 border border-slate-100 hover:border-blue-100 transition-colors">
+                        <h5 className="font-bold text-slate-900 text-lg mb-2">{feat}</h5>
+                        <p className="text-slate-500 text-sm leading-relaxed font-medium">
+                          {t(
+                            "powerful_tools_to_automate_thi",
+                            "Powerful tools to automate this aspect of your business, integrating seamlessly with your broader operations."
+                          )}
+                        </p>
+                      </div>
+                    );
+                  })}
                 </div>
                 
                 <div className="bg-blue-600 rounded-3xl p-8 sm:p-10 text-white relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-[50px] -translate-y-1/2 translate-x-1/3"></div>
-                  <h4 className="text-2xl font-bold mb-4 relative z-10">Ready to transform your workflow?</h4>
+                  <h4 className="text-2xl font-bold mb-4 relative z-10">{t("ready_to_transform_your_workfl", "Ready to transform your workflow?")}</h4>
                   <p className="text-blue-100 font-medium mb-8 max-w-lg relative z-10">
-                    Get started today and see how {activeSuite.name} can streamline your daily operations and boost your bottom line.
+                    {t("get_started_today_and_see_how", "Get started today and see how")} {activeSuite.name} {t(
+                      "can_streamline_your_daily_oper",
+                      "can streamline your daily operations and boost your bottom line."
+                    )}
                   </p>
                   <Button className="bg-white text-blue-600 hover:bg-slate-50 font-bold py-6 px-8 rounded-xl shadow-lg relative z-10">
-                    Start Your Free Trial
+                    {t("start_your_free_trial", "Start Your Free Trial")}
                   </Button>
                 </div>
               </div>
@@ -502,6 +519,7 @@ function SuitesSection() {
 /*  Component                                                         */
 /* ------------------------------------------------------------------ */
 export default function Home() {
+  const { t } = useTranslation();
   return (
     <div className="overflow-x-hidden">
       {/* ============================================================ */}
@@ -516,16 +534,19 @@ export default function Home() {
           <FadeIn>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 text-xs font-semibold text-slate-600 mb-8 shadow-sm">
               <span className="flex h-2 w-2 rounded-full bg-green-500" />
-              Trusted by 500+ Enterprise Teams &nbsp;&bull;&nbsp; <span className="font-bold text-blue-600 flex items-center gap-1"><Sparkles className="w-3 h-3"/> Powered by Orbit AI</span>
+              {t("trusted_by_500_enterprise_team", "Trusted by 500+ Enterprise Teams  •")}  <span className="font-bold text-blue-600 flex items-center gap-1"><Sparkles className="w-3 h-3"/> {t("powered_by_orbit_ai", "Powered by Orbit AI")}</span>
             </div>
           </FadeIn>
 
           {/* Headline */}
           <FadeIn delay="delay-100">
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1] max-w-4xl mx-auto mb-6">
-              The unified workspace that turns hours into{' '}
+              {t(
+                "the_unified_workspace_that_tur",
+                "The unified workspace that turns hours into"
+              )}{' '}
               <span className="bg-green-100 text-slate-900 px-4 py-1 rounded-[1.5rem] inline-block mt-2">
-                clear profit
+                {t("clear_profit", "clear profit")}
               </span>
             </h1>
           </FadeIn>
@@ -533,8 +554,10 @@ export default function Home() {
           {/* Subtitle */}
           <FadeIn delay="delay-200">
             <p className="text-lg text-slate-600 max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
-              Built for teams that take operations seriously. Manage cases, automate client communication, log billable hours,
-              process payments, and track HR — all in one place.
+              {t(
+                "built_for_teams_that_take_oper",
+                "Built for teams that take operations seriously. Manage cases, automate client communication, log billable hours,\n              process payments, and track HR — all in one place."
+              )}
             </p>
           </FadeIn>
 
@@ -542,11 +565,11 @@ export default function Home() {
           <FadeIn delay="delay-300">
             <div className="flex flex-col items-center justify-center mb-16">
               <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
-                <div className="bg-white border border-slate-100 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 shadow-sm">Project Profitability</div>
-                <div className="bg-white border border-slate-100 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 shadow-sm">Billing & Invoicing</div>
-                <div className="bg-white border border-slate-100 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 shadow-sm">Client Portal</div>
-                <div className="bg-white border border-slate-100 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 shadow-sm">HR & Payroll</div>
-                <div className="bg-primary/5 border border-primary/10 text-primary px-6 py-2.5 rounded-xl text-sm font-semibold shadow-sm">All Features</div>
+                <div className="bg-white border border-slate-100 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 shadow-sm">{t("project_profitability", "Project Profitability")}</div>
+                <div className="bg-white border border-slate-100 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 shadow-sm">{t("billing_invoicing", "Billing & Invoicing")}</div>
+                <div className="bg-white border border-slate-100 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 shadow-sm">{t("client_portal", "Client Portal")}</div>
+                <div className="bg-white border border-slate-100 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 shadow-sm">{t("hr_payroll", "HR & Payroll")}</div>
+                <div className="bg-primary/5 border border-primary/10 text-primary px-6 py-2.5 rounded-xl text-sm font-semibold shadow-sm">{t("all_features", "All Features")}</div>
               </div>
             </div>
           </FadeIn>
@@ -559,7 +582,6 @@ export default function Home() {
           </FadeIn>
         </div>
       </section>
-
       {/* ============================================================ */}
       {/*  ORBIT AI HERO (INTERACTIVE DEMO)                            */}
       {/* ============================================================ */}
@@ -572,22 +594,27 @@ export default function Home() {
               <div>
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-bold uppercase tracking-widest mb-6">
                   <Sparkles className="w-3.5 h-3.5" />
-                  Your Intelligent Agent
+                  {t("your_intelligent_agent", "Your Intelligent Agent")}
                 </div>
                 <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-6 leading-[1.1]">
-                  Meet <br/>
+                  {t("meet", "Meet")} <br/>
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-6xl md:text-8xl drop-shadow-sm font-extrabold pb-2 inline-block tracking-tighter">
-                    Orbit AI
+                    {t("orbit_ai", "Orbit AI")}
                   </span>
                 </h2>
                 <p className="text-lg text-slate-600 mb-8 leading-relaxed font-medium">
-                  Orbit isn't just a chatbot. It's an intelligent agent embedded directly into your workflow. 
-                  Ask it to analyze data, schedule appointments, or draft emails — it executes actions automatically across the entire Optalflow suite.
+                  {t(
+                    "orbit_isn_t_just_a_chatbot_it_",
+                    "Orbit isn't just a chatbot. It's an intelligent agent embedded directly into your workflow. \n                  Ask it to analyze data, schedule appointments, or draft emails — it executes actions automatically across the entire Optalflow suite."
+                  )}
                 </p>
                 <ul className="space-y-4 mb-10 text-slate-700 font-medium">
-                  <li className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0"><Clock className="w-4 h-4" /></div> Saves an average of 14 hours per week</li>
-                  <li className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0"><Shield className="w-4 h-4" /></div> Bank-grade secure long-term memory</li>
-                  <li className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0"><Briefcase className="w-4 h-4" /></div> Understands all 9 industry sectors natively</li>
+                  <li className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0"><Clock className="w-4 h-4" /></div> {t("saves_an_average_of_14_hours_p", "Saves an average of 14 hours per week")}</li>
+                  <li className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0"><Shield className="w-4 h-4" /></div> {t("bank_grade_secure_long_term_me", "Bank-grade secure long-term memory")}</li>
+                  <li className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0"><Briefcase className="w-4 h-4" /></div> {t(
+                      "understands_all_9_industry_sec",
+                      "Understands all 9 industry sectors natively"
+                    )}</li>
                 </ul>
               </div>
             </FadeIn>
@@ -605,16 +632,12 @@ export default function Home() {
           </div>
         </div>
       </section>
-      
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes slideRight {
           0% { transform: scaleX(1); }
           100% { transform: scaleX(0); }
         }
       `}} />
-
-
-
       {/* ============================================================ */}
       {/*  HOW IT WORKS                                                */}
       {/* ============================================================ */}
@@ -622,13 +645,16 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16 md:mb-24">
             <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-600 text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
-              Workflow
+              {t("workflow", "Workflow")}
             </span>
             <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-slate-900 mb-6">
-              How Optalflow works
+              {t("how_optalflow_works", "How Optalflow works")}
             </h2>
             <p className="text-lg text-slate-600 leading-relaxed font-medium">
-              We've streamlined the entire project lifecycle so your team can focus on execution, not administration.
+              {t(
+                "we_ve_streamlined_the_entire_p",
+                "We've streamlined the entire project lifecycle so your team can focus on execution, not administration."
+              )}
             </p>
           </div>
 
@@ -655,26 +681,27 @@ export default function Home() {
                 desc: 'Generate branded invoices instantly from tracked time and accept seamless local payments.',
                 icon: CreditCard
               }
-            ].map((step, i) => (
-              <FadeIn key={i} delay={`delay-${(i + 1) * 100}`}>
-                <div className="relative bg-white rounded-3xl p-8 border border-slate-100 shadow-sm text-center z-10 group hover:shadow-md transition-shadow">
-                  <div className="w-16 h-16 mx-auto bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-inner">
-                    <step.icon className="w-8 h-8" />
+            ].map((step, i) => {
+              return (
+                <FadeIn key={i} delay={`delay-${(i + 1) * 100}`}>
+                  <div className="relative bg-white rounded-3xl p-8 border border-slate-100 shadow-sm text-center z-10 group hover:shadow-md transition-shadow">
+                    <div className="w-16 h-16 mx-auto bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-inner">
+                      <step.icon className="w-8 h-8" />
+                    </div>
+                    <div className="absolute -top-4 -right-4 w-12 h-12 bg-blue-600 text-white font-black rounded-xl flex items-center justify-center text-lg shadow-lg transform rotate-6 group-hover:rotate-12 transition-transform">
+                      {step.step}
+                    </div>
+                    <h3 className="text-2xl font-bold text-slate-900 mb-4">{step.title}</h3>
+                    <p className="text-slate-600 font-medium leading-relaxed">
+                      {step.desc}
+                    </p>
                   </div>
-                  <div className="absolute -top-4 -right-4 w-12 h-12 bg-blue-600 text-white font-black rounded-xl flex items-center justify-center text-lg shadow-lg transform rotate-6 group-hover:rotate-12 transition-transform">
-                    {step.step}
-                  </div>
-                  <h3 className="text-2xl font-bold text-slate-900 mb-4">{step.title}</h3>
-                  <p className="text-slate-600 font-medium leading-relaxed">
-                    {step.desc}
-                  </p>
-                </div>
-              </FadeIn>
-            ))}
+                </FadeIn>
+              );
+            })}
           </div>
         </div>
       </section>
-
       {/* ============================================================ */}
       {/*  SOCIAL PROOF STRIP                                          */}
       {/* ============================================================ */}
@@ -682,28 +709,32 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <p className="text-xl font-medium text-slate-500 text-center mb-10">
-              Trusted by over 10 000 companies worldwide
+              {t(
+                "trusted_by_over_10_000_compani",
+                "Trusted by over 10 000 companies worldwide"
+              )}
             </p>
           </FadeIn>
 
           <FadeIn delay="delay-100">
             <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-10 md:gap-x-16">
-              {firms.map((firm, idx) => (
+              {firms.map((firm, idx) => {
+                return (
                   <div
                     key={idx}
                     className="flex items-center cursor-default select-none hover:scale-105 transition-transform duration-300"
                   >
-                  {firm.logo}
-                  <span className={`text-slate-900 ${firm.font}`}>
-                    {firm.name}
-                  </span>
-                </div>
-              ))}
+                    {firm.logo}
+                    <span className={`text-slate-900 ${firm.font}`}>
+                      {firm.name}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </FadeIn>
         </div>
       </section>
-
       {/* ============================================================ */}
       {/*  FEATURES GRID                                               */}
       {/* ============================================================ */}
@@ -718,14 +749,19 @@ export default function Home() {
           <FadeIn>
             <div className="text-center max-w-2xl mx-auto mb-20">
               <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-slate-200 text-blue-600 text-xs font-bold uppercase tracking-widest mb-6 shadow-sm">
-                Unified Architecture
+                {t("unified_architecture", "Unified Architecture")}
               </span>
               <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-6">
-                Built for the complexities of modern business
+                {t(
+                  "built_for_the_complexities_of_",
+                  "Built for the complexities of modern business"
+                )}
               </h2>
               <p className="text-lg text-slate-600 leading-relaxed font-medium">
-                Unify case files, client relationships, time tracking, billing,
-                and employee metrics in one beautifully designed, secure platform.
+                {t(
+                  "unify_case_files_client_relati",
+                  "Unify case files, client relationships, time tracking, billing,\n                and employee metrics in one beautifully designed, secure platform."
+                )}
               </p>
             </div>
           </FadeIn>
@@ -762,7 +798,7 @@ export default function Home() {
                     
                     {/* Elegant Reveal Link (Always visible but enhances on hover) */}
                     <div className="relative z-10 mt-12 flex items-center text-blue-700 font-extrabold text-lg opacity-80 group-hover:opacity-100 transition-all duration-500 ease-out">
-                      Explore capabilities
+                      {t("explore_capabilities", "Explore capabilities")}
                       <span className="ml-3 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center group-hover:bg-blue-600 text-blue-700 group-hover:text-white transition-all duration-500 shadow-sm transform group-hover:translate-x-1">
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -771,17 +807,15 @@ export default function Home() {
                     </div>
                   </div>
                 </FadeIn>
-              )
+              );
             })}
           </div>
         </div>
       </section>
-
       {/* ============================================================ */}
       {/*  SUITES SECTION (Interactive)                                */}
       {/* ============================================================ */}
       <SuitesSection />
-
       {/* ============================================================ */}
       {/*  TESTIMONIALS                                                */}
       {/* ============================================================ */}
@@ -790,57 +824,60 @@ export default function Home() {
           <FadeIn>
             <div className="text-center max-w-2xl mx-auto mb-20">
               <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-bold uppercase tracking-widest mb-6">
-                Client Success
+                {t("client_success", "Client Success")}
               </span>
               <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
-                What our customers say
+                {t("what_our_customers_say", "What our customers say")}
               </h2>
             </div>
           </FadeIn>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((t, idx) => (
-              <FadeIn key={idx} delay={`delay-[${idx * 120}ms]`}>
-                <div className="bg-white border border-slate-200 rounded-[2rem] p-10 flex flex-col justify-between hover:border-blue-300 hover:shadow-2xl hover:shadow-blue-900/5 transition-all duration-300 h-full group relative overflow-hidden">
-                  <div className="absolute top-0 right-0 p-8 opacity-5 text-[8rem] font-serif leading-none font-black text-blue-900 group-hover:text-blue-600 group-hover:opacity-10 transition-colors duration-500">"</div>
-                  
-                  <div className="relative z-10">
-                    <div className="flex gap-1.5 mb-8">
-                      {Array.from({ length: t.rating }).map((_, si) => (
-                        <Star
-                          key={si}
-                          className="w-5 h-5 fill-amber-400 text-amber-400"
-                        />
-                      ))}
+            {testimonials.map((t, idx) => {
+              return (
+                <FadeIn key={idx} delay={`delay-[${idx * 120}ms]`}>
+                  <div className="bg-white border border-slate-200 rounded-[2rem] p-10 flex flex-col justify-between hover:border-blue-300 hover:shadow-2xl hover:shadow-blue-900/5 transition-all duration-300 h-full group relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-8 opacity-5 text-[8rem] font-serif leading-none font-black text-blue-900 group-hover:text-blue-600 group-hover:opacity-10 transition-colors duration-500">"</div>
+                    
+                    <div className="relative z-10">
+                      <div className="flex gap-1.5 mb-8">
+                        {Array.from({ length: item.rating }).map((_, si) => {
+                          return (
+                            <Star
+                              key={si}
+                              className="w-5 h-5 fill-amber-400 text-amber-400"
+                            />
+                          );
+                        })}
+                      </div>
+                      <blockquote className="text-lg text-slate-700 leading-relaxed font-medium mb-10">
+                        "{item.quote}"
+                      </blockquote>
                     </div>
-                    <blockquote className="text-lg text-slate-700 leading-relaxed font-medium mb-10">
-                      "{t.quote}"
-                    </blockquote>
-                  </div>
 
-                  <div className="flex items-center gap-4 pt-6 border-t border-slate-100 relative z-10">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center text-blue-700 font-bold text-lg shadow-inner">
-                      {t.author
-                        .split(' ')
-                        .map((n) => n[0])
-                        .join('')}
-                    </div>
-                    <div>
-                      <p className="text-base font-bold text-slate-900">
-                        {t.author}
-                      </p>
-                      <p className="text-sm font-medium text-slate-500">
-                        {t.role}, {t.firm}
-                      </p>
+                    <div className="flex items-center gap-4 pt-6 border-t border-slate-100 relative z-10">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center text-blue-700 font-bold text-lg shadow-inner">
+                        {item.author
+                          .split(' ')
+                          .map((n) => n[0])
+                          .join('')}
+                      </div>
+                      <div>
+                        <p className="text-base font-bold text-slate-900">
+                          {item.author}
+                        </p>
+                        <p className="text-sm font-medium text-slate-500">
+                          {item.role}, {item.firm}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </FadeIn>
-            ))}
+                </FadeIn>
+              );
+            })}
           </div>
         </div>
       </section>
-
       {/* ============================================================ */}
       {/*  CTA BANNER                                                  */}
       {/* ============================================================ */}
@@ -854,17 +891,19 @@ export default function Home() {
 
               <div className="relative z-10 max-w-3xl mx-auto space-y-8">
                 <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter leading-[1.1]">
-                  Ready to modernize your organization?
+                  {t("ready_to_modernize_your_organi", "Ready to modernize your organization?")}
                 </h2>
                 <p className="text-lg md:text-xl text-white/80 leading-relaxed max-w-2xl mx-auto font-medium">
-                  Create your workspace, invite associates, and start managing
-                  cases in minutes.
+                  {t(
+                    "create_your_workspace_invite_a",
+                    "Create your workspace, invite associates, and start managing\n                  cases in minutes."
+                  )}
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
                   <Link to="/signup">
                     <Button className="bg-white text-primary hover:bg-white/90 font-bold text-base py-6 px-10 rounded-xl shadow-xl group transition-all hover:scale-[1.02]">
-                      Start Your Free Trial
+                      {t("start_your_free_trial", "Start Your Free Trial")}
                       <ChevronRight className="w-5 h-5 ml-1 transition-transform group-hover:translate-x-1" />
                     </Button>
                   </Link>
@@ -873,15 +912,15 @@ export default function Home() {
                       variant="outline"
                       className="border-white/30 text-white hover:bg-white/10 font-bold text-base py-6 px-10 rounded-xl transition-all hover:scale-[1.02] bg-transparent"
                     >
-                      Contact Sales
+                      {t("contact_sales", "Contact Sales")}
                     </Button>
                   </Link>
                 </div>
                 
                 <div className="pt-8 flex flex-wrap justify-center gap-6 text-sm text-white/70 font-medium">
-                  <span className="flex items-center gap-1.5"><Shield className="w-4 h-4"/> SOC2 Certified</span>
-                  <span className="flex items-center gap-1.5"><Clock className="w-4 h-4"/> 5-Minute Setup</span>
-                  <span className="flex items-center gap-1.5"><CreditCard className="w-4 h-4"/> No Credit Card Required</span>
+                  <span className="flex items-center gap-1.5"><Shield className="w-4 h-4"/> {t("soc2_certified", "SOC2 Certified")}</span>
+                  <span className="flex items-center gap-1.5"><Clock className="w-4 h-4"/> {t("5_minute_setup", "5-Minute Setup")}</span>
+                  <span className="flex items-center gap-1.5"><CreditCard className="w-4 h-4"/> {t("no_credit_card_required", "No Credit Card Required")}</span>
                 </div>
               </div>
             </div>

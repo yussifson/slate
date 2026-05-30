@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Utensils, Plus, Receipt, Search, ShoppingCart, Check, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -6,6 +7,7 @@ import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } 
 import { toast } from 'react-hot-toast';
 
 export default function Restaurant() {
+  const { t } = useTranslation();
   // Supabase Real-time Sync Hooks
   const { data: dbMenu = [], isLoading: isMenuLoading } = useIndustryRecords('menu');
   const mutateRecord = useMutateIndustryRecord();
@@ -121,14 +123,13 @@ export default function Restaurant() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground">Restaurant & Room Service</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Manage food orders and POS</p>
+          <h1 className="text-2xl font-bold text-card-foreground">{t("restaurant_room_service", "Restaurant & Room Service")}</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{t("manage_food_orders_and_pos", "Manage food orders and POS")}</p>
         </div>
         <Button onClick={() => setShowAddMenuModal(true)} className="gap-2 bg-amber-600 hover:bg-amber-700 text-white">
-          <Plus className="w-4 h-4" /> Add Menu Item
+          <Plus className="w-4 h-4" /> {t("add_menu_item", "Add Menu Item")}
         </Button>
       </div>
-
       <div className="flex flex-col lg:flex-row gap-6">
          {/* Left: Menu & POS */}
          <div className="flex-1 space-y-4">
@@ -142,26 +143,30 @@ export default function Restaurant() {
                  onChange={e => setSelectedCategory(e.target.value)} 
                  className="rounded-md border border-input bg-background px-3 py-2 text-sm max-w-[200px]"
                >
-                  <option value="All">All Categories</option>
-                  <option value="Starters">Starters</option>
-                  <option value="Mains">Mains</option>
-                  <option value="Desserts">Desserts</option>
-                  <option value="Beverages">Beverages</option>
+                  <option value="All">{t("all_categories", "All Categories")}</option>
+                  <option value="Starters">{t("starters", "Starters")}</option>
+                  <option value="Mains">{t("mains", "Mains")}</option>
+                  <option value="Desserts">{t("desserts", "Desserts")}</option>
+                  <option value="Beverages">{t("beverages", "Beverages")}</option>
                </select>
             </div>
 
             {isMenuLoading ? (
-              <div className="py-12 text-center text-muted-foreground">Loading menu...</div>
+              <div className="py-12 text-center text-muted-foreground">{t("loading_menu", "Loading menu...")}</div>
             ) : filtered.length === 0 ? (
               <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-border">
                 <Utensils className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                <p className="font-semibold">No menu items found.</p>
-                <p className="text-xs mt-1">Click "Add Menu Item" to get started.</p>
+                <p className="font-semibold">{t("no_menu_items_found", "No menu items found.")}</p>
+                <p className="text-xs mt-1">{t(
+                  "click_add_menu_item_to_get_sta",
+                  "Click \"Add Menu Item\" to get started."
+                )}</p>
               </div>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                 {filtered.map(item => (
-                    <div key={item.id} className="group bg-card p-4 rounded-xl border border-border shadow-sm hover:shadow-md hover:border-amber-200 cursor-pointer transition-all flex flex-col justify-between h-32 relative">
+                 {filtered.map(item => {
+                   return (
+                     <div key={item.id} className="group bg-card p-4 rounded-xl border border-border shadow-sm hover:shadow-md hover:border-amber-200 cursor-pointer transition-all flex flex-col justify-between h-32 relative">
                        <button 
                          onClick={(e) => { e.stopPropagation(); handleDeleteMenu(item.id); }} 
                          className="absolute top-2 right-2 p-1 text-muted-foreground hover:text-red-500 rounded opacity-0 group-hover:opacity-100 transition-opacity"
@@ -176,8 +181,9 @@ export default function Restaurant() {
                           <span className="font-bold text-amber-600">${item.price.toFixed(2)}</span>
                           <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-muted-foreground group-hover:bg-amber-100 group-hover:text-amber-600"><Plus className="w-4 h-4"/></div>
                        </div>
-                    </div>
-                 ))}
+                     </div>
+                   );
+                 })}
               </div>
             )}
          </div>
@@ -185,77 +191,78 @@ export default function Restaurant() {
          {/* Right: Current Order */}
          <div className="w-full lg:w-96 bg-card rounded-xl shadow-md border border-border flex flex-col h-[600px] overflow-hidden">
             <div className="p-4 bg-slate-900 text-white flex items-center justify-between">
-               <h3 className="font-bold flex items-center gap-2"><ShoppingCart className="w-5 h-5"/> Current Order</h3>
+               <h3 className="font-bold flex items-center gap-2"><ShoppingCart className="w-5 h-5"/> {t("current_order", "Current Order")}</h3>
                <Input value={roomNumber} onChange={e => setRoomNumber(e.target.value)} className="w-24 h-8 bg-slate-800 border-none text-white text-xs font-bold text-center" />
             </div>
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
                {order.length === 0 ? (
                   <div className="h-full flex flex-col items-center justify-center text-muted-foreground opacity-50">
                      <Utensils className="w-12 h-12 mb-2" />
-                     <p className="text-sm font-medium">Order is empty</p>
+                     <p className="text-sm font-medium">{t("order_is_empty", "Order is empty")}</p>
                   </div>
                ) : (
-                  order.map(item => (
-                     <div key={item.id} className="flex justify-between items-center">
+                  order.map(item => {
+                    return (
+                      <div key={item.id} className="flex justify-between items-center">
                         <div className="flex-1">
                            <p className="font-bold text-sm text-card-foreground">{item.name}</p>
                            <p className="text-xs text-muted-foreground">${item.price} x {item.qty}</p>
                         </div>
                         <div className="flex items-center gap-3">
                            <span className="font-bold text-sm">${(item.price * item.qty).toFixed(2)}</span>
-                           <button onClick={() => removeFromOrder(item.id)} className="text-red-500 hover:text-red-700 text-xs font-bold">Remove</button>
+                           <button onClick={() => removeFromOrder(item.id)} className="text-red-500 hover:text-red-700 text-xs font-bold">{t("remove", "Remove")}</button>
                         </div>
-                     </div>
-                  ))
+                      </div>
+                    );
+                  })
                )}
             </div>
             <div className="p-4 border-t border-border bg-muted space-y-4">
                <div className="flex justify-between items-center text-sm">
-                  <span className="text-muted-foreground">Subtotal</span>
+                  <span className="text-muted-foreground">{t("subtotal", "Subtotal")}</span>
                   <span className="font-bold text-card-foreground">${total.toFixed(2)}</span>
                </div>
                <div className="flex justify-between items-center text-sm">
-                  <span className="text-muted-foreground">Tax (10%)</span>
+                  <span className="text-muted-foreground">{t("tax_10", "Tax (10%)")}</span>
                   <span className="font-bold text-card-foreground">${(total * 0.1).toFixed(2)}</span>
                </div>
                <div className="flex justify-between items-center text-lg pt-2 border-t border-border">
-                  <span className="font-bold text-card-foreground">Total</span>
+                  <span className="font-bold text-card-foreground">{t("total", "Total")}</span>
                   <span className="font-bold text-amber-600">${(total * 1.1).toFixed(2)}</span>
                </div>
                <div className="grid grid-cols-2 gap-2 pt-2">
-                  <Button onClick={() => handlePlaceOrder('Room')} variant="outline" className="w-full">Charge Room</Button>
-                  <Button onClick={() => handlePlaceOrder('Cash')} className="w-full bg-green-600 hover:bg-green-700 text-white gap-2"><Receipt className="w-4 h-4"/> Pay Now</Button>
+                  <Button onClick={() => handlePlaceOrder('Room')} variant="outline" className="w-full">{t("charge_room", "Charge Room")}</Button>
+                  <Button onClick={() => handlePlaceOrder('Cash')} className="w-full bg-green-600 hover:bg-green-700 text-white gap-2"><Receipt className="w-4 h-4"/> {t("pay_now", "Pay Now")}</Button>
                </div>
             </div>
          </div>
       </div>
-
       {showAddMenuModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-sm p-6 space-y-4">
-            <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><Utensils className="w-5 h-5 text-amber-600"/> Add Menu Item</h2>
+            <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><Utensils className="w-5 h-5 text-amber-600"/> {t("add_menu_item", "Add Menu Item")}</h2>
             <div className="space-y-3">
                <div>
-                 <label className="text-xs font-bold text-muted-foreground uppercase">Item Name</label>
+                 <label className="text-xs font-bold text-muted-foreground uppercase">{t("item_name", "Item Name")}</label>
                  <Input value={newMenu.name} onChange={e => setNewMenu({ ...newMenu, name: e.target.value })} className="mt-1" placeholder="e.g. T-Bone Steak" />
                </div>
                <div>
-                 <label className="text-xs font-bold text-muted-foreground uppercase">Category</label>
+                 <label className="text-xs font-bold text-muted-foreground uppercase">{t("category", "Category")}</label>
                  <select value={newMenu.category} onChange={e => setNewMenu({ ...newMenu, category: e.target.value })} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-                   <option>Starters</option>
-                   <option>Mains</option>
-                   <option>Desserts</option>
-                   <option>Beverages</option>
+                   <option>{t("starters", "Starters")}</option>
+                   <option>{t("mains", "Mains")}</option>
+                   <option>{t("desserts", "Desserts")}</option>
+                   <option>{t("beverages", "Beverages")}</option>
                  </select>
                </div>
                <div>
-                 <label className="text-xs font-bold text-muted-foreground uppercase">Price ($)</label>
+                 <label className="text-xs font-bold text-muted-foreground uppercase">{t("price", "Price ($)")}</label>
                  <Input type="number" value={newMenu.price} onChange={e => setNewMenu({ ...newMenu, price: e.target.value })} className="mt-1" placeholder="e.g. 24.99" />
                </div>
             </div>
             <div className="flex gap-3 pt-2">
-              <Button variant="outline" className="flex-1" onClick={() => setShowAddMenuModal(false)}>Cancel</Button>
-              <Button className="flex-1 bg-amber-600 hover:bg-amber-700 text-white" onClick={handleAddMenuItem}>Add Item</Button>
+              <Button variant="outline" className="flex-1" onClick={() => setShowAddMenuModal(false)}>{t("cancel", "Cancel")}</Button>
+              <Button className="flex-1 bg-amber-600 hover:bg-amber-700 text-white" onClick={handleAddMenuItem}>{t("add_item", "Add Item")}</Button>
             </div>
           </div>
         </div>

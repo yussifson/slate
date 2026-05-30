@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -21,6 +22,7 @@ const STATUS_CONFIG = {
 };
 
 export default function ESignaturePanel({ caseData, user }) {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [showSendForm, setShowSendForm] = useState(false);
@@ -103,23 +105,28 @@ Optalflow Law Management`,
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-sm font-semibold">E-Signature Requests</h3>
-          <p className="text-xs text-muted-foreground mt-0.5">Send documents to clients for legally binding electronic signatures</p>
+          <h3 className="text-sm font-semibold">{t("e_signature_requests", "E-Signature Requests")}</h3>
+          <p className="text-xs text-muted-foreground mt-0.5">{t(
+            "send_documents_to_clients_for_",
+            "Send documents to clients for legally binding electronic signatures"
+          )}</p>
         </div>
         {canManage && (
           <Button size="sm" onClick={() => setShowSendForm(true)} className="gap-1.5 text-xs">
-            <Send className="w-3.5 h-3.5" /> Request Signature
+            <Send className="w-3.5 h-3.5" /> {t("request_signature", "Request Signature")}
           </Button>
         )}
       </div>
-
       {isLoading ? (
-        <div className="p-8 text-center text-sm text-muted-foreground">Loading...</div>
+        <div className="p-8 text-center text-sm text-muted-foreground">{t("loading", "Loading...")}</div>
       ) : requests.length === 0 ? (
         <div className="bg-card rounded-xl border border-border p-10 text-center">
           <PenTool className="w-10 h-10 mx-auto text-muted-foreground mb-3" />
-          <p className="text-sm font-medium">No signature requests yet</p>
-          <p className="text-xs text-muted-foreground mt-1">Send documents to clients for e-signatures and track their status here.</p>
+          <p className="text-sm font-medium">{t("no_signature_requests_yet", "No signature requests yet")}</p>
+          <p className="text-xs text-muted-foreground mt-1">{t(
+            "send_documents_to_clients_for_",
+            "Send documents to clients for e-signatures and track their status here."
+          )}</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -140,16 +147,16 @@ Optalflow Law Management`,
                     </Badge>
                   </div>
                   <div className="flex flex-wrap gap-2 mt-0.5 text-xs text-muted-foreground">
-                    <span>To: {req.client_name} ({req.client_email})</span>
-                    {req.sent_at && <span>Sent: {format(new Date(req.sent_at), "MMM d, HH:mm")}</span>}
-                    {req.opened_at && <span>Opened: {format(new Date(req.opened_at), "MMM d, HH:mm")}</span>}
-                    {req.signed_at && <span>Signed: {format(new Date(req.signed_at), "MMM d, HH:mm")}</span>}
+                    <span>{t("to", "To:")} {req.client_name}({req.client_email})</span>
+                    {req.sent_at && <span>{t("sent", "Sent:")} {format(new Date(req.sent_at), "MMM d, HH:mm")}</span>}
+                    {req.opened_at && <span>{t("opened", "Opened:")} {format(new Date(req.opened_at), "MMM d, HH:mm")}</span>}
+                    {req.signed_at && <span>{t("signed", "Signed:")} {format(new Date(req.signed_at), "MMM d, HH:mm")}</span>}
                   </div>
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
                   {req.signature_data && (
                     <Button variant="outline" size="sm" className="text-xs h-7 px-2" onClick={() => setViewingSig(req)}>
-                      View Signature
+                      {t("view_signature", "View Signature")}
                     </Button>
                   )}
                   {["sent", "opened"].includes(req.status) && canManage && (
@@ -163,7 +170,6 @@ Optalflow Law Management`,
           })}
         </div>
       )}
-
       <SendSignatureDialog
         open={showSendForm}
         onClose={() => setShowSendForm(false)}
@@ -172,21 +178,20 @@ Optalflow Law Management`,
         caseData={caseData}
         isSending={sendMutation.isPending}
       />
-
       {viewingSig && (
         <Dialog open={!!viewingSig} onOpenChange={() => setViewingSig(null)}>
           <DialogContent className="max-w-md">
-            <DialogHeader><DialogTitle>Signed Signature — {viewingSig.document_name}</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{t("signed_signature", "Signed Signature —")} {viewingSig.document_name}</DialogTitle></DialogHeader>
             <div className="space-y-3">
               <div className="bg-white border border-border rounded-lg p-4 flex items-center justify-center min-h-32">
                 {viewingSig.signature_data
                   ? <img src={viewingSig.signature_data} alt="Client signature" className="max-h-28 object-contain" />
-                  : <p className="text-sm text-muted-foreground">No signature image</p>}
+                  : <p className="text-sm text-muted-foreground">{t("no_signature_image", "No signature image")}</p>}
               </div>
               <div className="text-xs text-muted-foreground space-y-1">
-                <p><strong>Signed by:</strong> {viewingSig.client_name} ({viewingSig.client_email})</p>
-                {viewingSig.signed_at && <p><strong>Signed at:</strong> {format(new Date(viewingSig.signed_at), "PPP p")}</p>}
-                {viewingSig.signature_ip && <p><strong>IP Address:</strong> {viewingSig.signature_ip}</p>}
+                <p><strong>{t("signed_by", "Signed by:")}</strong> {viewingSig.client_name} ({viewingSig.client_email})</p>
+                {viewingSig.signed_at && <p><strong>{t("signed_at", "Signed at:")}</strong> {format(new Date(viewingSig.signed_at), "PPP p")}</p>}
+                {viewingSig.signature_ip && <p><strong>{t("ip_address", "IP Address:")}</strong> {viewingSig.signature_ip}</p>}
               </div>
             </div>
           </DialogContent>
@@ -197,6 +202,7 @@ Optalflow Law Management`,
 }
 
 function SendSignatureDialog({ open, onClose, onSubmit, documents, caseData, isSending }) {
+  const { t } = useTranslation();
   const [form, setForm] = useState({
     document_id: "",
     document_name: "",
@@ -214,34 +220,36 @@ function SendSignatureDialog({ open, onClose, onSubmit, documents, caseData, isS
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
-        <DialogHeader><DialogTitle>Request E-Signature</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle>{t("request_e_signature", "Request E-Signature")}</DialogTitle></DialogHeader>
         <div className="space-y-3">
           <div>
-            <Label>Document to Sign</Label>
+            <Label>{t("document_to_sign", "Document to Sign")}</Label>
             <Select value={form.document_id} onValueChange={handleDocChange}>
               <SelectTrigger><SelectValue placeholder="Select document..." /></SelectTrigger>
               <SelectContent>
-                {documents.map(d => <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>)}
+                {documents.map(d => {
+                  return <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>;
+                })}
               </SelectContent>
             </Select>
           </div>
           <div>
-            <Label>Client Name</Label>
+            <Label>{t("client_name", "Client Name")}</Label>
             <Input value={form.client_name} onChange={e => setForm({ ...form, client_name: e.target.value })} />
           </div>
           <div>
-            <Label>Client Email</Label>
+            <Label>{t("client_email", "Client Email")}</Label>
             <Input type="email" value={form.client_email} onChange={e => setForm({ ...form, client_email: e.target.value })} placeholder="client@example.com" required />
           </div>
           <div>
-            <Label>Message to Client (optional)</Label>
+            <Label>{t("message_to_client_optional", "Message to Client (optional)")}</Label>
             <Input value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} placeholder="Please review and sign this document..." />
           </div>
           <div className="flex justify-end gap-2 pt-1">
-            <Button variant="outline" onClick={onClose}>Cancel</Button>
+            <Button variant="outline" onClick={onClose}>{t("cancel", "Cancel")}</Button>
             <Button onClick={() => onSubmit(form)} disabled={isSending || !form.document_id || !form.client_email} className="gap-1.5">
               {isSending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-              Send for Signature
+              {t("send_for_signature", "Send for Signature")}
             </Button>
           </div>
         </div>

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -19,14 +20,7 @@ import { useCompanyId, useCompany } from "@/hooks/useCompanyId";
 import { SUBSCRIPTION_PLANS } from "@/lib/constants";
 import { useNotifications } from "@/hooks/useNotifications";
 
-const DEFAULT_ROLES = [
-  { value: "company_admin", label: "Company Admin" },
-  { value: "lawyer", label: "Lawyer" },
-  { value: "paralegal", label: "Paralegal" },
-  { value: "hr", label: "HR" },
-  { value: "finance", label: "Finance" },
-  { value: "support", label: "Support" },
-];
+import { getIndustryRoles } from "@/config/industries";
 
 const roleColors = {
   company_admin: "bg-purple-100 text-purple-700",
@@ -38,6 +32,7 @@ const roleColors = {
 };
 
 export default function Team() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const companyId = useCompanyId();
   const { company } = useCompany();
@@ -94,47 +89,59 @@ export default function Team() {
   const columns = [
     {
       header: "Staff Member",
-      render: (row) => (
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-            <span className="text-xs font-bold text-primary">{row.full_name?.[0]?.toUpperCase()}</span>
+      render: row => {
+        return (
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+              <span className="text-xs font-bold text-primary">{row.full_name?.[0]?.toUpperCase()}</span>
+            </div>
+            <div>
+              <p className="font-medium text-sm">{row.full_name}</p>
+              <p className="text-xs text-muted-foreground">{row.user_email}</p>
+            </div>
           </div>
-          <div>
-            <p className="font-medium text-sm">{row.full_name}</p>
-            <p className="text-xs text-muted-foreground">{row.user_email}</p>
-          </div>
-        </div>
-      )
+        );
+      }
     },
-    { header: "Role", render: (row) => <Badge className={`${roleColors[row.role] || "bg-gray-100 text-gray-600"} text-[10px] capitalize`}>{row.role?.replace(/_/g, " ")}</Badge> },
-    { header: "Department", render: (row) => <span className="text-sm">{row.department || "—"}</span> },
+    { header: "Role", render: row => {
+      return <Badge className={`${roleColors[row.role] || "bg-gray-100 text-gray-600"} text-[10px] capitalize`}>{row.role?.replace(/_/g, " ")}</Badge>;
+    } },
+    { header: "Department", render: row => {
+      return <span className="text-sm">{row.department || "—"}</span>;
+    } },
     {
       header: "Status",
-      render: (row) => (
-        <Badge className={`text-[10px] ${row.status === "active" ? "bg-green-100 text-green-700" : row.status === "on_leave" ? "bg-amber-100 text-amber-700" : "bg-slate-100 text-slate-600"}`}>
-          {row.status?.replace("_", " ")}
-        </Badge>
-      )
+      render: row => {
+        return (
+          <Badge className={`text-[10px] ${row.status === "active" ? "bg-green-100 text-green-700" : row.status === "on_leave" ? "bg-amber-100 text-amber-700" : "bg-slate-100 text-slate-600"}`}>
+            {row.status?.replace("_", " ")}
+          </Badge>
+        );
+      }
     },
-    { header: "Joined", render: (row) => <span className="text-xs text-muted-foreground">{row.hire_date ? format(new Date(row.hire_date), "MMM d, yyyy") : "—"}</span> },
+    { header: "Joined", render: row => {
+      return <span className="text-xs text-muted-foreground">{row.hire_date ? format(new Date(row.hire_date), "MMM d, yyyy") : "—"}</span>;
+    } },
     ...(canManage ? [{
       header: "Actions",
-      render: (row) => (
-        <div className="flex items-center gap-1">
-          <Button
-            variant="ghost" size="sm" className="h-7 px-2 text-xs"
-            onClick={(e) => { e.stopPropagation(); setEditingStaff(row); }}
-          >
-            Edit
-          </Button>
-          <Button
-            variant="ghost" size="icon" className="h-7 w-7 hover:bg-red-50"
-            onClick={(e) => { e.stopPropagation(); if (window.confirm(`Remove ${row.full_name}?`)) removeMutation.mutate(row.id); }}
-          >
-            <Trash2 className="w-3.5 h-3.5 text-red-600" />
-          </Button>
-        </div>
-      )
+      render: row => {
+        return (
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost" size="sm" className="h-7 px-2 text-xs"
+              onClick={(e) => { e.stopPropagation(); setEditingStaff(row); }}
+            >
+              {t("edit", "Edit")}
+            </Button>
+            <Button
+              variant="ghost" size="icon" className="h-7 w-7 hover:bg-red-50"
+              onClick={(e) => { e.stopPropagation(); if (window.confirm(`Remove ${row.full_name}?`)) removeMutation.mutate(row.id); }}
+            >
+              <Trash2 className="w-3.5 h-3.5 text-red-600" />
+            </Button>
+          </div>
+        );
+      }
     }] : []),
   ];
 
@@ -145,7 +152,7 @@ export default function Team() {
         subtitle={`${staff.filter(s => s.status === "active").length} active members`}
         actions={canManage && (
           <Button onClick={handleAddClick} size="sm" className="gap-1.5">
-            <UserPlus className="w-4 h-4" /> Add Team Member
+            <UserPlus className="w-4 h-4" /> {t("add_team_member", "Add Team Member")}
           </Button>
         )}
       />
@@ -154,11 +161,11 @@ export default function Team() {
         <Input placeholder="Search team..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
       <DataTable columns={columns} data={filtered} isLoading={isLoading} onRowClick={canManage ? (row) => setEditingStaff(row) : undefined} emptyTitle="No team members" emptyIcon={UserCog} />
-
       {/* Create / Edit dialog */}
       <StaffDialog
         open={showCreate || !!editingStaff}
         onClose={() => { setShowCreate(false); setEditingStaff(null); }}
+        industryRoles={getIndustryRoles(user?.company_industry)}
         onSubmit={async (data, password) => {
           if (editingStaff) {
             updateMutation.mutate({ id: editingStaff.id, data });
@@ -187,7 +194,8 @@ export default function Team() {
   );
 }
 
-function StaffDialog({ open, onClose, onSubmit, initialData, isNew }) {
+function StaffDialog({ open, onClose, onSubmit, initialData, isNew, industryRoles = [] }) {
+  const { t } = useTranslation();
   const { roles, addRole } = useFirmSettings();
   const [form, setForm] = useState({
     full_name: "", user_email: "", role: "lawyer", department: "",
@@ -198,11 +206,12 @@ function StaffDialog({ open, onClose, onSubmit, initialData, isNew }) {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
+    const defaultRole = industryRoles[0]?.value || "lawyer";
     if (initialData) setForm(initialData);
-    else setForm({ full_name: "", user_email: "", role: "lawyer", department: "", phone: "", hire_date: "", status: "active", bar_number: "" });
+    else setForm({ full_name: "", user_email: "", role: defaultRole, department: "", phone: "", hire_date: "", status: "active", bar_number: "" });
     setPassword("");
     setShowPassword(false);
-  }, [initialData, open]);
+  }, [initialData, open, industryRoles]);
 
   const handleChange = (field, value) => setForm(prev => ({ ...prev, [field]: value }));
 
@@ -225,7 +234,7 @@ function StaffDialog({ open, onClose, onSubmit, initialData, isNew }) {
 
   // Wait, I should add useToast to StaffDialog
   const { toast } = useToast();
-  
+
   const triggerReset = async () => {
     try {
       await base44.auth.resetPasswordForEmail(form.user_email);
@@ -240,24 +249,27 @@ function StaffDialog({ open, onClose, onSubmit, initialData, isNew }) {
       <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            {isNew ? <><UserPlus className="w-4 h-4" /> Add Team Member</> : <><UserCog className="w-4 h-4" /> Edit Staff Member</>}
+            {isNew ? <><UserPlus className="w-4 h-4" /> {t("add_team_member", "Add Team Member")}</> : <><UserCog className="w-4 h-4" /> {t("edit_staff_member", "Edit Staff Member")}</>}
           </DialogTitle>
-          {isNew && <p className="text-xs text-muted-foreground mt-1">Create an account with a temporary password. The team member can change it after logging in.</p>}
+          {isNew && <p className="text-xs text-muted-foreground mt-1">{t(
+            "create_an_account_with_a_tempo",
+            "Create an account with a temporary password. The team member can change it after logging in."
+          )}</p>}
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div className="col-span-2">
-              <Label>Full Name *</Label>
+              <Label>{t("full_name", "Full Name *")}</Label>
               <Input className="mt-1" value={form.full_name} onChange={(e) => handleChange("full_name", e.target.value)} required />
             </div>
             <div>
-              <Label>Email Address *</Label>
+              <Label>{t("email_address", "Email Address *")}</Label>
               <Input className="mt-1" value={form.user_email} onChange={(e) => handleChange("user_email", e.target.value)} type="email" required disabled={!isNew} />
-              {!isNew && <p className="text-[10px] text-muted-foreground mt-0.5">Email cannot be changed.</p>}
+              {!isNew && <p className="text-[10px] text-muted-foreground mt-0.5">{t("email_cannot_be_changed", "Email cannot be changed.")}</p>}
             </div>
             {isNew && (
               <div>
-                <Label>Temporary Password *</Label>
+                <Label>{t("temporary_password", "Temporary Password *")}</Label>
                 <div className="relative mt-1">
                   <Input
                     value={password}
@@ -275,43 +287,45 @@ function StaffDialog({ open, onClose, onSubmit, initialData, isNew }) {
               </div>
             )}
             <div>
-              <Label>Phone <span className="text-muted-foreground text-xs">(optional)</span></Label>
+              <Label>{t("phone", "Phone")} <span className="text-muted-foreground text-xs">{t("optional", "(optional)")}</span></Label>
               <Input className="mt-1" value={form.phone} onChange={(e) => handleChange("phone", e.target.value)} />
             </div>
             <div>
-              <Label>Role</Label>
+              <Label>{t("role", "Role")}</Label>
               <Select value={form.role} onValueChange={(v) => handleChange("role", v)}>
                 <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  {DEFAULT_ROLES.map(r => <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>)}
-                  {roles.filter(r => !DEFAULT_ROLES.map(d => d.value).includes(r)).map(r => (
-                    <SelectItem key={r} value={r} className="capitalize">{r.replace(/_/g, " ")}</SelectItem>
-                  ))}
+                  {industryRoles.map(r => {
+                    return <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>;
+                  })}
+                  {roles.filter(r => !industryRoles.map(d => d.value).includes(r)).map(r => {
+                    return (<SelectItem key={r} value={r} className="capitalize">{r.replace(/_/g, " ")}</SelectItem>);
+                  })}
                   <AddOptionInline onAdd={(v) => { addRole(v); handleChange("role", v); }} placeholder="New role..." />
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label>Department <span className="text-muted-foreground text-xs">(optional)</span></Label>
+              <Label>{t("department", "Department")} <span className="text-muted-foreground text-xs">{t("optional", "(optional)")}</span></Label>
               <Input className="mt-1" value={form.department} onChange={(e) => handleChange("department", e.target.value)} />
             </div>
             <div>
-              <Label>Hire Date <span className="text-muted-foreground text-xs">(optional)</span></Label>
+              <Label>{t("hire_date", "Hire Date")} <span className="text-muted-foreground text-xs">{t("optional", "(optional)")}</span></Label>
               <Input className="mt-1" type="date" value={form.hire_date} onChange={(e) => handleChange("hire_date", e.target.value)} />
             </div>
             <div>
-              <Label>Bar Number <span className="text-muted-foreground text-xs">(optional)</span></Label>
+              <Label>{t("bar_number", "Bar Number")} <span className="text-muted-foreground text-xs">{t("optional", "(optional)")}</span></Label>
               <Input className="mt-1" value={form.bar_number} onChange={(e) => handleChange("bar_number", e.target.value)} placeholder="For lawyers" />
             </div>
             {!isNew && (
               <div>
-                <Label>Status</Label>
+                <Label>{t("status", "Status")}</Label>
                 <Select value={form.status} onValueChange={(v) => handleChange("status", v)}>
                   <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="inactive">Inactive</SelectItem>
-                    <SelectItem value="on_leave">On Leave</SelectItem>
+                    <SelectItem value="active">{t("active", "Active")}</SelectItem>
+                    <SelectItem value="inactive">{t("inactive", "Inactive")}</SelectItem>
+                    <SelectItem value="on_leave">{t("on_leave", "On Leave")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -322,12 +336,12 @@ function StaffDialog({ open, onClose, onSubmit, initialData, isNew }) {
             <div>
               {!isNew && (
                 <Button type="button" variant="outline" onClick={triggerReset} className="text-xs h-9">
-                  Send Password Reset Email
+                  {t("send_password_reset_email", "Send Password Reset Email")}
                 </Button>
               )}
             </div>
             <div className="flex gap-2">
-              <Button type="button" variant="outline" onClick={onClose} className="h-9">Cancel</Button>
+              <Button type="button" variant="outline" onClick={onClose} className="h-9">{t("cancel", "Cancel")}</Button>
               <Button type="submit" disabled={submitting} className="gap-1.5 h-9">
                 {isNew ? (submitting ? "Creating..." : "Create Account") : (submitting ? "Saving..." : "Save Changes")}
               </Button>

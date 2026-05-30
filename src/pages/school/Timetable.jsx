@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Calendar, Clock, MapPin, Plus, Trash2, LayoutGrid, MoreVertical, Edit2 } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -47,6 +48,7 @@ const defaultForm = {
 };
 
 export default function Timetable() {
+  const { t } = useTranslation();
   const [selectedClass, setSelectedClass] = useState('Grade 9A');
   const [showModal, setShowModal] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState(null);
@@ -159,8 +161,8 @@ export default function Timetable() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground">Timetable</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Weekly class schedule grid</p>
+          <h1 className="text-2xl font-bold text-card-foreground">{t("timetable", "Timetable")}</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{t("weekly_class_schedule_grid", "Weekly class schedule grid")}</p>
         </div>
         <div className="flex items-center gap-3">
           <select
@@ -168,17 +170,18 @@ export default function Timetable() {
             onChange={e => setSelectedClass(e.target.value)}
             className="rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground shadow-sm"
           >
-            {CLASS_LIST.map(c => <option key={c}>{c}</option>)}
+            {CLASS_LIST.map(c => {
+              return <option key={c}>{c}</option>;
+            })}
           </select>
           <Button
             onClick={() => { setFormData({ ...defaultForm, className: selectedClass }); setShowModal(true); }}
             className="gap-2 bg-blue-600 hover:bg-blue-700 text-white"
           >
-            <Plus className="w-4 h-4" /> Add Slot
+            <Plus className="w-4 h-4" /> {t("add_slot", "Add Slot")}
           </Button>
         </div>
       </div>
-
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-3">
@@ -187,7 +190,7 @@ export default function Timetable() {
           </div>
           <div>
             <p className="text-2xl font-bold text-card-foreground">{classSlots.length}</p>
-            <p className="text-xs text-muted-foreground">Slots Scheduled</p>
+            <p className="text-xs text-muted-foreground">{t("slots_scheduled", "Slots Scheduled")}</p>
           </div>
         </div>
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-3">
@@ -198,7 +201,7 @@ export default function Timetable() {
             <p className="text-2xl font-bold text-card-foreground">
               {[...new Set(classSlots.map(s => s.day))].length}
             </p>
-            <p className="text-xs text-muted-foreground">Active Days</p>
+            <p className="text-xs text-muted-foreground">{t("active_days", "Active Days")}</p>
           </div>
         </div>
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-3">
@@ -209,14 +212,13 @@ export default function Timetable() {
             <p className="text-2xl font-bold text-card-foreground">
               {[...new Set(classSlots.map(s => s.subject))].length}
             </p>
-            <p className="text-xs text-muted-foreground">Subjects</p>
+            <p className="text-xs text-muted-foreground">{t("subjects", "Subjects")}</p>
           </div>
         </div>
       </div>
-
       {/* Weekly Grid */}
       {isLoading ? (
-        <div className="py-12 text-center text-muted-foreground">Loading timetable...</div>
+        <div className="py-12 text-center text-muted-foreground">{t("loading_timetable", "Loading timetable...")}</div>
       ) : (
         <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden overflow-x-auto">
           <div className="min-w-[720px]">
@@ -225,92 +227,94 @@ export default function Timetable() {
               <div className="p-4 flex items-center justify-center">
                 <Clock className="w-5 h-5 text-muted-foreground" />
               </div>
-              {DAYS.map(day => (
-                <div key={day} className="p-4 text-center font-bold text-foreground text-sm uppercase tracking-wide">
-                  {day}
-                </div>
-              ))}
+              {DAYS.map(day => {
+                return (
+                  <div key={day} className="p-4 text-center font-bold text-foreground text-sm uppercase tracking-wide">
+                    {day}
+                  </div>
+                );
+              })}
             </div>
 
             {/* Period Rows */}
             <div className="divide-y divide-border">
-              {PERIODS.map(period => (
-                <div key={period} className="grid grid-cols-6 divide-x divide-border min-h-[80px]">
-                  {/* Period Label */}
-                  <div className="p-3 flex flex-col items-center justify-center bg-muted/40 text-muted-foreground">
-                    <span className="text-xs font-bold uppercase">P{period}</span>
-                    <span className="text-[10px] mt-0.5">Period {period}</span>
-                  </div>
-
-                  {/* Day Cells */}
-                  {DAYS.map(day => {
-                    const slot = slotGrid[day]?.[period];
-                    if (slot) {
-                      const color = subjectColor(slot.subject);
-                      return (
-                        <div key={day} className="p-2 group relative">
-                          <div className={`h-full p-2.5 rounded-lg border shadow-sm flex flex-col justify-between ${color} hover:shadow-md transition-all`}>
-                            <div>
-                              <p className="font-bold text-xs leading-tight mb-0.5">{slot.subject}</p>
-                              <p className="text-[10px] opacity-75"><Link to="/team" className="hover:underline">{slot.teacher}</Link></p>
-                            </div>
-                            <div className="flex items-center justify-between mt-1.5">
-                              <p className="text-[10px] font-medium flex items-center gap-0.5 opacity-80">
-                                <MapPin className="w-2.5 h-2.5" /> {slot.room}
-                              </p>
-                              <p className="text-[10px] opacity-70">{slot.startTime}–{slot.endTime}</p>
-                            </div>
-                            <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button variant="ghost" className="h-6 w-6 p-0 hover:bg-black/10">
-                                    <MoreVertical className="h-3 w-3" />
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" className="w-32">
-                                  <DropdownMenuItem onClick={() => {
-                                    setEditingId(slot.id);
-                                    setFormData({
-                                      className: slot.className,
-                                      day: slot.day,
-                                      period: String(slot.period),
-                                      startTime: slot.startTime,
-                                      endTime: slot.endTime,
-                                      subject: slot.subject,
-                                      teacher: slot.teacher,
-                                      room: slot.room
-                                    });
-                                    setShowModal(true);
-                                  }}>Edit Slot</DropdownMenuItem>
-                                  <DropdownMenuItem className="text-red-600 font-medium" onClick={() => setDeleteTargetId(slot.id)}>Remove</DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
+              {PERIODS.map(period => {
+                return (
+                  <div key={period} className="grid grid-cols-6 divide-x divide-border min-h-[80px]">
+                    {/* Period Label */}
+                    <div className="p-3 flex flex-col items-center justify-center bg-muted/40 text-muted-foreground">
+                      <span className="text-xs font-bold uppercase">P{period}</span>
+                      <span className="text-[10px] mt-0.5">{t("period", "Period")} {period}</span>
+                    </div>
+                    {/* Day Cells */}
+                    {DAYS.map(day => {
+                      const slot = slotGrid[day]?.[period];
+                      if (slot) {
+                        const color = subjectColor(slot.subject);
+                        return (
+                          <div key={day} className="p-2 group relative">
+                            <div className={`h-full p-2.5 rounded-lg border shadow-sm flex flex-col justify-between ${color} hover:shadow-md transition-all`}>
+                              <div>
+                                <p className="font-bold text-xs leading-tight mb-0.5">{slot.subject}</p>
+                                <p className="text-[10px] opacity-75"><Link to="/team" className="hover:underline">{slot.teacher}</Link></p>
+                              </div>
+                              <div className="flex items-center justify-between mt-1.5">
+                                <p className="text-[10px] font-medium flex items-center gap-0.5 opacity-80">
+                                  <MapPin className="w-2.5 h-2.5" /> {slot.room}
+                                </p>
+                                <p className="text-[10px] opacity-70">{slot.startTime}–{slot.endTime}</p>
+                              </div>
+                              <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" className="h-6 w-6 p-0 hover:bg-black/10">
+                                      <MoreVertical className="h-3 w-3" />
+                                    </Button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent align="end" className="w-32">
+                                    <DropdownMenuItem onClick={() => {
+                                      setEditingId(slot.id);
+                                      setFormData({
+                                        className: slot.className,
+                                        day: slot.day,
+                                        period: String(slot.period),
+                                        startTime: slot.startTime,
+                                        endTime: slot.endTime,
+                                        subject: slot.subject,
+                                        teacher: slot.teacher,
+                                        room: slot.room
+                                      });
+                                      setShowModal(true);
+                                    }}>{t("edit_slot", "Edit Slot")}</DropdownMenuItem>
+                                    <DropdownMenuItem className="text-red-600 font-medium" onClick={() => setDeleteTargetId(slot.id)}>{t("remove", "Remove")}</DropdownMenuItem>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              </div>
                             </div>
                           </div>
+                        );
+                      }
+                      return (
+                        <div key={day} className="p-2 flex items-center justify-center">
+                          <button
+                            onClick={() => {
+                              setFormData({ ...defaultForm, className: selectedClass, day, period: String(period) });
+                              setShowModal(true);
+                            }}
+                            className="w-full h-full min-h-[56px] rounded-lg border-2 border-dashed border-border text-muted-foreground/40 hover:border-blue-400 hover:text-blue-500 transition-colors flex items-center justify-center"
+                          >
+                            <Plus className="w-4 h-4" />
+                          </button>
                         </div>
                       );
-                    }
-                    return (
-                      <div key={day} className="p-2 flex items-center justify-center">
-                        <button
-                          onClick={() => {
-                            setFormData({ ...defaultForm, className: selectedClass, day, period: String(period) });
-                            setShowModal(true);
-                          }}
-                          className="w-full h-full min-h-[56px] rounded-lg border-2 border-dashed border-border text-muted-foreground/40 hover:border-blue-400 hover:text-blue-500 transition-colors flex items-center justify-center"
-                        >
-                          <Plus className="w-4 h-4" />
-                        </button>
-                      </div>
-                    );
-                  })}
-                </div>
-              ))}
+                    })}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
       )}
-
       {/* Add Slot Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
@@ -320,40 +324,46 @@ export default function Timetable() {
             </h2>
             <div className="space-y-3">
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">Class</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("class", "Class")}</label>
                 <select
                   value={formData.className}
                   onChange={e => setFormData({ ...formData, className: e.target.value })}
                   className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
                 >
-                  {CLASS_LIST.map(c => <option key={c}>{c}</option>)}
+                  {CLASS_LIST.map(c => {
+                    return <option key={c}>{c}</option>;
+                  })}
                 </select>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-bold text-muted-foreground uppercase">Day</label>
+                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("day", "Day")}</label>
                   <select
                     value={formData.day}
                     onChange={e => setFormData({ ...formData, day: e.target.value })}
                     className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
                   >
-                    {DAYS.map(d => <option key={d}>{d}</option>)}
+                    {DAYS.map(d => {
+                      return <option key={d}>{d}</option>;
+                    })}
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-muted-foreground uppercase">Period (1–8)</label>
+                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("period_1_8", "Period (1–8)")}</label>
                   <select
                     value={formData.period}
                     onChange={e => setFormData({ ...formData, period: e.target.value })}
                     className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
                   >
-                    {PERIODS.map(p => <option key={p} value={p}>Period {p}</option>)}
+                    {PERIODS.map(p => {
+                      return <option key={p} value={p}>{t("period", "Period")} {p}</option>;
+                    })}
                   </select>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-bold text-muted-foreground uppercase">Start Time</label>
+                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("start_time", "Start Time")}</label>
                   <Input
                     type="time"
                     value={formData.startTime}
@@ -362,7 +372,7 @@ export default function Timetable() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-muted-foreground uppercase">End Time</label>
+                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("end_time", "End Time")}</label>
                   <Input
                     type="time"
                     value={formData.endTime}
@@ -372,27 +382,31 @@ export default function Timetable() {
                 </div>
               </div>
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">Subject</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("subject", "Subject")}</label>
                 <select
                   value={formData.subject}
                   onChange={e => setFormData({ ...formData, subject: e.target.value })}
                   className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
                 >
-                  {SUBJECTS.map(s => <option key={s}>{s}</option>)}
+                  {SUBJECTS.map(s => {
+                    return <option key={s}>{s}</option>;
+                  })}
                 </select>
               </div>
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">Teacher</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("teacher", "Teacher")}</label>
                 <select
                   value={formData.teacher}
                   onChange={e => setFormData({ ...formData, teacher: e.target.value })}
                   className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
                 >
-                  {TEACHERS.map(t => <option key={t}>{t}</option>)}
+                  {TEACHERS.map(item => {
+                    return <option key={item}>{item}</option>;
+                  })}
                 </select>
               </div>
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">Room</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("room", "Room")}</label>
                 <Input
                   value={formData.room}
                   onChange={e => setFormData({ ...formData, room: e.target.value })}
@@ -404,11 +418,11 @@ export default function Timetable() {
             <div className="flex items-center gap-4 mt-2">
               <label className="flex items-center gap-2 text-sm text-foreground">
                 <input type="checkbox" checked={formData.createZoomLink || false} onChange={e => setFormData({ ...formData, createZoomLink: e.target.checked })} />
-                Generate Zoom Link
+                {t("generate_zoom_link", "Generate Zoom Link")}
               </label>
               <label className="flex items-center gap-2 text-sm text-foreground">
                 <input type="checkbox" checked={formData.addCalendar || false} onChange={e => setFormData({ ...formData, addCalendar: e.target.checked })} />
-                Add to Calendar
+                {t("add_to_calendar", "Add to Calendar")}
               </label>
             </div>
             <div className="flex gap-3 pt-2">
@@ -418,7 +432,7 @@ export default function Timetable() {
                 onClick={() => { setShowModal(false); setEditingId(null); setFormData({ ...defaultForm, className: selectedClass }); }}
                 disabled={mutateRecord.isPending}
               >
-                Cancel
+                {t("cancel", "Cancel")}
               </Button>
               <Button
                 className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
@@ -431,7 +445,6 @@ export default function Timetable() {
           </div>
         </div>
       )}
-
       <ConfirmationModal
         isOpen={deleteTargetId !== null}
         onClose={() => setDeleteTargetId(null)}

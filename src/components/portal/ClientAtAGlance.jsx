@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React from "react";
 import { format, isAfter, differenceInDays } from "date-fns";
 import { Calendar, PenTool, Receipt, AlertTriangle, CheckCircle2, Clock, ChevronRight } from "lucide-react";
@@ -14,6 +15,7 @@ function SectionHeader({ icon: Icon, label, color }) {
 }
 
 export default function ClientAtAGlance({ hearings = [], signatureRequests = [], invoices = [], currency = "GHS" }) {
+  const { t } = useTranslation();
   const now = new Date();
 
   const upcomingHearings = hearings
@@ -37,8 +39,11 @@ export default function ClientAtAGlance({ hearings = [], signatureRequests = [],
           <CheckCircle2 className="w-6 h-6 text-green-600" />
         </div>
         <div>
-          <p className="text-sm font-semibold text-green-800">You're all caught up!</p>
-          <p className="text-xs text-green-700 mt-0.5">No upcoming hearings, pending signatures, or outstanding invoices.</p>
+          <p className="text-sm font-semibold text-green-800">{t("you_re_all_caught_up", "You're all caught up!")}</p>
+          <p className="text-xs text-green-700 mt-0.5">{t(
+            "no_upcoming_hearings_pending_s",
+            "No upcoming hearings, pending signatures, or outstanding invoices."
+          )}</p>
         </div>
       </div>
     );
@@ -46,14 +51,13 @@ export default function ClientAtAGlance({ hearings = [], signatureRequests = [],
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-
       {/* Upcoming Hearings */}
       <div className="bg-card border border-border rounded-xl overflow-hidden">
         <SectionHeader icon={Calendar} label={`Upcoming Hearings (${upcomingHearings.length})`} color="bg-purple-50/60 text-purple-700" />
         {upcomingHearings.length === 0 ? (
           <div className="px-4 py-5 text-center">
             <CheckCircle2 className="w-6 h-6 text-green-400 mx-auto mb-1" />
-            <p className="text-xs text-muted-foreground">No upcoming hearings</p>
+            <p className="text-xs text-muted-foreground">{t("no_upcoming_hearings", "No upcoming hearings")}</p>
           </div>
         ) : (
           <div className="divide-y divide-border">
@@ -87,78 +91,79 @@ export default function ClientAtAGlance({ hearings = [], signatureRequests = [],
           </div>
         )}
       </div>
-
       {/* Pending Signatures */}
       <div className="bg-card border border-border rounded-xl overflow-hidden">
         <SectionHeader icon={PenTool} label={`Pending Signatures (${pendingSignatures.length})`} color="bg-amber-50/60 text-amber-700" />
         {pendingSignatures.length === 0 ? (
           <div className="px-4 py-5 text-center">
             <CheckCircle2 className="w-6 h-6 text-green-400 mx-auto mb-1" />
-            <p className="text-xs text-muted-foreground">No pending signatures</p>
+            <p className="text-xs text-muted-foreground">{t("no_pending_signatures", "No pending signatures")}</p>
           </div>
         ) : (
           <div className="divide-y divide-border">
-            {pendingSignatures.map(sig => (
-              <div key={sig.id} className="px-4 py-3 flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
-                  <PenTool className="w-3.5 h-3.5 text-amber-600" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">{sig.document_name}</p>
-                  {sig.case_title && <p className="text-xs text-muted-foreground truncate">{sig.case_title}</p>}
-                  <div className="flex items-center gap-1.5 mt-1">
-                    <Badge className={cn("text-[10px]", sig.status === "opened" ? "bg-blue-100 text-blue-700" : "bg-amber-100 text-amber-700")}>
-                      {sig.status === "opened" ? "Opened" : "Awaiting Signature"}
-                    </Badge>
-                    {sig.expires_at && (
-                      <span className="text-[10px] text-muted-foreground flex items-center gap-0.5">
-                        <Clock className="w-2.5 h-2.5" /> Expires {format(new Date(sig.expires_at), "MMM d")}
-                      </span>
-                    )}
+            {pendingSignatures.map(sig => {
+              return (
+                <div key={sig.id} className="px-4 py-3 flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
+                    <PenTool className="w-3.5 h-3.5 text-amber-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">{sig.document_name}</p>
+                    {sig.case_title && <p className="text-xs text-muted-foreground truncate">{sig.case_title}</p>}
+                    <div className="flex items-center gap-1.5 mt-1">
+                      <Badge className={cn("text-[10px]", sig.status === "opened" ? "bg-blue-100 text-blue-700" : "bg-amber-100 text-amber-700")}>
+                        {sig.status === "opened" ? "Opened" : "Awaiting Signature"}
+                      </Badge>
+                      {sig.expires_at && (
+                        <span className="text-[10px] text-muted-foreground flex items-center gap-0.5">
+                          <Clock className="w-2.5 h-2.5" /> {t("expires", "Expires")} {format(new Date(sig.expires_at), "MMM d")}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
-
       {/* Outstanding Invoices */}
       <div className="bg-card border border-border rounded-xl overflow-hidden">
         <SectionHeader icon={Receipt} label={`Outstanding Invoices (${outstandingInvoices.length})`} color="bg-red-50/60 text-red-700" />
         {outstandingInvoices.length === 0 ? (
           <div className="px-4 py-5 text-center">
             <CheckCircle2 className="w-6 h-6 text-green-400 mx-auto mb-1" />
-            <p className="text-xs text-muted-foreground">No outstanding invoices</p>
+            <p className="text-xs text-muted-foreground">{t("no_outstanding_invoices", "No outstanding invoices")}</p>
           </div>
         ) : (
           <>
             <div className="divide-y divide-border">
-              {outstandingInvoices.slice(0, 4).map(inv => (
-                <div key={inv.id} className="px-4 py-3 flex items-center justify-between gap-2">
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium truncate">{inv.invoice_number || "Invoice"}</p>
-                    <p className="text-xs text-muted-foreground">
-                      Due {inv.due_date ? format(new Date(inv.due_date), "MMM d") : "—"}
-                    </p>
+              {outstandingInvoices.slice(0, 4).map(inv => {
+                return (
+                  <div key={inv.id} className="px-4 py-3 flex items-center justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium truncate">{inv.invoice_number || "Invoice"}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {t("due", "Due")} {inv.due_date ? format(new Date(inv.due_date), "MMM d") : "—"}
+                      </p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="text-sm font-bold">{currencySymbol}{(inv.total_amount || 0).toLocaleString()}</p>
+                      <Badge className={cn("text-[10px]", inv.status === "overdue" ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700")}>
+                        {inv.status}
+                      </Badge>
+                    </div>
                   </div>
-                  <div className="text-right shrink-0">
-                    <p className="text-sm font-bold">{currencySymbol}{(inv.total_amount || 0).toLocaleString()}</p>
-                    <Badge className={cn("text-[10px]", inv.status === "overdue" ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700")}>
-                      {inv.status}
-                    </Badge>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
             <div className="px-4 py-3 border-t border-border bg-muted/30 flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">Total outstanding</span>
+              <span className="text-xs text-muted-foreground">{t("total_outstanding", "Total outstanding")}</span>
               <span className="text-sm font-bold text-red-600">{currencySymbol}{totalOutstanding.toLocaleString()}</span>
             </div>
           </>
         )}
       </div>
-
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
@@ -55,6 +56,7 @@ function SectionCard({ icon: Icon, title, count, children, defaultOpen = true })
 }
 
 function CalendarView({ dates, deadlines }) {
+  const { t } = useTranslation();
   const today = new Date();
   const allEvents = [
     ...(dates || []).map(d => ({ ...d, label: d.label, category: "date", colorKey: d.type || "Filing" })),
@@ -63,7 +65,7 @@ function CalendarView({ dates, deadlines }) {
     .filter(e => e.date && isValid(parseISO(e.date)))
     .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-  if (allEvents.length === 0) return <p className="text-sm text-muted-foreground text-center py-4">No dates extracted</p>;
+  if (allEvents.length === 0) return <p className="text-sm text-muted-foreground text-center py-4">{t("no_dates_extracted", "No dates extracted")}</p>;
 
   return (
     <div className="space-y-2">
@@ -82,16 +84,16 @@ function CalendarView({ dates, deadlines }) {
               <div className="flex items-center gap-2 mt-0.5">
                 {event.category === "deadline" ? (
                   <Badge className={cn("text-[9px] h-4 px-1.5", URGENCY_COLORS[event.urgency] || URGENCY_COLORS.medium)}>
-                    {event.urgency} deadline
+                    {event.urgency} {t("deadline", "deadline")}
                   </Badge>
                 ) : (
                   <Badge className={cn("text-[9px] h-4 px-1.5", DATE_TYPE_COLORS[event.colorKey] || "bg-gray-100 text-gray-700")}>
                     {event.type || "Date"}
                   </Badge>
                 )}
-                {isPast && <span className="text-[10px] text-muted-foreground">Past</span>}
+                {isPast && <span className="text-[10px] text-muted-foreground">{t("past", "Past")}</span>}
               </div>
-              {event.party_responsible && <p className="text-xs text-muted-foreground mt-0.5">Responsible: {event.party_responsible}</p>}
+              {event.party_responsible && <p className="text-xs text-muted-foreground mt-0.5">{t("responsible", "Responsible:")} {event.party_responsible}</p>}
             </div>
           </div>
         );
@@ -101,6 +103,7 @@ function CalendarView({ dates, deadlines }) {
 }
 
 export default function AIDocumentReview({ caseData }) {
+  const { t } = useTranslation();
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
@@ -212,9 +215,9 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
           <div className="flex flex-col items-center gap-2">
             <CheckCircle className="w-8 h-8 text-primary" />
             <p className="text-sm font-medium">{file.name}</p>
-            <p className="text-xs text-muted-foreground">{(file.size / 1024).toFixed(1)} KB</p>
+            <p className="text-xs text-muted-foreground">{(file.size / 1024).toFixed(1)} {t("kb", "KB")}</p>
             <Button size="sm" variant="ghost" className="h-7 text-xs gap-1 text-muted-foreground" onClick={() => { setFile(null); setAnalysis(null); }}>
-              <X className="w-3 h-3" /> Remove
+              <X className="w-3 h-3" /> {t("remove", "Remove")}
             </Button>
           </div>
         ) : (
@@ -223,19 +226,21 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
               <Upload className="w-6 h-6 text-primary" />
             </div>
             <div>
-              <p className="text-sm font-medium">Drop a document here or click to upload</p>
-              <p className="text-xs text-muted-foreground mt-0.5">PDF, DOCX, TXT, images supported</p>
+              <p className="text-sm font-medium">{t(
+                "drop_a_document_here_or_click_",
+                "Drop a document here or click to upload"
+              )}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">{t("pdf_docx_txt_images_supported", "PDF, DOCX, TXT, images supported")}</p>
             </div>
             <label className="cursor-pointer">
               <Button size="sm" variant="outline" asChild>
-                <span><Upload className="w-3.5 h-3.5 mr-1.5" />Browse Files</span>
+                <span><Upload className="w-3.5 h-3.5 mr-1.5" />{t("browse_files", "Browse Files")}</span>
               </Button>
               <input type="file" className="hidden" accept=".pdf,.docx,.doc,.txt,.png,.jpg,.jpeg" onChange={handleFileChange} />
             </label>
           </div>
         )}
       </div>
-
       {/* Analyze Button */}
       {file && !analysis && (
         <Button onClick={handleAnalyze} disabled={isLoading} className="w-full gap-2" size="lg">
@@ -247,31 +252,29 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
           ) : (
             <>
               <Sparkles className="w-4 h-4" />
-              Analyze with AI
+              {t("analyze_with_ai", "Analyze with AI")}
             </>
           )}
         </Button>
       )}
-
       {error && (
         <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3 text-sm text-destructive flex items-center gap-2">
           <AlertTriangle className="w-4 h-4 shrink-0" />
           {error}
         </div>
       )}
-
       {/* Analysis Results */}
       {analysis && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-sm font-semibold">AI Analysis Complete</span>
+              <span className="text-sm font-semibold">{t("ai_analysis_complete", "AI Analysis Complete")}</span>
               <Badge variant="secondary" className="text-[10px]">{docName}</Badge>
             </div>
             <Button size="sm" variant="outline" className="gap-1.5 h-8 text-xs" onClick={handleSaveDates}>
               <Calendar className="w-3.5 h-3.5" />
-              Save All Dates to Calendar
+              {t("save_all_dates_to_calendar", "Save All Dates to Calendar")}
             </Button>
           </div>
 
@@ -279,7 +282,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
           <div className="bg-primary/5 border border-primary/20 rounded-xl p-4">
             <div className="flex items-center gap-2 mb-2">
               <FileText className="w-4 h-4 text-primary" />
-              <span className="text-sm font-semibold">Executive Summary</span>
+              <span className="text-sm font-semibold">{t("executive_summary", "Executive Summary")}</span>
             </div>
             <p className="text-sm text-foreground leading-relaxed">{analysis.summary}</p>
           </div>
@@ -287,50 +290,56 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
           {/* Risk Flags */}
           {analysis.risk_flags?.length > 0 && (
             <SectionCard icon={AlertTriangle} title="Risk Flags" count={analysis.risk_flags.length}>
-              {analysis.risk_flags.map((r, i) => (
-                <div key={i} className={cn("flex items-start gap-2 p-2.5 rounded-lg border text-sm", URGENCY_COLORS[r.severity] || URGENCY_COLORS.medium)}>
-                  <AlertTriangle className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-                  <div className="flex-1">
-                    <span>{r.flag}</span>
-                    <Badge className={cn("ml-2 text-[9px] h-4 px-1.5", URGENCY_COLORS[r.severity])}>{r.severity}</Badge>
+              {analysis.risk_flags.map((r, i) => {
+                return (
+                  <div key={i} className={cn("flex items-start gap-2 p-2.5 rounded-lg border text-sm", URGENCY_COLORS[r.severity] || URGENCY_COLORS.medium)}>
+                    <AlertTriangle className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+                    <div className="flex-1">
+                      <span>{r.flag}</span>
+                      <Badge className={cn("ml-2 text-[9px] h-4 px-1.5", URGENCY_COLORS[r.severity])}>{r.severity}</Badge>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </SectionCard>
           )}
 
           {/* Key Legal Points */}
           {analysis.key_legal_points?.length > 0 && (
             <SectionCard icon={FileText} title="Key Legal Points" count={analysis.key_legal_points.length}>
-              {analysis.key_legal_points.map((p, i) => (
-                <div key={i} className={cn("p-2.5 rounded-lg border text-sm", IMPORTANCE_COLORS[p.importance] || IMPORTANCE_COLORS.low)}>
-                  <div className="flex items-start gap-2">
-                    <span className="flex-1">{p.point}</span>
+              {analysis.key_legal_points.map((p, i) => {
+                return (
+                  <div key={i} className={cn("p-2.5 rounded-lg border text-sm", IMPORTANCE_COLORS[p.importance] || IMPORTANCE_COLORS.low)}>
+                    <div className="flex items-start gap-2">
+                      <span className="flex-1">{p.point}</span>
+                    </div>
+                    <div className="flex gap-1.5 mt-1">
+                      {p.category && <Badge variant="outline" className="text-[9px] h-4 px-1.5">{p.category}</Badge>}
+                      <Badge className={cn("text-[9px] h-4 px-1.5", IMPORTANCE_COLORS[p.importance])}>{p.importance}</Badge>
+                    </div>
                   </div>
-                  <div className="flex gap-1.5 mt-1">
-                    {p.category && <Badge variant="outline" className="text-[9px] h-4 px-1.5">{p.category}</Badge>}
-                    <Badge className={cn("text-[9px] h-4 px-1.5", IMPORTANCE_COLORS[p.importance])}>{p.importance}</Badge>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </SectionCard>
           )}
 
           {/* Deadlines */}
           {analysis.deadlines?.length > 0 && (
             <SectionCard icon={Clock} title="Deadlines" count={analysis.deadlines.length}>
-              {analysis.deadlines.map((d, i) => (
-                <div key={i} className={cn("p-2.5 rounded-lg border text-sm", URGENCY_COLORS[d.urgency] || URGENCY_COLORS.medium)}>
-                  <p className="font-medium">{d.description}</p>
-                  <div className="flex flex-wrap gap-2 mt-1 text-xs">
-                    {d.date && isValid(parseISO(d.date)) && (
-                      <span className="font-semibold">{format(parseISO(d.date), "MMMM d, yyyy")}</span>
-                    )}
-                    {d.party_responsible && <span>→ {d.party_responsible}</span>}
-                    <Badge className={cn("text-[9px] h-4 px-1.5", URGENCY_COLORS[d.urgency])}>{d.urgency}</Badge>
+              {analysis.deadlines.map((d, i) => {
+                return (
+                  <div key={i} className={cn("p-2.5 rounded-lg border text-sm", URGENCY_COLORS[d.urgency] || URGENCY_COLORS.medium)}>
+                    <p className="font-medium">{d.description}</p>
+                    <div className="flex flex-wrap gap-2 mt-1 text-xs">
+                      {d.date && isValid(parseISO(d.date)) && (
+                        <span className="font-semibold">{format(parseISO(d.date), "MMMM d, yyyy")}</span>
+                      )}
+                      {d.party_responsible && <span>→ {d.party_responsible}</span>}
+                      <Badge className={cn("text-[9px] h-4 px-1.5", URGENCY_COLORS[d.urgency])}>{d.urgency}</Badge>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </SectionCard>
           )}
 
@@ -343,19 +352,21 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
           {analysis.parties?.length > 0 && (
             <SectionCard icon={Users} title="Parties Involved" count={analysis.parties.length} defaultOpen={false}>
               <div className="grid grid-cols-2 gap-2">
-                {analysis.parties.map((p, i) => (
-                  <div key={i} className="bg-muted/40 rounded-lg p-2.5 text-sm">
-                    <p className="font-medium truncate">{p.name}</p>
-                    <p className="text-xs text-muted-foreground">{p.role}</p>
-                  </div>
-                ))}
+                {analysis.parties.map((p, i) => {
+                  return (
+                    <div key={i} className="bg-muted/40 rounded-lg p-2.5 text-sm">
+                      <p className="font-medium truncate">{p.name}</p>
+                      <p className="text-xs text-muted-foreground">{p.role}</p>
+                    </div>
+                  );
+                })}
               </div>
             </SectionCard>
           )}
 
           {/* Re-analyze */}
           <Button variant="outline" className="w-full gap-2" onClick={() => { setAnalysis(null); setFile(null); }}>
-            <Upload className="w-4 h-4" /> Analyze Another Document
+            <Upload className="w-4 h-4" /> {t("analyze_another_document", "Analyze Another Document")}
           </Button>
         </div>
       )}

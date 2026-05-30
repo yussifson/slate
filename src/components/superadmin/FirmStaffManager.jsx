@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -31,6 +32,7 @@ const ROLE_COLORS = {
 const emptyInvite = { full_name: "", user_email: "", role: "lawyer", department: "", bar_number: "" };
 
 export default function FirmStaffManager({ firm, onClose }) {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [invite, setInvite] = useState(emptyInvite);
@@ -95,17 +97,20 @@ export default function FirmStaffManager({ firm, onClose }) {
         <DialogHeader className="px-6 pt-5 pb-4 border-b border-border">
           <DialogTitle className="flex items-center gap-2">
             <UserCog className="w-4 h-4" />
-            Team — {firm.name}
+            {t("team", "Team —")} {firm.name}
           </DialogTitle>
-          <p className="text-xs text-muted-foreground mt-0.5">Invite staff and manage their roles for this firm.</p>
+          <p className="text-xs text-muted-foreground mt-0.5">{t(
+            "invite_staff_and_manage_their_",
+            "Invite staff and manage their roles for this firm."
+          )}</p>
         </DialogHeader>
 
         {/* Invite Section */}
         <div className="px-6 py-4 bg-muted/30 border-b border-border space-y-3">
-          <p className="text-xs font-semibold text-foreground flex items-center gap-1.5"><UserPlus className="w-3.5 h-3.5" />Invite New Team Member</p>
+          <p className="text-xs font-semibold text-foreground flex items-center gap-1.5"><UserPlus className="w-3.5 h-3.5" />{t("invite_new_team_member", "Invite New Team Member")}</p>
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <Label className="text-xs">Full Name *</Label>
+              <Label className="text-xs">{t("full_name", "Full Name *")}</Label>
               <Input
                 className="mt-1 h-8 text-sm"
                 placeholder="Jane Asante"
@@ -114,7 +119,7 @@ export default function FirmStaffManager({ firm, onClose }) {
               />
             </div>
             <div>
-              <Label className="text-xs">Email Address *</Label>
+              <Label className="text-xs">{t("email_address", "Email Address *")}</Label>
               <Input
                 className="mt-1 h-8 text-sm"
                 type="email"
@@ -124,16 +129,18 @@ export default function FirmStaffManager({ firm, onClose }) {
               />
             </div>
             <div>
-              <Label className="text-xs">Role</Label>
+              <Label className="text-xs">{t("role", "Role")}</Label>
               <Select value={invite.role} onValueChange={v => setInvite(p => ({ ...p, role: v }))}>
                 <SelectTrigger className="mt-1 h-8 text-xs"><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  {ROLES.map(r => <SelectItem key={r.value} value={r.value} className="text-xs">{r.label}</SelectItem>)}
+                  {ROLES.map(r => {
+                    return <SelectItem key={r.value} value={r.value} className="text-xs">{r.label}</SelectItem>;
+                  })}
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label className="text-xs">Department <span className="text-muted-foreground">(optional)</span></Label>
+              <Label className="text-xs">{t("department", "Department")} <span className="text-muted-foreground">{t("optional", "(optional)")}</span></Label>
               <Input
                 className="mt-1 h-8 text-sm"
                 placeholder="e.g. Litigation"
@@ -143,7 +150,7 @@ export default function FirmStaffManager({ firm, onClose }) {
             </div>
             {["company_admin", "lawyer"].includes(invite.role) && (
               <div className="col-span-2">
-                <Label className="text-xs">Bar Number <span className="text-muted-foreground">(optional, for lawyers)</span></Label>
+                <Label className="text-xs">{t("bar_number", "Bar Number")} <span className="text-muted-foreground">{t("optional_for_lawyers", "(optional, for lawyers)")}</span></Label>
                 <Input
                   className="mt-1 h-8 text-sm"
                   placeholder="BAR-XXXXXX"
@@ -159,58 +166,68 @@ export default function FirmStaffManager({ firm, onClose }) {
               {inviting ? "Sending invite..." : "Send Invite & Create Login"}
             </Button>
           </div>
-          <p className="text-[10px] text-muted-foreground">An email invite will be sent. Once they log in, their account will be linked to this firm.</p>
+          <p className="text-[10px] text-muted-foreground">{t(
+            "an_email_invite_will_be_sent_o",
+            "An email invite will be sent. Once they log in, their account will be linked to this firm."
+          )}</p>
         </div>
 
         {/* Staff List */}
         <div className="flex-1 overflow-y-auto px-6 py-4 space-y-2">
           <p className="text-xs font-semibold text-foreground flex items-center gap-1.5 mb-3">
             <Users className="w-3.5 h-3.5" />
-            Current Team ({staffRecords.length})
-          </p>
+            {t("current_team", "Current Team (")}{staffRecords.length})
+                      </p>
           {isLoading ? (
-            <p className="text-center text-sm text-muted-foreground py-6">Loading team...</p>
+            <p className="text-center text-sm text-muted-foreground py-6">{t("loading_team", "Loading team...")}</p>
           ) : staffRecords.length === 0 ? (
-            <div className="text-center py-8 text-sm text-muted-foreground">No team members yet. Invite someone above.</div>
-          ) : staffRecords.map(staff => (
-            <div key={staff.id} className="flex items-center gap-3 p-3 bg-card rounded-lg border border-border">
-              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                <span className="text-xs font-bold text-primary">{staff.full_name?.[0]?.toUpperCase() || "?"}</span>
+            <div className="text-center py-8 text-sm text-muted-foreground">{t(
+              "no_team_members_yet_invite_som",
+              "No team members yet. Invite someone above."
+            )}</div>
+          ) : staffRecords.map(staff => {
+            return (
+              <div key={staff.id} className="flex items-center gap-3 p-3 bg-card rounded-lg border border-border">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <span className="text-xs font-bold text-primary">{staff.full_name?.[0]?.toUpperCase() || "?"}</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate">{staff.full_name}</p>
+                  <p className="text-xs text-muted-foreground truncate">{staff.user_email}</p>
+                  {staff.department && <p className="text-[10px] text-muted-foreground">{staff.department}</p>}
+                </div>
+                {/* Role selector */}
+                <Select value={staff.role} onValueChange={v => updateRoleMutation.mutate({ id: staff.id, role: v })}>
+                  <SelectTrigger className="w-36 h-7 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {ROLES.map(r => {
+                      return <SelectItem key={r.value} value={r.value} className="text-xs">{r.label}</SelectItem>;
+                    })}
+                  </SelectContent>
+                </Select>
+                {/* Status toggle */}
+                <button
+                  onClick={() => toggleStatusMutation.mutate({ id: staff.id, status: staff.status === "active" ? "inactive" : "active" })}
+                  title="Toggle active/inactive"
+                >
+                  <Badge className={`text-[10px] cursor-pointer shrink-0 ${staff.status === "active" ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500"}`}>
+                    {staff.status === "active" ? "Active" : "Inactive"}
+                  </Badge>
+                </button>
+                {/* Remove */}
+                <Button
+                  variant="ghost" size="icon" className="h-7 w-7 shrink-0"
+                  onClick={() => { if (window.confirm(`Remove ${staff.full_name} from this firm?`)) removeMutation.mutate(staff.id); }}
+                >
+                  <Trash2 className="w-3.5 h-3.5 text-destructive" />
+                </Button>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">{staff.full_name}</p>
-                <p className="text-xs text-muted-foreground truncate">{staff.user_email}</p>
-                {staff.department && <p className="text-[10px] text-muted-foreground">{staff.department}</p>}
-              </div>
-              {/* Role selector */}
-              <Select value={staff.role} onValueChange={v => updateRoleMutation.mutate({ id: staff.id, role: v })}>
-                <SelectTrigger className="w-36 h-7 text-xs"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {ROLES.map(r => <SelectItem key={r.value} value={r.value} className="text-xs">{r.label}</SelectItem>)}
-                </SelectContent>
-              </Select>
-              {/* Status toggle */}
-              <button
-                onClick={() => toggleStatusMutation.mutate({ id: staff.id, status: staff.status === "active" ? "inactive" : "active" })}
-                title="Toggle active/inactive"
-              >
-                <Badge className={`text-[10px] cursor-pointer shrink-0 ${staff.status === "active" ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500"}`}>
-                  {staff.status === "active" ? "Active" : "Inactive"}
-                </Badge>
-              </button>
-              {/* Remove */}
-              <Button
-                variant="ghost" size="icon" className="h-7 w-7 shrink-0"
-                onClick={() => { if (window.confirm(`Remove ${staff.full_name} from this firm?`)) removeMutation.mutate(staff.id); }}
-              >
-                <Trash2 className="w-3.5 h-3.5 text-destructive" />
-              </Button>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className="flex justify-end px-6 pb-5 pt-3 border-t border-border">
-          <Button variant="outline" onClick={onClose}>Close</Button>
+          <Button variant="outline" onClick={onClose}>{t("close", "Close")}</Button>
         </div>
       </DialogContent>
     </Dialog>

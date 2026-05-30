@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -23,6 +24,7 @@ const STATUS_COLORS = {
 };
 
 export default function CaseExpenses({ caseData, user }) {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
@@ -108,81 +110,85 @@ export default function CaseExpenses({ caseData, user }) {
           { label: "Total Expenses", value: formatCurrency(totalAll, currency), color: "text-foreground" },
           { label: "Unbilled", value: formatCurrency(totalUnbilled, currency), color: "text-amber-600" },
           { label: "Expenses Count", value: expenses.length, color: "text-foreground" },
-        ].map(s => (
-          <div key={s.label} className="bg-card rounded-xl border border-border p-3 text-center">
-            <p className={`text-lg font-bold ${s.color}`}>{s.value}</p>
-            <p className="text-xs text-muted-foreground">{s.label}</p>
-          </div>
-        ))}
+        ].map(s => {
+          return (
+            <div key={s.label} className="bg-card rounded-xl border border-border p-3 text-center">
+              <p className={`text-lg font-bold ${s.color}`}>{s.value}</p>
+              <p className="text-xs text-muted-foreground">{s.label}</p>
+            </div>
+          );
+        })}
       </div>
-
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-foreground">Expense Log</h3>
+        <h3 className="text-sm font-semibold text-foreground">{t("expense_log", "Expense Log")}</h3>
         <div className="flex gap-2">
           {canManage && totalUnbilled > 0 && (
             <Button variant="outline" size="sm" onClick={handleAddToInvoice} className="gap-1.5 text-xs">
-              <FileText className="w-3.5 h-3.5" /> Add to Invoice
+              <FileText className="w-3.5 h-3.5" /> {t("add_to_invoice", "Add to Invoice")}
             </Button>
           )}
           {canManage && (
             <Button size="sm" onClick={() => setShowForm(true)} className="gap-1.5 text-xs">
-              <Plus className="w-3.5 h-3.5" /> Log Expense
+              <Plus className="w-3.5 h-3.5" /> {t("log_expense", "Log Expense")}
             </Button>
           )}
         </div>
       </div>
-
       {isLoading ? (
-        <div className="p-8 text-center text-sm text-muted-foreground">Loading...</div>
+        <div className="p-8 text-center text-sm text-muted-foreground">{t("loading", "Loading...")}</div>
       ) : expenses.length === 0 ? (
         <div className="bg-card rounded-xl border border-border p-10 text-center">
           <Receipt className="w-10 h-10 mx-auto text-muted-foreground mb-3" />
-          <p className="text-sm font-medium">No expenses logged yet</p>
-          <p className="text-xs text-muted-foreground mt-1">Track case-related costs like travel, filing fees, and more.</p>
+          <p className="text-sm font-medium">{t("no_expenses_logged_yet", "No expenses logged yet")}</p>
+          <p className="text-xs text-muted-foreground mt-1">{t(
+            "track_case_related_costs_like_",
+            "Track case-related costs like travel, filing fees, and more."
+          )}</p>
         </div>
       ) : (
         <div className="space-y-2">
-          {expenses.map(exp => (
-            <div key={exp.id} className="bg-card rounded-xl border border-border px-4 py-3 flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
-                <Receipt className="w-4 h-4 text-amber-600" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <p className="text-sm font-medium">{exp.description}</p>
-                  <Badge className={`text-[10px] ${STATUS_COLORS[exp.status]}`}>{exp.status}</Badge>
-                  {exp.billed && <Badge className="text-[10px] bg-blue-100 text-blue-700">Billed</Badge>}
-                  {!exp.billable && <Badge className="text-[10px] bg-gray-100 text-gray-600">Non-billable</Badge>}
+          {expenses.map(exp => {
+            return (
+              <div key={exp.id} className="bg-card rounded-xl border border-border px-4 py-3 flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
+                  <Receipt className="w-4 h-4 text-amber-600" />
                 </div>
-                <div className="flex flex-wrap gap-2 mt-0.5">
-                  <span className="text-xs text-muted-foreground capitalize">{exp.category?.replace("_", " ")}</span>
-                  {exp.expense_date && <span className="text-xs text-muted-foreground">{format(new Date(exp.expense_date), "MMM d, yyyy")}</span>}
-                  <span className="text-xs text-muted-foreground">by {exp.logged_by_name || exp.logged_by}</span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="text-sm font-medium">{exp.description}</p>
+                    <Badge className={`text-[10px] ${STATUS_COLORS[exp.status]}`}>{exp.status}</Badge>
+                    {exp.billed && <Badge className="text-[10px] bg-blue-100 text-blue-700">{t("billed", "Billed")}</Badge>}
+                    {!exp.billable && <Badge className="text-[10px] bg-gray-100 text-gray-600">{t("non_billable", "Non-billable")}</Badge>}
+                  </div>
+                  <div className="flex flex-wrap gap-2 mt-0.5">
+                    <span className="text-xs text-muted-foreground capitalize">{exp.category?.replace("_", " ")}</span>
+                    {exp.expense_date && <span className="text-xs text-muted-foreground">{format(new Date(exp.expense_date), "MMM d, yyyy")}</span>}
+                    <span className="text-xs text-muted-foreground">{t("by", "by")} {exp.logged_by_name || exp.logged_by}</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-sm font-bold">{formatCurrency(exp.amount, exp.currency)}</span>
+                  {exp.receipt_url && (
+                    <a href={exp.receipt_url} target="_blank" rel="noopener noreferrer">
+                      <Button variant="ghost" size="icon" className="h-7 w-7"><Receipt className="w-3.5 h-3.5" /></Button>
+                    </a>
+                  )}
+                  {canManage && exp.status === "pending" && (
+                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => updateMutation.mutate({ id: exp.id, data: { status: "approved" } })}>
+                      <CheckCircle className="w-3.5 h-3.5 text-green-600" />
+                    </Button>
+                  )}
+                  {canManage && !exp.billed && (
+                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => deleteMutation.mutate(exp.id)}>
+                      <Trash2 className="w-3.5 h-3.5 text-destructive" />
+                    </Button>
+                  )}
                 </div>
               </div>
-              <div className="flex items-center gap-2 shrink-0">
-                <span className="text-sm font-bold">{formatCurrency(exp.amount, exp.currency)}</span>
-                {exp.receipt_url && (
-                  <a href={exp.receipt_url} target="_blank" rel="noopener noreferrer">
-                    <Button variant="ghost" size="icon" className="h-7 w-7"><Receipt className="w-3.5 h-3.5" /></Button>
-                  </a>
-                )}
-                {canManage && exp.status === "pending" && (
-                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => updateMutation.mutate({ id: exp.id, data: { status: "approved" } })}>
-                    <CheckCircle className="w-3.5 h-3.5 text-green-600" />
-                  </Button>
-                )}
-                {canManage && !exp.billed && (
-                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => deleteMutation.mutate(exp.id)}>
-                    <Trash2 className="w-3.5 h-3.5 text-destructive" />
-                  </Button>
-                )}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
-
       <ExpenseFormDialog
         open={showForm}
         onClose={() => setShowForm(false)}
@@ -194,6 +200,7 @@ export default function CaseExpenses({ caseData, user }) {
 }
 
 function ExpenseFormDialog({ open, onClose, onSubmit, currency }) {
+  const { t } = useTranslation();
   const [form, setForm] = useState({
     description: "", category: "other", amount: "", expense_date: new Date().toISOString().split("T")[0],
     billable: true, notes: "", currency: currency || "GHS",
@@ -226,31 +233,33 @@ function ExpenseFormDialog({ open, onClose, onSubmit, currency }) {
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
-        <DialogHeader><DialogTitle>Log Expense</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle>{t("log_expense", "Log Expense")}</DialogTitle></DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>
-            <Label>Description</Label>
+            <Label>{t("description", "Description")}</Label>
             <Input value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="e.g. Filing fee for court application" required />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label>Category</Label>
+              <Label>{t("category", "Category")}</Label>
               <Select value={form.category} onValueChange={v => setForm({ ...form, category: v })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>{CATEGORIES.map(c => <SelectItem key={c} value={c} className="capitalize">{c.replace("_", " ")}</SelectItem>)}</SelectContent>
+                <SelectContent>{CATEGORIES.map(c => {
+                  return <SelectItem key={c} value={c} className="capitalize">{c.replace("_", " ")}</SelectItem>;
+                })}</SelectContent>
               </Select>
             </div>
             <div>
-              <Label>Amount ({form.currency})</Label>
+              <Label>{t("amount", "Amount (")}{form.currency})</Label>
               <Input type="number" step="0.01" min="0" value={form.amount} onChange={e => setForm({ ...form, amount: e.target.value })} required />
             </div>
           </div>
           <div>
-            <Label>Expense Date</Label>
+            <Label>{t("expense_date", "Expense Date")}</Label>
             <Input type="date" value={form.expense_date} onChange={e => setForm({ ...form, expense_date: e.target.value })} />
           </div>
           <div>
-            <Label>Receipt (optional)</Label>
+            <Label>{t("receipt_optional", "Receipt (optional)")}</Label>
             <div className="mt-1 border-2 border-dashed border-border rounded-lg p-3 text-center">
               <input type="file" id="receipt-upload" className="hidden" onChange={handleReceiptUpload} accept="image/*,.pdf" />
               <label htmlFor="receipt-upload" className="text-sm text-primary cursor-pointer hover:underline">
@@ -259,19 +268,19 @@ function ExpenseFormDialog({ open, onClose, onSubmit, currency }) {
             </div>
           </div>
           <div>
-            <Label>Notes (optional)</Label>
+            <Label>{t("notes_optional", "Notes (optional)")}</Label>
             <Input value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} placeholder="Any additional details..." />
           </div>
           <div className="flex items-center justify-between rounded-lg border border-border p-3">
             <div>
-              <p className="text-sm font-medium">Billable to client</p>
-              <p className="text-xs text-muted-foreground">Include this in client invoice</p>
+              <p className="text-sm font-medium">{t("billable_to_client", "Billable to client")}</p>
+              <p className="text-xs text-muted-foreground">{t("include_this_in_client_invoice", "Include this in client invoice")}</p>
             </div>
             <Switch checked={form.billable} onCheckedChange={v => setForm({ ...form, billable: v })} />
           </div>
           <div className="flex justify-end gap-2 pt-1">
-            <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-            <Button type="submit" disabled={uploading}>Log Expense</Button>
+            <Button type="button" variant="outline" onClick={onClose}>{t("cancel", "Cancel")}</Button>
+            <Button type="submit" disabled={uploading}>{t("log_expense", "Log Expense")}</Button>
           </div>
         </form>
       </DialogContent>

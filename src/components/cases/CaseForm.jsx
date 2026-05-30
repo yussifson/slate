@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +15,7 @@ import { useQuery } from "@tanstack/react-query";
 const PRIORITIES = ["low", "medium", "high", "urgent"];
 
 export default function CaseForm({ open, onClose, onSubmit, initialData, clients, staff }) {
+  const { t } = useTranslation();
   const companyId = useCompanyId();
   const { caseTypes, caseStatuses, addCaseType, addCaseStatus } = useFirmSettings();
 
@@ -64,86 +66,94 @@ export default function CaseForm({ open, onClose, onSubmit, initialData, clients
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="md:col-span-2">
-              <Label>Case Title *</Label>
+              <Label>{t("case_title", "Case Title *")}</Label>
               <Input value={form.title} onChange={(e) => handleChange("title", e.target.value)} required />
             </div>
             <div>
-              <Label>Case Number</Label>
+              <Label>{t("case_number", "Case Number")}</Label>
               <Input value={form.case_number} onChange={(e) => handleChange("case_number", e.target.value)} placeholder="Auto-generated" />
             </div>
             <div>
-              <Label>Case Type</Label>
+              <Label>{t("case_type", "Case Type")}</Label>
               <Select value={form.case_type} onValueChange={(v) => handleChange("case_type", v)}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  {caseTypes.map(t => <SelectItem key={t} value={t} className="capitalize">{t.replace(/_/g, " ")}</SelectItem>)}
+                  {caseTypes.map(item => {
+                    return <SelectItem key={item} value={item} className="capitalize">{item.replace(/_/g, " ")}</SelectItem>;
+                  })}
                   <AddOptionInline onAdd={(v) => { addCaseType(v); handleChange("case_type", v); }} placeholder="New case type..." />
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label>Status</Label>
+              <Label>{t("status", "Status")}</Label>
               <Select value={form.status} onValueChange={(v) => handleChange("status", v)}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  {caseStatuses.map(s => <SelectItem key={s} value={s} className="capitalize">{s.replace(/_/g, " ")}</SelectItem>)}
+                  {caseStatuses.map(s => {
+                    return <SelectItem key={s} value={s} className="capitalize">{s.replace(/_/g, " ")}</SelectItem>;
+                  })}
                   <AddOptionInline onAdd={(v) => { addCaseStatus(v); handleChange("status", v); }} placeholder="New status..." />
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label>Priority</Label>
+              <Label>{t("priority", "Priority")}</Label>
               <Select value={form.priority} onValueChange={(v) => handleChange("priority", v)}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  {PRIORITIES.map(p => <SelectItem key={p} value={p} className="capitalize">{p}</SelectItem>)}
+                  {PRIORITIES.map(p => {
+                    return <SelectItem key={p} value={p} className="capitalize">{p}</SelectItem>;
+                  })}
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label>Client <span className="text-muted-foreground text-xs">(optional)</span></Label>
+              <Label>{t("client", "Client")} <span className="text-muted-foreground text-xs">{t("optional", "(optional)")}</span></Label>
               <Select value={form.client_id || undefined} onValueChange={handleClientChange}>
                 <SelectTrigger><SelectValue placeholder="Select client" /></SelectTrigger>
                 <SelectContent>
-                  {clients?.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
+                  {clients?.map(c => {
+                    return <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>;
+                  })}
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label>Assigned Lawyer <span className="text-muted-foreground text-xs">(optional)</span></Label>
+              <Label>{t("assigned_lawyer", "Assigned Lawyer")} <span className="text-muted-foreground text-xs">{t("optional", "(optional)")}</span></Label>
               <Select value={form.assigned_lawyer || undefined} onValueChange={handleLawyerChange}>
                 <SelectTrigger><SelectValue placeholder="Select lawyer" /></SelectTrigger>
                 <SelectContent>
-                  {staff?.filter(s => ["lawyer", "company_admin"].includes(s.role)).map(s => (
-                    <SelectItem key={s.user_email} value={s.user_email}>{s.full_name}</SelectItem>
-                  ))}
+                  {staff?.filter(s => ["lawyer", "company_admin"].includes(s.role)).map(s => {
+                    return (<SelectItem key={s.user_email} value={s.user_email}>{s.full_name}</SelectItem>);
+                  })}
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label>Court Name <span className="text-muted-foreground text-xs">(optional)</span></Label>
+              <Label>{t("court_name", "Court Name")} <span className="text-muted-foreground text-xs">{t("optional", "(optional)")}</span></Label>
               <Input value={form.court_name} onChange={(e) => handleChange("court_name", e.target.value)} />
             </div>
             <div>
-              <Label>Judge Name <span className="text-muted-foreground text-xs">(optional)</span></Label>
+              <Label>{t("judge_name", "Judge Name")} <span className="text-muted-foreground text-xs">{t("optional", "(optional)")}</span></Label>
               <Input value={form.judge_name} onChange={(e) => handleChange("judge_name", e.target.value)} />
             </div>
             <div>
-              <Label>Opposing Party <span className="text-muted-foreground text-xs">(optional)</span></Label>
+              <Label>{t("opposing_party", "Opposing Party")} <span className="text-muted-foreground text-xs">{t("optional", "(optional)")}</span></Label>
               <Input value={form.opposing_party} onChange={(e) => handleChange("opposing_party", e.target.value)} />
             </div>
             <div>
-              <Label>Filing Date <span className="text-muted-foreground text-xs">(optional)</span></Label>
+              <Label>{t("filing_date", "Filing Date")} <span className="text-muted-foreground text-xs">{t("optional", "(optional)")}</span></Label>
               <Input type="date" value={form.filing_date} onChange={(e) => handleChange("filing_date", e.target.value)} />
             </div>
             <div className="md:col-span-2">
-              <Label>Description</Label>
+              <Label>{t("description", "Description")}</Label>
               <Textarea value={form.description} onChange={(e) => handleChange("description", e.target.value)} rows={3} />
             </div>
           </div>
           <div className="flex justify-end gap-2 pt-2">
-            <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-            <Button type="submit">{initialData ? "Update" : "Create"} Case</Button>
+            <Button type="button" variant="outline" onClick={onClose}>{t("cancel", "Cancel")}</Button>
+            <Button type="submit">{initialData ? "Update" : "Create"} {t("case", "Case")}</Button>
           </div>
         </form>
       </DialogContent>

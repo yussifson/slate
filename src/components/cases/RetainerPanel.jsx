@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -18,6 +19,7 @@ const RETAINER_STATUS_COLORS = {
 };
 
 export default function RetainerPanel({ caseData, user }) {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const companyId = user?.company_id;
@@ -123,7 +125,7 @@ export default function RetainerPanel({ caseData, user }) {
   const percentUsed = retainer ? Math.min(100, ((retainer.total_deducted || 0) / retainer.initial_deposit) * 100) : 0;
   const percentRemaining = 100 - percentUsed;
 
-  if (isLoading) return <div className="p-8 text-center text-sm text-muted-foreground">Loading retainer...</div>;
+  if (isLoading) return <div className="p-8 text-center text-sm text-muted-foreground">{t("loading_retainer", "Loading retainer...")}</div>;
 
   return (
     <div className="space-y-4">
@@ -132,9 +134,9 @@ export default function RetainerPanel({ caseData, user }) {
         <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4">
           <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
           <div>
-            <p className="text-sm font-semibold text-amber-800">Retainer Balance Low</p>
+            <p className="text-sm font-semibold text-amber-800">{t("retainer_balance_low", "Retainer Balance Low")}</p>
             <p className="text-xs text-amber-700 mt-0.5">
-              Current balance of {formatCurrency(retainer.current_balance, currency)} is below the alert threshold of {formatCurrency(retainer.alert_threshold, currency)}. Request a top-up from the client.
+              {t("current_balance_of", "Current balance of")} {formatCurrency(retainer.current_balance, currency)} {t("is_below_the_alert_threshold_o", "is below the alert threshold of")} {formatCurrency(retainer.alert_threshold, currency)}{t("request_a_top_up_from_the_clie", ". Request a top-up from the client.")}
             </p>
           </div>
         </div>
@@ -143,22 +145,27 @@ export default function RetainerPanel({ caseData, user }) {
         <div className="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl p-4">
           <AlertTriangle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
           <div>
-            <p className="text-sm font-semibold text-red-800">Retainer Depleted</p>
-            <p className="text-xs text-red-700 mt-0.5">The retainer balance has been fully used. Client needs to replenish.</p>
+            <p className="text-sm font-semibold text-red-800">{t("retainer_depleted", "Retainer Depleted")}</p>
+            <p className="text-xs text-red-700 mt-0.5">{t(
+              "the_retainer_balance_has_been_",
+              "The retainer balance has been fully used. Client needs to replenish."
+            )}</p>
           </div>
         </div>
       )}
-
       {!retainer ? (
         /* No retainer yet */
-        <div className="bg-card rounded-xl border border-border p-10 text-center">
+        (<div className="bg-card rounded-xl border border-border p-10 text-center">
           <Wallet className="w-10 h-10 mx-auto text-muted-foreground mb-3" />
-          <p className="text-sm font-medium">No Retainer Set Up</p>
-          <p className="text-xs text-muted-foreground mt-1 mb-4">Set an initial deposit and track balance deductions against this case.</p>
+          <p className="text-sm font-medium">{t("no_retainer_set_up", "No Retainer Set Up")}</p>
+          <p className="text-xs text-muted-foreground mt-1 mb-4">{t(
+            "set_an_initial_deposit_and_tra",
+            "Set an initial deposit and track balance deductions against this case."
+          )}</p>
           <Button onClick={() => setShowSetup(true)} className="gap-2">
-            <Plus className="w-4 h-4" /> Set Up Retainer
+            <Plus className="w-4 h-4" /> {t("set_up_retainer", "Set Up Retainer")}
           </Button>
-        </div>
+        </div>)
       ) : (
         <>
           {/* Balance card */}
@@ -169,7 +176,7 @@ export default function RetainerPanel({ caseData, user }) {
                   <Wallet className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Current Balance</p>
+                  <p className="text-xs text-muted-foreground">{t("current_balance", "Current Balance")}</p>
                   <p className="text-2xl font-bold text-foreground">{formatCurrency(retainer.current_balance, currency)}</p>
                 </div>
               </div>
@@ -179,8 +186,8 @@ export default function RetainerPanel({ caseData, user }) {
             {/* Progress bar */}
             <div className="space-y-1.5">
               <div className="flex justify-between text-xs text-muted-foreground">
-                <span>Used: {formatCurrency(retainer.total_deducted || 0, currency)}</span>
-                <span>Initial: {formatCurrency(retainer.initial_deposit, currency)}</span>
+                <span>{t("used", "Used:")} {formatCurrency(retainer.total_deducted || 0, currency)}</span>
+                <span>{t("initial", "Initial:")} {formatCurrency(retainer.initial_deposit, currency)}</span>
               </div>
               <div className="h-2.5 rounded-full bg-muted overflow-hidden">
                 <div
@@ -188,21 +195,21 @@ export default function RetainerPanel({ caseData, user }) {
                   style={{ width: `${percentRemaining}%` }}
                 />
               </div>
-              <p className="text-[10px] text-muted-foreground text-right">{percentRemaining.toFixed(0)}% remaining</p>
+              <p className="text-[10px] text-muted-foreground text-right">{percentRemaining.toFixed(0)}{t("remaining", "% remaining")}</p>
             </div>
 
             {/* Stats row */}
             <div className="grid grid-cols-3 gap-3 pt-1">
               <div className="bg-muted/40 rounded-lg p-3 text-center">
-                <p className="text-xs text-muted-foreground">Initial Deposit</p>
+                <p className="text-xs text-muted-foreground">{t("initial_deposit", "Initial Deposit")}</p>
                 <p className="text-sm font-semibold">{formatCurrency(retainer.initial_deposit, currency)}</p>
               </div>
               <div className="bg-muted/40 rounded-lg p-3 text-center">
-                <p className="text-xs text-muted-foreground">Total Deducted</p>
+                <p className="text-xs text-muted-foreground">{t("total_deducted", "Total Deducted")}</p>
                 <p className="text-sm font-semibold">{formatCurrency(retainer.total_deducted || 0, currency)}</p>
               </div>
               <div className="bg-muted/40 rounded-lg p-3 text-center">
-                <p className="text-xs text-muted-foreground">Alert Threshold</p>
+                <p className="text-xs text-muted-foreground">{t("alert_threshold", "Alert Threshold")}</p>
                 <p className="text-sm font-semibold">{retainer.alert_threshold > 0 ? formatCurrency(retainer.alert_threshold, currency) : "—"}</p>
               </div>
             </div>
@@ -212,22 +219,21 @@ export default function RetainerPanel({ caseData, user }) {
             {/* Actions */}
             <div className="flex gap-2 pt-1">
               <Button onClick={() => setShowDeduct(true)} disabled={retainer.status === "depleted"} className="gap-2" size="sm">
-                <Minus className="w-3.5 h-3.5" /> Deduct Bill
+                <Minus className="w-3.5 h-3.5" /> {t("deduct_bill", "Deduct Bill")}
               </Button>
               <Button variant="outline" onClick={() => setShowSetup(true)} size="sm" className="gap-2">
-                <Settings className="w-3.5 h-3.5" /> Edit / Top-Up
+                <Settings className="w-3.5 h-3.5" /> {t("edit_top_up", "Edit / Top-Up")}
               </Button>
               {retainer.alert_triggered && (
                 <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground"
                   onClick={() => updateMutation.mutate({ id: retainer.id, data: { alert_triggered: false } })}>
-                  <CheckCircle className="w-3.5 h-3.5" /> Dismiss Alert
+                  <CheckCircle className="w-3.5 h-3.5" /> {t("dismiss_alert", "Dismiss Alert")}
                 </Button>
               )}
             </div>
           </div>
         </>
       )}
-
       {/* Setup / Edit dialog */}
       <Dialog open={showSetup} onOpenChange={setShowSetup}>
         <DialogContent className="max-w-md">
@@ -255,7 +261,7 @@ export default function RetainerPanel({ caseData, user }) {
             toast({ title: "Retainer updated" });
           } : handleSetup} className="space-y-3">
             <div>
-              <Label>Initial Deposit ({currency})</Label>
+              <Label>{t("initial_deposit", "Initial Deposit (")}{currency})</Label>
               <Input
                 type="number" min={0} step="0.01"
                 placeholder={retainer ? String(retainer.initial_deposit) : "e.g. 5000"}
@@ -263,20 +269,26 @@ export default function RetainerPanel({ caseData, user }) {
                 onChange={e => setSetupForm({ ...setupForm, initial_deposit: e.target.value })}
                 required={!retainer}
               />
-              {retainer && <p className="text-xs text-muted-foreground mt-1">Increasing this adds to the current balance (top-up).</p>}
+              {retainer && <p className="text-xs text-muted-foreground mt-1">{t(
+                "increasing_this_adds_to_the_cu",
+                "Increasing this adds to the current balance (top-up)."
+              )}</p>}
             </div>
             <div>
-              <Label>Low Balance Alert Threshold ({currency})</Label>
+              <Label>{t("low_balance_alert_threshold", "Low Balance Alert Threshold (")}{currency})</Label>
               <Input
                 type="number" min={0} step="0.01"
                 placeholder={retainer ? String(retainer.alert_threshold || 0) : "e.g. 1000"}
                 value={setupForm.alert_threshold}
                 onChange={e => setSetupForm({ ...setupForm, alert_threshold: e.target.value })}
               />
-              <p className="text-xs text-muted-foreground mt-1">You'll be alerted when balance falls below this amount.</p>
+              <p className="text-xs text-muted-foreground mt-1">{t(
+                "you_ll_be_alerted_when_balance",
+                "You'll be alerted when balance falls below this amount."
+              )}</p>
             </div>
             <div>
-              <Label>Notes (optional)</Label>
+              <Label>{t("notes_optional", "Notes (optional)")}</Label>
               <Input
                 placeholder="e.g. Paid via bank transfer on Jan 5"
                 value={setupForm.notes}
@@ -284,23 +296,22 @@ export default function RetainerPanel({ caseData, user }) {
               />
             </div>
             <div className="flex justify-end gap-2 pt-1">
-              <Button type="button" variant="outline" onClick={() => setShowSetup(false)}>Cancel</Button>
+              <Button type="button" variant="outline" onClick={() => setShowSetup(false)}>{t("cancel", "Cancel")}</Button>
               <Button type="submit">{retainer ? "Save Changes" : "Create Retainer"}</Button>
             </div>
           </form>
         </DialogContent>
       </Dialog>
-
       {/* Deduct dialog */}
       <Dialog open={showDeduct} onOpenChange={setShowDeduct}>
         <DialogContent className="max-w-sm">
-          <DialogHeader><DialogTitle>Deduct from Retainer</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>{t("deduct_from_retainer", "Deduct from Retainer")}</DialogTitle></DialogHeader>
           <form onSubmit={handleDeduct} className="space-y-3">
             <div className="bg-muted/40 rounded-lg p-3 text-sm">
-              Available balance: <span className="font-semibold">{formatCurrency(retainer?.current_balance || 0, currency)}</span>
+              {t("available_balance", "Available balance:")} <span className="font-semibold">{formatCurrency(retainer?.current_balance || 0, currency)}</span>
             </div>
             <div>
-              <Label>Amount to Deduct ({currency})</Label>
+              <Label>{t("amount_to_deduct", "Amount to Deduct (")}{currency})</Label>
               <Input
                 type="number" min={0.01} step="0.01"
                 max={retainer?.current_balance}
@@ -310,7 +321,7 @@ export default function RetainerPanel({ caseData, user }) {
               />
             </div>
             <div>
-              <Label>Reason / Invoice Reference</Label>
+              <Label>{t("reason_invoice_reference", "Reason / Invoice Reference")}</Label>
               <Input
                 placeholder="e.g. Invoice INV-001 for court appearance"
                 value={deductForm.reason}
@@ -318,8 +329,8 @@ export default function RetainerPanel({ caseData, user }) {
               />
             </div>
             <div className="flex justify-end gap-2 pt-1">
-              <Button type="button" variant="outline" onClick={() => setShowDeduct(false)}>Cancel</Button>
-              <Button type="submit" variant="destructive">Deduct</Button>
+              <Button type="button" variant="outline" onClick={() => setShowDeduct(false)}>{t("cancel", "Cancel")}</Button>
+              <Button type="submit" variant="destructive">{t("deduct", "Deduct")}</Button>
             </div>
           </form>
         </DialogContent>

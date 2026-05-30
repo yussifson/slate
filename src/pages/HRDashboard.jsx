@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
@@ -35,6 +36,7 @@ function MetricCard({ icon: Icon, label, value, color }) {
 }
 
 export default function HRDashboard() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const companyId = user?.company_id;
   const isAdmin = user?.role === "company_admin" || user?.role === "hr" || isSuperAdmin(user);
@@ -79,7 +81,6 @@ export default function HRDashboard() {
   return (
     <div className="space-y-6">
       <PageHeader title="HR Management" subtitle="Team, payroll, leave, complaints and promotions" />
-
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         <MetricCard icon={Users} label="Active Staff" value={activeStaff} color="bg-blue-50 text-blue-600" />
         <MetricCard icon={DollarSign} label={`Monthly Payroll (${currency})`} value={formatCurrency(totalSalary, currency)} color="bg-green-50 text-green-600" />
@@ -87,21 +88,20 @@ export default function HRDashboard() {
         <MetricCard icon={MessageSquareWarning} label="Open Complaints" value={openComplaints} color="bg-red-50 text-red-600" />
         <MetricCard icon={ArrowUpCircle} label="Pending Promotions" value={pendingPromotions} color="bg-purple-50 text-purple-600" />
       </div>
-
       <Tabs defaultValue="team">
         <TabsList className="flex-wrap h-auto gap-1">
-          <TabsTrigger value="team">Team</TabsTrigger>
-          <TabsTrigger value="salary">Salary</TabsTrigger>
+          <TabsTrigger value="team">{t("team", "Team")}</TabsTrigger>
+          <TabsTrigger value="salary">{t("salary", "Salary")}</TabsTrigger>
           <TabsTrigger value="leave">
-            Leave {pendingLeaves > 0 && <Badge className="ml-1 bg-amber-100 text-amber-700 text-[9px] h-4 px-1">{pendingLeaves}</Badge>}
+            {t("leave", "Leave")} {pendingLeaves > 0 && <Badge className="ml-1 bg-amber-100 text-amber-700 text-[9px] h-4 px-1">{pendingLeaves}</Badge>}
           </TabsTrigger>
           <TabsTrigger value="complaints">
-            Complaints {openComplaints > 0 && <Badge className="ml-1 bg-red-100 text-red-700 text-[9px] h-4 px-1">{openComplaints}</Badge>}
+            {t("complaints", "Complaints")} {openComplaints > 0 && <Badge className="ml-1 bg-red-100 text-red-700 text-[9px] h-4 px-1">{openComplaints}</Badge>}
           </TabsTrigger>
           <TabsTrigger value="promotions">
-            Promotions {pendingPromotions > 0 && <Badge className="ml-1 bg-purple-100 text-purple-700 text-[9px] h-4 px-1">{pendingPromotions}</Badge>}
+            {t("promotions", "Promotions")} {pendingPromotions > 0 && <Badge className="ml-1 bg-purple-100 text-purple-700 text-[9px] h-4 px-1">{pendingPromotions}</Badge>}
           </TabsTrigger>
-          <TabsTrigger value="payroll">Payroll</TabsTrigger>
+          <TabsTrigger value="payroll">{t("payroll", "Payroll")}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="team" className="mt-4">

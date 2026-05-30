@@ -1,8 +1,10 @@
+import { useTranslation } from "react-i18next";
 import { Link } from 'react-router-dom';
 import { Briefcase, Users, CreditCard, Mail, Shield, Clock, Check, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function Features() {
+  const { t } = useTranslation();
   const deepDives = [
     {
       badge: "Project Management",
@@ -138,22 +140,22 @@ export default function Features() {
       <section className="relative pt-10 pb-16 md:pt-14 md:pb-20 bg-slate-50 border-b border-slate-100">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-600 text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
-            Core Features
+            {t("core_features", "Core Features")}
           </span>
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-slate-900 mb-6 max-w-4xl mx-auto leading-[1.1]">
-            Everything your business team needs to{' '}
+            {t("everything_your_business_team_", "Everything your business team needs to")}{' '}
             <span className="bg-green-100 text-slate-900 px-4 py-1 rounded-[1.5rem] inline-block mt-2">
-              succeed
+              {t("succeed", "succeed")}
             </span>
           </h1>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed font-medium">
-            Unlock a comprehensive system built specifically for modern operational
-            requirements. Minimize admin work and focus entirely on
-            delivering value to your clients.
+            {t(
+              "unlock_a_comprehensive_system_",
+              "Unlock a comprehensive system built specifically for modern operational\n            requirements. Minimize admin work and focus entirely on\n            delivering value to your clients."
+            )}
           </p>
         </div>
       </section>
-
       {/* ── Feature Deep Dives ── */}
       <section className="py-20 md:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-28 lg:space-y-32">
@@ -183,20 +185,21 @@ export default function Features() {
                   </p>
 
                   <ul className="space-y-4 pt-4">
-                    {feature.bullets.map((bullet, idx) => (
-                      <li
-                        key={idx}
-                        className="flex items-start gap-3 text-base text-slate-700 font-medium"
-                      >
-                        <div className="w-5 h-5 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 mt-0.5 shrink-0">
-                          <Check className="w-3.5 h-3.5" strokeWidth={3} />
-                        </div>
-                        <span>{bullet}</span>
-                      </li>
-                    ))}
+                    {feature.bullets.map((bullet, idx) => {
+                      return (
+                        <li
+                          key={idx}
+                          className="flex items-start gap-3 text-base text-slate-700 font-medium"
+                        >
+                          <div className="w-5 h-5 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 mt-0.5 shrink-0">
+                            <Check className="w-3.5 h-3.5" strokeWidth={3} />
+                          </div>
+                          <span>{bullet}</span>
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
-
                 {/* Stylized UI Mockup */}
                 <div className="flex-1 w-full">
                   <div className="aspect-[4/3] rounded-3xl border border-slate-200 bg-slate-50 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden">
@@ -212,16 +215,18 @@ export default function Features() {
           })}
         </div>
       </section>
-
       {/* ── Additional Capabilities Grid ── */}
       <section className="py-20 md:py-28 bg-slate-50 border-t border-slate-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-600 text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
-              Even More Capabilities
+              {t("even_more_capabilities", "Even More Capabilities")}
             </span>
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900">
-              An operating system packed with integrations
+              {t(
+                "an_operating_system_packed_wit",
+                "An operating system packed with integrations"
+              )}
             </h2>
           </div>
 
@@ -248,20 +253,21 @@ export default function Features() {
           </div>
         </div>
       </section>
-
       {/* ── CTA Footer ── */}
       <section className="py-24 md:py-32 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-6">
-            Supercharge your business office today
+            {t("supercharge_your_business_offi", "Supercharge your business office today")}
           </h2>
           <p className="text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed mb-10 font-medium">
-            Sign up now for a 14-day free trial on your own customized
-            subdomain. Set up takes less than 2 minutes.
+            {t(
+              "sign_up_now_for_a_14_day_free_",
+              "Sign up now for a 14-day free trial on your own customized\n            subdomain. Set up takes less than 2 minutes."
+            )}
           </p>
           <Link to="/signup">
             <Button className="bg-primary hover:bg-primary/90 text-white font-bold py-6 px-10 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 text-base">
-              Start Free Trial
+              {t("start_free_trial", "Start Free Trial")}
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </Link>

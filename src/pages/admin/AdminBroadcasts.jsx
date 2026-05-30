@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
@@ -6,6 +7,7 @@ import { useToast } from '@/components/ui/use-toast';
 import PageHeader from '@/components/shared/PageHeader';
 
 export default function AdminBroadcasts() {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const [announcementText, setAnnouncementText] = useState('');
   const [broadcasting, setBroadcasting] = useState(false);
@@ -49,21 +51,23 @@ export default function AdminBroadcasts() {
         title="System Broadcasts" 
         subtitle="Push release notes, maintenance alerts, or notifications to all tenants." 
       />
-
       <div className="bg-card border border-border rounded-2xl p-8 space-y-6 shadow-sm">
         <div className="flex items-center gap-3 mb-2">
           <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
             <Bell className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="font-bold text-lg text-slate-900">Compose Broadcast</h3>
-            <p className="text-sm text-slate-500">This message will appear in the notification bell for all active firms.</p>
+            <h3 className="font-bold text-lg text-slate-900">{t("compose_broadcast", "Compose Broadcast")}</h3>
+            <p className="text-sm text-slate-500">{t(
+              "this_message_will_appear_in_th",
+              "This message will appear in the notification bell for all active firms."
+            )}</p>
           </div>
         </div>
         
         <div className="space-y-4 pt-4 border-t border-slate-100">
           <div>
-            <label className="block text-sm font-bold text-slate-700 mb-2">Message Body</label>
+            <label className="block text-sm font-bold text-slate-700 mb-2">{t("message_body", "Message Body")}</label>
             <textarea
               value={announcementText}
               onChange={(e) => setAnnouncementText(e.target.value)}
@@ -81,12 +85,12 @@ export default function AdminBroadcasts() {
             {broadcasting ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                Broadcasting to {companies.length} firms...
+                {t("broadcasting_to", "Broadcasting to")} {companies.length} {t("firms", "firms...")}
               </>
             ) : (
               <>
                 <Bell className="w-4 h-4" />
-                Push Notification to All Tenants
+                {t("push_notification_to_all_tenan", "Push Notification to All Tenants")}
               </>
             )}
           </Button>

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
@@ -147,6 +148,7 @@ const EXPORT_CONFIGS = [
 ];
 
 export default function DataExport() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const companyId = user?.company_id;
   const [exporting, setExporting] = useState(null);
@@ -180,12 +182,16 @@ export default function DataExport() {
         title="Data Export"
         subtitle="Export cases, client data, and billing reports to CSV"
       />
-
       <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-xs text-amber-700 flex items-start gap-2">
         <Download className="w-4 h-4 shrink-0 mt-0.5" />
-        <span>Exports include all records for your firm. Files are downloaded as <strong>CSV</strong> which can be opened in Excel, Google Sheets, or any spreadsheet application.</span>
+        <span>{t(
+            "exports_include_all_records_fo",
+            "Exports include all records for your firm. Files are downloaded as"
+          )} <strong>{t("csv", "CSV")}</strong> {t(
+            "which_can_be_opened_in_excel_g",
+            "which can be opened in Excel, Google Sheets, or any spreadsheet application."
+          )}</span>
       </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {EXPORT_CONFIGS.map(config => {
           const Icon = config.icon;
@@ -200,13 +206,13 @@ export default function DataExport() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <h3 className="text-sm font-semibold text-foreground">{config.label}</h3>
-                    <Badge variant="outline" className="text-[10px]">{count} records</Badge>
+                    <Badge variant="outline" className="text-[10px]">{count} {t("records", "records")}</Badge>
                   </div>
                   <p className="text-xs text-muted-foreground mt-0.5">{config.description}</p>
                 </div>
               </div>
               <div className="text-xs text-muted-foreground">
-                <span className="font-medium">Columns: </span>
+                <span className="font-medium">{t("columns", "Columns:")} </span>
                 {config.columns.map(c => c.label).join(", ")}
               </div>
               <Button

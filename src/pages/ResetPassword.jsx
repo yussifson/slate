@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { Input } from '@/components/ui/input';
@@ -13,6 +14,7 @@ function Logo({ className }) {
 }
 
 export default function ResetPassword() {
+  const { t } = useTranslation();
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -58,7 +60,7 @@ export default function ResetPassword() {
         <div className="bg-white rounded-2xl shadow-xl border border-slate-100 p-10 space-y-8">
           <div className="flex flex-col items-center gap-3 text-center">
             <Logo className="w-12 h-12" />
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Set new password</h1>
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{t("set_new_password", "Set new password")}</h1>
             <p className="text-sm text-slate-500">
               {done ? 'Password updated! Redirecting to login...' : 'Choose a strong password for your account.'}
             </p>
@@ -70,8 +72,14 @@ export default function ResetPassword() {
                 <CheckCircle2 className="w-8 h-8 text-green-500" />
               </div>
               <p className="text-sm text-slate-600 text-center">
-                Your password has been updated successfully!
-                <br />You will be redirected to login shortly.
+                {t(
+                  "your_password_has_been_updated",
+                  "Your password has been updated successfully!"
+                )}
+                <br />{t(
+                  "you_will_be_redirected_to_logi",
+                  "You will be redirected to login shortly."
+                )}
               </p>
             </div>
           ) : (
@@ -84,7 +92,7 @@ export default function ResetPassword() {
 
               <div>
                 <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">
-                  New Password
+                  {t("new_password", "New Password")}
                 </label>
                 <div className="relative">
                   <Input
@@ -107,7 +115,7 @@ export default function ResetPassword() {
 
               <div>
                 <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">
-                  Confirm Password
+                  {t("confirm_password", "Confirm Password")}
                 </label>
                 <Input
                   type="password"

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
@@ -19,6 +20,7 @@ const NOTIFICATION_ICONS = {
 };
 
 export default function NotificationBell({ user }) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
@@ -88,10 +90,10 @@ export default function NotificationBell({ user }) {
       </PopoverTrigger>
       <PopoverContent className="w-80 p-0 mr-4 mt-2 bg-card border border-border shadow-xl rounded-xl overflow-hidden font-sans">
         <div className="px-4 py-3 border-b border-border bg-muted/30 flex items-center justify-between">
-          <span className="font-semibold text-sm">Notifications</span>
+          <span className="font-semibold text-sm">{t("notifications", "Notifications")}</span>
           {unreadCount > 0 && (
             <Button variant="ghost" size="sm" className="h-7 text-xs px-2 gap-1 text-primary hover:text-primary/90" onClick={markAllRead}>
-              <Check className="w-3 h-3" /> Mark all read
+              <Check className="w-3 h-3" /> {t("mark_all_read", "Mark all read")}
             </Button>
           )}
         </div>
@@ -99,7 +101,7 @@ export default function NotificationBell({ user }) {
           {notifications.length === 0 ? (
             <div className="p-8 text-center text-xs text-muted-foreground">
               <Bell className="w-8 h-8 mx-auto mb-2 text-muted-foreground/40" />
-              No notifications yet
+              {t("no_notifications_yet", "No notifications yet")}
             </div>
           ) : (
             notifications.map(n => {

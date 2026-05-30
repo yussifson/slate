@@ -1,9 +1,11 @@
+import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Mail, Phone, MapPin, CheckCircle, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 export default function Contact() {
+  const { t } = useTranslation();
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -55,21 +57,23 @@ export default function Contact() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 text-xs font-semibold text-slate-600 mb-8 shadow-sm">
             <span className="flex h-2 w-2 rounded-full bg-blue-500" />
-            Get in Touch
+            {t("get_in_touch", "Get in Touch")}
           </div>
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1] max-w-4xl mx-auto mb-6">
-            We're here to{' '}
+            {t("we_re_here_to", "We're here to")}{' '}
             <span className="bg-blue-100 text-blue-900 px-4 py-1 rounded-[1.5rem] inline-block mt-2">
-              support
+              {t("support", "support")}
             </span>{' '}
-            you
+            {t("you", "you")}
           </h1>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed font-medium mb-10">
-            Whether you're exploring enterprise options, need help migrating data, or have a simple question—our team is ready.
+            {t(
+              "whether_you_re_exploring_enter",
+              "Whether you're exploring enterprise options, need help migrating data, or have a simple question—our team is ready."
+            )}
           </p>
         </div>
       </section>
-
       {/* Main Content Layout */}
       <section className="py-20 md:py-32 bg-white relative">
         <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-slate-50 to-transparent"></div>
@@ -86,17 +90,20 @@ export default function Contact() {
                       <CheckCircle className="w-10 h-10" />
                     </div>
                     <h3 className="text-4xl font-extrabold text-slate-900 tracking-tight">
-                      Message Received
+                      {t("message_received", "Message Received")}
                     </h3>
                     <p className="text-lg text-slate-600 font-medium max-w-sm mx-auto leading-relaxed">
-                      Thank you for reaching out! A specialist has been assigned and will reply to your email shortly.
+                      {t(
+                        "thank_you_for_reaching_out_a_s",
+                        "Thank you for reaching out! A specialist has been assigned and will reply to your email shortly."
+                      )}
                     </p>
                     <div className="pt-8">
                       <Button
                         onClick={() => setFormSubmitted(false)}
                         className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-6 px-10 rounded-full shadow-lg transition-all duration-300"
                       >
-                        Send another message
+                        {t("send_another_message", "Send another message")}
                       </Button>
                     </div>
                   </div>
@@ -104,15 +111,15 @@ export default function Contact() {
                   <form onSubmit={handleSubmit} className="space-y-8">
                     <div>
                       <h3 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">
-                        Send a Message
+                        {t("send_a_message", "Send a Message")}
                       </h3>
-                      <p className="text-slate-500 font-medium">We'll get back to you within 24 hours.</p>
+                      <p className="text-slate-500 font-medium">{t("we_ll_get_back_to_you_within_2", "We'll get back to you within 24 hours.")}</p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
                         <label htmlFor="name" className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                          Full Name <span className="text-red-500">*</span>
+                          {t("full_name", "Full Name")} <span className="text-red-500">*</span>
                         </label>
                         <Input
                           type="text"
@@ -127,7 +134,7 @@ export default function Contact() {
                       </div>
                       <div className="space-y-2">
                         <label htmlFor="email" className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                          Email Address <span className="text-red-500">*</span>
+                          {t("email_address", "Email Address")} <span className="text-red-500">*</span>
                         </label>
                         <Input
                           type="email"
@@ -145,7 +152,7 @@ export default function Contact() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
                         <label htmlFor="company" className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                          Company Name
+                          {t("company_name", "Company Name")}
                         </label>
                         <Input
                           type="text"
@@ -159,7 +166,7 @@ export default function Contact() {
                       </div>
                       <div className="space-y-2">
                         <label htmlFor="phone" className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                          Phone Number
+                          {t("phone_number", "Phone Number")}
                         </label>
                         <Input
                           type="tel"
@@ -175,7 +182,7 @@ export default function Contact() {
 
                     <div className="space-y-2">
                       <label htmlFor="message" className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                        How can we help? <span className="text-red-500">*</span>
+                        {t("how_can_we_help", "How can we help?")} <span className="text-red-500">*</span>
                       </label>
                       <textarea
                         id="message"
@@ -190,7 +197,7 @@ export default function Contact() {
                     </div>
 
                     <Button type="submit" className="w-full h-14 bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg rounded-xl shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 hover:-translate-y-0.5 transition-all duration-300">
-                      Send Message
+                      {t("send_message", "Send Message")}
                     </Button>
                   </form>
                 )}
@@ -204,44 +211,49 @@ export default function Contact() {
                   <Clock className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-xl text-slate-900 mb-2">Support Hours</h3>
+                  <h3 className="font-bold text-xl text-slate-900 mb-2">{t("support_hours", "Support Hours")}</h3>
                   <p className="text-slate-600 font-medium leading-relaxed">
-                    Monday – Friday<br />
-                    8:00 AM – 5:00 PM (GMT)
+                    {t("monday_friday", "Monday – Friday")}<br />
+                    {t("8_00_am_5_00_pm_gmt", "8:00 AM – 5:00 PM (GMT)")}
                   </p>
                   <p className="text-sm text-blue-600 font-bold mt-4 pt-4 border-t border-blue-200">
-                    * Enterprise subscribers receive 24/7 priority support.
+                    {t(
+                      "enterprise_subscribers_receive",
+                      "* Enterprise subscribers receive 24/7 priority support."
+                    )}
                   </p>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-2xl font-bold text-slate-900 mb-6 px-2">Regional Offices</h3>
+                <h3 className="text-2xl font-bold text-slate-900 mb-6 px-2">{t("regional_offices", "Regional Offices")}</h3>
                 <div className="space-y-4">
-                  {offices.map((office, idx) => (
-                    <div
-                      key={idx}
-                      className="group rounded-3xl p-6 bg-white border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 transition-colors duration-300 flex items-start gap-5"
-                    >
-                      <div className="w-10 h-10 rounded-full bg-slate-100 group-hover:bg-blue-100 flex items-center justify-center text-slate-500 group-hover:text-blue-600 shrink-0 transition-colors">
-                        <MapPin className="w-5 h-5" />
-                      </div>
-                      <div className="space-y-3">
-                        <h4 className="font-bold text-slate-900 text-lg">{office.city}</h4>
-                        <div className="text-slate-600 font-medium text-sm space-y-2">
-                          <p>{office.address}</p>
-                          <p className="flex items-center gap-2 group-hover:text-blue-600 transition-colors">
-                            <Phone className="w-4 h-4 shrink-0" />
-                            <span>{office.phone}</span>
-                          </p>
-                          <p className="flex items-center gap-2 group-hover:text-blue-600 transition-colors">
-                            <Mail className="w-4 h-4 shrink-0" />
-                            <span>{office.email}</span>
-                          </p>
+                  {offices.map((office, idx) => {
+                    return (
+                      <div
+                        key={idx}
+                        className="group rounded-3xl p-6 bg-white border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 transition-colors duration-300 flex items-start gap-5"
+                      >
+                        <div className="w-10 h-10 rounded-full bg-slate-100 group-hover:bg-blue-100 flex items-center justify-center text-slate-500 group-hover:text-blue-600 shrink-0 transition-colors">
+                          <MapPin className="w-5 h-5" />
+                        </div>
+                        <div className="space-y-3">
+                          <h4 className="font-bold text-slate-900 text-lg">{office.city}</h4>
+                          <div className="text-slate-600 font-medium text-sm space-y-2">
+                            <p>{office.address}</p>
+                            <p className="flex items-center gap-2 group-hover:text-blue-600 transition-colors">
+                              <Phone className="w-4 h-4 shrink-0" />
+                              <span>{office.phone}</span>
+                            </p>
+                            <p className="flex items-center gap-2 group-hover:text-blue-600 transition-colors">
+                              <Mail className="w-4 h-4 shrink-0" />
+                              <span>{office.email}</span>
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </div>

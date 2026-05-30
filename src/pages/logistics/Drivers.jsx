@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import {
   User, Search, Plus, Edit2, Trash2, X, Phone, Mail,
@@ -41,6 +42,7 @@ function generateDriverId() {
 }
 
 export default function Drivers() {
+  const { t } = useTranslation();
   const { data: dbRecords = [], isLoading } = useIndustryRecords('driver');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
@@ -159,29 +161,32 @@ export default function Drivers() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground">Driver Management</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Manage and monitor all registered drivers</p>
+          <h1 className="text-2xl font-bold text-card-foreground">{t("driver_management", "Driver Management")}</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{t(
+            "manage_and_monitor_all_registe",
+            "Manage and monitor all registered drivers"
+          )}</p>
         </div>
         <Button onClick={openAdd} className="gap-2 bg-indigo-600 hover:bg-indigo-700 text-white">
-          <Plus className="w-4 h-4" /> Add Driver
+          <Plus className="w-4 h-4" /> {t("add_driver", "Add Driver")}
         </Button>
       </div>
-
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {stats.map(s => (
-          <div key={s.label} className={`stat-card-premium bg-card rounded-xl border ${s.border} p-4 flex items-center gap-3`}>
-            <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${s.color}`}>
-              <s.icon className="w-5 h-5" />
+        {stats.map(s => {
+          return (
+            <div key={s.label} className={`stat-card-premium bg-card rounded-xl border ${s.border} p-4 flex items-center gap-3`}>
+              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${s.color}`}>
+                <s.icon className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-card-foreground">{s.value}</p>
+                <p className="text-xs text-muted-foreground">{s.label}</p>
+              </div>
             </div>
-            <div>
-              <p className="text-2xl font-bold text-card-foreground">{s.value}</p>
-              <p className="text-xs text-muted-foreground">{s.label}</p>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
-
       {/* Table */}
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         <div className="p-4 border-b border-border bg-muted/40">
@@ -198,123 +203,129 @@ export default function Drivers() {
 
         <div className="overflow-x-auto">
           {isLoading ? (
-            <div className="py-16 text-center text-muted-foreground">Loading drivers...</div>
+            <div className="py-16 text-center text-muted-foreground">{t("loading_drivers", "Loading drivers...")}</div>
           ) : filtered.length === 0 ? (
             <div className="py-16 text-center text-muted-foreground">
               <User className="w-12 h-12 mx-auto mb-3 opacity-30" />
-              <p className="font-semibold">No drivers found.</p>
-              <p className="text-xs mt-1">Click "Add Driver" to register your first driver.</p>
+              <p className="font-semibold">{t("no_drivers_found", "No drivers found.")}</p>
+              <p className="text-xs mt-1">{t(
+                "click_add_driver_to_register_y",
+                "Click \"Add Driver\" to register your first driver."
+              )}</p>
             </div>
           ) : (
             <table className="w-full text-sm">
               <thead className="bg-muted/30 border-b border-border">
                 <tr>
-                  {['Driver', 'License', 'Contact', 'Vehicle Assigned', 'Total Trips', 'Status', 'Actions'].map(h => (
-                    <th key={h} className="px-5 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider first:pl-6 last:text-right last:pr-6">
-                      {h}
-                    </th>
-                  ))}
+                  {['Driver', 'License', 'Contact', 'Vehicle Assigned', 'Total Trips', 'Status', 'Actions'].map(h => {
+                    return (
+                      <th key={h} className="px-5 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider first:pl-6 last:text-right last:pr-6">
+                        {h}
+                      </th>
+                    );
+                  })}
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {filtered.map(driver => (
-                  <tr key={driver.id} className="hover:bg-muted/30 transition-colors">
-                    <td className="px-5 py-4 pl-6">
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-indigo-100 dark:bg-indigo-950/30 flex items-center justify-center text-indigo-600 font-bold text-sm">
-                          {driver.driverName?.charAt(0)?.toUpperCase() || 'D'}
+                {filtered.map(driver => {
+                  return (
+                    <tr key={driver.id} className="hover:bg-muted/30 transition-colors">
+                      <td className="px-5 py-4 pl-6">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-full bg-indigo-100 dark:bg-indigo-950/30 flex items-center justify-center text-indigo-600 font-bold text-sm">
+                            {driver.driverName?.charAt(0)?.toUpperCase() || 'D'}
+                          </div>
+                          <div>
+                            <div className="font-semibold text-card-foreground">{driver.driverName}</div>
+                            <div className="text-xs text-muted-foreground font-mono">{driver.driverId}</div>
+                          </div>
                         </div>
-                        <div>
-                          <div className="font-semibold text-card-foreground">{driver.driverName}</div>
-                          <div className="text-xs text-muted-foreground font-mono">{driver.driverId}</div>
+                      </td>
+                      <td className="px-5 py-4">
+                        <div className="flex items-center gap-1 text-card-foreground text-xs">
+                          <BadgeCheck className="w-3.5 h-3.5 text-indigo-500" />
+                          {driver.licenseNumber || '—'}
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-5 py-4">
-                      <div className="flex items-center gap-1 text-card-foreground text-xs">
-                        <BadgeCheck className="w-3.5 h-3.5 text-indigo-500" />
-                        {driver.licenseNumber || '—'}
-                      </div>
-                      <div className="text-xs text-muted-foreground mt-0.5">
-                        Exp: {driver.licenseExpiry || '—'}
-                      </div>
-                    </td>
-                    <td className="px-5 py-4">
-                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <Phone className="w-3 h-3" /> {driver.phone || '—'}
-                      </div>
-                      <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
-                        <Mail className="w-3 h-3" /> {driver.email || '—'}
-                      </div>
-                    </td>
-                    <td className="px-5 py-4 font-medium text-card-foreground">
-                      {driver.vehicleAssigned ? (
-                        <Link to="/logistics/fleet" className="text-primary hover:underline">
-                          {driver.vehicleAssigned}
-                        </Link>
-                      ) : (
-                        <span className="text-muted-foreground italic">Unassigned</span>
-                      )}
-                    </td>
-                    <td className="px-5 py-4 text-center font-bold text-card-foreground">
-                      {driver.totalTrips || 0}
-                    </td>
-                    <td className="px-5 py-4">
-                      <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${STATUS_COLORS[driver.status] || 'bg-muted text-muted-foreground'}`}>
-                        {statusIcons[driver.status]}
-                        {driver.status}
-                      </span>
-                    </td>
-                    <td className="px-5 py-4 pr-6">
-                      <div className="flex items-center justify-end gap-1.5">
-                        {driver.status === 'Active' && (
-                          <Button onClick={() => handleUpdateStatus(driver, 'On Trip')} size="sm"
-                            className="h-7 text-xs bg-blue-600 hover:bg-blue-700 text-white gap-1">
-                            <Truck className="w-3 h-3" /> Dispatch
-                          </Button>
+                        <div className="text-xs text-muted-foreground mt-0.5">
+                          {t("exp", "Exp:")} {driver.licenseExpiry || '—'}
+                        </div>
+                      </td>
+                      <td className="px-5 py-4">
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <Phone className="w-3 h-3" /> {driver.phone || '—'}
+                        </div>
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
+                          <Mail className="w-3 h-3" /> {driver.email || '—'}
+                        </div>
+                      </td>
+                      <td className="px-5 py-4 font-medium text-card-foreground">
+                        {driver.vehicleAssigned ? (
+                          <Link to="/logistics/fleet" className="text-primary hover:underline">
+                            {driver.vehicleAssigned}
+                          </Link>
+                        ) : (
+                          <span className="text-muted-foreground italic">{t("unassigned", "Unassigned")}</span>
                         )}
-                        {driver.status === 'On Trip' && (
-                          <Button onClick={() => handleUpdateStatus(driver, 'Active')} size="sm"
-                            className="h-7 text-xs bg-green-600 hover:bg-green-700 text-white gap-1">
-                            <CheckCircle2 className="w-3 h-3" /> Return
-                          </Button>
-                        )}
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                              <MoreVertical className="h-4 w-4" />
+                      </td>
+                      <td className="px-5 py-4 text-center font-bold text-card-foreground">
+                        {driver.totalTrips || 0}
+                      </td>
+                      <td className="px-5 py-4">
+                        <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${STATUS_COLORS[driver.status] || 'bg-muted text-muted-foreground'}`}>
+                          {statusIcons[driver.status]}
+                          {driver.status}
+                        </span>
+                      </td>
+                      <td className="px-5 py-4 pr-6">
+                        <div className="flex items-center justify-end gap-1.5">
+                          {driver.status === 'Active' && (
+                            <Button onClick={() => handleUpdateStatus(driver, 'On Trip')} size="sm"
+                              className="h-7 text-xs bg-blue-600 hover:bg-blue-700 text-white gap-1">
+                              <Truck className="w-3 h-3" /> {t("dispatch", "Dispatch")}
                             </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => setViewTarget(driver)}>
-                              <Eye className="w-4 h-4 mr-2" /> View Details
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => {
-                              const signerEmail = prompt("Enter driver's email for contract signature:", driver.email || "");
-                              if (signerEmail) {
-                                sendForSignature({ companyId, provider: 'docusign', documentName: `Driver_Agreement_${driver.driverName}`, signerEmail, signerName: driver.driverName });
-                              }
-                            }}>
-                              <FileSignature className="w-4 h-4 mr-2" /> Send Contract
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => openEdit(driver)}>
-                              <Edit2 className="w-4 h-4 mr-2" /> Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => setDeleteTargetId(driver.id)} className="text-red-600">
-                              <Trash2 className="w-4 h-4 mr-2" /> Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                          )}
+                          {driver.status === 'On Trip' && (
+                            <Button onClick={() => handleUpdateStatus(driver, 'Active')} size="sm"
+                              className="h-7 text-xs bg-green-600 hover:bg-green-700 text-white gap-1">
+                              <CheckCircle2 className="w-3 h-3" /> {t("return", "Return")}
+                            </Button>
+                          )}
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" className="h-8 w-8 p-0">
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem onClick={() => setViewTarget(driver)}>
+                                <Eye className="w-4 h-4 mr-2" /> {t("view_details", "View Details")}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => {
+                                const signerEmail = prompt("Enter driver's email for contract signature:", driver.email || "");
+                                if (signerEmail) {
+                                  sendForSignature({ companyId, provider: 'docusign', documentName: `Driver_Agreement_${driver.driverName}`, signerEmail, signerName: driver.driverName });
+                                }
+                              }}>
+                                <FileSignature className="w-4 h-4 mr-2" /> {t("send_contract", "Send Contract")}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => openEdit(driver)}>
+                                <Edit2 className="w-4 h-4 mr-2" /> {t("edit", "Edit")}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => setDeleteTargetId(driver.id)} className="text-red-600">
+                                <Trash2 className="w-4 h-4 mr-2" /> {t("delete", "Delete")}
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           )}
         </div>
       </div>
-
       {/* Add/Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
@@ -331,56 +342,58 @@ export default function Drivers() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-semibold text-muted-foreground uppercase">Driver Name</label>
+                <label className="text-xs font-semibold text-muted-foreground uppercase">{t("driver_name", "Driver Name")}</label>
                 <Input value={formData.driverName} onChange={e => setFormData({ ...formData, driverName: e.target.value })}
                   className="mt-1" placeholder="Full name" />
               </div>
               <div>
-                <label className="text-xs font-semibold text-muted-foreground uppercase">Driver ID</label>
+                <label className="text-xs font-semibold text-muted-foreground uppercase">{t("driver_id", "Driver ID")}</label>
                 <Input value={formData.driverId} onChange={e => setFormData({ ...formData, driverId: e.target.value })}
                   className="mt-1" placeholder="DRV-XXXX" />
               </div>
               <div>
-                <label className="text-xs font-semibold text-muted-foreground uppercase">License Number</label>
+                <label className="text-xs font-semibold text-muted-foreground uppercase">{t("license_number", "License Number")}</label>
                 <Input value={formData.licenseNumber} onChange={e => setFormData({ ...formData, licenseNumber: e.target.value })}
                   className="mt-1" placeholder="e.g. GH-0123456" />
               </div>
               <div>
-                <label className="text-xs font-semibold text-muted-foreground uppercase">License Expiry</label>
+                <label className="text-xs font-semibold text-muted-foreground uppercase">{t("license_expiry", "License Expiry")}</label>
                 <Input type="date" value={formData.licenseExpiry} onChange={e => setFormData({ ...formData, licenseExpiry: e.target.value })}
                   className="mt-1" />
               </div>
               <div>
-                <label className="text-xs font-semibold text-muted-foreground uppercase">Phone</label>
+                <label className="text-xs font-semibold text-muted-foreground uppercase">{t("phone", "Phone")}</label>
                 <Input value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })}
                   className="mt-1" placeholder="+233 XX XXX XXXX" />
               </div>
               <div>
-                <label className="text-xs font-semibold text-muted-foreground uppercase">Email</label>
+                <label className="text-xs font-semibold text-muted-foreground uppercase">{t("email", "Email")}</label>
                 <Input type="email" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })}
                   className="mt-1" placeholder="driver@email.com" />
               </div>
               <div>
-                <label className="text-xs font-semibold text-muted-foreground uppercase">Vehicle Assigned</label>
+                <label className="text-xs font-semibold text-muted-foreground uppercase">{t("vehicle_assigned", "Vehicle Assigned")}</label>
                 <Input value={formData.vehicleAssigned} onChange={e => setFormData({ ...formData, vehicleAssigned: e.target.value })}
                   className="mt-1" placeholder="Plate # or vehicle name" />
               </div>
               <div>
-                <label className="text-xs font-semibold text-muted-foreground uppercase">Total Trips</label>
+                <label className="text-xs font-semibold text-muted-foreground uppercase">{t("total_trips", "Total Trips")}</label>
                 <Input type="number" value={formData.totalTrips} onChange={e => setFormData({ ...formData, totalTrips: e.target.value })}
                   className="mt-1" placeholder="0" />
               </div>
               <div className="col-span-2">
-                <label className="text-xs font-semibold text-muted-foreground uppercase">Status</label>
+                <label className="text-xs font-semibold text-muted-foreground uppercase">{t("status", "Status")}</label>
                 <select value={formData.status} onChange={e => setFormData({ ...formData, status: e.target.value })}
                   className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-card-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                  {STATUSES.map(s => <option key={s}>{s}</option>)}
+                  {STATUSES.map(s => {
+                    return <option key={s}>{s}</option>;
+                  })}
                 </select>
               </div>
             </div>
 
             <div className="flex gap-3 pt-1">
-              <Button variant="outline" className="flex-1" onClick={closeModal}>Cancel</Button>
+              <Button variant="outline" className="flex-1" onClick={closeModal}>{t("cancel", "Cancel")}</Button>
               <Button onClick={handleSave} disabled={mutateRecord.isPending}
                 className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white">
                 {mutateRecord.isPending ? 'Saving...' : editTarget ? 'Update Driver' : 'Add Driver'}
@@ -389,7 +402,6 @@ export default function Drivers() {
           </div>
         </div>
       )}
-
       <ConfirmationModal
         isOpen={deleteTargetId !== null}
         onClose={() => setDeleteTargetId(null)}
@@ -397,41 +409,40 @@ export default function Drivers() {
         title="Remove Driver"
         message="Are you sure you want to remove this driver? This action cannot be undone."
       />
-
       <Sheet open={!!viewTarget} onOpenChange={(open) => !open && setViewTarget(null)}>
         <SheetContent className="overflow-y-auto">
           <SheetHeader>
-            <SheetTitle>Driver Details</SheetTitle>
+            <SheetTitle>{t("driver_details", "Driver Details")}</SheetTitle>
           </SheetHeader>
           {viewTarget && (
             <div className="mt-6 space-y-4 text-sm">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <div className="text-xs text-muted-foreground">Driver Name</div>
+                  <div className="text-xs text-muted-foreground">{t("driver_name", "Driver Name")}</div>
                   <div className="font-medium text-foreground">{viewTarget.driverName}</div>
                 </div>
                 <div>
-                  <div className="text-xs text-muted-foreground">Driver ID</div>
+                  <div className="text-xs text-muted-foreground">{t("driver_id", "Driver ID")}</div>
                   <div className="font-mono text-foreground">{viewTarget.driverId}</div>
                 </div>
                 <div>
-                  <div className="text-xs text-muted-foreground">License Number</div>
+                  <div className="text-xs text-muted-foreground">{t("license_number", "License Number")}</div>
                   <div className="font-medium text-foreground">{viewTarget.licenseNumber || '—'}</div>
                 </div>
                 <div>
-                  <div className="text-xs text-muted-foreground">License Expiry</div>
+                  <div className="text-xs text-muted-foreground">{t("license_expiry", "License Expiry")}</div>
                   <div className="font-medium text-foreground">{viewTarget.licenseExpiry || '—'}</div>
                 </div>
                 <div>
-                  <div className="text-xs text-muted-foreground">Phone</div>
+                  <div className="text-xs text-muted-foreground">{t("phone", "Phone")}</div>
                   <div className="font-medium text-foreground">{viewTarget.phone || '—'}</div>
                 </div>
                 <div>
-                  <div className="text-xs text-muted-foreground">Email</div>
+                  <div className="text-xs text-muted-foreground">{t("email", "Email")}</div>
                   <div className="font-medium text-foreground">{viewTarget.email || '—'}</div>
                 </div>
                 <div>
-                  <div className="text-xs text-muted-foreground">Vehicle Assigned</div>
+                  <div className="text-xs text-muted-foreground">{t("vehicle_assigned", "Vehicle Assigned")}</div>
                   <div className="font-medium text-foreground">
                     {viewTarget.vehicleAssigned ? (
                       <Link to="/logistics/fleet" className="text-primary hover:underline">
@@ -443,11 +454,11 @@ export default function Drivers() {
                   </div>
                 </div>
                 <div>
-                  <div className="text-xs text-muted-foreground">Total Trips</div>
+                  <div className="text-xs text-muted-foreground">{t("total_trips", "Total Trips")}</div>
                   <div className="font-medium text-foreground">{viewTarget.totalTrips || '0'}</div>
                 </div>
                 <div>
-                  <div className="text-xs text-muted-foreground">Status</div>
+                  <div className="text-xs text-muted-foreground">{t("status", "Status")}</div>
                   <div className="font-medium text-foreground">{viewTarget.status}</div>
                 </div>
               </div>

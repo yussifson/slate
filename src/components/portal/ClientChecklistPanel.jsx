@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
@@ -15,6 +16,7 @@ const STATUS_CONFIG = {
 };
 
 export default function ClientChecklistPanel({ clientId }) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
 
   const { data: items = [], isLoading } = useQuery({
@@ -34,13 +36,13 @@ export default function ClientChecklistPanel({ clientId }) {
   const pending = items.filter(i => i.status !== "completed" && i.status !== "waived");
   const done = items.filter(i => i.status === "completed" || i.status === "waived");
 
-  if (isLoading) return <div className="p-6 text-center text-sm text-muted-foreground">Loading checklist...</div>;
+  if (isLoading) return <div className="p-6 text-center text-sm text-muted-foreground">{t("loading_checklist", "Loading checklist...")}</div>;
 
   if (items.length === 0) {
     return (
       <div className="bg-card border border-border rounded-xl p-10 text-center">
         <CheckSquare className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-        <p className="text-sm text-muted-foreground">No checklist items assigned yet</p>
+        <p className="text-sm text-muted-foreground">{t("no_checklist_items_assigned_ye", "No checklist items assigned yet")}</p>
       </div>
     );
   }
@@ -50,8 +52,8 @@ export default function ClientChecklistPanel({ clientId }) {
       {/* Progress */}
       <div className="bg-card border border-border rounded-xl p-4">
         <div className="flex justify-between items-center mb-2">
-          <p className="text-sm font-semibold">Your Action Items</p>
-          <span className="text-xs text-muted-foreground">{done.length}/{items.length} completed</span>
+          <p className="text-sm font-semibold">{t("your_action_items", "Your Action Items")}</p>
+          <span className="text-xs text-muted-foreground">{done.length}/{items.length} {t("completed", "completed")}</span>
         </div>
         <div className="w-full bg-muted rounded-full h-2">
           <div
@@ -60,12 +62,11 @@ export default function ClientChecklistPanel({ clientId }) {
           />
         </div>
       </div>
-
       {/* Pending items */}
       {pending.length > 0 && (
         <div className="bg-card border border-border rounded-xl overflow-hidden">
           <div className="px-4 py-3 border-b border-border">
-            <p className="text-sm font-semibold">Pending ({pending.length})</p>
+            <p className="text-sm font-semibold">{t("pending", "Pending (")}{pending.length})</p>
           </div>
           <div className="divide-y divide-border">
             {pending.map(item => {
@@ -81,7 +82,7 @@ export default function ClientChecklistPanel({ clientId }) {
                       {item.case_title && <span className="text-xs text-muted-foreground">{item.case_title}</span>}
                       {item.due_date && (
                         <span className="text-xs text-muted-foreground">
-                          Due {format(new Date(item.due_date), "MMM d, yyyy")}
+                          {t("due", "Due")} {format(new Date(item.due_date), "MMM d, yyyy")}
                         </span>
                       )}
                       <Badge className={cn("text-[10px]", cfg.badge)}>{item.status}</Badge>
@@ -94,7 +95,7 @@ export default function ClientChecklistPanel({ clientId }) {
                     onClick={() => updateMutation.mutate({ id: item.id, status: "completed" })}
                     disabled={updateMutation.isPending}
                   >
-                    Mark Done
+                    {t("mark_done", "Mark Done")}
                   </Button>
                 </div>
               );
@@ -102,25 +103,26 @@ export default function ClientChecklistPanel({ clientId }) {
           </div>
         </div>
       )}
-
       {/* Completed items */}
       {done.length > 0 && (
         <div className="bg-card border border-border rounded-xl overflow-hidden opacity-70">
           <div className="px-4 py-3 border-b border-border">
-            <p className="text-sm font-semibold text-muted-foreground">Completed ({done.length})</p>
+            <p className="text-sm font-semibold text-muted-foreground">{t("completed", "Completed (")}{done.length})</p>
           </div>
           <div className="divide-y divide-border">
-            {done.map(item => (
-              <div key={item.id} className="px-4 py-3 flex items-center gap-3">
-                <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm line-through text-muted-foreground">{item.title}</p>
-                  {item.completed_at && (
-                    <p className="text-xs text-muted-foreground">Completed {format(new Date(item.completed_at), "MMM d, yyyy")}</p>
-                  )}
+            {done.map(item => {
+              return (
+                <div key={item.id} className="px-4 py-3 flex items-center gap-3">
+                  <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm line-through text-muted-foreground">{item.title}</p>
+                    {item.completed_at && (
+                      <p className="text-xs text-muted-foreground">{t("completed", "Completed")} {format(new Date(item.completed_at), "MMM d, yyyy")}</p>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}

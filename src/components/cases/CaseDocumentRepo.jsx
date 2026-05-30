@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -54,6 +55,7 @@ function fileSize(bytes) {
 }
 
 export default function CaseDocumentRepo({ caseData, user }) {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [showUpload, setShowUpload] = useState(false);
@@ -121,10 +123,12 @@ export default function CaseDocumentRepo({ caseData, user }) {
       {/* Access notice */}
       <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/40 rounded-lg px-3 py-2">
         <Lock className="w-3.5 h-3.5 shrink-0" />
-        <span>Documents are restricted to authorized case personnel only.</span>
-        <span className="ml-auto font-medium">{documents.length} file{documents.length !== 1 ? "s" : ""}</span>
+        <span>{t(
+          "documents_are_restricted_to_au",
+          "Documents are restricted to authorized case personnel only."
+        )}</span>
+        <span className="ml-auto font-medium">{documents.length} {t("file", "file")}{documents.length !== 1 ? "s" : ""}</span>
       </div>
-
       {/* Toolbar */}
       <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center justify-between">
         <div className="flex gap-2 flex-1 w-full sm:w-auto">
@@ -135,26 +139,30 @@ export default function CaseDocumentRepo({ caseData, user }) {
           <Select value={categoryFilter} onValueChange={setCategoryFilter}>
             <SelectTrigger className="w-44 h-9"><SelectValue placeholder="All Categories" /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
-              {CATEGORIES.map(c => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}
+              <SelectItem value="all">{t("all_categories", "All Categories")}</SelectItem>
+              {CATEGORIES.map(c => {
+                return <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>;
+              })}
             </SelectContent>
           </Select>
         </div>
         {canManage && (
           <Button onClick={() => setShowUpload(true)} size="sm" className="gap-2 shrink-0">
-            <Upload className="w-4 h-4" /> Upload Filing / Document
+            <Upload className="w-4 h-4" /> {t("upload_filing_document", "Upload Filing / Document")}
           </Button>
         )}
       </div>
-
       {isLoading ? (
-        <div className="p-8 text-center text-sm text-muted-foreground">Loading documents...</div>
+        <div className="p-8 text-center text-sm text-muted-foreground">{t("loading_documents", "Loading documents...")}</div>
       ) : filtered.length === 0 ? (
         <div className="bg-card rounded-xl border border-dashed border-border p-12 text-center">
           <FolderOpen className="w-10 h-10 mx-auto text-muted-foreground mb-3" />
-          <p className="text-sm font-medium">No documents yet</p>
-          <p className="text-xs text-muted-foreground mt-1 mb-4">Upload court filings, scanned documents, and case files to keep everything in one place.</p>
-          {canManage && <Button size="sm" onClick={() => setShowUpload(true)}><Upload className="w-3.5 h-3.5 mr-1.5" />Upload First Document</Button>}
+          <p className="text-sm font-medium">{t("no_documents_yet", "No documents yet")}</p>
+          <p className="text-xs text-muted-foreground mt-1 mb-4">{t(
+            "upload_court_filings_scanned_d",
+            "Upload court filings, scanned documents, and case files to keep everything in one place."
+          )}</p>
+          {canManage && <Button size="sm" onClick={() => setShowUpload(true)}><Upload className="w-3.5 h-3.5 mr-1.5" />{t("upload_first_document", "Upload First Document")}</Button>}
         </div>
       ) : (
         <div className="space-y-5">
@@ -163,21 +171,23 @@ export default function CaseDocumentRepo({ caseData, user }) {
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <Gavel className="w-4 h-4 text-red-600" />
-                <h3 className="text-sm font-semibold text-red-700">Court Filings & Orders</h3>
+                <h3 className="text-sm font-semibold text-red-700">{t("court_filings_orders", "Court Filings & Orders")}</h3>
                 <span className="text-xs text-muted-foreground">({courtFilings.length})</span>
               </div>
               <div className="grid grid-cols-1 gap-2">
-                {courtFilings.map(doc => (
-                  <DocRow
-                    key={doc.id}
-                    doc={doc}
-                    canManage={canManage}
-                    onDelete={() => deleteMutation.mutate(doc.id)}
-                    onToggleShare={() => updateMutation.mutate({ id: doc.id, data: { shared_with_client: !doc.shared_with_client } })}
-                    onPreview={() => setPreviewDoc(doc)}
-                    highlighted
-                  />
-                ))}
+                {courtFilings.map(doc => {
+                  return (
+                    <DocRow
+                      key={doc.id}
+                      doc={doc}
+                      canManage={canManage}
+                      onDelete={() => deleteMutation.mutate(doc.id)}
+                      onToggleShare={() => updateMutation.mutate({ id: doc.id, data: { shared_with_client: !doc.shared_with_client } })}
+                      onPreview={() => setPreviewDoc(doc)}
+                      highlighted
+                    />
+                  );
+                })}
               </div>
             </div>
           )}
@@ -188,27 +198,28 @@ export default function CaseDocumentRepo({ caseData, user }) {
               {courtFilings.length > 0 && (
                 <div className="flex items-center gap-2 mb-2">
                   <FolderOpen className="w-4 h-4 text-muted-foreground" />
-                  <h3 className="text-sm font-semibold text-muted-foreground">Other Documents</h3>
+                  <h3 className="text-sm font-semibold text-muted-foreground">{t("other_documents", "Other Documents")}</h3>
                   <span className="text-xs text-muted-foreground">({otherDocs.length})</span>
                 </div>
               )}
               <div className="grid grid-cols-1 gap-2">
-                {otherDocs.map(doc => (
-                  <DocRow
-                    key={doc.id}
-                    doc={doc}
-                    canManage={canManage}
-                    onDelete={() => deleteMutation.mutate(doc.id)}
-                    onToggleShare={() => updateMutation.mutate({ id: doc.id, data: { shared_with_client: !doc.shared_with_client } })}
-                    onPreview={() => setPreviewDoc(doc)}
-                  />
-                ))}
+                {otherDocs.map(doc => {
+                  return (
+                    <DocRow
+                      key={doc.id}
+                      doc={doc}
+                      canManage={canManage}
+                      onDelete={() => deleteMutation.mutate(doc.id)}
+                      onToggleShare={() => updateMutation.mutate({ id: doc.id, data: { shared_with_client: !doc.shared_with_client } })}
+                      onPreview={() => setPreviewDoc(doc)}
+                    />
+                  );
+                })}
               </div>
             </div>
           )}
         </div>
       )}
-
       {/* Upload dialog */}
       {showUpload && (
         <UploadDocumentDialog
@@ -219,7 +230,6 @@ export default function CaseDocumentRepo({ caseData, user }) {
           caseId={caseData?.id}
         />
       )}
-
       {/* Preview modal */}
       {previewDoc && (
         <Dialog open onOpenChange={() => setPreviewDoc(null)}>
@@ -238,9 +248,12 @@ export default function CaseDocumentRepo({ caseData, user }) {
               ) : (
                 <div className="text-center py-10">
                   <FileText className="w-12 h-12 mx-auto text-muted-foreground mb-3" />
-                  <p className="text-sm text-muted-foreground mb-3">Preview not available for this file type.</p>
+                  <p className="text-sm text-muted-foreground mb-3">{t(
+                    "preview_not_available_for_this",
+                    "Preview not available for this file type."
+                  )}</p>
                   <a href={previewDoc.file_url} target="_blank" rel="noopener noreferrer">
-                    <Button size="sm"><Download className="w-3.5 h-3.5 mr-1.5" />Download to View</Button>
+                    <Button size="sm"><Download className="w-3.5 h-3.5 mr-1.5" />{t("download_to_view", "Download to View")}</Button>
                   </a>
                 </div>
               )}
@@ -253,6 +266,7 @@ export default function CaseDocumentRepo({ caseData, user }) {
 }
 
 function DocRow({ doc, canManage, onDelete, onToggleShare, onPreview, highlighted }) {
+  const { t } = useTranslation();
   const cat = getCategoryMeta(doc.category);
   return (
     <div className={cn(
@@ -270,9 +284,9 @@ function DocRow({ doc, canManage, onDelete, onToggleShare, onPreview, highlighte
         <div className="flex flex-wrap gap-1.5 mt-0.5 items-center">
           <Badge className={`text-[10px] ${cat.color}`}>{cat.label}</Badge>
           {doc.file_size && <span className="text-[10px] text-muted-foreground">{fileSize(doc.file_size)}</span>}
-          {doc.uploaded_by && <span className="text-[10px] text-muted-foreground">by {doc.uploaded_by.split("@")[0]}</span>}
+          {doc.uploaded_by && <span className="text-[10px] text-muted-foreground">{t("by", "by")} {doc.uploaded_by.split("@")[0]}</span>}
           <span className="text-[10px] text-muted-foreground">{format(new Date(doc.created_date), "MMM d, yyyy")}</span>
-          {doc.shared_with_client && <Badge className="text-[10px] bg-blue-100 text-blue-700 gap-1"><Share2 className="w-2.5 h-2.5" />Shared</Badge>}
+          {doc.shared_with_client && <Badge className="text-[10px] bg-blue-100 text-blue-700 gap-1"><Share2 className="w-2.5 h-2.5" />{t("shared", "Shared")}</Badge>}
         </div>
         {doc.notes && <p className="text-xs text-muted-foreground mt-0.5 truncate">{doc.notes}</p>}
       </div>
@@ -370,7 +384,7 @@ export function UploadDocumentDialog({ onClose, onSubmit, isUploading: saving, c
   return (
     <Dialog open onOpenChange={onClose}>
       <DialogContent className="max-w-lg">
-        <DialogHeader><DialogTitle className="flex items-center gap-2"><Upload className="w-4 h-4" />Upload Filing / Document</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle className="flex items-center gap-2"><Upload className="w-4 h-4" />{t("upload_filing_document", "Upload Filing / Document")}</DialogTitle></DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Drop zone */}
           <div
@@ -386,60 +400,67 @@ export function UploadDocumentDialog({ onClose, onSubmit, isUploading: saving, c
             <input ref={inputRef} type="file" multiple className="hidden" onChange={handleFileInput} accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,.txt,.xls,.xlsx" />
             <Upload className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
             <p className="text-sm font-medium">{uploading ? "Uploading..." : "Drag & drop files here, or click to browse"}</p>
-            <p className="text-xs text-muted-foreground mt-1">PDF, Word, images, spreadsheets — multiple files supported</p>
+            <p className="text-xs text-muted-foreground mt-1">{t(
+              "pdf_word_images_spreadsheets_m",
+              "PDF, Word, images, spreadsheets — multiple files supported"
+            )}</p>
           </div>
 
           {/* Uploaded files list */}
           {files.length > 0 && (
             <div className="space-y-1.5">
-              {files.map((f, idx) => (
-                <div key={idx} className="flex items-center gap-2 bg-muted/40 rounded-lg px-3 py-2 text-sm">
-                  {getFileIcon(f.type, f.name)}
-                  <span className="flex-1 truncate text-xs">{f.name}</span>
-                  <span className="text-xs text-muted-foreground shrink-0">{fileSize(f.size)}</span>
-                  <button type="button" onClick={() => removeFile(idx)} className="text-muted-foreground hover:text-destructive">
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              ))}
+              {files.map((f, idx) => {
+                return (
+                  <div key={idx} className="flex items-center gap-2 bg-muted/40 rounded-lg px-3 py-2 text-sm">
+                    {getFileIcon(f.type, f.name)}
+                    <span className="flex-1 truncate text-xs">{f.name}</span>
+                    <span className="text-xs text-muted-foreground shrink-0">{fileSize(f.size)}</span>
+                    <button type="button" onClick={() => removeFile(idx)} className="text-muted-foreground hover:text-destructive">
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                );
+              })}
             </div>
           )}
 
           <div className="grid grid-cols-2 gap-3">
             <div className="col-span-2">
-              <Label>Document Name {files.length > 1 && <span className="text-muted-foreground text-xs">(applied to first file only)</span>}</Label>
+              <Label>{t("document_name", "Document Name")} {files.length > 1 && <span className="text-muted-foreground text-xs">{t("applied_to_first_file_only", "(applied to first file only)")}</span>}</Label>
               <Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="e.g. Writ of Summons" className="mt-1" />
             </div>
             <div>
-              <Label>Category</Label>
+              <Label>{t("category", "Category")}</Label>
               <Select value={form.category} onValueChange={v => setForm({ ...form, category: v })}>
                 <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  {CATEGORIES.map(c => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}
+                  {CATEGORIES.map(c => {
+                    return <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>;
+                  })}
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label>Filing Date <span className="text-muted-foreground text-xs">(optional)</span></Label>
+              <Label>{t("filing_date", "Filing Date")} <span className="text-muted-foreground text-xs">{t("optional", "(optional)")}</span></Label>
               <Input type="date" value={form.filing_date} onChange={e => setForm({ ...form, filing_date: e.target.value })} className="mt-1" />
             </div>
           </div>
 
           <div>
-            <Label>Notes <span className="text-muted-foreground text-xs">(optional)</span></Label>
+            <Label>{t("notes", "Notes")} <span className="text-muted-foreground text-xs">{t("optional", "(optional)")}</span></Label>
             <Input value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} placeholder="Brief description..." className="mt-1" />
           </div>
 
           <div className="flex items-center justify-between rounded-lg border border-border p-3">
             <div>
-              <p className="text-sm font-medium">Share with client portal</p>
-              <p className="text-xs text-muted-foreground">Client can view this in their portal</p>
+              <p className="text-sm font-medium">{t("share_with_client_portal", "Share with client portal")}</p>
+              <p className="text-xs text-muted-foreground">{t("client_can_view_this_in_their_", "Client can view this in their portal")}</p>
             </div>
             <Switch checked={form.shared_with_client} onCheckedChange={v => setForm({ ...form, shared_with_client: v })} />
           </div>
 
           <div className="flex justify-end gap-2 pt-1">
-            <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
+            <Button type="button" variant="outline" onClick={onClose}>{t("cancel", "Cancel")}</Button>
             <Button type="submit" disabled={uploading || !files.length || saving}>
               {saving ? "Saving..." : `Upload ${files.length > 1 ? `${files.length} Files` : "File"}`}
             </Button>

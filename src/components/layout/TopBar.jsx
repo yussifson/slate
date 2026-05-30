@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { LayoutDashboard, RefreshCw, Globe, PanelLeft, Sparkles, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { isSuperAdmin } from "@/lib/constants";
@@ -26,7 +27,17 @@ const PAGE_TITLES = {
   "/client-portal": "Client Portal",
 };
 
+const LANGUAGES = {
+  en: { name: "English", flag: "🇬🇧" },
+  es: { name: "Español", flag: "🇪🇸" },
+  fr: { name: "Français", flag: "🇫🇷" },
+  ar: { name: "العربية", flag: "🇸🇦" },
+  he: { name: "עברית", flag: "🇮🇱" },
+};
+
 export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOpen, toggleAI }) {
+  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -39,43 +50,42 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
     await queryClient.invalidateQueries();
     setTimeout(() => {
       setIsRefreshing(false);
-      toast({ title: "Data refreshed", description: "Everything is up to date." });
+      toast({ title: t('data_refreshed', "Data refreshed"), description: t('everything_up_to_date', "Everything is up to date.") });
     }, 500);
   };
 
   const handleIndustryChange = (newIndustry) => {
     if (!navigator.onLine) {
       toast({
-        title: "Offline Mode",
-        description: "Cannot switch industries while offline. Please reconnect.",
+        title: t('offline_mode', "Offline Mode"),
+        description: t('cannot_switch_industry_offline', "Cannot switch industries while offline. Please reconnect."),
         variant: "destructive",
       });
       return;
     }
     sessionStorage.setItem('optalflow_industry_override', newIndustry);
-    // Clear all cached queries so pages reload with the new industry context
     queryClient.clear();
     toast({
-      title: "Industry Switched",
-      description: `Active industry changed to ${INDUSTRIES[newIndustry]?.name || newIndustry}.`,
+      title: t('industry_switched', "Industry Switched"),
+      description: t('active_industry_changed', "Active industry changed"),
     });
-    // Navigate to dashboard - React Query will refetch everything fresh
     navigate('/');
-    // Force a window-level reload to re-render the sidebar and layout for the new industry
-    // Use a small delay to let the navigate() complete first
     setTimeout(() => {
       window.location.href = '/';
     }, 50);
   };
 
   const pathKey = Object.keys(PAGE_TITLES).filter(k => k !== "/").find(k => location.pathname.startsWith(k)) || (location.pathname === "/" ? "/" : "/");
-  const title = PAGE_TITLES[pathKey] || "Dashboard";
+  const defaultTitle = PAGE_TITLES[pathKey] || "Dashboard";
+  const title = t(defaultTitle.toLowerCase().replace(/\s+/g, '_'), defaultTitle);
 
   const nameStr = user?.full_name || user?.first_name || "User";
   const initials = nameStr.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
-  const displayName = isSuperAdmin(user) ? "Super Admin" : nameStr;
+  const displayName = isSuperAdmin(user) ? t('super_admin', "Super Admin") : nameStr;
 
   const currentIndustry = sessionStorage.getItem('optalflow_industry_override') || company?.industry_type || 'law';
+
+  const currentLang = LANGUAGES[i18n.language?.split('-')[0]] || LANGUAGES.en;
 
   return (
     <div className="h-12 border-t-[3px] border-t-blue-500 border-b border-border bg-card sticky top-0 z-30 flex items-center pl-4 pr-5 lg:px-5 gap-3">
@@ -84,7 +94,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
         <button 
           onClick={toggleSidebar}
           className="hidden lg:flex p-1.5 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
-          title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          title={isSidebarCollapsed ? t('expand_sidebar', "Expand sidebar") : t('collapse_sidebar', "Collapse sidebar")}
         >
           <PanelLeft className="w-5 h-5" />
         </button>
@@ -92,7 +102,6 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
         <LayoutDashboard className="w-4 h-4 text-muted-foreground hidden sm:block" />
         <span className="font-medium text-foreground">{title}</span>
       </div>
-
       {/* Right */}
       <div className="flex items-center gap-2">
         {/* Super Admin Industry Switcher */}
@@ -104,20 +113,33 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
               onChange={e => handleIndustryChange(e.target.value)}
               className="bg-transparent border-none outline-none font-bold text-xs pr-4 cursor-pointer text-amber-700 dark:text-amber-400"
             >
-              {Object.entries(INDUSTRIES).map(([key, ind]) => (
-                <option key={key} value={key} className="bg-card text-foreground">
-                  {ind.icon} {ind.name}
-                </option>
-              ))}
+              {Object.entries(INDUSTRIES).map(([key, ind]) => {
+                return (
+                  <option key={key} value={key} className="bg-card text-foreground">
+                    {ind.icon} {ind.name}
+                  </option>
+                );
+              })}
             </select>
           </div>
         )}
 
-        {/* Language */}
-        <div className="hidden sm:flex items-center gap-1.5 text-xs text-muted-foreground border border-border rounded-md px-2.5 py-1.5 hover:bg-muted/50 cursor-default bg-card">
+        {/* Language Switcher */}
+        <div className="hidden sm:flex items-center gap-1.5 text-xs text-muted-foreground border border-border rounded-md px-2.5 py-1 hover:bg-muted/50 bg-card">
           <Globe className="w-3.5 h-3.5" />
-          <span>English</span>
-          <span>🇬🇧</span>
+          <select 
+            value={i18n.language?.split('-')[0] || 'en'} 
+            onChange={(e) => i18n.changeLanguage(e.target.value)}
+            className="bg-transparent border-none outline-none cursor-pointer focus:ring-0"
+          >
+            {Object.entries(LANGUAGES).map(([key, lang]) => {
+              return (
+                <option key={key} value={key} className="bg-card text-foreground">
+                  {lang.name} {lang.flag}
+                </option>
+              );
+            })}
+          </select>
         </div>
 
         {/* Orbit AI Toggle */}
@@ -133,7 +155,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
         >
           <span className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 opacity-0 hover:opacity-100 transition-opacity duration-300" />
           <Sparkles className={`w-3.5 h-3.5 ${isAIOpen ? "animate-spin text-white" : "text-blue-500"}`} style={{ animationDuration: '3s' }} />
-          <span>Orbit AI</span>
+          <span>{t("orbit_ai", "Orbit AI")}</span>
           <span className="flex h-1.5 w-1.5 relative">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>

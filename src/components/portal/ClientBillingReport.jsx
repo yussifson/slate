@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState, useMemo } from "react";
 import { format, startOfMonth, endOfMonth, subMonths, isWithinInterval } from "date-fns";
 import { Receipt, TrendingUp, Download, ChevronLeft, ChevronRight } from "lucide-react";
@@ -12,6 +13,7 @@ function formatAmt(amount, currency) {
 }
 
 export default function ClientBillingReport({ invoices = [], expenses = [], currency = "GHS" }) {
+  const { t } = useTranslation();
   const [monthOffset, setMonthOffset] = useState(0);
 
   const targetMonth = subMonths(new Date(), monthOffset);
@@ -43,79 +45,82 @@ export default function ClientBillingReport({ invoices = [], expenses = [], curr
         </Button>
         <div className="text-center">
           <p className="text-sm font-semibold">{monthLabel}</p>
-          <p className="text-xs text-muted-foreground">Monthly Billing Summary</p>
+          <p className="text-xs text-muted-foreground">{t("monthly_billing_summary", "Monthly Billing Summary")}</p>
         </div>
         <Button variant="ghost" size="icon" onClick={() => setMonthOffset(o => Math.max(0, o - 1))} disabled={monthOffset === 0} className="h-8 w-8">
           <ChevronRight className="w-4 h-4" />
         </Button>
       </div>
-
       {/* KPIs */}
       <div className="grid grid-cols-3 gap-3">
         {[
           { label: "Total Billed", value: formatAmt(totalBilled, currency), color: "bg-blue-50 text-blue-700" },
           { label: "Paid", value: formatAmt(totalPaid, currency), color: "bg-green-50 text-green-700" },
           { label: "Outstanding", value: formatAmt(outstanding, currency), color: outstanding > 0 ? "bg-red-50 text-red-700" : "bg-muted text-muted-foreground" },
-        ].map(k => (
-          <div key={k.label} className={`rounded-xl p-3 text-center ${k.color}`}>
-            <p className="text-lg font-bold">{k.value}</p>
-            <p className="text-xs font-medium mt-0.5">{k.label}</p>
-          </div>
-        ))}
+        ].map(k => {
+          return (
+            <div key={k.label} className={`rounded-xl p-3 text-center ${k.color}`}>
+              <p className="text-lg font-bold">{k.value}</p>
+              <p className="text-xs font-medium mt-0.5">{k.label}</p>
+            </div>
+          );
+        })}
       </div>
-
       {/* Invoices */}
       <div className="bg-card border border-border rounded-xl overflow-hidden">
         <div className="px-4 py-3 border-b border-border flex items-center gap-2">
           <Receipt className="w-4 h-4 text-primary" />
-          <p className="text-sm font-semibold">Invoices</p>
-          <span className="ml-auto text-xs text-muted-foreground">{monthInvoices.length} invoice{monthInvoices.length !== 1 ? "s" : ""}</span>
+          <p className="text-sm font-semibold">{t("invoices", "Invoices")}</p>
+          <span className="ml-auto text-xs text-muted-foreground">{monthInvoices.length} {t("invoice", "invoice")}{monthInvoices.length !== 1 ? "s" : ""}</span>
         </div>
         {monthInvoices.length === 0 ? (
-          <div className="px-4 py-6 text-center text-xs text-muted-foreground">No invoices for this month</div>
+          <div className="px-4 py-6 text-center text-xs text-muted-foreground">{t("no_invoices_for_this_month", "No invoices for this month")}</div>
         ) : (
           <div className="divide-y divide-border">
-            {monthInvoices.map(inv => (
-              <div key={inv.id} className="px-4 py-3 flex items-center justify-between gap-2">
-                <div>
-                  <p className="text-sm font-medium">{inv.invoice_number || "Invoice"}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {inv.case_title ? `${inv.case_title} · ` : ""}Due {inv.due_date ? format(new Date(inv.due_date), "MMM d") : "—"}
-                  </p>
+            {monthInvoices.map(inv => {
+              return (
+                <div key={inv.id} className="px-4 py-3 flex items-center justify-between gap-2">
+                  <div>
+                    <p className="text-sm font-medium">{inv.invoice_number || "Invoice"}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {inv.case_title ? `${inv.case_title} · ` : ""}{t("due", "Due")} {inv.due_date ? format(new Date(inv.due_date), "MMM d") : "—"}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-sm font-bold">{formatAmt(inv.total_amount, inv.currency || currency)}</span>
+                    <Badge className={cn("text-[10px]", INVOICE_STATUS_COLORS[inv.status])}>{inv.status}</Badge>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-sm font-bold">{formatAmt(inv.total_amount, inv.currency || currency)}</span>
-                  <Badge className={cn("text-[10px]", INVOICE_STATUS_COLORS[inv.status])}>{inv.status}</Badge>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
-
       {/* Expenses */}
       {monthExpenses.length > 0 && (
         <div className="bg-card border border-border rounded-xl overflow-hidden">
           <div className="px-4 py-3 border-b border-border flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-amber-500" />
-            <p className="text-sm font-semibold">Case Expenses</p>
-            <span className="ml-auto text-xs text-muted-foreground">{formatAmt(totalExpenses, currency)} billable</span>
+            <p className="text-sm font-semibold">{t("case_expenses", "Case Expenses")}</p>
+            <span className="ml-auto text-xs text-muted-foreground">{formatAmt(totalExpenses, currency)} {t("billable", "billable")}</span>
           </div>
           <div className="divide-y divide-border">
-            {monthExpenses.map(exp => (
-              <div key={exp.id} className="px-4 py-3 flex items-center justify-between gap-2">
-                <div>
-                  <p className="text-sm font-medium">{exp.description}</p>
-                  <p className="text-xs text-muted-foreground capitalize">
-                    {exp.category?.replace(/_/g, " ")}{exp.case_title ? ` · ${exp.case_title}` : ""}
-                  </p>
+            {monthExpenses.map(exp => {
+              return (
+                <div key={exp.id} className="px-4 py-3 flex items-center justify-between gap-2">
+                  <div>
+                    <p className="text-sm font-medium">{exp.description}</p>
+                    <p className="text-xs text-muted-foreground capitalize">
+                      {exp.category?.replace(/_/g, " ")}{exp.case_title ? ` · ${exp.case_title}` : ""}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-sm font-bold">{formatAmt(exp.amount, exp.currency || currency)}</span>
+                    <Badge variant="outline" className="text-[10px]">{exp.billable ? "Billable" : "Internal"}</Badge>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-sm font-bold">{formatAmt(exp.amount, exp.currency || currency)}</span>
-                  <Badge variant="outline" className="text-[10px]">{exp.billable ? "Billable" : "Internal"}</Badge>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}

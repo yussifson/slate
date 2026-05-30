@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Sparkles, MessageSquare, X, Send, Bot, User, Maximize2, Minimize2, Plus, Clock, Mic, MicOff, Paperclip, Trash2, FileText, Image, Square } from 'lucide-react';
@@ -144,6 +145,7 @@ function FormatMessage({ content }) {
 
 //  Main Component 
 export default function GlobalAIAssistant({ onClose }) {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -707,46 +709,46 @@ RULES FOR MULTI-STEP REASONING:
   //  Render 
   return (
     <div className={`flex h-full shrink-0 border-l-[3px] border-l-blue-500 bg-card shadow-[-8px_0_30px_rgba(0,0,0,0.07)] animate-in slide-in-from-right-8 duration-300 z-40 transition-all ${isExpanded ? 'w-[680px]' : 'w-[400px]'}`}>
-
       {/*  History Sidebar  */}
       {showHistory && (
         <div className="w-52 shrink-0 border-r border-border bg-muted/20 flex flex-col">
           <div className="px-3 py-2.5 border-b border-border flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Chat History</span>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{t("chat_history", "Chat History")}</span>
             <button onClick={startNewChat} className="p-1 hover:bg-muted rounded text-muted-foreground hover:text-blue-600 transition-colors" title="New chat">
               <Plus className="w-3.5 h-3.5" />
             </button>
           </div>
           <div className="flex-1 overflow-y-auto p-2 space-y-1">
-            {sessions.map(s => (
-              <div
-                key={s.id}
-                onClick={() => { setActiveId(s.id); setShowHistory(false); }}
-                className={`group relative flex items-start gap-2 p-2 rounded-lg cursor-pointer text-left transition-colors ${
-                  s.id === activeId
-                    ? 'bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/50'
-                    : 'hover:bg-muted/70'
-                }`}
-              >
-                <Clock className="w-3 h-3 mt-0.5 text-muted-foreground shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-[11px] font-medium text-foreground truncate leading-tight">{s.title}</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">
-                    {new Date(s.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-                  </p>
-                </div>
-                <button
-                  onClick={e => deleteSession(s.id, e)}
-                  className="opacity-0 group-hover:opacity-100 p-0.5 text-muted-foreground hover:text-red-500 transition-all shrink-0"
+            {sessions.map(s => {
+              return (
+                <div
+                  key={s.id}
+                  onClick={() => { setActiveId(s.id); setShowHistory(false); }}
+                  className={`group relative flex items-start gap-2 p-2 rounded-lg cursor-pointer text-left transition-colors ${
+                    s.id === activeId
+                      ? 'bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/50'
+                      : 'hover:bg-muted/70'
+                  }`}
                 >
-                  <Trash2 className="w-3 h-3" />
-                </button>
-              </div>
-            ))}
+                  <Clock className="w-3 h-3 mt-0.5 text-muted-foreground shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[11px] font-medium text-foreground truncate leading-tight">{s.title}</p>
+                    <p className="text-[10px] text-muted-foreground mt-0.5">
+                      {new Date(s.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                    </p>
+                  </div>
+                  <button
+                    onClick={e => deleteSession(s.id, e)}
+                    className="opacity-0 group-hover:opacity-100 p-0.5 text-muted-foreground hover:text-red-500 transition-all shrink-0"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                  </button>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
-
       {/*  Main Panel  */}
       <div className="flex-1 flex flex-col min-w-0">
 
@@ -764,10 +766,10 @@ RULES FOR MULTI-STEP REASONING:
               <OrbitIcon className="w-3.5 h-3.5" />
             </div>
             <div className="flex items-center gap-1.5 flex-1">
-              <p className="text-[11px] font-bold text-foreground leading-none">Orbit</p>
+              <p className="text-[11px] font-bold text-foreground leading-none">{t("orbit", "Orbit")}</p>
               <div className="flex items-center gap-1 bg-gradient-to-r from-blue-600 to-indigo-600 px-1.5 py-0.5 rounded-full">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse shrink-0"></span>
-                <span className="text-[9px] font-bold uppercase tracking-wider text-white truncate">Agent Active</span>
+                <span className="text-[9px] font-bold uppercase tracking-wider text-white truncate">{t("agent_active", "Agent Active")}</span>
               </div>
             </div>
           </div>
@@ -788,7 +790,7 @@ RULES FOR MULTI-STEP REASONING:
         <div className="px-3 py-1.5 flex items-center gap-1.5 bg-blue-50/60 dark:bg-blue-950/10 border-b border-blue-100 dark:border-blue-900/20 shrink-0">
           <div className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0"></div>
           <span className="text-[10px] text-blue-600 dark:text-blue-400 font-semibold truncate">
-            {ctx ? `${ctx.suite}  ${ctx.title}` : location.pathname}  AI has full context
+            {ctx ? `${ctx.suite}  ${ctx.title}` : location.pathname}  {t("ai_has_full_context", "AI has full context")}
           </span>
         </div>
 
@@ -796,41 +798,43 @@ RULES FOR MULTI-STEP REASONING:
         <div className="flex-1 overflow-y-auto p-4 space-y-4 relative bg-[radial-gradient(circle,#e2e8f0_1px,transparent_1px)] dark:bg-[radial-gradient(circle,#1e293b_1px,transparent_1px)] [background-size:18px_18px]">
           <div className="absolute inset-0 bg-card/65 pointer-events-none z-0"></div>
           <div className="relative z-10 space-y-4">
-            {messages.filter(m => m.role !== 'system').map((msg, i) => (
-              <div key={i} className={`flex gap-2.5 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-0.5 shadow-sm ${
-                  msg.role === 'user'
-                    ? 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
-                    : 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white'
-                }`}>
-                  {msg.role === 'user' ? <User className="w-3.5 h-3.5" /> : <Sparkles className="w-3.5 h-3.5" />}
+            {messages.filter(m => m.role !== 'system').map((msg, i) => {
+              return (
+                <div key={i} className={`flex gap-2.5 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                  <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-0.5 shadow-sm ${
+                    msg.role === 'user'
+                      ? 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
+                      : 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white'
+                  }`}>
+                    {msg.role === 'user' ? <User className="w-3.5 h-3.5" /> : <Sparkles className="w-3.5 h-3.5" />}
+                  </div>
+                  <div className={`px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed shadow-sm max-w-[88%] ${
+                    msg.role === 'user'
+                      ? 'bg-blue-600 text-white rounded-tr-sm'
+                      : 'bg-card border border-border rounded-tl-sm text-foreground'
+                  }`}>
+                    <FormatMessage content={msg.content} />
+                    
+                    {msg.isConfirmation && msg.pendingAction && (
+                      <div className="mt-3 flex gap-2 pt-3 border-t border-border">
+                        <button 
+                          onClick={() => confirmPendingAction(msg.pendingAction, i)}
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shadow-sm flex items-center gap-1.5"
+                        >
+                          <Sparkles className="w-3 h-3" /> {t("continue_action", "Continue Action")}
+                        </button>
+                        <button 
+                          onClick={() => cancelPendingAction(i)}
+                          className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border border-border shadow-sm"
+                        >
+                          {t("cancel", "Cancel")}
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div className={`px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed shadow-sm max-w-[88%] ${
-                  msg.role === 'user'
-                    ? 'bg-blue-600 text-white rounded-tr-sm'
-                    : 'bg-card border border-border rounded-tl-sm text-foreground'
-                }`}>
-                  <FormatMessage content={msg.content} />
-                  
-                  {msg.isConfirmation && msg.pendingAction && (
-                    <div className="mt-3 flex gap-2 pt-3 border-t border-border">
-                      <button 
-                        onClick={() => confirmPendingAction(msg.pendingAction, i)}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shadow-sm flex items-center gap-1.5"
-                      >
-                        <Sparkles className="w-3 h-3" /> Continue Action
-                      </button>
-                      <button 
-                        onClick={() => cancelPendingAction(i)}
-                        className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border border-border shadow-sm"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
+              );
+            })}
             {isLoading && (
               <div className="flex gap-2.5">
                 <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shrink-0 shadow-sm">
@@ -842,7 +846,7 @@ RULES FOR MULTI-STEP REASONING:
                     <span className="w-2 h-2 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: '150ms' }} />
                     <span className="w-2 h-2 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: '300ms' }} />
                   </div>
-                  <p className="text-[10px] text-muted-foreground mt-1.5 italic">Orbit is thinking...</p>
+                  <p className="text-[10px] text-muted-foreground mt-1.5 italic">{t("orbit_is_thinking", "Orbit is thinking...")}</p>
                 </div>
               </div>
             )}
@@ -853,15 +857,17 @@ RULES FOR MULTI-STEP REASONING:
         {/* Contextual Suggestions */}
         {!isLoading && messages.length <= 1 && (
           <div className="px-3 pb-2 flex flex-wrap gap-1.5 shrink-0">
-            {(PAGE_SUGGESTIONS[location.pathname] || PAGE_SUGGESTIONS['/']).map((s, i) => (
-              <button
-                key={i}
-                onClick={() => handleSend(s)}
-                className="text-[10px] font-medium px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors truncate max-w-[180px]"
-              >
-                {s}
-              </button>
-            ))}
+            {(PAGE_SUGGESTIONS[location.pathname] || PAGE_SUGGESTIONS['/']).map((s, i) => {
+              return (
+                <button
+                  key={i}
+                  onClick={() => handleSend(s)}
+                  className="text-[10px] font-medium px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors truncate max-w-[180px]"
+                >
+                  {s}
+                </button>
+              );
+            })}
           </div>
         )}
 
@@ -917,7 +923,7 @@ RULES FOR MULTI-STEP REASONING:
                 </button>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-[9px] text-muted-foreground/40 uppercase tracking-wider hidden sm:block"> Send  Shift+ Newline</span>
+                <span className="text-[9px] text-muted-foreground/40 uppercase tracking-wider hidden sm:block"> {t("send_shift_newline", "Send  Shift+ Newline")}</span>
                 <button
                   type="button"
                   disabled={(!input.trim() && !uploadedFile) || isLoading}

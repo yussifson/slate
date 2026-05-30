@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -16,6 +17,7 @@ import { INVOICE_STATUS_COLORS, formatCurrency } from "@/lib/constants";
 import { format } from "date-fns";
 
 export default function Invoices() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const companyId = useCompanyId();
   const queryClient = useQueryClient();
@@ -66,27 +68,39 @@ export default function Invoices() {
   const totalPending = invoices.filter(i => ["sent", "draft"].includes(i.status)).reduce((s, i) => s + (i.total_amount || 0), 0);
 
   const getPaymentStatusIcon = (status) => {
-    if (status === "paid") return <span className="flex items-center gap-1 text-green-700 text-xs font-medium"><CheckCircle2 className="w-3.5 h-3.5" /> Paid</span>;
-    if (status === "overdue") return <span className="flex items-center gap-1 text-red-600 text-xs font-medium"><AlertCircle className="w-3.5 h-3.5" /> Overdue</span>;
-    return <span className="flex items-center gap-1 text-amber-600 text-xs font-medium"><Clock className="w-3.5 h-3.5" /> Pending</span>;
+    if (status === "paid") return <span className="flex items-center gap-1 text-green-700 text-xs font-medium"><CheckCircle2 className="w-3.5 h-3.5" /> {t("paid", "Paid")}</span>;
+    if (status === "overdue") return <span className="flex items-center gap-1 text-red-600 text-xs font-medium"><AlertCircle className="w-3.5 h-3.5" /> {t("overdue", "Overdue")}</span>;
+    return <span className="flex items-center gap-1 text-amber-600 text-xs font-medium"><Clock className="w-3.5 h-3.5" /> {t("pending", "Pending")}</span>;
   };
 
   const columns = [
-    { header: "Invoice #", render: (row) => <span className="font-medium text-sm">{row.invoice_number || "—"}</span> },
-    { header: "Client", render: (row) => <span className="text-sm">{row.client_name}</span> },
-    { header: "Amount", render: (row) => <span className="font-semibold text-sm">{formatCurrency(row.total_amount, row.currency)}</span> },
+    { header: "Invoice #", render: row => {
+      return <span className="font-medium text-sm">{row.invoice_number || "—"}</span>;
+    } },
+    { header: "Client", render: row => {
+      return <span className="text-sm">{row.client_name}</span>;
+    } },
+    { header: "Amount", render: row => {
+      return <span className="font-semibold text-sm">{formatCurrency(row.total_amount, row.currency)}</span>;
+    } },
     { header: "Payment Status", render: (row) => getPaymentStatusIcon(row.status) },
-    { header: "Status", render: (row) => <Badge className={`${INVOICE_STATUS_COLORS[row.status]} text-[10px]`}>{row.status}</Badge> },
+    { header: "Status", render: row => {
+      return <Badge className={`${INVOICE_STATUS_COLORS[row.status]} text-[10px]`}>{row.status}</Badge>;
+    } },
     {
       header: "Due Date",
-      render: (row) => (
-        <span className="text-xs text-muted-foreground">
-          {row.due_date ? format(new Date(row.due_date), "MMM d, yyyy") : "—"}
-          {row.due_time ? ` at ${row.due_time}` : ""}
-        </span>
-      )
+      render: row => {
+        return (
+          <span className="text-xs text-muted-foreground">
+            {row.due_date ? format(new Date(row.due_date), "MMM d, yyyy") : "—"}
+            {row.due_time ? ` at ${row.due_time}` : ""}
+          </span>
+        );
+      }
     },
-    { header: "Paid Date", render: (row) => <span className="text-xs text-muted-foreground">{row.paid_date ? format(new Date(row.paid_date), "MMM d, yyyy") : "—"}</span> },
+    { header: "Paid Date", render: row => {
+      return <span className="text-xs text-muted-foreground">{row.paid_date ? format(new Date(row.paid_date), "MMM d, yyyy") : "—"}</span>;
+    } },
   ];
 
   return (
@@ -97,11 +111,10 @@ export default function Invoices() {
         actions={
           <div className="flex items-center gap-2">
             <ExportButton data={invoices.map(i => ({ invoice_number: i.invoice_number, client: i.client_name, amount: i.total_amount, currency: i.currency, status: i.status, due_date: i.due_date, paid_date: i.paid_date }))} filename="invoices_export" label="Export" />
-            <Button onClick={() => setShowForm(true)} size="sm"><Plus className="w-4 h-4 mr-1" /> New Invoice</Button>
+            <Button onClick={() => setShowForm(true)} size="sm"><Plus className="w-4 h-4 mr-1" /> {t("new_invoice", "New Invoice")}</Button>
           </div>
         }
       />
-
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -110,15 +123,14 @@ export default function Invoices() {
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
-            <SelectItem value="draft">Draft</SelectItem>
-            <SelectItem value="sent">Sent</SelectItem>
-            <SelectItem value="paid">Paid</SelectItem>
-            <SelectItem value="overdue">Overdue</SelectItem>
+            <SelectItem value="all">{t("all_status", "All Status")}</SelectItem>
+            <SelectItem value="draft">{t("draft", "Draft")}</SelectItem>
+            <SelectItem value="sent">{t("sent", "Sent")}</SelectItem>
+            <SelectItem value="paid">{t("paid", "Paid")}</SelectItem>
+            <SelectItem value="overdue">{t("overdue", "Overdue")}</SelectItem>
           </SelectContent>
         </Select>
       </div>
-
       <DataTable
         columns={columns}
         data={filtered}
@@ -128,7 +140,6 @@ export default function Invoices() {
         emptyDescription="Create your first invoice."
         emptyIcon={Receipt}
       />
-
       {(showForm || editingInvoice) && (
         <InvoiceForm
           open={showForm || !!editingInvoice}

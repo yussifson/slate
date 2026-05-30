@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
@@ -8,6 +9,7 @@ import { useToast } from '@/components/ui/use-toast';
 import PageHeader from '@/components/shared/PageHeader';
 
 export default function AdminUsers() {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const [profiles, setProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -84,7 +86,6 @@ export default function AdminUsers() {
           </div>
         }
       />
-
       {loading ? (
         <div className="flex justify-center py-24">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
@@ -95,59 +96,61 @@ export default function AdminUsers() {
             <table className="w-full text-sm text-left border-collapse bg-white font-sans">
               <thead>
                 <tr className="bg-slate-50/80 border-b border-slate-100 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
-                  <th className="px-6 py-4">Identity</th>
-                  <th className="px-6 py-4">Organization</th>
-                  <th className="px-6 py-4">Role</th>
-                  <th className="px-6 py-4">Joined</th>
-                  <th className="px-6 py-4 text-right">Administrative Actions</th>
+                  <th className="px-6 py-4">{t("identity", "Identity")}</th>
+                  <th className="px-6 py-4">{t("organization", "Organization")}</th>
+                  <th className="px-6 py-4">{t("role", "Role")}</th>
+                  <th className="px-6 py-4">{t("joined", "Joined")}</th>
+                  <th className="px-6 py-4 text-right">{t("administrative_actions", "Administrative Actions")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
-                {filteredProfiles.map((user) => (
-                  <tr key={user.id} className="hover:bg-slate-50/50 transition-colors group">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-600 text-xs shrink-0">
-                          {user.full_name?.charAt(0) || user.email?.charAt(0) || 'U'}
+                {filteredProfiles.map(user => {
+                  return (
+                    <tr key={user.id} className="hover:bg-slate-50/50 transition-colors group">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-600 text-xs shrink-0">
+                            {user.full_name?.charAt(0) || user.email?.charAt(0) || 'U'}
+                          </div>
+                          <div>
+                            <p className="font-bold text-slate-900">{user.full_name || 'Anonymous'}</p>
+                            <p className="text-xs text-slate-500">{user.email}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-bold text-slate-900">{user.full_name || 'Anonymous'}</p>
-                          <p className="text-xs text-slate-500">{user.email}</p>
+                      </td>
+                      <td className="px-6 py-4 text-sm font-semibold text-slate-700">
+                        {user.companies?.name || <span className="text-slate-400 italic">{t("orphaned", "Orphaned")}</span>}
+                      </td>
+                      <td className="px-6 py-4">
+                        <Badge className="text-[10px] font-bold uppercase py-0.5 px-2 bg-indigo-50 text-indigo-700 border-none">
+                          {user.role?.replace(/_/g, ' ')}
+                        </Badge>
+                      </td>
+                      <td className="px-6 py-4 text-xs text-slate-500 font-medium">
+                        {new Date(user.created_at).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handleResetPassword(user.email)}
+                            className="h-8 px-3 rounded-lg border-slate-200 text-slate-600 hover:text-slate-900"
+                          >
+                            <KeyRound className="w-3.5 h-3.5 mr-1.5" /> {t("reset", "Reset")}
+                          </Button>
+                          <Button 
+                            variant="destructive" 
+                            size="sm"
+                            className="h-8 px-3 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 border-none"
+                          >
+                            <ShieldAlert className="w-3.5 h-3.5 mr-1.5" /> {t("suspend", "Suspend")}
+                          </Button>
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-sm font-semibold text-slate-700">
-                      {user.companies?.name || <span className="text-slate-400 italic">Orphaned</span>}
-                    </td>
-                    <td className="px-6 py-4">
-                      <Badge className="text-[10px] font-bold uppercase py-0.5 px-2 bg-indigo-50 text-indigo-700 border-none">
-                        {user.role?.replace(/_/g, ' ')}
-                      </Badge>
-                    </td>
-                    <td className="px-6 py-4 text-xs text-slate-500 font-medium">
-                      {new Date(user.created_at).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => handleResetPassword(user.email)}
-                          className="h-8 px-3 rounded-lg border-slate-200 text-slate-600 hover:text-slate-900"
-                        >
-                          <KeyRound className="w-3.5 h-3.5 mr-1.5" /> Reset
-                        </Button>
-                        <Button 
-                          variant="destructive" 
-                          size="sm"
-                          className="h-8 px-3 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 border-none"
-                        >
-                          <ShieldAlert className="w-3.5 h-3.5 mr-1.5" /> Suspend
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Calendar, Search, Plus, Clock, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -19,6 +20,7 @@ const statusColors = {
 };
 
 export default function Reservations() {
+  const { t } = useTranslation();
   // Supabase Real-time Sync Hooks
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('reservation');
   const mutateRecord = useMutateIndustryRecord();
@@ -140,20 +142,22 @@ export default function Reservations() {
     res.resId?.includes(search)
   );
 
-  if (isDbLoading) return <div className="flex items-center justify-center h-64 text-muted-foreground">Loading reservations...</div>;
+  if (isDbLoading) return <div className="flex items-center justify-center h-64 text-muted-foreground">{t("loading_reservations", "Loading reservations...")}</div>;
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground">Reservations</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Manage room bookings and guest arrivals</p>
+          <h1 className="text-2xl font-bold text-card-foreground">{t("reservations", "Reservations")}</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{t(
+            "manage_room_bookings_and_guest",
+            "Manage room bookings and guest arrivals"
+          )}</p>
         </div>
         <Button onClick={() => { setEditTargetId(null); setShowModal(true); setFormData({ guest: '', checkIn: new Date().toISOString().split('T')[0], checkOut: new Date(Date.now() + 86400000).toISOString().split('T')[0], roomType: 'Standard Room', guestsCount: 1 }); }} className="gap-2 bg-amber-600 hover:bg-amber-700 text-white">
-          <Plus className="w-4 h-4" /> New Booking
+          <Plus className="w-4 h-4" /> {t("new_booking", "New Booking")}
         </Button>
       </div>
-
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         <div className="p-4 border-b border-border bg-muted/50">
           <div className="relative max-w-md">
@@ -165,121 +169,124 @@ export default function Reservations() {
           <table className="w-full text-sm">
             <thead className="bg-card border-b border-border">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Res ID</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Guest</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Dates</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Room Details</th>
-                <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">Status</th>
-                <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">Amount</th>
-                <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">Action</th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("res_id", "Res ID")}</th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("guest", "Guest")}</th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("dates", "Dates")}</th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("room_details", "Room Details")}</th>
+                <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("status", "Status")}</th>
+                <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("amount", "Amount")}</th>
+                <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("action", "Action")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {filtered.map(res => (
-                <tr key={res.id} className="hover:bg-muted/50 transition-colors">
-                  <td className="px-6 py-4 font-mono text-xs font-bold text-amber-600">{res.resId}</td>
-                  <td className="px-6 py-4 font-bold text-card-foreground">
-                    <Link to={`/clients`} className="text-primary hover:underline">{res.guest}</Link>
-                  </td>
-                  <td className="px-6 py-4">
-                     <p className="text-foreground font-medium">{res.checkIn} → {res.checkOut}</p>
-                     <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5"><Clock className="w-3 h-3"/> {res.nights} Nights</p>
-                  </td>
-                  <td className="px-6 py-4 text-muted-foreground font-medium">{res.roomType}</td>
-                  <td className="px-6 py-4 text-center">
-                    <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${statusColors[res.status] || 'bg-amber-100 text-amber-700'}`}>{res.status}</span>
-                  </td>
-                  <td className="px-6 py-4 text-center font-bold text-card-foreground">${res.total}</td>
-                  <td className="px-6 py-4 text-right flex justify-end gap-2">
-                    {res.status === 'Confirmed' && (
-                      <Button onClick={() => handleStatusChange(res, 'Checked-in')} size="sm" className="h-8 bg-blue-600 hover:bg-blue-700 text-white">Check In</Button>
-                    )}
-                    {res.status === 'Checked-in' && (
-                      <Button onClick={() => handleStatusChange(res, 'Checked-out')} size="sm" className="h-8 bg-green-600 hover:bg-green-700 text-white">Check Out</Button>
-                    )}
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                          <MoreVertical className="w-4 h-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => setViewDetailsId(res.id)}>
-                          <FileText className="w-4 h-4 mr-2" /> View Details
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => {
-                          const customerEmail = prompt("Enter customer email for payment receipt:");
-                          if (customerEmail) {
-                            processPayment({ companyId, provider: 'stripe', amount: res.total, currency: 'USD', customerEmail, invoiceId: res.resId });
-                          }
-                        }}>
-                          <CreditCard className="w-4 h-4 mr-2" /> Process Payment
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleEdit(res)}>
-                          <Edit className="w-4 h-4 mr-2" /> Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleDeleteFromDb(res.id)} className="text-red-600">
-                          <Trash2 className="w-4 h-4 mr-2" /> Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </td>
-                </tr>
-              ))}
+              {filtered.map(res => {
+                return (
+                  <tr key={res.id} className="hover:bg-muted/50 transition-colors">
+                    <td className="px-6 py-4 font-mono text-xs font-bold text-amber-600">{res.resId}</td>
+                    <td className="px-6 py-4 font-bold text-card-foreground">
+                      <Link to={`/clients`} className="text-primary hover:underline">{res.guest}</Link>
+                    </td>
+                    <td className="px-6 py-4">
+                       <p className="text-foreground font-medium">{res.checkIn} → {res.checkOut}</p>
+                       <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5"><Clock className="w-3 h-3"/> {res.nights} {t("nights", "Nights")}</p>
+                    </td>
+                    <td className="px-6 py-4 text-muted-foreground font-medium">{res.roomType}</td>
+                    <td className="px-6 py-4 text-center">
+                      <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${statusColors[res.status] || 'bg-amber-100 text-amber-700'}`}>{res.status}</span>
+                    </td>
+                    <td className="px-6 py-4 text-center font-bold text-card-foreground">${res.total}</td>
+                    <td className="px-6 py-4 text-right flex justify-end gap-2">
+                      {res.status === 'Confirmed' && (
+                        <Button onClick={() => handleStatusChange(res, 'Checked-in')} size="sm" className="h-8 bg-blue-600 hover:bg-blue-700 text-white">{t("check_in", "Check In")}</Button>
+                      )}
+                      {res.status === 'Checked-in' && (
+                        <Button onClick={() => handleStatusChange(res, 'Checked-out')} size="sm" className="h-8 bg-green-600 hover:bg-green-700 text-white">{t("check_out", "Check Out")}</Button>
+                      )}
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                            <MoreVertical className="w-4 h-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => setViewDetailsId(res.id)}>
+                            <FileText className="w-4 h-4 mr-2" /> {t("view_details", "View Details")}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => {
+                            const customerEmail = prompt("Enter customer email for payment receipt:");
+                            if (customerEmail) {
+                              processPayment({ companyId, provider: 'stripe', amount: res.total, currency: 'USD', customerEmail, invoiceId: res.resId });
+                            }
+                          }}>
+                            <CreditCard className="w-4 h-4 mr-2" /> {t("process_payment", "Process Payment")}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleEdit(res)}>
+                            <Edit className="w-4 h-4 mr-2" /> {t("edit", "Edit")}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleDeleteFromDb(res.id)} className="text-red-600">
+                            <Trash2 className="w-4 h-4 mr-2" /> {t("delete", "Delete")}
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
           {filtered.length === 0 && (
             <div className="text-center py-12 text-muted-foreground">
               <Calendar className="w-10 h-10 mx-auto mb-3 opacity-30" />
-              <p>No reservations found. Click "New Booking" to add one.</p>
+              <p>{t(
+                "no_reservations_found_click_ne",
+                "No reservations found. Click \"New Booking\" to add one."
+              )}</p>
             </div>
           )}
         </div>
       </div>
-      
-       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-lg p-6 space-y-4">
-            <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-              {editTargetId ? <Edit className="w-5 h-5 text-amber-600"/> : <Calendar className="w-5 h-5 text-amber-600"/>}
-              {editTargetId ? 'Edit Reservation' : 'New Reservation'}
-            </h2>
-            <div className="grid grid-cols-2 gap-4">
-               <div className="col-span-2">
-                 <label className="text-xs font-bold text-muted-foreground uppercase">Guest Name</label>
-                 <Input value={formData.guest} onChange={e => setFormData({ ...formData, guest: e.target.value })} className="mt-1" placeholder="e.g. John Doe" />
-               </div>
-               <div>
-                 <label className="text-xs font-bold text-muted-foreground uppercase">Check-in</label>
-                 <Input type="date" value={formData.checkIn} onChange={e => setFormData({ ...formData, checkIn: e.target.value })} className="mt-1" />
-               </div>
-               <div>
-                 <label className="text-xs font-bold text-muted-foreground uppercase">Check-out</label>
-                 <Input type="date" value={formData.checkOut} onChange={e => setFormData({ ...formData, checkOut: e.target.value })} className="mt-1" />
-               </div>
-               <div>
-                 <label className="text-xs font-bold text-muted-foreground uppercase">Room Type</label>
-                 <select value={formData.roomType} onChange={e => setFormData({ ...formData, roomType: e.target.value })} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-                   <option>Standard Room</option>
-                   <option>Deluxe Room</option>
-                   <option>Suite</option>
-                 </select>
-               </div>
-               <div>
-                 <label className="text-xs font-bold text-muted-foreground uppercase">Guests Count</label>
-                 <Input type="number" value={formData.guestsCount} onChange={e => setFormData({ ...formData, guestsCount: parseInt(e.target.value) || 1 })} className="mt-1" />
-               </div>
-            </div>
-            <div className="flex gap-3 pt-4">
-              <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>Cancel</Button>
-              <Button className="flex-1 bg-amber-600 hover:bg-amber-700 text-white" onClick={handleSaveToDb}>
-                {editTargetId ? 'Save Changes' : 'Confirm Booking'}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
+      {showModal && (
+       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+         <div className="bg-card rounded-2xl shadow-2xl w-full max-w-lg p-6 space-y-4">
+           <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
+             {editTargetId ? <Edit className="w-5 h-5 text-amber-600"/> : <Calendar className="w-5 h-5 text-amber-600"/>}
+             {editTargetId ? 'Edit Reservation' : 'New Reservation'}
+           </h2>
+           <div className="grid grid-cols-2 gap-4">
+              <div className="col-span-2">
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("guest_name", "Guest Name")}</label>
+                <Input value={formData.guest} onChange={e => setFormData({ ...formData, guest: e.target.value })} className="mt-1" placeholder="e.g. John Doe" />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("check_in", "Check-in")}</label>
+                <Input type="date" value={formData.checkIn} onChange={e => setFormData({ ...formData, checkIn: e.target.value })} className="mt-1" />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("check_out", "Check-out")}</label>
+                <Input type="date" value={formData.checkOut} onChange={e => setFormData({ ...formData, checkOut: e.target.value })} className="mt-1" />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("room_type", "Room Type")}</label>
+                <select value={formData.roomType} onChange={e => setFormData({ ...formData, roomType: e.target.value })} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+                  <option>{t("standard_room", "Standard Room")}</option>
+                  <option>{t("deluxe_room", "Deluxe Room")}</option>
+                  <option>{t("suite", "Suite")}</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("guests_count", "Guests Count")}</label>
+                <Input type="number" value={formData.guestsCount} onChange={e => setFormData({ ...formData, guestsCount: parseInt(e.target.value) || 1 })} className="mt-1" />
+              </div>
+           </div>
+           <div className="flex gap-3 pt-4">
+             <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
+             <Button className="flex-1 bg-amber-600 hover:bg-amber-700 text-white" onClick={handleSaveToDb}>
+               {editTargetId ? 'Save Changes' : 'Confirm Booking'}
+             </Button>
+           </div>
+         </div>
+       </div>
+     )}
       {/* View Details Sheet */}
       <Sheet open={viewDetailsId !== null} onOpenChange={(isOpen) => !isOpen && setViewDetailsId(null)}>
         <SheetContent className="overflow-y-auto">
@@ -291,15 +298,15 @@ export default function Reservations() {
                 <SheetHeader className="mb-6">
                   <SheetTitle className="text-2xl flex items-center gap-2">
                     <Calendar className="w-6 h-6 text-amber-600" />
-                    Reservation {res.resId}
+                    {t("reservation", "Reservation")} {res.resId}
                   </SheetTitle>
                   <SheetDescription>
-                    Complete information for booking {res.resId}
+                    {t("complete_information_for_booki", "Complete information for booking")} {res.resId}
                   </SheetDescription>
                 </SheetHeader>
                 <div className="space-y-6">
                   <div>
-                    <h3 className="text-sm font-semibold text-muted-foreground mb-2">Guest Info</h3>
+                    <h3 className="text-sm font-semibold text-muted-foreground mb-2">{t("guest_info", "Guest Info")}</h3>
                     <div className="bg-muted/50 p-4 rounded-lg flex items-center gap-4">
                       <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
                         <User className="w-5 h-5" />
@@ -308,27 +315,27 @@ export default function Reservations() {
                         <p className="font-bold text-foreground text-lg">
                           <Link to={`/clients`} className="text-primary hover:underline">{res.guest}</Link>
                         </p>
-                        <p className="text-sm text-muted-foreground">{res.guestsCount || 1} Guest(s)</p>
+                        <p className="text-sm text-muted-foreground">{res.guestsCount || 1} {t("guest_s", "Guest(s)")}</p>
                       </div>
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-muted-foreground mb-2">Booking Details</h3>
+                    <h3 className="text-sm font-semibold text-muted-foreground mb-2">{t("booking_details", "Booking Details")}</h3>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="bg-muted/50 p-3 rounded-lg">
-                        <p className="text-xs text-muted-foreground mb-1">Check-in</p>
+                        <p className="text-xs text-muted-foreground mb-1">{t("check_in", "Check-in")}</p>
                         <p className="font-semibold text-foreground">{res.checkIn}</p>
                       </div>
                       <div className="bg-muted/50 p-3 rounded-lg">
-                        <p className="text-xs text-muted-foreground mb-1">Check-out</p>
+                        <p className="text-xs text-muted-foreground mb-1">{t("check_out", "Check-out")}</p>
                         <p className="font-semibold text-foreground">{res.checkOut}</p>
                       </div>
                       <div className="bg-muted/50 p-3 rounded-lg">
-                        <p className="text-xs text-muted-foreground mb-1">Room Type</p>
+                        <p className="text-xs text-muted-foreground mb-1">{t("room_type", "Room Type")}</p>
                         <p className="font-semibold text-foreground">{res.roomType}</p>
                       </div>
                       <div className="bg-muted/50 p-3 rounded-lg">
-                        <p className="text-xs text-muted-foreground mb-1">Status</p>
+                        <p className="text-xs text-muted-foreground mb-1">{t("status", "Status")}</p>
                         <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-bold ${res.status === 'Confirmed' ? 'bg-amber-100 text-amber-700' : res.status === 'Checked-in' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}`}>
                           <Activity className="w-3 h-3 mr-1" /> {res.status}
                         </span>
@@ -337,14 +344,14 @@ export default function Reservations() {
                   </div>
                   <div className="bg-muted/50 p-4 rounded-lg border border-border flex justify-between items-center">
                     <div>
-                      <p className="text-sm text-muted-foreground">Total Amount</p>
-                      <p className="text-xs text-muted-foreground">{res.nights} Nights</p>
+                      <p className="text-sm text-muted-foreground">{t("total_amount", "Total Amount")}</p>
+                      <p className="text-xs text-muted-foreground">{res.nights} {t("nights", "Nights")}</p>
                     </div>
                     <p className="text-2xl font-bold text-amber-600">${res.total}</p>
                   </div>
                   <div className="pt-4 flex gap-2">
                     <Button onClick={() => { setViewDetailsId(null); handleEdit(res); }} className="flex-1 bg-amber-600 hover:bg-amber-700 text-white">
-                      <Edit className="w-4 h-4 mr-2" /> Edit Booking
+                      <Edit className="w-4 h-4 mr-2" /> {t("edit_booking", "Edit Booking")}
                     </Button>
                   </div>
                 </div>

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
@@ -66,7 +67,7 @@ function buildBillingHearingPDF(caseData, client, invoices, timeEntries, hearing
   const totalBilled = invoices.reduce((s, i) => s + (i.total_amount || 0), 0);
   const totalPaid = invoices.filter(i => i.status === "paid").reduce((s, i) => s + (i.total_amount || 0), 0);
   const outstanding = totalBilled - totalPaid;
-  const totalHours = timeEntries.reduce((s, t) => s + (t.hours || 0), 0);
+  const totalHours = timeEntries.reduce((s, t) => s + (item.hours || 0), 0);
 
   addLine("BILLING SUMMARY", { bold: true, size: 11 });
   addDivider();
@@ -94,9 +95,9 @@ function buildBillingHearingPDF(caseData, client, invoices, timeEntries, hearing
   if (timeEntries.length > 0) {
     addLine("BILLABLE HOURS LOG", { bold: true, size: 11 });
     addDivider();
-    timeEntries.slice(0, 20).forEach(t => {
+    timeEntries.slice(0, 20).forEach(item => {
       addLine(
-        `${t.date ? format(new Date(t.date), "MMM d, yyyy") : "—"} — ${t.hours || 0}h — ${t.description || "Work performed"} (${t.billed ? "Billed" : "Unbilled"})`,
+        `${item.date ? format(new Date(item.date), "MMM d, yyyy") : "—"} — ${item.hours || 0}h — ${item.description || "Work performed"} (${item.billed ? "Billed" : "Unbilled"})`,
         { indent: 4, size: 9 }
       );
     });
@@ -362,6 +363,7 @@ function buildPDF(template, caseData, client, additionalNotes) {
 }
 
 export default function CasePDFGenerator({ caseData, user }) {
+  const { t } = useTranslation();
   const [templateId, setTemplateId] = useState("legal_notice");
   const [notes, setNotes] = useState("");
   const [generating, setGenerating] = useState(false);
@@ -391,7 +393,7 @@ export default function CasePDFGenerator({ caseData, user }) {
   });
 
   const client = clients.find(c => c.id === caseData.client_id);
-  const selectedTemplate = TEMPLATES.find(t => t.id === templateId);
+  const selectedTemplate = TEMPLATES.find(item => item.id === templateId);
 
   const [generatingReport, setGeneratingReport] = useState(false);
 
@@ -426,8 +428,11 @@ export default function CasePDFGenerator({ caseData, user }) {
             <BarChart2 className="w-4 h-4 text-blue-600" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-blue-900">Client Billing & Hearing Report</p>
-            <p className="text-xs text-blue-700 mt-0.5">Download a full summary of invoices, billable hours, and hearing history for this client.</p>
+            <p className="text-sm font-semibold text-blue-900">{t("client_billing_hearing_report", "Client Billing & Hearing Report")}</p>
+            <p className="text-xs text-blue-700 mt-0.5">{t(
+              "download_a_full_summary_of_inv",
+              "Download a full summary of invoices, billable hours, and hearing history for this client."
+            )}</p>
           </div>
         </div>
         <Button
@@ -439,44 +444,48 @@ export default function CasePDFGenerator({ caseData, user }) {
           {generatingReport ? "Generating..." : "Download Report"}
         </Button>
       </div>
-
       {/* Template picker */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-        {TEMPLATES.map(t => (
-          <button
-            key={t.id}
-            onClick={() => setTemplateId(t.id)}
-            className={`text-left p-4 rounded-xl border-2 transition-all ${templateId === t.id ? "border-primary bg-primary/5" : "border-border hover:border-primary/40 bg-card"}`}
-          >
-            <div className={`w-8 h-8 rounded-lg flex items-center justify-center mb-2 ${templateId === t.id ? "bg-primary text-white" : "bg-muted text-muted-foreground"}`}>
-              <FileText className="w-4 h-4" />
-            </div>
-            <p className={`text-sm font-semibold ${templateId === t.id ? "text-primary" : "text-foreground"}`}>{t.label}</p>
-            <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">{t.description}</p>
-          </button>
-        ))}
+        {TEMPLATES.map(item => {
+          return (
+            <button
+              key={item.id}
+              onClick={() => setTemplateId(item.id)}
+              className={`text-left p-4 rounded-xl border-2 transition-all ${templateId === item.id ? "border-primary bg-primary/5" : "border-border hover:border-primary/40 bg-card"}`}
+            >
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center mb-2 ${templateId === item.id ? "bg-primary text-white" : "bg-muted text-muted-foreground"}`}>
+                <FileText className="w-4 h-4" />
+              </div>
+              <p className={`text-sm font-semibold ${templateId === item.id ? "text-primary" : "text-foreground"}`}>{item.label}</p>
+              <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">{item.description}</p>
+            </button>
+          );
+        })}
       </div>
-
       {/* Case data preview */}
       <div className="bg-card rounded-xl border border-border p-4 grid grid-cols-2 sm:grid-cols-3 gap-3">
-        <div><p className="text-[10px] text-muted-foreground uppercase tracking-wide">Case</p><p className="text-sm font-medium">{caseData.title}</p></div>
-        <div><p className="text-[10px] text-muted-foreground uppercase tracking-wide">Client</p><p className="text-sm font-medium">{client?.name || caseData.client_name || "—"}</p></div>
-        <div><p className="text-[10px] text-muted-foreground uppercase tracking-wide">Case #</p><p className="text-sm font-medium">{caseData.case_number || "—"}</p></div>
-        <div><p className="text-[10px] text-muted-foreground uppercase tracking-wide">Court</p><p className="text-sm font-medium">{caseData.court_name || "—"}</p></div>
-        <div><p className="text-[10px] text-muted-foreground uppercase tracking-wide">Lawyer</p><p className="text-sm font-medium">{caseData.assigned_lawyer_name || "—"}</p></div>
-        <div><p className="text-[10px] text-muted-foreground uppercase tracking-wide">Status</p><p className="text-sm font-medium capitalize">{caseData.status?.replace("_", " ")}</p></div>
+        <div><p className="text-[10px] text-muted-foreground uppercase tracking-wide">{t("case", "Case")}</p><p className="text-sm font-medium">{caseData.title}</p></div>
+        <div><p className="text-[10px] text-muted-foreground uppercase tracking-wide">{t("client", "Client")}</p><p className="text-sm font-medium">{client?.name || caseData.client_name || "—"}</p></div>
+        <div><p className="text-[10px] text-muted-foreground uppercase tracking-wide">{t("case", "Case #")}</p><p className="text-sm font-medium">{caseData.case_number || "—"}</p></div>
+        <div><p className="text-[10px] text-muted-foreground uppercase tracking-wide">{t("court", "Court")}</p><p className="text-sm font-medium">{caseData.court_name || "—"}</p></div>
+        <div><p className="text-[10px] text-muted-foreground uppercase tracking-wide">{t("lawyer", "Lawyer")}</p><p className="text-sm font-medium">{caseData.assigned_lawyer_name || "—"}</p></div>
+        <div><p className="text-[10px] text-muted-foreground uppercase tracking-wide">{t("status", "Status")}</p><p className="text-sm font-medium capitalize">{caseData.status?.replace("_", " ")}</p></div>
       </div>
-
       {/* Additional notes */}
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
-          <Label className="text-xs">Additional Notes / Custom Content (optional)</Label>
+          <Label className="text-xs">{t(
+            "additional_notes_custom_conten",
+            "Additional Notes / Custom Content (optional)"
+          )}</Label>
           <div className="flex gap-1.5 overflow-x-auto pb-1">
-            {["{client_name}", "{case_number}", "{case_title}", "{lawyer_name}", "{today}"].map(tag => (
-              <Badge key={tag} variant="outline" className="text-[10px] cursor-pointer hover:bg-muted" onClick={() => setNotes(prev => prev + " " + tag)}>
-                {tag}
-              </Badge>
-            ))}
+            {["{client_name}", "{case_number}", "{case_title}", "{lawyer_name}", "{today}"].map(tag => {
+              return (
+                <Badge key={tag} variant="outline" className="text-[10px] cursor-pointer hover:bg-muted" onClick={() => setNotes(prev => prev + " " + tag)}>
+                  {tag}
+                </Badge>
+              );
+            })}
           </div>
         </div>
         <Textarea
@@ -486,7 +495,6 @@ export default function CasePDFGenerator({ caseData, user }) {
           className="h-24 text-sm"
         />
       </div>
-
       {/* Actions */}
       <div className="flex items-center gap-3">
         <Button
@@ -496,7 +504,7 @@ export default function CasePDFGenerator({ caseData, user }) {
           className="gap-2"
         >
           <Eye className="w-4 h-4" />
-          Preview
+          {t("preview", "Preview")}
         </Button>
         <Button
           onClick={() => handleGenerate(true)}

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
@@ -11,6 +12,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { getSubdomainAndBase } from '@/lib/domainUtils';
 import { getTerm, INDUSTRIES } from '@/config/industries';
 export default function OnboardingWizard() {
+  const { t } = useTranslation();
   const { user, refreshUser } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -180,34 +182,35 @@ export default function OnboardingWizard() {
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center text-white">
             <Scale className="w-4 h-4" />
           </div>
-          <span className="font-bold text-base text-slate-900 tracking-tight">Workspace Setup Wizard</span>
+          <span className="font-bold text-base text-slate-900 tracking-tight">{t("workspace_setup_wizard", "Workspace Setup Wizard")}</span>
         </div>
         <div className="text-xs font-semibold text-slate-400">
-          Step {step} of 3
+          {t("step", "Step")} {step} {t("of_3", "of 3")}
         </div>
       </div>
-
       {/* Main card */}
       <div className="max-w-xl mx-auto w-full glass-card bg-card rounded-3xl p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] my-8 relative overflow-hidden animate-in slide-in-from-bottom-8 duration-500">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-blue-400 to-primary"></div>
         {/* Progress indicator */}
         <div className="flex justify-between items-center mb-8">
-          {[1, 2, 3].map((s) => (
-            <div key={s} className="flex items-center flex-1 last:flex-none">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs transition-colors ${
-                step >= s 
-                  ? 'bg-primary text-white shadow-md shadow-primary/20' 
-                  : 'bg-slate-100 text-slate-400'
-              }`}>
-                {step > s ? <Check className="w-4 h-4" /> : s}
+          {[1, 2, 3].map(s => {
+            return (
+              <div key={s} className="flex items-center flex-1 last:flex-none">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs transition-colors ${
+                  step >= s 
+                    ? 'bg-primary text-white shadow-md shadow-primary/20' 
+                    : 'bg-slate-100 text-slate-400'
+                }`}>
+                  {step > s ? <Check className="w-4 h-4" /> : s}
+                </div>
+                {s < 3 && (
+                  <div className={`h-1 flex-1 mx-2 rounded-full transition-colors ${
+                    step > s ? 'bg-primary' : 'bg-slate-100'
+                  }`} />
+                )}
               </div>
-              {s < 3 && (
-                <div className={`h-1 flex-1 mx-2 rounded-full transition-colors ${
-                  step > s ? 'bg-primary' : 'bg-slate-100'
-                }`} />
-              )}
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Step 1: Company Profile */}
@@ -215,16 +218,19 @@ export default function OnboardingWizard() {
           <div className="space-y-6">
             <div className="space-y-2">
               <h2 className="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-1.5">
-                <Building2 className="w-5 h-5 text-primary" /> Setup your {INDUSTRIES[user?.company_industry || 'law']?.name || 'Workspace'}
+                <Building2 className="w-5 h-5 text-primary" /> {t("setup_your", "Setup your")} {INDUSTRIES[user?.company_industry || 'law']?.name || 'Workspace'}
               </h2>
               <p className="text-sm text-slate-500 leading-relaxed">
-                Provide your organization's physical coordinates and standard operating currency for dynamic billing templates.
+                {t(
+                  "provide_your_organization_s_ph",
+                  "Provide your organization's physical coordinates and standard operating currency for dynamic billing templates."
+                )}
               </p>
             </div>
 
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{INDUSTRIES[industry]?.name || 'Workspace'} Name</label>
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{INDUSTRIES[industry]?.name || 'Workspace'} {t("name", "Name")}</label>
                 <Input 
                   type="text"
                   value={firmName}
@@ -237,7 +243,7 @@ export default function OnboardingWizard() {
               {!user?.company_id && (
                 <>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Workspace URL (Subdomain)</label>
+                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("workspace_url_subdomain", "Workspace URL (Subdomain)")}</label>
                     <Input 
                       type="text"
                       value={subdomain}
@@ -247,19 +253,19 @@ export default function OnboardingWizard() {
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Industry</label>
+                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("industry", "Industry")}</label>
                     <Select value={industry} onValueChange={setIndustry}>
                       <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="law">Law Firm</SelectItem>
-                        <SelectItem value="hospital">Hospital & Healthcare</SelectItem>
-                        <SelectItem value="school">School & Education</SelectItem>
-                        <SelectItem value="hotel">Hotel & Hospitality</SelectItem>
-                        <SelectItem value="church">Church & Religion</SelectItem>
-                        <SelectItem value="insurance">Insurance</SelectItem>
-                        <SelectItem value="retail">Retail / POS</SelectItem>
-                        <SelectItem value="logistics">Logistics & Delivery</SelectItem>
-                        <SelectItem value="hr">HR & ERP</SelectItem>
+                        <SelectItem value="law">{t("law_firm", "Law Firm")}</SelectItem>
+                        <SelectItem value="hospital">{t("hospital_healthcare", "Hospital & Healthcare")}</SelectItem>
+                        <SelectItem value="school">{t("school_education", "School & Education")}</SelectItem>
+                        <SelectItem value="hotel">{t("hotel_hospitality", "Hotel & Hospitality")}</SelectItem>
+                        <SelectItem value="church">{t("church_religion", "Church & Religion")}</SelectItem>
+                        <SelectItem value="insurance">{t("insurance", "Insurance")}</SelectItem>
+                        <SelectItem value="retail">{t("retail_pos", "Retail / POS")}</SelectItem>
+                        <SelectItem value="logistics">{t("logistics_delivery", "Logistics & Delivery")}</SelectItem>
+                        <SelectItem value="hr">{t("hr_erp", "HR & ERP")}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -268,7 +274,7 @@ export default function OnboardingWizard() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Country</label>
+                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("country", "Country")}</label>
                   <Select value={country} onValueChange={(v) => {
                     setCountry(v);
                     if (v === 'Ghana') setCurrency('GHS');
@@ -278,23 +284,23 @@ export default function OnboardingWizard() {
                   }}>
                     <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Nigeria">Nigeria</SelectItem>
-                      <SelectItem value="Ghana">Ghana</SelectItem>
-                      <SelectItem value="Sierra Leone">Sierra Leone</SelectItem>
+                      <SelectItem value="Nigeria">{t("nigeria", "Nigeria")}</SelectItem>
+                      <SelectItem value="Ghana">{t("ghana", "Ghana")}</SelectItem>
+                      <SelectItem value="Sierra Leone">{t("sierra_leone", "Sierra Leone")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Currency</label>
+                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("currency", "Currency")}</label>
                   <Select value={currency} onValueChange={setCurrency}>
                     <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="NGN">NGN (₦)</SelectItem>
-                      <SelectItem value="GHS">GHS (₵)</SelectItem>
-                      <SelectItem value="SLL">SLL (Le)</SelectItem>
-                      <SelectItem value="ZAR">ZAR (R)</SelectItem>
-                      <SelectItem value="USD">USD ($)</SelectItem>
+                      <SelectItem value="NGN">{t("ngn", "NGN (₦)")}</SelectItem>
+                      <SelectItem value="GHS">{t("ghs", "GHS (₵)")}</SelectItem>
+                      <SelectItem value="SLL">{t("sll_le", "SLL (Le)")}</SelectItem>
+                      <SelectItem value="ZAR">{t("zar_r", "ZAR (R)")}</SelectItem>
+                      <SelectItem value="USD">{t("usd", "USD ($)")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -307,7 +313,7 @@ export default function OnboardingWizard() {
                 disabled={!firmName}
                 className="w-full bg-primary hover:bg-primary/95 text-white font-semibold py-5 rounded-xl shadow-md group"
               >
-                Continue Setup
+                {t("continue_setup", "Continue Setup")}
                 <ArrowRight className="w-4 h-4 ml-1.5 transition-transform group-hover:translate-x-0.5" />
               </Button>
             </div>
@@ -319,10 +325,13 @@ export default function OnboardingWizard() {
           <div className="space-y-6">
             <div className="space-y-2">
               <h2 className="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-1.5">
-                <Users className="w-5 h-5 text-primary" /> Invite your team
+                <Users className="w-5 h-5 text-primary" /> {t("invite_your_team", "Invite your team")}
               </h2>
               <p className="text-sm text-slate-500 leading-relaxed">
-                Add your {getTerm(industry, 'lawyer').toLowerCase()}s and staff members to collaborate in real-time.
+                {t("add_your", "Add your")} {getTerm(industry, 'lawyer').toLowerCase()}{t(
+                  "s_and_staff_members_to_collabo",
+                  "s and staff members to collaborate in real-time."
+                )}
               </p>
             </div>
 
@@ -351,9 +360,9 @@ export default function OnboardingWizard() {
                   <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="primary_role">{getTerm(industry, 'lawyer')}</SelectItem>
-                    <SelectItem value="partner">Manager / Partner</SelectItem>
-                    <SelectItem value="secretary">Admin / Secretary</SelectItem>
-                    <SelectItem value="clerk">Assistant / Clerk</SelectItem>
+                    <SelectItem value="partner">{t("manager_partner", "Manager / Partner")}</SelectItem>
+                    <SelectItem value="secretary">{t("admin_secretary", "Admin / Secretary")}</SelectItem>
+                    <SelectItem value="clerk">{t("assistant_clerk", "Assistant / Clerk")}</SelectItem>
                   </SelectContent>
                 </Select>
                 <Button 
@@ -361,30 +370,32 @@ export default function OnboardingWizard() {
                   disabled={!staffEmail || !staffName}
                   className="bg-slate-900 hover:bg-slate-800 text-white rounded-xl py-3 px-5 text-xs font-bold"
                 >
-                  Add Team
+                  {t("add_team", "Add Team")}
                 </Button>
               </div>
 
               {/* Invited List */}
               {invitedStaff.length > 0 && (
                 <div className="border border-slate-150 rounded-xl overflow-hidden divide-y divide-slate-100 bg-slate-50/50">
-                  {invitedStaff.map((staff, idx) => (
-                    <div key={idx} className="flex justify-between items-center p-3 text-xs">
-                      <div>
-                        <span className="font-bold text-slate-900">{staff.name}</span>
-                        <span className="text-slate-400 font-mono ml-2">({staff.email})</span>
+                  {invitedStaff.map((staff, idx) => {
+                    return (
+                      <div key={idx} className="flex justify-between items-center p-3 text-xs">
+                        <div>
+                          <span className="font-bold text-slate-900">{staff.name}</span>
+                          <span className="text-slate-400 font-mono ml-2">({staff.email})</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="bg-slate-200 text-slate-700 py-0.5 px-2 rounded font-medium capitalize text-[10px]">{staff.role}</span>
+                          <button 
+                            onClick={() => handleRemoveStaff(idx)}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            ✕
+                          </button>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="bg-slate-200 text-slate-700 py-0.5 px-2 rounded font-medium capitalize text-[10px]">{staff.role}</span>
-                        <button 
-                          onClick={() => handleRemoveStaff(idx)}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -395,13 +406,13 @@ export default function OnboardingWizard() {
                 onClick={() => setStep(1)}
                 className="flex-1 rounded-xl text-slate-700 border-slate-200"
               >
-                <ArrowLeft className="w-4 h-4 mr-1.5" /> Back
+                <ArrowLeft className="w-4 h-4 mr-1.5" /> {t("back", "Back")}
               </Button>
               <Button 
                 onClick={() => setStep(3)}
                 className="flex-1 bg-primary hover:bg-primary/95 text-white font-semibold rounded-xl shadow-md group"
               >
-                Continue Setup
+                {t("continue_setup", "Continue Setup")}
                 <ArrowRight className="w-4 h-4 ml-1.5 transition-transform group-hover:translate-x-0.5" />
               </Button>
             </div>
@@ -413,16 +424,16 @@ export default function OnboardingWizard() {
           <div className="space-y-6">
             <div className="space-y-2">
               <h2 className="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-1.5">
-                <Briefcase className="w-5 h-5 text-primary" /> Initialize your first {getTerm(industry, 'case')}
+                <Briefcase className="w-5 h-5 text-primary" /> {t("initialize_your_first", "Initialize your first")} {getTerm(industry, 'case')}
               </h2>
               <p className="text-sm text-slate-500 leading-relaxed">
-                Create a {getTerm(industry, 'case').toLowerCase()} and link it to your first active {getTerm(industry, 'client').toLowerCase()} to test the pipeline.
+                {t("create_a", "Create a")} {getTerm(industry, 'case').toLowerCase()} {t("and_link_it_to_your_first_acti", "and link it to your first active")} {getTerm(industry, 'client').toLowerCase()} {t("to_test_the_pipeline", "to test the pipeline.")}
               </p>
             </div>
 
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(industry, 'case')} Title</label>
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(industry, 'case')} {t("title", "Title")}</label>
                 <Input 
                   type="text"
                   value={caseTitle}
@@ -434,7 +445,7 @@ export default function OnboardingWizard() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(industry, 'client')} Full Name</label>
+                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(industry, 'client')} {t("full_name", "Full Name")}</label>
                   <Input 
                     type="text"
                     value={clientName}
@@ -443,7 +454,7 @@ export default function OnboardingWizard() {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(industry, 'client')} Email</label>
+                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(industry, 'client')} {t("email", "Email")}</label>
                   <Input 
                     type="email"
                     value={clientEmail}
@@ -460,7 +471,7 @@ export default function OnboardingWizard() {
                 onClick={() => setStep(2)}
                 className="flex-1 rounded-xl text-slate-700 border-slate-200"
               >
-                <ArrowLeft className="w-4 h-4 mr-1.5" /> Back
+                <ArrowLeft className="w-4 h-4 mr-1.5" /> {t("back", "Back")}
               </Button>
               <Button 
                 onClick={handleCompleteOnboarding}
@@ -470,12 +481,12 @@ export default function OnboardingWizard() {
                 {loading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    Finalizing Workspace...
+                    {t("finalizing_workspace", "Finalizing Workspace...")}
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-4 h-4" />
-                    Complete Setup!
+                    {t("complete_setup", "Complete Setup!")}
                   </>
                 )}
               </Button>
@@ -483,10 +494,12 @@ export default function OnboardingWizard() {
           </div>
         )}
       </div>
-
       {/* Bottom info */}
       <div className="max-w-4xl mx-auto w-full text-center text-xs text-slate-400">
-        Skip steps to finalize details inside the main settings panel later.
+        {t(
+          "skip_steps_to_finalize_details",
+          "Skip steps to finalize details inside the main settings panel later."
+        )}
       </div>
     </div>
   );

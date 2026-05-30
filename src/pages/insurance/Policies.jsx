@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Shield, Search, Plus, Trash2, FileText, CheckCircle, MoreVertical, Eye, Edit } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -10,6 +11,7 @@ import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
 
 export default function Policies() {
+  const { t } = useTranslation();
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('policy');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
@@ -143,14 +145,13 @@ export default function Policies() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground">Policies</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Manage insurance policies and coverage</p>
+          <h1 className="text-2xl font-bold text-card-foreground">{t("policies", "Policies")}</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{t("manage_insurance_policies_and_", "Manage insurance policies and coverage")}</p>
         </div>
         <Button onClick={openNewModal} className="gap-2 bg-indigo-600 hover:bg-indigo-700 text-white">
-          <Plus className="w-4 h-4" /> New Policy
+          <Plus className="w-4 h-4" /> {t("new_policy", "New Policy")}
         </Button>
       </div>
-
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
           <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-600">
@@ -158,7 +159,7 @@ export default function Policies() {
           </div>
           <div>
             <p className="text-2xl font-bold text-card-foreground">{policies.length}</p>
-            <p className="text-xs text-muted-foreground">Total Policies</p>
+            <p className="text-xs text-muted-foreground">{t("total_policies", "Total Policies")}</p>
           </div>
         </div>
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
@@ -167,7 +168,7 @@ export default function Policies() {
           </div>
           <div>
             <p className="text-2xl font-bold text-card-foreground">{policies.filter(p => p.status === 'Active').length}</p>
-            <p className="text-xs text-muted-foreground">Active</p>
+            <p className="text-xs text-muted-foreground">{t("active", "Active")}</p>
           </div>
         </div>
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
@@ -176,7 +177,7 @@ export default function Policies() {
           </div>
           <div>
             <p className="text-2xl font-bold text-card-foreground">{policies.filter(p => p.status === 'Lapsed').length}</p>
-            <p className="text-xs text-muted-foreground">Lapsed</p>
+            <p className="text-xs text-muted-foreground">{t("lapsed", "Lapsed")}</p>
           </div>
         </div>
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
@@ -185,11 +186,10 @@ export default function Policies() {
           </div>
           <div>
             <p className="text-2xl font-bold text-card-foreground">${totalPremium.toLocaleString()}</p>
-            <p className="text-xs text-muted-foreground">Total Premium Value</p>
+            <p className="text-xs text-muted-foreground">{t("total_premium_value", "Total Premium Value")}</p>
           </div>
         </div>
       </div>
-
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         <div className="p-4 border-b border-border bg-muted/50">
           <div className="relative max-w-md">
@@ -199,132 +199,131 @@ export default function Policies() {
         </div>
         <div className="overflow-x-auto">
           {isDbLoading ? (
-            <div className="py-12 text-center text-muted-foreground">Loading policies...</div>
+            <div className="py-12 text-center text-muted-foreground">{t("loading_policies", "Loading policies...")}</div>
           ) : filtered.length === 0 ? (
             <div className="py-12 text-center text-muted-foreground">
               <Shield className="w-12 h-12 mx-auto mb-3 opacity-30 text-indigo-600" />
-              <p className="font-semibold text-lg text-card-foreground">No policies found</p>
-              <p className="text-xs mt-1">Create a new policy to get started.</p>
+              <p className="font-semibold text-lg text-card-foreground">{t("no_policies_found", "No policies found")}</p>
+              <p className="text-xs mt-1">{t("create_a_new_policy_to_get_sta", "Create a new policy to get started.")}</p>
             </div>
           ) : (
             <table className="w-full text-sm">
               <thead className="bg-card border-b border-border">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Policy No.</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Holder & Type</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Coverage Dates</th>
-                  <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">Premium</th>
-                  <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">Status</th>
-                  <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">Action</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("policy_no", "Policy No.")}</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("holder_type", "Holder & Type")}</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("coverage_dates", "Coverage Dates")}</th>
+                  <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("premium", "Premium")}</th>
+                  <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("status", "Status")}</th>
+                  <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("action", "Action")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {filtered.map(policy => (
-                  <tr key={policy.id} className="hover:bg-muted/50 transition-colors">
-                    <td className="px-6 py-4 font-mono font-bold text-indigo-600">{policy.policyNumber}</td>
-                    <td className="px-6 py-4">
-                      <p className="font-bold text-card-foreground">{policy.holderName}</p>
-                      <p className="text-xs text-muted-foreground">{policy.policyType} Insurance</p>
-                    </td>
-                    <td className="px-6 py-4 text-muted-foreground font-medium">
-                      {policy.startDate} to {policy.endDate}
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <p className="font-bold text-card-foreground">${Number(policy.premium).toLocaleString()}</p>
-                      <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Sum: ${Number(policy.sumInsured).toLocaleString()}</p>
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <select
-                        value={policy.status}
-                        onChange={e => handleUpdateStatus(policy, e.target.value)}
-                        className={`rounded-md border border-input px-2 py-1 text-xs font-bold ${
-                          policy.status === 'Active' ? 'bg-green-100 text-green-700' : 
-                          policy.status === 'Lapsed' ? 'bg-red-100 text-red-700' : 
-                          policy.status === 'Cancelled' ? 'bg-muted text-muted-foreground' : 'bg-amber-100 text-amber-700'
-                        }`}
-                      >
-                        <option value="Active">Active</option>
-                        <option value="Pending">Pending</option>
-                        <option value="Lapsed">Lapsed</option>
-                        <option value="Cancelled">Cancelled</option>
-                      </select>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => setViewRecord(policy)}>View Details</DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleEdit(policy)}>Edit</DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => setDeleteTargetId(policy.id)} className="text-red-600">Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </td>
-                  </tr>
-                ))}
+                {filtered.map(policy => {
+                  return (
+                    <tr key={policy.id} className="hover:bg-muted/50 transition-colors">
+                      <td className="px-6 py-4 font-mono font-bold text-indigo-600">{policy.policyNumber}</td>
+                      <td className="px-6 py-4">
+                        <p className="font-bold text-card-foreground">{policy.holderName}</p>
+                        <p className="text-xs text-muted-foreground">{policy.policyType} {t("insurance", "Insurance")}</p>
+                      </td>
+                      <td className="px-6 py-4 text-muted-foreground font-medium">
+                        {policy.startDate} {t("to", "to")} {policy.endDate}
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <p className="font-bold text-card-foreground">${Number(policy.premium).toLocaleString()}</p>
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{t("sum", "Sum: $")}{Number(policy.sumInsured).toLocaleString()}</p>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <select
+                          value={policy.status}
+                          onChange={e => handleUpdateStatus(policy, e.target.value)}
+                          className={`rounded-md border border-input px-2 py-1 text-xs font-bold ${
+                            policy.status === 'Active' ? 'bg-green-100 text-green-700' : 
+                            policy.status === 'Lapsed' ? 'bg-red-100 text-red-700' : 
+                            policy.status === 'Cancelled' ? 'bg-muted text-muted-foreground' : 'bg-amber-100 text-amber-700'
+                          }`}
+                        >
+                          <option value="Active">{t("active", "Active")}</option>
+                          <option value="Pending">{t("pending", "Pending")}</option>
+                          <option value="Lapsed">{t("lapsed", "Lapsed")}</option>
+                          <option value="Cancelled">{t("cancelled", "Cancelled")}</option>
+                        </select>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <span className="sr-only">{t("open_menu", "Open menu")}</span>
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => setViewRecord(policy)}>{t("view_details", "View Details")}</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleEdit(policy)}>{t("edit", "Edit")}</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setDeleteTargetId(policy.id)} className="text-red-600">{t("delete", "Delete")}</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           )}
         </div>
       </div>
-
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-border">
             <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Policy' : 'New Policy'}</h2>
             <div className="space-y-3">
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">Holder Name</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("holder_name", "Holder Name")}</label>
                 <Input value={formData.holderName} onChange={e => setFormData({...formData, holderName: e.target.value})} placeholder="Jane Doe" className="mt-1" />
               </div>
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">Policy Type</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("policy_type", "Policy Type")}</label>
                 <select value={formData.policyType} onChange={e => setFormData({...formData, policyType: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground">
-                  <option>Life</option>
-                  <option>Health</option>
-                  <option>Auto</option>
-                  <option>Property</option>
-                  <option>Business</option>
+                  <option>{t("life", "Life")}</option>
+                  <option>{t("health", "Health")}</option>
+                  <option>{t("auto", "Auto")}</option>
+                  <option>{t("property", "Property")}</option>
+                  <option>{t("business", "Business")}</option>
                 </select>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-bold text-muted-foreground uppercase">Premium ($)</label>
+                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("premium", "Premium ($)")}</label>
                   <Input type="number" value={formData.premium} onChange={e => setFormData({...formData, premium: e.target.value})} placeholder="500" className="mt-1" />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-muted-foreground uppercase">Sum Insured ($)</label>
+                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("sum_insured", "Sum Insured ($)")}</label>
                   <Input type="number" value={formData.sumInsured} onChange={e => setFormData({...formData, sumInsured: e.target.value})} placeholder="50000" className="mt-1" />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-bold text-muted-foreground uppercase">Start Date</label>
+                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("start_date", "Start Date")}</label>
                   <Input type="date" value={formData.startDate} onChange={e => setFormData({...formData, startDate: e.target.value})} className="mt-1" />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-muted-foreground uppercase">End Date</label>
+                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("end_date", "End Date")}</label>
                   <Input type="date" value={formData.endDate} onChange={e => setFormData({...formData, endDate: e.target.value})} className="mt-1" />
                 </div>
               </div>
             </div>
             <div className="flex gap-3 pt-4">
-              <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditTargetId(null); }}>Cancel</Button>
+              <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditTargetId(null); }}>{t("cancel", "Cancel")}</Button>
               <Button className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white" onClick={handleCreatePolicy}>{editTargetId ? 'Save Changes' : 'Create Policy'}</Button>
             </div>
           </div>
         </div>
       )}
-
-      
       <Sheet open={viewDetailsId !== null} onOpenChange={(open) => !open && setViewDetailsId(null)}>
         <SheetContent className="bg-card text-card-foreground">
           <SheetHeader>
-            <SheetTitle>Record Details</SheetTitle>
+            <SheetTitle>{t("record_details", "Record Details")}</SheetTitle>
           </SheetHeader>
           <div className="mt-6 space-y-4">
             {viewDetailsId && (() => {
@@ -343,7 +342,6 @@ export default function Policies() {
           </div>
         </SheetContent>
       </Sheet>
-    
       <ConfirmationModal
         isOpen={deleteTargetId !== null}
         onClose={() => setDeleteTargetId(null)}
@@ -351,42 +349,44 @@ export default function Policies() {
         title="Delete Policy"
         message="Are you sure you want to completely remove this policy? This cannot be undone."
       />
-
       <Sheet open={!!viewRecord} onOpenChange={() => setViewRecord(null)}>
         <SheetContent className="overflow-y-auto">
           <SheetHeader>
-            <SheetTitle>Policy Details</SheetTitle>
-            <SheetDescription>View complete information for this policy.</SheetDescription>
+            <SheetTitle>{t("policy_details", "Policy Details")}</SheetTitle>
+            <SheetDescription>{t(
+              "view_complete_information_for_",
+              "View complete information for this policy."
+            )}</SheetDescription>
           </SheetHeader>
           {viewRecord && (
             <div className="mt-6 space-y-4">
               <div>
-                <h4 className="text-sm font-medium text-muted-foreground">Policy Number</h4>
+                <h4 className="text-sm font-medium text-muted-foreground">{t("policy_number", "Policy Number")}</h4>
                 <p className="text-base font-semibold">{viewRecord.policyNumber}</p>
               </div>
               <div>
-                <h4 className="text-sm font-medium text-muted-foreground">Holder Name</h4>
+                <h4 className="text-sm font-medium text-muted-foreground">{t("holder_name", "Holder Name")}</h4>
                 <p className="text-base font-semibold">{viewRecord.holderName}</p>
               </div>
               <div>
-                <h4 className="text-sm font-medium text-muted-foreground">Policy Type</h4>
+                <h4 className="text-sm font-medium text-muted-foreground">{t("policy_type", "Policy Type")}</h4>
                 <p className="text-base">{viewRecord.policyType}</p>
               </div>
               <div>
-                <h4 className="text-sm font-medium text-muted-foreground">Status</h4>
+                <h4 className="text-sm font-medium text-muted-foreground">{t("status", "Status")}</h4>
                 <p className="text-base">{viewRecord.status}</p>
               </div>
               <div>
-                <h4 className="text-sm font-medium text-muted-foreground">Premium</h4>
+                <h4 className="text-sm font-medium text-muted-foreground">{t("premium", "Premium")}</h4>
                 <p className="text-base">${Number(viewRecord.premium).toLocaleString()}</p>
               </div>
               <div>
-                <h4 className="text-sm font-medium text-muted-foreground">Sum Insured</h4>
+                <h4 className="text-sm font-medium text-muted-foreground">{t("sum_insured", "Sum Insured")}</h4>
                 <p className="text-base">${Number(viewRecord.sumInsured).toLocaleString()}</p>
               </div>
               <div>
-                <h4 className="text-sm font-medium text-muted-foreground">Coverage Period</h4>
-                <p className="text-base">{viewRecord.startDate} to {viewRecord.endDate}</p>
+                <h4 className="text-sm font-medium text-muted-foreground">{t("coverage_period", "Coverage Period")}</h4>
+                <p className="text-base">{viewRecord.startDate} {t("to", "to")} {viewRecord.endDate}</p>
               </div>
             </div>
           )}

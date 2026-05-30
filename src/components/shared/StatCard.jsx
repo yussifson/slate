@@ -1,7 +1,9 @@
+import { useTranslation } from "react-i18next";
 import React from "react";
 import { cn } from "@/lib/utils";
 
 export default function StatCard({ title, value, subtitle, icon: Icon, trend, trendUp, className }) {
+  const { t } = useTranslation();
   return (
     <div className={cn("bg-card rounded-xl border border-border p-5 hover:shadow-md transition-shadow", className)}>
       <div className="flex items-start justify-between">
@@ -21,7 +23,7 @@ export default function StatCard({ title, value, subtitle, icon: Icon, trend, tr
           <span className={cn("text-xs font-medium", trendUp ? "text-green-600" : "text-red-500")}>
             {trendUp ? "↑" : "↓"} {trend}
           </span>
-          <span className="text-xs text-muted-foreground">vs last month</span>
+          <span className="text-xs text-muted-foreground">{t("vs_last_month", "vs last month")}</span>
         </div>
       )}
     </div>

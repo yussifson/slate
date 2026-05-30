@@ -1,8 +1,10 @@
+import { useTranslation } from "react-i18next";
 import React from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { format, subMonths, startOfMonth, endOfMonth } from "date-fns";
 
 export default function RevenueChart({ invoices, currency }) {
+  const { t } = useTranslation();
   const months = Array.from({ length: 6 }, (_, i) => {
     const date = subMonths(new Date(), 5 - i);
     const start = startOfMonth(date);
@@ -21,7 +23,7 @@ export default function RevenueChart({ invoices, currency }) {
 
   return (
     <div className="bg-card rounded-xl border border-border p-4">
-      <h3 className="text-sm font-semibold mb-4">Revenue Trend (6 Months)</h3>
+      <h3 className="text-sm font-semibold mb-4">{t("revenue_trend_6_months", "Revenue Trend (6 Months)")}</h3>
       <ResponsiveContainer width="100%" height={200}>
         <LineChart data={months} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />

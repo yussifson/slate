@@ -1,9 +1,11 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { Plus, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export default function AddOptionInline({ onAdd, placeholder = "New option..." }) {
+  const { t } = useTranslation();
   const [adding, setAdding] = useState(false);
   const [value, setValue] = useState("");
 
@@ -20,7 +22,7 @@ export default function AddOptionInline({ onAdd, placeholder = "New option..." }
       onClick={() => setAdding(true)}
       className="flex items-center gap-1 px-2 py-1.5 text-xs text-primary hover:bg-primary/5 rounded w-full"
     >
-      <Plus className="w-3 h-3" /> Add option
+      <Plus className="w-3 h-3" /> {t("add_option", "Add option")}
     </button>
   );
 

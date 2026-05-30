@@ -1,9 +1,11 @@
+import { useTranslation } from "react-i18next";
 import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Download, ExternalLink, X, FileText } from "lucide-react";
 
 export default function DocumentPreviewModal({ fileUrl, fileName, open, onClose }) {
+  const { t } = useTranslation();
   if (!fileUrl) return null;
 
   // Determine file type based on extension
@@ -66,12 +68,12 @@ export default function DocumentPreviewModal({ fileUrl, fileName, open, onClose 
           <div className="flex items-center gap-2 select-none pr-8">
             <a href={fileUrl} download={fileName} target="_blank" rel="noopener noreferrer">
               <Button size="sm" variant="outline" className="h-8 gap-1.5 text-xs">
-                <Download className="w-3.5 h-3.5" /> Download
+                <Download className="w-3.5 h-3.5" /> {t("download", "Download")}
               </Button>
             </a>
             <a href={fileUrl} target="_blank" rel="noopener noreferrer">
               <Button size="sm" variant="ghost" className="h-8 gap-1.5 text-xs text-muted-foreground hover:text-foreground">
-                <ExternalLink className="w-3.5 h-3.5" /> Open Direct
+                <ExternalLink className="w-3.5 h-3.5" /> {t("open_direct", "Open Direct")}
               </Button>
             </a>
           </div>

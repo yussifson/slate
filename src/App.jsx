@@ -114,6 +114,7 @@ import InsuranceClients from './pages/insurance/Clients';
 import InsurancePolicyholderPortal from './pages/insurance/PolicyholderPortal';
 import InsuranceUnderwriting from './pages/insurance/Underwriting';
 import InsuranceAgentPerformance from './pages/insurance/AgentPerformance';
+import InsurancePremiums from './pages/insurance/Premiums';
 
 // Retail Pages
 import RetailInventory from './pages/retail/Inventory';
@@ -248,6 +249,7 @@ function PlatformRoutes() {
       <Route path="/policyholder-portal" element={<InsurancePolicyholderPortal />} />
       <Route path="/underwriting" element={<InsuranceUnderwriting />} />
       <Route path="/agent-performance" element={<InsuranceAgentPerformance />} />
+      <Route path="/premiums" element={<InsurancePremiums />} />
 
       {/* Retail Suite */}
       <Route path="/pos" element={<RetailPOS />} />

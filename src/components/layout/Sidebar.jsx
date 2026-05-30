@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard, Briefcase, Users, Calendar,
@@ -36,6 +37,7 @@ const ICON_MAP = {
 };
 
 export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
+  const { t } = useTranslation();
   const { impersonatedCompany } = useImpersonation();
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -94,7 +96,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
       {/* Section label */}
       {!collapsed ? (
         <div className="px-4 pt-5 pb-1.5 animate-in fade-in duration-200">
-          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest whitespace-nowrap">Platform</p>
+          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest whitespace-nowrap">{t('platform', 'Platform')}</p>
         </div>
       ) : (
         <div className="pt-5" />
@@ -110,7 +112,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
               key={item.path}
               to={item.path}
               onClick={() => setMobileOpen(false)}
-              title={collapsed ? item.label : undefined}
+              title={collapsed ? t(item.label.toLowerCase().replace(/\s+/g, '_'), item.label) : undefined}
               className={cn(
                 "flex items-center rounded-lg text-sm font-medium transition-all duration-150",
                 collapsed ? "justify-center p-2" : "gap-3 px-3 py-2",
@@ -120,7 +122,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
               )}
             >
               <IconComp className={cn("flex-shrink-0 transition-all", collapsed ? "w-5 h-5" : "w-4 h-4")} />
-              {!collapsed && <span className="whitespace-nowrap animate-in fade-in duration-200">{item.label}</span>}
+              {!collapsed && <span className="whitespace-nowrap animate-in fade-in duration-200">{t(item.label.toLowerCase().replace(/\s+/g, '_'), item.label)}</span>}
             </Link>
           );
         })}

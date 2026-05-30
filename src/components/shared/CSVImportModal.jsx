@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import Papa from 'papaparse';
 import { UploadCloud, CheckCircle, AlertCircle, ArrowRight, X } from 'lucide-react';
@@ -6,13 +7,14 @@ import { useToast } from '@/components/ui/use-toast';
 import { useMutateIndustryRecord } from '@/hooks/useIndustryData';
 
 export default function CSVImportModal({ isOpen, onClose, recordType, onComplete }) {
+  const { t } = useTranslation();
   const [file, setFile] = useState(null);
   const [data, setData] = useState([]);
   const [headers, setHeaders] = useState([]);
   const [mapping, setMapping] = useState({});
   const [step, setStep] = useState(1);
   const [isImporting, setIsImporting] = useState(false);
-  
+
   const { toast } = useToast();
   const mutateRecord = useMutateIndustryRecord();
 
@@ -82,8 +84,11 @@ export default function CSVImportModal({ isOpen, onClose, recordType, onComplete
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-border">
           <div>
-            <h2 className="text-xl font-bold text-card-foreground">Import {recordType}s</h2>
-            <p className="text-sm text-muted-foreground mt-1">Upload a CSV file to bulk import records.</p>
+            <h2 className="text-xl font-bold text-card-foreground">{t("import", "Import")} {recordType}s</h2>
+            <p className="text-sm text-muted-foreground mt-1">{t(
+              "upload_a_csv_file_to_bulk_impo",
+              "Upload a CSV file to bulk import records."
+            )}</p>
           </div>
           <button onClick={onClose} className="text-muted-foreground hover:bg-muted p-2 rounded-full transition-colors">
             <X className="w-5 h-5" />
@@ -95,10 +100,10 @@ export default function CSVImportModal({ isOpen, onClose, recordType, onComplete
           {step === 1 && (
             <div className="border-2 border-dashed border-border rounded-xl p-12 text-center hover:bg-muted/30 transition-colors">
               <UploadCloud className="w-12 h-12 mx-auto text-indigo-500 mb-4" />
-              <h3 className="text-lg font-bold mb-2">Drag and drop your CSV here</h3>
-              <p className="text-sm text-muted-foreground mb-6">Or click to browse your files</p>
+              <h3 className="text-lg font-bold mb-2">{t("drag_and_drop_your_csv_here", "Drag and drop your CSV here")}</h3>
+              <p className="text-sm text-muted-foreground mb-6">{t("or_click_to_browse_your_files", "Or click to browse your files")}</p>
               <label className="bg-primary text-white px-4 py-2 rounded-md cursor-pointer hover:bg-primary/90 transition-colors">
-                Select File
+                {t("select_file", "Select File")}
                 <input type="file" accept=".csv" className="hidden" onChange={handleFileUpload} />
               </label>
             </div>
@@ -108,40 +113,42 @@ export default function CSVImportModal({ isOpen, onClose, recordType, onComplete
             <div className="space-y-6">
               <div className="flex items-center gap-3 bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-400 p-3 rounded-lg border border-green-200 dark:border-green-900/50">
                 <CheckCircle className="w-5 h-5" />
-                <span className="text-sm font-medium">Successfully loaded <strong>{data.length}</strong> rows. Map the columns below.</span>
+                <span className="text-sm font-medium">{t("successfully_loaded", "Successfully loaded")} <strong>{data.length}</strong> {t("rows_map_the_columns_below", "rows. Map the columns below.")}</span>
               </div>
 
               <div className="bg-muted/30 rounded-lg border border-border overflow-hidden">
                 <table className="w-full text-sm">
                   <thead className="bg-muted text-muted-foreground">
                     <tr>
-                      <th className="px-4 py-3 text-left font-semibold">CSV Column</th>
+                      <th className="px-4 py-3 text-left font-semibold">{t("csv_column", "CSV Column")}</th>
                       <th className="px-4 py-3 text-center"><ArrowRight className="w-4 h-4 mx-auto" /></th>
-                      <th className="px-4 py-3 text-left font-semibold">Map to Database Field</th>
+                      <th className="px-4 py-3 text-left font-semibold">{t("map_to_database_field", "Map to Database Field")}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border">
-                    {headers.map(header => (
-                      <tr key={header}>
-                        <td className="px-4 py-3 font-medium">{header}</td>
-                        <td className="px-4 py-3"></td>
-                        <td className="px-4 py-3">
-                          <input 
-                            type="text" 
-                            placeholder="e.g. name, email, status"
-                            value={mapping[header] || ''}
-                            onChange={(e) => handleMappingChange(header, e.target.value)}
-                            className="w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm"
-                          />
-                        </td>
-                      </tr>
-                    ))}
+                    {headers.map(header => {
+                      return (
+                        <tr key={header}>
+                          <td className="px-4 py-3 font-medium">{header}</td>
+                          <td className="px-4 py-3"></td>
+                          <td className="px-4 py-3">
+                            <input 
+                              type="text" 
+                              placeholder="e.g. name, email, status"
+                              value={mapping[header] || ''}
+                              onChange={(e) => handleMappingChange(header, e.target.value)}
+                              className="w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm"
+                            />
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
 
               <div className="flex justify-end gap-3">
-                <Button variant="outline" onClick={() => setStep(1)}>Back</Button>
+                <Button variant="outline" onClick={() => setStep(1)}>{t("back", "Back")}</Button>
                 <Button onClick={handleImport} disabled={isImporting} className="bg-indigo-600 hover:bg-indigo-700 text-white min-w-[120px]">
                   {isImporting ? 'Importing...' : `Import ${data.length} Records`}
                 </Button>

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
@@ -18,6 +19,7 @@ const STATUS_COLORS = { pending: "bg-amber-100 text-amber-700", approved: "bg-gr
 const LEAVE_COLORS = { annual: "bg-blue-100 text-blue-700", sick: "bg-red-100 text-red-700", maternity: "bg-pink-100 text-pink-700", paternity: "bg-purple-100 text-purple-700", bereavement: "bg-gray-100 text-gray-600", unpaid: "bg-orange-100 text-orange-700", other: "bg-slate-100 text-slate-600" };
 
 export default function HRLeavePanel({ companyId, leaves, staff, isAdmin, user }) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
 
@@ -53,14 +55,13 @@ export default function HRLeavePanel({ companyId, leaves, staff, isAdmin, user }
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
-        <Button size="sm" onClick={() => setShowForm(true)}><Plus className="w-4 h-4 mr-1" /> Request Leave</Button>
+        <Button size="sm" onClick={() => setShowForm(true)}><Plus className="w-4 h-4 mr-1" /> {t("request_leave", "Request Leave")}</Button>
       </div>
-
       <Tabs defaultValue={isAdmin ? "all" : "mine"}>
         <TabsList>
-          {isAdmin && <TabsTrigger value="all">All Requests {pending.length > 0 && <Badge className="ml-1 bg-amber-100 text-amber-700 text-[9px] h-4 px-1">{pending.length}</Badge>}</TabsTrigger>}
-          <TabsTrigger value="mine">My Requests</TabsTrigger>
-          {isAdmin && <TabsTrigger value="balances">Staff Balances</TabsTrigger>}
+          {isAdmin && <TabsTrigger value="all">{t("all_requests", "All Requests")} {pending.length > 0 && <Badge className="ml-1 bg-amber-100 text-amber-700 text-[9px] h-4 px-1">{pending.length}</Badge>}</TabsTrigger>}
+          <TabsTrigger value="mine">{t("my_requests", "My Requests")}</TabsTrigger>
+          {isAdmin && <TabsTrigger value="balances">{t("staff_balances", "Staff Balances")}</TabsTrigger>}
         </TabsList>
 
         <TabsContent value="all" className="mt-3">
@@ -86,11 +87,11 @@ export default function HRLeavePanel({ companyId, leaves, staff, isAdmin, user }
                         <div className="flex-1 bg-muted rounded-full h-1.5">
                           <div className="bg-primary rounded-full h-1.5" style={{ width: `${pct}%` }} />
                         </div>
-                        <span className="text-xs text-muted-foreground shrink-0">{bal.used}/{bal.total} days used</span>
+                        <span className="text-xs text-muted-foreground shrink-0">{bal.used}/{bal.total} {t("days_used", "days used")}</span>
                       </div>
                     </div>
                     <Badge className={cn("text-[10px]", bal.remaining < 5 ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700")}>
-                      {bal.remaining} days left
+                      {bal.remaining} {t("days_left", "days left")}
                     </Badge>
                   </div>
                 );
@@ -99,42 +100,44 @@ export default function HRLeavePanel({ companyId, leaves, staff, isAdmin, user }
           </TabsContent>
         )}
       </Tabs>
-
       <LeaveRequestDialog open={showForm} onClose={() => setShowForm(false)} onSubmit={(d) => createMutation.mutate(d)} isAdmin={isAdmin} staffRecords={staff} />
     </div>
   );
 }
 
 function LeaveList({ leaves, isAdmin, onApprove, onReject }) {
+  const { t } = useTranslation();
   if (!leaves.length) return (
     <div className="bg-card border border-border rounded-xl p-10 text-center">
       <Calendar className="w-10 h-10 text-muted-foreground mx-auto mb-2" />
-      <p className="text-sm text-muted-foreground">No leave requests</p>
+      <p className="text-sm text-muted-foreground">{t("no_leave_requests", "No leave requests")}</p>
     </div>
   );
   return (
     <div className="bg-card border border-border rounded-xl divide-y divide-border">
-      {leaves.map(leave => (
-        <div key={leave.id} className="px-4 py-3 flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center shrink-0"><User className="w-4 h-4 text-muted-foreground" /></div>
-          <div className="flex-1 min-w-0">
-            <div className="flex flex-wrap items-center gap-1.5">
-              <span className="text-sm font-medium">{leave.staff_name}</span>
-              <Badge className={cn("text-[9px] h-4 px-1.5 capitalize", LEAVE_COLORS[leave.leave_type])}>{leave.leave_type}</Badge>
-              <Badge className={cn("text-[9px] h-4 px-1.5", STATUS_COLORS[leave.status])}>{leave.status}</Badge>
+      {leaves.map(leave => {
+        return (
+          <div key={leave.id} className="px-4 py-3 flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center shrink-0"><User className="w-4 h-4 text-muted-foreground" /></div>
+            <div className="flex-1 min-w-0">
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="text-sm font-medium">{leave.staff_name}</span>
+                <Badge className={cn("text-[9px] h-4 px-1.5 capitalize", LEAVE_COLORS[leave.leave_type])}>{leave.leave_type}</Badge>
+                <Badge className={cn("text-[9px] h-4 px-1.5", STATUS_COLORS[leave.status])}>{leave.status}</Badge>
+              </div>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {leave.start_date && format(parseISO(leave.start_date), "MMM d")}– {leave.end_date && format(parseISO(leave.end_date), "MMM d, yyyy")}· {leave.days_requested} {t("day_s", "day(s)")}
+              </p>
             </div>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              {leave.start_date && format(parseISO(leave.start_date), "MMM d")} – {leave.end_date && format(parseISO(leave.end_date), "MMM d, yyyy")} · {leave.days_requested} day(s)
-            </p>
+            {isAdmin && leave.status === "pending" && (
+              <div className="flex gap-1.5 shrink-0">
+                <Button size="sm" className="h-7 text-xs bg-green-600 hover:bg-green-700 gap-1" onClick={() => onApprove(leave)}><CheckCircle className="w-3 h-3" />{t("approve", "Approve")}</Button>
+                <Button size="sm" variant="outline" className="h-7 text-xs gap-1 text-red-600 border-red-200" onClick={() => onReject(leave)}><XCircle className="w-3 h-3" />{t("reject", "Reject")}</Button>
+              </div>
+            )}
           </div>
-          {isAdmin && leave.status === "pending" && (
-            <div className="flex gap-1.5 shrink-0">
-              <Button size="sm" className="h-7 text-xs bg-green-600 hover:bg-green-700 gap-1" onClick={() => onApprove(leave)}><CheckCircle className="w-3 h-3" />Approve</Button>
-              <Button size="sm" variant="outline" className="h-7 text-xs gap-1 text-red-600 border-red-200" onClick={() => onReject(leave)}><XCircle className="w-3 h-3" />Reject</Button>
-            </div>
-          )}
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
@@ -147,33 +150,37 @@ function LeaveRequestDialog({ open, onClose, onSubmit, isAdmin, staffRecords }) 
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
-        <DialogHeader><DialogTitle>Request Leave</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle>{t("request_leave", "Request Leave")}</DialogTitle></DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           {isAdmin && (
             <div>
-              <Label>For Team Member <span className="text-xs text-muted-foreground">(blank = yourself)</span></Label>
+              <Label>{t("for_team_member", "For Team Member")} <span className="text-xs text-muted-foreground">{t("blank_yourself", "(blank = yourself)")}</span></Label>
               <Select value={form._for_staff_email} onValueChange={v => { const s = staffRecords.find(sr => sr.user_email === v); set("_for_staff_email", v); set("_for_staff_name", s?.full_name || ""); }}>
                 <SelectTrigger><SelectValue placeholder="Select staff member" /></SelectTrigger>
-                <SelectContent>{staffRecords.map(s => <SelectItem key={s.user_email} value={s.user_email}>{s.full_name}</SelectItem>)}</SelectContent>
+                <SelectContent>{staffRecords.map(s => {
+                  return <SelectItem key={s.user_email} value={s.user_email}>{s.full_name}</SelectItem>;
+                })}</SelectContent>
               </Select>
             </div>
           )}
           <div>
-            <Label>Leave Type</Label>
+            <Label>{t("leave_type", "Leave Type")}</Label>
             <Select value={form.leave_type} onValueChange={v => set("leave_type", v)}>
               <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>{LEAVE_TYPES.map(t => <SelectItem key={t} value={t} className="capitalize">{t}</SelectItem>)}</SelectContent>
+              <SelectContent>{LEAVE_TYPES.map(item => {
+                return <SelectItem key={item} value={item} className="capitalize">{item}</SelectItem>;
+              })}</SelectContent>
             </Select>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <div><Label>Start Date</Label><Input type="date" value={form.start_date} onChange={e => set("start_date", e.target.value)} required /></div>
-            <div><Label>End Date</Label><Input type="date" value={form.end_date} onChange={e => set("end_date", e.target.value)} required /></div>
+            <div><Label>{t("start_date", "Start Date")}</Label><Input type="date" value={form.start_date} onChange={e => set("start_date", e.target.value)} required /></div>
+            <div><Label>{t("end_date", "End Date")}</Label><Input type="date" value={form.end_date} onChange={e => set("end_date", e.target.value)} required /></div>
           </div>
-          {days > 0 && <p className="text-sm text-primary font-medium">{days} day(s) requested</p>}
-          <div><Label>Reason</Label><Textarea value={form.reason} onChange={e => set("reason", e.target.value)} className="resize-none h-20" /></div>
+          {days > 0 && <p className="text-sm text-primary font-medium">{days} {t("day_s_requested", "day(s) requested")}</p>}
+          <div><Label>{t("reason", "Reason")}</Label><Textarea value={form.reason} onChange={e => set("reason", e.target.value)} className="resize-none h-20" /></div>
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-            <Button type="submit">Submit Request</Button>
+            <Button type="button" variant="outline" onClick={onClose}>{t("cancel", "Cancel")}</Button>
+            <Button type="submit">{t("submit_request", "Submit Request")}</Button>
           </div>
         </form>
       </DialogContent>

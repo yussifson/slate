@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React from "react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from "recharts";
 
@@ -9,6 +10,7 @@ const CASE_TYPE_LABELS = {
 };
 
 export default function CaseDistributionChart({ cases }) {
+  const { t } = useTranslation();
   const distribution = Object.entries(
     cases.reduce((acc, c) => {
       const type = c.case_type || "other";
@@ -21,20 +23,20 @@ export default function CaseDistributionChart({ cases }) {
   if (distribution.length === 0) {
     return (
       <div className="bg-card rounded-xl border border-border p-4 flex items-center justify-center h-[280px]">
-        <p className="text-sm text-muted-foreground">No case data yet</p>
+        <p className="text-sm text-muted-foreground">{t("no_case_data_yet", "No case data yet")}</p>
       </div>
     );
   }
 
   return (
     <div className="bg-card rounded-xl border border-border p-4">
-      <h3 className="text-sm font-semibold mb-4">Cases by Practice Area</h3>
+      <h3 className="text-sm font-semibold mb-4">{t("cases_by_practice_area", "Cases by Practice Area")}</h3>
       <ResponsiveContainer width="100%" height={200}>
         <PieChart>
           <Pie data={distribution} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={3} dataKey="value">
-            {distribution.map((_, i) => (
-              <Cell key={i} fill={COLORS[i % COLORS.length]} />
-            ))}
+            {distribution.map((_, i) => {
+              return (<Cell key={i} fill={COLORS[i % COLORS.length]} />);
+            })}
           </Pie>
           <Tooltip
             contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px", fontSize: "12px" }}

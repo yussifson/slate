@@ -1,9 +1,11 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { useFirmSettings } from "@/hooks/useFirmSettings";
+import { getTerm } from "@/config/industries";
 import { Plus, FolderOpen, Search, Download, Trash2, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +22,7 @@ import { format } from "date-fns";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function Documents() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const companyId = useCompanyId();
   const queryClient = useQueryClient();
@@ -31,6 +34,8 @@ export default function Documents() {
   const [previewDoc, setPreviewDoc] = useState(null);
 
   const isAdmin = ["super_admin", "company_admin", "managing_partner"].includes(user?.role);
+  const industry = user?.company_industry || "law";
+  const caseTerm = getTerm(industry, "case");
 
   const { data: documents = [], isLoading } = useQuery({
     queryKey: ["documents", companyId, user?.email, isAdmin],
@@ -80,30 +85,40 @@ export default function Documents() {
   const columns = [
     {
       header: "Document",
-      render: (row) => (
-        <div>
-          <p className="font-medium text-sm">{row.name}</p>
-          <p className="text-xs text-muted-foreground">{row.case_title || "General"}</p>
-        </div>
-      )
+      render: row => {
+        return (
+          <div>
+            <p className="font-medium text-sm">{row.name}</p>
+            <p className="text-xs text-muted-foreground">{row.case_title || "General"}</p>
+          </div>
+        );
+      }
     },
-    { header: "Category", render: (row) => <Badge variant="outline" className="text-[10px] capitalize">{row.category?.replace(/_/g, " ")}</Badge> },
-    { header: "Uploaded By", render: (row) => <span className="text-sm">{row.uploaded_by || "—"}</span> },
-    { header: "Date", render: (row) => <span className="text-xs text-muted-foreground">{format(new Date(row.created_date), "MMM d, yyyy")}</span> },
+    { header: "Category", render: row => {
+      return <Badge variant="outline" className="text-[10px] capitalize">{row.category?.replace(/_/g, " ")}</Badge>;
+    } },
+    { header: "Uploaded By", render: row => {
+      return <span className="text-sm">{row.uploaded_by || "—"}</span>;
+    } },
+    { header: "Date", render: row => {
+      return <span className="text-xs text-muted-foreground">{format(new Date(row.created_date), "MMM d, yyyy")}</span>;
+    } },
     {
       header: "Actions",
-      render: (row) => (
-        <div className="flex gap-1">
-          {row.file_url && (
-            <a href={row.file_url} target="_blank" rel="noopener noreferrer">
-              <Button variant="ghost" size="icon" className="h-7 w-7"><Download className="w-3.5 h-3.5" /></Button>
-            </a>
-          )}
-          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(row.id); }}>
-            <Trash2 className="w-3.5 h-3.5 text-destructive" />
-          </Button>
-        </div>
-      )
+      render: row => {
+        return (
+          <div className="flex gap-1">
+            {row.file_url && (
+              <a href={row.file_url} target="_blank" rel="noopener noreferrer">
+                <Button variant="ghost" size="icon" className="h-7 w-7"><Download className="w-3.5 h-3.5" /></Button>
+              </a>
+            )}
+            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(row.id); }}>
+              <Trash2 className="w-3.5 h-3.5 text-destructive" />
+            </Button>
+          </div>
+        );
+      }
     },
   ];
 
@@ -112,7 +127,7 @@ export default function Documents() {
       <PageHeader
         title="Documents"
         subtitle={`${documents.length} documents`}
-        actions={<Button onClick={() => setShowForm(true)} size="sm"><Plus className="w-4 h-4 mr-1" /> Upload Document</Button>}
+        actions={<Button onClick={() => setShowForm(true)} size="sm"><Plus className="w-4 h-4 mr-1" /> {t("upload_document", "Upload Document")}</Button>}
       />
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
@@ -122,8 +137,10 @@ export default function Documents() {
         <Select value={categoryFilter} onValueChange={setCategoryFilter}>
           <SelectTrigger className="w-44"><SelectValue /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Categories</SelectItem>
-            {docCategories.map(c => <SelectItem key={c} value={c} className="capitalize">{c.replace(/_/g, " ")}</SelectItem>)}
+            <SelectItem value="all">{t("all_categories", "All Categories")}</SelectItem>
+            {docCategories.map(c => {
+              return <SelectItem key={c} value={c} className="capitalize">{c.replace(/_/g, " ")}</SelectItem>;
+            })}
           </SelectContent>
         </Select>
       </div>
@@ -135,7 +152,6 @@ export default function Documents() {
         emptyTitle="No documents yet"
         emptyIcon={FolderOpen}
       />
-
       <DocumentUploadDialog
         open={showForm}
         onClose={() => setShowForm(false)}
@@ -144,8 +160,8 @@ export default function Documents() {
         docCategories={docCategories}
         addDocCategory={addDocCategory}
         companyId={companyId}
+        caseTerm={caseTerm}
       />
-
       {previewDoc && (
         <DocumentPreviewModal
           fileUrl={previewDoc.file_url}
@@ -158,7 +174,8 @@ export default function Documents() {
   );
 }
 
-function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, addDocCategory, companyId }) {
+function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, addDocCategory, companyId, caseTerm }) {
+  const { t } = useTranslation();
   const [form, setForm] = useState({ name: "", category: "other", case_id: "", case_title: "", notes: "" });
   const [uploading, setUploading] = useState(false);
   const [fileUrl, setFileUrl] = useState("");
@@ -199,10 +216,10 @@ function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, a
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
-        <DialogHeader><DialogTitle>Upload Document</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle>{t("upload_document", "Upload Document")}</DialogTitle></DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label>File</Label>
+            <Label>{t("file", "File")}</Label>
             <div className="mt-1 border-2 border-dashed border-border rounded-lg p-6 text-center">
               <Upload className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
               <input type="file" className="hidden" id="doc-upload" onChange={handleFileUpload} />
@@ -211,27 +228,31 @@ function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, a
               </label>
             </div>
           </div>
-          <div><Label>Document Name</Label><Input value={form.name} onChange={(e) => handleChange("name", e.target.value)} required /></div>
+          <div><Label>{t("document_name", "Document Name")}</Label><Input value={form.name} onChange={(e) => handleChange("name", e.target.value)} required /></div>
           <div>
-            <Label>Category</Label>
+            <Label>{t("category", "Category")}</Label>
             <Select value={form.category} onValueChange={(v) => handleChange("category", v)}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
-                {docCategories.map(c => <SelectItem key={c} value={c} className="capitalize">{c.replace(/_/g, " ")}</SelectItem>)}
+                {docCategories.map(c => {
+                  return <SelectItem key={c} value={c} className="capitalize">{c.replace(/_/g, " ")}</SelectItem>;
+                })}
                 <AddOptionInline onAdd={(v) => { addDocCategory(v); handleChange("category", v); }} placeholder="New category..." />
               </SelectContent>
             </Select>
           </div>
           <div>
-            <Label>Case</Label>
+            <Label>{caseTerm}</Label>
             <Select value={form.case_id} onValueChange={(v) => { const c = cases?.find(cs => cs.id === v); handleChange("case_id", v); handleChange("case_title", c?.title || ""); }}>
-              <SelectTrigger><SelectValue placeholder="Link to case (optional)" /></SelectTrigger>
-              <SelectContent>{cases?.map(c => <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>)}</SelectContent>
+              <SelectTrigger><SelectValue placeholder={`Link to ${caseTerm.toLowerCase()} (optional)`} /></SelectTrigger>
+              <SelectContent>{cases?.map(c => {
+                return <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>;
+              })}</SelectContent>
             </Select>
           </div>
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-            <Button type="submit" disabled={uploading}>Upload</Button>
+            <Button type="button" variant="outline" onClick={onClose}>{t("cancel", "Cancel")}</Button>
+            <Button type="submit" disabled={uploading}>{t("upload", "Upload")}</Button>
           </div>
         </form>
       </DialogContent>

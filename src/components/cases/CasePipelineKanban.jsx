@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { base44 } from "@/api/base44Client";
@@ -11,6 +12,7 @@ import { CheckCircle, Plus, GripVertical } from "lucide-react";
 import { PRIORITY_COLORS } from "@/lib/constants";
 
 export default function CasePipelineKanban({ pipelines, caseStates, companyId }) {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedPipelineId, setSelectedPipelineId] = useState(null);
@@ -95,113 +97,123 @@ export default function CasePipelineKanban({ pipelines, caseStates, companyId })
       <div className="p-4 border-b border-border flex items-center justify-between gap-3 flex-wrap">
         <div className="flex items-center gap-2">
           <CheckCircle className="w-4 h-4 text-primary" />
-          <span className="text-sm font-semibold">Case Board</span>
-          <span className="text-xs text-muted-foreground">· drag cards between stages</span>
+          <span className="text-sm font-semibold">{t("case_board", "Case Board")}</span>
+          <span className="text-xs text-muted-foreground">{t("drag_cards_between_stages", "· drag cards between stages")}</span>
         </div>
         {pipelines.length > 1 && (
           <Select value={selectedPipelineId || pipelines[0]?.id} onValueChange={setSelectedPipelineId}>
             <SelectTrigger className="w-44"><SelectValue /></SelectTrigger>
             <SelectContent>
-              {pipelines.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
+              {pipelines.map(p => {
+                return <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>;
+              })}
             </SelectContent>
           </Select>
         )}
       </div>
-
       {/* Kanban columns */}
       <div className="p-4 overflow-x-auto">
         <DragDropContext onDragEnd={onDragEnd}>
           <div className="flex gap-4" style={{ minWidth: `${stages.length * 224 + (untrackedCases.length > 0 ? 224 : 0)}px` }}>
-            {stages.map(stage => (
-              <div key={stage.id} className="w-52 shrink-0 flex flex-col">
-                {/* Stage header */}
-                <div className="flex items-center gap-2 mb-3 px-1">
-                  <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: stage.color }} />
-                  <span className="text-xs font-semibold">{stage.name}</span>
-                  <span className="ml-auto text-[10px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full">
-                    {stageCards[stage.id]?.length || 0}
-                  </span>
-                </div>
-
-                {/* Droppable column */}
-                <Droppable droppableId={stage.id}>
-                  {(provided, snapshot) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.droppableProps}
-                      className={`flex-1 space-y-2 min-h-[120px] rounded-lg p-2 transition-colors ${
-                        snapshot.isDraggingOver ? "bg-primary/5 border border-dashed border-primary/30" : "bg-muted/20"
-                      }`}
-                    >
-                      {(stageCards[stage.id] || []).map((c, index) => (
-                        <Draggable key={c.id} draggableId={c.id} index={index}>
-                          {(provided, snapshot) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              className={`bg-card border rounded-lg p-2.5 text-xs space-y-1.5 shadow-sm ${
-                                snapshot.isDragging ? "shadow-md border-primary/40 rotate-1" : "border-border"
-                              }`}
-                            >
-                              <div className="flex items-start gap-1.5">
-                                <span {...provided.dragHandleProps} className="mt-0.5 cursor-grab active:cursor-grabbing">
-                                  <GripVertical className="w-3 h-3 text-muted-foreground" />
-                                </span>
-                                <p className="font-medium leading-tight line-clamp-2 flex-1">{c.title}</p>
-                              </div>
-                              {c.client_name && (
-                                <p className="text-muted-foreground truncate pl-4">{c.client_name}</p>
-                              )}
-                              {c.priority && (
-                                <div className="pl-4">
-                                  <span className={`inline-block px-1.5 py-0.5 rounded text-[9px] font-semibold ${PRIORITY_COLORS[c.priority] || ""}`}>
-                                    {c.priority}
-                                  </span>
-                                </div>
-                              )}
+            {stages.map(stage => {
+              return (
+                <div key={stage.id} className="w-52 shrink-0 flex flex-col">
+                  {/* Stage header */}
+                  <div className="flex items-center gap-2 mb-3 px-1">
+                    <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: stage.color }} />
+                    <span className="text-xs font-semibold">{stage.name}</span>
+                    <span className="ml-auto text-[10px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full">
+                      {stageCards[stage.id]?.length || 0}
+                    </span>
+                  </div>
+                  {/* Droppable column */}
+                  <Droppable droppableId={stage.id}>
+                    {(provided, snapshot) => {
+                      return (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.droppableProps}
+                          className={`flex-1 space-y-2 min-h-[120px] rounded-lg p-2 transition-colors ${
+                            snapshot.isDraggingOver ? "bg-primary/5 border border-dashed border-primary/30" : "bg-muted/20"
+                          }`}
+                        >
+                          {(stageCards[stage.id] || []).map((c, index) => {
+                            return (
+                              <Draggable key={c.id} draggableId={c.id} index={index}>
+                                {(provided, snapshot) => {
+                                  return (
+                                    <div
+                                      ref={provided.innerRef}
+                                      {...provided.draggableProps}
+                                      className={`bg-card border rounded-lg p-2.5 text-xs space-y-1.5 shadow-sm ${
+                                        snapshot.isDragging ? "shadow-md border-primary/40 rotate-1" : "border-border"
+                                      }`}
+                                    >
+                                      <div className="flex items-start gap-1.5">
+                                        <span {...provided.dragHandleProps} className="mt-0.5 cursor-grab active:cursor-grabbing">
+                                          <GripVertical className="w-3 h-3 text-muted-foreground" />
+                                        </span>
+                                        <p className="font-medium leading-tight line-clamp-2 flex-1">{c.title}</p>
+                                      </div>
+                                      {c.client_name && (
+                                        <p className="text-muted-foreground truncate pl-4">{c.client_name}</p>
+                                      )}
+                                      {c.priority && (
+                                        <div className="pl-4">
+                                          <span className={`inline-block px-1.5 py-0.5 rounded text-[9px] font-semibold ${PRIORITY_COLORS[c.priority] || ""}`}>
+                                            {c.priority}
+                                          </span>
+                                        </div>
+                                      )}
+                                    </div>
+                                  );
+                                }}
+                              </Draggable>
+                            );
+                          })}
+                          {provided.placeholder}
+                          {(stageCards[stage.id]?.length === 0) && !snapshot.isDraggingOver && (
+                            <div className="h-12 rounded-lg border border-dashed border-border/60 flex items-center justify-center">
+                              <span className="text-[10px] text-muted-foreground">{t("drop_here", "Drop here")}</span>
                             </div>
                           )}
-                        </Draggable>
-                      ))}
-                      {provided.placeholder}
-                      {(stageCards[stage.id]?.length === 0) && !snapshot.isDraggingOver && (
-                        <div className="h-12 rounded-lg border border-dashed border-border/60 flex items-center justify-center">
-                          <span className="text-[10px] text-muted-foreground">Drop here</span>
                         </div>
-                      )}
-                    </div>
-                  )}
-                </Droppable>
-              </div>
-            ))}
+                      );
+                    }}
+                  </Droppable>
+                </div>
+              );
+            })}
 
             {/* Untracked cases column */}
             {untrackedCases.length > 0 && (
               <div className="w-52 shrink-0 flex flex-col">
                 <div className="flex items-center gap-2 mb-3 px-1">
                   <div className="w-2.5 h-2.5 rounded-full bg-muted-foreground shrink-0" />
-                  <span className="text-xs font-semibold text-muted-foreground">Not Tracked</span>
+                  <span className="text-xs font-semibold text-muted-foreground">{t("not_tracked", "Not Tracked")}</span>
                   <span className="ml-auto text-[10px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full">{untrackedCases.length}</span>
                 </div>
                 <div className="space-y-2 bg-muted/10 rounded-lg p-2 min-h-[120px]">
-                  {untrackedCases.slice(0, 8).map(c => (
-                    <div key={c.id} className="bg-card border border-dashed border-border rounded-lg p-2.5 text-xs">
-                      <p className="font-medium line-clamp-2 text-muted-foreground mb-1">{c.title}</p>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="h-6 text-[10px] gap-1 px-1.5 w-full justify-start"
-                        onClick={() => {
-                          const firstStage = stages[0];
-                          if (firstStage) {
-                            updateStateMutation.mutate({ stateId: null, caseId: c.id, stage: firstStage, pipelineId: activePipeline.id });
-                          }
-                        }}
-                      >
-                        <Plus className="w-3 h-3" /> Add to board
-                      </Button>
-                    </div>
-                  ))}
+                  {untrackedCases.slice(0, 8).map(c => {
+                    return (
+                      <div key={c.id} className="bg-card border border-dashed border-border rounded-lg p-2.5 text-xs">
+                        <p className="font-medium line-clamp-2 text-muted-foreground mb-1">{c.title}</p>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-6 text-[10px] gap-1 px-1.5 w-full justify-start"
+                          onClick={() => {
+                            const firstStage = stages[0];
+                            if (firstStage) {
+                              updateStateMutation.mutate({ stateId: null, caseId: c.id, stage: firstStage, pipelineId: activePipeline.id });
+                            }
+                          }}
+                        >
+                          <Plus className="w-3 h-3" /> {t("add_to_board", "Add to board")}
+                        </Button>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}

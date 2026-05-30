@@ -792,3 +792,1156 @@ ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Enable all for authenticated users" ON public.profiles;
 CREATE POLICY "Enable all for authenticated users" ON public.profiles FOR ALL USING (auth.role() = 'authenticated');
 
+ 
+ - -   S C H O O L   T A B L E S  
+  
+ C R E A T E   T A B L E   I F   N O T   E X I S T S   p u b l i c . s c h o o l _ s t u d e n t s   (  
+     i d   U U I D   P R I M A R Y   K E Y   D E F A U L T   g e n _ r a n d o m _ u u i d ( ) ,  
+     c r e a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     u p d a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     c r e a t e d _ b y   T E X T ,  
+     c o m p a n y _ i d   T E X T ,  
+     t y p e   T E X T ,  
+     n a m e   T E X T ,  
+     e m a i l   T E X T ,  
+     p h o n e   T E X T ,  
+     a d d r e s s   T E X T ,  
+     c i t y   T E X T ,  
+     c o u n t r y   T E X T ,  
+     i d _ n u m b e r   T E X T ,  
+     s t a t u s   T E X T ,  
+     n o t e s   T E X T ,  
+     t o t a l _ c a s e s   N U M E R I C ,  
+     t o t a l _ b i l l e d   N U M E R I C  
+ ) ;  
+ A L T E R   T A B L E   p u b l i c . s c h o o l _ s t u d e n t s   E N A B L E   R O W   L E V E L   S E C U R I T Y ;  
+ D R O P   P O L I C Y   I F   E X I S T S   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . s c h o o l _ s t u d e n t s ;  
+ C R E A T E   P O L I C Y   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . s c h o o l _ s t u d e n t s   F O R   A L L   U S I N G   ( a u t h . r o l e ( )   =   ' a u t h e n t i c a t e d ' ) ;  
+  
+ C R E A T E   T A B L E   I F   N O T   E X I S T S   p u b l i c . s c h o o l _ c l a s s e s   (  
+     i d   U U I D   P R I M A R Y   K E Y   D E F A U L T   g e n _ r a n d o m _ u u i d ( ) ,  
+     c r e a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     u p d a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     c r e a t e d _ b y   T E X T ,  
+     c o m p a n y _ i d   T E X T ,  
+     c a s e _ n u m b e r   T E X T ,  
+     t i t l e   T E X T ,  
+     d e s c r i p t i o n   T E X T ,  
+     c a s e _ t y p e   T E X T ,  
+     s t a t u s   T E X T ,  
+     p r i o r i t y   T E X T ,  
+     c l i e n t _ i d   T E X T ,  
+     c l i e n t _ n a m e   T E X T ,  
+     a s s i g n e d _ s t a f f   T E X T ,  
+     a s s i g n e d _ s t a f f _ n a m e   T E X T ,  
+     s t a r t _ d a t e   D A T E ,  
+     e n d _ d a t e   D A T E ,  
+     n o t e s   T E X T ,  
+     t a g s   J S O N B  
+ ) ;  
+ A L T E R   T A B L E   p u b l i c . s c h o o l _ c l a s s e s   E N A B L E   R O W   L E V E L   S E C U R I T Y ;  
+ D R O P   P O L I C Y   I F   E X I S T S   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . s c h o o l _ c l a s s e s ;  
+ C R E A T E   P O L I C Y   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . s c h o o l _ c l a s s e s   F O R   A L L   U S I N G   ( a u t h . r o l e ( )   =   ' a u t h e n t i c a t e d ' ) ;  
+  
+ C R E A T E   T A B L E   I F   N O T   E X I S T S   p u b l i c . s c h o o l _ s e s s i o n s   (  
+     i d   U U I D   P R I M A R Y   K E Y   D E F A U L T   g e n _ r a n d o m _ u u i d ( ) ,  
+     c r e a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     u p d a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     c r e a t e d _ b y   T E X T ,  
+     c o m p a n y _ i d   T E X T ,  
+     c a s e _ i d   T E X T ,  
+     c a s e _ t i t l e   T E X T ,  
+     t i t l e   T E X T ,  
+     d a t e   D A T E ,  
+     t i m e   T E X T ,  
+     v e n u e _ n a m e   T E X T ,  
+     s t a f f _ e m a i l   T E X T ,  
+     s t a f f _ n a m e   T E X T ,  
+     s t a t u s   T E X T ,  
+     n o t e s   T E X T ,  
+     o u t c o m e   T E X T  
+ ) ;  
+ A L T E R   T A B L E   p u b l i c . s c h o o l _ s e s s i o n s   E N A B L E   R O W   L E V E L   S E C U R I T Y ;  
+ D R O P   P O L I C Y   I F   E X I S T S   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . s c h o o l _ s e s s i o n s ;  
+ C R E A T E   P O L I C Y   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . s c h o o l _ s e s s i o n s   F O R   A L L   U S I N G   ( a u t h . r o l e ( )   =   ' a u t h e n t i c a t e d ' ) ;  
+  
+ - -   H O S P I T A L   T A B L E S  
+  
+ C R E A T E   T A B L E   I F   N O T   E X I S T S   p u b l i c . h o s p i t a l _ p a t i e n t s   (  
+     i d   U U I D   P R I M A R Y   K E Y   D E F A U L T   g e n _ r a n d o m _ u u i d ( ) ,  
+     c r e a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     u p d a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     c r e a t e d _ b y   T E X T ,  
+     c o m p a n y _ i d   T E X T ,  
+     t y p e   T E X T ,  
+     n a m e   T E X T ,  
+     e m a i l   T E X T ,  
+     p h o n e   T E X T ,  
+     a d d r e s s   T E X T ,  
+     c i t y   T E X T ,  
+     c o u n t r y   T E X T ,  
+     i d _ n u m b e r   T E X T ,  
+     s t a t u s   T E X T ,  
+     n o t e s   T E X T ,  
+     t o t a l _ c a s e s   N U M E R I C ,  
+     t o t a l _ b i l l e d   N U M E R I C  
+ ) ;  
+ A L T E R   T A B L E   p u b l i c . h o s p i t a l _ p a t i e n t s   E N A B L E   R O W   L E V E L   S E C U R I T Y ;  
+ D R O P   P O L I C Y   I F   E X I S T S   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . h o s p i t a l _ p a t i e n t s ;  
+ C R E A T E   P O L I C Y   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . h o s p i t a l _ p a t i e n t s   F O R   A L L   U S I N G   ( a u t h . r o l e ( )   =   ' a u t h e n t i c a t e d ' ) ;  
+  
+ C R E A T E   T A B L E   I F   N O T   E X I S T S   p u b l i c . h o s p i t a l _ a d m i s s i o n s   (  
+     i d   U U I D   P R I M A R Y   K E Y   D E F A U L T   g e n _ r a n d o m _ u u i d ( ) ,  
+     c r e a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     u p d a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     c r e a t e d _ b y   T E X T ,  
+     c o m p a n y _ i d   T E X T ,  
+     c a s e _ n u m b e r   T E X T ,  
+     t i t l e   T E X T ,  
+     d e s c r i p t i o n   T E X T ,  
+     c a s e _ t y p e   T E X T ,  
+     s t a t u s   T E X T ,  
+     p r i o r i t y   T E X T ,  
+     c l i e n t _ i d   T E X T ,  
+     c l i e n t _ n a m e   T E X T ,  
+     a s s i g n e d _ s t a f f   T E X T ,  
+     a s s i g n e d _ s t a f f _ n a m e   T E X T ,  
+     s t a r t _ d a t e   D A T E ,  
+     e n d _ d a t e   D A T E ,  
+     n o t e s   T E X T ,  
+     t a g s   J S O N B  
+ ) ;  
+ A L T E R   T A B L E   p u b l i c . h o s p i t a l _ a d m i s s i o n s   E N A B L E   R O W   L E V E L   S E C U R I T Y ;  
+ D R O P   P O L I C Y   I F   E X I S T S   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . h o s p i t a l _ a d m i s s i o n s ;  
+ C R E A T E   P O L I C Y   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . h o s p i t a l _ a d m i s s i o n s   F O R   A L L   U S I N G   ( a u t h . r o l e ( )   =   ' a u t h e n t i c a t e d ' ) ;  
+  
+ C R E A T E   T A B L E   I F   N O T   E X I S T S   p u b l i c . h o s p i t a l _ a p p o i n t m e n t s   (  
+     i d   U U I D   P R I M A R Y   K E Y   D E F A U L T   g e n _ r a n d o m _ u u i d ( ) ,  
+     c r e a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     u p d a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     c r e a t e d _ b y   T E X T ,  
+     c o m p a n y _ i d   T E X T ,  
+     c a s e _ i d   T E X T ,  
+     c a s e _ t i t l e   T E X T ,  
+     t i t l e   T E X T ,  
+     d a t e   D A T E ,  
+     t i m e   T E X T ,  
+     v e n u e _ n a m e   T E X T ,  
+     s t a f f _ e m a i l   T E X T ,  
+     s t a f f _ n a m e   T E X T ,  
+     s t a t u s   T E X T ,  
+     n o t e s   T E X T ,  
+     o u t c o m e   T E X T  
+ ) ;  
+ A L T E R   T A B L E   p u b l i c . h o s p i t a l _ a p p o i n t m e n t s   E N A B L E   R O W   L E V E L   S E C U R I T Y ;  
+ D R O P   P O L I C Y   I F   E X I S T S   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . h o s p i t a l _ a p p o i n t m e n t s ;  
+ C R E A T E   P O L I C Y   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . h o s p i t a l _ a p p o i n t m e n t s   F O R   A L L   U S I N G   ( a u t h . r o l e ( )   =   ' a u t h e n t i c a t e d ' ) ;  
+  
+ - -   H O T E L   T A B L E S  
+  
+ C R E A T E   T A B L E   I F   N O T   E X I S T S   p u b l i c . h o t e l _ g u e s t s   (  
+     i d   U U I D   P R I M A R Y   K E Y   D E F A U L T   g e n _ r a n d o m _ u u i d ( ) ,  
+     c r e a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     u p d a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     c r e a t e d _ b y   T E X T ,  
+     c o m p a n y _ i d   T E X T ,  
+     t y p e   T E X T ,  
+     n a m e   T E X T ,  
+     e m a i l   T E X T ,  
+     p h o n e   T E X T ,  
+     a d d r e s s   T E X T ,  
+     c i t y   T E X T ,  
+     c o u n t r y   T E X T ,  
+     i d _ n u m b e r   T E X T ,  
+     s t a t u s   T E X T ,  
+     n o t e s   T E X T ,  
+     t o t a l _ c a s e s   N U M E R I C ,  
+     t o t a l _ b i l l e d   N U M E R I C  
+ ) ;  
+ A L T E R   T A B L E   p u b l i c . h o t e l _ g u e s t s   E N A B L E   R O W   L E V E L   S E C U R I T Y ;  
+ D R O P   P O L I C Y   I F   E X I S T S   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . h o t e l _ g u e s t s ;  
+ C R E A T E   P O L I C Y   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . h o t e l _ g u e s t s   F O R   A L L   U S I N G   ( a u t h . r o l e ( )   =   ' a u t h e n t i c a t e d ' ) ;  
+  
+ C R E A T E   T A B L E   I F   N O T   E X I S T S   p u b l i c . h o t e l _ b o o k i n g s   (  
+     i d   U U I D   P R I M A R Y   K E Y   D E F A U L T   g e n _ r a n d o m _ u u i d ( ) ,  
+     c r e a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     u p d a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     c r e a t e d _ b y   T E X T ,  
+     c o m p a n y _ i d   T E X T ,  
+     c a s e _ n u m b e r   T E X T ,  
+     t i t l e   T E X T ,  
+     d e s c r i p t i o n   T E X T ,  
+     c a s e _ t y p e   T E X T ,  
+     s t a t u s   T E X T ,  
+     p r i o r i t y   T E X T ,  
+     c l i e n t _ i d   T E X T ,  
+     c l i e n t _ n a m e   T E X T ,  
+     a s s i g n e d _ s t a f f   T E X T ,  
+     a s s i g n e d _ s t a f f _ n a m e   T E X T ,  
+     s t a r t _ d a t e   D A T E ,  
+     e n d _ d a t e   D A T E ,  
+     n o t e s   T E X T ,  
+     t a g s   J S O N B  
+ ) ;  
+ A L T E R   T A B L E   p u b l i c . h o t e l _ b o o k i n g s   E N A B L E   R O W   L E V E L   S E C U R I T Y ;  
+ D R O P   P O L I C Y   I F   E X I S T S   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . h o t e l _ b o o k i n g s ;  
+ C R E A T E   P O L I C Y   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . h o t e l _ b o o k i n g s   F O R   A L L   U S I N G   ( a u t h . r o l e ( )   =   ' a u t h e n t i c a t e d ' ) ;  
+  
+ C R E A T E   T A B L E   I F   N O T   E X I S T S   p u b l i c . h o t e l _ r e s e r v a t i o n s   (  
+     i d   U U I D   P R I M A R Y   K E Y   D E F A U L T   g e n _ r a n d o m _ u u i d ( ) ,  
+     c r e a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     u p d a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     c r e a t e d _ b y   T E X T ,  
+     c o m p a n y _ i d   T E X T ,  
+     c a s e _ i d   T E X T ,  
+     c a s e _ t i t l e   T E X T ,  
+     t i t l e   T E X T ,  
+     d a t e   D A T E ,  
+     t i m e   T E X T ,  
+     v e n u e _ n a m e   T E X T ,  
+     s t a f f _ e m a i l   T E X T ,  
+     s t a f f _ n a m e   T E X T ,  
+     s t a t u s   T E X T ,  
+     n o t e s   T E X T ,  
+     o u t c o m e   T E X T  
+ ) ;  
+ A L T E R   T A B L E   p u b l i c . h o t e l _ r e s e r v a t i o n s   E N A B L E   R O W   L E V E L   S E C U R I T Y ;  
+ D R O P   P O L I C Y   I F   E X I S T S   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . h o t e l _ r e s e r v a t i o n s ;  
+ C R E A T E   P O L I C Y   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . h o t e l _ r e s e r v a t i o n s   F O R   A L L   U S I N G   ( a u t h . r o l e ( )   =   ' a u t h e n t i c a t e d ' ) ;  
+  
+ - -   C H U R C H   T A B L E S  
+  
+ C R E A T E   T A B L E   I F   N O T   E X I S T S   p u b l i c . c h u r c h _ m e m b e r s   (  
+     i d   U U I D   P R I M A R Y   K E Y   D E F A U L T   g e n _ r a n d o m _ u u i d ( ) ,  
+     c r e a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     u p d a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     c r e a t e d _ b y   T E X T ,  
+     c o m p a n y _ i d   T E X T ,  
+     t y p e   T E X T ,  
+     n a m e   T E X T ,  
+     e m a i l   T E X T ,  
+     p h o n e   T E X T ,  
+     a d d r e s s   T E X T ,  
+     c i t y   T E X T ,  
+     c o u n t r y   T E X T ,  
+     i d _ n u m b e r   T E X T ,  
+     s t a t u s   T E X T ,  
+     n o t e s   T E X T ,  
+     t o t a l _ c a s e s   N U M E R I C ,  
+     t o t a l _ b i l l e d   N U M E R I C  
+ ) ;  
+ A L T E R   T A B L E   p u b l i c . c h u r c h _ m e m b e r s   E N A B L E   R O W   L E V E L   S E C U R I T Y ;  
+ D R O P   P O L I C Y   I F   E X I S T S   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . c h u r c h _ m e m b e r s ;  
+ C R E A T E   P O L I C Y   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . c h u r c h _ m e m b e r s   F O R   A L L   U S I N G   ( a u t h . r o l e ( )   =   ' a u t h e n t i c a t e d ' ) ;  
+  
+ C R E A T E   T A B L E   I F   N O T   E X I S T S   p u b l i c . c h u r c h _ m i n i s t r i e s   (  
+     i d   U U I D   P R I M A R Y   K E Y   D E F A U L T   g e n _ r a n d o m _ u u i d ( ) ,  
+     c r e a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     u p d a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     c r e a t e d _ b y   T E X T ,  
+     c o m p a n y _ i d   T E X T ,  
+     c a s e _ n u m b e r   T E X T ,  
+     t i t l e   T E X T ,  
+     d e s c r i p t i o n   T E X T ,  
+     c a s e _ t y p e   T E X T ,  
+     s t a t u s   T E X T ,  
+     p r i o r i t y   T E X T ,  
+     c l i e n t _ i d   T E X T ,  
+     c l i e n t _ n a m e   T E X T ,  
+     a s s i g n e d _ s t a f f   T E X T ,  
+     a s s i g n e d _ s t a f f _ n a m e   T E X T ,  
+     s t a r t _ d a t e   D A T E ,  
+     e n d _ d a t e   D A T E ,  
+     n o t e s   T E X T ,  
+     t a g s   J S O N B  
+ ) ;  
+ A L T E R   T A B L E   p u b l i c . c h u r c h _ m i n i s t r i e s   E N A B L E   R O W   L E V E L   S E C U R I T Y ;  
+ D R O P   P O L I C Y   I F   E X I S T S   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . c h u r c h _ m i n i s t r i e s ;  
+ C R E A T E   P O L I C Y   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . c h u r c h _ m i n i s t r i e s   F O R   A L L   U S I N G   ( a u t h . r o l e ( )   =   ' a u t h e n t i c a t e d ' ) ;  
+  
+ C R E A T E   T A B L E   I F   N O T   E X I S T S   p u b l i c . c h u r c h _ e v e n t s   (  
+     i d   U U I D   P R I M A R Y   K E Y   D E F A U L T   g e n _ r a n d o m _ u u i d ( ) ,  
+     c r e a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     u p d a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     c r e a t e d _ b y   T E X T ,  
+     c o m p a n y _ i d   T E X T ,  
+     c a s e _ i d   T E X T ,  
+     c a s e _ t i t l e   T E X T ,  
+     t i t l e   T E X T ,  
+     d a t e   D A T E ,  
+     t i m e   T E X T ,  
+     v e n u e _ n a m e   T E X T ,  
+     s t a f f _ e m a i l   T E X T ,  
+     s t a f f _ n a m e   T E X T ,  
+     s t a t u s   T E X T ,  
+     n o t e s   T E X T ,  
+     o u t c o m e   T E X T  
+ ) ;  
+ A L T E R   T A B L E   p u b l i c . c h u r c h _ e v e n t s   E N A B L E   R O W   L E V E L   S E C U R I T Y ;  
+ D R O P   P O L I C Y   I F   E X I S T S   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . c h u r c h _ e v e n t s ;  
+ C R E A T E   P O L I C Y   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . c h u r c h _ e v e n t s   F O R   A L L   U S I N G   ( a u t h . r o l e ( )   =   ' a u t h e n t i c a t e d ' ) ;  
+  
+ - -   I N S U R A N C E   T A B L E S  
+  
+ C R E A T E   T A B L E   I F   N O T   E X I S T S   p u b l i c . i n s u r a n c e _ p o l i c y h o l d e r s   (  
+     i d   U U I D   P R I M A R Y   K E Y   D E F A U L T   g e n _ r a n d o m _ u u i d ( ) ,  
+     c r e a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     u p d a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     c r e a t e d _ b y   T E X T ,  
+     c o m p a n y _ i d   T E X T ,  
+     t y p e   T E X T ,  
+     n a m e   T E X T ,  
+     e m a i l   T E X T ,  
+     p h o n e   T E X T ,  
+     a d d r e s s   T E X T ,  
+     c i t y   T E X T ,  
+     c o u n t r y   T E X T ,  
+     i d _ n u m b e r   T E X T ,  
+     s t a t u s   T E X T ,  
+     n o t e s   T E X T ,  
+     t o t a l _ c a s e s   N U M E R I C ,  
+     t o t a l _ b i l l e d   N U M E R I C  
+ ) ;  
+ A L T E R   T A B L E   p u b l i c . i n s u r a n c e _ p o l i c y h o l d e r s   E N A B L E   R O W   L E V E L   S E C U R I T Y ;  
+ D R O P   P O L I C Y   I F   E X I S T S   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . i n s u r a n c e _ p o l i c y h o l d e r s ;  
+ C R E A T E   P O L I C Y   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . i n s u r a n c e _ p o l i c y h o l d e r s   F O R   A L L   U S I N G   ( a u t h . r o l e ( )   =   ' a u t h e n t i c a t e d ' ) ;  
+  
+ C R E A T E   T A B L E   I F   N O T   E X I S T S   p u b l i c . i n s u r a n c e _ c l a i m s   (  
+     i d   U U I D   P R I M A R Y   K E Y   D E F A U L T   g e n _ r a n d o m _ u u i d ( ) ,  
+     c r e a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     u p d a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     c r e a t e d _ b y   T E X T ,  
+     c o m p a n y _ i d   T E X T ,  
+     c a s e _ n u m b e r   T E X T ,  
+     t i t l e   T E X T ,  
+     d e s c r i p t i o n   T E X T ,  
+     c a s e _ t y p e   T E X T ,  
+     s t a t u s   T E X T ,  
+     p r i o r i t y   T E X T ,  
+     c l i e n t _ i d   T E X T ,  
+     c l i e n t _ n a m e   T E X T ,  
+     a s s i g n e d _ s t a f f   T E X T ,  
+     a s s i g n e d _ s t a f f _ n a m e   T E X T ,  
+     s t a r t _ d a t e   D A T E ,  
+     e n d _ d a t e   D A T E ,  
+     n o t e s   T E X T ,  
+     t a g s   J S O N B  
+ ) ;  
+ A L T E R   T A B L E   p u b l i c . i n s u r a n c e _ c l a i m s   E N A B L E   R O W   L E V E L   S E C U R I T Y ;  
+ D R O P   P O L I C Y   I F   E X I S T S   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . i n s u r a n c e _ c l a i m s ;  
+ C R E A T E   P O L I C Y   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . i n s u r a n c e _ c l a i m s   F O R   A L L   U S I N G   ( a u t h . r o l e ( )   =   ' a u t h e n t i c a t e d ' ) ;  
+  
+ C R E A T E   T A B L E   I F   N O T   E X I S T S   p u b l i c . i n s u r a n c e _ m e e t i n g s   (  
+     i d   U U I D   P R I M A R Y   K E Y   D E F A U L T   g e n _ r a n d o m _ u u i d ( ) ,  
+     c r e a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     u p d a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     c r e a t e d _ b y   T E X T ,  
+     c o m p a n y _ i d   T E X T ,  
+     c a s e _ i d   T E X T ,  
+     c a s e _ t i t l e   T E X T ,  
+     t i t l e   T E X T ,  
+     d a t e   D A T E ,  
+     t i m e   T E X T ,  
+     v e n u e _ n a m e   T E X T ,  
+     s t a f f _ e m a i l   T E X T ,  
+     s t a f f _ n a m e   T E X T ,  
+     s t a t u s   T E X T ,  
+     n o t e s   T E X T ,  
+     o u t c o m e   T E X T  
+ ) ;  
+ A L T E R   T A B L E   p u b l i c . i n s u r a n c e _ m e e t i n g s   E N A B L E   R O W   L E V E L   S E C U R I T Y ;  
+ D R O P   P O L I C Y   I F   E X I S T S   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . i n s u r a n c e _ m e e t i n g s ;  
+ C R E A T E   P O L I C Y   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . i n s u r a n c e _ m e e t i n g s   F O R   A L L   U S I N G   ( a u t h . r o l e ( )   =   ' a u t h e n t i c a t e d ' ) ;  
+  
+ - -   R E T A I L   T A B L E S  
+  
+ C R E A T E   T A B L E   I F   N O T   E X I S T S   p u b l i c . r e t a i l _ c u s t o m e r s   (  
+     i d   U U I D   P R I M A R Y   K E Y   D E F A U L T   g e n _ r a n d o m _ u u i d ( ) ,  
+     c r e a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     u p d a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     c r e a t e d _ b y   T E X T ,  
+     c o m p a n y _ i d   T E X T ,  
+     t y p e   T E X T ,  
+     n a m e   T E X T ,  
+     e m a i l   T E X T ,  
+     p h o n e   T E X T ,  
+     a d d r e s s   T E X T ,  
+     c i t y   T E X T ,  
+     c o u n t r y   T E X T ,  
+     i d _ n u m b e r   T E X T ,  
+     s t a t u s   T E X T ,  
+     n o t e s   T E X T ,  
+     t o t a l _ c a s e s   N U M E R I C ,  
+     t o t a l _ b i l l e d   N U M E R I C  
+ ) ;  
+ A L T E R   T A B L E   p u b l i c . r e t a i l _ c u s t o m e r s   E N A B L E   R O W   L E V E L   S E C U R I T Y ;  
+ D R O P   P O L I C Y   I F   E X I S T S   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . r e t a i l _ c u s t o m e r s ;  
+ C R E A T E   P O L I C Y   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . r e t a i l _ c u s t o m e r s   F O R   A L L   U S I N G   ( a u t h . r o l e ( )   =   ' a u t h e n t i c a t e d ' ) ;  
+  
+ C R E A T E   T A B L E   I F   N O T   E X I S T S   p u b l i c . r e t a i l _ o r d e r s   (  
+     i d   U U I D   P R I M A R Y   K E Y   D E F A U L T   g e n _ r a n d o m _ u u i d ( ) ,  
+     c r e a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     u p d a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     c r e a t e d _ b y   T E X T ,  
+     c o m p a n y _ i d   T E X T ,  
+     c a s e _ n u m b e r   T E X T ,  
+     t i t l e   T E X T ,  
+     d e s c r i p t i o n   T E X T ,  
+     c a s e _ t y p e   T E X T ,  
+     s t a t u s   T E X T ,  
+     p r i o r i t y   T E X T ,  
+     c l i e n t _ i d   T E X T ,  
+     c l i e n t _ n a m e   T E X T ,  
+     a s s i g n e d _ s t a f f   T E X T ,  
+     a s s i g n e d _ s t a f f _ n a m e   T E X T ,  
+     s t a r t _ d a t e   D A T E ,  
+     e n d _ d a t e   D A T E ,  
+     n o t e s   T E X T ,  
+     t a g s   J S O N B  
+ ) ;  
+ A L T E R   T A B L E   p u b l i c . r e t a i l _ o r d e r s   E N A B L E   R O W   L E V E L   S E C U R I T Y ;  
+ D R O P   P O L I C Y   I F   E X I S T S   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . r e t a i l _ o r d e r s ;  
+ C R E A T E   P O L I C Y   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . r e t a i l _ o r d e r s   F O R   A L L   U S I N G   ( a u t h . r o l e ( )   =   ' a u t h e n t i c a t e d ' ) ;  
+  
+ C R E A T E   T A B L E   I F   N O T   E X I S T S   p u b l i c . r e t a i l _ s h i f t s   (  
+     i d   U U I D   P R I M A R Y   K E Y   D E F A U L T   g e n _ r a n d o m _ u u i d ( ) ,  
+     c r e a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     u p d a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     c r e a t e d _ b y   T E X T ,  
+     c o m p a n y _ i d   T E X T ,  
+     c a s e _ i d   T E X T ,  
+     c a s e _ t i t l e   T E X T ,  
+     t i t l e   T E X T ,  
+     d a t e   D A T E ,  
+     t i m e   T E X T ,  
+     v e n u e _ n a m e   T E X T ,  
+     s t a f f _ e m a i l   T E X T ,  
+     s t a f f _ n a m e   T E X T ,  
+     s t a t u s   T E X T ,  
+     n o t e s   T E X T ,  
+     o u t c o m e   T E X T  
+ ) ;  
+ A L T E R   T A B L E   p u b l i c . r e t a i l _ s h i f t s   E N A B L E   R O W   L E V E L   S E C U R I T Y ;  
+ D R O P   P O L I C Y   I F   E X I S T S   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . r e t a i l _ s h i f t s ;  
+ C R E A T E   P O L I C Y   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . r e t a i l _ s h i f t s   F O R   A L L   U S I N G   ( a u t h . r o l e ( )   =   ' a u t h e n t i c a t e d ' ) ;  
+  
+ - -   L O G I S T I C S   T A B L E S  
+  
+ C R E A T E   T A B L E   I F   N O T   E X I S T S   p u b l i c . l o g i s t i c s _ s h i p p e r s   (  
+     i d   U U I D   P R I M A R Y   K E Y   D E F A U L T   g e n _ r a n d o m _ u u i d ( ) ,  
+     c r e a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     u p d a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     c r e a t e d _ b y   T E X T ,  
+     c o m p a n y _ i d   T E X T ,  
+     t y p e   T E X T ,  
+     n a m e   T E X T ,  
+     e m a i l   T E X T ,  
+     p h o n e   T E X T ,  
+     a d d r e s s   T E X T ,  
+     c i t y   T E X T ,  
+     c o u n t r y   T E X T ,  
+     i d _ n u m b e r   T E X T ,  
+     s t a t u s   T E X T ,  
+     n o t e s   T E X T ,  
+     t o t a l _ c a s e s   N U M E R I C ,  
+     t o t a l _ b i l l e d   N U M E R I C  
+ ) ;  
+ A L T E R   T A B L E   p u b l i c . l o g i s t i c s _ s h i p p e r s   E N A B L E   R O W   L E V E L   S E C U R I T Y ;  
+ D R O P   P O L I C Y   I F   E X I S T S   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . l o g i s t i c s _ s h i p p e r s ;  
+ C R E A T E   P O L I C Y   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . l o g i s t i c s _ s h i p p e r s   F O R   A L L   U S I N G   ( a u t h . r o l e ( )   =   ' a u t h e n t i c a t e d ' ) ;  
+  
+ C R E A T E   T A B L E   I F   N O T   E X I S T S   p u b l i c . l o g i s t i c s _ s h i p m e n t s   (  
+     i d   U U I D   P R I M A R Y   K E Y   D E F A U L T   g e n _ r a n d o m _ u u i d ( ) ,  
+     c r e a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     u p d a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     c r e a t e d _ b y   T E X T ,  
+     c o m p a n y _ i d   T E X T ,  
+     c a s e _ n u m b e r   T E X T ,  
+     t i t l e   T E X T ,  
+     d e s c r i p t i o n   T E X T ,  
+     c a s e _ t y p e   T E X T ,  
+     s t a t u s   T E X T ,  
+     p r i o r i t y   T E X T ,  
+     c l i e n t _ i d   T E X T ,  
+     c l i e n t _ n a m e   T E X T ,  
+     a s s i g n e d _ s t a f f   T E X T ,  
+     a s s i g n e d _ s t a f f _ n a m e   T E X T ,  
+     s t a r t _ d a t e   D A T E ,  
+     e n d _ d a t e   D A T E ,  
+     n o t e s   T E X T ,  
+     t a g s   J S O N B  
+ ) ;  
+ A L T E R   T A B L E   p u b l i c . l o g i s t i c s _ s h i p m e n t s   E N A B L E   R O W   L E V E L   S E C U R I T Y ;  
+ D R O P   P O L I C Y   I F   E X I S T S   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . l o g i s t i c s _ s h i p m e n t s ;  
+ C R E A T E   P O L I C Y   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . l o g i s t i c s _ s h i p m e n t s   F O R   A L L   U S I N G   ( a u t h . r o l e ( )   =   ' a u t h e n t i c a t e d ' ) ;  
+  
+ C R E A T E   T A B L E   I F   N O T   E X I S T S   p u b l i c . l o g i s t i c s _ d i s p a t c h e s   (  
+     i d   U U I D   P R I M A R Y   K E Y   D E F A U L T   g e n _ r a n d o m _ u u i d ( ) ,  
+     c r e a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     u p d a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     c r e a t e d _ b y   T E X T ,  
+     c o m p a n y _ i d   T E X T ,  
+     c a s e _ i d   T E X T ,  
+     c a s e _ t i t l e   T E X T ,  
+     t i t l e   T E X T ,  
+     d a t e   D A T E ,  
+     t i m e   T E X T ,  
+     v e n u e _ n a m e   T E X T ,  
+     s t a f f _ e m a i l   T E X T ,  
+     s t a f f _ n a m e   T E X T ,  
+     s t a t u s   T E X T ,  
+     n o t e s   T E X T ,  
+     o u t c o m e   T E X T  
+ ) ;  
+ A L T E R   T A B L E   p u b l i c . l o g i s t i c s _ d i s p a t c h e s   E N A B L E   R O W   L E V E L   S E C U R I T Y ;  
+ D R O P   P O L I C Y   I F   E X I S T S   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . l o g i s t i c s _ d i s p a t c h e s ;  
+ C R E A T E   P O L I C Y   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . l o g i s t i c s _ d i s p a t c h e s   F O R   A L L   U S I N G   ( a u t h . r o l e ( )   =   ' a u t h e n t i c a t e d ' ) ;  
+  
+ - -   H R   T A B L E S  
+  
+ C R E A T E   T A B L E   I F   N O T   E X I S T S   p u b l i c . h r _ e m p l o y e e s   (  
+     i d   U U I D   P R I M A R Y   K E Y   D E F A U L T   g e n _ r a n d o m _ u u i d ( ) ,  
+     c r e a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     u p d a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     c r e a t e d _ b y   T E X T ,  
+     c o m p a n y _ i d   T E X T ,  
+     t y p e   T E X T ,  
+     n a m e   T E X T ,  
+     e m a i l   T E X T ,  
+     p h o n e   T E X T ,  
+     a d d r e s s   T E X T ,  
+     c i t y   T E X T ,  
+     c o u n t r y   T E X T ,  
+     i d _ n u m b e r   T E X T ,  
+     s t a t u s   T E X T ,  
+     n o t e s   T E X T ,  
+     t o t a l _ c a s e s   N U M E R I C ,  
+     t o t a l _ b i l l e d   N U M E R I C  
+ ) ;  
+ A L T E R   T A B L E   p u b l i c . h r _ e m p l o y e e s   E N A B L E   R O W   L E V E L   S E C U R I T Y ;  
+ D R O P   P O L I C Y   I F   E X I S T S   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . h r _ e m p l o y e e s ;  
+ C R E A T E   P O L I C Y   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . h r _ e m p l o y e e s   F O R   A L L   U S I N G   ( a u t h . r o l e ( )   =   ' a u t h e n t i c a t e d ' ) ;  
+  
+ C R E A T E   T A B L E   I F   N O T   E X I S T S   p u b l i c . h r _ p r o j e c t s   (  
+     i d   U U I D   P R I M A R Y   K E Y   D E F A U L T   g e n _ r a n d o m _ u u i d ( ) ,  
+     c r e a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     u p d a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     c r e a t e d _ b y   T E X T ,  
+     c o m p a n y _ i d   T E X T ,  
+     c a s e _ n u m b e r   T E X T ,  
+     t i t l e   T E X T ,  
+     d e s c r i p t i o n   T E X T ,  
+     c a s e _ t y p e   T E X T ,  
+     s t a t u s   T E X T ,  
+     p r i o r i t y   T E X T ,  
+     c l i e n t _ i d   T E X T ,  
+     c l i e n t _ n a m e   T E X T ,  
+     a s s i g n e d _ s t a f f   T E X T ,  
+     a s s i g n e d _ s t a f f _ n a m e   T E X T ,  
+     s t a r t _ d a t e   D A T E ,  
+     e n d _ d a t e   D A T E ,  
+     n o t e s   T E X T ,  
+     t a g s   J S O N B  
+ ) ;  
+ A L T E R   T A B L E   p u b l i c . h r _ p r o j e c t s   E N A B L E   R O W   L E V E L   S E C U R I T Y ;  
+ D R O P   P O L I C Y   I F   E X I S T S   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . h r _ p r o j e c t s ;  
+ C R E A T E   P O L I C Y   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . h r _ p r o j e c t s   F O R   A L L   U S I N G   ( a u t h . r o l e ( )   =   ' a u t h e n t i c a t e d ' ) ;  
+  
+ C R E A T E   T A B L E   I F   N O T   E X I S T S   p u b l i c . h r _ i n t e r v i e w s   (  
+     i d   U U I D   P R I M A R Y   K E Y   D E F A U L T   g e n _ r a n d o m _ u u i d ( ) ,  
+     c r e a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     u p d a t e d _ d a t e   T I M E S T A M P T Z   D E F A U L T   n o w ( ) ,  
+     c r e a t e d _ b y   T E X T ,  
+     c o m p a n y _ i d   T E X T ,  
+     c a s e _ i d   T E X T ,  
+     c a s e _ t i t l e   T E X T ,  
+     t i t l e   T E X T ,  
+     d a t e   D A T E ,  
+     t i m e   T E X T ,  
+     v e n u e _ n a m e   T E X T ,  
+     s t a f f _ e m a i l   T E X T ,  
+     s t a f f _ n a m e   T E X T ,  
+     s t a t u s   T E X T ,  
+     n o t e s   T E X T ,  
+     o u t c o m e   T E X T  
+ ) ;  
+ A L T E R   T A B L E   p u b l i c . h r _ i n t e r v i e w s   E N A B L E   R O W   L E V E L   S E C U R I T Y ;  
+ D R O P   P O L I C Y   I F   E X I S T S   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . h r _ i n t e r v i e w s ;  
+ C R E A T E   P O L I C Y   " E n a b l e   a l l   f o r   a u t h e n t i c a t e d   u s e r s "   O N   p u b l i c . h r _ i n t e r v i e w s   F O R   A L L   U S I N G   ( a u t h . r o l e ( )   =   ' a u t h e n t i c a t e d ' ) ;  
+ 
+
+-- SCHOOL TABLES
+
+CREATE TABLE IF NOT EXISTS public.school_students (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_date TIMESTAMPTZ DEFAULT now(),
+  updated_date TIMESTAMPTZ DEFAULT now(),
+  created_by TEXT,
+  company_id TEXT,
+  type TEXT,
+  name TEXT,
+  email TEXT,
+  phone TEXT,
+  address TEXT,
+  city TEXT,
+  country TEXT,
+  id_number TEXT,
+  status TEXT,
+  notes TEXT,
+  total_cases NUMERIC,
+  total_billed NUMERIC
+);
+ALTER TABLE public.school_students ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable all for authenticated users" ON public.school_students;
+CREATE POLICY "Enable all for authenticated users" ON public.school_students FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE TABLE IF NOT EXISTS public.school_classes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_date TIMESTAMPTZ DEFAULT now(),
+  updated_date TIMESTAMPTZ DEFAULT now(),
+  created_by TEXT,
+  company_id TEXT,
+  case_number TEXT,
+  title TEXT,
+  description TEXT,
+  case_type TEXT,
+  status TEXT,
+  priority TEXT,
+  client_id TEXT,
+  client_name TEXT,
+  assigned_staff TEXT,
+  assigned_staff_name TEXT,
+  start_date DATE,
+  end_date DATE,
+  notes TEXT,
+  tags JSONB
+);
+ALTER TABLE public.school_classes ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable all for authenticated users" ON public.school_classes;
+CREATE POLICY "Enable all for authenticated users" ON public.school_classes FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE TABLE IF NOT EXISTS public.school_sessions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_date TIMESTAMPTZ DEFAULT now(),
+  updated_date TIMESTAMPTZ DEFAULT now(),
+  created_by TEXT,
+  company_id TEXT,
+  case_id TEXT,
+  case_title TEXT,
+  title TEXT,
+  date DATE,
+  time TEXT,
+  venue_name TEXT,
+  staff_email TEXT,
+  staff_name TEXT,
+  status TEXT,
+  notes TEXT,
+  outcome TEXT
+);
+ALTER TABLE public.school_sessions ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable all for authenticated users" ON public.school_sessions;
+CREATE POLICY "Enable all for authenticated users" ON public.school_sessions FOR ALL USING (auth.role() = 'authenticated');
+
+-- HOSPITAL TABLES
+
+CREATE TABLE IF NOT EXISTS public.hospital_patients (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_date TIMESTAMPTZ DEFAULT now(),
+  updated_date TIMESTAMPTZ DEFAULT now(),
+  created_by TEXT,
+  company_id TEXT,
+  type TEXT,
+  name TEXT,
+  email TEXT,
+  phone TEXT,
+  address TEXT,
+  city TEXT,
+  country TEXT,
+  id_number TEXT,
+  status TEXT,
+  notes TEXT,
+  total_cases NUMERIC,
+  total_billed NUMERIC
+);
+ALTER TABLE public.hospital_patients ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable all for authenticated users" ON public.hospital_patients;
+CREATE POLICY "Enable all for authenticated users" ON public.hospital_patients FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE TABLE IF NOT EXISTS public.hospital_admissions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_date TIMESTAMPTZ DEFAULT now(),
+  updated_date TIMESTAMPTZ DEFAULT now(),
+  created_by TEXT,
+  company_id TEXT,
+  case_number TEXT,
+  title TEXT,
+  description TEXT,
+  case_type TEXT,
+  status TEXT,
+  priority TEXT,
+  client_id TEXT,
+  client_name TEXT,
+  assigned_staff TEXT,
+  assigned_staff_name TEXT,
+  start_date DATE,
+  end_date DATE,
+  notes TEXT,
+  tags JSONB
+);
+ALTER TABLE public.hospital_admissions ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable all for authenticated users" ON public.hospital_admissions;
+CREATE POLICY "Enable all for authenticated users" ON public.hospital_admissions FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE TABLE IF NOT EXISTS public.hospital_appointments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_date TIMESTAMPTZ DEFAULT now(),
+  updated_date TIMESTAMPTZ DEFAULT now(),
+  created_by TEXT,
+  company_id TEXT,
+  case_id TEXT,
+  case_title TEXT,
+  title TEXT,
+  date DATE,
+  time TEXT,
+  venue_name TEXT,
+  staff_email TEXT,
+  staff_name TEXT,
+  status TEXT,
+  notes TEXT,
+  outcome TEXT
+);
+ALTER TABLE public.hospital_appointments ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable all for authenticated users" ON public.hospital_appointments;
+CREATE POLICY "Enable all for authenticated users" ON public.hospital_appointments FOR ALL USING (auth.role() = 'authenticated');
+
+-- HOTEL TABLES
+
+CREATE TABLE IF NOT EXISTS public.hotel_guests (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_date TIMESTAMPTZ DEFAULT now(),
+  updated_date TIMESTAMPTZ DEFAULT now(),
+  created_by TEXT,
+  company_id TEXT,
+  type TEXT,
+  name TEXT,
+  email TEXT,
+  phone TEXT,
+  address TEXT,
+  city TEXT,
+  country TEXT,
+  id_number TEXT,
+  status TEXT,
+  notes TEXT,
+  total_cases NUMERIC,
+  total_billed NUMERIC
+);
+ALTER TABLE public.hotel_guests ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable all for authenticated users" ON public.hotel_guests;
+CREATE POLICY "Enable all for authenticated users" ON public.hotel_guests FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE TABLE IF NOT EXISTS public.hotel_bookings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_date TIMESTAMPTZ DEFAULT now(),
+  updated_date TIMESTAMPTZ DEFAULT now(),
+  created_by TEXT,
+  company_id TEXT,
+  case_number TEXT,
+  title TEXT,
+  description TEXT,
+  case_type TEXT,
+  status TEXT,
+  priority TEXT,
+  client_id TEXT,
+  client_name TEXT,
+  assigned_staff TEXT,
+  assigned_staff_name TEXT,
+  start_date DATE,
+  end_date DATE,
+  notes TEXT,
+  tags JSONB
+);
+ALTER TABLE public.hotel_bookings ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable all for authenticated users" ON public.hotel_bookings;
+CREATE POLICY "Enable all for authenticated users" ON public.hotel_bookings FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE TABLE IF NOT EXISTS public.hotel_reservations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_date TIMESTAMPTZ DEFAULT now(),
+  updated_date TIMESTAMPTZ DEFAULT now(),
+  created_by TEXT,
+  company_id TEXT,
+  case_id TEXT,
+  case_title TEXT,
+  title TEXT,
+  date DATE,
+  time TEXT,
+  venue_name TEXT,
+  staff_email TEXT,
+  staff_name TEXT,
+  status TEXT,
+  notes TEXT,
+  outcome TEXT
+);
+ALTER TABLE public.hotel_reservations ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable all for authenticated users" ON public.hotel_reservations;
+CREATE POLICY "Enable all for authenticated users" ON public.hotel_reservations FOR ALL USING (auth.role() = 'authenticated');
+
+-- CHURCH TABLES
+
+CREATE TABLE IF NOT EXISTS public.church_members (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_date TIMESTAMPTZ DEFAULT now(),
+  updated_date TIMESTAMPTZ DEFAULT now(),
+  created_by TEXT,
+  company_id TEXT,
+  type TEXT,
+  name TEXT,
+  email TEXT,
+  phone TEXT,
+  address TEXT,
+  city TEXT,
+  country TEXT,
+  id_number TEXT,
+  status TEXT,
+  notes TEXT,
+  total_cases NUMERIC,
+  total_billed NUMERIC
+);
+ALTER TABLE public.church_members ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable all for authenticated users" ON public.church_members;
+CREATE POLICY "Enable all for authenticated users" ON public.church_members FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE TABLE IF NOT EXISTS public.church_ministries (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_date TIMESTAMPTZ DEFAULT now(),
+  updated_date TIMESTAMPTZ DEFAULT now(),
+  created_by TEXT,
+  company_id TEXT,
+  case_number TEXT,
+  title TEXT,
+  description TEXT,
+  case_type TEXT,
+  status TEXT,
+  priority TEXT,
+  client_id TEXT,
+  client_name TEXT,
+  assigned_staff TEXT,
+  assigned_staff_name TEXT,
+  start_date DATE,
+  end_date DATE,
+  notes TEXT,
+  tags JSONB
+);
+ALTER TABLE public.church_ministries ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable all for authenticated users" ON public.church_ministries;
+CREATE POLICY "Enable all for authenticated users" ON public.church_ministries FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE TABLE IF NOT EXISTS public.church_events (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_date TIMESTAMPTZ DEFAULT now(),
+  updated_date TIMESTAMPTZ DEFAULT now(),
+  created_by TEXT,
+  company_id TEXT,
+  case_id TEXT,
+  case_title TEXT,
+  title TEXT,
+  date DATE,
+  time TEXT,
+  venue_name TEXT,
+  staff_email TEXT,
+  staff_name TEXT,
+  status TEXT,
+  notes TEXT,
+  outcome TEXT
+);
+ALTER TABLE public.church_events ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable all for authenticated users" ON public.church_events;
+CREATE POLICY "Enable all for authenticated users" ON public.church_events FOR ALL USING (auth.role() = 'authenticated');
+
+-- INSURANCE TABLES
+
+CREATE TABLE IF NOT EXISTS public.insurance_policyholders (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_date TIMESTAMPTZ DEFAULT now(),
+  updated_date TIMESTAMPTZ DEFAULT now(),
+  created_by TEXT,
+  company_id TEXT,
+  type TEXT,
+  name TEXT,
+  email TEXT,
+  phone TEXT,
+  address TEXT,
+  city TEXT,
+  country TEXT,
+  id_number TEXT,
+  status TEXT,
+  notes TEXT,
+  total_cases NUMERIC,
+  total_billed NUMERIC
+);
+ALTER TABLE public.insurance_policyholders ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable all for authenticated users" ON public.insurance_policyholders;
+CREATE POLICY "Enable all for authenticated users" ON public.insurance_policyholders FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE TABLE IF NOT EXISTS public.insurance_claims (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_date TIMESTAMPTZ DEFAULT now(),
+  updated_date TIMESTAMPTZ DEFAULT now(),
+  created_by TEXT,
+  company_id TEXT,
+  case_number TEXT,
+  title TEXT,
+  description TEXT,
+  case_type TEXT,
+  status TEXT,
+  priority TEXT,
+  client_id TEXT,
+  client_name TEXT,
+  assigned_staff TEXT,
+  assigned_staff_name TEXT,
+  start_date DATE,
+  end_date DATE,
+  notes TEXT,
+  tags JSONB
+);
+ALTER TABLE public.insurance_claims ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable all for authenticated users" ON public.insurance_claims;
+CREATE POLICY "Enable all for authenticated users" ON public.insurance_claims FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE TABLE IF NOT EXISTS public.insurance_meetings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_date TIMESTAMPTZ DEFAULT now(),
+  updated_date TIMESTAMPTZ DEFAULT now(),
+  created_by TEXT,
+  company_id TEXT,
+  case_id TEXT,
+  case_title TEXT,
+  title TEXT,
+  date DATE,
+  time TEXT,
+  venue_name TEXT,
+  staff_email TEXT,
+  staff_name TEXT,
+  status TEXT,
+  notes TEXT,
+  outcome TEXT
+);
+ALTER TABLE public.insurance_meetings ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable all for authenticated users" ON public.insurance_meetings;
+CREATE POLICY "Enable all for authenticated users" ON public.insurance_meetings FOR ALL USING (auth.role() = 'authenticated');
+
+-- RETAIL TABLES
+
+CREATE TABLE IF NOT EXISTS public.retail_customers (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_date TIMESTAMPTZ DEFAULT now(),
+  updated_date TIMESTAMPTZ DEFAULT now(),
+  created_by TEXT,
+  company_id TEXT,
+  type TEXT,
+  name TEXT,
+  email TEXT,
+  phone TEXT,
+  address TEXT,
+  city TEXT,
+  country TEXT,
+  id_number TEXT,
+  status TEXT,
+  notes TEXT,
+  total_cases NUMERIC,
+  total_billed NUMERIC
+);
+ALTER TABLE public.retail_customers ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable all for authenticated users" ON public.retail_customers;
+CREATE POLICY "Enable all for authenticated users" ON public.retail_customers FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE TABLE IF NOT EXISTS public.retail_orders (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_date TIMESTAMPTZ DEFAULT now(),
+  updated_date TIMESTAMPTZ DEFAULT now(),
+  created_by TEXT,
+  company_id TEXT,
+  case_number TEXT,
+  title TEXT,
+  description TEXT,
+  case_type TEXT,
+  status TEXT,
+  priority TEXT,
+  client_id TEXT,
+  client_name TEXT,
+  assigned_staff TEXT,
+  assigned_staff_name TEXT,
+  start_date DATE,
+  end_date DATE,
+  notes TEXT,
+  tags JSONB
+);
+ALTER TABLE public.retail_orders ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable all for authenticated users" ON public.retail_orders;
+CREATE POLICY "Enable all for authenticated users" ON public.retail_orders FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE TABLE IF NOT EXISTS public.retail_shifts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_date TIMESTAMPTZ DEFAULT now(),
+  updated_date TIMESTAMPTZ DEFAULT now(),
+  created_by TEXT,
+  company_id TEXT,
+  case_id TEXT,
+  case_title TEXT,
+  title TEXT,
+  date DATE,
+  time TEXT,
+  venue_name TEXT,
+  staff_email TEXT,
+  staff_name TEXT,
+  status TEXT,
+  notes TEXT,
+  outcome TEXT
+);
+ALTER TABLE public.retail_shifts ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable all for authenticated users" ON public.retail_shifts;
+CREATE POLICY "Enable all for authenticated users" ON public.retail_shifts FOR ALL USING (auth.role() = 'authenticated');
+
+-- LOGISTICS TABLES
+
+CREATE TABLE IF NOT EXISTS public.logistics_shippers (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_date TIMESTAMPTZ DEFAULT now(),
+  updated_date TIMESTAMPTZ DEFAULT now(),
+  created_by TEXT,
+  company_id TEXT,
+  type TEXT,
+  name TEXT,
+  email TEXT,
+  phone TEXT,
+  address TEXT,
+  city TEXT,
+  country TEXT,
+  id_number TEXT,
+  status TEXT,
+  notes TEXT,
+  total_cases NUMERIC,
+  total_billed NUMERIC
+);
+ALTER TABLE public.logistics_shippers ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable all for authenticated users" ON public.logistics_shippers;
+CREATE POLICY "Enable all for authenticated users" ON public.logistics_shippers FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE TABLE IF NOT EXISTS public.logistics_shipments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_date TIMESTAMPTZ DEFAULT now(),
+  updated_date TIMESTAMPTZ DEFAULT now(),
+  created_by TEXT,
+  company_id TEXT,
+  case_number TEXT,
+  title TEXT,
+  description TEXT,
+  case_type TEXT,
+  status TEXT,
+  priority TEXT,
+  client_id TEXT,
+  client_name TEXT,
+  assigned_staff TEXT,
+  assigned_staff_name TEXT,
+  start_date DATE,
+  end_date DATE,
+  notes TEXT,
+  tags JSONB
+);
+ALTER TABLE public.logistics_shipments ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable all for authenticated users" ON public.logistics_shipments;
+CREATE POLICY "Enable all for authenticated users" ON public.logistics_shipments FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE TABLE IF NOT EXISTS public.logistics_dispatches (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_date TIMESTAMPTZ DEFAULT now(),
+  updated_date TIMESTAMPTZ DEFAULT now(),
+  created_by TEXT,
+  company_id TEXT,
+  case_id TEXT,
+  case_title TEXT,
+  title TEXT,
+  date DATE,
+  time TEXT,
+  venue_name TEXT,
+  staff_email TEXT,
+  staff_name TEXT,
+  status TEXT,
+  notes TEXT,
+  outcome TEXT
+);
+ALTER TABLE public.logistics_dispatches ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable all for authenticated users" ON public.logistics_dispatches;
+CREATE POLICY "Enable all for authenticated users" ON public.logistics_dispatches FOR ALL USING (auth.role() = 'authenticated');
+
+-- HR TABLES
+
+CREATE TABLE IF NOT EXISTS public.hr_employees (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_date TIMESTAMPTZ DEFAULT now(),
+  updated_date TIMESTAMPTZ DEFAULT now(),
+  created_by TEXT,
+  company_id TEXT,
+  type TEXT,
+  name TEXT,
+  email TEXT,
+  phone TEXT,
+  address TEXT,
+  city TEXT,
+  country TEXT,
+  id_number TEXT,
+  status TEXT,
+  notes TEXT,
+  total_cases NUMERIC,
+  total_billed NUMERIC
+);
+ALTER TABLE public.hr_employees ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable all for authenticated users" ON public.hr_employees;
+CREATE POLICY "Enable all for authenticated users" ON public.hr_employees FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE TABLE IF NOT EXISTS public.hr_projects (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_date TIMESTAMPTZ DEFAULT now(),
+  updated_date TIMESTAMPTZ DEFAULT now(),
+  created_by TEXT,
+  company_id TEXT,
+  case_number TEXT,
+  title TEXT,
+  description TEXT,
+  case_type TEXT,
+  status TEXT,
+  priority TEXT,
+  client_id TEXT,
+  client_name TEXT,
+  assigned_staff TEXT,
+  assigned_staff_name TEXT,
+  start_date DATE,
+  end_date DATE,
+  notes TEXT,
+  tags JSONB
+);
+ALTER TABLE public.hr_projects ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable all for authenticated users" ON public.hr_projects;
+CREATE POLICY "Enable all for authenticated users" ON public.hr_projects FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE TABLE IF NOT EXISTS public.hr_interviews (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_date TIMESTAMPTZ DEFAULT now(),
+  updated_date TIMESTAMPTZ DEFAULT now(),
+  created_by TEXT,
+  company_id TEXT,
+  case_id TEXT,
+  case_title TEXT,
+  title TEXT,
+  date DATE,
+  time TEXT,
+  venue_name TEXT,
+  staff_email TEXT,
+  staff_name TEXT,
+  status TEXT,
+  notes TEXT,
+  outcome TEXT
+);
+ALTER TABLE public.hr_interviews ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable all for authenticated users" ON public.hr_interviews;
+CREATE POLICY "Enable all for authenticated users" ON public.hr_interviews FOR ALL USING (auth.role() = 'authenticated');

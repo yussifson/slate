@@ -4,6 +4,8 @@ import App from '@/App.jsx'
 import '@/index.css'
 import { ErrorBoundary } from '@/components/ErrorBoundary.jsx'
 import { registerSW } from 'virtual:pwa-register'
+import i18n from '@/i18n/config.js'
+import { I18nextProvider } from 'react-i18next'
 
 const updateSW = registerSW({
   onNeedRefresh() {
@@ -24,6 +26,8 @@ window.addEventListener('vite:preloadError', (event) => {
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <ErrorBoundary>
-    <App />
+    <I18nextProvider i18n={i18n}>
+      <App />
+    </I18nextProvider>
   </ErrorBoundary>
 )

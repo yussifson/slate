@@ -375,9 +375,13 @@ export const getIndustryTerms = (industryKey) => {
   return ind.terms;
 };
 
+import i18n from '@/i18n/config.js';
+
 export const getTerm = (industryKey, termKey) => {
   const terms = getIndustryTerms(industryKey);
-  return terms[termKey] || termKey;
+  const englishTerm = terms[termKey] || termKey;
+  const translationKey = `industry_${industryKey}_${termKey}`;
+  return i18n.t(translationKey, { defaultValue: englishTerm });
 };
 
 export const getIndustryNav = (industryKey) => {

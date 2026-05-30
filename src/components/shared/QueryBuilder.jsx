@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Filter, Plus, X, ChevronDown, ChevronUp, SlidersHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -26,6 +27,7 @@ function emptyCondition() {
  *   onClear: () => void
  */
 export default function QueryBuilder({ fields = [], onApply, onClear }) {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [logic, setLogic] = useState('AND');
   const [conditions, setConditions] = useState([emptyCondition()]);
@@ -63,7 +65,7 @@ export default function QueryBuilder({ fields = [], onApply, onClear }) {
         }`}
       >
         <SlidersHorizontal className="w-4 h-4" />
-        Filters
+        {t("filters", "Filters")}
         {activeCount > 0 && (
           <span className="ml-0.5 w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">
             {activeCount}
@@ -71,28 +73,29 @@ export default function QueryBuilder({ fields = [], onApply, onClear }) {
         )}
         {isOpen ? <ChevronUp className="w-3.5 h-3.5 ml-1" /> : <ChevronDown className="w-3.5 h-3.5 ml-1" />}
       </button>
-
       {/* Panel */}
       {isOpen && (
         <div className="absolute top-full mt-2 left-0 z-30 w-[480px] max-w-[calc(100vw-2rem)] bg-card border border-border rounded-xl shadow-2xl p-4 animate-in fade-in slide-in-from-top-2 duration-200">
           {/* Header */}
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-bold text-card-foreground flex items-center gap-2">
-              <Filter className="w-4 h-4 text-primary" /> Advanced Filters
+              <Filter className="w-4 h-4 text-primary" /> {t("advanced_filters", "Advanced Filters")}
             </h3>
             {/* AND / OR toggle */}
             <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
-              {['AND', 'OR'].map(l => (
-                <button
-                  key={l}
-                  onClick={() => setLogic(l)}
-                  className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${
-                    logic === l ? 'bg-card shadow text-primary' : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  {l}
-                </button>
-              ))}
+              {['AND', 'OR'].map(l => {
+                return (
+                  <button
+                    key={l}
+                    onClick={() => setLogic(l)}
+                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${
+                      logic === l ? 'bg-card shadow text-primary' : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    {l}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -106,31 +109,28 @@ export default function QueryBuilder({ fields = [], onApply, onClear }) {
                   <span className="text-[10px] font-bold text-muted-foreground w-7 text-right flex-shrink-0">
                     {idx === 0 ? 'WHERE' : logic}
                   </span>
-
                   {/* Field selector */}
                   <Select value={cond.field} onValueChange={v => updateCondition(idx, { field: v, value: '' })}>
                     <SelectTrigger className="h-8 text-xs flex-1 min-w-0 bg-background">
                       <SelectValue placeholder="Choose field..." />
                     </SelectTrigger>
                     <SelectContent>
-                      {fields.map(f => (
-                        <SelectItem key={f.key} value={f.key} className="text-xs">{f.label}</SelectItem>
-                      ))}
+                      {fields.map(f => {
+                        return (<SelectItem key={f.key} value={f.key} className="text-xs">{f.label}</SelectItem>);
+                      })}
                     </SelectContent>
                   </Select>
-
                   {/* Operator selector */}
                   <Select value={cond.operator} onValueChange={v => updateCondition(idx, { operator: v })}>
                     <SelectTrigger className="h-8 text-xs w-32 flex-shrink-0 bg-background">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {OPERATORS.map(op => (
-                        <SelectItem key={op.value} value={op.value} className="text-xs">{op.label}</SelectItem>
-                      ))}
+                      {OPERATORS.map(op => {
+                        return (<SelectItem key={op.value} value={op.value} className="text-xs">{op.label}</SelectItem>);
+                      })}
                     </SelectContent>
                   </Select>
-
                   {/* Value input or select */}
                   {fieldDef?.type === 'select' ? (
                     <Select value={cond.value} onValueChange={v => updateCondition(idx, { value: v })}>
@@ -138,9 +138,9 @@ export default function QueryBuilder({ fields = [], onApply, onClear }) {
                         <SelectValue placeholder="Value..." />
                       </SelectTrigger>
                       <SelectContent>
-                        {(fieldDef.options || []).map(opt => (
-                          <SelectItem key={opt} value={opt} className="text-xs">{opt}</SelectItem>
-                        ))}
+                        {(fieldDef.options || []).map(opt => {
+                          return (<SelectItem key={opt} value={opt} className="text-xs">{opt}</SelectItem>);
+                        })}
                       </SelectContent>
                     </Select>
                   ) : (
@@ -152,7 +152,6 @@ export default function QueryBuilder({ fields = [], onApply, onClear }) {
                       type={fieldDef?.type === 'number' ? 'number' : 'text'}
                     />
                   )}
-
                   {/* Remove button */}
                   <button
                     onClick={() => removeCondition(idx)}
@@ -170,14 +169,14 @@ export default function QueryBuilder({ fields = [], onApply, onClear }) {
             onClick={addCondition}
             className="mt-3 flex items-center gap-1.5 text-xs text-primary hover:underline font-medium"
           >
-            <Plus className="w-3.5 h-3.5" /> Add Condition
+            <Plus className="w-3.5 h-3.5" /> {t("add_condition", "Add Condition")}
           </button>
 
           {/* Footer actions */}
           <div className="flex gap-2 mt-4 pt-3 border-t border-border">
-            <Button variant="outline" size="sm" onClick={handleClear} className="flex-1">Clear All</Button>
+            <Button variant="outline" size="sm" onClick={handleClear} className="flex-1">{t("clear_all", "Clear All")}</Button>
             <Button size="sm" onClick={handleApply} className="flex-1 bg-primary text-primary-foreground">
-              Apply Filters
+              {t("apply_filters", "Apply Filters")}
             </Button>
           </div>
         </div>

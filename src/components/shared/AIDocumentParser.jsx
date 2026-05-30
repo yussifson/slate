@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState, useRef } from 'react';
 import { Upload, FileScan, CheckCircle2, X, Loader2, Sparkles } from 'lucide-react';
 import { analyzeImage } from '@/lib/cloudflareAI';
@@ -13,6 +14,7 @@ import { toast } from 'react-hot-toast';
  *   fieldsContext: string (optional context about what fields to extract)
  */
 export default function AIDocumentParser({ onExtracted, fieldsContext = 'invoice details' }) {
+  const { t } = useTranslation();
   const [isProcessing, setIsProcessing] = useState(false);
   const [preview, setPreview] = useState(null);
   const fileInputRef = useRef(null);
@@ -73,7 +75,6 @@ export default function AIDocumentParser({ onExtracted, fieldsContext = 'invoice
         accept="image/*"
         className="hidden"
       />
-      
       {isProcessing ? (
         <div className="flex flex-col items-center justify-center space-y-3">
           <div className="relative">
@@ -81,7 +82,7 @@ export default function AIDocumentParser({ onExtracted, fieldsContext = 'invoice
             <FileScan className="w-10 h-10 text-primary animate-pulse relative z-10" />
             <Sparkles className="w-4 h-4 text-amber-400 absolute -top-1 -right-1 animate-spin" />
           </div>
-          <p className="text-sm font-bold text-primary">AI is analyzing document...</p>
+          <p className="text-sm font-bold text-primary">{t("ai_is_analyzing_document", "AI is analyzing document...")}</p>
         </div>
       ) : preview ? (
         <div className="flex flex-col items-center space-y-3">
@@ -93,7 +94,10 @@ export default function AIDocumentParser({ onExtracted, fieldsContext = 'invoice
               </Button>
             </div>
           </div>
-          <p className="text-xs text-muted-foreground">Document scanned. You can edit the extracted fields below.</p>
+          <p className="text-xs text-muted-foreground">{t(
+            "document_scanned_you_can_edit_",
+            "Document scanned. You can edit the extracted fields below."
+          )}</p>
         </div>
       ) : (
         <div 
@@ -105,9 +109,12 @@ export default function AIDocumentParser({ onExtracted, fieldsContext = 'invoice
           <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-3 group-hover:scale-110 transition-transform">
             <Upload className="w-6 h-6" />
           </div>
-          <h4 className="text-sm font-bold text-card-foreground">Upload Document for AI Auto-Fill</h4>
+          <h4 className="text-sm font-bold text-card-foreground">{t("upload_document_for_ai_auto_fi", "Upload Document for AI Auto-Fill")}</h4>
           <p className="text-xs text-muted-foreground mt-1 max-w-xs mx-auto">
-            Drag & drop an invoice, receipt, or ID card here. Our AI will automatically extract and fill the fields.
+            {t(
+              "drag_drop_an_invoice_receipt_o",
+              "Drag & drop an invoice, receipt, or ID card here. Our AI will automatically extract and fill the fields."
+            )}
           </p>
         </div>
       )}

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
@@ -31,6 +32,7 @@ function StatCard({ icon: IconComp, label, value, color }) {
 }
 
 export default function ClientPortal() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [selectedCase, setSelectedCase] = useState(null);
   const [showUpload, setShowUpload] = useState(false);
@@ -125,9 +127,12 @@ export default function ClientPortal() {
           <Scale className="w-8 h-8 text-muted-foreground" />
         </div>
         <div>
-          <h2 className="text-lg font-semibold">No {getTerm(user?.company_industry, 'client')} Profile Found</h2>
+          <h2 className="text-lg font-semibold">{t("no", "No")} {getTerm(user?.company_industry, 'client')} {t("profile_found", "Profile Found")}</h2>
           <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-            Your account ({user?.email}) is not linked to a {getTerm(user?.company_industry, 'client').toLowerCase()} record. Please contact your organization.
+            {t("your_account", "Your account (")}{user?.email}{t("is_not_linked_to_a", ") is not linked to a")} {getTerm(user?.company_industry, 'client').toLowerCase()} {t(
+              "record_please_contact_your_org",
+              "record. Please contact your organization."
+            )}
           </p>
         </div>
       </div>
@@ -143,12 +148,11 @@ export default function ClientPortal() {
             {client.name?.[0]?.toUpperCase()}
           </div>
           <div>
-            <h1 className="text-xl font-bold">Welcome, {client.name}</h1>
-            <p className="text-sm text-white/80">Your secure portal — view {getTerm(user?.company_industry, 'cases').toLowerCase()}, documents & invoices</p>
+            <h1 className="text-xl font-bold">{t("welcome", "Welcome,")} {client.name}</h1>
+            <p className="text-sm text-white/80">{t("your_secure_portal_view", "Your secure portal — view")} {getTerm(user?.company_industry, 'cases').toLowerCase()}{t("documents_invoices", ", documents & invoices")}</p>
           </div>
         </div>
       </div>
-
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <StatCard icon={Briefcase} label={`My ${getTerm(user?.company_industry, 'cases')}`} value={cases.length} color="bg-blue-50 text-blue-600" />
@@ -156,7 +160,6 @@ export default function ClientPortal() {
         <StatCard icon={Receipt} label="Invoices Paid" value={invoices.filter(i => i.status === "paid").length} color="bg-green-50 text-green-600" />
         <StatCard icon={FolderOpen} label="Documents" value={sharedDocs.length} color="bg-amber-50 text-amber-600" />
       </div>
-
       {/* At a Glance */}
       <ClientAtAGlance
       hearings={upcomingHearings}
@@ -164,23 +167,22 @@ export default function ClientPortal() {
       invoices={invoices}
       currency="GHS"
       />
-
       <Tabs defaultValue="cases">
         <TabsList className="flex-wrap h-auto gap-1">
-          <TabsTrigger value="cases" className="gap-1.5"><Briefcase className="w-3.5 h-3.5" />My {getTerm(user?.company_industry, 'cases')}</TabsTrigger>
-          <TabsTrigger value="hearings" className="gap-1.5"><Calendar className="w-3.5 h-3.5" />Appointments</TabsTrigger>
-          <TabsTrigger value="documents" className="gap-1.5"><FolderOpen className="w-3.5 h-3.5" />Documents</TabsTrigger>
-          <TabsTrigger value="invoices" className="gap-1.5"><Receipt className="w-3.5 h-3.5" />Invoices</TabsTrigger>
-          <TabsTrigger value="messages" className="gap-1.5"><MessageSquare className="w-3.5 h-3.5" />Messages</TabsTrigger>
-          <TabsTrigger value="billing" className="gap-1.5"><BarChart2 className="w-3.5 h-3.5" />Billing Report</TabsTrigger>
-          <TabsTrigger value="checklist" className="gap-1.5"><CheckSquare className="w-3.5 h-3.5" />My Tasks</TabsTrigger>
+          <TabsTrigger value="cases" className="gap-1.5"><Briefcase className="w-3.5 h-3.5" />{t("my", "My")} {getTerm(user?.company_industry, 'cases')}</TabsTrigger>
+          <TabsTrigger value="hearings" className="gap-1.5"><Calendar className="w-3.5 h-3.5" />{t("appointments", "Appointments")}</TabsTrigger>
+          <TabsTrigger value="documents" className="gap-1.5"><FolderOpen className="w-3.5 h-3.5" />{t("documents", "Documents")}</TabsTrigger>
+          <TabsTrigger value="invoices" className="gap-1.5"><Receipt className="w-3.5 h-3.5" />{t("invoices", "Invoices")}</TabsTrigger>
+          <TabsTrigger value="messages" className="gap-1.5"><MessageSquare className="w-3.5 h-3.5" />{t("messages", "Messages")}</TabsTrigger>
+          <TabsTrigger value="billing" className="gap-1.5"><BarChart2 className="w-3.5 h-3.5" />{t("billing_report", "Billing Report")}</TabsTrigger>
+          <TabsTrigger value="checklist" className="gap-1.5"><CheckSquare className="w-3.5 h-3.5" />{t("my_tasks", "My Tasks")}</TabsTrigger>
         </TabsList>
 
         {/* Cases tab */}
         <TabsContent value="cases" className="mt-4">
           <div className="bg-card rounded-xl border border-border divide-y divide-border">
             {cases.length === 0 ? (
-              <div className="p-10 text-center text-sm text-muted-foreground">No {getTerm(user?.company_industry, 'cases').toLowerCase()} found</div>
+              <div className="p-10 text-center text-sm text-muted-foreground">{t("no", "No")} {getTerm(user?.company_industry, 'cases').toLowerCase()} {t("found", "found")}</div>
             ) : cases.map(c => {
               const ps = getPipelineState(c.id);
               return (
@@ -195,16 +197,16 @@ export default function ClientPortal() {
                     {c.case_number && <span>#{c.case_number}</span>}
                     {c.case_type && <span className="capitalize">{c.case_type}</span>}
                     {c.court_name && <span>{c.court_name}</span>}
-                    {c.assigned_lawyer_name && <span>Lawyer: <span className="text-foreground font-medium">{c.assigned_lawyer_name}</span></span>}
+                    {c.assigned_lawyer_name && <span>{t("lawyer", "Lawyer:")} <span className="text-foreground font-medium">{c.assigned_lawyer_name}</span></span>}
                   </div>
                   {ps && (
                     <div className="flex items-center gap-1.5 mt-1">
-                      <span className="text-[10px] text-muted-foreground">Status:</span>
+                      <span className="text-[10px] text-muted-foreground">{t("status", "Status:")}</span>
                       <Badge className="text-[10px] bg-primary/10 text-primary">{ps.current_stage_name}</Badge>
                     </div>
                   )}
                   {c.next_hearing_date && (
-                    <p className="text-xs text-muted-foreground">Next appointment: <span className="text-foreground">{format(new Date(c.next_hearing_date), "MMM d, yyyy")}</span></p>
+                    <p className="text-xs text-muted-foreground">{t("next_appointment", "Next appointment:")} <span className="text-foreground">{format(new Date(c.next_hearing_date), "MMM d, yyyy")}</span></p>
                   )}
                 </div>
               );
@@ -216,54 +218,58 @@ export default function ClientPortal() {
         <TabsContent value="hearings" className="mt-4">
           <div className="bg-card rounded-xl border border-border divide-y divide-border">
             {upcomingHearings.length === 0 ? (
-              <div className="p-10 text-center text-sm text-muted-foreground">No upcoming appointments</div>
-            ) : upcomingHearings.map(h => (
-              <div key={h.id} className="p-4 flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex flex-col items-center justify-center shrink-0">
-                  <span className="text-[9px] font-bold text-primary leading-none">{format(new Date(h.date), "MMM")}</span>
-                  <span className="text-lg font-bold text-primary leading-none">{format(new Date(h.date), "d")}</span>
+              <div className="p-10 text-center text-sm text-muted-foreground">{t("no_upcoming_appointments", "No upcoming appointments")}</div>
+            ) : upcomingHearings.map(h => {
+              return (
+                <div key={h.id} className="p-4 flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex flex-col items-center justify-center shrink-0">
+                    <span className="text-[9px] font-bold text-primary leading-none">{format(new Date(h.date), "MMM")}</span>
+                    <span className="text-lg font-bold text-primary leading-none">{format(new Date(h.date), "d")}</span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">{h.title}</p>
+                    <p className="text-xs text-muted-foreground">{h.court_name}{h.time ? ` · ${h.time}` : ""}</p>
+                    {h.judge_name && <p className="text-xs text-muted-foreground">{t("judge", "Judge:")} {h.judge_name}</p>}
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-medium">{h.title}</p>
-                  <p className="text-xs text-muted-foreground">{h.court_name}{h.time ? ` · ${h.time}` : ""}</p>
-                  {h.judge_name && <p className="text-xs text-muted-foreground">Judge: {h.judge_name}</p>}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </TabsContent>
 
         {/* Documents tab */}
         <TabsContent value="documents" className="mt-4">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-sm font-semibold">My Documents</h3>
+            <h3 className="text-sm font-semibold">{t("my_documents", "My Documents")}</h3>
             <Button size="sm" onClick={() => setShowUpload(true)} className="gap-1.5">
-              <Upload className="w-4 h-4" /> Upload Document
+              <Upload className="w-4 h-4" /> {t("upload_document", "Upload Document")}
             </Button>
           </div>
           <div className="bg-card rounded-xl border border-border divide-y divide-border">
             {sharedDocs.length === 0 ? (
-              <div className="p-10 text-center text-sm text-muted-foreground">No documents shared with you yet</div>
-            ) : sharedDocs.map(doc => (
-              <div key={doc.id} className="px-4 py-3 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                    <FileText className="w-4 h-4 text-muted-foreground" />
+              <div className="p-10 text-center text-sm text-muted-foreground">{t("no_documents_shared_with_you_y", "No documents shared with you yet")}</div>
+            ) : sharedDocs.map(doc => {
+              return (
+                <div key={doc.id} className="px-4 py-3 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                      <FileText className="w-4 h-4 text-muted-foreground" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium truncate">{doc.name}</p>
+                      <p className="text-xs text-muted-foreground capitalize">{doc.category?.replace("_", " ")}{doc.case_title ? ` · ${doc.case_title}` : ""}</p>
+                    </div>
                   </div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium truncate">{doc.name}</p>
-                    <p className="text-xs text-muted-foreground capitalize">{doc.category?.replace("_", " ")}{doc.case_title ? ` · ${doc.case_title}` : ""}</p>
-                  </div>
+                  {doc.file_url && (
+                    <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
+                      <Button size="sm" variant="outline" className="h-7 text-xs gap-1 shrink-0">
+                        <Download className="w-3 h-3" /> {t("download", "Download")}
+                      </Button>
+                    </a>
+                  )}
                 </div>
-                {doc.file_url && (
-                  <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
-                    <Button size="sm" variant="outline" className="h-7 text-xs gap-1 shrink-0">
-                      <Download className="w-3 h-3" /> Download
-                    </Button>
-                  </a>
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
         </TabsContent>
 
@@ -271,22 +277,24 @@ export default function ClientPortal() {
         <TabsContent value="invoices" className="mt-4">
           <div className="bg-card rounded-xl border border-border divide-y divide-border">
             {invoices.length === 0 ? (
-              <div className="p-10 text-center text-sm text-muted-foreground">No invoices found</div>
-            ) : invoices.map(inv => (
-              <div key={inv.id} className="px-4 py-3 flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-sm font-medium">{inv.invoice_number || "Invoice"}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {inv.case_title && `${inv.case_title} · `}
-                    Due {inv.due_date ? format(new Date(inv.due_date), "MMM d, yyyy") : "—"}
-                  </p>
+              <div className="p-10 text-center text-sm text-muted-foreground">{t("no_invoices_found", "No invoices found")}</div>
+            ) : invoices.map(inv => {
+              return (
+                <div key={inv.id} className="px-4 py-3 flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-medium">{inv.invoice_number || "Invoice"}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {inv.case_title && `${inv.case_title} · `}
+                      {t("due", "Due")} {inv.due_date ? format(new Date(inv.due_date), "MMM d, yyyy") : "—"}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3 shrink-0">
+                    <span className="text-sm font-bold">{inv.currency === "NGN" ? "₦" : inv.currency === "USD" ? "$" : "GH₵"}{(inv.total_amount || 0).toLocaleString()}</span>
+                    <Badge className={cn("text-[10px]", INVOICE_STATUS_COLORS[inv.status])}>{inv.status}</Badge>
+                  </div>
                 </div>
-                <div className="flex items-center gap-3 shrink-0">
-                  <span className="text-sm font-bold">{inv.currency === "NGN" ? "₦" : inv.currency === "USD" ? "$" : "GH₵"}{(inv.total_amount || 0).toLocaleString()}</span>
-                  <Badge className={cn("text-[10px]", INVOICE_STATUS_COLORS[inv.status])}>{inv.status}</Badge>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </TabsContent>
 
@@ -308,26 +316,28 @@ export default function ClientPortal() {
         <TabsContent value="messages" className="mt-4">
           {cases.length === 0 ? (
             <div className="bg-card rounded-xl border border-border p-10 text-center text-sm text-muted-foreground">
-              No {getTerm(user?.company_industry, 'cases').toLowerCase()} found to message about
+              {t("no", "No")} {getTerm(user?.company_industry, 'cases').toLowerCase()} {t("found_to_message_about", "found to message about")}
             </div>
           ) : (
             <div className="space-y-4">
               {cases.length > 1 && (
                 <div className="flex flex-wrap gap-2">
-                  {cases.map(c => (
-                    <button
-                      key={c.id}
-                      onClick={() => setSelectedCase(c)}
-                      className={cn(
-                        "text-xs px-3 py-1.5 rounded-full border transition-colors",
-                        selectedCase?.id === c.id || (!selectedCase && c.id === cases[0].id)
-                          ? "bg-primary text-white border-primary"
-                          : "bg-card border-border text-foreground hover:bg-muted"
-                      )}
-                    >
-                      {c.title}
-                    </button>
-                  ))}
+                  {cases.map(c => {
+                    return (
+                      <button
+                        key={c.id}
+                        onClick={() => setSelectedCase(c)}
+                        className={cn(
+                          "text-xs px-3 py-1.5 rounded-full border transition-colors",
+                          selectedCase?.id === c.id || (!selectedCase && c.id === cases[0].id)
+                            ? "bg-primary text-white border-primary"
+                            : "bg-card border-border text-foreground hover:bg-muted"
+                        )}
+                      >
+                        {c.title}
+                      </button>
+                    );
+                  })}
                 </div>
               )}
               <ClientMessaging
@@ -339,7 +349,6 @@ export default function ClientPortal() {
           )}
         </TabsContent>
       </Tabs>
-
       {/* Upload document dialog */}
       {showUpload && (
         <UploadDocumentDialog

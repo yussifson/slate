@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Calendar, FileText, Activity, Download, Plus, Pill, Beaker } from 'lucide-react';
 import { useIndustryRecords } from '@/hooks/useIndustryData';
@@ -11,6 +12,7 @@ import { format } from "date-fns";
 import { useAuth } from '@/lib/AuthContext';
 
 export default function PatientPortal() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [showUpload, setShowUpload] = useState(false);
@@ -18,7 +20,7 @@ export default function PatientPortal() {
   // Real Database Hooks
   const { data: patients = [], isLoading: isPatientsLoading } = useIndustryRecords('patient');
   const { data: appts = [], isLoading: isApptsLoading } = useIndustryRecords('appt');
-  
+
   // A real system would filter by user email, but for demo we just take the first patient record
   const mappedPatients = patients.map(r => ({ id: r.id, ...r.data }));
   const activePatient = mappedPatients[0];
@@ -54,15 +56,18 @@ export default function PatientPortal() {
   };
 
   if (isPatientsLoading || isApptsLoading) {
-    return <div className="py-12 text-center text-muted-foreground">Loading your health profile...</div>;
+    return <div className="py-12 text-center text-muted-foreground">{t("loading_your_health_profile", "Loading your health profile...")}</div>;
   }
 
   if (mappedPatients.length === 0) {
     return (
       <div className="py-12 text-center max-w-md mx-auto bg-card rounded-xl border border-border p-6 shadow-sm">
         <Activity className="w-12 h-12 mx-auto mb-3 opacity-30 text-blue-600 animate-pulse" />
-        <p className="font-semibold text-lg text-card-foreground">No health profile found</p>
-        <p className="text-sm text-muted-foreground mt-1 mb-4">Please contact your healthcare provider to link your account to your medical records.</p>
+        <p className="font-semibold text-lg text-card-foreground">{t("no_health_profile_found", "No health profile found")}</p>
+        <p className="text-sm text-muted-foreground mt-1 mb-4">{t(
+          "please_contact_your_healthcare",
+          "Please contact your healthcare provider to link your account to your medical records."
+        )}</p>
       </div>
     );
   }
@@ -72,14 +77,16 @@ export default function PatientPortal() {
       {/* Header */}
       <div className="bg-gradient-to-r from-teal-600 to-blue-700 rounded-2xl p-6 md:p-8 text-white shadow-md relative overflow-hidden">
         <div className="relative z-10">
-          <h1 className="text-2xl md:text-3xl font-bold mb-2">Welcome, {activePatient.name}</h1>
-          <p className="text-blue-100 max-w-xl">View your medical records, upcoming appointments, and secure lab results in one place.</p>
+          <h1 className="text-2xl md:text-3xl font-bold mb-2">{t("welcome", "Welcome,")} {activePatient.name}</h1>
+          <p className="text-blue-100 max-w-xl">{t(
+            "view_your_medical_records_upco",
+            "View your medical records, upcoming appointments, and secure lab results in one place."
+          )}</p>
         </div>
         <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none transform translate-x-1/4 translate-y-1/4">
           <Activity className="w-64 h-64" />
         </div>
       </div>
-
       {/* Patient Profile Card */}
       <div className="bg-card rounded-2xl border border-border p-6 shadow-sm flex flex-col md:flex-row items-center md:items-start gap-6">
         <div className="w-24 h-24 rounded-full bg-teal-100 flex items-center justify-center text-teal-700 text-3xl font-bold shrink-0 shadow-inner uppercase">
@@ -88,14 +95,13 @@ export default function PatientPortal() {
         <div className="text-center md:text-left flex-1">
           <h2 className="text-2xl font-bold text-card-foreground mb-1">{activePatient.name}</h2>
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-sm text-muted-foreground font-medium">
-            <span className="bg-muted px-3 py-1 rounded-full text-foreground">{activePatient.age} yrs</span>
-            <span>Blood Type: <strong className="text-red-500">{activePatient.bloodType}</strong></span>
+            <span className="bg-muted px-3 py-1 rounded-full text-foreground">{activePatient.age} {t("yrs", "yrs")}</span>
+            <span>{t("blood_type", "Blood Type:")} <strong className="text-red-500">{activePatient.bloodType}</strong></span>
             <span className="text-slate-300">•</span>
-            <span>Patient ID: {activePatient.patientId}</span>
+            <span>{t("patient_id", "Patient ID:")} {activePatient.patientId}</span>
           </div>
         </div>
       </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column (Stats & Appts) */}
         <div className="col-span-1 lg:col-span-2 space-y-6">
@@ -103,42 +109,44 @@ export default function PatientPortal() {
             <div className="bg-card rounded-xl border border-border p-5 shadow-sm">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-950/20 flex items-center justify-center text-purple-600"><Pill className="w-4 h-4" /></div>
-                <h3 className="font-bold text-foreground">Active Prescriptions</h3>
+                <h3 className="font-bold text-foreground">{t("active_prescriptions", "Active Prescriptions")}</h3>
               </div>
               <p className="text-3xl font-extrabold text-card-foreground mb-1">2</p>
-              <p className="text-xs text-muted-foreground">Medications</p>
+              <p className="text-xs text-muted-foreground">{t("medications", "Medications")}</p>
             </div>
             
             <div className="bg-card rounded-xl border border-border p-5 shadow-sm">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-950/20 flex items-center justify-center text-blue-600"><Beaker className="w-4 h-4" /></div>
-                <h3 className="font-bold text-foreground">Lab Results</h3>
+                <h3 className="font-bold text-foreground">{t("lab_results", "Lab Results")}</h3>
               </div>
-              <p className="text-3xl font-extrabold text-blue-600 mb-1">New</p>
-              <p className="text-xs text-muted-foreground">Ready for viewing</p>
+              <p className="text-3xl font-extrabold text-blue-600 mb-1">{t("new", "New")}</p>
+              <p className="text-xs text-muted-foreground">{t("ready_for_viewing", "Ready for viewing")}</p>
             </div>
           </div>
 
           <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
             <div className="p-4 md:p-5 border-b border-border bg-muted/50 flex justify-between items-center">
-              <h3 className="font-bold text-card-foreground flex items-center gap-2"><Calendar className="w-5 h-5 text-muted-foreground" /> Upcoming Appointments</h3>
+              <h3 className="font-bold text-card-foreground flex items-center gap-2"><Calendar className="w-5 h-5 text-muted-foreground" /> {t("upcoming_appointments", "Upcoming Appointments")}</h3>
             </div>
             <div className="divide-y divide-border p-2">
-              {mappedAppts.map((item, i) => (
-                <div key={i} className="flex items-center gap-4 p-3 hover:bg-muted dark:hover:bg-muted/30 rounded-lg transition-colors">
-                  <div className="w-20 shrink-0 text-center flex flex-col items-center">
-                    <span className="text-xs font-bold text-blue-600 bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded w-full">{item.date}</span>
-                    <span className="text-[10px] font-semibold text-muted-foreground mt-1">{item.time}</span>
+              {mappedAppts.map((item, i) => {
+                return (
+                  <div key={i} className="flex items-center gap-4 p-3 hover:bg-muted dark:hover:bg-muted/30 rounded-lg transition-colors">
+                    <div className="w-20 shrink-0 text-center flex flex-col items-center">
+                      <span className="text-xs font-bold text-blue-600 bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded w-full">{item.date}</span>
+                      <span className="text-[10px] font-semibold text-muted-foreground mt-1">{item.time}</span>
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-bold text-card-foreground text-sm">{item.type}</p>
+                      <p className="text-xs text-muted-foreground">{item.doctor}</p>
+                    </div>
+                    <span className="bg-amber-100 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider">{item.status}</span>
                   </div>
-                  <div className="flex-1">
-                    <p className="font-bold text-card-foreground text-sm">{item.type}</p>
-                    <p className="text-xs text-muted-foreground">{item.doctor}</p>
-                  </div>
-                  <span className="bg-amber-100 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider">{item.status}</span>
-                </div>
-              ))}
+                );
+              })}
               {mappedAppts.length === 0 && (
-                <div className="py-6 text-center text-xs text-muted-foreground">No upcoming appointments scheduled.</div>
+                <div className="py-6 text-center text-xs text-muted-foreground">{t("no_upcoming_appointments_sched", "No upcoming appointments scheduled.")}</div>
               )}
             </div>
           </div>
@@ -148,34 +156,35 @@ export default function PatientPortal() {
         <div className="space-y-6">
           <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
             <div className="p-4 border-b border-border bg-muted/50 flex justify-between items-center">
-              <h3 className="font-bold text-card-foreground flex items-center gap-2"><FileText className="w-5 h-5 text-muted-foreground" /> Medical Records & Labs</h3>
+              <h3 className="font-bold text-card-foreground flex items-center gap-2"><FileText className="w-5 h-5 text-muted-foreground" /> {t("medical_records_labs", "Medical Records & Labs")}</h3>
               <Button size="sm" variant="outline" className="h-8 gap-1" onClick={() => setShowUpload(true)}>
-                <Plus className="w-3.5 h-3.5" /> Upload
+                <Plus className="w-3.5 h-3.5" /> {t("upload", "Upload")}
               </Button>
             </div>
             <div className="divide-y divide-border p-2">
               {documents.length === 0 ? (
-                <div className="py-6 text-center text-xs text-muted-foreground">No records available yet.</div>
-              ) : documents.map(doc => (
-                <div key={doc.id} className="p-3 flex items-center justify-between hover:bg-muted dark:hover:bg-muted/30 rounded-lg transition-colors">
-                  <div>
-                    <p className="text-sm font-medium text-card-foreground mb-0.5 truncate max-w-[150px]">{doc.name}</p>
-                    <p className="text-xs text-muted-foreground">{format(new Date(doc.created_date), "MMM d, yyyy")} • {doc.category?.replace('_', ' ')}</p>
+                <div className="py-6 text-center text-xs text-muted-foreground">{t("no_records_available_yet", "No records available yet.")}</div>
+              ) : documents.map(doc => {
+                return (
+                  <div key={doc.id} className="p-3 flex items-center justify-between hover:bg-muted dark:hover:bg-muted/30 rounded-lg transition-colors">
+                    <div>
+                      <p className="text-sm font-medium text-card-foreground mb-0.5 truncate max-w-[150px]">{doc.name}</p>
+                      <p className="text-xs text-muted-foreground">{format(new Date(doc.created_date), "MMM d, yyyy")} • {doc.category?.replace('_', ' ')}</p>
+                    </div>
+                    {doc.file_url && (
+                      <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50">
+                          <Download className="w-4 h-4" />
+                        </Button>
+                      </a>
+                    )}
                   </div>
-                  {doc.file_url && (
-                    <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50">
-                        <Download className="w-4 h-4" />
-                      </Button>
-                    </a>
-                  )}
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
       </div>
-
       {showUpload && (
         <UploadDocumentDialog
           onClose={() => setShowUpload(false)}

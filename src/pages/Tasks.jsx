@@ -1,8 +1,10 @@
+import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
-import { useCompanyId } from "@/hooks/useCompanyId";
+import { useCompanyId, useCompany } from "@/hooks/useCompanyId";
+import { getTerm } from "@/config/industries";
 import PageHeader from "@/components/shared/PageHeader";
 import DataTable from "@/components/shared/DataTable";
 import { Button } from "@/components/ui/button";
@@ -31,7 +33,8 @@ const STATUS_COLORS = {
   cancelled: "bg-gray-100 text-gray-500",
 };
 
-function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId }) {
+function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, caseTerm }) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const isEdit = !!initialData?.id;
 
@@ -95,42 +98,42 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId })
         </DialogHeader>
         <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
           <div>
-            <Label>Title *</Label>
+            <Label>{t("title", "Title *")}</Label>
             <Input value={form.title} onChange={e => set("title", e.target.value)} placeholder="Task title" />
           </div>
           <div>
-            <Label>Description</Label>
+            <Label>{t("description", "Description")}</Label>
             <Textarea value={form.description} onChange={e => set("description", e.target.value)} rows={2} />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label>Priority</Label>
+              <Label>{t("priority", "Priority")}</Label>
               <Select value={form.priority} onValueChange={v => set("priority", v)}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="low">Low</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
-                  <SelectItem value="urgent">Urgent</SelectItem>
+                  <SelectItem value="low">{t("low", "Low")}</SelectItem>
+                  <SelectItem value="medium">{t("medium", "Medium")}</SelectItem>
+                  <SelectItem value="high">{t("high", "High")}</SelectItem>
+                  <SelectItem value="urgent">{t("urgent", "Urgent")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label>Status</Label>
+              <Label>{t("status", "Status")}</Label>
               <Select value={form.status} onValueChange={v => set("status", v)}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="in_progress">In Progress</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
-                  <SelectItem value="cancelled">Cancelled</SelectItem>
+                  <SelectItem value="pending">{t("pending", "Pending")}</SelectItem>
+                  <SelectItem value="in_progress">{t("in_progress", "In Progress")}</SelectItem>
+                  <SelectItem value="completed">{t("completed", "Completed")}</SelectItem>
+                  <SelectItem value="cancelled">{t("cancelled", "Cancelled")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="col-span-2">
-              <Label className="block mb-1.5">Assign To (Multiple Team Members)</Label>
+              <Label className="block mb-1.5">{t("assign_to_multiple_team_member", "Assign To (Multiple Team Members)")}</Label>
               <div className="border border-border rounded-lg p-3 max-h-36 overflow-y-auto space-y-2 bg-card">
                 {staff.map(s => {
                   const isChecked = form.assignees?.some(a => a.id === s.id);
@@ -149,37 +152,37 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId })
               </div>
             </div>
             <div className="col-span-2">
-              <Label>Due Date</Label>
+              <Label>{t("due_date", "Due Date")}</Label>
               <Input type="date" value={form.due_date} onChange={e => set("due_date", e.target.value)} />
             </div>
           </div>
           <div>
-            <Label>Related Case</Label>
+            <Label>{t("related", "Related")} {caseTerm}</Label>
             <Select value={form.case_id} onValueChange={handleCaseChange}>
-              <SelectTrigger><SelectValue placeholder="Select case (optional)" /></SelectTrigger>
+              <SelectTrigger><SelectValue placeholder={`Select ${caseTerm.toLowerCase()} (optional)`} /></SelectTrigger>
               <SelectContent>
-                {cases.map(c => (
-                  <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>
-                ))}
+                {cases.map(c => {
+                  return (<SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>);
+                })}
               </SelectContent>
             </Select>
           </div>
           <div>
-            <Label>Category</Label>
+            <Label>{t("category", "Category")}</Label>
             <Select value={form.category} onValueChange={v => set("category", v)}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="legal">Legal</SelectItem>
-                <SelectItem value="admin">Admin</SelectItem>
-                <SelectItem value="finance">Finance</SelectItem>
-                <SelectItem value="hr">HR</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
+                <SelectItem value="legal">{t("legal", "Legal")}</SelectItem>
+                <SelectItem value="admin">{t("admin", "Admin")}</SelectItem>
+                <SelectItem value="finance">{t("finance", "Finance")}</SelectItem>
+                <SelectItem value="hr">{t("hr", "HR")}</SelectItem>
+                <SelectItem value="other">{t("other", "Other")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>Cancel</Button>
+          <Button variant="outline" onClick={onClose}>{t("cancel", "Cancel")}</Button>
           <Button onClick={() => mutation.mutate(form)} disabled={!form.title || mutation.isPending}>
             {mutation.isPending ? "Saving..." : isEdit ? "Save Changes" : "Create Task"}
           </Button>
@@ -190,14 +193,19 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId })
 }
 
 export default function Tasks() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const companyId = useCompanyId();
   const queryClient = useQueryClient();
 
+  const { company } = useCompany();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
+
+  const industry = company?.industry_type || user?.company_industry || "law";
+  const caseTerm = getTerm(industry, "case");
 
   const { data: tasks = [], isLoading } = useQuery({
     queryKey: ["tasks", companyId],
@@ -223,68 +231,76 @@ export default function Tasks() {
   });
 
   const isAdmin = ["super_admin", "company_admin", "managing_partner"].includes(user?.role);
-  const filtered = tasks.filter(t => {
+  const filtered = tasks.filter(item => {
     if (!isAdmin) {
-      const isAssignee = t.assignees?.some(a => a.user_email === user?.email);
-      const isCreator = t.created_by === user?.id;
+      const isAssignee = item.assignees?.some(a => a.user_email === user?.email);
+      const isCreator = item.created_by === user?.id;
       if (!isAssignee && !isCreator) return false;
     }
-    const matchSearch = !search || t.title?.toLowerCase().includes(search.toLowerCase()) ||
-      t.assignees?.some(a => a.full_name?.toLowerCase().includes(search.toLowerCase()));
-    const matchStatus = statusFilter === "all" || t.status === statusFilter;
+    const matchSearch = !search || item.title?.toLowerCase().includes(search.toLowerCase()) ||
+      item.assignees?.some(a => a.full_name?.toLowerCase().includes(search.toLowerCase()));
+    const matchStatus = statusFilter === "all" || item.status === statusFilter;
     return matchSearch && matchStatus;
   });
 
   const stats = {
     total: tasks.length,
-    pending: tasks.filter(t => t.status === "pending").length,
-    in_progress: tasks.filter(t => t.status === "in_progress").length,
-    completed: tasks.filter(t => t.status === "completed").length,
+    pending: tasks.filter(item => item.status === "pending").length,
+    in_progress: tasks.filter(item => item.status === "in_progress").length,
+    completed: tasks.filter(item => item.status === "completed").length,
   };
 
   const columns = [
     {
       header: "Task",
-      render: (row) => (
-        <div>
-          <p className="font-medium text-sm">{row.title}</p>
-          {row.case_title && <p className="text-xs text-muted-foreground">{row.case_title}</p>}
-        </div>
-      ),
+      render: row => {
+        return (
+          <div>
+            <p className="font-medium text-sm">{row.title}</p>
+            {row.case_title && <p className="text-xs text-muted-foreground">{row.case_title}</p>}
+          </div>
+        );
+      },
     },
     {
       header: "Assigned To",
-      render: (row) => (
-        <span className="text-sm">
-          {row.assignees?.length > 0 
-            ? row.assignees.map(a => a.full_name).join(", ") 
-            : "—"}
-        </span>
-      ),
+      render: row => {
+        return (
+          <span className="text-sm">
+            {row.assignees?.length > 0 
+              ? row.assignees.map(a => a.full_name).join(", ") 
+              : "—"}
+          </span>
+        );
+      },
     },
     {
       header: "Priority",
-      render: (row) => (
-        <Badge className={cn("text-xs capitalize", PRIORITY_COLORS[row.priority])}>
-          {row.priority}
-        </Badge>
-      ),
+      render: row => {
+        return (
+          <Badge className={cn("text-xs capitalize", PRIORITY_COLORS[row.priority])}>
+            {row.priority}
+          </Badge>
+        );
+      },
     },
     {
       header: "Status",
-      render: (row) => (
-        <Select value={row.status} onValueChange={v => updateMutation.mutate({ id: row.id, data: { status: v } })}>
-          <SelectTrigger className="h-7 text-xs w-32">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="pending">Pending</SelectItem>
-            <SelectItem value="in_progress">In Progress</SelectItem>
-            <SelectItem value="completed">Completed</SelectItem>
-            <SelectItem value="cancelled">Cancelled</SelectItem>
-          </SelectContent>
-        </Select>
-      ),
+      render: row => {
+        return (
+          <Select value={row.status} onValueChange={v => updateMutation.mutate({ id: row.id, data: { status: v } })}>
+            <SelectTrigger className="h-7 text-xs w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="pending">{t("pending", "Pending")}</SelectItem>
+              <SelectItem value="in_progress">{t("in_progress", "In Progress")}</SelectItem>
+              <SelectItem value="completed">{t("completed", "Completed")}</SelectItem>
+              <SelectItem value="cancelled">{t("cancelled", "Cancelled")}</SelectItem>
+            </SelectContent>
+          </Select>
+        );
+      },
     },
     {
       header: "Due Date",
@@ -294,11 +310,13 @@ export default function Tasks() {
     },
     {
       header: "",
-      render: (row) => (
-        <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); setEditing(row); setShowForm(true); }}>
-          Edit
-        </Button>
-      ),
+      render: row => {
+        return (
+          <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); setEditing(row); setShowForm(true); }}>
+            {t("edit", "Edit")}
+          </Button>
+        );
+      },
     },
   ];
 
@@ -309,11 +327,10 @@ export default function Tasks() {
         subtitle="Manage and track team tasks"
         actions={
           <Button onClick={() => { setEditing(null); setShowForm(true); }} className="gap-2">
-            <Plus className="w-4 h-4" /> New Task
+            <Plus className="w-4 h-4" /> {t("new_task", "New Task")}
           </Button>
         }
       />
-
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
@@ -321,19 +338,20 @@ export default function Tasks() {
           { label: "Pending", value: stats.pending, icon: AlertCircle, color: "text-yellow-600 bg-yellow-50" },
           { label: "In Progress", value: stats.in_progress, icon: Clock, color: "text-blue-600 bg-blue-50" },
           { label: "Completed", value: stats.completed, icon: CheckCircle2, color: "text-green-600 bg-green-50" },
-        ].map(({ label, value, icon: Icon, color }) => (
-          <div key={label} className="bg-card rounded-xl border border-border p-4 flex items-center gap-3">
-            <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${color}`}>
-              <Icon className="w-4 h-4" />
+        ].map(({ label, value, icon: Icon, color }) => {
+          return (
+            <div key={label} className="bg-card rounded-xl border border-border p-4 flex items-center gap-3">
+              <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${color}`}>
+                <Icon className="w-4 h-4" />
+              </div>
+              <div>
+                <p className="text-xl font-bold">{value}</p>
+                <p className="text-xs text-muted-foreground">{label}</p>
+              </div>
             </div>
-            <div>
-              <p className="text-xl font-bold">{value}</p>
-              <p className="text-xs text-muted-foreground">{label}</p>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
-
       {/* Filters */}
       <div className="flex flex-wrap gap-3">
         <div className="relative flex-1 min-w-48">
@@ -343,15 +361,14 @@ export default function Tasks() {
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-36"><SelectValue /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Statuses</SelectItem>
-            <SelectItem value="pending">Pending</SelectItem>
-            <SelectItem value="in_progress">In Progress</SelectItem>
-            <SelectItem value="completed">Completed</SelectItem>
-            <SelectItem value="cancelled">Cancelled</SelectItem>
+            <SelectItem value="all">{t("all_statuses", "All Statuses")}</SelectItem>
+            <SelectItem value="pending">{t("pending", "Pending")}</SelectItem>
+            <SelectItem value="in_progress">{t("in_progress", "In Progress")}</SelectItem>
+            <SelectItem value="completed">{t("completed", "Completed")}</SelectItem>
+            <SelectItem value="cancelled">{t("cancelled", "Cancelled")}</SelectItem>
           </SelectContent>
         </Select>
       </div>
-
       <DataTable
         columns={columns}
         data={filtered}
@@ -359,7 +376,6 @@ export default function Tasks() {
         emptyTitle="No tasks yet"
         emptyDescription="Create your first task to get started."
       />
-
       {showForm && (
         <TaskFormDialog
           open={showForm}
@@ -368,6 +384,7 @@ export default function Tasks() {
           cases={cases}
           staff={staff}
           companyId={companyId}
+          caseTerm={caseTerm}
         />
       )}
     </div>

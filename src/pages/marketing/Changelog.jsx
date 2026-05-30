@@ -1,6 +1,8 @@
+import { useTranslation } from "react-i18next";
 import { GitCommit, Star, Zap } from 'lucide-react';
 
 export default function Changelog() {
+  const { t } = useTranslation();
   const updates = [
     {
       version: 'v2.4.0',
@@ -40,34 +42,39 @@ export default function Changelog() {
   return (
     <div className="py-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto min-h-screen">
       <div className="mb-16">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-4">Changelog</h1>
-        <p className="text-xl text-slate-600">New updates and improvements to Optalflow.</p>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-4">{t("changelog", "Changelog")}</h1>
+        <p className="text-xl text-slate-600">{t(
+          "new_updates_and_improvements_t",
+          "New updates and improvements to Optalflow."
+        )}</p>
       </div>
-
       <div className="space-y-12 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 before:to-transparent">
-        {updates.map((update, idx) => (
-          <div key={idx} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-            <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-blue-100 text-blue-600 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-sm relative z-10">
-              {update.type === 'feature' ? <Star className="w-4 h-4 fill-current" /> : <Zap className="w-4 h-4 fill-current" />}
-            </div>
-            
-            <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">{update.version}</span>
-                <time className="text-sm font-medium text-slate-500">{update.date}</time>
+        {updates.map((update, idx) => {
+          return (
+            <div key={idx} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+              <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-blue-100 text-blue-600 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-sm relative z-10">
+                {update.type === 'feature' ? <Star className="w-4 h-4 fill-current" /> : <Zap className="w-4 h-4 fill-current" />}
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-4">{update.title}</h3>
-              <ul className="space-y-2">
-                {update.changes.map((change, i) => (
-                  <li key={i} className="flex items-start gap-2 text-slate-600 text-sm">
-                    <GitCommit className="w-4 h-4 mt-0.5 text-slate-400 shrink-0" />
-                    <span>{change}</span>
-                  </li>
-                ))}
-              </ul>
+              <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">{update.version}</span>
+                  <time className="text-sm font-medium text-slate-500">{update.date}</time>
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-4">{update.title}</h3>
+                <ul className="space-y-2">
+                  {update.changes.map((change, i) => {
+                    return (
+                      <li key={i} className="flex items-start gap-2 text-slate-600 text-sm">
+                        <GitCommit className="w-4 h-4 mt-0.5 text-slate-400 shrink-0" />
+                        <span>{change}</span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

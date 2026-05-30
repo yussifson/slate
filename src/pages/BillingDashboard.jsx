@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -54,6 +55,7 @@ const EXPENSE_CATEGORY_LABELS = {
 };
 
 function CompanyBilling({ companyId }) {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
@@ -169,26 +171,24 @@ function CompanyBilling({ companyId }) {
         title="Billing"
         subtitle="Invoices and expenses"
       />
-
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard icon={DollarSign} label="Collected" value={formatCurrency(totalCollected, currency)} color="bg-green-50 text-green-600" />
         <MetricCard icon={Clock} label="Pending" value={formatCurrency(totalPending, currency)} color="bg-blue-50 text-blue-600" />
         <MetricCard icon={AlertCircle} label="Overdue" value={overdueCount} color="bg-red-50 text-red-600" />
         <MetricCard icon={Receipt} label="Unbilled Expenses" value={unbilledExpenses.length} color="bg-amber-50 text-amber-600" />
       </div>
-
       <Tabs defaultValue="invoices">
         <div className="flex items-center justify-between flex-wrap gap-3">
           <TabsList>
-            <TabsTrigger value="invoices">Invoices</TabsTrigger>
-            <TabsTrigger value="expenses">Expenses</TabsTrigger>
+            <TabsTrigger value="invoices">{t("invoices", "Invoices")}</TabsTrigger>
+            <TabsTrigger value="expenses">{t("expenses", "Expenses")}</TabsTrigger>
           </TabsList>
           <div className="flex gap-2">
             <Button size="sm" variant="outline" onClick={() => { setEditingExpense(null); setShowExpenseForm(true); }}>
-              <Plus className="w-4 h-4 mr-1" /> Log Expense
+              <Plus className="w-4 h-4 mr-1" /> {t("log_expense", "Log Expense")}
             </Button>
             <Button size="sm" onClick={() => { setEditingInvoice(null); setShowForm(true); }}>
-              <Plus className="w-4 h-4 mr-1" /> New Invoice
+              <Plus className="w-4 h-4 mr-1" /> {t("new_invoice", "New Invoice")}
             </Button>
           </div>
         </div>
@@ -203,28 +203,31 @@ function CompanyBilling({ companyId }) {
             <Select value={filterType} onValueChange={setFilterType}>
               <SelectTrigger className="w-36"><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="case">By Case</SelectItem>
-                <SelectItem value="client">By Client</SelectItem>
+                <SelectItem value="all">{t("all_types", "All Types")}</SelectItem>
+                <SelectItem value="case">{t("by_case", "By Case")}</SelectItem>
+                <SelectItem value="client">{t("by_client", "By Client")}</SelectItem>
               </SelectContent>
             </Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-36"><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="draft">Draft</SelectItem>
-                <SelectItem value="sent">Sent</SelectItem>
-                <SelectItem value="paid">Paid</SelectItem>
-                <SelectItem value="overdue">Overdue</SelectItem>
+                <SelectItem value="all">{t("all_status", "All Status")}</SelectItem>
+                <SelectItem value="draft">{t("draft", "Draft")}</SelectItem>
+                <SelectItem value="sent">{t("sent", "Sent")}</SelectItem>
+                <SelectItem value="paid">{t("paid", "Paid")}</SelectItem>
+                <SelectItem value="overdue">{t("overdue", "Overdue")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           {isLoading ? (
-            <div className="text-center py-12 text-sm text-muted-foreground">Loading...</div>
+            <div className="text-center py-12 text-sm text-muted-foreground">{t("loading", "Loading...")}</div>
           ) : Object.keys(grouped).length === 0 ? (
             <div className="bg-card rounded-xl border border-border p-12 text-center text-sm text-muted-foreground">
-              No invoices found. Create your first invoice to get started.
+              {t(
+                "no_invoices_found_create_your_",
+                "No invoices found. Create your first invoice to get started."
+              )}
             </div>
           ) : (
             <div className="space-y-4">
@@ -234,48 +237,50 @@ function CompanyBilling({ companyId }) {
                   <div key={key} className="bg-card rounded-xl border border-border overflow-hidden">
                     <div className="px-4 py-3 bg-muted/30 border-b border-border flex items-center justify-between">
                       <p className="text-sm font-semibold">{group.label}</p>
-                      <span className="text-xs font-medium text-muted-foreground">{formatCurrency(groupTotal, currency)} total</span>
+                      <span className="text-xs font-medium text-muted-foreground">{formatCurrency(groupTotal, currency)} {t("total", "total")}</span>
                     </div>
                     <div className="divide-y divide-border">
-                      {group.invoices.map(inv => (
-                        <div key={inv.id} className="px-4 py-3 flex items-center gap-4 hover:bg-muted/20 transition-colors">
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="text-sm font-medium">{inv.invoice_number || "No #"}</span>
-                              <Badge className={`text-[10px] ${INVOICE_STATUS_COLORS[inv.status]}`}>{inv.status}</Badge>
+                      {group.invoices.map(inv => {
+                        return (
+                          <div key={inv.id} className="px-4 py-3 flex items-center gap-4 hover:bg-muted/20 transition-colors">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="text-sm font-medium">{inv.invoice_number || "No #"}</span>
+                                <Badge className={`text-[10px] ${INVOICE_STATUS_COLORS[inv.status]}`}>{inv.status}</Badge>
+                              </div>
+                              <p className="text-xs text-muted-foreground mt-0.5">
+                                {inv.client_name} {inv.due_date ? `· Due ${format(new Date(inv.due_date), "MMM d, yyyy")}` : ""}{inv.due_time ? ` at ${inv.due_time}` : ""}
+                              </p>
                             </div>
-                            <p className="text-xs text-muted-foreground mt-0.5">
-                              {inv.client_name} {inv.due_date ? `· Due ${format(new Date(inv.due_date), "MMM d, yyyy")}` : ""}{inv.due_time ? ` at ${inv.due_time}` : ""}
-                            </p>
+                            <p className="text-sm font-bold shrink-0">{formatCurrency(inv.total_amount, inv.currency)}</p>
+                            <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => setEditingInvoice(inv)}>
+                              <Pencil className="w-3.5 h-3.5" />
+                            </Button>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
+                                  <MoreVertical className="w-4 h-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                {inv.status !== "paid" && (
+                                  <DropdownMenuItem onClick={() => updateMutation.mutate({ id: inv.id, data: { status: "paid", paid_date: new Date().toISOString().split("T")[0] } })}>
+                                    <CheckCircle className="w-4 h-4 mr-2 text-green-600" /> {t("mark_as_paid", "Mark as Paid")}
+                                  </DropdownMenuItem>
+                                )}
+                                {inv.status === "draft" && (
+                                  <DropdownMenuItem onClick={() => updateMutation.mutate({ id: inv.id, data: { status: "sent" } })}>
+                                    <Send className="w-4 h-4 mr-2" /> {t("mark_as_sent", "Mark as Sent")}
+                                  </DropdownMenuItem>
+                                )}
+                                <DropdownMenuItem className="text-destructive" onClick={() => updateMutation.mutate({ id: inv.id, data: { status: "cancelled" } })}>
+                                  {t("cancel_invoice", "Cancel Invoice")}
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </div>
-                          <p className="text-sm font-bold shrink-0">{formatCurrency(inv.total_amount, inv.currency)}</p>
-                          <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => setEditingInvoice(inv)}>
-                            <Pencil className="w-3.5 h-3.5" />
-                          </Button>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
-                                <MoreVertical className="w-4 h-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              {inv.status !== "paid" && (
-                                <DropdownMenuItem onClick={() => updateMutation.mutate({ id: inv.id, data: { status: "paid", paid_date: new Date().toISOString().split("T")[0] } })}>
-                                  <CheckCircle className="w-4 h-4 mr-2 text-green-600" /> Mark as Paid
-                                </DropdownMenuItem>
-                              )}
-                              {inv.status === "draft" && (
-                                <DropdownMenuItem onClick={() => updateMutation.mutate({ id: inv.id, data: { status: "sent" } })}>
-                                  <Send className="w-4 h-4 mr-2" /> Mark as Sent
-                                </DropdownMenuItem>
-                              )}
-                              <DropdownMenuItem className="text-destructive" onClick={() => updateMutation.mutate({ id: inv.id, data: { status: "cancelled" } })}>
-                                Cancel Invoice
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 );
@@ -287,46 +292,50 @@ function CompanyBilling({ companyId }) {
         {/* ── Expenses Tab ── */}
         <TabsContent value="expenses" className="mt-4">
           {expensesLoading ? (
-            <div className="text-center py-12 text-sm text-muted-foreground">Loading...</div>
+            <div className="text-center py-12 text-sm text-muted-foreground">{t("loading", "Loading...")}</div>
           ) : expenses.length === 0 ? (
             <div className="bg-card rounded-xl border border-border p-12 text-center text-sm text-muted-foreground">
-              No expenses logged yet. Click "Log Expense" to add one.
+              {t(
+                "no_expenses_logged_yet_click_l",
+                "No expenses logged yet. Click \"Log Expense\" to add one."
+              )}
             </div>
           ) : (
             <div className="bg-card rounded-xl border border-border overflow-hidden">
               <div className="divide-y divide-border">
-                {expenses.map(exp => (
-                  <div key={exp.id} className="px-4 py-3 flex items-center gap-4 hover:bg-muted/20 transition-colors">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-sm font-medium">{exp.description}</span>
-                        <Badge variant="outline" className="text-[10px] capitalize">{EXPENSE_CATEGORY_LABELS[exp.category] || exp.category}</Badge>
-                        {exp.billable && !exp.billed && <Badge className="text-[10px] bg-amber-100 text-amber-700">Unbilled</Badge>}
-                        {exp.billed && <Badge className="text-[10px] bg-green-100 text-green-700">Billed</Badge>}
-                        {!exp.billable && <Badge className="text-[10px] bg-gray-100 text-gray-600">Internal</Badge>}
+                {expenses.map(exp => {
+                  return (
+                    <div key={exp.id} className="px-4 py-3 flex items-center gap-4 hover:bg-muted/20 transition-colors">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-sm font-medium">{exp.description}</span>
+                          <Badge variant="outline" className="text-[10px] capitalize">{EXPENSE_CATEGORY_LABELS[exp.category] || exp.category}</Badge>
+                          {exp.billable && !exp.billed && <Badge className="text-[10px] bg-amber-100 text-amber-700">{t("unbilled", "Unbilled")}</Badge>}
+                          {exp.billed && <Badge className="text-[10px] bg-green-100 text-green-700">{t("billed", "Billed")}</Badge>}
+                          {!exp.billable && <Badge className="text-[10px] bg-gray-100 text-gray-600">{t("internal", "Internal")}</Badge>}
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          {exp.case_title || exp.client_name || "—"}
+                          {exp.expense_date ? ` · ${format(new Date(exp.expense_date), "MMM d, yyyy")}` : ""}
+                        </p>
                       </div>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        {exp.case_title || exp.client_name || "—"}
-                        {exp.expense_date ? ` · ${format(new Date(exp.expense_date), "MMM d, yyyy")}` : ""}
-                      </p>
-                    </div>
-                    <p className="text-sm font-bold shrink-0">{formatCurrency(exp.amount, exp.currency || currency)}</p>
-                    {exp.billable && !exp.billed && (
-                      <Button size="sm" variant="outline" className="shrink-0 text-xs h-7 gap-1" onClick={() => addExpenseToInvoice(exp)}>
-                        <Plus className="w-3 h-3" /> Invoice
+                      <p className="text-sm font-bold shrink-0">{formatCurrency(exp.amount, exp.currency || currency)}</p>
+                      {exp.billable && !exp.billed && (
+                        <Button size="sm" variant="outline" className="shrink-0 text-xs h-7 gap-1" onClick={() => addExpenseToInvoice(exp)}>
+                          <Plus className="w-3 h-3" /> {t("invoice", "Invoice")}
+                        </Button>
+                      )}
+                      <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => { setEditingExpense(exp); setShowExpenseForm(true); }}>
+                        <Pencil className="w-3.5 h-3.5" />
                       </Button>
-                    )}
-                    <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => { setEditingExpense(exp); setShowExpenseForm(true); }}>
-                      <Pencil className="w-3.5 h-3.5" />
-                    </Button>
-                  </div>
-                ))}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
         </TabsContent>
       </Tabs>
-
       {(showForm || editingInvoice) && (
         <InvoiceForm
           open={showForm || !!editingInvoice}
@@ -337,7 +346,6 @@ function CompanyBilling({ companyId }) {
           currency={currency}
         />
       )}
-
       {showExpenseForm && (
         <ExpenseForm
           open={showExpenseForm}
@@ -409,10 +417,10 @@ function SuperAdminBilling() {
         actions={
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={runReminders} disabled={running} className="gap-1.5">
-              <Send className="w-3.5 h-3.5" /> Send Reminders
+              <Send className="w-3.5 h-3.5" /> {t("send_reminders", "Send Reminders")}
             </Button>
             <Button size="sm" onClick={runBilling} disabled={running} className="gap-1.5">
-              <RefreshCw className={`w-3.5 h-3.5 ${running ? "animate-spin" : ""}`} /> Run Billing Cycle
+              <RefreshCw className={`w-3.5 h-3.5 ${running ? "animate-spin" : ""}`} /> {t("run_billing_cycle", "Run Billing Cycle")}
             </Button>
           </div>
         }
@@ -425,22 +433,25 @@ function SuperAdminBilling() {
       </div>
       <div className="bg-card rounded-xl border border-border overflow-hidden">
         <div className="p-4 border-b border-border flex items-center justify-between gap-3 flex-wrap">
-          <h2 className="text-sm font-semibold">Subscription Invoices</h2>
+          <h2 className="text-sm font-semibold">{t("subscription_invoices", "Subscription Invoices")}</h2>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-36"><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Statuses</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="sent">Sent</SelectItem>
-              <SelectItem value="paid">Paid</SelectItem>
-              <SelectItem value="overdue">Overdue</SelectItem>
+              <SelectItem value="all">{t("all_statuses", "All Statuses")}</SelectItem>
+              <SelectItem value="pending">{t("pending", "Pending")}</SelectItem>
+              <SelectItem value="sent">{t("sent", "Sent")}</SelectItem>
+              <SelectItem value="paid">{t("paid", "Paid")}</SelectItem>
+              <SelectItem value="overdue">{t("overdue", "Overdue")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
         {isLoading ? (
-          <div className="p-12 text-center text-sm text-muted-foreground">Loading invoices...</div>
+          <div className="p-12 text-center text-sm text-muted-foreground">{t("loading_invoices", "Loading invoices...")}</div>
         ) : filtered.length === 0 ? (
-          <div className="p-12 text-center text-sm text-muted-foreground">No invoices found. Run a billing cycle to generate invoices.</div>
+          <div className="p-12 text-center text-sm text-muted-foreground">{t(
+            "no_invoices_found_run_a_billin",
+            "No invoices found. Run a billing cycle to generate invoices."
+          )}</div>
         ) : (
           <div className="divide-y divide-border">
             {filtered.map(inv => {
@@ -455,10 +466,10 @@ function SuperAdminBilling() {
                       </Badge>
                     </div>
                     <div className="flex flex-wrap gap-3 mt-0.5 text-xs text-muted-foreground">
-                      <span>{inv.plan_name} Plan</span>
-                      <span>Period: {inv.billing_period}</span>
-                      <span>Due: {inv.due_date ? format(new Date(inv.due_date), "MMM d, yyyy") : "—"}</span>
-                      {inv.reminder_count > 0 && <span className="text-amber-600">{inv.reminder_count} reminder{inv.reminder_count > 1 ? "s" : ""} sent</span>}
+                      <span>{inv.plan_name} {t("plan", "Plan")}</span>
+                      <span>{t("period", "Period:")} {inv.billing_period}</span>
+                      <span>{t("due", "Due:")} {inv.due_date ? format(new Date(inv.due_date), "MMM d, yyyy") : "—"}</span>
+                      {inv.reminder_count > 0 && <span className="text-amber-600">{inv.reminder_count} {t("reminder", "reminder")}{inv.reminder_count > 1 ? "s" : ""} {t("sent", "sent")}</span>}
                     </div>
                   </div>
                   <p className="text-base font-bold shrink-0">${(inv.amount_usd || 0).toLocaleString()}</p>
@@ -471,16 +482,16 @@ function SuperAdminBilling() {
                     <DropdownMenuContent align="end">
                       {inv.status !== "paid" && (
                         <DropdownMenuItem onClick={() => updateMutation.mutate({ id: inv.id, data: { status: "paid", paid_date: new Date().toISOString().split("T")[0] } })}>
-                          <CheckCircle className="w-4 h-4 mr-2 text-green-600" /> Mark as Paid
+                          <CheckCircle className="w-4 h-4 mr-2 text-green-600" /> {t("mark_as_paid", "Mark as Paid")}
                         </DropdownMenuItem>
                       )}
                       {inv.status !== "paid" && (
                         <DropdownMenuItem onClick={() => sendReminder(inv)}>
-                          <Send className="w-4 h-4 mr-2" /> Send Reminder Email
+                          <Send className="w-4 h-4 mr-2" /> {t("send_reminder_email", "Send Reminder Email")}
                         </DropdownMenuItem>
                       )}
                       <DropdownMenuItem onClick={() => updateMutation.mutate({ id: inv.id, data: { status: "cancelled" } })} className="text-destructive">
-                        Cancel Invoice
+                        {t("cancel_invoice", "Cancel Invoice")}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -497,6 +508,7 @@ function SuperAdminBilling() {
 // ─── Root ──────────────────────────────────────────────────────────────────────
 
 export default function BillingDashboard() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const companyId = useCompanyId();
   const { impersonatedCompany } = useImpersonation();

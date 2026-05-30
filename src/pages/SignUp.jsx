@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
@@ -8,6 +9,7 @@ import { Logo } from '@/components/ui/Logo';
 import { getSubdomainAndBase } from '@/lib/domainUtils';
 
 export default function SignUp() {
+  const { t } = useTranslation();
   const [companyName, setCompanyName] = useState('');
   const [subdomain, setSubdomain] = useState('');
   const [industryType, setIndustryType] = useState('law');
@@ -91,8 +93,11 @@ export default function SignUp() {
         <div className="w-full max-w-sm mx-auto">
           <div className="mb-4 text-center lg:text-left">
             <Logo className="w-8 h-8 mx-auto lg:mx-0 mb-3" />
-            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">Register Workspace</h2>
-            <p className="text-xs text-slate-500 font-medium mt-1">Create an account to start managing your business</p>
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">{t("register_workspace", "Register Workspace")}</h2>
+            <p className="text-xs text-slate-500 font-medium mt-1">{t(
+              "create_an_account_to_start_man",
+              "Create an account to start managing your business"
+            )}</p>
           </div>
           
           <form className="space-y-3" onSubmit={handleSignUp}>
@@ -103,7 +108,7 @@ export default function SignUp() {
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                   <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-                    Company Name
+                    {t("company_name", "Company Name")}
                   </label>
                   <Input
                     required
@@ -116,7 +121,7 @@ export default function SignUp() {
 
                 <div className="space-y-1.5">
                   <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-                    Subdomain
+                    {t("subdomain", "Subdomain")}
                   </label>
                   <Input
                     required
@@ -129,21 +134,21 @@ export default function SignUp() {
               </div>
 
               <div>
-                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Workspace Region</label>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">{t("workspace_region", "Workspace Region")}</label>
                 <Select value={country} onValueChange={setCountry}>
                   <SelectTrigger className="w-full h-10 text-sm">
                     <SelectValue placeholder="Select a region" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Ghana">Ghana</SelectItem>
-                    <SelectItem value="Nigeria">Nigeria</SelectItem>
-                    <SelectItem value="Sierra Leone">Sierra Leone</SelectItem>
+                    <SelectItem value="Ghana">{t("ghana", "Ghana")}</SelectItem>
+                    <SelectItem value="Nigeria">{t("nigeria", "Nigeria")}</SelectItem>
+                    <SelectItem value="Sierra Leone">{t("sierra_leone", "Sierra Leone")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div>
-                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Admin Email</label>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">{t("admin_email", "Admin Email")}</label>
                 <Input
                   type="email"
                   required
@@ -155,7 +160,7 @@ export default function SignUp() {
               </div>
 
               <div>
-                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Admin Password</label>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">{t("admin_password", "Admin Password")}</label>
                 <Input
                   type="password"
                   required
@@ -177,14 +182,13 @@ export default function SignUp() {
           </form>
 
             <div className="text-center mt-4">
-              <span className="text-xs text-slate-500 font-medium">Already have an account? </span>
+              <span className="text-xs text-slate-500 font-medium">{t("already_have_an_account", "Already have an account?")} </span>
               <a href="/login" className="text-xs font-bold text-blue-600 hover:underline">
-                Sign in
+                {t("sign_in", "Sign in")}
               </a>
             </div>
         </div>
       </div>
-
       {/* Right Side: Marketing Visual */}
       <div className="hidden lg:flex flex-1 relative items-center justify-center bg-slate-50 overflow-hidden">
         {/* Abstract Pattern Background */}
@@ -196,14 +200,20 @@ export default function SignUp() {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-[11px] font-bold text-blue-600 mb-6 uppercase tracking-widest">
               <span className="flex h-1.5 w-1.5 rounded-full bg-blue-500" />
-              Scale Faster
+              {t("scale_faster", "Scale Faster")}
             </div>
             
             <h3 className="text-4xl 2xl:text-5xl font-extrabold text-slate-900 mb-5 leading-[1.1] tracking-tight">
-              A workspace that grows with your ambition.
+              {t(
+                "a_workspace_that_grows_with_yo",
+                "A workspace that grows with your ambition."
+              )}
             </h3>
             <p className="text-lg text-slate-500 font-medium max-w-lg leading-relaxed">
-              Optalflow unifies your team's workflow, client communication, and billing into one single, beautifully simple platform.
+              {t(
+                "optalflow_unifies_your_team_s_",
+                "Optalflow unifies your team's workflow, client communication, and billing into one single, beautifully simple platform."
+              )}
             </p>
           </div>
 
@@ -212,16 +222,22 @@ export default function SignUp() {
               <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-700 mb-4 shadow-sm">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
               </div>
-              <h4 className="text-xl font-bold text-slate-900 mb-1">Set up in seconds</h4>
-              <p className="text-sm text-slate-500 font-medium leading-relaxed">No engineering required. Just invite your team and start working.</p>
+              <h4 className="text-xl font-bold text-slate-900 mb-1">{t("set_up_in_seconds", "Set up in seconds")}</h4>
+              <p className="text-sm text-slate-500 font-medium leading-relaxed">{t(
+                "no_engineering_required_just_i",
+                "No engineering required. Just invite your team and start working."
+              )}</p>
             </div>
             
             <div>
               <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-700 mb-4 shadow-sm">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
               </div>
-              <h4 className="text-xl font-bold text-slate-900 mb-1">Bank-grade security</h4>
-              <p className="text-sm text-slate-500 font-medium leading-relaxed">SOC2 compliant infrastructure to keep your client data safe.</p>
+              <h4 className="text-xl font-bold text-slate-900 mb-1">{t("bank_grade_security", "Bank-grade security")}</h4>
+              <p className="text-sm text-slate-500 font-medium leading-relaxed">{t(
+                "soc2_compliant_infrastructure_",
+                "SOC2 compliant infrastructure to keep your client data safe."
+              )}</p>
             </div>
           </div>
         </div>

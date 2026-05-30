@@ -1,9 +1,11 @@
+import { useTranslation } from "react-i18next";
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Bell, Calendar } from "lucide-react";
 import { format, differenceInHours, isAfter } from "date-fns";
 
 export default function HearingReminders({ hearings, userEmail, isAdmin }) {
+  const { t } = useTranslation();
   const now = new Date();
 
   // Filter hearings within next 24 hours for this lawyer (or all if admin)
@@ -22,7 +24,7 @@ export default function HearingReminders({ hearings, userEmail, isAdmin }) {
       <div className="px-4 py-3 bg-amber-100/70 border-b border-amber-200 flex items-center gap-2">
         <Bell className="w-4 h-4 text-amber-600 animate-pulse" />
         <span className="text-sm font-semibold text-amber-800">
-          {urgent.length} Hearing{urgent.length > 1 ? "s" : ""} Within 24 Hours
+          {urgent.length} {t("hearing", "Hearing")}{urgent.length > 1 ? "s" : ""} {t("within_24_hours", "Within 24 Hours")}
         </span>
       </div>
       <div className="divide-y divide-amber-100">

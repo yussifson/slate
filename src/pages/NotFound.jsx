@@ -1,9 +1,11 @@
+import { useTranslation } from "react-i18next";
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FileQuestion, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function NotFound() {
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-slate-50 p-6 font-sans">
       <div className="max-w-md w-full bg-white border border-slate-200 rounded-3xl p-10 text-center shadow-2xl shadow-slate-200/50">
@@ -11,13 +13,16 @@ export default function NotFound() {
           <FileQuestion className="w-12 h-12" strokeWidth={1.5} />
         </div>
         <h1 className="text-4xl font-black text-slate-900 tracking-tight mb-4">
-          404
+          {t("404", "404")}
         </h1>
         <h2 className="text-xl font-bold text-slate-700 mb-4">
-          Page Not Found
+          {t("page_not_found", "Page Not Found")}
         </h2>
         <p className="text-slate-500 font-medium leading-relaxed mb-10">
-          The page or workspace you are looking for doesn't exist, has been moved, or you don't have access to it.
+          {t(
+            "the_page_or_workspace_you_are_",
+            "The page or workspace you are looking for doesn't exist, has been moved, or you don't have access to it."
+          )}
         </p>
         
         <div className="flex flex-col gap-3">
@@ -27,7 +32,7 @@ export default function NotFound() {
           >
             <Link to="/">
               <ArrowLeft className="w-5 h-5 mr-2" />
-              Return Home
+              {t("return_home", "Return Home")}
             </Link>
           </Button>
         </div>

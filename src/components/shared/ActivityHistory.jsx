@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useQuery } from '@tanstack/react-query';
 import { Clock, UserCircle, Edit, Trash2, Plus, AlertCircle } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
@@ -10,6 +11,7 @@ const ACTION_CONFIG = {
 };
 
 export default function ActivityHistory({ recordId, recordType }) {
+  const { t } = useTranslation();
   const { data: logs = [], isLoading } = useQuery({
     queryKey: ['audit_logs', recordId],
     queryFn: async () => {
@@ -28,15 +30,17 @@ export default function ActivityHistory({ recordId, recordType }) {
   if (isLoading) {
     return (
       <div className="space-y-3 mt-4">
-        {[...Array(3)].map((_, i) => (
-          <div key={i} className="flex items-start gap-3 animate-pulse">
-            <div className="w-8 h-8 rounded-full bg-muted" />
-            <div className="flex-1 space-y-1.5">
-              <div className="h-3 bg-muted rounded w-1/3" />
-              <div className="h-2 bg-muted rounded w-2/3" />
+        {[...Array(3)].map((_, i) => {
+          return (
+            <div key={i} className="flex items-start gap-3 animate-pulse">
+              <div className="w-8 h-8 rounded-full bg-muted" />
+              <div className="flex-1 space-y-1.5">
+                <div className="h-3 bg-muted rounded w-1/3" />
+                <div className="h-2 bg-muted rounded w-2/3" />
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     );
   }
@@ -45,7 +49,7 @@ export default function ActivityHistory({ recordId, recordType }) {
     return (
       <div className="text-center py-8 text-muted-foreground">
         <Clock className="w-8 h-8 mx-auto mb-2 opacity-30" />
-        <p className="text-sm">No activity recorded yet</p>
+        <p className="text-sm">{t("no_activity_recorded_yet", "No activity recorded yet")}</p>
       </div>
     );
   }
@@ -80,9 +84,9 @@ export default function ActivityHistory({ recordId, recordType }) {
               </div>
               {log.changes && Object.keys(log.changes).length > 0 && (
                 <div className="mt-1.5 text-xs text-muted-foreground bg-muted/40 rounded-md p-2 font-mono overflow-x-auto">
-                  {Object.entries(log.changes).map(([key, val]) => (
-                    <div key={key}><span className="text-primary">{key}</span>: {String(val)}</div>
-                  ))}
+                  {Object.entries(log.changes).map(([key, val]) => {
+                    return (<div key={key}><span className="text-primary">{key}</span>: {String(val)}</div>);
+                  })}
                 </div>
               )}
             </div>

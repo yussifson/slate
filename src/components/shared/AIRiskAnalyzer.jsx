@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { generateText } from '@/lib/cloudflareAI';
 import { Sparkles, ShieldAlert, AlertTriangle, Info, CheckCircle, X, Loader2 } from 'lucide-react';
@@ -30,6 +31,7 @@ const RISK_CONFIG = {
  * Props: records (array), recordType (string), onClose
  */
 export default function AIRiskAnalyzer({ records = [], recordType = 'record', onClose }) {
+  const { t } = useTranslation();
   const [findings, setFindings] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
@@ -81,8 +83,8 @@ export default function AIRiskAnalyzer({ records = [], recordType = 'record', on
               <ShieldAlert className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-card-foreground">AI Risk Analyzer</h2>
-              <p className="text-xs text-muted-foreground">Scanning {records.length} {recordType} records for anomalies</p>
+              <h2 className="text-lg font-bold text-card-foreground">{t("ai_risk_analyzer", "AI Risk Analyzer")}</h2>
+              <p className="text-xs text-muted-foreground">{t("scanning", "Scanning")} {records.length} {recordType} {t("records_for_anomalies", "records for anomalies")}</p>
             </div>
           </div>
           <button onClick={onClose} className="text-muted-foreground hover:bg-muted p-1.5 rounded-full transition-colors">
@@ -95,15 +97,18 @@ export default function AIRiskAnalyzer({ records = [], recordType = 'record', on
           {findings === null && !isAnalyzing && (
             <div className="text-center py-10">
               <ShieldAlert className="w-14 h-14 mx-auto text-amber-400 mb-4 opacity-60" />
-              <h3 className="text-base font-bold text-card-foreground mb-2">Ready to Analyze</h3>
+              <h3 className="text-base font-bold text-card-foreground mb-2">{t("ready_to_analyze", "Ready to Analyze")}</h3>
               <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-                Our AI will scan your {recordType} records for fraud patterns, unusual activity, and business risks.
+                {t("our_ai_will_scan_your", "Our AI will scan your")} {recordType} {t(
+                  "records_for_fraud_patterns_unu",
+                  "records for fraud patterns, unusual activity, and business risks."
+                )}
               </p>
               <Button
                 onClick={handleAnalyze}
                 className="mt-6 gap-2 bg-amber-600 hover:bg-amber-700 text-white px-8"
               >
-                <Sparkles className="w-4 h-4" /> Start Analysis
+                <Sparkles className="w-4 h-4" /> {t("start_analysis", "Start Analysis")}
               </Button>
             </div>
           )}
@@ -115,8 +120,8 @@ export default function AIRiskAnalyzer({ records = [], recordType = 'record', on
                 <div className="absolute inset-0 rounded-full border-4 border-t-amber-500 animate-spin" />
                 <ShieldAlert className="absolute inset-0 m-auto w-6 h-6 text-amber-500" />
               </div>
-              <p className="text-sm font-medium text-card-foreground">Analyzing records with AI...</p>
-              <p className="text-xs text-muted-foreground mt-1">This may take a few seconds</p>
+              <p className="text-sm font-medium text-card-foreground">{t("analyzing_records_with_ai", "Analyzing records with AI...")}</p>
+              <p className="text-xs text-muted-foreground mt-1">{t("this_may_take_a_few_seconds", "This may take a few seconds")}</p>
             </div>
           )}
 
@@ -125,20 +130,20 @@ export default function AIRiskAnalyzer({ records = [], recordType = 'record', on
               {findings.length === 0 ? (
                 <div className="text-center py-10">
                   <CheckCircle className="w-14 h-14 mx-auto text-emerald-500 mb-4" />
-                  <h3 className="text-base font-bold text-card-foreground">No Anomalies Detected</h3>
-                  <p className="text-sm text-muted-foreground mt-1">All {records.length} records look healthy.</p>
+                  <h3 className="text-base font-bold text-card-foreground">{t("no_anomalies_detected", "No Anomalies Detected")}</h3>
+                  <p className="text-sm text-muted-foreground mt-1">{t("all", "All")} {records.length} {t("records_look_healthy", "records look healthy.")}</p>
                   <Button onClick={handleAnalyze} variant="outline" className="mt-4 gap-2" size="sm">
-                    <Sparkles className="w-3.5 h-3.5" /> Re-analyze
+                    <Sparkles className="w-3.5 h-3.5" /> {t("re_analyze", "Re-analyze")}
                   </Button>
                 </div>
               ) : (
                 <>
                   <div className="flex items-center justify-between">
                     <p className="text-sm font-bold text-card-foreground">
-                      {findings.length} Finding{findings.length > 1 ? 's' : ''} Detected
+                      {findings.length} {t("finding", "Finding")}{findings.length > 1 ? 's' : ''} {t("detected", "Detected")}
                     </p>
                     <Button onClick={handleAnalyze} variant="outline" size="sm" className="gap-1.5 text-xs h-7">
-                      <Sparkles className="w-3 h-3" /> Re-run
+                      <Sparkles className="w-3 h-3" /> {t("re_run", "Re-run")}
                     </Button>
                   </div>
                   <div className="space-y-3">
@@ -156,7 +161,7 @@ export default function AIRiskAnalyzer({ records = [], recordType = 'record', on
                                 </span>
                                 {finding.record_ref && (
                                   <span className="text-[10px] font-mono text-current opacity-70">
-                                    Ref: {finding.record_ref}
+                                    {t("ref", "Ref:")} {finding.record_ref}
                                   </span>
                                 )}
                               </div>
@@ -176,7 +181,7 @@ export default function AIRiskAnalyzer({ records = [], recordType = 'record', on
 
         {/* Footer */}
         <div className="p-4 border-t border-border bg-muted/20 rounded-b-2xl flex justify-end">
-          <Button variant="outline" onClick={onClose}>Close</Button>
+          <Button variant="outline" onClick={onClose}>{t("close", "Close")}</Button>
         </div>
       </div>
     </div>

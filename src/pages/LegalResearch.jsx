@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
@@ -31,6 +32,7 @@ function Section({ icon: Icon, title, children, defaultOpen = true }) {
 }
 
 export default function LegalResearch() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [question, setQuestion] = useState("");
   const [jurisdiction, setJurisdiction] = useState("Ghana");
@@ -88,17 +90,16 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
         title="Legal Research Assistant"
         subtitle="AI-powered research on West African law — case law, statutes, and practical guidance"
       />
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Query Panel */}
         <div className="lg:col-span-1 space-y-4">
           <div className="bg-card border border-border rounded-xl p-4 space-y-4">
             <div className="flex items-center gap-2 mb-1">
               <Sparkles className="w-4 h-4 text-primary" />
-              <h2 className="text-sm font-semibold">Ask a Legal Question</h2>
+              <h2 className="text-sm font-semibold">{t("ask_a_legal_question", "Ask a Legal Question")}</h2>
             </div>
             <div>
-              <Label className="text-xs mb-1">Your Question *</Label>
+              <Label className="text-xs mb-1">{t("your_question", "Your Question *")}</Label>
               <Textarea
                 placeholder="e.g. What are the requirements for filing a caveat against probate in Ghana?"
                 value={question}
@@ -107,39 +108,48 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
               />
             </div>
             <div>
-              <Label className="text-xs mb-1">Jurisdiction</Label>
+              <Label className="text-xs mb-1">{t("jurisdiction", "Jurisdiction")}</Label>
               <Select value={jurisdiction} onValueChange={setJurisdiction}>
                 <SelectTrigger className="h-8 text-sm"><SelectValue /></SelectTrigger>
-                <SelectContent>{JURISDICTIONS.map(j => <SelectItem key={j} value={j}>{j}</SelectItem>)}</SelectContent>
+                <SelectContent>{JURISDICTIONS.map(j => {
+                  return <SelectItem key={j} value={j}>{j}</SelectItem>;
+                })}</SelectContent>
               </Select>
             </div>
             <div>
-              <Label className="text-xs mb-1">Case Type (optional)</Label>
+              <Label className="text-xs mb-1">{t("case_type_optional", "Case Type (optional)")}</Label>
               <Select value={caseType} onValueChange={setCaseType}>
                 <SelectTrigger className="h-8 text-sm"><SelectValue placeholder="Any" /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value={null}>Any</SelectItem>
-                  {CASE_TYPES.map(t => <SelectItem key={t} value={t} className="capitalize">{t}</SelectItem>)}
+                  <SelectItem value={null}>{t("any", "Any")}</SelectItem>
+                  {CASE_TYPES.map(item => {
+                    return <SelectItem key={item} value={item} className="capitalize">{item}</SelectItem>;
+                  })}
                 </SelectContent>
               </Select>
             </div>
             <Button className="w-full gap-2" onClick={handleResearch} disabled={loading || !question.trim()}>
-              {loading ? <><Loader2 className="w-4 h-4 animate-spin" />Researching...</> : <><Search className="w-4 h-4" />Research</>}
+              {loading ? <><Loader2 className="w-4 h-4 animate-spin" />{t("researching", "Researching...")}</> : <><Search className="w-4 h-4" />{t("research", "Research")}</>}
             </Button>
-            {loading && <p className="text-xs text-muted-foreground text-center">Searching case law and statutes... (~30s)</p>}
+            {loading && <p className="text-xs text-muted-foreground text-center">{t(
+              "searching_case_law_and_statute",
+              "Searching case law and statutes... (~30s)"
+            )}</p>}
           </div>
 
           {/* History */}
           {history.length > 0 && (
             <div className="bg-card border border-border rounded-xl p-4 space-y-2">
-              <div className="flex items-center gap-2 mb-2"><Clock className="w-4 h-4 text-primary" /><h3 className="text-sm font-semibold">Recent Queries</h3></div>
-              {history.map((h, i) => (
-                <button key={i} onClick={() => { setQuestion(h.question); setResult(h.result); }}
-                  className="w-full text-left p-2.5 rounded-lg hover:bg-muted/40 border border-border transition-colors">
-                  <p className="text-xs font-medium truncate">{h.question}</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">{h.jurisdiction} · {format(h.timestamp, "h:mm a")}</p>
-                </button>
-              ))}
+              <div className="flex items-center gap-2 mb-2"><Clock className="w-4 h-4 text-primary" /><h3 className="text-sm font-semibold">{t("recent_queries", "Recent Queries")}</h3></div>
+              {history.map((h, i) => {
+                return (
+                  <button key={i} onClick={() => { setQuestion(h.question); setResult(h.result); }}
+                    className="w-full text-left p-2.5 rounded-lg hover:bg-muted/40 border border-border transition-colors">
+                    <p className="text-xs font-medium truncate">{h.question}</p>
+                    <p className="text-[10px] text-muted-foreground mt-0.5">{h.jurisdiction} · {format(h.timestamp, "h:mm a")}</p>
+                  </button>
+                );
+              })}
             </div>
           )}
         </div>
@@ -155,12 +165,15 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
           {!result && !loading && !error && (
             <div className="bg-card border border-border rounded-xl p-12 text-center">
               <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4"><BookOpen className="w-7 h-7 text-primary" /></div>
-              <h3 className="text-sm font-semibold mb-1">Ask your first question</h3>
-              <p className="text-xs text-muted-foreground max-w-xs mx-auto">Get instant research on statutes, case law, and legal procedures across Ghana, Nigeria, and Sierra Leone.</p>
+              <h3 className="text-sm font-semibold mb-1">{t("ask_your_first_question", "Ask your first question")}</h3>
+              <p className="text-xs text-muted-foreground max-w-xs mx-auto">{t(
+                "get_instant_research_on_statut",
+                "Get instant research on statutes, case law, and legal procedures across Ghana, Nigeria, and Sierra Leone."
+              )}</p>
               <div className="mt-4 flex flex-wrap gap-2 justify-center">
-                {["Requirements for bail in Nigeria", "Tenancy termination notice periods Ghana", "Corporate registration requirements Sierra Leone"].map(s => (
-                  <button key={s} onClick={() => setQuestion(s)} className="text-xs px-3 py-1.5 rounded-full border border-primary/30 text-primary hover:bg-primary/5 transition-colors">{s}</button>
-                ))}
+                {["Requirements for bail in Nigeria", "Tenancy termination notice periods Ghana", "Corporate registration requirements Sierra Leone"].map(s => {
+                  return (<button key={s} onClick={() => setQuestion(s)} className="text-xs px-3 py-1.5 rounded-full border border-primary/30 text-primary hover:bg-primary/5 transition-colors">{s}</button>);
+                })}
               </div>
             </div>
           )}
@@ -168,16 +181,16 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
           {result && (
             <div className="space-y-4">
               <div className="flex items-center justify-between flex-wrap gap-2">
-                <div className="flex items-center gap-2"><Sparkles className="w-4 h-4 text-primary" /><span className="text-sm font-semibold">Research Results</span></div>
+                <div className="flex items-center gap-2"><Sparkles className="w-4 h-4 text-primary" /><span className="text-sm font-semibold">{t("research_results", "Research Results")}</span></div>
                 <div className="flex items-center gap-2">
                   <Badge variant="outline" className="text-[10px]">{jurisdiction}</Badge>
-                  {result.confidence && <Badge className={cn("text-[10px]", CONFIDENCE_COLORS[result.confidence])}>Confidence: {result.confidence}</Badge>}
+                  {result.confidence && <Badge className={cn("text-[10px]", CONFIDENCE_COLORS[result.confidence])}>{t("confidence", "Confidence:")} {result.confidence}</Badge>}
                 </div>
               </div>
 
               {/* Main Answer */}
               <div className="bg-primary/5 border border-primary/20 rounded-xl p-4">
-                <div className="flex items-center gap-2 mb-2"><Scale className="w-4 h-4 text-primary" /><span className="text-sm font-semibold">Answer</span></div>
+                <div className="flex items-center gap-2 mb-2"><Scale className="w-4 h-4 text-primary" /><span className="text-sm font-semibold">{t("answer", "Answer")}</span></div>
                 <div className="text-sm text-foreground leading-relaxed prose prose-sm max-w-none">
                   <ReactMarkdown>{result.answer}</ReactMarkdown>
                 </div>
@@ -187,12 +200,14 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
               {result.legislation?.length > 0 && (
                 <Section icon={BookOpen} title={`Relevant Legislation (${result.legislation.length})`}>
                   <div className="space-y-2 pt-1">
-                    {result.legislation.map((l, i) => (
-                      <div key={i} className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                        <p className="text-sm font-medium text-blue-800">{l.name}{l.section && ` — ${l.section}`}</p>
-                        {l.relevance && <p className="text-xs text-blue-700 mt-0.5">{l.relevance}</p>}
-                      </div>
-                    ))}
+                    {result.legislation.map((l, i) => {
+                      return (
+                        <div key={i} className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                          <p className="text-sm font-medium text-blue-800">{l.name}{l.section && ` — ${l.section}`}</p>
+                          {l.relevance && <p className="text-xs text-blue-700 mt-0.5">{l.relevance}</p>}
+                        </div>
+                      );
+                    })}
                   </div>
                 </Section>
               )}
@@ -201,12 +216,14 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
               {result.case_law?.length > 0 && (
                 <Section icon={Scale} title={`Case Law Precedents (${result.case_law.length})`}>
                   <div className="space-y-2 pt-1">
-                    {result.case_law.map((c, i) => (
-                      <div key={i} className="p-3 bg-purple-50 border border-purple-200 rounded-lg">
-                        <p className="text-sm font-medium text-purple-800">{c.case_name}{c.year && ` (${c.year})`}</p>
-                        {c.principle && <p className="text-xs text-purple-700 mt-0.5">{c.principle}</p>}
-                      </div>
-                    ))}
+                    {result.case_law.map((c, i) => {
+                      return (
+                        <div key={i} className="p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                          <p className="text-sm font-medium text-purple-800">{c.case_name}{c.year && ` (${c.year})`}</p>
+                          {c.principle && <p className="text-xs text-purple-700 mt-0.5">{c.principle}</p>}
+                        </div>
+                      );
+                    })}
                   </div>
                 </Section>
               )}
@@ -215,12 +232,14 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
               {result.next_steps?.length > 0 && (
                 <Section icon={BookOpen} title="Recommended Next Steps" defaultOpen={false}>
                   <div className="space-y-1.5 pt-1">
-                    {result.next_steps.map((s, i) => (
-                      <div key={i} className="flex items-start gap-2 text-sm">
-                        <span className="w-5 h-5 rounded-full bg-primary/10 text-primary text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">{i + 1}</span>
-                        <span>{s}</span>
-                      </div>
-                    ))}
+                    {result.next_steps.map((s, i) => {
+                      return (
+                        <div key={i} className="flex items-start gap-2 text-sm">
+                          <span className="w-5 h-5 rounded-full bg-primary/10 text-primary text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">{i + 1}</span>
+                          <span>{s}</span>
+                        </div>
+                      );
+                    })}
                   </div>
                 </Section>
               )}

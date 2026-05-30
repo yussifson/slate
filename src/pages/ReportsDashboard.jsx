@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
@@ -27,6 +28,7 @@ function MetricCard({ title, value, icon: Icon, color, sub }) {
 }
 
 export default function ReportsDashboard() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const companyId = user?.company_id;
   const [period, setPeriod] = useState("6");
@@ -137,21 +139,20 @@ export default function ReportsDashboard() {
           <Select value={period} onValueChange={setPeriod}>
             <SelectTrigger className="w-36 text-xs h-8"><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="3">Last 3 months</SelectItem>
-              <SelectItem value="6">Last 6 months</SelectItem>
-              <SelectItem value="12">Last 12 months</SelectItem>
+              <SelectItem value="3">{t("last_3_months", "Last 3 months")}</SelectItem>
+              <SelectItem value="6">{t("last_6_months", "Last 6 months")}</SelectItem>
+              <SelectItem value="12">{t("last_12_months", "Last 12 months")}</SelectItem>
             </SelectContent>
           </Select>
         }
       />
-
       {/* Monthly Summary for Managers */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="bg-card border border-border rounded-xl p-5">
-          <p className="text-xs text-muted-foreground font-medium mb-1">This Month's Revenue</p>
+          <p className="text-xs text-muted-foreground font-medium mb-1">{t("this_month_s_revenue", "This Month's Revenue")}</p>
           <p className="text-3xl font-bold text-foreground">{formatCurrency(thisMonthRevenue, currency)}</p>
           <div className="flex items-center gap-2 mt-2">
-            <span className="text-xs text-muted-foreground">vs last month: {formatCurrency(lastMonthRevenue, currency)}</span>
+            <span className="text-xs text-muted-foreground">{t("vs_last_month", "vs last month:")} {formatCurrency(lastMonthRevenue, currency)}</span>
             {revenueDelta !== null && (
               <span className={`text-xs font-semibold px-1.5 py-0.5 rounded ${revenueDelta >= 0 ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
                 {revenueDelta >= 0 ? "+" : ""}{revenueDelta}%
@@ -160,10 +161,10 @@ export default function ReportsDashboard() {
           </div>
         </div>
         <div className="bg-card border border-border rounded-xl p-5">
-          <p className="text-xs text-muted-foreground font-medium mb-1">This Month's Billable Hours</p>
+          <p className="text-xs text-muted-foreground font-medium mb-1">{t("this_month_s_billable_hours", "This Month's Billable Hours")}</p>
           <p className="text-3xl font-bold text-foreground">{Math.round(thisMonthHours * 10) / 10}h</p>
           <div className="flex items-center gap-2 mt-2">
-            <span className="text-xs text-muted-foreground">vs last month: {Math.round(lastMonthHours * 10) / 10}h</span>
+            <span className="text-xs text-muted-foreground">{t("vs_last_month", "vs last month:")} {Math.round(lastMonthHours * 10) / 10}h</span>
             {hoursDelta !== null && (
               <span className={`text-xs font-semibold px-1.5 py-0.5 rounded ${hoursDelta >= 0 ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
                 {hoursDelta >= 0 ? "+" : ""}{hoursDelta}%
@@ -172,7 +173,6 @@ export default function ReportsDashboard() {
           </div>
         </div>
       </div>
-
       {/* KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard title="Total Billable Hours" value={`${Math.round(totalBillable)}h`} icon={Clock} color="bg-blue-100 text-blue-600" sub={`${timeEntries.length} entries`} />
@@ -180,11 +180,10 @@ export default function ReportsDashboard() {
         <MetricCard title="Total Revenue" value={formatCurrency(totalRevenue, currency)} icon={DollarSign} color="bg-amber-100 text-amber-600" sub="All time paid" />
         <MetricCard title="Active Staff" value={staff.filter(s => s.status === "active").length} icon={Users} color="bg-purple-100 text-purple-600" sub={`${staff.length} total`} />
       </div>
-
       {/* Revenue Trend */}
       <div className="bg-card border border-border rounded-xl p-5">
         <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
-          <TrendingUp className="w-4 h-4 text-primary" /> Monthly Revenue Trend
+          <TrendingUp className="w-4 h-4 text-primary" /> {t("monthly_revenue_trend", "Monthly Revenue Trend")}
         </h3>
         <ResponsiveContainer width="100%" height={220}>
           <LineChart data={revenueData}>
@@ -196,11 +195,10 @@ export default function ReportsDashboard() {
           </LineChart>
         </ResponsiveContainer>
       </div>
-
       {/* Billable Hours Trend */}
       <div className="bg-card border border-border rounded-xl p-5">
         <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
-          <Clock className="w-4 h-4 text-primary" /> Monthly Billable Hours Trend
+          <Clock className="w-4 h-4 text-primary" /> {t("monthly_billable_hours_trend", "Monthly Billable Hours Trend")}
         </h3>
         <ResponsiveContainer width="100%" height={220}>
           <BarChart data={hoursData}>
@@ -212,15 +210,14 @@ export default function ReportsDashboard() {
           </BarChart>
         </ResponsiveContainer>
       </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Billable Hours by Department */}
         <div className="bg-card border border-border rounded-xl p-5">
           <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
-            <Clock className="w-4 h-4 text-primary" /> Billable Hours by Department
+            <Clock className="w-4 h-4 text-primary" /> {t("billable_hours_by_department", "Billable Hours by Department")}
           </h3>
           {deptHours.length === 0 ? (
-            <div className="h-48 flex items-center justify-center text-sm text-muted-foreground">No time entries found</div>
+            <div className="h-48 flex items-center justify-center text-sm text-muted-foreground">{t("no_time_entries_found", "No time entries found")}</div>
           ) : (
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={deptHours} layout="vertical">
@@ -237,54 +234,59 @@ export default function ReportsDashboard() {
         {/* Win Rate by Department */}
         <div className="bg-card border border-border rounded-xl p-5">
           <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
-            <Trophy className="w-4 h-4 text-primary" /> Case Outcomes
+            <Trophy className="w-4 h-4 text-primary" /> {t("case_outcomes", "Case Outcomes")}
           </h3>
           {outcomePie.length === 0 ? (
-            <div className="h-48 flex items-center justify-center text-sm text-muted-foreground">No resolved cases yet</div>
+            <div className="h-48 flex items-center justify-center text-sm text-muted-foreground">{t("no_resolved_cases_yet", "No resolved cases yet")}</div>
           ) : (
             <div className="flex items-center gap-4">
               <ResponsiveContainer width="50%" height={180}>
                 <PieChart>
                   <Pie data={outcomePie} cx="50%" cy="50%" innerRadius={45} outerRadius={70} dataKey="value" paddingAngle={3}>
-                    {outcomePie.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                    {outcomePie.map((_, i) => {
+                      return <Cell key={i} fill={COLORS[i % COLORS.length]} />;
+                    })}
                   </Pie>
                   <Tooltip />
                 </PieChart>
               </ResponsiveContainer>
               <div className="space-y-2">
-                {outcomePie.map((entry, i) => (
-                  <div key={entry.name} className="flex items-center gap-2 text-sm">
-                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                    <span className="text-muted-foreground">{entry.name}</span>
-                    <span className="font-semibold">{entry.value}</span>
-                  </div>
-                ))}
+                {outcomePie.map((entry, i) => {
+                  return (
+                    <div key={entry.name} className="flex items-center gap-2 text-sm">
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
+                      <span className="text-muted-foreground">{entry.name}</span>
+                      <span className="font-semibold">{entry.value}</span>
+                    </div>
+                  );
+                })}
                 <div className="pt-1 border-t border-border text-xs text-muted-foreground">
-                  Win rate: <span className="font-bold text-foreground">{winRateData.winRate}%</span>
+                  {t("win_rate", "Win rate:")} <span className="font-bold text-foreground">{winRateData.winRate}%</span>
                 </div>
               </div>
             </div>
           )}
         </div>
       </div>
-
       {/* Win Rate per Department Table */}
       {deptWinRate.length > 0 && (
         <div className="bg-card border border-border rounded-xl p-5">
           <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
-            <BarChart2 className="w-4 h-4 text-primary" /> Win Rate by Department
+            <BarChart2 className="w-4 h-4 text-primary" /> {t("win_rate_by_department", "Win Rate by Department")}
           </h3>
           <div className="space-y-3">
-            {deptWinRate.map(d => (
-              <div key={d.dept} className="flex items-center gap-3">
-                <span className="text-sm w-28 shrink-0 capitalize">{d.dept}</span>
-                <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
-                  <div className="h-full bg-green-500 rounded-full" style={{ width: `${d.rate}%` }} />
+            {deptWinRate.map(d => {
+              return (
+                <div key={d.dept} className="flex items-center gap-3">
+                  <span className="text-sm w-28 shrink-0 capitalize">{d.dept}</span>
+                  <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                    <div className="h-full bg-green-500 rounded-full" style={{ width: `${d.rate}%` }} />
+                  </div>
+                  <span className="text-sm font-semibold w-12 text-right">{d.rate}%</span>
+                  <span className="text-xs text-muted-foreground w-16 text-right">{d.total} {t("cases", "cases")}</span>
                 </div>
-                <span className="text-sm font-semibold w-12 text-right">{d.rate}%</span>
-                <span className="text-xs text-muted-foreground w-16 text-right">{d.total} cases</span>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}

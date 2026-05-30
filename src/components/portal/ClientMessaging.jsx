@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -6,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 
 export default function ClientMessaging({ caseData, user, senderType = "client" }) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const endRef = useRef(null);
   const [content, setContent] = useState("");
@@ -63,15 +65,17 @@ export default function ClientMessaging({ caseData, user, senderType = "client" 
     <div className="flex flex-col h-[480px] bg-card rounded-xl border border-border overflow-hidden">
       <div className="px-4 py-3 border-b border-border flex items-center gap-2 bg-muted/20">
         <MessageSquare className="w-4 h-4 text-primary" />
-        <span className="text-sm font-semibold">Messages — {caseData?.title}</span>
+        <span className="text-sm font-semibold">{t("messages", "Messages —")} {caseData?.title}</span>
       </div>
-
       <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
-        {isLoading && <p className="text-center text-xs text-muted-foreground py-6">Loading messages...</p>}
+        {isLoading && <p className="text-center text-xs text-muted-foreground py-6">{t("loading_messages", "Loading messages...")}</p>}
         {!isLoading && messages.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full text-center">
             <MessageSquare className="w-8 h-8 text-muted-foreground mb-2" />
-            <p className="text-sm text-muted-foreground">No messages yet. Start the conversation.</p>
+            <p className="text-sm text-muted-foreground">{t(
+              "no_messages_yet_start_the_conv",
+              "No messages yet. Start the conversation."
+            )}</p>
           </div>
         )}
         {messages.map(msg => {
@@ -96,7 +100,6 @@ export default function ClientMessaging({ caseData, user, senderType = "client" 
         })}
         <div ref={endRef} />
       </div>
-
       <div className="px-4 py-3 border-t border-border bg-background flex items-end gap-2">
         <div className="flex-1 bg-muted/50 rounded-xl px-3 py-2 border border-border focus-within:border-primary/50 focus-within:bg-background transition-colors">
           <textarea

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
@@ -16,6 +17,7 @@ import { cn } from "@/lib/utils";
 const STATUS_COLORS = { pending: "bg-amber-100 text-amber-700", approved: "bg-green-100 text-green-700", rejected: "bg-red-100 text-red-700" };
 
 export default function HRPromotionsPanel({ companyId, promotions, staff, currency, isAdmin, user }) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
 
@@ -36,46 +38,46 @@ export default function HRPromotionsPanel({ companyId, promotions, staff, curren
     <div className="space-y-4">
       {isAdmin && (
         <div className="flex justify-end">
-          <Button size="sm" onClick={() => setShowForm(true)}><Plus className="w-4 h-4 mr-1" /> Record Promotion</Button>
+          <Button size="sm" onClick={() => setShowForm(true)}><Plus className="w-4 h-4 mr-1" /> {t("record_promotion", "Record Promotion")}</Button>
         </div>
       )}
-
       {promotions.length === 0 ? (
         <div className="bg-card border border-border rounded-xl p-10 text-center">
           <ArrowUpCircle className="w-10 h-10 text-muted-foreground mx-auto mb-2" />
-          <p className="text-sm text-muted-foreground">No promotions recorded yet</p>
+          <p className="text-sm text-muted-foreground">{t("no_promotions_recorded_yet", "No promotions recorded yet")}</p>
         </div>
       ) : (
         <div className="bg-card border border-border rounded-xl divide-y divide-border">
-          {promotions.map(p => (
-            <div key={p.id} className="px-4 py-3 flex items-center gap-4">
-              <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                <span className="text-sm font-bold text-primary">{p.staff_name?.[0]?.toUpperCase()}</span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <span className="text-sm font-medium">{p.staff_name}</span>
-                  <Badge className={cn("text-[9px] h-4 px-1.5", STATUS_COLORS[p.status])}>{p.status}</Badge>
+          {promotions.map(p => {
+            return (
+              <div key={p.id} className="px-4 py-3 flex items-center gap-4">
+                <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <span className="text-sm font-bold text-primary">{p.staff_name?.[0]?.toUpperCase()}</span>
                 </div>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  <span className="line-through">{p.from_role?.replace(/_/g, " ")}</span>
-                  {" → "}<strong className="text-foreground">{p.to_role?.replace(/_/g, " ")}</strong>
-                  {p.from_salary && p.to_salary && ` · ${formatCurrency(p.from_salary, currency)} → ${formatCurrency(p.to_salary, currency)}`}
-                  {p.effective_date ? ` · Effective ${format(new Date(p.effective_date), "MMM d, yyyy")}` : ""}
-                </p>
-                {p.reason && <p className="text-xs text-muted-foreground truncate">{p.reason}</p>}
-              </div>
-              {isAdmin && p.status === "pending" && (
-                <div className="flex gap-1.5 shrink-0">
-                  <Button size="sm" className="h-7 text-xs bg-green-600 hover:bg-green-700 gap-1" onClick={() => handleApprove(p)}><CheckCircle className="w-3 h-3" />Approve</Button>
-                  <Button size="sm" variant="outline" className="h-7 text-xs gap-1 text-red-600 border-red-200" onClick={() => handleReject(p)}><XCircle className="w-3 h-3" />Reject</Button>
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <span className="text-sm font-medium">{p.staff_name}</span>
+                    <Badge className={cn("text-[9px] h-4 px-1.5", STATUS_COLORS[p.status])}>{p.status}</Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    <span className="line-through">{p.from_role?.replace(/_/g, " ")}</span>
+                    {" → "}<strong className="text-foreground">{p.to_role?.replace(/_/g, " ")}</strong>
+                    {p.from_salary && p.to_salary && ` · ${formatCurrency(p.from_salary, currency)} → ${formatCurrency(p.to_salary, currency)}`}
+                    {p.effective_date ? ` · Effective ${format(new Date(p.effective_date), "MMM d, yyyy")}` : ""}
+                  </p>
+                  {p.reason && <p className="text-xs text-muted-foreground truncate">{p.reason}</p>}
                 </div>
-              )}
-            </div>
-          ))}
+                {isAdmin && p.status === "pending" && (
+                  <div className="flex gap-1.5 shrink-0">
+                    <Button size="sm" className="h-7 text-xs bg-green-600 hover:bg-green-700 gap-1" onClick={() => handleApprove(p)}><CheckCircle className="w-3 h-3" />{t("approve", "Approve")}</Button>
+                    <Button size="sm" variant="outline" className="h-7 text-xs gap-1 text-red-600 border-red-200" onClick={() => handleReject(p)}><XCircle className="w-3 h-3" />{t("reject", "Reject")}</Button>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
-
       {showForm && (
         <PromotionFormDialog onClose={() => setShowForm(false)} onSubmit={(d) => createMutation.mutate(d)} staff={staff} currency={currency} />
       )}
@@ -84,6 +86,7 @@ export default function HRPromotionsPanel({ companyId, promotions, staff, curren
 }
 
 function PromotionFormDialog({ onClose, onSubmit, staff, currency }) {
+  const { t } = useTranslation();
   const [form, setForm] = useState({ staff_email: "", staff_name: "", from_role: "", to_role: "", from_salary: "", to_salary: "", effective_date: "", reason: "", status: "pending" });
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
@@ -103,26 +106,28 @@ function PromotionFormDialog({ onClose, onSubmit, staff, currency }) {
   return (
     <Dialog open onOpenChange={onClose}>
       <DialogContent className="max-w-lg">
-        <DialogHeader><DialogTitle>Record Promotion</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle>{t("record_promotion", "Record Promotion")}</DialogTitle></DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>
-            <Label>Staff Member *</Label>
+            <Label>{t("staff_member", "Staff Member *")}</Label>
             <Select value={form.staff_email || "none"} onValueChange={v => v !== "none" && handleStaffChange(v)}>
               <SelectTrigger><SelectValue placeholder="Select staff..." /></SelectTrigger>
-              <SelectContent>{staff.map(s => <SelectItem key={s.user_email} value={s.user_email}>{s.full_name}</SelectItem>)}</SelectContent>
+              <SelectContent>{staff.map(s => {
+                return <SelectItem key={s.user_email} value={s.user_email}>{s.full_name}</SelectItem>;
+              })}</SelectContent>
             </Select>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <div><Label>Current Role</Label><Input value={form.from_role} onChange={e => set("from_role", e.target.value)} placeholder="e.g. paralegal" /></div>
-            <div><Label>New Role *</Label><Input value={form.to_role} onChange={e => set("to_role", e.target.value)} placeholder="e.g. lawyer" required /></div>
-            <div><Label>Current Salary ({currency})</Label><Input type="number" min="0" value={form.from_salary} onChange={e => set("from_salary", e.target.value)} /></div>
-            <div><Label>New Salary ({currency})</Label><Input type="number" min="0" value={form.to_salary} onChange={e => set("to_salary", e.target.value)} /></div>
+            <div><Label>{t("current_role", "Current Role")}</Label><Input value={form.from_role} onChange={e => set("from_role", e.target.value)} placeholder="e.g. paralegal" /></div>
+            <div><Label>{t("new_role", "New Role *")}</Label><Input value={form.to_role} onChange={e => set("to_role", e.target.value)} placeholder="e.g. lawyer" required /></div>
+            <div><Label>{t("current_salary", "Current Salary (")}{currency})</Label><Input type="number" min="0" value={form.from_salary} onChange={e => set("from_salary", e.target.value)} /></div>
+            <div><Label>{t("new_salary", "New Salary (")}{currency})</Label><Input type="number" min="0" value={form.to_salary} onChange={e => set("to_salary", e.target.value)} /></div>
           </div>
-          <div><Label>Effective Date</Label><Input type="date" value={form.effective_date} onChange={e => set("effective_date", e.target.value)} /></div>
-          <div><Label>Reason / Notes</Label><Textarea value={form.reason} onChange={e => set("reason", e.target.value)} rows={2} /></div>
+          <div><Label>{t("effective_date", "Effective Date")}</Label><Input type="date" value={form.effective_date} onChange={e => set("effective_date", e.target.value)} /></div>
+          <div><Label>{t("reason_notes", "Reason / Notes")}</Label><Textarea value={form.reason} onChange={e => set("reason", e.target.value)} rows={2} /></div>
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-            <Button type="submit">Record Promotion</Button>
+            <Button type="button" variant="outline" onClick={onClose}>{t("cancel", "Cancel")}</Button>
+            <Button type="submit">{t("record_promotion", "Record Promotion")}</Button>
           </div>
         </form>
       </DialogContent>

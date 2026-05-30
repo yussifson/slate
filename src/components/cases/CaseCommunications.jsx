@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { Send, Mail, MessageSquare, Phone, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { base44 } from "@/api/base44Client";
 
 export default function CaseCommunications({ caseData, client, user }) {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const [activeMode, setActiveMode] = useState("email");
   const [message, setMessage] = useState("");
@@ -155,42 +157,40 @@ export default function CaseCommunications({ caseData, client, user }) {
 
   return (
     <div className="bg-card rounded-xl border border-border p-5 space-y-4">
-      <h3 className="font-semibold text-sm">External Communications</h3>
-      <p className="text-xs text-muted-foreground">Send updates directly to {client?.name || "the client"}</p>
-      
+      <h3 className="font-semibold text-sm">{t("external_communications", "External Communications")}</h3>
+      <p className="text-xs text-muted-foreground">{t("send_updates_directly_to", "Send updates directly to")} {client?.name || "the client"}</p>
       <div className="flex gap-2 mb-4">
         <Button 
           variant={activeMode === "email" ? "default" : "outline"} 
           onClick={() => setActiveMode("email")}
           className="gap-2"
         >
-          <Mail className="w-4 h-4" /> Email
+          <Mail className="w-4 h-4" /> {t("email", "Email")}
         </Button>
         <Button 
           variant={activeMode === "whatsapp" ? "default" : "outline"} 
           onClick={() => setActiveMode("whatsapp")}
           className="gap-2"
         >
-          <MessageSquare className="w-4 h-4" /> WhatsApp
+          <MessageSquare className="w-4 h-4" /> {t("whatsapp", "WhatsApp")}
         </Button>
         <Button 
           variant={activeMode === "sms" ? "default" : "outline"} 
           onClick={() => setActiveMode("sms")}
           className="gap-2"
         >
-          <Phone className="w-4 h-4" /> SMS
+          <Phone className="w-4 h-4" /> {t("sms", "SMS")}
         </Button>
       </div>
-
       <div className="space-y-3">
         {activeMode === "email" && (
           <div className="space-y-1">
-            <Label className="text-xs">Subject</Label>
+            <Label className="text-xs">{t("subject", "Subject")}</Label>
             <Input value={subject} onChange={e => setSubject(e.target.value)} placeholder="Email subject..." />
           </div>
         )}
         <div className="space-y-1">
-          <Label className="text-xs">Message</Label>
+          <Label className="text-xs">{t("message", "Message")}</Label>
           <Textarea 
             value={message} 
             onChange={e => setMessage(e.target.value)} 
@@ -201,7 +201,7 @@ export default function CaseCommunications({ caseData, client, user }) {
         <div className="pt-2">
           <Button onClick={handleSend} disabled={sending} className="gap-2 w-full sm:w-auto">
             {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-            Send {activeMode.toUpperCase()}
+            {t("send", "Send")} {activeMode.toUpperCase()}
           </Button>
         </div>
       </div>

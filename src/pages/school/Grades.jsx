@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Award, Search, Plus, Trash2, TrendingUp, BarChart3, CheckCircle, XCircle, MoreVertical } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -40,6 +41,7 @@ const defaultForm = {
 };
 
 export default function Grades() {
+  const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const [filterClass, setFilterClass] = useState('All');
   const [showModal, setShowModal] = useState(false);
@@ -141,14 +143,13 @@ export default function Grades() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground">Grades & Results</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Record and manage student exam scores</p>
+          <h1 className="text-2xl font-bold text-card-foreground">{t("grades_results", "Grades & Results")}</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{t("record_and_manage_student_exam", "Record and manage student exam scores")}</p>
         </div>
         <Button onClick={() => setShowModal(true)} className="gap-2 bg-green-600 hover:bg-green-700 text-white">
-          <Plus className="w-4 h-4" /> Add Grade Entry
+          <Plus className="w-4 h-4" /> {t("add_grade_entry", "Add Grade Entry")}
         </Button>
       </div>
-
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-3">
@@ -157,7 +158,7 @@ export default function Grades() {
           </div>
           <div>
             <p className="text-2xl font-bold text-card-foreground">{avgScore}%</p>
-            <p className="text-xs text-muted-foreground">Average Score</p>
+            <p className="text-xs text-muted-foreground">{t("average_score", "Average Score")}</p>
           </div>
         </div>
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-3">
@@ -166,7 +167,7 @@ export default function Grades() {
           </div>
           <div>
             <p className="text-2xl font-bold text-green-600">{highScore}%</p>
-            <p className="text-xs text-muted-foreground">Highest Score</p>
+            <p className="text-xs text-muted-foreground">{t("highest_score", "Highest Score")}</p>
           </div>
         </div>
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-3">
@@ -175,7 +176,7 @@ export default function Grades() {
           </div>
           <div>
             <p className="text-2xl font-bold text-red-600">{lowScore}%</p>
-            <p className="text-xs text-muted-foreground">Lowest Score</p>
+            <p className="text-xs text-muted-foreground">{t("lowest_score", "Lowest Score")}</p>
           </div>
         </div>
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-3">
@@ -184,11 +185,10 @@ export default function Grades() {
           </div>
           <div>
             <p className="text-2xl font-bold text-teal-600">{passRate}%</p>
-            <p className="text-xs text-muted-foreground">Pass Rate</p>
+            <p className="text-xs text-muted-foreground">{t("pass_rate", "Pass Rate")}</p>
           </div>
         </div>
       </div>
-
       {/* Filters */}
       <div className="bg-card rounded-xl border border-border p-4 shadow-sm flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
@@ -201,99 +201,104 @@ export default function Grades() {
           />
         </div>
         <div className="flex gap-2 flex-wrap">
-          {['All', ...CLASS_LIST].map(c => (
-            <button
-              key={c}
-              onClick={() => setFilterClass(c)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
-                filterClass === c ? 'bg-green-600 text-white' : 'bg-muted text-muted-foreground hover:bg-slate-200'
-              }`}
-            >
-              {c}
-            </button>
-          ))}
+          {['All', ...CLASS_LIST].map(c => {
+            return (
+              <button
+                key={c}
+                onClick={() => setFilterClass(c)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                  filterClass === c ? 'bg-green-600 text-white' : 'bg-muted text-muted-foreground hover:bg-slate-200'
+                }`}
+              >
+                {c}
+              </button>
+            );
+          })}
         </div>
       </div>
-
       {/* Table */}
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           {isLoading ? (
-            <div className="py-12 text-center text-muted-foreground">Loading grade records...</div>
+            <div className="py-12 text-center text-muted-foreground">{t("loading_grade_records", "Loading grade records...")}</div>
           ) : filtered.length === 0 ? (
             <div className="py-12 text-center text-muted-foreground">
               <Award className="w-12 h-12 mx-auto mb-3 opacity-30 text-green-600" />
-              <p className="font-semibold text-lg text-card-foreground">No grade entries found</p>
-              <p className="text-sm mt-1">Add a grade entry using the button above.</p>
+              <p className="font-semibold text-lg text-card-foreground">{t("no_grade_entries_found", "No grade entries found")}</p>
+              <p className="text-sm mt-1">{t(
+                "add_a_grade_entry_using_the_bu",
+                "Add a grade entry using the button above."
+              )}</p>
             </div>
           ) : (
             <table className="w-full text-sm">
               <thead className="bg-muted border-b border-border">
                 <tr>
-                  {['Student', 'Class', 'Subject', 'Exam', 'Date', 'Score', 'Grade', ''].map(h => (
-                    <th key={h} className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{h}</th>
-                  ))}
+                  {['Student', 'Class', 'Subject', 'Exam', 'Date', 'Score', 'Grade', ''].map(h => {
+                    return (<th key={h} className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{h}</th>);
+                  })}
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {filtered.map(g => (
-                  <tr key={g.id} className="hover:bg-muted/40 transition-colors">
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold text-xs shrink-0">
-                          {g.studentName?.substring(0, 2).toUpperCase()}
+                {filtered.map(g => {
+                  return (
+                    <tr key={g.id} className="hover:bg-muted/40 transition-colors">
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold text-xs shrink-0">
+                            {g.studentName?.substring(0, 2).toUpperCase()}
+                          </div>
+                          <Link to="/students" className="font-semibold text-primary hover:underline">{g.studentName}</Link>
                         </div>
-                        <Link to="/students" className="font-semibold text-primary hover:underline">{g.studentName}</Link>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3">
-                      <Link to="/classes" className="bg-blue-50 text-blue-700 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{g.className}</Link>
-                    </td>
-                    <td className="px-4 py-3 text-muted-foreground">{g.subject}</td>
-                    <td className="px-4 py-3 text-foreground font-medium">{g.examName}</td>
-                    <td className="px-4 py-3 text-muted-foreground text-xs">{g.date}</td>
-                    <td className="px-4 py-3 font-bold text-card-foreground">
-                      {g.score} <span className="text-muted-foreground font-normal text-xs">/ {g.maxScore}</span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className={`inline-flex items-center justify-center w-8 h-8 rounded-lg font-bold text-sm ${GRADE_COLORS[g.grade] || 'bg-gray-100 text-gray-700'}`}>
-                        {g.grade}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 p-0">
-                            <MoreVertical className="h-4 w-4 text-muted-foreground" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-40">
-                          <DropdownMenuItem onClick={() => setViewDetails(g)}>View Details</DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => {
-                            setEditingId(g.id);
-                            setFormData({
-                              studentName: g.studentName,
-                              className: g.className,
-                              subject: g.subject,
-                              examName: g.examName,
-                              date: g.date,
-                              score: g.score,
-                              maxScore: g.maxScore
-                            });
-                            setShowModal(true);
-                          }}>Edit</DropdownMenuItem>
-                          <DropdownMenuItem className="text-red-600 font-medium" onClick={() => setDeleteTargetId(g.id)}>Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td className="px-4 py-3">
+                        <Link to="/classes" className="bg-blue-50 text-blue-700 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{g.className}</Link>
+                      </td>
+                      <td className="px-4 py-3 text-muted-foreground">{g.subject}</td>
+                      <td className="px-4 py-3 text-foreground font-medium">{g.examName}</td>
+                      <td className="px-4 py-3 text-muted-foreground text-xs">{g.date}</td>
+                      <td className="px-4 py-3 font-bold text-card-foreground">
+                        {g.score} <span className="text-muted-foreground font-normal text-xs">/ {g.maxScore}</span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className={`inline-flex items-center justify-center w-8 h-8 rounded-lg font-bold text-sm ${GRADE_COLORS[g.grade] || 'bg-gray-100 text-gray-700'}`}>
+                          {g.grade}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <MoreVertical className="h-4 w-4 text-muted-foreground" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-40">
+                            <DropdownMenuItem onClick={() => setViewDetails(g)}>{t("view_details", "View Details")}</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => {
+                              setEditingId(g.id);
+                              setFormData({
+                                studentName: g.studentName,
+                                className: g.className,
+                                subject: g.subject,
+                                examName: g.examName,
+                                date: g.date,
+                                score: g.score,
+                                maxScore: g.maxScore
+                              });
+                              setShowModal(true);
+                            }}>{t("edit", "Edit")}</DropdownMenuItem>
+                            <DropdownMenuItem className="text-red-600 font-medium" onClick={() => setDeleteTargetId(g.id)}>{t("delete", "Delete")}</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           )}
         </div>
       </div>
-
       {/* Add Grade Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
@@ -303,7 +308,7 @@ export default function Grades() {
             </h2>
             <div className="space-y-3">
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">Student Name</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("student_name", "Student Name")}</label>
                 <Input
                   value={formData.studentName}
                   onChange={e => setFormData({ ...formData, studentName: e.target.value })}
@@ -313,28 +318,32 @@ export default function Grades() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-bold text-muted-foreground uppercase">Class</label>
+                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("class", "Class")}</label>
                   <select
                     value={formData.className}
                     onChange={e => setFormData({ ...formData, className: e.target.value })}
                     className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
                   >
-                    {CLASS_LIST.map(c => <option key={c}>{c}</option>)}
+                    {CLASS_LIST.map(c => {
+                      return <option key={c}>{c}</option>;
+                    })}
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-muted-foreground uppercase">Subject</label>
+                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("subject", "Subject")}</label>
                   <select
                     value={formData.subject}
                     onChange={e => setFormData({ ...formData, subject: e.target.value })}
                     className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
                   >
-                    {SUBJECTS.map(s => <option key={s}>{s}</option>)}
+                    {SUBJECTS.map(s => {
+                      return <option key={s}>{s}</option>;
+                    })}
                   </select>
                 </div>
               </div>
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">Exam Name</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("exam_name", "Exam Name")}</label>
                 <Input
                   value={formData.examName}
                   onChange={e => setFormData({ ...formData, examName: e.target.value })}
@@ -343,7 +352,7 @@ export default function Grades() {
                 />
               </div>
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">Date</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("date", "Date")}</label>
                 <Input
                   type="date"
                   value={formData.date}
@@ -353,7 +362,7 @@ export default function Grades() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-bold text-muted-foreground uppercase">Score</label>
+                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("score", "Score")}</label>
                   <Input
                     type="number"
                     value={formData.score}
@@ -363,7 +372,7 @@ export default function Grades() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-muted-foreground uppercase">Max Score</label>
+                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("max_score", "Max Score")}</label>
                   <Input
                     type="number"
                     value={formData.maxScore}
@@ -375,7 +384,7 @@ export default function Grades() {
               </div>
               {formData.score !== '' && (
                 <div className="flex items-center gap-2 pt-1">
-                  <span className="text-xs text-muted-foreground">Auto Grade:</span>
+                  <span className="text-xs text-muted-foreground">{t("auto_grade", "Auto Grade:")}</span>
                   <span className={`inline-flex items-center justify-center w-7 h-7 rounded-md font-bold text-sm ${GRADE_COLORS[liveGrade]}`}>
                     {liveGrade}
                   </span>
@@ -387,7 +396,7 @@ export default function Grades() {
             </div>
             <div className="flex gap-3 pt-2">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditingId(null); setFormData(defaultForm); }} disabled={mutateRecord.isPending}>
-                Cancel
+                {t("cancel", "Cancel")}
               </Button>
               <Button className="flex-1 bg-green-600 hover:bg-green-700 text-white" onClick={handleAdd} disabled={mutateRecord.isPending}>
                 {mutateRecord.isPending ? 'Saving...' : (editingId ? 'Save Changes' : 'Save Grade')}
@@ -396,7 +405,6 @@ export default function Grades() {
           </div>
         </div>
       )}
-
       <ConfirmationModal
         isOpen={deleteTargetId !== null}
         onClose={() => setDeleteTargetId(null)}
@@ -404,12 +412,14 @@ export default function Grades() {
         title="Delete Grade Entry"
         message="Are you sure you want to permanently remove this grade entry? This action cannot be undone."
       />
-
       <Sheet open={!!viewDetails} onOpenChange={(open) => !open && setViewDetails(null)}>
         <SheetContent className="overflow-y-auto w-full sm:max-w-md">
           <SheetHeader>
-            <SheetTitle>Grade Details</SheetTitle>
-            <SheetDescription>Comprehensive view of the student's grade record.</SheetDescription>
+            <SheetTitle>{t("grade_details", "Grade Details")}</SheetTitle>
+            <SheetDescription>{t(
+              "comprehensive_view_of_the_stud",
+              "Comprehensive view of the student's grade record."
+            )}</SheetDescription>
           </SheetHeader>
           {viewDetails && (
             <div className="mt-6 space-y-6">
@@ -427,32 +437,32 @@ export default function Grades() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-muted/50 p-3 rounded-lg">
-                  <p className="text-xs text-muted-foreground uppercase font-semibold">Class</p>
+                  <p className="text-xs text-muted-foreground uppercase font-semibold">{t("class", "Class")}</p>
                   <Link to="/classes" className="text-primary hover:underline font-medium">{viewDetails.className}</Link>
                 </div>
                 <div className="bg-muted/50 p-3 rounded-lg">
-                  <p className="text-xs text-muted-foreground uppercase font-semibold">Subject</p>
+                  <p className="text-xs text-muted-foreground uppercase font-semibold">{t("subject", "Subject")}</p>
                   <p className="font-medium text-foreground">{viewDetails.subject}</p>
                 </div>
                 <div className="bg-muted/50 p-3 rounded-lg">
-                  <p className="text-xs text-muted-foreground uppercase font-semibold">Date</p>
+                  <p className="text-xs text-muted-foreground uppercase font-semibold">{t("date", "Date")}</p>
                   <p className="font-medium text-foreground">{viewDetails.date}</p>
                 </div>
                 <div className="bg-muted/50 p-3 rounded-lg flex flex-col items-start justify-center">
-                  <p className="text-xs text-muted-foreground uppercase font-semibold mb-1">Final Grade</p>
+                  <p className="text-xs text-muted-foreground uppercase font-semibold mb-1">{t("final_grade", "Final Grade")}</p>
                   <span className={`inline-flex items-center justify-center px-3 py-1 rounded-md font-bold text-sm ${GRADE_COLORS[viewDetails.grade] || 'bg-gray-100 text-gray-700'}`}>
                     {viewDetails.grade}
                   </span>
                 </div>
                 <div className="bg-muted/50 p-3 rounded-lg col-span-2 flex justify-between items-center">
                   <div>
-                    <p className="text-xs text-muted-foreground uppercase font-semibold">Score Acquired</p>
+                    <p className="text-xs text-muted-foreground uppercase font-semibold">{t("score_acquired", "Score Acquired")}</p>
                     <p className="font-bold text-xl text-foreground">
                       {viewDetails.score} <span className="text-muted-foreground text-sm font-medium">/ {viewDetails.maxScore}</span>
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-xs text-muted-foreground uppercase font-semibold">Percentage</p>
+                    <p className="text-xs text-muted-foreground uppercase font-semibold">{t("percentage", "Percentage")}</p>
                     <p className="font-bold text-xl text-foreground">
                       {viewDetails.maxScore > 0 ? Math.round((viewDetails.score / viewDetails.maxScore) * 100) : 0}%
                     </p>

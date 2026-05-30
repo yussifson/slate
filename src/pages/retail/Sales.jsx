@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { DollarSign, Search, TrendingUp, Calendar, ArrowUpRight, Download, MoreVertical, Eye, Edit2, Trash2, Edit, FileText, CreditCard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -13,6 +14,7 @@ import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
 
 export default function Sales() {
+  const { t } = useTranslation();
   // Supabase Real-time Sync Hooks
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('retail_sale');
   const mutateRecord = useMutateIndustryRecord();
@@ -108,34 +110,35 @@ export default function Sales() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground">Sales History</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">View real-time transactions, refunds, and daily reports</p>
+          <h1 className="text-2xl font-bold text-card-foreground">{t("sales_history", "Sales History")}</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{t(
+            "view_real_time_transactions_re",
+            "View real-time transactions, refunds, and daily reports"
+          )}</p>
         </div>
       </div>
-
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-card rounded-xl border border-border p-5 shadow-sm col-span-1 md:col-span-2 bg-gradient-to-br from-blue-600 to-blue-800 text-white relative overflow-hidden">
            <div className="relative z-10">
-               <p className="text-sm font-bold text-blue-200 uppercase tracking-wider mb-2">Today's Sales</p>
+               <p className="text-sm font-bold text-blue-200 uppercase tracking-wider mb-2">{t("today_s_sales", "Today's Sales")}</p>
                <h2 className="text-4xl font-black mb-1">${stats.totalSales.toFixed(2)}</h2>
-               <p className="text-sm text-blue-100 flex items-center gap-1"><ArrowUpRight className="w-4 h-4 text-green-300"/> Real-time production transactions</p>
+               <p className="text-sm text-blue-100 flex items-center gap-1"><ArrowUpRight className="w-4 h-4 text-green-300"/> {t("real_time_production_transacti", "Real-time production transactions")}</p>
            </div>
            <TrendingUp className="absolute right-[-20px] bottom-[-20px] w-48 h-48 opacity-10 text-white" />
         </div>
         
         <div className="bg-card rounded-xl border border-border p-5 shadow-sm">
-           <p className="text-sm font-bold text-muted-foreground uppercase mb-2">Transactions</p>
+           <p className="text-sm font-bold text-muted-foreground uppercase mb-2">{t("transactions", "Transactions")}</p>
            <h3 className="text-3xl font-black text-card-foreground">{stats.transactions}</h3>
-           <p className="text-xs text-muted-foreground mt-2 font-medium">Total receipts registered</p>
+           <p className="text-xs text-muted-foreground mt-2 font-medium">{t("total_receipts_registered", "Total receipts registered")}</p>
         </div>
         
         <div className="bg-card rounded-xl border border-border p-5 shadow-sm">
-           <p className="text-sm font-bold text-muted-foreground uppercase mb-2">Avg. Order Value</p>
+           <p className="text-sm font-bold text-muted-foreground uppercase mb-2">{t("avg_order_value", "Avg. Order Value")}</p>
            <h3 className="text-3xl font-black text-card-foreground">${stats.avgValue.toFixed(2)}</h3>
-           <p className="text-xs text-muted-foreground mt-2 font-medium">Per transaction</p>
+           <p className="text-xs text-muted-foreground mt-2 font-medium">{t("per_transaction", "Per transaction")}</p>
         </div>
       </div>
-
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         <div className="p-4 border-b border-border bg-muted/50 flex flex-col sm:flex-row gap-4 justify-between">
           <div className="relative max-w-md w-full">
@@ -145,98 +148,102 @@ export default function Sales() {
         </div>
         <div className="overflow-x-auto">
           {isDbLoading ? (
-            <div className="py-12 text-center text-muted-foreground">Loading sales history...</div>
+            <div className="py-12 text-center text-muted-foreground">{t("loading_sales_history", "Loading sales history...")}</div>
           ) : filtered.length === 0 ? (
             <div className="py-12 text-center text-muted-foreground">
                <Calendar className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse" />
-               <p className="font-semibold">No sales transactions logged.</p>
-               <p className="text-xs mt-1">Execute purchases in the POS page to record them here.</p>
+               <p className="font-semibold">{t("no_sales_transactions_logged", "No sales transactions logged.")}</p>
+               <p className="text-xs mt-1">{t(
+                 "execute_purchases_in_the_pos_p",
+                 "Execute purchases in the POS page to record them here."
+               )}</p>
             </div>
           ) : (
             <table className="w-full text-sm">
               <thead className="bg-card border-b border-border">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Receipt No.</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Date & Time</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Cashier</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Payment Method</th>
-                  <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">Status</th>
-                  <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">Total Amount</th>
-                  <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">Actions</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("receipt_no", "Receipt No.")}</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("date_time", "Date & Time")}</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("cashier", "Cashier")}</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("payment_method", "Payment Method")}</th>
+                  <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("status", "Status")}</th>
+                  <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("total_amount", "Total Amount")}</th>
+                  <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("actions", "Actions")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {filtered.map(sale => (
-                  <tr key={sale.id} className="hover:bg-muted/50 transition-colors">
-                    <td className="px-6 py-4 font-mono font-bold text-blue-600">{sale.saleId}</td>
-                    <td className="px-6 py-4 text-muted-foreground">{sale.date}</td>
-                    <td className="px-6 py-4 font-medium text-card-foreground">{sale.cashier}</td>
-                    <td className="px-6 py-4 text-muted-foreground">{sale.method}</td>
-                    <td className="px-6 py-4 text-center">
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider ${sale.status === 'Refunded' ? 'bg-red-100 dark:bg-red-950/20 text-red-700 dark:text-red-400' : 'bg-green-100 dark:bg-green-950/20 text-green-700 dark:text-green-400'}`}>
-                        {sale.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-right font-black text-card-foreground">${sale.total.toFixed(2)}</td>
-                    <td className="px-6 py-4 text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => openDetails(sale)}>
-                            <Eye className="mr-2 h-4 w-4" /> View Details
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => {
-                            const customerEmail = prompt("Enter customer email for payment receipt:");
-                            if (customerEmail) {
-                              processPayment({ companyId, provider: 'stripe', amount: sale.total, currency: 'USD', customerEmail, invoiceId: sale.saleId });
-                            }
-                          }}>
-                            <CreditCard className="mr-2 h-4 w-4" /> Process Payment
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => openEdit(sale)}>
-                            <Edit2 className="mr-2 h-4 w-4" /> Edit Status
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => setDeleteTargetId(sale.id)} className="text-red-600">
-                            <Trash2 className="mr-2 h-4 w-4" /> Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </td>
-                  </tr>
-                ))}
+                {filtered.map(sale => {
+                  return (
+                    <tr key={sale.id} className="hover:bg-muted/50 transition-colors">
+                      <td className="px-6 py-4 font-mono font-bold text-blue-600">{sale.saleId}</td>
+                      <td className="px-6 py-4 text-muted-foreground">{sale.date}</td>
+                      <td className="px-6 py-4 font-medium text-card-foreground">{sale.cashier}</td>
+                      <td className="px-6 py-4 text-muted-foreground">{sale.method}</td>
+                      <td className="px-6 py-4 text-center">
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider ${sale.status === 'Refunded' ? 'bg-red-100 dark:bg-red-950/20 text-red-700 dark:text-red-400' : 'bg-green-100 dark:bg-green-950/20 text-green-700 dark:text-green-400'}`}>
+                          {sale.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right font-black text-card-foreground">${sale.total.toFixed(2)}</td>
+                      <td className="px-6 py-4 text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <span className="sr-only">{t("open_menu", "Open menu")}</span>
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => openDetails(sale)}>
+                              <Eye className="mr-2 h-4 w-4" /> {t("view_details", "View Details")}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => {
+                              const customerEmail = prompt("Enter customer email for payment receipt:");
+                              if (customerEmail) {
+                                processPayment({ companyId, provider: 'stripe', amount: sale.total, currency: 'USD', customerEmail, invoiceId: sale.saleId });
+                              }
+                            }}>
+                              <CreditCard className="mr-2 h-4 w-4" /> {t("process_payment", "Process Payment")}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => openEdit(sale)}>
+                              <Edit2 className="mr-2 h-4 w-4" /> {t("edit_status", "Edit Status")}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setDeleteTargetId(sale.id)} className="text-red-600">
+                              <Trash2 className="mr-2 h-4 w-4" /> {t("delete", "Delete")}
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           )}
         </div>
       </div>
-
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
         <SheetContent className="overflow-y-auto w-[400px]">
           <SheetHeader>
-            <SheetTitle>Sale Receipt Details</SheetTitle>
-            <SheetDescription>View details for receipt {selectedRecord?.saleId}</SheetDescription>
+            <SheetTitle>{t("sale_receipt_details", "Sale Receipt Details")}</SheetTitle>
+            <SheetDescription>{t("view_details_for_receipt", "View details for receipt")} {selectedRecord?.saleId}</SheetDescription>
           </SheetHeader>
           {selectedRecord && (
             <div className="mt-6 space-y-6 text-sm">
               <div className="grid grid-cols-2 gap-4 border-b pb-4">
-                <div className="font-semibold text-muted-foreground">Date</div>
+                <div className="font-semibold text-muted-foreground">{t("date", "Date")}</div>
                 <div className="text-right">{selectedRecord.date}</div>
               </div>
               <div className="grid grid-cols-2 gap-4 border-b pb-4">
-                <div className="font-semibold text-muted-foreground">Cashier</div>
+                <div className="font-semibold text-muted-foreground">{t("cashier", "Cashier")}</div>
                 <div className="text-right">{selectedRecord.cashier}</div>
               </div>
               <div className="grid grid-cols-2 gap-4 border-b pb-4">
-                <div className="font-semibold text-muted-foreground">Payment Method</div>
+                <div className="font-semibold text-muted-foreground">{t("payment_method", "Payment Method")}</div>
                 <div className="text-right">{selectedRecord.method}</div>
               </div>
               <div className="grid grid-cols-2 gap-4 border-b pb-4">
-                <div className="font-semibold text-muted-foreground">Status</div>
+                <div className="font-semibold text-muted-foreground">{t("status", "Status")}</div>
                 <div className="text-right">
                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider ${selectedRecord.status === 'Refunded' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
                     {selectedRecord.status}
@@ -245,34 +252,36 @@ export default function Sales() {
               </div>
               
               <div>
-                <div className="font-bold mb-3 uppercase text-xs text-muted-foreground tracking-wider">Items Purchased</div>
+                <div className="font-bold mb-3 uppercase text-xs text-muted-foreground tracking-wider">{t("items_purchased", "Items Purchased")}</div>
                 <div className="space-y-3">
-                  {selectedRecord.items.map((item, idx) => (
-                    <div key={idx} className="flex justify-between items-center bg-muted/30 p-2 rounded">
-                      <div>
-                        <div className="font-semibold">{item.name}</div>
-                        <div className="text-xs text-muted-foreground font-mono"><Link to="/retail/inventory" className="text-primary hover:underline">{item.sku}</Link></div>
+                  {selectedRecord.items.map((item, idx) => {
+                    return (
+                      <div key={idx} className="flex justify-between items-center bg-muted/30 p-2 rounded">
+                        <div>
+                          <div className="font-semibold">{item.name}</div>
+                          <div className="text-xs text-muted-foreground font-mono"><Link to="/retail/inventory" className="text-primary hover:underline">{item.sku}</Link></div>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-bold">${item.price.toFixed(2)}</div>
+                          <div className="text-xs text-muted-foreground">{t("qty", "Qty:")} {item.qty}</div>
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <div className="font-bold">${item.price.toFixed(2)}</div>
-                        <div className="text-xs text-muted-foreground">Qty: {item.qty}</div>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 
               <div className="border-t pt-4 space-y-2">
                 <div className="flex justify-between text-muted-foreground">
-                  <span>Subtotal</span>
+                  <span>{t("subtotal", "Subtotal")}</span>
                   <span>${selectedRecord.subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-muted-foreground">
-                  <span>Tax</span>
+                  <span>{t("tax", "Tax")}</span>
                   <span>${selectedRecord.tax.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between font-black text-lg text-card-foreground pt-2">
-                  <span>Total</span>
+                  <span>{t("total", "Total")}</span>
                   <span>${selectedRecord.total.toFixed(2)}</span>
                 </div>
               </div>
@@ -280,28 +289,26 @@ export default function Sales() {
           )}
         </SheetContent>
       </Sheet>
-
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-sm p-6 space-y-4">
-            <h2 className="text-lg font-bold text-card-foreground">Update Sale Status</h2>
+            <h2 className="text-lg font-bold text-card-foreground">{t("update_sale_status", "Update Sale Status")}</h2>
             <div className="space-y-3">
                <div>
-                 <label className="text-xs font-bold text-muted-foreground uppercase">Status</label>
+                 <label className="text-xs font-bold text-muted-foreground uppercase">{t("status", "Status")}</label>
                  <select value={formData.status} onChange={e => setFormData({ status: e.target.value })} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-                   <option value="Completed">Completed</option>
-                   <option value="Refunded">Refunded</option>
+                   <option value="Completed">{t("completed", "Completed")}</option>
+                   <option value="Refunded">{t("refunded", "Refunded")}</option>
                  </select>
                </div>
             </div>
             <div className="flex gap-3 pt-4">
-              <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>Cancel</Button>
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleUpdateStatus}>Save Changes</Button>
+              <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
+              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleUpdateStatus}>{t("save_changes", "Save Changes")}</Button>
             </div>
           </div>
         </div>
       )}
-
       <ConfirmationModal
         isOpen={deleteTargetId !== null}
         onClose={() => setDeleteTargetId(null)}
@@ -309,8 +316,6 @@ export default function Sales() {
         title="Delete Sale Record"
         message="Are you sure you want to delete this sale record? This action cannot be undone."
       />
-
-      
     </div>
   );
 }

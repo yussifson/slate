@@ -1,8 +1,10 @@
+import { useTranslation } from "react-i18next";
 import React from 'react';
 import { AlertTriangle, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function ConfirmationModal({ isOpen, onClose, onConfirm, title = "Confirm Action", message = "Are you sure you want to proceed? This action cannot be undone." }) {
+  const { t } = useTranslation();
   if (!isOpen) return null;
 
   return (
@@ -26,10 +28,10 @@ export default function ConfirmationModal({ isOpen, onClose, onConfirm, title = 
 
         <div className="bg-muted/50 p-4 border-t border-border flex gap-3 justify-end">
           <Button variant="outline" size="sm" onClick={onClose} className="h-9 px-4 rounded-xl text-xs font-semibold">
-            Cancel
+            {t("cancel", "Cancel")}
           </Button>
           <Button size="sm" onClick={onConfirm} className="h-9 px-4 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-semibold">
-            Confirm
+            {t("confirm", "Confirm")}
           </Button>
         </div>
       </div>

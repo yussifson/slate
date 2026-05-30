@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Users, Plus, Shield, Music, HeartHandshake, Trash2, Calendar, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -18,6 +19,7 @@ const COLOR_SCHEMES = [
 ];
 
 export default function Ministries() {
+  const { t } = useTranslation();
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('ministry');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
@@ -43,7 +45,7 @@ export default function Ministries() {
     schemeIndex: 0
   });
 
-  
+
   const openEdit = (record) => {
     setEditRecord(record);
     setFormData(record);
@@ -117,83 +119,84 @@ export default function Ministries() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground">Ministries</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Manage church departments and groups</p>
+          <h1 className="text-2xl font-bold text-card-foreground">{t("ministries", "Ministries")}</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{t("manage_church_departments_and_", "Manage church departments and groups")}</p>
         </div>
         <Button onClick={() => setShowModal(true)} className="gap-2 bg-purple-600 hover:bg-purple-700 text-white">
-          <Plus className="w-4 h-4" /> Add Ministry
+          <Plus className="w-4 h-4" /> {t("add_ministry", "Add Ministry")}
         </Button>
       </div>
-
       <div className="flex items-center gap-3">
         <div className="relative max-w-md flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input placeholder="Search ministries and leaders..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
         </div>
       </div>
-
       {isDbLoading ? (
-        <div className="py-12 text-center text-muted-foreground">Loading departments...</div>
+        <div className="py-12 text-center text-muted-foreground">{t("loading_departments", "Loading departments...")}</div>
       ) : filtered.length === 0 ? (
         <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-border">
           <HeartHandshake className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-purple-600" />
-          <p className="font-semibold text-lg text-card-foreground">No ministries configured</p>
-          <p className="text-sm mt-1 max-w-md mx-auto">Establish departments, choir leaders, youth fellowships, and meeting routines using the top-right button.</p>
+          <p className="font-semibold text-lg text-card-foreground">{t("no_ministries_configured", "No ministries configured")}</p>
+          <p className="text-sm mt-1 max-w-md mx-auto">{t(
+            "establish_departments_choir_le",
+            "Establish departments, choir leaders, youth fellowships, and meeting routines using the top-right button."
+          )}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map(min => (
-            <div key={min.id} className="bg-card rounded-xl border border-border p-6 shadow-sm hover:shadow-md transition-shadow relative group">
-              <div className="flex justify-between items-start mb-4">
-                <div className={`w-14 h-14 rounded-full border-2 flex items-center justify-center ${min.color || 'border-border bg-muted'}`}>
-                  {getIcon(min.iconType)}
+          {filtered.map(min => {
+            return (
+              <div key={min.id} className="bg-card rounded-xl border border-border p-6 shadow-sm hover:shadow-md transition-shadow relative group">
+                <div className="flex justify-between items-start mb-4">
+                  <div className={`w-14 h-14 rounded-full border-2 flex items-center justify-center ${min.color || 'border-border bg-muted'}`}>
+                    {getIcon(min.iconType)}
+                  </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <MoreVertical className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => setViewRecord(min)}>
+                        <Eye className="mr-2 h-4 w-4" /> {t("view_details", "View Details")}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => openEdit(min)}>
+                        <Edit className="mr-2 h-4 w-4" /> {t("edit", "Edit")}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setDeleteTargetId(min.id)} className="text-red-600">
+                        <Trash2 className="mr-2 h-4 w-4" /> {t("delete", "Delete")}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <MoreVertical className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => setViewRecord(min)}>
-                      <Eye className="mr-2 h-4 w-4" /> View Details
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => openEdit(min)}>
-                      <Edit className="mr-2 h-4 w-4" /> Edit
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setDeleteTargetId(min.id)} className="text-red-600">
-                      <Trash2 className="mr-2 h-4 w-4" /> Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <h3 className="text-xl font-bold text-card-foreground mb-1">{min.name}</h3>
+                <p className="text-sm text-muted-foreground mb-4">{t("leader", "Leader:")} <Link to="/church/members" className="font-bold text-primary hover:underline">{min.leader}</Link></p>
+                <div className="space-y-2 text-sm text-muted-foreground">
+                  <div className="flex justify-between items-center py-2 border-t border-border">
+                    <span>{t("members", "Members")}</span>
+                    <span className="font-bold bg-muted px-2.5 py-0.5 rounded-full text-card-foreground">{min.members}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-2 border-t border-border">
+                    <span>{t("meetings", "Meetings")}</span>
+                    <span className="font-medium text-card-foreground text-right">{min.schedule}</span>
+                  </div>
+                </div>
               </div>
-              <h3 className="text-xl font-bold text-card-foreground mb-1">{min.name}</h3>
-              <p className="text-sm text-muted-foreground mb-4">Leader: <Link to="/church/members" className="font-bold text-primary hover:underline">{min.leader}</Link></p>
-
-              <div className="space-y-2 text-sm text-muted-foreground">
-                <div className="flex justify-between items-center py-2 border-t border-border">
-                  <span>Members</span>
-                  <span className="font-bold bg-muted px-2.5 py-0.5 rounded-full text-card-foreground">{min.members}</span>
-                </div>
-                <div className="flex justify-between items-center py-2 border-t border-border">
-                  <span>Meetings</span>
-                  <span className="font-medium text-card-foreground text-right">{min.schedule}</span>
-                </div>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
-
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-border">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-              <HeartHandshake className="w-5 h-5 text-purple-600" /> Create Ministry Dept
+              <HeartHandshake className="w-5 h-5 text-purple-600" /> {t("create_ministry_dept", "Create Ministry Dept")}
             </h2>
             <div className="space-y-3">
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">Ministry Name</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("ministry_name", "Ministry Name")}</label>
                 <Input
                   value={formData.name}
                   onChange={e => setFormData({ ...formData, name: e.target.value })}
@@ -202,7 +205,7 @@ export default function Ministries() {
                 />
               </div>
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">Assign Leader</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("assign_leader", "Assign Leader")}</label>
                 <Input
                   value={formData.leader}
                   onChange={e => setFormData({ ...formData, leader: e.target.value })}
@@ -212,7 +215,7 @@ export default function Ministries() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-bold text-muted-foreground uppercase">Initial Members</label>
+                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("initial_members", "Initial Members")}</label>
                   <Input
                     type="number"
                     value={formData.members}
@@ -222,20 +225,20 @@ export default function Ministries() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-muted-foreground uppercase">Theme Preset</label>
+                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("theme_preset", "Theme Preset")}</label>
                   <select
                     value={formData.schemeIndex}
                     onChange={e => setFormData({ ...formData, schemeIndex: parseInt(e.target.value) })}
                     className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
                   >
-                    {COLOR_SCHEMES.map((scheme, i) => (
-                      <option key={i} value={i}>{scheme.name}</option>
-                    ))}
+                    {COLOR_SCHEMES.map((scheme, i) => {
+                      return (<option key={i} value={i}>{scheme.name}</option>);
+                    })}
                   </select>
                 </div>
               </div>
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">Meeting Schedule</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("meeting_schedule", "Meeting Schedule")}</label>
                 <Input
                   value={formData.schedule}
                   onChange={e => setFormData({ ...formData, schedule: e.target.value })}
@@ -245,13 +248,12 @@ export default function Ministries() {
               </div>
             </div>
             <div className="flex gap-3 pt-4">
-              <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditRecord(null); }}>Cancel</Button>
+              <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditRecord(null); }}>{t("cancel", "Cancel")}</Button>
               <Button className="flex-1 bg-purple-600 hover:bg-purple-700 text-white" onClick={handleCreateMinistry}>{editRecord ? 'Update' : 'Save Dept'}</Button>
             </div>
           </div>
         </div>
       )}
-
       <ConfirmationModal
         isOpen={deleteTargetId !== null}
         onClose={() => setDeleteTargetId(null)}
@@ -259,24 +261,25 @@ export default function Ministries() {
         title="Delete Ministry"
         message="Are you sure you want to completely disband this ministry group? This will remove all associated meeting schedules permanently."
       />
-    
       <Sheet open={!!viewRecord} onOpenChange={(open) => !open && setViewRecord(null)}>
         <SheetContent className="sm:max-w-md overflow-y-auto">
           <SheetHeader>
-            <SheetTitle>Record Details</SheetTitle>
-            <SheetDescription>Read-only view of the selected record.</SheetDescription>
+            <SheetTitle>{t("record_details", "Record Details")}</SheetTitle>
+            <SheetDescription>{t("read_only_view_of_the_selected", "Read-only view of the selected record.")}</SheetDescription>
           </SheetHeader>
           <div className="mt-6 space-y-4">
-            {viewRecord && Object.entries(viewRecord).filter(([k]) => k !== 'id' && k !== 'status').map(([key, value]) => (
-              <div key={key} className="border-b border-border pb-2">
-                <p className="text-sm font-medium text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
-                <p className="mt-1 text-base text-foreground font-semibold">
-                  {key === 'leader' ? (
-                    <Link to="/church/members" className="text-primary hover:underline">{String(value)}</Link>
-                  ) : typeof value === 'object' ? JSON.stringify(value) : String(value)}
-                </p>
-              </div>
-            ))}
+            {viewRecord && Object.entries(viewRecord).filter(([k]) => k !== 'id' && k !== 'status').map(([key, value]) => {
+              return (
+                <div key={key} className="border-b border-border pb-2">
+                  <p className="text-sm font-medium text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
+                  <p className="mt-1 text-base text-foreground font-semibold">
+                    {key === 'leader' ? (
+                      <Link to="/church/members" className="text-primary hover:underline">{String(value)}</Link>
+                    ) : typeof value === 'object' ? JSON.stringify(value) : String(value)}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         </SheetContent>
       </Sheet>

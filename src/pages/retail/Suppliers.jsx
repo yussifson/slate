@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Truck, Search, Plus, Phone, Mail, FileText, Star, Trash2, MoreVertical, Eye, Edit, FileSignature } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -12,6 +13,7 @@ import { useContracts } from '@/hooks/integrations/useContracts';
 import { useCompanyId } from '@/hooks/useCompanyId';
 
 export default function Suppliers() {
+  const { t } = useTranslation();
   // Supabase Real-time Sync Hooks
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('supplier');
   const mutateRecord = useMutateIndustryRecord();
@@ -124,14 +126,16 @@ export default function Suppliers() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground">Suppliers</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Manage vendor relationships and purchase orders</p>
+          <h1 className="text-2xl font-bold text-card-foreground">{t("suppliers", "Suppliers")}</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{t(
+            "manage_vendor_relationships_an",
+            "Manage vendor relationships and purchase orders"
+          )}</p>
         </div>
         <Button onClick={() => { setEditingId(null); setFormData({ name: '', category: 'Electronics', contact: '', phone: '', email: '', rating: 5 }); setShowModal(true); }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
-          <Plus className="w-4 h-4" /> Add Supplier
+          <Plus className="w-4 h-4" /> {t("add_supplier", "Add Supplier")}
         </Button>
       </div>
-
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         <div className="p-4 border-b border-border bg-muted/50">
           <div className="relative max-w-md">
@@ -141,120 +145,131 @@ export default function Suppliers() {
         </div>
         <div className="overflow-x-auto">
           {isDbLoading ? (
-            <div className="py-12 text-center text-muted-foreground">Loading suppliers...</div>
+            <div className="py-12 text-center text-muted-foreground">{t("loading_suppliers", "Loading suppliers...")}</div>
           ) : filtered.length === 0 ? (
             <div className="py-12 text-center text-muted-foreground">
                <Truck className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse" />
-               <p className="font-semibold">No suppliers configured.</p>
-               <p className="text-xs mt-1">Configure your first retail vendor using the "Add Supplier" button.</p>
+               <p className="font-semibold">{t("no_suppliers_configured", "No suppliers configured.")}</p>
+               <p className="text-xs mt-1">{t(
+                 "configure_your_first_retail_ve",
+                 "Configure your first retail vendor using the \"Add Supplier\" button."
+               )}</p>
             </div>
           ) : (
             <table className="w-full text-sm">
               <thead className="bg-card border-b border-border">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Supplier</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Contact Person</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Contact Info</th>
-                  <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">Rating</th>
-                  <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">Status</th>
-                  <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">Action</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("supplier", "Supplier")}</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("contact_person", "Contact Person")}</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("contact_info", "Contact Info")}</th>
+                  <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("rating", "Rating")}</th>
+                  <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("status", "Status")}</th>
+                  <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("action", "Action")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {filtered.map(sup => (
-                  <tr key={sup.id} className="hover:bg-muted/50 transition-colors">
-                    <td className="px-6 py-4">
-                      <p className="font-bold text-card-foreground flex items-center gap-2"><Truck className="w-4 h-4 text-muted-foreground"/> {sup.name}</p>
-                      <p className="text-xs text-muted-foreground mt-1"><Link to="/retail/inventory" className="text-primary hover:underline">{sup.category}</Link></p>
-                    </td>
-                    <td className="px-6 py-4 font-medium text-foreground">{sup.contact}</td>
-                    <td className="px-6 py-4 text-muted-foreground space-y-1">
-                       <div className="flex items-center gap-2"><Phone className="w-3.5 h-3.5"/> {sup.phone}</div>
-                       <div className="flex items-center gap-2"><Mail className="w-3.5 h-3.5"/> {sup.email}</div>
-                    </td>
-                    <td className="px-6 py-4">
-                       <div className="flex items-center justify-center gap-1 text-yellow-400">
-                          {[...Array(sup.rating)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
-                       </div>
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${sup.status === 'Active' ? 'bg-green-100 dark:bg-green-950/20 text-green-700 dark:text-green-400' : 'bg-muted text-muted-foreground'}`}>
-                         {sup.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => openDetails(sup)}>
-                            <Eye className="mr-2 h-4 w-4" /> View Details
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => {
-                            const signerEmail = prompt("Enter supplier email for vendor agreement signature:", sup.email || "");
-                            if (signerEmail) {
-                              sendForSignature({ companyId, provider: 'docusign', documentName: `Vendor_Agreement_${sup.name}`, signerEmail, signerName: sup.contact || sup.name });
-                            }
-                          }}>
-                            <FileSignature className="mr-2 h-4 w-4" /> Send Agreement
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => openEdit(sup)}>
-                            <Edit className="mr-2 h-4 w-4" /> Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => setDeleteTargetId(sup.id)} className="text-red-600">
-                            <Trash2 className="mr-2 h-4 w-4" /> Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </td>
-                  </tr>
-                ))}
+                {filtered.map(sup => {
+                  return (
+                    <tr key={sup.id} className="hover:bg-muted/50 transition-colors">
+                      <td className="px-6 py-4">
+                        <p className="font-bold text-card-foreground flex items-center gap-2"><Truck className="w-4 h-4 text-muted-foreground"/> {sup.name}</p>
+                        <p className="text-xs text-muted-foreground mt-1"><Link to="/retail/inventory" className="text-primary hover:underline">{sup.category}</Link></p>
+                      </td>
+                      <td className="px-6 py-4 font-medium text-foreground">{sup.contact}</td>
+                      <td className="px-6 py-4 text-muted-foreground space-y-1">
+                         <div className="flex items-center gap-2"><Phone className="w-3.5 h-3.5"/> {sup.phone}</div>
+                         <div className="flex items-center gap-2"><Mail className="w-3.5 h-3.5"/> {sup.email}</div>
+                      </td>
+                      <td className="px-6 py-4">
+                         <div className="flex items-center justify-center gap-1 text-yellow-400">
+                            {[...Array(sup.rating)].map((_, i) => {
+                              return <Star key={i} className="w-4 h-4 fill-current" />;
+                            })}
+                         </div>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${sup.status === 'Active' ? 'bg-green-100 dark:bg-green-950/20 text-green-700 dark:text-green-400' : 'bg-muted text-muted-foreground'}`}>
+                           {sup.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <span className="sr-only">{t("open_menu", "Open menu")}</span>
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => openDetails(sup)}>
+                              <Eye className="mr-2 h-4 w-4" /> {t("view_details", "View Details")}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => {
+                              const signerEmail = prompt("Enter supplier email for vendor agreement signature:", sup.email || "");
+                              if (signerEmail) {
+                                sendForSignature({ companyId, provider: 'docusign', documentName: `Vendor_Agreement_${sup.name}`, signerEmail, signerName: sup.contact || sup.name });
+                              }
+                            }}>
+                              <FileSignature className="mr-2 h-4 w-4" /> {t("send_agreement", "Send Agreement")}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => openEdit(sup)}>
+                              <Edit className="mr-2 h-4 w-4" /> {t("edit", "Edit")}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setDeleteTargetId(sup.id)} className="text-red-600">
+                              <Trash2 className="mr-2 h-4 w-4" /> {t("delete", "Delete")}
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           )}
         </div>
       </div>
-
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
         <SheetContent className="overflow-y-auto">
           <SheetHeader>
-            <SheetTitle>Supplier Details</SheetTitle>
-            <SheetDescription>View detailed information for this vendor.</SheetDescription>
+            <SheetTitle>{t("supplier_details", "Supplier Details")}</SheetTitle>
+            <SheetDescription>{t(
+              "view_detailed_information_for_",
+              "View detailed information for this vendor."
+            )}</SheetDescription>
           </SheetHeader>
           {selectedRecord && (
             <div className="mt-6 space-y-4 text-sm">
               <div className="grid grid-cols-3 gap-4 border-b pb-4">
-                <div className="col-span-1 font-semibold text-muted-foreground">Supplier Name</div>
+                <div className="col-span-1 font-semibold text-muted-foreground">{t("supplier_name", "Supplier Name")}</div>
                 <div className="col-span-2 font-medium">{selectedRecord.name}</div>
               </div>
               <div className="grid grid-cols-3 gap-4 border-b pb-4">
-                <div className="col-span-1 font-semibold text-muted-foreground">Category</div>
+                <div className="col-span-1 font-semibold text-muted-foreground">{t("category", "Category")}</div>
                 <div className="col-span-2"><Link to="/retail/inventory" className="text-primary hover:underline">{selectedRecord.category}</Link></div>
               </div>
               <div className="grid grid-cols-3 gap-4 border-b pb-4">
-                <div className="col-span-1 font-semibold text-muted-foreground">Contact Person</div>
+                <div className="col-span-1 font-semibold text-muted-foreground">{t("contact_person", "Contact Person")}</div>
                 <div className="col-span-2">{selectedRecord.contact}</div>
               </div>
               <div className="grid grid-cols-3 gap-4 border-b pb-4">
-                <div className="col-span-1 font-semibold text-muted-foreground">Email</div>
+                <div className="col-span-1 font-semibold text-muted-foreground">{t("email", "Email")}</div>
                 <div className="col-span-2">{selectedRecord.email}</div>
               </div>
               <div className="grid grid-cols-3 gap-4 border-b pb-4">
-                <div className="col-span-1 font-semibold text-muted-foreground">Phone</div>
+                <div className="col-span-1 font-semibold text-muted-foreground">{t("phone", "Phone")}</div>
                 <div className="col-span-2">{selectedRecord.phone}</div>
               </div>
               <div className="grid grid-cols-3 gap-4 border-b pb-4">
-                <div className="col-span-1 font-semibold text-muted-foreground">Rating</div>
+                <div className="col-span-1 font-semibold text-muted-foreground">{t("rating", "Rating")}</div>
                 <div className="col-span-2 flex items-center gap-1 text-yellow-400">
-                  {[...Array(selectedRecord.rating)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
+                  {[...Array(selectedRecord.rating)].map((_, i) => {
+                    return <Star key={i} className="w-4 h-4 fill-current" />;
+                  })}
                 </div>
               </div>
               <div className="grid grid-cols-3 gap-4">
-                <div className="col-span-1 font-semibold text-muted-foreground">Status</div>
+                <div className="col-span-1 font-semibold text-muted-foreground">{t("status", "Status")}</div>
                 <div className="col-span-2">
                   <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${selectedRecord.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-muted text-muted-foreground'}`}>
                      {selectedRecord.status}
@@ -265,58 +280,56 @@ export default function Suppliers() {
           )}
         </SheetContent>
       </Sheet>
-
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><Plus className="w-5 h-5 text-blue-600"/> {editingId ? 'Edit Supplier' : 'Add Supplier'}</h2>
             <div className="space-y-3">
                <div>
-                 <label className="text-xs font-bold text-muted-foreground uppercase">Supplier Company Name</label>
+                 <label className="text-xs font-bold text-muted-foreground uppercase">{t("supplier_company_name", "Supplier Company Name")}</label>
                  <Input value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} className="mt-1" placeholder="e.g. Acme Wholesale" />
                </div>
                <div>
-                 <label className="text-xs font-bold text-muted-foreground uppercase">Category</label>
+                 <label className="text-xs font-bold text-muted-foreground uppercase">{t("category", "Category")}</label>
                  <select value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-                   <option>Electronics</option>
-                   <option>Apparel</option>
-                   <option>Footwear</option>
-                   <option>Fitness</option>
-                   <option>Groceries</option>
-                   <option>Home & Living</option>
-                   <option>Beauty</option>
-                   <option>Other</option>
+                   <option>{t("electronics", "Electronics")}</option>
+                   <option>{t("apparel", "Apparel")}</option>
+                   <option>{t("footwear", "Footwear")}</option>
+                   <option>{t("fitness", "Fitness")}</option>
+                   <option>{t("groceries", "Groceries")}</option>
+                   <option>{t("home_living", "Home & Living")}</option>
+                   <option>{t("beauty", "Beauty")}</option>
+                   <option>{t("other", "Other")}</option>
                  </select>
                </div>
                <div>
-                 <label className="text-xs font-bold text-muted-foreground uppercase">Contact Person Name</label>
+                 <label className="text-xs font-bold text-muted-foreground uppercase">{t("contact_person_name", "Contact Person Name")}</label>
                  <Input value={formData.contact} onChange={e => setFormData({ ...formData, contact: e.target.value })} className="mt-1" placeholder="e.g. Robert Smith" />
                </div>
                <div>
-                 <label className="text-xs font-bold text-muted-foreground uppercase">Phone Number</label>
+                 <label className="text-xs font-bold text-muted-foreground uppercase">{t("phone_number", "Phone Number")}</label>
                  <Input value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} className="mt-1" placeholder="e.g. +1 555-0199" />
                </div>
                <div>
-                 <label className="text-xs font-bold text-muted-foreground uppercase">Email Address</label>
+                 <label className="text-xs font-bold text-muted-foreground uppercase">{t("email_address", "Email Address")}</label>
                  <Input value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} className="mt-1" placeholder="e.g. orders@acme.com" />
                </div>
                <div>
-                 <label className="text-xs font-bold text-muted-foreground uppercase">Supplier Rating (1-5)</label>
+                 <label className="text-xs font-bold text-muted-foreground uppercase">{t("supplier_rating_1_5", "Supplier Rating (1-5)")}</label>
                  <select value={formData.rating} onChange={e => setFormData({ ...formData, rating: parseInt(e.target.value) || 5 })} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-                   <option value="5">⭐⭐⭐⭐⭐ (Excellent)</option>
-                   <option value="4">⭐⭐⭐⭐ (Very Good)</option>
-                   <option value="3">⭐⭐⭐ (Average)</option>
+                   <option value="5">{t("excellent", "⭐⭐⭐⭐⭐ (Excellent)")}</option>
+                   <option value="4">{t("very_good", "⭐⭐⭐⭐ (Very Good)")}</option>
+                   <option value="3">{t("average", "⭐⭐⭐ (Average)")}</option>
                  </select>
                </div>
             </div>
             <div className="flex gap-3 pt-4">
-              <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditingId(null); }}>Cancel</Button>
+              <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditingId(null); }}>{t("cancel", "Cancel")}</Button>
               <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleCreateSupplier}>{editingId ? 'Save Changes' : 'Configure Supplier'}</Button>
             </div>
           </div>
         </div>
       )}
-
       <ConfirmationModal
         isOpen={deleteTargetId !== null}
         onClose={() => setDeleteTargetId(null)}

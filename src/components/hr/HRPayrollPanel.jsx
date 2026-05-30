@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
@@ -33,6 +34,7 @@ function periodLabel(period) {
 }
 
 export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, leaves, user }) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [period, setPeriod] = useState(currentPeriod());
   const [generating, setGenerating] = useState(false);
@@ -122,7 +124,7 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
       {/* Controls */}
       <div className="flex flex-wrap items-center gap-3">
         <div>
-          <Label className="text-xs mb-1 block">Pay Period</Label>
+          <Label className="text-xs mb-1 block">{t("pay_period", "Pay Period")}</Label>
           <Input type="month" value={period} onChange={e => setPeriod(e.target.value)} className="w-44" />
         </div>
         <div className="flex gap-2 mt-5">
@@ -134,54 +136,58 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
           )}
           {isAdmin && draftCount > 0 && (
             <Button size="sm" variant="outline" onClick={handleApproveAll}>
-              <CheckCircle className="w-4 h-4 mr-1" /> Approve All ({draftCount})
-            </Button>
+              <CheckCircle className="w-4 h-4 mr-1" /> {t("approve_all", "Approve All (")}{draftCount})
+                          </Button>
           )}
           {isAdmin && approvedCount > 0 && (
             <Button size="sm" variant="outline" className="text-green-700 border-green-300 hover:bg-green-50" onClick={handleMarkAllPaid}>
-              <Banknote className="w-4 h-4 mr-1" /> Mark All Paid ({approvedCount})
-            </Button>
+              <Banknote className="w-4 h-4 mr-1" /> {t("mark_all_paid", "Mark All Paid (")}{approvedCount})
+                          </Button>
           )}
         </div>
       </div>
-
       {/* Summary bar */}
       {slips.length > 0 && (
         <div className="bg-primary/5 border border-primary/20 rounded-xl px-5 py-3 flex flex-wrap gap-6 items-center">
           <div>
-            <p className="text-xs text-muted-foreground">Total Net Payroll</p>
+            <p className="text-xs text-muted-foreground">{t("total_net_payroll", "Total Net Payroll")}</p>
             <p className="text-xl font-bold text-primary">{formatCurrency(totalNet, currency)}</p>
           </div>
           <div className="flex gap-4 text-sm">
-            {draftCount > 0 && <span className="text-slate-600">{draftCount} Draft</span>}
-            {approvedCount > 0 && <span className="text-blue-600">{approvedCount} Approved</span>}
-            {paidCount > 0 && <span className="text-green-600">{paidCount} Paid</span>}
+            {draftCount > 0 && <span className="text-slate-600">{draftCount} {t("draft", "Draft")}</span>}
+            {approvedCount > 0 && <span className="text-blue-600">{approvedCount} {t("approved", "Approved")}</span>}
+            {paidCount > 0 && <span className="text-green-600">{paidCount} {t("paid", "Paid")}</span>}
           </div>
         </div>
       )}
-
       {/* Slip list */}
       {isLoading ? (
-        <div className="text-center py-10 text-sm text-muted-foreground">Loading...</div>
+        <div className="text-center py-10 text-sm text-muted-foreground">{t("loading", "Loading...")}</div>
       ) : slips.length === 0 ? (
         <div className="bg-card border border-border rounded-xl p-12 text-center">
           <FileText className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-          <p className="text-sm font-medium">No payroll slips for {periodLabel(period)}</p>
+          <p className="text-sm font-medium">{t("no_payroll_slips_for", "No payroll slips for")} {periodLabel(period)}</p>
           {isAdmin && staff.filter(s => s.status === "active" && s.salary > 0).length > 0 && (
-            <p className="text-xs text-muted-foreground mt-1">Click "Generate Slips" to auto-calculate for all active staff.</p>
+            <p className="text-xs text-muted-foreground mt-1">{t(
+              "click_generate_slips_to_auto_c",
+              "Click \"Generate Slips\" to auto-calculate for all active staff."
+            )}</p>
           )}
           {staff.filter(s => s.status === "active" && s.salary > 0).length === 0 && (
-            <p className="text-xs text-muted-foreground mt-1">Set salaries for active staff members first.</p>
+            <p className="text-xs text-muted-foreground mt-1">{t(
+              "set_salaries_for_active_staff_",
+              "Set salaries for active staff members first."
+            )}</p>
           )}
         </div>
       ) : (
         <div className="bg-card border border-border rounded-xl overflow-hidden">
           <div className="px-4 py-2.5 bg-muted/30 border-b border-border grid grid-cols-12 gap-2 text-xs font-semibold uppercase text-muted-foreground">
-            <span className="col-span-4">Staff Member</span>
-            <span className="col-span-2">Basic</span>
-            <span className="col-span-2">Deductions</span>
-            <span className="col-span-2 font-bold">Net Pay</span>
-            <span className="col-span-2 text-center">Actions</span>
+            <span className="col-span-4">{t("staff_member", "Staff Member")}</span>
+            <span className="col-span-2">{t("basic", "Basic")}</span>
+            <span className="col-span-2">{t("deductions", "Deductions")}</span>
+            <span className="col-span-2 font-bold">{t("net_pay", "Net Pay")}</span>
+            <span className="col-span-2 text-center">{t("actions", "Actions")}</span>
           </div>
           <div className="divide-y divide-border">
             {slips.map(slip => {
@@ -196,7 +202,7 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
                         <p className="text-sm font-medium">{slip.staff_name}</p>
                         <div className="flex items-center gap-1.5 mt-0.5">
                           <Badge className={cn("text-[9px] h-4 px-1.5", STATUS_COLORS[slip.status])}>{slip.status}</Badge>
-                          {slip.leave_days_taken > 0 && <span className="text-[9px] text-amber-600">{slip.leave_days_taken}d leave</span>}
+                          {slip.leave_days_taken > 0 && <span className="text-[9px] text-amber-600">{slip.leave_days_taken}{t("d_leave", "d leave")}</span>}
                         </div>
                       </div>
                     </div>
@@ -226,27 +232,28 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
                       )}
                     </div>
                   </div>
-
                   {/* Expanded detail panel */}
                   {isExpanded && (
                     <div className="bg-muted/20 border-t border-border px-8 py-4">
                       <div className="grid grid-cols-3 gap-6 text-sm">
                         {/* Earnings */}
                         <div>
-                          <p className="text-xs font-semibold uppercase text-green-700 mb-2">Earnings</p>
+                          <p className="text-xs font-semibold uppercase text-green-700 mb-2">{t("earnings", "Earnings")}</p>
                           <div className="space-y-1.5">
                             <div className="flex justify-between">
-                              <span className="text-muted-foreground">Basic Salary</span>
+                              <span className="text-muted-foreground">{t("basic_salary", "Basic Salary")}</span>
                               <span className="font-medium">{formatCurrency(slip.basic_salary, currency)}</span>
                             </div>
-                            {(slip.allowances || []).length > 0 ? slip.allowances.map((a, i) => (
-                              <div key={i} className="flex justify-between">
-                                <span className="text-muted-foreground">{a.label || "Allowance"}</span>
-                                <span className="text-green-700">+{formatCurrency(a.amount, currency)}</span>
-                              </div>
-                            )) : <p className="text-xs text-muted-foreground italic">No allowances</p>}
+                            {(slip.allowances || []).length > 0 ? slip.allowances.map((a, i) => {
+                              return (
+                                <div key={i} className="flex justify-between">
+                                  <span className="text-muted-foreground">{a.label || "Allowance"}</span>
+                                  <span className="text-green-700">+{formatCurrency(a.amount, currency)}</span>
+                                </div>
+                              );
+                            }) : <p className="text-xs text-muted-foreground italic">{t("no_allowances", "No allowances")}</p>}
                             <div className="flex justify-between font-semibold border-t border-border pt-1">
-                              <span>Gross</span>
+                              <span>{t("gross", "Gross")}</span>
                               <span>{formatCurrency(slip.gross_salary, currency)}</span>
                             </div>
                           </div>
@@ -254,17 +261,19 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
 
                         {/* Deductions */}
                         <div>
-                          <p className="text-xs font-semibold uppercase text-red-600 mb-2">Deductions</p>
+                          <p className="text-xs font-semibold uppercase text-red-600 mb-2">{t("deductions", "Deductions")}</p>
                           <div className="space-y-1.5">
-                            {(slip.deductions || []).length > 0 ? slip.deductions.map((d, i) => (
-                              <div key={i} className="flex justify-between">
-                                <span className="text-muted-foreground">{d.label || "Deduction"}</span>
-                                <span className="text-red-600">-{formatCurrency(d.amount, currency)}</span>
-                              </div>
-                            )) : <p className="text-xs text-muted-foreground italic">No deductions</p>}
+                            {(slip.deductions || []).length > 0 ? slip.deductions.map((d, i) => {
+                              return (
+                                <div key={i} className="flex justify-between">
+                                  <span className="text-muted-foreground">{d.label || "Deduction"}</span>
+                                  <span className="text-red-600">-{formatCurrency(d.amount, currency)}</span>
+                                </div>
+                              );
+                            }) : <p className="text-xs text-muted-foreground italic">{t("no_deductions", "No deductions")}</p>}
                             {slip.total_deductions > 0 && (
                               <div className="flex justify-between font-semibold border-t border-border pt-1 text-red-600">
-                                <span>Total</span>
+                                <span>{t("total", "Total")}</span>
                                 <span>-{formatCurrency(slip.total_deductions, currency)}</span>
                               </div>
                             )}
@@ -273,24 +282,24 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
 
                         {/* Summary */}
                         <div>
-                          <p className="text-xs font-semibold uppercase text-primary mb-2">Summary</p>
+                          <p className="text-xs font-semibold uppercase text-primary mb-2">{t("summary", "Summary")}</p>
                           <div className="space-y-1.5">
                             <div className="flex justify-between">
-                              <span className="text-muted-foreground">Gross Pay</span>
+                              <span className="text-muted-foreground">{t("gross_pay", "Gross Pay")}</span>
                               <span>{formatCurrency(slip.gross_salary, currency)}</span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-muted-foreground">Total Deductions</span>
+                              <span className="text-muted-foreground">{t("total_deductions", "Total Deductions")}</span>
                               <span className="text-red-600">-{formatCurrency(slip.total_deductions || 0, currency)}</span>
                             </div>
                             {slip.leave_days_taken > 0 && (
                               <div className="flex justify-between">
-                                <span className="text-muted-foreground">Leave Taken</span>
-                                <span className="text-amber-600">{slip.leave_days_taken} day(s)</span>
+                                <span className="text-muted-foreground">{t("leave_taken", "Leave Taken")}</span>
+                                <span className="text-amber-600">{slip.leave_days_taken} {t("day_s", "day(s)")}</span>
                               </div>
                             )}
                             <div className="flex justify-between font-bold text-primary border-t border-border pt-1">
-                              <span>Net Pay</span>
+                              <span>{t("net_pay", "Net Pay")}</span>
                               <span>{formatCurrency(slip.net_salary, currency)}</span>
                             </div>
                           </div>
@@ -305,7 +314,6 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
           </div>
         </div>
       )}
-
       {viewSlip && (
         <SalarySlipDialog slip={viewSlip} currency={currency} onClose={() => setViewSlip(null)} />
       )}
@@ -322,13 +330,14 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
 }
 
 function SalarySlipDialog({ slip, currency, onClose }) {
+  const { t } = useTranslation();
   const handlePrint = () => window.print();
 
   return (
     <Dialog open onOpenChange={onClose}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle>Salary Slip — {periodLabel(slip.pay_period)}</DialogTitle>
+          <DialogTitle>{t("salary_slip", "Salary Slip —")} {periodLabel(slip.pay_period)}</DialogTitle>
         </DialogHeader>
         <div id="salary-slip" className="space-y-4 text-sm">
           {/* Header */}
@@ -342,24 +351,24 @@ function SalarySlipDialog({ slip, currency, onClose }) {
           </div>
 
           <div className="grid grid-cols-2 gap-2 text-xs bg-muted/30 rounded-lg p-3">
-            <div><span className="text-muted-foreground">Pay Period:</span> <strong>{periodLabel(slip.pay_period)}</strong></div>
-            <div><span className="text-muted-foreground">Currency:</span> <strong>{slip.currency || currency}</strong></div>
-            {slip.leave_days_taken > 0 && <div><span className="text-muted-foreground">Leave Taken:</span> <strong>{slip.leave_days_taken} day(s)</strong></div>}
-            {slip.approved_by && <div><span className="text-muted-foreground">Approved by:</span> <strong>{slip.approved_by.split("@")[0]}</strong></div>}
+            <div><span className="text-muted-foreground">{t("pay_period", "Pay Period:")}</span> <strong>{periodLabel(slip.pay_period)}</strong></div>
+            <div><span className="text-muted-foreground">{t("currency", "Currency:")}</span> <strong>{slip.currency || currency}</strong></div>
+            {slip.leave_days_taken > 0 && <div><span className="text-muted-foreground">{t("leave_taken", "Leave Taken:")}</span> <strong>{slip.leave_days_taken} {t("day_s", "day(s)")}</strong></div>}
+            {slip.approved_by && <div><span className="text-muted-foreground">{t("approved_by", "Approved by:")}</span> <strong>{slip.approved_by.split("@")[0]}</strong></div>}
           </div>
 
           <Separator />
 
           {/* Earnings */}
           <div>
-            <p className="font-semibold mb-2 text-green-700">Earnings</p>
+            <p className="font-semibold mb-2 text-green-700">{t("earnings", "Earnings")}</p>
             <div className="space-y-1">
-              <div className="flex justify-between"><span>Basic Salary</span><span className="font-medium">{formatCurrency(slip.basic_salary, currency)}</span></div>
-              {(slip.allowances || []).map((a, i) => (
-                <div key={i} className="flex justify-between text-green-700"><span>{a.label}</span><span>+{formatCurrency(a.amount, currency)}</span></div>
-              ))}
+              <div className="flex justify-between"><span>{t("basic_salary", "Basic Salary")}</span><span className="font-medium">{formatCurrency(slip.basic_salary, currency)}</span></div>
+              {(slip.allowances || []).map((a, i) => {
+                return (<div key={i} className="flex justify-between text-green-700"><span>{a.label}</span><span>+{formatCurrency(a.amount, currency)}</span></div>);
+              })}
               <div className="flex justify-between font-semibold border-t border-border pt-1 mt-1">
-                <span>Gross Salary</span><span>{formatCurrency(slip.gross_salary, currency)}</span>
+                <span>{t("gross_salary", "Gross Salary")}</span><span>{formatCurrency(slip.gross_salary, currency)}</span>
               </div>
             </div>
           </div>
@@ -367,13 +376,13 @@ function SalarySlipDialog({ slip, currency, onClose }) {
           {/* Deductions */}
           {(slip.deductions || []).length > 0 && (
             <div>
-              <p className="font-semibold mb-2 text-red-600">Deductions</p>
+              <p className="font-semibold mb-2 text-red-600">{t("deductions", "Deductions")}</p>
               <div className="space-y-1">
-                {slip.deductions.map((d, i) => (
-                  <div key={i} className="flex justify-between text-red-600"><span>{d.label}</span><span>-{formatCurrency(d.amount, currency)}</span></div>
-                ))}
+                {slip.deductions.map((d, i) => {
+                  return (<div key={i} className="flex justify-between text-red-600"><span>{d.label}</span><span>-{formatCurrency(d.amount, currency)}</span></div>);
+                })}
                 <div className="flex justify-between font-semibold border-t border-border pt-1 mt-1 text-red-600">
-                  <span>Total Deductions</span><span>-{formatCurrency(slip.total_deductions, currency)}</span>
+                  <span>{t("total_deductions", "Total Deductions")}</span><span>-{formatCurrency(slip.total_deductions, currency)}</span>
                 </div>
               </div>
             </div>
@@ -382,7 +391,7 @@ function SalarySlipDialog({ slip, currency, onClose }) {
           <Separator />
 
           <div className="flex justify-between text-base font-bold bg-primary/5 rounded-lg px-4 py-3">
-            <span>Net Pay</span>
+            <span>{t("net_pay", "Net Pay")}</span>
             <span className="text-primary">{formatCurrency(slip.net_salary, currency)}</span>
           </div>
 
@@ -390,8 +399,8 @@ function SalarySlipDialog({ slip, currency, onClose }) {
         </div>
 
         <div className="flex justify-end gap-2 mt-2">
-          <Button variant="outline" onClick={onClose}>Close</Button>
-          <Button onClick={handlePrint}><Printer className="w-4 h-4 mr-1" /> Print</Button>
+          <Button variant="outline" onClick={onClose}>{t("close", "Close")}</Button>
+          <Button onClick={handlePrint}><Printer className="w-4 h-4 mr-1" /> {t("print", "Print")}</Button>
         </div>
       </DialogContent>
     </Dialog>
@@ -419,62 +428,66 @@ function EditSlipDialog({ slip, currency, onClose, onSubmit }) {
   return (
     <Dialog open onOpenChange={onClose}>
       <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
-        <DialogHeader><DialogTitle>Edit Slip — {slip.staff_name}</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle>{t("edit_slip", "Edit Slip —")} {slip.staff_name}</DialogTitle></DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="text-sm text-muted-foreground bg-muted/30 rounded-lg px-3 py-2">
-            Basic Salary: <strong>{formatCurrency(slip.basic_salary, currency)}</strong>
+            {t("basic_salary", "Basic Salary:")} <strong>{formatCurrency(slip.basic_salary, currency)}</strong>
           </div>
 
           {/* Allowances */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <Label className="text-green-700">Allowances</Label>
+              <Label className="text-green-700">{t("allowances", "Allowances")}</Label>
               <Button type="button" size="sm" variant="outline" className="h-7 text-xs" onClick={() => addRow(setAllowances)}>
-                <Plus className="w-3 h-3 mr-1" /> Add
+                <Plus className="w-3 h-3 mr-1" /> {t("add", "Add")}
               </Button>
             </div>
-            {allowances.map((a, i) => (
-              <div key={i} className="flex gap-2 mb-2">
-                <Input placeholder="Label (e.g. Housing)" value={a.label} onChange={e => updateRow(setAllowances, i, "label", e.target.value)} className="flex-1" />
-                <Input type="number" min="0" placeholder="Amount" value={a.amount} onChange={e => updateRow(setAllowances, i, "amount", e.target.value)} className="w-28" />
-                <Button type="button" variant="ghost" size="icon" className="h-9 w-9 shrink-0" onClick={() => removeRow(setAllowances, i)}>
-                  <Trash2 className="w-3.5 h-3.5 text-destructive" />
-                </Button>
-              </div>
-            ))}
+            {allowances.map((a, i) => {
+              return (
+                <div key={i} className="flex gap-2 mb-2">
+                  <Input placeholder="Label (e.g. Housing)" value={a.label} onChange={e => updateRow(setAllowances, i, "label", e.target.value)} className="flex-1" />
+                  <Input type="number" min="0" placeholder="Amount" value={a.amount} onChange={e => updateRow(setAllowances, i, "amount", e.target.value)} className="w-28" />
+                  <Button type="button" variant="ghost" size="icon" className="h-9 w-9 shrink-0" onClick={() => removeRow(setAllowances, i)}>
+                    <Trash2 className="w-3.5 h-3.5 text-destructive" />
+                  </Button>
+                </div>
+              );
+            })}
           </div>
 
           {/* Deductions */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <Label className="text-red-600">Deductions</Label>
+              <Label className="text-red-600">{t("deductions", "Deductions")}</Label>
               <Button type="button" size="sm" variant="outline" className="h-7 text-xs" onClick={() => addRow(setDeductions)}>
-                <Plus className="w-3 h-3 mr-1" /> Add
+                <Plus className="w-3 h-3 mr-1" /> {t("add", "Add")}
               </Button>
             </div>
-            {deductions.map((d, i) => (
-              <div key={i} className="flex gap-2 mb-2">
-                <Input placeholder="Label (e.g. Tax, Pension)" value={d.label} onChange={e => updateRow(setDeductions, i, "label", e.target.value)} className="flex-1" />
-                <Input type="number" min="0" placeholder="Amount" value={d.amount} onChange={e => updateRow(setDeductions, i, "amount", e.target.value)} className="w-28" />
-                <Button type="button" variant="ghost" size="icon" className="h-9 w-9 shrink-0" onClick={() => removeRow(setDeductions, i)}>
-                  <Trash2 className="w-3.5 h-3.5 text-destructive" />
-                </Button>
-              </div>
-            ))}
+            {deductions.map((d, i) => {
+              return (
+                <div key={i} className="flex gap-2 mb-2">
+                  <Input placeholder="Label (e.g. Tax, Pension)" value={d.label} onChange={e => updateRow(setDeductions, i, "label", e.target.value)} className="flex-1" />
+                  <Input type="number" min="0" placeholder="Amount" value={d.amount} onChange={e => updateRow(setDeductions, i, "amount", e.target.value)} className="w-28" />
+                  <Button type="button" variant="ghost" size="icon" className="h-9 w-9 shrink-0" onClick={() => removeRow(setDeductions, i)}>
+                    <Trash2 className="w-3.5 h-3.5 text-destructive" />
+                  </Button>
+                </div>
+              );
+            })}
           </div>
 
           {/* Live summary */}
           <div className="bg-muted/30 rounded-lg p-3 text-sm space-y-1">
-            <div className="flex justify-between"><span>Gross</span><span className="font-medium">{formatCurrency(gross, currency)}</span></div>
-            <div className="flex justify-between text-red-600"><span>Deductions</span><span>-{formatCurrency(totalDed, currency)}</span></div>
-            <div className="flex justify-between font-bold text-primary border-t border-border pt-1 mt-1"><span>Net Pay</span><span>{formatCurrency(net, currency)}</span></div>
+            <div className="flex justify-between"><span>{t("gross", "Gross")}</span><span className="font-medium">{formatCurrency(gross, currency)}</span></div>
+            <div className="flex justify-between text-red-600"><span>{t("deductions", "Deductions")}</span><span>-{formatCurrency(totalDed, currency)}</span></div>
+            <div className="flex justify-between font-bold text-primary border-t border-border pt-1 mt-1"><span>{t("net_pay", "Net Pay")}</span><span>{formatCurrency(net, currency)}</span></div>
           </div>
 
-          <div><Label>Notes</Label><Textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} /></div>
+          <div><Label>{t("notes", "Notes")}</Label><Textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} /></div>
 
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-            <Button type="submit">Save Slip</Button>
+            <Button type="button" variant="outline" onClick={onClose}>{t("cancel", "Cancel")}</Button>
+            <Button type="submit">{t("save_slip", "Save Slip")}</Button>
           </div>
         </form>
       </DialogContent>

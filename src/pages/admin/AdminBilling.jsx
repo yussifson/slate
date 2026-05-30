@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -12,10 +13,11 @@ import { useToast } from '@/components/ui/use-toast';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel } from '@/components/ui/dropdown-menu';
 
 export default function AdminBilling() {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
-  
+
   // Fetch Global Data
   const { data: invoices = [], isLoading: loadingInvoices } = useQuery({
     queryKey: ['admin_invoices'],
@@ -60,17 +62,16 @@ export default function AdminBilling() {
         subtitle="Global platform financial controls and invoice management." 
         action={
           <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-            <Plus className="w-4 h-4 mr-2" /> Create Manual Bill
+            <Plus className="w-4 h-4 mr-2" /> {t("create_manual_bill", "Create Manual Bill")}
           </Button>
         }
       />
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="bg-gradient-to-br from-indigo-50 to-white border-indigo-100 shadow-sm rounded-2xl">
           <CardContent className="p-6">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm font-bold text-indigo-600/80 uppercase tracking-wider mb-1">Total Paid MRR</p>
+                <p className="text-sm font-bold text-indigo-600/80 uppercase tracking-wider mb-1">{t("total_paid_mrr", "Total Paid MRR")}</p>
                 <h3 className="text-4xl font-extrabold text-indigo-950">{formatCurrency(totalRevenue, 'USD')}</h3>
               </div>
               <div className="w-12 h-12 rounded-2xl bg-indigo-100 flex items-center justify-center">
@@ -78,7 +79,7 @@ export default function AdminBilling() {
               </div>
             </div>
             <div className="mt-4 flex items-center gap-2 text-sm">
-              <span className="text-slate-500 font-medium">All-time collected revenue</span>
+              <span className="text-slate-500 font-medium">{t("all_time_collected_revenue", "All-time collected revenue")}</span>
             </div>
           </CardContent>
         </Card>
@@ -87,7 +88,7 @@ export default function AdminBilling() {
           <CardContent className="p-6">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm font-bold text-amber-600/80 uppercase tracking-wider mb-1">Pending Revenue</p>
+                <p className="text-sm font-bold text-amber-600/80 uppercase tracking-wider mb-1">{t("pending_revenue", "Pending Revenue")}</p>
                 <h3 className="text-4xl font-extrabold text-amber-950">{formatCurrency(pendingRevenue, 'USD')}</h3>
               </div>
               <div className="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center">
@@ -95,7 +96,7 @@ export default function AdminBilling() {
               </div>
             </div>
             <div className="mt-4 flex items-center gap-2 text-sm">
-              <span className="text-slate-500 font-medium">Awaiting payment clearing</span>
+              <span className="text-slate-500 font-medium">{t("awaiting_payment_clearing", "Awaiting payment clearing")}</span>
             </div>
           </CardContent>
         </Card>
@@ -104,7 +105,7 @@ export default function AdminBilling() {
           <CardContent className="p-6">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm font-bold text-rose-500 uppercase tracking-wider mb-1">Overdue / Failed</p>
+                <p className="text-sm font-bold text-rose-500 uppercase tracking-wider mb-1">{t("overdue_failed", "Overdue / Failed")}</p>
                 <h3 className="text-4xl font-extrabold text-rose-900">{failedCharges}</h3>
               </div>
               <div className="w-12 h-12 rounded-2xl bg-rose-100 flex items-center justify-center">
@@ -112,15 +113,14 @@ export default function AdminBilling() {
               </div>
             </div>
             <div className="mt-4 flex items-center gap-2 text-sm">
-              <span className="text-slate-500 font-medium">Action required on accounts</span>
+              <span className="text-slate-500 font-medium">{t("action_required_on_accounts", "Action required on accounts")}</span>
             </div>
           </CardContent>
         </Card>
       </div>
-
       <Card className="border-border shadow-sm rounded-2xl overflow-hidden">
         <CardHeader className="bg-slate-50 border-b border-slate-100 flex flex-row items-center justify-between py-4">
-          <CardTitle className="text-lg font-bold text-slate-800">Global Invoices</CardTitle>
+          <CardTitle className="text-lg font-bold text-slate-800">{t("global_invoices", "Global Invoices")}</CardTitle>
           <div className="relative w-64">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <input
@@ -137,58 +137,60 @@ export default function AdminBilling() {
             <table className="w-full text-sm text-left">
               <thead className="bg-slate-50/50 text-slate-500 font-medium border-b border-slate-100">
                 <tr>
-                  <th className="px-6 py-4">Firm / Company</th>
-                  <th className="px-6 py-4">Amount</th>
-                  <th className="px-6 py-4">Date Created</th>
-                  <th className="px-6 py-4">Status</th>
-                  <th className="px-6 py-4 text-right">Actions</th>
+                  <th className="px-6 py-4">{t("firm_company", "Firm / Company")}</th>
+                  <th className="px-6 py-4">{t("amount", "Amount")}</th>
+                  <th className="px-6 py-4">{t("date_created", "Date Created")}</th>
+                  <th className="px-6 py-4">{t("status", "Status")}</th>
+                  <th className="px-6 py-4 text-right">{t("actions", "Actions")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {loadingInvoices ? (
                   <tr>
-                    <td colSpan="5" className="px-6 py-8 text-center text-slate-500">Loading invoices...</td>
+                    <td colSpan="5" className="px-6 py-8 text-center text-slate-500">{t("loading_invoices", "Loading invoices...")}</td>
                   </tr>
                 ) : filteredInvoices.length === 0 ? (
                   <tr>
-                    <td colSpan="5" className="px-6 py-8 text-center text-slate-500">No invoices found.</td>
+                    <td colSpan="5" className="px-6 py-8 text-center text-slate-500">{t("no_invoices_found", "No invoices found.")}</td>
                   </tr>
                 ) : (
-                  filteredInvoices.map((inv) => (
-                    <tr key={inv.id} className="hover:bg-slate-50/50 transition-colors">
-                      <td className="px-6 py-4 font-semibold text-slate-900">{getCompanyName(inv.company_id)}</td>
-                      <td className="px-6 py-4 font-bold">{formatCurrency(inv.total_amount || inv.amount || 0, 'USD')}</td>
-                      <td className="px-6 py-4 text-slate-500">{inv.created_at ? format(new Date(inv.created_at), 'MMM dd, yyyy') : 'N/A'}</td>
-                      <td className="px-6 py-4">
-                        <Badge className={`${inv.status === 'paid' ? 'bg-emerald-100 text-emerald-700' : inv.status === 'pending' ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'} border-none`}>
-                          {inv.status || 'unknown'}
-                        </Badge>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                              <span className="sr-only">Open menu</span>
-                              <MoreVertical className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-48">
-                            <DropdownMenuLabel>Manage Invoice</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => handleUpdateStatus(inv.id, 'paid')} className="text-emerald-600 font-medium cursor-pointer">
-                              <CheckCircle className="mr-2 h-4 w-4" /> Mark as Paid
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleUpdateStatus(inv.id, 'pending')} className="text-amber-600 font-medium cursor-pointer">
-                              <Activity className="mr-2 h-4 w-4" /> Mark as Pending
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleUpdateStatus(inv.id, 'overdue')} className="text-rose-600 font-medium cursor-pointer">
-                              <Activity className="mr-2 h-4 w-4" /> Mark as Overdue
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </td>
-                    </tr>
-                  ))
+                  filteredInvoices.map(inv => {
+                    return (
+                      <tr key={inv.id} className="hover:bg-slate-50/50 transition-colors">
+                        <td className="px-6 py-4 font-semibold text-slate-900">{getCompanyName(inv.company_id)}</td>
+                        <td className="px-6 py-4 font-bold">{formatCurrency(inv.total_amount || inv.amount || 0, 'USD')}</td>
+                        <td className="px-6 py-4 text-slate-500">{inv.created_at ? format(new Date(inv.created_at), 'MMM dd, yyyy') : 'N/A'}</td>
+                        <td className="px-6 py-4">
+                          <Badge className={`${inv.status === 'paid' ? 'bg-emerald-100 text-emerald-700' : inv.status === 'pending' ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'} border-none`}>
+                            {inv.status || 'unknown'}
+                          </Badge>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                <span className="sr-only">{t("open_menu", "Open menu")}</span>
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-48">
+                              <DropdownMenuLabel>{t("manage_invoice", "Manage Invoice")}</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem onClick={() => handleUpdateStatus(inv.id, 'paid')} className="text-emerald-600 font-medium cursor-pointer">
+                                <CheckCircle className="mr-2 h-4 w-4" /> {t("mark_as_paid", "Mark as Paid")}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleUpdateStatus(inv.id, 'pending')} className="text-amber-600 font-medium cursor-pointer">
+                                <Activity className="mr-2 h-4 w-4" /> {t("mark_as_pending", "Mark as Pending")}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleUpdateStatus(inv.id, 'overdue')} className="text-rose-600 font-medium cursor-pointer">
+                                <Activity className="mr-2 h-4 w-4" /> {t("mark_as_overdue", "Mark as Overdue")}
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </td>
+                      </tr>
+                    );
+                  })
                 )}
               </tbody>
             </table>

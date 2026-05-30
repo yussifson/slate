@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
@@ -20,6 +21,7 @@ const STATUS_COLORS = {
 };
 
 export default function Subscriptions() {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [editingCompany, setEditingCompany] = useState(null);
 
@@ -49,91 +51,91 @@ export default function Subscriptions() {
   return (
     <div className="space-y-6">
       <PageHeader title="Subscriptions" subtitle="Manage subscription plans and revenue" />
-
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard title="Monthly Revenue" value={formatCurrency(monthlyRevenue, "USD")} icon={TrendingUp} />
         <StatCard title="Annual Projection" value={formatCurrency(monthlyRevenue * 12, "USD")} icon={CreditCard} />
         <StatCard title="Active Subscriptions" value={activeCount} icon={Building2} />
         <StatCard title="Trials" value={trialCount} icon={Users} />
       </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {Object.entries(SUBSCRIPTION_PLANS).map(([key, plan]) => (
-          <div key={key} className="bg-card rounded-xl border border-border p-5 hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold">{plan.name}</h3>
-              <Badge variant="secondary" className="text-xs">{planCounts[key] || 0} firms</Badge>
-            </div>
-            <p className="text-3xl font-bold text-primary">
-              ${plan.price}<span className="text-sm font-normal text-muted-foreground">/mo</span>
-            </p>
-            <div className="mt-4 space-y-2 text-sm">
-              <div className="flex justify-between text-muted-foreground">
-                <span>Max Users</span><span className="font-medium text-foreground">{plan.maxUsers}</span>
+        {Object.entries(SUBSCRIPTION_PLANS).map(([key, plan]) => {
+          return (
+            <div key={key} className="bg-card rounded-xl border border-border p-5 hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold">{plan.name}</h3>
+                <Badge variant="secondary" className="text-xs">{planCounts[key] || 0} {t("firms", "firms")}</Badge>
               </div>
-              <div className="flex justify-between text-muted-foreground">
-                <span>Max Cases</span><span className="font-medium text-foreground">{plan.maxCases}</span>
-              </div>
-              <div className="flex justify-between text-muted-foreground">
-                <span>Storage</span><span className="font-medium text-foreground">{plan.maxStorageGB} GB</span>
-              </div>
-              <div className="flex justify-between text-muted-foreground">
-                <span>Max Clients</span><span className="font-medium text-foreground">{plan.maxClients}</span>
-              </div>
-            </div>
-            <div className="mt-4 pt-3 border-t border-border">
-              <div className="h-2 bg-muted rounded-full overflow-hidden">
-                <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${companies.length > 0 ? ((planCounts[key] || 0) / companies.length * 100) : 0}%` }} />
-              </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                {companies.length > 0 ? Math.round((planCounts[key] || 0) / companies.length * 100) : 0}% of firms
+              <p className="text-3xl font-bold text-primary">
+                ${plan.price}<span className="text-sm font-normal text-muted-foreground">{t("mo", "/mo")}</span>
               </p>
+              <div className="mt-4 space-y-2 text-sm">
+                <div className="flex justify-between text-muted-foreground">
+                  <span>{t("max_users", "Max Users")}</span><span className="font-medium text-foreground">{plan.maxUsers}</span>
+                </div>
+                <div className="flex justify-between text-muted-foreground">
+                  <span>{t("max_cases", "Max Cases")}</span><span className="font-medium text-foreground">{plan.maxCases}</span>
+                </div>
+                <div className="flex justify-between text-muted-foreground">
+                  <span>{t("storage", "Storage")}</span><span className="font-medium text-foreground">{plan.maxStorageGB} {t("gb", "GB")}</span>
+                </div>
+                <div className="flex justify-between text-muted-foreground">
+                  <span>{t("max_clients", "Max Clients")}</span><span className="font-medium text-foreground">{plan.maxClients}</span>
+                </div>
+              </div>
+              <div className="mt-4 pt-3 border-t border-border">
+                <div className="h-2 bg-muted rounded-full overflow-hidden">
+                  <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${companies.length > 0 ? ((planCounts[key] || 0) / companies.length * 100) : 0}%` }} />
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {companies.length > 0 ? Math.round((planCounts[key] || 0) / companies.length * 100) : 0}{t("of_firms", "% of firms")}
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
-
       {/* Company subscription list */}
       <div>
-        <h2 className="text-base font-semibold mb-3">All Firm Subscriptions</h2>
+        <h2 className="text-base font-semibold mb-3">{t("all_firm_subscriptions", "All Firm Subscriptions")}</h2>
         <div className="bg-card rounded-xl border border-border overflow-hidden">
           <table className="w-full text-sm">
             <thead className="bg-muted/50">
               <tr>
-                {["Firm", "Plan", "Status", "Max Users", "Max Cases", ""].map(h => (
-                  <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">{h}</th>
-                ))}
+                {["Firm", "Plan", "Status", "Max Users", "Max Cases", ""].map(h => {
+                  return (<th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">{h}</th>);
+                })}
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               {companies.length === 0 ? (
-                <tr><td colSpan={6} className="px-4 py-8 text-center text-muted-foreground text-sm">No companies found</td></tr>
-              ) : companies.map(company => (
-                <tr key={company.id} className="hover:bg-muted/40 transition-colors">
-                  <td className="px-4 py-3">
-                    <p className="font-medium">{company.name}</p>
-                    <p className="text-xs text-muted-foreground">{company.email}</p>
-                  </td>
-                  <td className="px-4 py-3">
-                    <Badge variant="outline" className="capitalize text-xs">{company.subscription_plan}</Badge>
-                  </td>
-                  <td className="px-4 py-3">
-                    <Badge className={`text-[10px] capitalize ${STATUS_COLORS[company.subscription_status] || ""}`}>{company.subscription_status}</Badge>
-                  </td>
-                  <td className="px-4 py-3 text-muted-foreground">{company.max_users}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{company.max_cases}</td>
-                  <td className="px-4 py-3">
-                    <Button size="sm" variant="ghost" onClick={() => setEditingCompany(company)}>
-                      <Pencil className="w-3.5 h-3.5 mr-1" /> Edit
-                    </Button>
-                  </td>
-                </tr>
-              ))}
+                <tr><td colSpan={6} className="px-4 py-8 text-center text-muted-foreground text-sm">{t("no_companies_found", "No companies found")}</td></tr>
+              ) : companies.map(company => {
+                return (
+                  <tr key={company.id} className="hover:bg-muted/40 transition-colors">
+                    <td className="px-4 py-3">
+                      <p className="font-medium">{company.name}</p>
+                      <p className="text-xs text-muted-foreground">{company.email}</p>
+                    </td>
+                    <td className="px-4 py-3">
+                      <Badge variant="outline" className="capitalize text-xs">{company.subscription_plan}</Badge>
+                    </td>
+                    <td className="px-4 py-3">
+                      <Badge className={`text-[10px] capitalize ${STATUS_COLORS[company.subscription_status] || ""}`}>{company.subscription_status}</Badge>
+                    </td>
+                    <td className="px-4 py-3 text-muted-foreground">{company.max_users}</td>
+                    <td className="px-4 py-3 text-muted-foreground">{company.max_cases}</td>
+                    <td className="px-4 py-3">
+                      <Button size="sm" variant="ghost" onClick={() => setEditingCompany(company)}>
+                        <Pencil className="w-3.5 h-3.5 mr-1" /> {t("edit", "Edit")}
+                      </Button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
       </div>
-
       {editingCompany && (
         <EditSubscriptionDialog
           company={editingCompany}
@@ -147,6 +149,7 @@ export default function Subscriptions() {
 }
 
 function EditSubscriptionDialog({ company, onClose, onSave, saving }) {
+  const { t } = useTranslation();
   const [form, setForm] = useState({
     subscription_plan: company.subscription_plan || "free",
     subscription_status: company.subscription_status || "trial",
@@ -182,48 +185,48 @@ function EditSubscriptionDialog({ company, onClose, onSave, saving }) {
     <Dialog open onOpenChange={onClose}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Edit Subscription — {company.name}</DialogTitle>
+          <DialogTitle>{t("edit_subscription", "Edit Subscription —")} {company.name}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 pt-2">
           <div>
-            <Label>Plan</Label>
+            <Label>{t("plan", "Plan")}</Label>
             <Select value={form.subscription_plan} onValueChange={handlePlanChange}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
-                {Object.entries(SUBSCRIPTION_PLANS).map(([key, plan]) => (
-                  <SelectItem key={key} value={key}>{plan.name} — ${plan.price}/mo</SelectItem>
-                ))}
+                {Object.entries(SUBSCRIPTION_PLANS).map(([key, plan]) => {
+                  return (<SelectItem key={key} value={key}>{plan.name}— ${plan.price}{t("mo", "/mo")}</SelectItem>);
+                })}
               </SelectContent>
             </Select>
           </div>
           <div>
-            <Label>Status</Label>
+            <Label>{t("status", "Status")}</Label>
             <Select value={form.subscription_status} onValueChange={(v) => set("subscription_status", v)}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="trial">Trial</SelectItem>
-                <SelectItem value="inactive">Inactive</SelectItem>
-                <SelectItem value="expired">Expired</SelectItem>
+                <SelectItem value="active">{t("active", "Active")}</SelectItem>
+                <SelectItem value="trial">{t("trial", "Trial")}</SelectItem>
+                <SelectItem value="inactive">{t("inactive", "Inactive")}</SelectItem>
+                <SelectItem value="expired">{t("expired", "Expired")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <Label>Max Users</Label>
+              <Label>{t("max_users", "Max Users")}</Label>
               <Input type="number" min={1} value={form.max_users} onChange={(e) => set("max_users", Number(e.target.value))} />
             </div>
             <div>
-              <Label>Max Cases</Label>
+              <Label>{t("max_cases", "Max Cases")}</Label>
               <Input type="number" min={1} value={form.max_cases} onChange={(e) => set("max_cases", Number(e.target.value))} />
             </div>
             <div>
-              <Label>Storage (GB)</Label>
+              <Label>{t("storage_gb", "Storage (GB)")}</Label>
               <Input type="number" min={1} value={form.max_storage_gb} onChange={(e) => set("max_storage_gb", Number(e.target.value))} />
             </div>
           </div>
           <div className="flex justify-end gap-2 pt-2">
-            <Button variant="outline" onClick={onClose}>Cancel</Button>
+            <Button variant="outline" onClick={onClose}>{t("cancel", "Cancel")}</Button>
             <Button onClick={() => onSave(form)} disabled={saving}>{saving ? "Saving..." : "Save Changes"}</Button>
           </div>
         </div>

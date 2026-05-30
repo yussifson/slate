@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { generateText } from '@/lib/cloudflareAI';
 import { Button } from '@/components/ui/button';
@@ -5,6 +6,7 @@ import { Sparkles, Copy, CheckCircle, Mail, X } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 export default function AIEmailDrafter({ recordData, defaultContext = "Write a polite and professional email based on this record.", onClose }) {
+  const { t } = useTranslation();
   const [draft, setDraft] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [customPrompt, setCustomPrompt] = useState(defaultContext);
@@ -50,7 +52,7 @@ export default function AIEmailDrafter({ recordData, defaultContext = "Write a p
         <div className="flex items-center justify-between p-4 border-b border-border">
           <div className="flex items-center gap-2 text-primary">
             <Sparkles className="w-5 h-5" />
-            <h2 className="text-lg font-bold">AI Communication Drafter</h2>
+            <h2 className="text-lg font-bold">{t("ai_communication_drafter", "AI Communication Drafter")}</h2>
           </div>
           <button onClick={onClose} className="text-muted-foreground hover:bg-muted p-1 rounded-full transition-colors">
             <X className="w-5 h-5" />
@@ -60,7 +62,7 @@ export default function AIEmailDrafter({ recordData, defaultContext = "Write a p
         {/* Body */}
         <div className="p-4 flex-1 overflow-y-auto space-y-4">
           <div className="space-y-1">
-            <label className="text-xs font-bold text-muted-foreground uppercase">AI Instructions</label>
+            <label className="text-xs font-bold text-muted-foreground uppercase">{t("ai_instructions", "AI Instructions")}</label>
             <textarea
               value={customPrompt}
               onChange={e => setCustomPrompt(e.target.value)}
@@ -75,16 +77,16 @@ export default function AIEmailDrafter({ recordData, defaultContext = "Write a p
             className="w-full bg-primary hover:bg-primary/90 text-white gap-2"
           >
             {isGenerating ? (
-              <span className="flex items-center gap-2"><Sparkles className="w-4 h-4 animate-spin" /> Generating Magic...</span>
+              <span className="flex items-center gap-2"><Sparkles className="w-4 h-4 animate-spin" /> {t("generating_magic", "Generating Magic...")}</span>
             ) : (
-              <span className="flex items-center gap-2"><Sparkles className="w-4 h-4" /> Generate Draft</span>
+              <span className="flex items-center gap-2"><Sparkles className="w-4 h-4" /> {t("generate_draft", "Generate Draft")}</span>
             )}
           </Button>
 
           {draft && (
             <div className="mt-4 space-y-2 animate-in fade-in slide-in-from-bottom-2">
               <div className="flex items-center justify-between">
-                <label className="text-xs font-bold text-muted-foreground uppercase">Generated Draft</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("generated_draft", "Generated Draft")}</label>
                 <button 
                   onClick={handleCopy}
                   className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
@@ -104,13 +106,13 @@ export default function AIEmailDrafter({ recordData, defaultContext = "Write a p
 
         {/* Footer */}
         <div className="p-4 border-t border-border bg-muted/30 flex justify-end gap-3">
-          <Button variant="outline" onClick={onClose}>Close</Button>
+          <Button variant="outline" onClick={onClose}>{t("close", "Close")}</Button>
           <Button 
             disabled={!draft} 
             onClick={() => window.location.href = `mailto:?subject=Regarding your record&body=${encodeURIComponent(draft)}`}
             className="gap-2 bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100"
           >
-            <Mail className="w-4 h-4" /> Open in Mail App
+            <Mail className="w-4 h-4" /> {t("open_in_mail_app", "Open in Mail App")}
           </Button>
         </div>
 

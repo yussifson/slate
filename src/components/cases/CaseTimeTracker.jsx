@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -36,6 +37,7 @@ function formatElapsed(seconds) {
 }
 
 export default function CaseTimeTracker({ caseData, user }) {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const companyId = user?.company_id;
@@ -197,20 +199,22 @@ export default function CaseTimeTracker({ caseData, user }) {
           <div className="flex-1 space-y-3">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="sm:col-span-2 space-y-1">
-                <Label className="text-xs">Description</Label>
+                <Label className="text-xs">{t("description", "Description")}</Label>
                 <Input placeholder="What are you working on?" value={timerDesc} onChange={e => setTimerDesc(e.target.value)} disabled={running} />
               </div>
               <div className="space-y-1">
-                <Label className="text-xs">Category</Label>
+                <Label className="text-xs">{t("category", "Category")}</Label>
                 <Select value={timerCategory} onValueChange={setTimerCategory} disabled={running}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>{CATEGORIES.map(c => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}</SelectContent>
+                  <SelectContent>{CATEGORIES.map(c => {
+                    return <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>;
+                  })}</SelectContent>
                 </Select>
               </div>
             </div>
             <div className="flex items-center gap-3">
               <div className="space-y-1 w-32">
-                <Label className="text-xs">Rate / hr ({currency})</Label>
+                <Label className="text-xs">{t("rate_hr", "Rate / hr (")}{currency})</Label>
                 <Input type="number" value={timerRate} onChange={e => setTimerRate(Number(e.target.value))} disabled={running} />
               </div>
               {running && (
@@ -224,25 +228,24 @@ export default function CaseTimeTracker({ caseData, user }) {
           <div className="flex gap-2 sm:flex-col">
             {!running ? (
               <Button onClick={handleStart} className="gap-2 bg-green-600 hover:bg-green-700 text-white">
-                <Play className="w-4 h-4" /> Start Timer
+                <Play className="w-4 h-4" /> {t("start_timer", "Start Timer")}
               </Button>
             ) : (
               <Button onClick={handleStop} variant="destructive" className="gap-2">
-                <Square className="w-4 h-4" /> Stop & Log
+                <Square className="w-4 h-4" /> {t("stop_log", "Stop & Log")}
               </Button>
             )}
             <Button variant="outline" onClick={() => setShowManual(true)} className="gap-2">
-              <Plus className="w-4 h-4" /> Add Manual
+              <Plus className="w-4 h-4" /> {t("add_manual", "Add Manual")}
             </Button>
           </div>
         </div>
       </div>
-
       {/* Summary + create invoice */}
       {unbilledEntries.length > 0 && (
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
-            <p className="text-sm font-medium text-amber-800">{unbilledEntries.length} unbilled entries</p>
+            <p className="text-sm font-medium text-amber-800">{unbilledEntries.length} {t("unbilled_entries", "unbilled entries")}</p>
             <p className="text-xs text-amber-700">{formatDuration(totalUnbilledMins)} · {formatCurrency(totalUnbilledAmount, currency)}</p>
           </div>
           <Button onClick={handleCreateInvoice} disabled={createInvoiceMutation.isPending} className="gap-2 bg-amber-600 hover:bg-amber-700 text-white text-sm">
@@ -251,72 +254,77 @@ export default function CaseTimeTracker({ caseData, user }) {
           </Button>
         </div>
       )}
-
       {/* Entries list */}
       <div className="bg-card rounded-xl border border-border overflow-hidden">
         <div className="px-5 py-3 border-b border-border bg-muted/30 flex items-center gap-2">
           <Clock className="w-4 h-4 text-muted-foreground" />
-          <span className="text-sm font-medium">Time Entries ({entries.length})</span>
+          <span className="text-sm font-medium">{t("time_entries", "Time Entries (")}{entries.length})</span>
         </div>
         {isLoading ? (
-          <div className="p-8 text-center text-sm text-muted-foreground">Loading...</div>
+          <div className="p-8 text-center text-sm text-muted-foreground">{t("loading", "Loading...")}</div>
         ) : entries.length === 0 ? (
-          <div className="p-8 text-center text-sm text-muted-foreground">No time entries yet. Start the timer or add manually.</div>
+          <div className="p-8 text-center text-sm text-muted-foreground">{t(
+            "no_time_entries_yet_start_the_",
+            "No time entries yet. Start the timer or add manually."
+          )}</div>
         ) : (
           <div className="divide-y divide-border">
-            {entries.sort((a, b) => new Date(b.created_date) - new Date(a.created_date)).map(entry => (
-              <div key={entry.id} className="px-5 py-3 flex items-center gap-3 hover:bg-muted/30">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">{entry.description || "Time entry"}</p>
-                  <div className="flex flex-wrap gap-2 mt-0.5">
-                    <span className="text-xs text-muted-foreground">{entry.start_time ? format(new Date(entry.start_time), "MMM d, yyyy") : ""}</span>
-                    <Badge variant="outline" className="text-[10px] capitalize">{entry.category?.replace("_", " ")}</Badge>
-                    {entry.billed && <Badge className="text-[10px] bg-green-100 text-green-700">Billed</Badge>}
-                    {!entry.billed && entry.is_billable && <Badge className="text-[10px] bg-amber-100 text-amber-700">Unbilled</Badge>}
+            {entries.sort((a, b) => new Date(b.created_date) - new Date(a.created_date)).map(entry => {
+              return (
+                <div key={entry.id} className="px-5 py-3 flex items-center gap-3 hover:bg-muted/30">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">{entry.description || "Time entry"}</p>
+                    <div className="flex flex-wrap gap-2 mt-0.5">
+                      <span className="text-xs text-muted-foreground">{entry.start_time ? format(new Date(entry.start_time), "MMM d, yyyy") : ""}</span>
+                      <Badge variant="outline" className="text-[10px] capitalize">{entry.category?.replace("_", " ")}</Badge>
+                      {entry.billed && <Badge className="text-[10px] bg-green-100 text-green-700">{t("billed", "Billed")}</Badge>}
+                      {!entry.billed && entry.is_billable && <Badge className="text-[10px] bg-amber-100 text-amber-700">{t("unbilled", "Unbilled")}</Badge>}
+                    </div>
                   </div>
+                  <div className="text-right shrink-0">
+                    <p className="text-sm font-semibold">{formatDuration(entry.duration_minutes || 0)}</p>
+                    {entry.is_billable && <p className="text-xs text-muted-foreground">{formatCurrency(entry.billable_amount || 0, entry.currency)}</p>}
+                  </div>
+                  <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={() => deleteMutation.mutate(entry.id)}>
+                    <Trash2 className="w-3.5 h-3.5 text-destructive" />
+                  </Button>
                 </div>
-                <div className="text-right shrink-0">
-                  <p className="text-sm font-semibold">{formatDuration(entry.duration_minutes || 0)}</p>
-                  {entry.is_billable && <p className="text-xs text-muted-foreground">{formatCurrency(entry.billable_amount || 0, entry.currency)}</p>}
-                </div>
-                <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={() => deleteMutation.mutate(entry.id)}>
-                  <Trash2 className="w-3.5 h-3.5 text-destructive" />
-                </Button>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
         {entries.length > 0 && (
           <div className="px-5 py-3 border-t border-border bg-muted/20 flex justify-between text-sm">
-            <span className="text-muted-foreground">Total logged</span>
+            <span className="text-muted-foreground">{t("total_logged", "Total logged")}</span>
             <span className="font-semibold">{formatDuration(entries.reduce((s, e) => s + (e.duration_minutes || 0), 0))} · {formatCurrency(entries.reduce((s, e) => s + (e.billable_amount || 0), 0), currency)}</span>
           </div>
         )}
       </div>
-
       {/* Manual entry dialog */}
       <Dialog open={showManual} onOpenChange={setShowManual}>
         <DialogContent className="max-w-md">
-          <DialogHeader><DialogTitle>Add Manual Time Entry</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>{t("add_manual_time_entry", "Add Manual Time Entry")}</DialogTitle></DialogHeader>
           <form onSubmit={handleManualSubmit} className="space-y-3">
-            <div><Label>Description</Label><Input value={manualForm.description} onChange={e => setManualForm({ ...manualForm, description: e.target.value })} required /></div>
+            <div><Label>{t("description", "Description")}</Label><Input value={manualForm.description} onChange={e => setManualForm({ ...manualForm, description: e.target.value })} required /></div>
             <div className="grid grid-cols-2 gap-3">
-              <div><Label>Date</Label><Input type="date" value={manualForm.date} onChange={e => setManualForm({ ...manualForm, date: e.target.value })} /></div>
-              <div><Label>Duration (min)</Label><Input type="number" min={1} value={manualForm.duration_minutes} onChange={e => setManualForm({ ...manualForm, duration_minutes: Number(e.target.value) })} required /></div>
+              <div><Label>{t("date", "Date")}</Label><Input type="date" value={manualForm.date} onChange={e => setManualForm({ ...manualForm, date: e.target.value })} /></div>
+              <div><Label>{t("duration_min", "Duration (min)")}</Label><Input type="number" min={1} value={manualForm.duration_minutes} onChange={e => setManualForm({ ...manualForm, duration_minutes: Number(e.target.value) })} required /></div>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <div><Label>Hourly Rate</Label><Input type="number" value={manualForm.hourly_rate} onChange={e => setManualForm({ ...manualForm, hourly_rate: Number(e.target.value) })} /></div>
+              <div><Label>{t("hourly_rate", "Hourly Rate")}</Label><Input type="number" value={manualForm.hourly_rate} onChange={e => setManualForm({ ...manualForm, hourly_rate: Number(e.target.value) })} /></div>
               <div>
-                <Label>Category</Label>
+                <Label>{t("category", "Category")}</Label>
                 <Select value={manualForm.category} onValueChange={v => setManualForm({ ...manualForm, category: v })}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>{CATEGORIES.map(c => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}</SelectContent>
+                  <SelectContent>{CATEGORIES.map(c => {
+                    return <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>;
+                  })}</SelectContent>
                 </Select>
               </div>
             </div>
             <div className="flex justify-end gap-2 pt-1">
-              <Button type="button" variant="outline" onClick={() => setShowManual(false)}>Cancel</Button>
-              <Button type="submit">Add Entry</Button>
+              <Button type="button" variant="outline" onClick={() => setShowManual(false)}>{t("cancel", "Cancel")}</Button>
+              <Button type="submit">{t("add_entry", "Add Entry")}</Button>
             </div>
           </form>
         </DialogContent>

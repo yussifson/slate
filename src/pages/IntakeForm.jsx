@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Scale, CheckCircle, Loader2, Phone, Mail, User, Building2, FileText, AlertTriangle } from "lucide-react";
@@ -28,6 +29,7 @@ const URGENCY_CONFIG = {
 };
 
 export default function IntakeForm() {
+  const { t } = useTranslation();
   const [form, setForm] = useState({
     full_name: "", email: "", phone: "", organization: "",
     case_type: "", case_description: "", urgency: "medium", preferred_contact: "email",
@@ -71,7 +73,7 @@ export default function IntakeForm() {
 Thank you for reaching out. We have received your legal inquiry and a member of our team will be in touch shortly.
 
 Your Reference: ${lead.id?.slice(-8).toUpperCase()}
-Matter Type: ${CASE_TYPES.find(t => t.value === form.case_type)?.label || form.case_type}
+Matter Type: ${CASE_TYPES.find(item => item.value === form.case_type)?.label || form.case_type}
 Urgency: ${URGENCY_CONFIG[form.urgency]?.label || form.urgency}
 
 We aim to respond within 24 business hours. If this is an emergency, please call us directly.
@@ -91,7 +93,7 @@ Name: ${form.full_name}
 Email: ${form.email}
 Phone: ${form.phone || "N/A"}
 Organization: ${form.organization || "Individual"}
-Case Type: ${CASE_TYPES.find(t => t.value === form.case_type)?.label || form.case_type}
+Case Type: ${CASE_TYPES.find(item => item.value === form.case_type)?.label || form.case_type}
 Urgency: ${URGENCY_CONFIG[form.urgency]?.label || form.urgency}
 Preferred Contact: ${form.preferred_contact}
 
@@ -112,14 +114,23 @@ View in App: ${window.location.origin}/leads`,
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="w-8 h-8 text-green-600" />
           </div>
-          <h2 className="text-xl font-bold text-foreground mb-2">Inquiry Received!</h2>
+          <h2 className="text-xl font-bold text-foreground mb-2">{t("inquiry_received", "Inquiry Received!")}</h2>
           <p className="text-sm text-muted-foreground mb-4">
-            Thank you, <strong>{form.full_name}</strong>. We've received your inquiry and sent a confirmation to <strong>{form.email}</strong>.
-          </p>
+            {t("thank_you", "Thank you,")} <strong>{form.full_name}</strong>{t(
+              "we_ve_received_your_inquiry_an",
+              ". We've received your inquiry and sent a confirmation to"
+            )} <strong>{form.email}</strong>.
+                      </p>
           <p className="text-sm text-muted-foreground">
-            A member of our team will contact you shortly via your preferred method.
+            {t(
+              "a_member_of_our_team_will_cont",
+              "A member of our team will contact you shortly via your preferred method."
+            )}
           </p>
-          <Badge className="mt-4 bg-blue-100 text-blue-700">Response expected within 24 business hours</Badge>
+          <Badge className="mt-4 bg-blue-100 text-blue-700">{t(
+            "response_expected_within_24_bu",
+            "Response expected within 24 business hours"
+          )}</Badge>
         </div>
       </div>
     );
@@ -140,31 +151,34 @@ View in App: ${window.location.origin}/leads`,
             )}
             <span className="text-xl font-bold text-foreground">{firmName}</span>
           </div>
-          <h1 className="text-2xl font-bold text-foreground">Start Your Legal Journey</h1>
-          <p className="text-sm text-muted-foreground mt-1">Fill out the form below and our team will be in touch within 24 hours.</p>
+          <h1 className="text-2xl font-bold text-foreground">{t("start_your_legal_journey", "Start Your Legal Journey")}</h1>
+          <p className="text-sm text-muted-foreground mt-1">{t(
+            "fill_out_the_form_below_and_ou",
+            "Fill out the form below and our team will be in touch within 24 hours."
+          )}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm border border-border p-6 space-y-5">
           {/* Personal Info */}
           <div>
             <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-              <User className="w-4 h-4 text-primary" /> Your Information
+              <User className="w-4 h-4 text-primary" /> {t("your_information", "Your Information")}
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label>Full Name <span className="text-red-500">*</span></Label>
+                <Label>{t("full_name", "Full Name")} <span className="text-red-500">*</span></Label>
                 <Input value={form.full_name} onChange={e => setForm({ ...form, full_name: e.target.value })} placeholder="John Mensah" required />
               </div>
               <div className="space-y-1.5">
-                <Label>Email Address <span className="text-red-500">*</span></Label>
+                <Label>{t("email_address", "Email Address")} <span className="text-red-500">*</span></Label>
                 <Input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="john@example.com" required />
               </div>
               <div className="space-y-1.5">
-                <Label>Phone Number</Label>
+                <Label>{t("phone_number", "Phone Number")}</Label>
                 <Input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="+233 20 000 0000" />
               </div>
               <div className="space-y-1.5">
-                <Label>Organization (if applicable)</Label>
+                <Label>{t("organization_if_applicable", "Organization (if applicable)")}</Label>
                 <Input value={form.organization} onChange={e => setForm({ ...form, organization: e.target.value })} placeholder="Company name or leave blank" />
               </div>
             </div>
@@ -175,31 +189,35 @@ View in App: ${window.location.origin}/leads`,
           {/* Case Info */}
           <div>
             <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-              <FileText className="w-4 h-4 text-primary" /> Case Details
+              <FileText className="w-4 h-4 text-primary" /> {t("case_details", "Case Details")}
             </h3>
             <div className="space-y-3">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                  <Label>Type of Legal Matter <span className="text-red-500">*</span></Label>
+                  <Label>{t("type_of_legal_matter", "Type of Legal Matter")} <span className="text-red-500">*</span></Label>
                   <Select value={form.case_type} onValueChange={v => setForm({ ...form, case_type: v })} required>
                     <SelectTrigger><SelectValue placeholder="Select matter type..." /></SelectTrigger>
                     <SelectContent>
-                      {CASE_TYPES.map(t => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
+                      {CASE_TYPES.map(item => {
+                        return <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>;
+                      })}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-1.5">
-                  <Label>Urgency</Label>
+                  <Label>{t("urgency", "Urgency")}</Label>
                   <Select value={form.urgency} onValueChange={v => setForm({ ...form, urgency: v })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      {Object.entries(URGENCY_CONFIG).map(([k, v]) => <SelectItem key={k} value={k}>{v.label}</SelectItem>)}
+                      {Object.entries(URGENCY_CONFIG).map(([k, v]) => {
+                        return <SelectItem key={k} value={k}>{v.label}</SelectItem>;
+                      })}
                     </SelectContent>
                   </Select>
                 </div>
               </div>
               <div className="space-y-1.5">
-                <Label>Describe Your Situation <span className="text-red-500">*</span></Label>
+                <Label>{t("describe_your_situation", "Describe Your Situation")} <span className="text-red-500">*</span></Label>
                 <textarea
                   value={form.case_description}
                   onChange={e => setForm({ ...form, case_description: e.target.value })}
@@ -217,19 +235,21 @@ View in App: ${window.location.origin}/leads`,
           {/* Contact preference */}
           <div>
             <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-              <Phone className="w-4 h-4 text-primary" /> Preferred Contact Method
+              <Phone className="w-4 h-4 text-primary" /> {t("preferred_contact_method", "Preferred Contact Method")}
             </h3>
             <div className="flex gap-2 flex-wrap">
-              {[["email", "Email", Mail], ["phone", "Phone Call", Phone], ["whatsapp", "WhatsApp", Phone]].map(([val, label, IconComp]) => (
-                <button
-                  type="button"
-                  key={val}
-                  onClick={() => setForm({ ...form, preferred_contact: val })}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${form.preferred_contact === val ? "bg-primary text-white border-primary" : "border-border text-muted-foreground hover:border-primary/50"}`}
-                >
-                  <IconComp className="w-3.5 h-3.5" /> {label}
-                </button>
-              ))}
+              {[["email", "Email", Mail], ["phone", "Phone Call", Phone], ["whatsapp", "WhatsApp", Phone]].map(([val, label, IconComp]) => {
+                return (
+                  <button
+                    type="button"
+                    key={val}
+                    onClick={() => setForm({ ...form, preferred_contact: val })}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${form.preferred_contact === val ? "bg-primary text-white border-primary" : "border-border text-muted-foreground hover:border-primary/50"}`}
+                  >
+                    <IconComp className="w-3.5 h-3.5" /> {label}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -245,7 +265,10 @@ View in App: ${window.location.origin}/leads`,
           </Button>
 
           <p className="text-xs text-center text-muted-foreground">
-            By submitting this form you agree to our privacy policy. Your information is confidential and protected.
+            {t(
+              "by_submitting_this_form_you_ag",
+              "By submitting this form you agree to our privacy policy. Your information is confidential and protected."
+            )}
           </p>
         </form>
       </div>

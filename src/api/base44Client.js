@@ -3,9 +3,55 @@ import { SCHEMA_COLUMNS } from './schemaColumns';
 import { encryptText, decryptText } from '../lib/encryption';
 import { powerSync } from './PowerSyncConnector';
 
-const toSnakeCase = (str) => {
-    if (str === 'User') return 'profiles';
-    let name = str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`).replace(/^_/, '');
+const TABLE_MAP = {
+    Company: 'companies',
+    User: 'profiles',
+    Profile: 'profiles',
+    Client: 'clients',
+    LegalCase: 'legal_cases',
+    Hearing: 'hearings',
+    Task: 'tasks',
+    Invoice: 'invoices',
+    Document: 'documents',
+    StaffRecord: 'staff_records',
+    IndustryRecord: 'industry_records',
+    Notification: 'notifications',
+    TimeEntry: 'time_entries'
+};
+
+
+const industryPrefixes = {
+  law: { Client: 'clients', LegalCase: 'legal_cases', Hearing: 'hearings' },
+  school: { Client: 'school_students', LegalCase: 'school_classes', Hearing: 'school_sessions' },
+  hospital: { Client: 'hospital_patients', LegalCase: 'hospital_admissions', Hearing: 'hospital_appointments' },
+  hotel: { Client: 'hotel_guests', LegalCase: 'hotel_bookings', Hearing: 'hotel_reservations' },
+  church: { Client: 'church_members', LegalCase: 'church_ministries', Hearing: 'church_events' },
+  insurance: { Client: 'insurance_policyholders', LegalCase: 'insurance_claims', Hearing: 'insurance_meetings' },
+  retail: { Client: 'retail_customers', LegalCase: 'retail_orders', Hearing: 'retail_shifts' },
+  logistics: { Client: 'logistics_shippers', LegalCase: 'logistics_shipments', Hearing: 'logistics_dispatches' },
+  hr: { Client: 'hr_employees', LegalCase: 'hr_projects', Hearing: 'hr_interviews' }
+};
+
+const getTableName = (prop) => {
+    let industry = 'law';
+    try {
+        const userStr = localStorage.getItem('optalflow_cached_user');
+        if (userStr) {
+            const user = JSON.parse(userStr);
+            if (user && user.company_industry) {
+                industry = user.company_industry;
+            }
+        }
+    } catch(e) {}
+
+    if (industryPrefixes[industry] && industryPrefixes[industry][prop]) {
+        return industryPrefixes[industry][prop];
+    }
+
+    if (TABLE_MAP[prop]) return TABLE_MAP[prop];
+
+    // Fallback just in case
+    let name = prop.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`).replace(/^_/, '');
     if (!name.endsWith('s') && !name.endsWith('x')) {
         if (name.endsWith('y')) name = name.slice(0, -1) + 'ies';
         else name += 's';
@@ -140,7 +186,7 @@ export const base44 = {
             if (prop === 'raw') return supabase;
             if (prop === 'powerSync') return powerSync;
 
-            const tableName = toSnakeCase(prop);
+            const tableName = getTableName(prop);
 
             return {
                 filter: async (filter = {}, sort = []) => {

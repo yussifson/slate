@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -30,6 +31,7 @@ const URGENCY_COLORS = {
 };
 
 export default function Leads() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { toast } = useToast();
   const companyId = user?.company_id;
@@ -83,31 +85,43 @@ export default function Leads() {
   const columns = [
     {
       header: "Name",
-      render: (row) => (
-        <div>
-          <p className="font-medium text-sm">{row.full_name}</p>
-          <p className="text-xs text-muted-foreground">{row.email}</p>
-        </div>
-      )
+      render: row => {
+        return (
+          <div>
+            <p className="font-medium text-sm">{row.full_name}</p>
+            <p className="text-xs text-muted-foreground">{row.email}</p>
+          </div>
+        );
+      }
     },
-    { header: "Case Type", render: (row) => <Badge variant="outline" className="text-[10px] capitalize">{row.case_type?.replace("_", " ") || "—"}</Badge> },
-    { header: "Urgency", render: (row) => <Badge className={`text-[10px] ${URGENCY_COLORS[row.urgency]}`}>{row.urgency}</Badge> },
-    { header: "Status", render: (row) => <Badge className={`text-[10px] ${STATUS_COLORS[row.status]}`}>{row.status}</Badge> },
-    { header: "Submitted", render: (row) => <span className="text-xs text-muted-foreground">{format(new Date(row.created_date), "MMM d, yyyy")}</span> },
+    { header: "Case Type", render: row => {
+      return <Badge variant="outline" className="text-[10px] capitalize">{row.case_type?.replace("_", " ") || "—"}</Badge>;
+    } },
+    { header: "Urgency", render: row => {
+      return <Badge className={`text-[10px] ${URGENCY_COLORS[row.urgency]}`}>{row.urgency}</Badge>;
+    } },
+    { header: "Status", render: row => {
+      return <Badge className={`text-[10px] ${STATUS_COLORS[row.status]}`}>{row.status}</Badge>;
+    } },
+    { header: "Submitted", render: row => {
+      return <span className="text-xs text-muted-foreground">{format(new Date(row.created_date), "MMM d, yyyy")}</span>;
+    } },
     {
       header: "Actions",
-      render: (row) => (
-        <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" className="h-7 w-7" title="Email lead" onClick={e => { e.stopPropagation(); window.open(`mailto:${row.email}`); }}>
-            <Mail className="w-3.5 h-3.5" />
-          </Button>
-          {row.phone && (
-            <Button variant="ghost" size="icon" className="h-7 w-7" title="Call lead" onClick={e => { e.stopPropagation(); window.open(`tel:${row.phone}`); }}>
-              <Phone className="w-3.5 h-3.5" />
+      render: row => {
+        return (
+          <div className="flex items-center gap-1">
+            <Button variant="ghost" size="icon" className="h-7 w-7" title="Email lead" onClick={e => { e.stopPropagation(); window.open(`mailto:${row.email}`); }}>
+              <Mail className="w-3.5 h-3.5" />
             </Button>
-          )}
-        </div>
-      )
+            {row.phone && (
+              <Button variant="ghost" size="icon" className="h-7 w-7" title="Call lead" onClick={e => { e.stopPropagation(); window.open(`tel:${row.phone}`); }}>
+                <Phone className="w-3.5 h-3.5" />
+              </Button>
+            )}
+          </div>
+        );
+      }
     },
   ];
 
@@ -118,22 +132,20 @@ export default function Leads() {
         subtitle={`${leads.filter(l => l.status === "new").length} new leads from intake form`}
         actions={
           <Button variant="outline" size="sm" className="gap-1.5" onClick={() => window.open(intakeFormUrl, "_blank")}>
-            <ExternalLink className="w-3.5 h-3.5" /> View Intake Form
+            <ExternalLink className="w-3.5 h-3.5" /> {t("view_intake_form", "View Intake Form")}
           </Button>
         }
       />
-
       {/* Intake Form Link Banner */}
       <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 flex items-center justify-between gap-4">
         <div>
-          <p className="text-sm font-medium text-blue-900">Your public intake form is live</p>
+          <p className="text-sm font-medium text-blue-900">{t("your_public_intake_form_is_liv", "Your public intake form is live")}</p>
           <p className="text-xs text-blue-700 mt-0.5 break-all">{intakeFormUrl}</p>
         </div>
         <Button size="sm" variant="outline" className="shrink-0 text-blue-700 border-blue-300" onClick={() => { navigator.clipboard.writeText(intakeFormUrl); toast({ title: "Link copied!" }); }}>
-          Copy Link
+          {t("copy_link", "Copy Link")}
         </Button>
       </div>
-
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -142,16 +154,15 @@ export default function Leads() {
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
-            <SelectItem value="new">New</SelectItem>
-            <SelectItem value="contacted">Contacted</SelectItem>
-            <SelectItem value="qualified">Qualified</SelectItem>
-            <SelectItem value="converted">Converted</SelectItem>
-            <SelectItem value="lost">Lost</SelectItem>
+            <SelectItem value="all">{t("all_status", "All Status")}</SelectItem>
+            <SelectItem value="new">{t("new", "New")}</SelectItem>
+            <SelectItem value="contacted">{t("contacted", "Contacted")}</SelectItem>
+            <SelectItem value="qualified">{t("qualified", "Qualified")}</SelectItem>
+            <SelectItem value="converted">{t("converted", "Converted")}</SelectItem>
+            <SelectItem value="lost">{t("lost", "Lost")}</SelectItem>
           </SelectContent>
         </Select>
       </div>
-
       <DataTable
         columns={columns}
         data={filtered}
@@ -161,7 +172,6 @@ export default function Leads() {
         emptyDescription="Share your intake form link to start collecting inquiries."
         emptyIcon={Users}
       />
-
       {selectedLead && (
         <LeadDetailDialog
           lead={selectedLead}
@@ -176,6 +186,7 @@ export default function Leads() {
 }
 
 function LeadDetailDialog({ lead, onClose, onUpdateStatus, onConvert, isConverting }) {
+  const { t } = useTranslation();
   return (
     <Dialog open={!!lead} onOpenChange={onClose}>
       <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
@@ -187,34 +198,36 @@ function LeadDetailDialog({ lead, onClose, onUpdateStatus, onConvert, isConverti
         </DialogHeader>
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-3 text-sm">
-            <div><Label className="text-xs">Email</Label><p className="mt-0.5">{lead.email}</p></div>
-            <div><Label className="text-xs">Phone</Label><p className="mt-0.5">{lead.phone || "—"}</p></div>
-            <div><Label className="text-xs">Organization</Label><p className="mt-0.5">{lead.organization || "Individual"}</p></div>
-            <div><Label className="text-xs">Case Type</Label><p className="mt-0.5 capitalize">{lead.case_type?.replace("_", " ") || "—"}</p></div>
-            <div><Label className="text-xs">Urgency</Label><Badge className={`text-[10px] mt-0.5 ${URGENCY_COLORS[lead.urgency]}`}>{lead.urgency}</Badge></div>
-            <div><Label className="text-xs">Preferred Contact</Label><p className="mt-0.5 capitalize">{lead.preferred_contact || "—"}</p></div>
+            <div><Label className="text-xs">{t("email", "Email")}</Label><p className="mt-0.5">{lead.email}</p></div>
+            <div><Label className="text-xs">{t("phone", "Phone")}</Label><p className="mt-0.5">{lead.phone || "—"}</p></div>
+            <div><Label className="text-xs">{t("organization", "Organization")}</Label><p className="mt-0.5">{lead.organization || "Individual"}</p></div>
+            <div><Label className="text-xs">{t("case_type", "Case Type")}</Label><p className="mt-0.5 capitalize">{lead.case_type?.replace("_", " ") || "—"}</p></div>
+            <div><Label className="text-xs">{t("urgency", "Urgency")}</Label><Badge className={`text-[10px] mt-0.5 ${URGENCY_COLORS[lead.urgency]}`}>{lead.urgency}</Badge></div>
+            <div><Label className="text-xs">{t("preferred_contact", "Preferred Contact")}</Label><p className="mt-0.5 capitalize">{lead.preferred_contact || "—"}</p></div>
           </div>
           <div>
-            <Label className="text-xs">Case Description</Label>
+            <Label className="text-xs">{t("case_description", "Case Description")}</Label>
             <p className="mt-1 text-sm bg-muted/40 rounded-lg p-3">{lead.case_description}</p>
           </div>
           <div>
-            <Label className="text-xs">Update Status</Label>
+            <Label className="text-xs">{t("update_status", "Update Status")}</Label>
             <div className="flex flex-wrap gap-2 mt-1.5">
-              {["new", "contacted", "qualified", "lost"].map(s => (
-                <button
-                  key={s}
-                  onClick={() => onUpdateStatus(s)}
-                  className={`px-3 py-1 rounded-full text-xs font-medium border capitalize transition-colors ${lead.status === s ? STATUS_COLORS[s] + " border-transparent" : "border-border text-muted-foreground hover:bg-muted"}`}
-                >{s}</button>
-              ))}
+              {["new", "contacted", "qualified", "lost"].map(s => {
+                return (
+                  <button
+                    key={s}
+                    onClick={() => onUpdateStatus(s)}
+                    className={`px-3 py-1 rounded-full text-xs font-medium border capitalize transition-colors ${lead.status === s ? STATUS_COLORS[s] + " border-transparent" : "border-border text-muted-foreground hover:bg-muted"}`}
+                  >{s}</button>
+                );
+              })}
             </div>
           </div>
           <div className="flex justify-between items-center pt-2 border-t border-border">
-            <Button variant="outline" onClick={onClose}>Close</Button>
+            <Button variant="outline" onClick={onClose}>{t("close", "Close")}</Button>
             {lead.status !== "converted" && (
               <Button onClick={onConvert} disabled={isConverting} className="gap-1.5 bg-green-600 hover:bg-green-700 text-white">
-                {isConverting ? "Converting..." : <><CheckCircle className="w-4 h-4" /> Convert to Client</>}
+                {isConverting ? "Converting..." : <><CheckCircle className="w-4 h-4" /> {t("convert_to_client", "Convert to Client")}</>}
               </Button>
             )}
           </div>

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Users, Search, Plus, UserPlus, Phone, Activity, Heart, Stethoscope, Trash2, Pencil, MoreVertical } from 'lucide-react';
@@ -27,6 +28,7 @@ const BLANK_FORM = {
 };
 
 export default function Patients() {
+  const { t } = useTranslation();
   const { data: dbRecords = [], isLoading } = useIndustryRecords('patient');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
@@ -112,41 +114,42 @@ export default function Patients() {
     p.patientId?.toLowerCase().includes(search.toLowerCase())
   );
 
-  if (isLoading) return <div className="flex items-center justify-center h-64 text-muted-foreground">Loading patients...</div>;
+  if (isLoading) return <div className="flex items-center justify-center h-64 text-muted-foreground">{t("loading_patients", "Loading patients...")}</div>;
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground">Patient Registry</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Manage patient records and clinical history</p>
+          <h1 className="text-2xl font-bold text-card-foreground">{t("patient_registry", "Patient Registry")}</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{t(
+            "manage_patient_records_and_cli",
+            "Manage patient records and clinical history"
+          )}</p>
         </div>
         <Button onClick={openAdd} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
-          <UserPlus className="w-4 h-4" /> Register Patient
+          <UserPlus className="w-4 h-4" /> {t("register_patient", "Register Patient")}
         </Button>
       </div>
-
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 shadow-sm">
           <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600"><Users className="w-5 h-5" /></div>
-          <div><p className="text-2xl font-bold text-card-foreground">{patients.length}</p><p className="text-xs text-muted-foreground">Total Patients</p></div>
+          <div><p className="text-2xl font-bold text-card-foreground">{patients.length}</p><p className="text-xs text-muted-foreground">{t("total_patients", "Total Patients")}</p></div>
         </div>
         <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 shadow-sm">
           <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center text-red-600"><Activity className="w-5 h-5" /></div>
-          <div><p className="text-2xl font-bold text-card-foreground">{patients.filter(p => p.status === 'Admitted').length}</p><p className="text-xs text-muted-foreground">Currently Admitted</p></div>
+          <div><p className="text-2xl font-bold text-card-foreground">{patients.filter(p => p.status === 'Admitted').length}</p><p className="text-xs text-muted-foreground">{t("currently_admitted", "Currently Admitted")}</p></div>
         </div>
         <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 shadow-sm">
           <div className="w-10 h-10 rounded-xl bg-teal-100 flex items-center justify-center text-teal-600"><Stethoscope className="w-5 h-5" /></div>
-          <div><p className="text-2xl font-bold text-card-foreground">{patients.filter(p => p.status === 'Outpatient').length}</p><p className="text-xs text-muted-foreground">Outpatients</p></div>
+          <div><p className="text-2xl font-bold text-card-foreground">{patients.filter(p => p.status === 'Outpatient').length}</p><p className="text-xs text-muted-foreground">{t("outpatients", "Outpatients")}</p></div>
         </div>
         <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 shadow-sm">
           <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center text-green-600"><Heart className="w-5 h-5" /></div>
-          <div><p className="text-2xl font-bold text-card-foreground">{patients.filter(p => p.status === 'Discharged').length}</p><p className="text-xs text-muted-foreground">Discharged</p></div>
+          <div><p className="text-2xl font-bold text-card-foreground">{patients.filter(p => p.status === 'Discharged').length}</p><p className="text-xs text-muted-foreground">{t("discharged", "Discharged")}</p></div>
         </div>
       </div>
-
       {/* Table */}
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         <div className="p-4 border-b border-border bg-muted/50">
@@ -159,70 +162,71 @@ export default function Patients() {
           <table className="w-full text-sm">
             <thead className="bg-card border-b border-border">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Patient</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Demographics</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Contact</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Diagnosis</th>
-                <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">Last Visit</th>
-                <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">Status</th>
-                <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">Actions</th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("patient", "Patient")}</th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("demographics", "Demographics")}</th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("contact", "Contact")}</th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("diagnosis", "Diagnosis")}</th>
+                <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("last_visit", "Last Visit")}</th>
+                <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("status", "Status")}</th>
+                <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("actions", "Actions")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {filtered.map(p => (
-                <tr key={p.id} className="hover:bg-muted/50">
-                  <td className="px-6 py-4">
-                    <p className="font-bold text-card-foreground">{p.name}</p>
-                    <p className="text-xs text-muted-foreground font-mono">{p.patientId}</p>
-                  </td>
-                  <td className="px-6 py-4">
-                    <p className="text-foreground font-medium">{p.age} yrs • {p.gender}</p>
-                    <p className="text-xs text-muted-foreground">Blood: <span className="font-bold text-red-600">{p.bloodType}</span></p>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <Phone className="w-3.5 h-3.5" /><span>{p.phone || '—'}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-muted-foreground text-sm">{p.diagnosis || '—'}</td>
-                  <td className="px-6 py-4 text-center text-muted-foreground font-medium">{p.lastVisit}</td>
-                  <td className="px-6 py-4 text-center">
-                    <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${statusColors[p.status] || 'bg-blue-100 text-blue-700'}`}>{p.status}</span>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <MoreVertical className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => setViewPatient(p)}>
-                          View Details
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => openEdit(p)}>
-                          Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => setDeleteTargetId(p.id)} className="text-red-600">
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </td>
-                </tr>
-              ))}
+              {filtered.map(p => {
+                return (
+                  <tr key={p.id} className="hover:bg-muted/50">
+                    <td className="px-6 py-4">
+                      <p className="font-bold text-card-foreground">{p.name}</p>
+                      <p className="text-xs text-muted-foreground font-mono">{p.patientId}</p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="text-foreground font-medium">{p.age} {t("yrs", "yrs •")} {p.gender}</p>
+                      <p className="text-xs text-muted-foreground">{t("blood", "Blood:")} <span className="font-bold text-red-600">{p.bloodType}</span></p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <Phone className="w-3.5 h-3.5" /><span>{p.phone || '—'}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-muted-foreground text-sm">{p.diagnosis || '—'}</td>
+                    <td className="px-6 py-4 text-center text-muted-foreground font-medium">{p.lastVisit}</td>
+                    <td className="px-6 py-4 text-center">
+                      <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${statusColors[p.status] || 'bg-blue-100 text-blue-700'}`}>{p.status}</span>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0">
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => setViewPatient(p)}>
+                            {t("view_details", "View Details")}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => openEdit(p)}>
+                            {t("edit", "Edit")}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => setDeleteTargetId(p.id)} className="text-red-600">
+                            {t("delete", "Delete")}
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
           {filtered.length === 0 && (
             <div className="text-center py-16 text-muted-foreground">
               <Users className="w-12 h-12 mx-auto mb-3 opacity-20" />
-              <p className="font-medium">No patients found.</p>
-              <p className="text-sm mt-1">Click "Register Patient" to add one.</p>
+              <p className="font-medium">{t("no_patients_found", "No patients found.")}</p>
+              <p className="text-sm mt-1">{t("click_register_patient_to_add_", "Click \"Register Patient\" to add one.")}</p>
             </div>
           )}
         </div>
       </div>
-
       {/* Add / Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
@@ -232,50 +236,50 @@ export default function Patients() {
             </h2>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">First Name</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("first_name", "First Name")}</label>
                 <Input value={formData.firstName} onChange={e => setFormData({ ...formData, firstName: e.target.value })} className="mt-1" placeholder="John" />
               </div>
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">Last Name</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("last_name", "Last Name")}</label>
                 <Input value={formData.lastName} onChange={e => setFormData({ ...formData, lastName: e.target.value })} className="mt-1" placeholder="Doe" />
               </div>
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">Date of Birth</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("date_of_birth", "Date of Birth")}</label>
                 <Input type="date" value={formData.dateOfBirth} onChange={e => setFormData({ ...formData, dateOfBirth: e.target.value })} className="mt-1" />
               </div>
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">Gender</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("gender", "Gender")}</label>
                 <select value={formData.gender} onChange={e => setFormData({ ...formData, gender: e.target.value })} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-                  <option>Male</option>
-                  <option>Female</option>
+                  <option>{t("male", "Male")}</option>
+                  <option>{t("female", "Female")}</option>
                 </select>
               </div>
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">Blood Type</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("blood_type", "Blood Type")}</label>
                 <select value={formData.bloodType} onChange={e => setFormData({ ...formData, bloodType: e.target.value })} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-                  <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
-                  <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
+                  <option>{t("a", "A+")}</option><option>{t("a", "A-")}</option><option>{t("b", "B+")}</option><option>{t("b", "B-")}</option>
+                  <option>{t("ab", "AB+")}</option><option>{t("ab", "AB-")}</option><option>{t("o", "O+")}</option><option>{t("o", "O-")}</option>
                 </select>
               </div>
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">Phone Number</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("phone_number", "Phone Number")}</label>
                 <Input value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} className="mt-1" placeholder="+233..." />
               </div>
               <div className="col-span-2">
-                <label className="text-xs font-bold text-muted-foreground uppercase">Diagnosis / Chief Complaint</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("diagnosis_chief_complaint", "Diagnosis / Chief Complaint")}</label>
                 <Input value={formData.diagnosis} onChange={e => setFormData({ ...formData, diagnosis: e.target.value })} className="mt-1" placeholder="e.g. Malaria, Hypertension..." />
               </div>
               <div className="col-span-2">
-                <label className="text-xs font-bold text-muted-foreground uppercase">Admission Status</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("admission_status", "Admission Status")}</label>
                 <select value={formData.status} onChange={e => setFormData({ ...formData, status: e.target.value })} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-                  <option>Outpatient</option>
-                  <option>Admitted</option>
-                  <option>Discharged</option>
+                  <option>{t("outpatient", "Outpatient")}</option>
+                  <option>{t("admitted", "Admitted")}</option>
+                  <option>{t("discharged", "Discharged")}</option>
                 </select>
               </div>
             </div>
             <div className="flex gap-3 pt-2">
-              <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditingPatient(null); }}>Cancel</Button>
+              <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditingPatient(null); }}>{t("cancel", "Cancel")}</Button>
               <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleSave} disabled={mutateRecord.isPending}>
                 {mutateRecord.isPending ? 'Saving...' : editingPatient ? 'Update Patient' : 'Register Patient'}
               </Button>
@@ -283,7 +287,6 @@ export default function Patients() {
           </div>
         </div>
       )}
-
       {/* Delete Confirmation */}
       <ConfirmationModal
         isOpen={!!deleteTargetId}
@@ -294,45 +297,44 @@ export default function Patients() {
         confirmText="Delete"
         confirmVariant="destructive"
       />
-
       <Sheet open={!!viewPatient} onOpenChange={(open) => !open && setViewPatient(null)}>
         <SheetContent className="overflow-y-auto">
           <SheetHeader>
-            <SheetTitle>Patient Details</SheetTitle>
-            <SheetDescription>View complete patient information</SheetDescription>
+            <SheetTitle>{t("patient_details", "Patient Details")}</SheetTitle>
+            <SheetDescription>{t("view_complete_patient_informat", "View complete patient information")}</SheetDescription>
           </SheetHeader>
           {viewPatient && (
             <div className="mt-6 space-y-4">
               <div>
-                <h3 className="text-sm font-medium text-muted-foreground">Name</h3>
+                <h3 className="text-sm font-medium text-muted-foreground">{t("name", "Name")}</h3>
                 <p className="text-base font-semibold">{viewPatient.name}</p>
               </div>
               <div>
-                <h3 className="text-sm font-medium text-muted-foreground">Patient ID</h3>
+                <h3 className="text-sm font-medium text-muted-foreground">{t("patient_id", "Patient ID")}</h3>
                 <p className="text-base font-semibold">{viewPatient.patientId}</p>
               </div>
               <div>
-                <h3 className="text-sm font-medium text-muted-foreground">Demographics</h3>
-                <p className="text-base">{viewPatient.age} yrs • {viewPatient.gender}</p>
+                <h3 className="text-sm font-medium text-muted-foreground">{t("demographics", "Demographics")}</h3>
+                <p className="text-base">{viewPatient.age} {t("yrs", "yrs •")} {viewPatient.gender}</p>
               </div>
               <div>
-                <h3 className="text-sm font-medium text-muted-foreground">Blood Type</h3>
+                <h3 className="text-sm font-medium text-muted-foreground">{t("blood_type", "Blood Type")}</h3>
                 <p className="text-base font-bold text-red-600">{viewPatient.bloodType}</p>
               </div>
               <div>
-                <h3 className="text-sm font-medium text-muted-foreground">Contact</h3>
+                <h3 className="text-sm font-medium text-muted-foreground">{t("contact", "Contact")}</h3>
                 <p className="text-base">{viewPatient.phone || '—'}</p>
               </div>
               <div>
-                <h3 className="text-sm font-medium text-muted-foreground">Diagnosis</h3>
+                <h3 className="text-sm font-medium text-muted-foreground">{t("diagnosis", "Diagnosis")}</h3>
                 <p className="text-base">{viewPatient.diagnosis || '—'}</p>
               </div>
               <div>
-                <h3 className="text-sm font-medium text-muted-foreground">Status</h3>
+                <h3 className="text-sm font-medium text-muted-foreground">{t("status", "Status")}</h3>
                 <p className="text-base">{viewPatient.status}</p>
               </div>
               <div>
-                <h3 className="text-sm font-medium text-muted-foreground">Last Visit</h3>
+                <h3 className="text-sm font-medium text-muted-foreground">{t("last_visit", "Last Visit")}</h3>
                 <p className="text-base">{viewPatient.lastVisit}</p>
               </div>
             </div>

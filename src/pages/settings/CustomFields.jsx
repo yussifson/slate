@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Database, Plus, Trash2, Edit2, CheckCircle2, ShieldAlert } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -17,6 +18,7 @@ const RECORD_TYPES = [
 ];
 
 export default function CustomFields() {
+  const { t } = useTranslation();
   const [selectedType, setSelectedType] = useState('customer');
   const { data: fields = [], isLoading } = useCustomFields(selectedType);
   const mutateField = useMutateCustomField();
@@ -24,7 +26,7 @@ export default function CustomFields() {
 
   const [showModal, setShowModal] = useState(false);
   const [editingField, setEditingField] = useState(null);
-  
+
   const [formData, setFormData] = useState({
     fieldLabel: '',
     fieldName: '',
@@ -98,30 +100,34 @@ export default function CustomFields() {
         <div>
           <h1 className="text-2xl font-bold text-card-foreground flex items-center gap-2">
             <Database className="w-6 h-6 text-primary" />
-            Custom Fields Engine
+            {t("custom_fields_engine", "Custom Fields Engine")}
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">Add organization-specific data fields to standard records.</p>
+          <p className="text-sm text-muted-foreground mt-1">{t(
+            "add_organization_specific_data",
+            "Add organization-specific data fields to standard records."
+          )}</p>
         </div>
       </div>
-
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {/* Sidebar */}
         <div className="bg-card border border-border rounded-xl p-4 shadow-sm h-fit">
-          <h3 className="text-xs font-bold text-muted-foreground uppercase mb-3">Record Types</h3>
+          <h3 className="text-xs font-bold text-muted-foreground uppercase mb-3">{t("record_types", "Record Types")}</h3>
           <div className="space-y-1">
-            {RECORD_TYPES.map(type => (
-              <button
-                key={type.id}
-                onClick={() => setSelectedType(type.id)}
-                className={`w-full text-left px-3 py-2 text-sm rounded-lg transition-colors ${
-                  selectedType === type.id 
-                    ? 'bg-primary text-primary-foreground font-medium shadow-sm' 
-                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                }`}
-              >
-                {type.label}
-              </button>
-            ))}
+            {RECORD_TYPES.map(type => {
+              return (
+                <button
+                  key={type.id}
+                  onClick={() => setSelectedType(type.id)}
+                  className={`w-full text-left px-3 py-2 text-sm rounded-lg transition-colors ${
+                    selectedType === type.id 
+                      ? 'bg-primary text-primary-foreground font-medium shadow-sm' 
+                      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  }`}
+                >
+                  {type.label}
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -130,68 +136,75 @@ export default function CustomFields() {
           <div className="flex items-center justify-between bg-card border border-border p-4 rounded-xl shadow-sm">
             <div>
               <h2 className="text-lg font-bold text-card-foreground">
-                Fields for {RECORD_TYPES.find(t => t.id === selectedType)?.label}
+                {t("fields_for", "Fields for")} {RECORD_TYPES.find(item => item.id === selectedType)?.label}
               </h2>
-              <p className="text-xs text-muted-foreground">Manage the custom schema for these records.</p>
+              <p className="text-xs text-muted-foreground">{t(
+                "manage_the_custom_schema_for_t",
+                "Manage the custom schema for these records."
+              )}</p>
             </div>
             <Button onClick={() => handleOpenModal()} className="gap-2 bg-primary text-primary-foreground">
-              <Plus className="w-4 h-4" /> Add Field
+              <Plus className="w-4 h-4" /> {t("add_field", "Add Field")}
             </Button>
           </div>
 
           <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
             {isLoading ? (
-              <div className="p-8 text-center text-muted-foreground">Loading custom schema...</div>
+              <div className="p-8 text-center text-muted-foreground">{t("loading_custom_schema", "Loading custom schema...")}</div>
             ) : fields.length === 0 ? (
               <div className="p-12 text-center text-muted-foreground">
                 <Database className="w-12 h-12 mx-auto mb-3 opacity-20 text-primary" />
-                <p className="font-semibold text-lg text-card-foreground">No Custom Fields Yet</p>
-                <p className="text-sm mt-1 max-w-md mx-auto">Click "Add Field" to attach specialized data tracking to this record type.</p>
+                <p className="font-semibold text-lg text-card-foreground">{t("no_custom_fields_yet", "No Custom Fields Yet")}</p>
+                <p className="text-sm mt-1 max-w-md mx-auto">{t(
+                  "click_add_field_to_attach_spec",
+                  "Click \"Add Field\" to attach specialized data tracking to this record type."
+                )}</p>
               </div>
             ) : (
               <table className="w-full text-sm">
                 <thead className="bg-muted/50 border-b border-border text-left">
                   <tr>
-                    <th className="px-6 py-4 text-xs font-bold text-muted-foreground uppercase">Field Info</th>
-                    <th className="px-6 py-4 text-xs font-bold text-muted-foreground uppercase">Internal Key</th>
-                    <th className="px-6 py-4 text-xs font-bold text-muted-foreground uppercase">Type & Validation</th>
-                    <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">Actions</th>
+                    <th className="px-6 py-4 text-xs font-bold text-muted-foreground uppercase">{t("field_info", "Field Info")}</th>
+                    <th className="px-6 py-4 text-xs font-bold text-muted-foreground uppercase">{t("internal_key", "Internal Key")}</th>
+                    <th className="px-6 py-4 text-xs font-bold text-muted-foreground uppercase">{t("type_validation", "Type & Validation")}</th>
+                    <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("actions", "Actions")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
-                  {fields.map(field => (
-                    <tr key={field.id} className="hover:bg-muted/50 transition-colors">
-                      <td className="px-6 py-4">
-                        <p className="font-bold text-card-foreground">{field.field_label}</p>
-                      </td>
-                      <td className="px-6 py-4 font-mono text-xs text-primary">{field.field_name}</td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <span className="px-2 py-0.5 rounded-full bg-muted text-xs font-medium uppercase">{field.field_type}</span>
-                          {field.is_required && (
-                            <span className="px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-[10px] font-bold uppercase">Required</span>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <Button variant="ghost" size="sm" onClick={() => handleOpenModal(field)} className="h-8 w-8 p-0">
-                            <Edit2 className="w-4 h-4" />
-                          </Button>
-                          <Button variant="ghost" size="sm" onClick={() => handleDelete(field.id)} className="h-8 w-8 p-0 text-red-500 hover:text-red-600 hover:bg-red-50">
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                  {fields.map(field => {
+                    return (
+                      <tr key={field.id} className="hover:bg-muted/50 transition-colors">
+                        <td className="px-6 py-4">
+                          <p className="font-bold text-card-foreground">{field.field_label}</p>
+                        </td>
+                        <td className="px-6 py-4 font-mono text-xs text-primary">{field.field_name}</td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2">
+                            <span className="px-2 py-0.5 rounded-full bg-muted text-xs font-medium uppercase">{field.field_type}</span>
+                            {field.is_required && (
+                              <span className="px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-[10px] font-bold uppercase">{t("required", "Required")}</span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <Button variant="ghost" size="sm" onClick={() => handleOpenModal(field)} className="h-8 w-8 p-0">
+                              <Edit2 className="w-4 h-4" />
+                            </Button>
+                            <Button variant="ghost" size="sm" onClick={() => handleDelete(field.id)} className="h-8 w-8 p-0 text-red-500 hover:text-red-600 hover:bg-red-50">
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             )}
           </div>
         </div>
       </div>
-
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-border">
@@ -199,7 +212,7 @@ export default function CustomFields() {
             
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">Field Label (UI)</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("field_label_ui", "Field Label (UI)")}</label>
                 <Input 
                   value={formData.fieldLabel} 
                   onChange={e => {
@@ -218,8 +231,8 @@ export default function CustomFields() {
 
               <div>
                 <label className="text-xs font-bold text-muted-foreground uppercase flex items-center justify-between">
-                  <span>Internal Key</span>
-                  <span className="text-red-500 font-normal lowercase tracking-wide opacity-80 text-[10px]"><ShieldAlert className="w-3 h-3 inline mr-0.5"/> cannot change later</span>
+                  <span>{t("internal_key", "Internal Key")}</span>
+                  <span className="text-red-500 font-normal lowercase tracking-wide opacity-80 text-[10px]"><ShieldAlert className="w-3 h-3 inline mr-0.5"/> {t("cannot_change_later", "cannot change later")}</span>
                 </label>
                 <Input 
                   value={formData.fieldName} 
@@ -232,21 +245,21 @@ export default function CustomFields() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-bold text-muted-foreground uppercase">Data Type</label>
+                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("data_type", "Data Type")}</label>
                   <select 
                     value={formData.fieldType} 
                     onChange={e => setFormData({...formData, fieldType: e.target.value})} 
                     className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
                   >
-                    <option value="text">Short Text</option>
-                    <option value="number">Number</option>
-                    <option value="date">Date</option>
-                    <option value="boolean">Yes/No</option>
-                    <option value="select">Dropdown Select</option>
+                    <option value="text">{t("short_text", "Short Text")}</option>
+                    <option value="number">{t("number", "Number")}</option>
+                    <option value="date">{t("date", "Date")}</option>
+                    <option value="boolean">{t("yes_no", "Yes/No")}</option>
+                    <option value="select">{t("dropdown_select", "Dropdown Select")}</option>
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-muted-foreground uppercase">Requirement</label>
+                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("requirement", "Requirement")}</label>
                   <div className="mt-2 flex items-center gap-2">
                     <input 
                       type="checkbox" 
@@ -254,15 +267,15 @@ export default function CustomFields() {
                       onChange={e => setFormData({...formData, isRequired: e.target.checked})}
                       className="rounded border-input text-primary focus:ring-primary"
                     />
-                    <span className="text-sm font-medium">Must fill</span>
+                    <span className="text-sm font-medium">{t("must_fill", "Must fill")}</span>
                   </div>
                 </div>
               </div>
 
               {formData.fieldType === 'select' && (
                 <div>
-                  <label className="text-xs font-bold text-muted-foreground uppercase">Dropdown Options</label>
-                  <p className="text-[10px] text-muted-foreground mb-1">Separate options with commas.</p>
+                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("dropdown_options", "Dropdown Options")}</label>
+                  <p className="text-[10px] text-muted-foreground mb-1">{t("separate_options_with_commas", "Separate options with commas.")}</p>
                   <Input 
                     value={formData.fieldOptions} 
                     onChange={e => setFormData({...formData, fieldOptions: e.target.value})} 
@@ -273,8 +286,8 @@ export default function CustomFields() {
             </div>
 
             <div className="flex gap-3 pt-4 border-t border-border mt-6">
-              <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>Cancel</Button>
-              <Button className="flex-1 bg-primary text-primary-foreground" onClick={handleSave}>Save Schema</Button>
+              <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
+              <Button className="flex-1 bg-primary text-primary-foreground" onClick={handleSave}>{t("save_schema", "Save Schema")}</Button>
             </div>
           </div>
         </div>

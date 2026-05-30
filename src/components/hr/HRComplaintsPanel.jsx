@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
@@ -18,6 +19,7 @@ const STATUS_COLORS = { open: "bg-red-100 text-red-700", under_review: "bg-amber
 const PRIORITY_COLORS = { low: "bg-slate-100 text-slate-600", medium: "bg-amber-100 text-amber-700", high: "bg-red-100 text-red-700" };
 
 export default function HRComplaintsPanel({ companyId, complaints, staff, isAdmin, user }) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
   const [viewing, setViewing] = useState(null);
@@ -37,38 +39,37 @@ export default function HRComplaintsPanel({ companyId, complaints, staff, isAdmi
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
-        <Button size="sm" onClick={() => setShowForm(true)}><Plus className="w-4 h-4 mr-1" /> File Complaint</Button>
+        <Button size="sm" onClick={() => setShowForm(true)}><Plus className="w-4 h-4 mr-1" /> {t("file_complaint", "File Complaint")}</Button>
       </div>
-
       {visible.length === 0 ? (
         <div className="bg-card border border-border rounded-xl p-10 text-center">
           <MessageSquareWarning className="w-10 h-10 text-muted-foreground mx-auto mb-2" />
-          <p className="text-sm text-muted-foreground">No complaints filed</p>
+          <p className="text-sm text-muted-foreground">{t("no_complaints_filed", "No complaints filed")}</p>
         </div>
       ) : (
         <div className="bg-card border border-border rounded-xl divide-y divide-border">
-          {visible.map(c => (
-            <div key={c.id} className="px-4 py-3 flex items-center gap-3 hover:bg-muted/20 cursor-pointer" onClick={() => setViewing(c)}>
-              <div className="flex-1 min-w-0">
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <span className="text-sm font-medium">{c.subject}</span>
-                  <Badge className={cn("text-[9px] h-4 px-1.5", STATUS_COLORS[c.status])}>{c.status?.replace("_", " ")}</Badge>
-                  <Badge className={cn("text-[9px] h-4 px-1.5", PRIORITY_COLORS[c.priority])}>{c.priority}</Badge>
+          {visible.map(c => {
+            return (
+              <div key={c.id} className="px-4 py-3 flex items-center gap-3 hover:bg-muted/20 cursor-pointer" onClick={() => setViewing(c)}>
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <span className="text-sm font-medium">{c.subject}</span>
+                    <Badge className={cn("text-[9px] h-4 px-1.5", STATUS_COLORS[c.status])}>{c.status?.replace("_", " ")}</Badge>
+                    <Badge className={cn("text-[9px] h-4 px-1.5", PRIORITY_COLORS[c.priority])}>{c.priority}</Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {CATEGORY_LABELS[c.category] || c.category} · {c.is_anonymous ? "Anonymous" : c.staff_name}
+                    {c.created_date ? ` · ${format(new Date(c.created_date), "MMM d, yyyy")}` : ""}
+                  </p>
                 </div>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  {CATEGORY_LABELS[c.category] || c.category} · {c.is_anonymous ? "Anonymous" : c.staff_name}
-                  {c.created_date ? ` · ${format(new Date(c.created_date), "MMM d, yyyy")}` : ""}
-                </p>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
-
       {showForm && (
         <ComplaintFormDialog onClose={() => setShowForm(false)} onSubmit={(d) => createMutation.mutate(d)} staff={staff} />
       )}
-
       {viewing && (
         <ComplaintViewDialog complaint={viewing} onClose={() => setViewing(null)} isAdmin={isAdmin} onUpdate={(data) => updateMutation.mutate({ id: viewing.id, data })} reviewerEmail={user?.email} />
       )}
@@ -77,53 +78,58 @@ export default function HRComplaintsPanel({ companyId, complaints, staff, isAdmi
 }
 
 function ComplaintFormDialog({ onClose, onSubmit, staff }) {
+  const { t } = useTranslation();
   const [form, setForm] = useState({ subject: "", description: "", category: "other", priority: "medium", against_email: "", against_name: "", is_anonymous: false });
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
   const handleSubmit = (e) => { e.preventDefault(); onSubmit(form); };
   return (
     <Dialog open onOpenChange={onClose}>
       <DialogContent className="max-w-lg">
-        <DialogHeader><DialogTitle>File a Complaint</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle>{t("file_a_complaint", "File a Complaint")}</DialogTitle></DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-3">
-          <div><Label>Subject *</Label><Input value={form.subject} onChange={e => set("subject", e.target.value)} required /></div>
+          <div><Label>{t("subject", "Subject *")}</Label><Input value={form.subject} onChange={e => set("subject", e.target.value)} required /></div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label>Category</Label>
+              <Label>{t("category", "Category")}</Label>
               <Select value={form.category} onValueChange={v => set("category", v)}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>{CATEGORIES.map(c => <SelectItem key={c} value={c}>{CATEGORY_LABELS[c]}</SelectItem>)}</SelectContent>
+                <SelectContent>{CATEGORIES.map(c => {
+                  return <SelectItem key={c} value={c}>{CATEGORY_LABELS[c]}</SelectItem>;
+                })}</SelectContent>
               </Select>
             </div>
             <div>
-              <Label>Priority</Label>
+              <Label>{t("priority", "Priority")}</Label>
               <Select value={form.priority} onValueChange={v => set("priority", v)}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="low">Low</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
+                  <SelectItem value="low">{t("low", "Low")}</SelectItem>
+                  <SelectItem value="medium">{t("medium", "Medium")}</SelectItem>
+                  <SelectItem value="high">{t("high", "High")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
-          <div><Label>Description *</Label><Textarea value={form.description} onChange={e => set("description", e.target.value)} rows={3} required /></div>
+          <div><Label>{t("description", "Description *")}</Label><Textarea value={form.description} onChange={e => set("description", e.target.value)} rows={3} required /></div>
           <div>
-            <Label>Against (optional)</Label>
+            <Label>{t("against_optional", "Against (optional)")}</Label>
             <Select value={form.against_email || "none"} onValueChange={v => { if (v === "none") { set("against_email", ""); set("against_name", ""); } else { const s = staff.find(s => s.user_email === v); set("against_email", v); set("against_name", s?.full_name || ""); } }}>
               <SelectTrigger><SelectValue placeholder="Select person (optional)" /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="none">None</SelectItem>
-                {staff.map(s => <SelectItem key={s.user_email} value={s.user_email}>{s.full_name}</SelectItem>)}
+                <SelectItem value="none">{t("none", "None")}</SelectItem>
+                {staff.map(s => {
+                  return <SelectItem key={s.user_email} value={s.user_email}>{s.full_name}</SelectItem>;
+                })}
               </SelectContent>
             </Select>
           </div>
           <div className="flex items-center gap-2">
             <input type="checkbox" id="anon" checked={form.is_anonymous} onChange={e => set("is_anonymous", e.target.checked)} className="rounded" />
-            <Label htmlFor="anon" className="font-normal cursor-pointer">Submit anonymously</Label>
+            <Label htmlFor="anon" className="font-normal cursor-pointer">{t("submit_anonymously", "Submit anonymously")}</Label>
           </div>
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-            <Button type="submit">Submit Complaint</Button>
+            <Button type="button" variant="outline" onClick={onClose}>{t("cancel", "Cancel")}</Button>
+            <Button type="submit">{t("submit_complaint", "Submit Complaint")}</Button>
           </div>
         </form>
       </DialogContent>
@@ -144,16 +150,16 @@ function ComplaintViewDialog({ complaint, onClose, isAdmin, onUpdate, reviewerEm
             <Badge variant="outline" className="text-[10px]">{CATEGORY_LABELS[complaint.category]}</Badge>
           </div>
           <p className="text-sm">{complaint.description}</p>
-          {complaint.against_name && <p className="text-xs text-muted-foreground">Filed against: <strong>{complaint.against_name}</strong></p>}
-          {complaint.created_date && <p className="text-xs text-muted-foreground">Filed: {format(new Date(complaint.created_date), "MMM d, yyyy")}</p>}
+          {complaint.against_name && <p className="text-xs text-muted-foreground">{t("filed_against", "Filed against:")} <strong>{complaint.against_name}</strong></p>}
+          {complaint.created_date && <p className="text-xs text-muted-foreground">{t("filed", "Filed:")} {format(new Date(complaint.created_date), "MMM d, yyyy")}</p>}
           {isAdmin && (
             <div className="space-y-2 pt-2 border-t border-border">
-              <Label>Resolution Notes</Label>
+              <Label>{t("resolution_notes", "Resolution Notes")}</Label>
               <Textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} />
               <div className="flex gap-2 flex-wrap">
-                <Button size="sm" className="bg-amber-600 hover:bg-amber-700 text-white" onClick={() => onUpdate({ status: "under_review" })}>Under Review</Button>
-                <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white" onClick={() => onUpdate({ status: "resolved", resolution_notes: notes, resolved_by: reviewerEmail, resolved_at: new Date().toISOString() })}>Resolve</Button>
-                <Button size="sm" variant="outline" onClick={() => onUpdate({ status: "dismissed", resolution_notes: notes })}>Dismiss</Button>
+                <Button size="sm" className="bg-amber-600 hover:bg-amber-700 text-white" onClick={() => onUpdate({ status: "under_review" })}>{t("under_review", "Under Review")}</Button>
+                <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white" onClick={() => onUpdate({ status: "resolved", resolution_notes: notes, resolved_by: reviewerEmail, resolved_at: new Date().toISOString() })}>{t("resolve", "Resolve")}</Button>
+                <Button size="sm" variant="outline" onClick={() => onUpdate({ status: "dismissed", resolution_notes: notes })}>{t("dismiss", "Dismiss")}</Button>
               </div>
             </div>
           )}

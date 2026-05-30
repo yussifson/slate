@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Menu, X, Scale, ArrowRight, Building, Home, Layers, CreditCard, Info, Mail, Shield, Clock } from 'lucide-react';
@@ -7,6 +8,7 @@ import { getSubdomainAndBase } from '@/lib/domainUtils';
 import { Logo } from '@/components/ui/Logo';
 
 export default function MarketingLayout({ children }) {
+  const { t } = useTranslation();
   const { isAuthenticated, user, isLoadingAuth } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -38,7 +40,6 @@ export default function MarketingLayout({ children }) {
 
   return (
     <div className="light min-h-screen bg-background text-foreground font-sans overflow-x-hidden selection:bg-primary/20 selection:text-primary relative">
-
       {/* ========== NAVIGATION HEADER ========== */}
       <div className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'py-3 bg-white/95 backdrop-blur-lg border-b-2 border-primary/80 shadow-sm' : 'py-5 bg-white/50 backdrop-blur-sm border-b-2 border-transparent'}`}>
         <header className="max-w-6xl mx-auto">
@@ -48,10 +49,10 @@ export default function MarketingLayout({ children }) {
             <Logo className="w-10 h-10 md:w-11 md:h-11 transition-transform group-hover:scale-105" />
             <div className="flex flex-col">
               <span className="font-extrabold text-base md:text-lg tracking-tight text-foreground leading-none">
-                Optalflow
+                {t("optalflow", "Optalflow")}
               </span>
               <span className="text-[9px] text-muted-foreground font-bold tracking-[0.2em] uppercase leading-none mt-0.5">
-                Unified Workspace
+                {t("unified_workspace", "Unified Workspace")}
               </span>
             </div>
           </Link>
@@ -83,23 +84,23 @@ export default function MarketingLayout({ children }) {
             ) : isAuthenticated ? (
               <a href={workspaceUrl}>
                   <Button className="bg-primary hover:bg-primary/90 text-white font-semibold rounded-full px-6 h-10 flex items-center gap-2 transition-all">
-                  <Building className="w-4 h-4" />
-                  Go to Workspace
-                  <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
-                </Button>
+                    <Building className="w-4 h-4" />
+                    {t("go_to_workspace", "Go to Workspace")}
+                    <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
+                  </Button>
               </a>
             ) : (
               <>
                 <Link to="/login">
                   <Button variant="ghost" className="text-muted-foreground hover:text-foreground font-medium h-10 px-4">
-                    Sign In
+                    {t("sign_in", "Sign In")}
                   </Button>
                 </Link>
                 <Link to="/signup">
                     <Button className="bg-primary hover:bg-primary/90 text-white font-semibold rounded-full px-6 h-10 transition-all">
-                    Start Free Trial
-                    <ArrowRight className="w-4 h-4 ml-1.5 transition-transform group-hover:translate-x-0.5" />
-                  </Button>
+                      {t("start_free_trial", "Start Free Trial")}
+                      <ArrowRight className="w-4 h-4 ml-1.5 transition-transform group-hover:translate-x-0.5" />
+                    </Button>
                 </Link>
               </>
             )}
@@ -116,7 +117,6 @@ export default function MarketingLayout({ children }) {
         </div>
       </header>
       </div>
-
       {/* Mobile Navigation Drawer */}
       {mobileMenuOpen && (
         <div className="lg:hidden fixed top-[65px] left-0 right-0 bottom-0 z-40 bg-white border-t border-slate-200 shadow-xl overflow-y-auto animate-in slide-in-from-top-2 duration-200">
@@ -148,19 +148,19 @@ export default function MarketingLayout({ children }) {
                   <a href={workspaceUrl} className="w-full">
                     <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-md h-11 flex items-center justify-center gap-2 rounded-xl">
                       <Building className="w-4 h-4" />
-                      Go to Workspace
+                      {t("go_to_workspace", "Go to Workspace")}
                     </Button>
                   </a>
                 ) : (
                   <>
                     <Link to="/login" className="w-full">
                       <Button variant="outline" className="w-full font-medium border-border hover:bg-muted/50 text-foreground h-11 rounded-xl">
-                        Sign In
+                        {t("sign_in", "Sign In")}
                       </Button>
                     </Link>
                     <Link to="/signup" className="w-full">
                       <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-md h-11 rounded-xl">
-                        Start Free Trial
+                        {t("start_free_trial", "Start Free Trial")}
                       </Button>
                     </Link>
                   </>
@@ -169,12 +169,10 @@ export default function MarketingLayout({ children }) {
             </nav>
         </div>
       )}
-
       {/* ========== MAIN CONTENT ========== */}
       <main className="relative z-10 pb-20 md:pb-0 pt-[80px] md:pt-[90px]">
         {children}
       </main>
-
       {/* ========== MOBILE BOTTOM NAVIGATION ========== */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-xl border-t border-border/80 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
         <div className="flex items-center justify-around h-16 px-2">
@@ -201,7 +199,6 @@ export default function MarketingLayout({ children }) {
         {/* Safe area spacer for notched phones */}
         <div className="h-[env(safe-area-inset-bottom)]" />
       </nav>
-
       {/* ========== PREMIUM FOOTER (LIGHT THEME) ========== */}
       <footer className="bg-slate-50 text-slate-600 pt-20 md:pt-28 pb-24 md:pb-12 border-t border-slate-200 relative overflow-hidden">
         {/* Subtle background glow */}
@@ -213,10 +210,13 @@ export default function MarketingLayout({ children }) {
             <div className="col-span-2 md:col-span-5 lg:col-span-4 flex flex-col gap-6 pr-0 md:pr-10">
               <Link to="/" className="flex items-center gap-2.5 group w-fit">
                 <Logo className="w-10 h-10 text-primary" />
-                <span className="font-extrabold text-xl text-slate-900 tracking-tight">Optalflow</span>
+                <span className="font-extrabold text-xl text-slate-900 tracking-tight">{t("optalflow", "Optalflow")}</span>
               </Link>
               <p className="text-sm leading-relaxed text-slate-600 font-medium">
-                The unified business operating system custom-engineered for modern enterprises across the globe. Built for scale, security, and speed.
+                {t(
+                  "the_unified_business_operating",
+                  "The unified business operating system custom-engineered for modern enterprises across the globe. Built for scale, security, and speed."
+                )}
               </p>
               
               <div className="flex items-center gap-4 mt-2">
@@ -231,42 +231,42 @@ export default function MarketingLayout({ children }) {
 
             {/* Product Links */}
             <div className="col-span-1 md:col-span-2 lg:col-span-2 lg:col-start-6 space-y-5">
-              <h4 className="text-slate-900 font-bold text-sm uppercase tracking-wider">Product</h4>
+              <h4 className="text-slate-900 font-bold text-sm uppercase tracking-wider">{t("product", "Product")}</h4>
               <ul className="flex flex-col gap-3.5">
-                <li><Link to="/features" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">Core Features</Link></li>
-                <li><Link to="/pricing" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">Pricing Plans</Link></li>
-                <li><Link to="/integrations" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">Integrations</Link></li>
-                <li><Link to="/changelog" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">Changelog</Link></li>
+                <li><Link to="/features" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("core_features", "Core Features")}</Link></li>
+                <li><Link to="/pricing" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("pricing_plans", "Pricing Plans")}</Link></li>
+                <li><Link to="/integrations" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("integrations", "Integrations")}</Link></li>
+                <li><Link to="/changelog" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("changelog", "Changelog")}</Link></li>
               </ul>
             </div>
 
             {/* Company Links */}
             <div className="col-span-1 md:col-span-2 lg:col-span-2 space-y-5">
-              <h4 className="text-slate-900 font-bold text-sm uppercase tracking-wider">Company</h4>
+              <h4 className="text-slate-900 font-bold text-sm uppercase tracking-wider">{t("company", "Company")}</h4>
               <ul className="flex flex-col gap-3.5">
-                <li><Link to="/about" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">About Us</Link></li>
-                <li><Link to="/careers" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">Careers <span className="ml-1 inline-block px-1.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 text-[9px] font-bold">HIRING</span></Link></li>
-                <li><Link to="/contact" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">Contact Sales</Link></li>
-                <li><Link to="/partners" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">Partner Program</Link></li>
+                <li><Link to="/about" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("about_us", "About Us")}</Link></li>
+                <li><Link to="/careers" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("careers", "Careers")} <span className="ml-1 inline-block px-1.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 text-[9px] font-bold">{t("hiring", "HIRING")}</span></Link></li>
+                <li><Link to="/contact" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("contact_sales", "Contact Sales")}</Link></li>
+                <li><Link to="/partners" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("partner_program", "Partner Program")}</Link></li>
               </ul>
             </div>
 
             {/* Regional Offices */}
             <div className="col-span-2 md:col-span-3 lg:col-span-2 space-y-5">
-              <h4 className="text-slate-900 font-bold text-sm uppercase tracking-wider">Offices</h4>
+              <h4 className="text-slate-900 font-bold text-sm uppercase tracking-wider">{t("offices", "Offices")}</h4>
               <ul className="flex flex-col gap-4">
                 <li className="flex items-start gap-3 group">
                   <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 group-hover:scale-150 transition-transform"></div>
                   <div>
-                    <span className="text-slate-800 text-sm font-bold block">San Francisco, CA</span>
-                    <span className="text-xs text-slate-500 mt-0.5 block">Global HQ</span>
+                    <span className="text-slate-800 text-sm font-bold block">{t("san_francisco_ca", "San Francisco, CA")}</span>
+                    <span className="text-xs text-slate-500 mt-0.5 block">{t("global_hq", "Global HQ")}</span>
                   </div>
                 </li>
                 <li className="flex items-start gap-3 group">
                   <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 group-hover:scale-150 transition-transform"></div>
                   <div>
-                    <span className="text-slate-800 text-sm font-bold block">London, UK</span>
-                    <span className="text-xs text-slate-500 mt-0.5 block">EMEA Hub</span>
+                    <span className="text-slate-800 text-sm font-bold block">{t("london_uk", "London, UK")}</span>
+                    <span className="text-xs text-slate-500 mt-0.5 block">{t("emea_hub", "EMEA Hub")}</span>
                   </div>
                 </li>
               </ul>
@@ -284,20 +284,22 @@ export default function MarketingLayout({ children }) {
                 </div>
               </div>
               <div className="text-xs text-slate-600 font-medium">
-                SOC-2 Type II Certified <br/> 99.99% Uptime SLA
+                {t("soc_2_type_ii_certified", "SOC-2 Type II Certified")} <br/> {t("99_99_uptime_sla", "99.99% Uptime SLA")}
               </div>
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm font-medium text-slate-600">
-              <Link to="/legal#terms" className="hover:text-primary transition-colors">Terms of Service</Link>
-              <Link to="/legal#privacy" className="hover:text-primary transition-colors">Privacy Policy</Link>
-              <Link to="/legal#security" className="hover:text-primary transition-colors">Security</Link>
-              <Link to="/legal#cookies" className="hover:text-primary transition-colors">Cookie Policy</Link>
+              <Link to="/legal#terms" className="hover:text-primary transition-colors">{t("terms_of_service", "Terms of Service")}</Link>
+              <Link to="/legal#privacy" className="hover:text-primary transition-colors">{t("privacy_policy", "Privacy Policy")}</Link>
+              <Link to="/legal#security" className="hover:text-primary transition-colors">{t("security", "Security")}</Link>
+              <Link to="/legal#cookies" className="hover:text-primary transition-colors">{t("cookie_policy", "Cookie Policy")}</Link>
             </div>
           </div>
           
-          <div className="mt-8 text-center md:text-left text-xs text-slate-500 font-medium">
-            © {new Date().getFullYear()} Optalflow Technologies Inc. All rights reserved.
+          <div className="mt-8 text-center md:text-left text-xs text-slate-500 font-medium">© {new Date().getFullYear()} {t(
+              "optalflow_technologies_inc_all",
+              "Optalflow Technologies Inc. All rights reserved."
+            )}
           </div>
         </div>
       </footer>

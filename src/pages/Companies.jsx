@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -16,6 +17,7 @@ import { format } from "date-fns";
 const COUNTRIES = ["Ghana", "Nigeria", "Sierra Leone"];
 
 export default function Companies() {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
   const [editingCompany, setEditingCompany] = useState(null);
@@ -62,53 +64,67 @@ export default function Companies() {
   const columns = [
     {
       header: "Company",
-      render: (row) => (
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
-            <span className="text-sm font-bold text-primary">{row.name?.[0]}</span>
+      render: row => {
+        return (
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
+              <span className="text-sm font-bold text-primary">{row.name?.[0]}</span>
+            </div>
+            <div>
+              <p className="font-medium text-sm">{row.name}</p>
+              <p className="text-xs text-muted-foreground">{row.email}</p>
+            </div>
           </div>
-          <div>
-            <p className="font-medium text-sm">{row.name}</p>
-            <p className="text-xs text-muted-foreground">{row.email}</p>
-          </div>
-        </div>
-      )
+        );
+      }
     },
-    { header: "Country", render: (row) => <span className="text-sm">{row.country}</span> },
+    { header: "Country", render: row => {
+      return <span className="text-sm">{row.country}</span>;
+    } },
     {
       header: "Plan",
-      render: (row) => <Badge variant="outline" className="text-[10px] capitalize">{SUBSCRIPTION_PLANS[row.subscription_plan]?.name || row.subscription_plan}</Badge>
+      render: row => {
+        return <Badge variant="outline" className="text-[10px] capitalize">{SUBSCRIPTION_PLANS[row.subscription_plan]?.name || row.subscription_plan}</Badge>;
+      }
     },
     {
       header: "Subscription",
-      render: (row) => (
-        <Badge className={`text-[10px] ${row.subscription_status === "active" ? "bg-green-100 text-green-700" : row.subscription_status === "trial" ? "bg-blue-100 text-blue-700" : "bg-slate-100 text-slate-600"}`}>
-          {row.subscription_status}
-        </Badge>
-      )
+      render: row => {
+        return (
+          <Badge className={`text-[10px] ${row.subscription_status === "active" ? "bg-green-100 text-green-700" : row.subscription_status === "trial" ? "bg-blue-100 text-blue-700" : "bg-slate-100 text-slate-600"}`}>
+            {row.subscription_status}
+          </Badge>
+        );
+      }
     },
     {
       header: "Status",
-      render: (row) => (
-        <Badge className={`text-[10px] ${row.status === "active" ? "bg-green-100 text-green-700" : row.status === "suspended" ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700"}`}>
-          {row.status}
-        </Badge>
-      )
+      render: row => {
+        return (
+          <Badge className={`text-[10px] ${row.status === "active" ? "bg-green-100 text-green-700" : row.status === "suspended" ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700"}`}>
+            {row.status}
+          </Badge>
+        );
+      }
     },
     {
       header: "Created",
-      render: (row) => <span className="text-xs text-muted-foreground">{format(new Date(row.created_date), "MMM d, yyyy")}</span>
+      render: row => {
+        return <span className="text-xs text-muted-foreground">{format(new Date(row.created_date), "MMM d, yyyy")}</span>;
+      }
     },
     {
       header: "",
-      render: (row) => (
-        <Button
-          variant="outline" size="sm" className="gap-1.5 h-7 text-xs"
-          onClick={(e) => { e.stopPropagation(); setManagingStaffFirm(row); }}
-        >
-          <Users className="w-3 h-3" /> Team
-        </Button>
-      )
+      render: row => {
+        return (
+          <Button
+            variant="outline" size="sm" className="gap-1.5 h-7 text-xs"
+            onClick={(e) => { e.stopPropagation(); setManagingStaffFirm(row); }}
+          >
+            <Users className="w-3 h-3" /> {t("team", "Team")}
+          </Button>
+        );
+      }
     },
   ];
 
@@ -117,9 +133,8 @@ export default function Companies() {
       <PageHeader
         title="Companies"
         subtitle={`${companies.length} registered law firms`}
-        actions={<Button onClick={() => setShowForm(true)} size="sm"><Plus className="w-4 h-4 mr-1" /> Add Company</Button>}
+        actions={<Button onClick={() => setShowForm(true)} size="sm"><Plus className="w-4 h-4 mr-1" /> {t("add_company", "Add Company")}</Button>}
       />
-
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -128,12 +143,13 @@ export default function Companies() {
         <Select value={countryFilter} onValueChange={setCountryFilter}>
           <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Countries</SelectItem>
-            {COUNTRIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+            <SelectItem value="all">{t("all_countries", "All Countries")}</SelectItem>
+            {COUNTRIES.map(c => {
+              return <SelectItem key={c} value={c}>{c}</SelectItem>;
+            })}
           </SelectContent>
         </Select>
       </div>
-
       <DataTable
         columns={columns}
         data={filtered}
@@ -143,14 +159,12 @@ export default function Companies() {
         emptyDescription="Register the first law firm to get started."
         emptyIcon={Building2}
       />
-
       <CompanyFormDialog
         open={showForm || !!editingCompany}
         onClose={() => { setShowForm(false); setEditingCompany(null); }}
         onSubmit={({ form, adminName }) => editingCompany ? updateMutation.mutate({ id: editingCompany.id, data: form }) : createMutation.mutate({ form, adminName })}
         initialData={editingCompany}
       />
-
       {managingStaffFirm && (
         <FirmStaffManager
           firm={managingStaffFirm}

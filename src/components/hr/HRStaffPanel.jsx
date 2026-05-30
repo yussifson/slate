@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from "react";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
@@ -22,6 +23,7 @@ const roleColors = {
 };
 
 export default function HRStaffPanel({ companyId, staff, currency, isAdmin }) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [showForm, setShowForm] = useState(false);
@@ -52,36 +54,36 @@ export default function HRStaffPanel({ companyId, staff, currency, isAdmin }) {
         </div>
         {isAdmin && (
           <Button size="sm" onClick={() => { setEditing(null); setShowForm(true); }}>
-            <Plus className="w-4 h-4 mr-1" /> Add Staff
+            <Plus className="w-4 h-4 mr-1" /> {t("add_staff", "Add Staff")}
           </Button>
         )}
       </div>
-
       <div className="bg-card border border-border rounded-xl overflow-hidden">
         {filtered.length === 0 ? (
-          <div className="p-10 text-center text-sm text-muted-foreground">No staff found</div>
+          <div className="p-10 text-center text-sm text-muted-foreground">{t("no_staff_found", "No staff found")}</div>
         ) : (
           <div className="divide-y divide-border">
-            {filtered.map(s => (
-              <div key={s.id} className="px-4 py-3 flex items-center gap-4 hover:bg-muted/20 cursor-pointer transition-colors" onClick={() => isAdmin && setEditing(s)}>
-                <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <span className="text-sm font-bold text-primary">{s.full_name?.[0]?.toUpperCase()}</span>
+            {filtered.map(s => {
+              return (
+                <div key={s.id} className="px-4 py-3 flex items-center gap-4 hover:bg-muted/20 cursor-pointer transition-colors" onClick={() => isAdmin && setEditing(s)}>
+                  <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                    <span className="text-sm font-bold text-primary">{s.full_name?.[0]?.toUpperCase()}</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium">{s.full_name}</p>
+                    <p className="text-xs text-muted-foreground">{s.user_email} {s.department ? `· ${s.department}` : ""}</p>
+                  </div>
+                  <Badge className={`${roleColors[s.role] || "bg-slate-100 text-slate-600"} text-[10px] capitalize`}>{s.role?.replace(/_/g, " ")}</Badge>
+                  <Badge className={`text-[10px] ${s.status === "active" ? "bg-green-100 text-green-700" : s.status === "on_leave" ? "bg-amber-100 text-amber-700" : "bg-slate-100 text-slate-600"}`}>
+                    {s.status?.replace("_", " ")}
+                  </Badge>
+                  <span className="text-xs text-muted-foreground shrink-0">{s.hire_date ? format(new Date(s.hire_date), "MMM d, yyyy") : "—"}</span>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium">{s.full_name}</p>
-                  <p className="text-xs text-muted-foreground">{s.user_email} {s.department ? `· ${s.department}` : ""}</p>
-                </div>
-                <Badge className={`${roleColors[s.role] || "bg-slate-100 text-slate-600"} text-[10px] capitalize`}>{s.role?.replace(/_/g, " ")}</Badge>
-                <Badge className={`text-[10px] ${s.status === "active" ? "bg-green-100 text-green-700" : s.status === "on_leave" ? "bg-amber-100 text-amber-700" : "bg-slate-100 text-slate-600"}`}>
-                  {s.status?.replace("_", " ")}
-                </Badge>
-                <span className="text-xs text-muted-foreground shrink-0">{s.hire_date ? format(new Date(s.hire_date), "MMM d, yyyy") : "—"}</span>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
-
       <StaffFormDialog
         open={showForm || !!editing}
         onClose={() => { setShowForm(false); setEditing(null); }}
@@ -93,6 +95,7 @@ export default function HRStaffPanel({ companyId, staff, currency, isAdmin }) {
 }
 
 function StaffFormDialog({ open, onClose, onSubmit, initialData }) {
+  const { t } = useTranslation();
   const { roles, addRole } = useFirmSettings();
   const [form, setForm] = useState({ full_name: "", user_email: "", role: "lawyer", department: "", phone: "", hire_date: "", status: "active", bar_number: "", salary: "", leave_balance: 21 });
 
@@ -110,38 +113,40 @@ function StaffFormDialog({ open, onClose, onSubmit, initialData }) {
         <DialogHeader><DialogTitle>{initialData ? "Edit Staff Member" : "Add Staff Member"}</DialogTitle></DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-3">
           <div className="grid grid-cols-2 gap-3">
-            <div className="col-span-2"><Label>Full Name *</Label><Input value={form.full_name} onChange={e => set("full_name", e.target.value)} required /></div>
-            <div><Label>Email *</Label><Input type="email" value={form.user_email} onChange={e => set("user_email", e.target.value)} required /></div>
-            <div><Label>Phone</Label><Input value={form.phone} onChange={e => set("phone", e.target.value)} /></div>
+            <div className="col-span-2"><Label>{t("full_name", "Full Name *")}</Label><Input value={form.full_name} onChange={e => set("full_name", e.target.value)} required /></div>
+            <div><Label>{t("email", "Email *")}</Label><Input type="email" value={form.user_email} onChange={e => set("user_email", e.target.value)} required /></div>
+            <div><Label>{t("phone", "Phone")}</Label><Input value={form.phone} onChange={e => set("phone", e.target.value)} /></div>
             <div>
-              <Label>Role</Label>
+              <Label>{t("role", "Role")}</Label>
               <Select value={form.role} onValueChange={v => set("role", v)}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  {roles.map(r => <SelectItem key={r} value={r} className="capitalize">{r.replace(/_/g, " ")}</SelectItem>)}
+                  {roles.map(r => {
+                    return <SelectItem key={r} value={r} className="capitalize">{r.replace(/_/g, " ")}</SelectItem>;
+                  })}
                   <AddOptionInline onAdd={(v) => { addRole(v); set("role", v); }} placeholder="New role..." />
                 </SelectContent>
               </Select>
             </div>
-            <div><Label>Department</Label><Input value={form.department} onChange={e => set("department", e.target.value)} /></div>
-            <div><Label>Hire Date</Label><Input type="date" value={form.hire_date} onChange={e => set("hire_date", e.target.value)} /></div>
-            <div><Label>Status</Label>
+            <div><Label>{t("department", "Department")}</Label><Input value={form.department} onChange={e => set("department", e.target.value)} /></div>
+            <div><Label>{t("hire_date", "Hire Date")}</Label><Input type="date" value={form.hire_date} onChange={e => set("hire_date", e.target.value)} /></div>
+            <div><Label>{t("status", "Status")}</Label>
               <Select value={form.status} onValueChange={v => set("status", v)}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
-                  <SelectItem value="on_leave">On Leave</SelectItem>
+                  <SelectItem value="active">{t("active", "Active")}</SelectItem>
+                  <SelectItem value="inactive">{t("inactive", "Inactive")}</SelectItem>
+                  <SelectItem value="on_leave">{t("on_leave", "On Leave")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-            <div><Label>Salary</Label><Input type="number" min="0" value={form.salary} onChange={e => set("salary", e.target.value)} placeholder="0" /></div>
-            <div><Label>Leave Balance (days)</Label><Input type="number" min="0" value={form.leave_balance} onChange={e => set("leave_balance", Number(e.target.value))} /></div>
-            <div><Label>Bar Number</Label><Input value={form.bar_number} onChange={e => set("bar_number", e.target.value)} placeholder="For lawyers" /></div>
+            <div><Label>{t("salary", "Salary")}</Label><Input type="number" min="0" value={form.salary} onChange={e => set("salary", e.target.value)} placeholder="0" /></div>
+            <div><Label>{t("leave_balance_days", "Leave Balance (days)")}</Label><Input type="number" min="0" value={form.leave_balance} onChange={e => set("leave_balance", Number(e.target.value))} /></div>
+            <div><Label>{t("bar_number", "Bar Number")}</Label><Input value={form.bar_number} onChange={e => set("bar_number", e.target.value)} placeholder="For lawyers" /></div>
           </div>
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-            <Button type="submit">{initialData ? "Update" : "Add"} Staff</Button>
+            <Button type="button" variant="outline" onClick={onClose}>{t("cancel", "Cancel")}</Button>
+            <Button type="submit">{initialData ? "Update" : "Add"} {t("staff", "Staff")}</Button>
           </div>
         </form>
       </DialogContent>

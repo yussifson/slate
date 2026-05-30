@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
@@ -68,6 +69,7 @@ const DEFAULTS = {
 };
 
 export default function StaffPermissionsSettings() {
+  const { t } = useTranslation();
   const companyId = useCompanyId();
   const queryClient = useQueryClient();
   const [selectedStaff, setSelectedStaff] = useState(null);
@@ -109,12 +111,19 @@ export default function StaffPermissionsSettings() {
 
   const activeStaff = selectedStaff || staff[0];
 
-  if (loadingStaff) return <div className="space-y-2">{[1,2,3].map(i => <Skeleton key={i} className="h-10 w-full" />)}</div>;
+  if (loadingStaff) return (
+    <div className="space-y-2">{[1,2,3].map(i => {
+      return <Skeleton key={i} className="h-10 w-full" />;
+    })}</div>
+  );
 
   if (!staff.length) return (
     <div className="text-center py-10 text-muted-foreground text-sm">
       <Shield className="w-8 h-8 mx-auto mb-2 opacity-40" />
-      No staff members found. Add staff first.
+      {t(
+        "no_staff_members_found_add_sta",
+        "No staff members found. Add staff first."
+      )}
     </div>
   );
 
@@ -122,18 +131,19 @@ export default function StaffPermissionsSettings() {
     <div className="flex gap-4 items-start">
       {/* Staff list */}
       <div className="w-48 shrink-0 bg-muted/30 rounded-xl border border-border overflow-hidden">
-        {staff.map(s => (
-          <button
-            key={s.id}
-            onClick={() => setSelectedStaff(s)}
-            className={`w-full text-left px-3 py-2.5 text-sm transition-colors border-b border-border last:border-0 ${activeStaff?.id === s.id ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted text-foreground"}`}
-          >
-            <p className="font-medium truncate">{s.full_name}</p>
-            <p className="text-[10px] text-muted-foreground capitalize">{s.role?.replace(/_/g, " ")}</p>
-          </button>
-        ))}
+        {staff.map(s => {
+          return (
+            <button
+              key={s.id}
+              onClick={() => setSelectedStaff(s)}
+              className={`w-full text-left px-3 py-2.5 text-sm transition-colors border-b border-border last:border-0 ${activeStaff?.id === s.id ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted text-foreground"}`}
+            >
+              <p className="font-medium truncate">{s.full_name}</p>
+              <p className="text-[10px] text-muted-foreground capitalize">{s.role?.replace(/_/g, " ")}</p>
+            </button>
+          );
+        })}
       </div>
-
       {/* Permissions panel */}
       {activeStaff && (
         <div className="flex-1 space-y-4">
@@ -147,29 +157,33 @@ export default function StaffPermissionsSettings() {
             </div>
           </div>
 
-          {PERMISSION_GROUPS.map(group => (
-            <div key={group.label} className="bg-card border border-border rounded-xl overflow-hidden">
-              <div className="px-4 py-2 bg-muted/40 border-b border-border">
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{group.label}</p>
+          {PERMISSION_GROUPS.map(group => {
+            return (
+              <div key={group.label} className="bg-card border border-border rounded-xl overflow-hidden">
+                <div className="px-4 py-2 bg-muted/40 border-b border-border">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{group.label}</p>
+                </div>
+                <div className="divide-y divide-border">
+                  {group.perms.map(perm => {
+                    return (
+                      <div key={perm.key} className="flex items-center justify-between px-4 py-2.5">
+                        <span className="text-sm">{perm.label}</span>
+                        <Switch
+                          checked={getPermission(activeStaff.user_email, perm.key)}
+                          onCheckedChange={(val) => updateMutation.mutate({
+                            staffEmail: activeStaff.user_email,
+                            staffName: activeStaff.full_name,
+                            key: perm.key,
+                            value: val,
+                          })}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-              <div className="divide-y divide-border">
-                {group.perms.map(perm => (
-                  <div key={perm.key} className="flex items-center justify-between px-4 py-2.5">
-                    <span className="text-sm">{perm.label}</span>
-                    <Switch
-                      checked={getPermission(activeStaff.user_email, perm.key)}
-                      onCheckedChange={(val) => updateMutation.mutate({
-                        staffEmail: activeStaff.user_email,
-                        staffName: activeStaff.full_name,
-                        key: perm.key,
-                        value: val,
-                      })}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
@@ -85,6 +86,7 @@ function Field({ label, children, full }) {
 // ── Sections ────────────────────────────────────────────────
 
 function SystemSettings({ company, onSave, saving }) {
+  const { t } = useTranslation();
   const { theme, changeTheme } = useTheme();
   const [form, setForm] = useState({
     language: "en",
@@ -101,9 +103,9 @@ function SystemSettings({ company, onSave, saving }) {
           <Select value={theme} onValueChange={changeTheme}>
             <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="light">☀️ Light Theme</SelectItem>
-              <SelectItem value="dark">🌙 Dark Theme</SelectItem>
-              <SelectItem value="system">💻 System Preferences</SelectItem>
+              <SelectItem value="light">{t("light_theme", "☀️ Light Theme")}</SelectItem>
+              <SelectItem value="dark">{t("dark_theme", "🌙 Dark Theme")}</SelectItem>
+              <SelectItem value="system">{t("system_preferences", "💻 System Preferences")}</SelectItem>
             </SelectContent>
           </Select>
         </Field>
@@ -111,9 +113,9 @@ function SystemSettings({ company, onSave, saving }) {
           <Select value={form.language} onValueChange={v => setForm({ ...form, language: v })}>
             <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="en">🇬🇧 English</SelectItem>
-              <SelectItem value="fr">🇫🇷 French</SelectItem>
-              <SelectItem value="pt">🇵🇹 Portuguese</SelectItem>
+              <SelectItem value="en">{t("english", "🇬🇧 English")}</SelectItem>
+              <SelectItem value="fr">{t("french", "🇫🇷 French")}</SelectItem>
+              <SelectItem value="pt">{t("portuguese", "🇵🇹 Portuguese")}</SelectItem>
             </SelectContent>
           </Select>
         </Field>
@@ -121,10 +123,10 @@ function SystemSettings({ company, onSave, saving }) {
           <Select value={form.date_format} onValueChange={v => setForm({ ...form, date_format: v })}>
             <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="Y-m-d">Y-m-d (2025-01-01)</SelectItem>
-              <SelectItem value="d/m/Y">d/m/Y (01/01/2025)</SelectItem>
-              <SelectItem value="m/d/Y">m/d/Y (01/01/2025)</SelectItem>
-              <SelectItem value="d M Y">d M Y (01 Jan 2025)</SelectItem>
+              <SelectItem value="Y-m-d">{t("y_m_d_2025_01_01", "Y-m-d (2025-01-01)")}</SelectItem>
+              <SelectItem value="d/m/Y">{t("d_m_y_01_01_2025", "d/m/Y (01/01/2025)")}</SelectItem>
+              <SelectItem value="m/d/Y">{t("m_d_y_01_01_2025", "m/d/Y (01/01/2025)")}</SelectItem>
+              <SelectItem value="d M Y">{t("d_m_y_01_jan_2025", "d M Y (01 Jan 2025)")}</SelectItem>
             </SelectContent>
           </Select>
         </Field>
@@ -132,8 +134,8 @@ function SystemSettings({ company, onSave, saving }) {
           <Select value={form.time_format} onValueChange={v => setForm({ ...form, time_format: v })}>
             <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="H:i">24-Hour (13:30)</SelectItem>
-              <SelectItem value="h:i A">12-Hour AM/PM (01:30 PM)</SelectItem>
+              <SelectItem value="H:i">{t("24_hour_13_30", "24-Hour (13:30)")}</SelectItem>
+              <SelectItem value="h:i A">{t("12_hour_am_pm_01_30_pm", "12-Hour AM/PM (01:30 PM)")}</SelectItem>
             </SelectContent>
           </Select>
         </Field>
@@ -141,9 +143,9 @@ function SystemSettings({ company, onSave, saving }) {
           <Select value={form.calendar_start} onValueChange={v => setForm({ ...form, calendar_start: v })}>
             <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="sunday">Sunday</SelectItem>
-              <SelectItem value="monday">Monday</SelectItem>
-              <SelectItem value="saturday">Saturday</SelectItem>
+              <SelectItem value="sunday">{t("sunday", "Sunday")}</SelectItem>
+              <SelectItem value="monday">{t("monday", "Monday")}</SelectItem>
+              <SelectItem value="saturday">{t("saturday", "Saturday")}</SelectItem>
             </SelectContent>
           </Select>
         </Field>
@@ -151,11 +153,17 @@ function SystemSettings({ company, onSave, saving }) {
           <Select value={form.timezone} onValueChange={v => setForm({ ...form, timezone: v })}>
             <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="Africa/Accra">(GMT+0:00) Africa/Accra (Ghana Mean Time)</SelectItem>
-              <SelectItem value="Africa/Lagos">(GMT+1:00) Africa/Lagos (West Africa Time)</SelectItem>
-              <SelectItem value="Africa/Freetown">(GMT+0:00) Africa/Freetown</SelectItem>
-              <SelectItem value="Europe/London">(GMT+0:00) Europe/London</SelectItem>
-              <SelectItem value="America/New_York">(GMT-5:00) America/New York</SelectItem>
+              <SelectItem value="Africa/Accra">{t(
+                "gmt_0_00_africa_accra_ghana_me",
+                "(GMT+0:00) Africa/Accra (Ghana Mean Time)"
+              )}</SelectItem>
+              <SelectItem value="Africa/Lagos">{t(
+                "gmt_1_00_africa_lagos_west_afr",
+                "(GMT+1:00) Africa/Lagos (West Africa Time)"
+              )}</SelectItem>
+              <SelectItem value="Africa/Freetown">{t("gmt_0_00_africa_freetown", "(GMT+0:00) Africa/Freetown")}</SelectItem>
+              <SelectItem value="Europe/London">{t("gmt_0_00_europe_london", "(GMT+0:00) Europe/London")}</SelectItem>
+              <SelectItem value="America/New_York">{t("gmt_5_00_america_new_york", "(GMT-5:00) America/New York")}</SelectItem>
             </SelectContent>
           </Select>
         </Field>
@@ -188,15 +196,16 @@ function BrandSettings({ company, onSave, saving }) {
   return (
     <SectionCard title="Brand & Identity" subtitle="Manage your company logos, application favicon, custom subdomain address, and theme colors" onSave={handleSaveClick} saving={saving}>
       <div className="flex gap-1 border border-border/80 bg-muted/20 rounded-xl p-1 w-fit mb-6">
-        {["logos", "text", "theme"].map(t => (
-          <button
-            key={t}
-            onClick={() => setTab(t)}
-            className={`px-4 py-2 rounded-lg text-sm font-semibold capitalize transition-all duration-200 ${tab === t ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
-          >{t}</button>
-        ))}
+        {["logos", "text", "theme"].map(item => {
+          return (
+            <button
+              key={item}
+              onClick={() => setTab(t)}
+              className={`px-4 py-2 rounded-lg text-sm font-semibold capitalize transition-all duration-200 ${tab === t ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+            >{item}</button>
+          );
+        })}
       </div>
-
       {tab === "logos" && (
         <FormRow>
           <Field label="Logo URL (Dark Background)">
@@ -212,7 +221,6 @@ function BrandSettings({ company, onSave, saving }) {
           </Field>
         </FormRow>
       )}
-
       {tab === "text" && (
         <FormRow>
           <Field label="Application Name">
@@ -223,14 +231,16 @@ function BrandSettings({ company, onSave, saving }) {
               <Input placeholder="yourfirm" value={form.subdomain} onChange={e => setForm({ ...form, subdomain: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') })} className="h-11 bg-muted/20 border-0 rounded-none focus-visible:ring-0" />
               <div className="bg-muted text-muted-foreground px-4 py-3 text-sm font-semibold border-l border-border/60 whitespace-nowrap overflow-hidden text-ellipsis select-none">.{getSubdomainAndBase().baseDomain}</div>
             </div>
-            <p className="text-xs text-amber-600 dark:text-amber-500 font-medium mt-2 flex items-center gap-1"><Info className="w-3 h-3" /> Changing this will instantly refresh and sign you back into the new subdomain.</p>
+            <p className="text-xs text-amber-600 dark:text-amber-500 font-medium mt-2 flex items-center gap-1"><Info className="w-3 h-3" /> {t(
+                "changing_this_will_instantly_r",
+                "Changing this will instantly refresh and sign you back into the new subdomain."
+              )}</p>
           </Field>
           <Field label="Tagline / Slogan" full>
             <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" placeholder="e.g. Legal Excellence in Africa" value={form.tagline} onChange={e => setForm({ ...form, tagline: e.target.value })} />
           </Field>
         </FormRow>
       )}
-
       {tab === "theme" && (
         <div className="space-y-4">
           <Field label="Primary Theme Color">
@@ -238,29 +248,31 @@ function BrandSettings({ company, onSave, saving }) {
               <input type="color" value={form.primary_color} onChange={e => setForm({ ...form, primary_color: e.target.value })} className="w-12 h-12 rounded-xl border border-border/80 cursor-pointer shadow-sm" />
               <Input value={form.primary_color} onChange={e => setForm({ ...form, primary_color: e.target.value })} className="w-36 h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" />
               <div className="flex gap-2">
-                {["#16a34a", "#2563eb", "#9333ea", "#dc2626", "#0f766e"].map(c => (
-                  <button key={c} onClick={() => setForm({ ...form, primary_color: c })} className={`w-8 h-8 rounded-full border-2 shadow transition-transform hover:scale-110 active:scale-95 ${form.primary_color === c ? "border-primary scale-110" : "border-background"}`} style={{ background: c }} />
-                ))}
+                {["#16a34a", "#2563eb", "#9333ea", "#dc2626", "#0f766e"].map(c => {
+                  return (<button key={c} onClick={() => setForm({ ...form, primary_color: c })} className={`w-8 h-8 rounded-full border-2 shadow transition-transform hover:scale-110 active:scale-95 ${form.primary_color === c ? "border-primary scale-110" : "border-background"}`} style={{ background: c }} />);
+                })}
               </div>
             </div>
           </Field>
         </div>
       )}
-
       <AlertDialog open={showSubdomainAlert} onOpenChange={setShowSubdomainAlert}>
         <AlertDialogContent className="rounded-2xl max-w-md">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-lg font-bold">Change firm subdomain?</AlertDialogTitle>
+            <AlertDialogTitle className="text-lg font-bold">{t("change_firm_subdomain", "Change firm subdomain?")}</AlertDialogTitle>
             <AlertDialogDescription className="text-sm leading-relaxed">
-              Modifying your subdomain triggers a system-wide redirect. Ensure your team members are aware, as their current browser tabs will require re-authentication.
+              {t(
+                "modifying_your_subdomain_trigg",
+                "Modifying your subdomain triggers a system-wide redirect. Ensure your team members are aware, as their current browser tabs will require re-authentication."
+              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="gap-2">
-            <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="rounded-xl">{t("cancel", "Cancel")}</AlertDialogCancel>
             <AlertDialogAction onClick={() => {
               setShowSubdomainAlert(false);
               onSave(form);
-            }} className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl">Continue & Relocate</AlertDialogAction>
+            }} className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl">{t("continue_relocate", "Continue & Relocate")}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -284,10 +296,10 @@ function CurrencySettings({ company, onSave, saving }) {
           <Select value={form.currency} onValueChange={v => setForm({ ...form, currency: v })}>
             <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="GHS">GHS – Ghanaian Cedi (GH₵)</SelectItem>
-              <SelectItem value="NGN">NGN – Nigerian Naira (₦)</SelectItem>
-              <SelectItem value="SLL">SLL – Sierra Leonean Leone (Le)</SelectItem>
-              <SelectItem value="USD">USD – US Dollar ($)</SelectItem>
+              <SelectItem value="GHS">{t("ghs_ghanaian_cedi_gh", "GHS – Ghanaian Cedi (GH₵)")}</SelectItem>
+              <SelectItem value="NGN">{t("ngn_nigerian_naira", "NGN – Nigerian Naira (₦)")}</SelectItem>
+              <SelectItem value="SLL">{t("sll_sierra_leonean_leone_le", "SLL – Sierra Leonean Leone (Le)")}</SelectItem>
+              <SelectItem value="USD">{t("usd_us_dollar", "USD – US Dollar ($)")}</SelectItem>
             </SelectContent>
           </Select>
         </Field>
@@ -295,8 +307,8 @@ function CurrencySettings({ company, onSave, saving }) {
           <Select value={form.currency_position} onValueChange={v => setForm({ ...form, currency_position: v })}>
             <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="before">Before amount (GH₵100)</SelectItem>
-              <SelectItem value="after">After amount (100 GH₵)</SelectItem>
+              <SelectItem value="before">{t("before_amount_gh_100", "Before amount (GH₵100)")}</SelectItem>
+              <SelectItem value="after">{t("after_amount_100_gh", "After amount (100 GH₵)")}</SelectItem>
             </SelectContent>
           </Select>
         </Field>
@@ -304,8 +316,8 @@ function CurrencySettings({ company, onSave, saving }) {
           <Select value={form.decimal_separator} onValueChange={v => setForm({ ...form, decimal_separator: v })}>
             <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value=".">Period ( . )</SelectItem>
-              <SelectItem value=",">Comma ( , )</SelectItem>
+              <SelectItem value=".">{t("period", "Period ( . )")}</SelectItem>
+              <SelectItem value=",">{t("comma", "Comma ( , )")}</SelectItem>
             </SelectContent>
           </Select>
         </Field>
@@ -313,9 +325,9 @@ function CurrencySettings({ company, onSave, saving }) {
           <Select value={form.thousands_separator} onValueChange={v => setForm({ ...form, thousands_separator: v })}>
             <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value=",">, (comma)</SelectItem>
-              <SelectItem value=".">. (period)</SelectItem>
-              <SelectItem value=" ">Space</SelectItem>
+              <SelectItem value=",">{t("comma", ", (comma)")}</SelectItem>
+              <SelectItem value=".">{t("period", ". (period)")}</SelectItem>
+              <SelectItem value=" ">{t("space", "Space")}</SelectItem>
             </SelectContent>
           </Select>
         </Field>
@@ -339,7 +351,7 @@ function EmailSettings({ company, onSave, saving }) {
   const [domainInput, setDomainInput] = useState(company?.custom_email_domain || "");
   const [verifyingDomain, setVerifyingDomain] = useState(false);
   const { toast } = useToast();
-  
+
   const [smtpForm, setSmtpForm] = useState({
     from_name: "LexAfrica",
     from_email: "",
@@ -391,16 +403,15 @@ function EmailSettings({ company, onSave, saving }) {
           onClick={() => setActiveTab("smtp")}
           className={`px-4 py-2 rounded-lg text-sm font-semibold capitalize transition-all duration-200 ${activeTab === "smtp" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
         >
-          SMTP Server
+          {t("smtp_server", "SMTP Server")}
         </button>
         <button
           onClick={() => setActiveTab("domain")}
           className={`px-4 py-2 rounded-lg text-sm font-semibold capitalize flex items-center gap-1.5 transition-all duration-200 ${activeTab === "domain" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
         >
-          Custom Sending Domain {!isPaidPlan && <span className="text-[10px] bg-amber-500 text-black px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider">Premium</span>}
+          {t("custom_sending_domain", "Custom Sending Domain")} {!isPaidPlan && <span className="text-[10px] bg-amber-500 text-black px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider">{t("premium", "Premium")}</span>}
         </button>
       </div>
-
       {activeTab === "smtp" ? (
         <FormRow>
           <Field label="From Name">
@@ -416,9 +427,9 @@ function EmailSettings({ company, onSave, saving }) {
             <Select value={smtpForm.smtp_port} onValueChange={v => setSmtpForm({ ...smtpForm, smtp_port: v })}>
               <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="25">25 (Unencrypted)</SelectItem>
-                <SelectItem value="465">465 (SSL)</SelectItem>
-                <SelectItem value="587">587 (TLS)</SelectItem>
+                <SelectItem value="25">{t("25_unencrypted", "25 (Unencrypted)")}</SelectItem>
+                <SelectItem value="465">{t("465_ssl", "465 (SSL)")}</SelectItem>
+                <SelectItem value="587">{t("587_tls", "587 (TLS)")}</SelectItem>
               </SelectContent>
             </Select>
           </Field>
@@ -435,16 +446,16 @@ function EmailSettings({ company, onSave, saving }) {
             <Select value={smtpForm.smtp_encryption} onValueChange={v => setSmtpForm({ ...smtpForm, smtp_encryption: v })}>
               <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="none">None</SelectItem>
-                <SelectItem value="tls">TLS</SelectItem>
-                <SelectItem value="ssl">SSL</SelectItem>
+                <SelectItem value="none">{t("none", "None")}</SelectItem>
+                <SelectItem value="tls">{t("tls", "TLS")}</SelectItem>
+                <SelectItem value="ssl">{t("ssl", "SSL")}</SelectItem>
               </SelectContent>
             </Select>
           </Field>
           <div className="sm:col-span-2 pt-4 flex justify-end">
             <Button onClick={() => onSave(smtpForm)} disabled={saving} className="gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-md font-semibold transition-all duration-200">
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-              Save SMTP Configuration
+              {t("save_smtp_configuration", "Save SMTP Configuration")}
             </Button>
           </div>
         </FormRow>
@@ -456,21 +467,27 @@ function EmailSettings({ company, onSave, saving }) {
                 <Lock className="w-6 h-6" />
               </div>
               <div className="max-w-md space-y-1.5">
-                <h3 className="font-bold text-lg text-foreground tracking-tight">Unlock Custom Sending Domain</h3>
+                <h3 className="font-bold text-lg text-foreground tracking-tight">{t("unlock_custom_sending_domain", "Unlock Custom Sending Domain")}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  Enhance your brand identity by sending system emails, client invoices, and reminders from your own domain (e.g., <code className="text-foreground font-semibold font-mono">legal@yourfirm.com</code>) instead of our shared generic templates.
+                  {t(
+                    "enhance_your_brand_identity_by",
+                    "Enhance your brand identity by sending system emails, client invoices, and reminders from your own domain (e.g.,"
+                  )} <code className="text-foreground font-semibold font-mono">{t("legal_yourfirm_com", "legal@yourfirm.com")}</code>{t(
+                    "instead_of_our_shared_generic_",
+                    ") instead of our shared generic templates."
+                  )}
                 </p>
               </div>
               <Button onClick={() => window.location.href = '#billing'} className="bg-primary hover:bg-primary/90 text-white rounded-xl shadow-md font-bold px-6 py-5 gap-2 transition-transform hover:-translate-y-0.5 active:translate-y-0">
                 <CreditCard className="w-4 h-4" />
-                Upgrade Subscription Plan
+                {t("upgrade_subscription_plan", "Upgrade Subscription Plan")}
               </Button>
             </div>
           ) : null}
 
           <div className={`space-y-6 ${!isPaidPlan ? "opacity-35 pointer-events-none select-none" : ""}`}>
             <div className="bg-muted/15 border border-border/50 rounded-xl p-5 space-y-4">
-              <h3 className="text-sm font-bold text-foreground">Configure Domain</h3>
+              <h3 className="text-sm font-bold text-foreground">{t("configure_domain", "Configure Domain")}</h3>
               <div className="flex flex-col sm:flex-row gap-3">
                 <div className="flex-1 relative">
                   <Input 
@@ -481,26 +498,29 @@ function EmailSettings({ company, onSave, saving }) {
                   />
                   {company?.custom_email_verified && (
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-600 flex items-center gap-1 text-xs font-bold bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full border border-emerald-200/50">
-                      <CheckCircle className="w-3.5 h-3.5" /> Verified
+                      <CheckCircle className="w-3.5 h-3.5" /> {t("verified", "Verified")}
                     </span>
                   )}
                 </div>
                 <Button onClick={handleDomainSave} disabled={saving} className="bg-primary hover:bg-primary/90 text-white h-11 px-5 rounded-lg font-semibold">
-                  Register Domain
+                  {t("register_domain", "Register Domain")}
                 </Button>
               </div>
-              <p className="text-xs text-muted-foreground">Register your corporate email root domain to generate cryptographic authentication keys.</p>
+              <p className="text-xs text-muted-foreground">{t(
+                "register_your_corporate_email_",
+                "Register your corporate email root domain to generate cryptographic authentication keys."
+              )}</p>
             </div>
 
             {company?.custom_email_domain && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h4 className="text-xs font-extrabold text-foreground/80 uppercase tracking-widest flex items-center gap-1.5">
-                    <Info className="w-3.5 h-3.5 text-primary" /> Required DNS Records
+                    <Info className="w-3.5 h-3.5 text-primary" /> {t("required_dns_records", "Required DNS Records")}
                   </h4>
                   <Button onClick={handleVerifyDomain} disabled={verifyingDomain} className="gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow font-bold text-xs h-9">
                     {verifyingDomain ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
-                    Verify DNS Records
+                    {t("verify_dns_records", "Verify DNS Records")}
                   </Button>
                 </div>
 
@@ -508,17 +528,17 @@ function EmailSettings({ company, onSave, saving }) {
                   <table className="w-full text-left border-collapse text-xs">
                     <thead>
                       <tr className="bg-muted/30 border-b border-border/80 font-bold uppercase tracking-wider text-muted-foreground select-none">
-                        <th className="px-4 py-3">Type</th>
-                        <th className="px-4 py-3">Host / Name</th>
-                        <th className="px-4 py-3">Value</th>
-                        <th className="px-4 py-3 text-right">Action</th>
+                        <th className="px-4 py-3">{t("type", "Type")}</th>
+                        <th className="px-4 py-3">{t("host_name", "Host / Name")}</th>
+                        <th className="px-4 py-3">{t("value", "Value")}</th>
+                        <th className="px-4 py-3 text-right">{t("action", "Action")}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border/60">
                       <tr>
-                        <td className="px-4 py-3.5 font-bold font-mono">TXT</td>
+                        <td className="px-4 py-3.5 font-bold font-mono">{t("txt", "TXT")}</td>
                         <td className="px-4 py-3.5 font-mono select-all">@</td>
-                        <td className="px-4 py-3.5 font-mono text-muted-foreground select-all">v=spf1 include:spf.lexafrica.com ~all</td>
+                        <td className="px-4 py-3.5 font-mono text-muted-foreground select-all">{t("v_spf1_include_spf_lexafrica_c", "v=spf1 include:spf.lexafrica.com ~all")}</td>
                         <td className="px-4 py-3.5 text-right">
                           <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => {
                             navigator.clipboard.writeText("v=spf1 include:spf.lexafrica.com ~all");
@@ -527,9 +547,12 @@ function EmailSettings({ company, onSave, saving }) {
                         </td>
                       </tr>
                       <tr>
-                        <td className="px-4 py-3.5 font-bold font-mono">TXT</td>
-                        <td className="px-4 py-3.5 font-mono select-all">la._domainkey</td>
-                        <td className="px-4 py-3.5 font-mono text-muted-foreground select-all">k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0y...</td>
+                        <td className="px-4 py-3.5 font-bold font-mono">{t("txt", "TXT")}</td>
+                        <td className="px-4 py-3.5 font-mono select-all">{t("la_domainkey", "la._domainkey")}</td>
+                        <td className="px-4 py-3.5 font-mono text-muted-foreground select-all">{t(
+                          "k_rsa_p_miibijanbgkqhkig9w0baq",
+                          "k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0y..."
+                        )}</td>
                         <td className="px-4 py-3.5 text-right">
                           <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => {
                             navigator.clipboard.writeText("k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0y...");
@@ -538,9 +561,9 @@ function EmailSettings({ company, onSave, saving }) {
                         </td>
                       </tr>
                       <tr>
-                        <td className="px-4 py-3.5 font-bold font-mono">CNAME</td>
-                        <td className="px-4 py-3.5 font-mono select-all">email.link</td>
-                        <td className="px-4 py-3.5 font-mono text-muted-foreground select-all">mail.lexafrica.com</td>
+                        <td className="px-4 py-3.5 font-bold font-mono">{t("cname", "CNAME")}</td>
+                        <td className="px-4 py-3.5 font-mono select-all">{t("email_link", "email.link")}</td>
+                        <td className="px-4 py-3.5 font-mono text-muted-foreground select-all">{t("mail_lexafrica_com", "mail.lexafrica.com")}</td>
                         <td className="px-4 py-3.5 text-right">
                           <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => {
                             navigator.clipboard.writeText("mail.lexafrica.com");
@@ -586,15 +609,17 @@ function NotificationSettings({ onSave, saving }) {
   return (
     <SectionCard title="Notification Triggers" subtitle="Control automated email rules, client reminders, and critical schedule updates" onSave={() => onSave(form)} saving={saving}>
       <div className="grid grid-cols-1 gap-3.5">
-        {items.map(item => (
-          <div key={item.key} className="flex items-center justify-between p-4 rounded-xl border border-border/60 bg-muted/10 hover:bg-muted/20 transition-all duration-200">
-            <div className="space-y-1 pr-4">
-              <p className="text-sm font-semibold text-foreground">{item.label}</p>
-              <p className="text-xs text-muted-foreground/80 leading-relaxed">{item.desc}</p>
+        {items.map(item => {
+          return (
+            <div key={item.key} className="flex items-center justify-between p-4 rounded-xl border border-border/60 bg-muted/10 hover:bg-muted/20 transition-all duration-200">
+              <div className="space-y-1 pr-4">
+                <p className="text-sm font-semibold text-foreground">{item.label}</p>
+                <p className="text-xs text-muted-foreground/80 leading-relaxed">{item.desc}</p>
+              </div>
+              <Switch checked={form[item.key]} onCheckedChange={() => toggle(item.key)} />
             </div>
-            <Switch checked={form[item.key]} onCheckedChange={() => toggle(item.key)} />
-          </div>
-        ))}
+          );
+        })}
       </div>
     </SectionCard>
   );
@@ -614,15 +639,17 @@ function SlackSettings({ onSave, saving }) {
         </Field>
       </FormRow>
       <div className="space-y-3.5 mt-6">
-        {[["notify_new_case", "Realtime Case Intake Alerts", "Ping channel whenever a new case file is successfully created"], ["notify_overdue", "Overdue Balance Webhooks", "Notify Slack channels automatically upon invoice status overdue trigger"]].map(([k, l, d]) => (
-          <div key={k} className="flex items-center justify-between p-4 rounded-xl border border-border/60 bg-muted/10 hover:bg-muted/20 transition-all duration-200">
-            <div className="space-y-0.5">
-              <p className="text-sm font-semibold text-foreground">{l}</p>
-              <p className="text-xs text-muted-foreground/85">{d}</p>
+        {[["notify_new_case", "Realtime Case Intake Alerts", "Ping channel whenever a new case file is successfully created"], ["notify_overdue", "Overdue Balance Webhooks", "Notify Slack channels automatically upon invoice status overdue trigger"]].map(([k, l, d]) => {
+          return (
+            <div key={k} className="flex items-center justify-between p-4 rounded-xl border border-border/60 bg-muted/10 hover:bg-muted/20 transition-all duration-200">
+              <div className="space-y-0.5">
+                <p className="text-sm font-semibold text-foreground">{l}</p>
+                <p className="text-xs text-muted-foreground/85">{d}</p>
+              </div>
+              <Switch checked={form[k]} onCheckedChange={() => setForm(f => ({ ...f, [k]: !f[k] }))} />
             </div>
-            <Switch checked={form[k]} onCheckedChange={() => setForm(f => ({ ...f, [k]: !f[k] }))} />
-          </div>
-        ))}
+          );
+        })}
       </div>
     </SectionCard>
   );
@@ -646,8 +673,11 @@ function TwilioSettings({ onSave, saving }) {
       </FormRow>
       <div className="flex items-center justify-between p-4 rounded-xl border border-border/60 bg-muted/10 hover:bg-muted/20 transition-all duration-200 mt-6">
         <div className="space-y-1">
-          <p className="text-sm font-semibold text-foreground">Global SMS Dispatch</p>
-          <p className="text-xs text-muted-foreground/80">Allow automatic text message dispatches globally for critical updates</p>
+          <p className="text-sm font-semibold text-foreground">{t("global_sms_dispatch", "Global SMS Dispatch")}</p>
+          <p className="text-xs text-muted-foreground/80">{t(
+            "allow_automatic_text_message_d",
+            "Allow automatic text message dispatches globally for critical updates"
+          )}</p>
         </div>
         <Switch checked={form.sms_enabled} onCheckedChange={() => setForm(f => ({ ...f, sms_enabled: !f.sms_enabled }))} />
       </div>
@@ -665,10 +695,10 @@ function PaymentSettings({ onSave, saving }) {
           <Select value={form.provider} onValueChange={v => setForm({ ...form, provider: v })}>
             <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="stripe">Stripe (Global)</SelectItem>
-              <SelectItem value="paystack">Paystack (Africa)</SelectItem>
-              <SelectItem value="flutterwave">Flutterwave (West Africa)</SelectItem>
-              <SelectItem value="momo">MTN Mobile Money</SelectItem>
+              <SelectItem value="stripe">{t("stripe_global", "Stripe (Global)")}</SelectItem>
+              <SelectItem value="paystack">{t("paystack_africa", "Paystack (Africa)")}</SelectItem>
+              <SelectItem value="flutterwave">{t("flutterwave_west_africa", "Flutterwave (West Africa)")}</SelectItem>
+              <SelectItem value="momo">{t("mtn_mobile_money", "MTN Mobile Money")}</SelectItem>
             </SelectContent>
           </Select>
         </Field>
@@ -684,8 +714,11 @@ function PaymentSettings({ onSave, saving }) {
       </FormRow>
       <div className="flex items-center justify-between p-4 rounded-xl border border-border/60 bg-muted/10 hover:bg-muted/20 transition-all duration-200 mt-6">
         <div className="space-y-1">
-          <p className="text-sm font-semibold text-foreground">Production Live Mode</p>
-          <p className="text-xs text-muted-foreground/80">Process live currency values. Disable to use developer test keys.</p>
+          <p className="text-sm font-semibold text-foreground">{t("production_live_mode", "Production Live Mode")}</p>
+          <p className="text-xs text-muted-foreground/80">{t(
+            "process_live_currency_values_d",
+            "Process live currency values. Disable to use developer test keys."
+          )}</p>
         </div>
         <Switch checked={form.live_mode} onCheckedChange={() => setForm(f => ({ ...f, live_mode: !f.live_mode }))} />
       </div>
@@ -711,8 +744,11 @@ function GoogleCalendarSettings({ onSave, saving }) {
       </FormRow>
       <div className="flex items-center justify-between p-4 rounded-xl border border-border/60 bg-muted/10 hover:bg-muted/20 transition-all duration-200 mt-6">
         <div className="space-y-1">
-          <p className="text-sm font-semibold text-foreground">Activate Sync Operations</p>
-          <p className="text-xs text-muted-foreground/80">Automatically coordinate all legal events with connected calendars</p>
+          <p className="text-sm font-semibold text-foreground">{t("activate_sync_operations", "Activate Sync Operations")}</p>
+          <p className="text-xs text-muted-foreground/80">{t(
+            "automatically_coordinate_all_l",
+            "Automatically coordinate all legal events with connected calendars"
+          )}</p>
         </div>
         <Switch checked={form.sync_enabled} onCheckedChange={() => setForm(f => ({ ...f, sync_enabled: !f.sync_enabled }))} />
       </div>
@@ -771,7 +807,6 @@ function SecuritySettings() {
           </Field>
         </FormRow>
       </SectionCard>
-
       <SectionCard title="Zero-Trust End-to-End Encryption Keys" subtitle="Configure secure client-side encryption keys to protect sensitive charts, medical diagnostic notes, and legal details locally in your browser" onSave={handleSavePassphrase}>
         <div className="space-y-4">
           <Field label="Secure Encryption Passphrase" full>
@@ -784,7 +819,10 @@ function SecuritySettings() {
             />
           </Field>
           <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-600 dark:text-amber-500 leading-relaxed font-semibold">
-            🔑 LexAfrica Zero-Trust Framework: All sensitive text fields (notes, diagnostics, case outcome details) are cryptographically encrypted directly inside your local web browser using AES-GCM-256 before leaving your computer. Our cloud databases and system administrators can never decrypt or access this data. Store this passphrase securely; if lost, encrypted data cannot be recovered.
+            {t(
+              "lexafrica_zero_trust_framework",
+              "🔑 LexAfrica Zero-Trust Framework: All sensitive text fields (notes, diagnostics, case outcome details) are cryptographically encrypted directly inside your local web browser using AES-GCM-256 before leaving your computer. Our cloud databases and system administrators can never decrypt or access this data. Store this passphrase securely; if lost, encrypted data cannot be recovered."
+            )}
           </div>
         </div>
       </SectionCard>
@@ -896,9 +934,9 @@ function BillingSettings({ company }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
           <div className="bg-gradient-to-br from-slate-50 to-slate-100/50 dark:from-slate-900/40 dark:to-slate-900/10 border border-border/80 rounded-2xl p-5 space-y-4">
             <div>
-              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest block">Firm Plan Level</span>
+              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest block">{t("firm_plan_level", "Firm Plan Level")}</span>
               <h3 className="font-extrabold text-2xl text-foreground capitalize flex items-center gap-2 mt-1">
-                {currentPlan} Model
+                {currentPlan} {t("model", "Model")}
                 <span className={`text-[10px] font-extrabold uppercase py-0.5 px-2.5 rounded-full border tracking-wider ${
                   currentStatus === 'active' 
                     ? 'bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border-emerald-200/50' 
@@ -909,16 +947,19 @@ function BillingSettings({ company }) {
               </h3>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Process payments directly using our secure **Paystack** local checkout system. Upgrades propagate instantly.
+              {t(
+                "process_payments_directly_usin",
+                "Process payments directly using our secure **Paystack** local checkout system. Upgrades propagate instantly."
+              )}
             </p>
           </div>
 
           <div className="bg-card/30 border border-border/70 rounded-2xl p-5 space-y-4 shadow-sm">
-            <h4 className="font-bold text-sm text-foreground">Quota Utilization</h4>
+            <h4 className="font-bold text-sm text-foreground">{t("quota_utilization", "Quota Utilization")}</h4>
             
             <div className="space-y-2">
               <div className="flex justify-between text-xs font-semibold text-muted-foreground">
-                <span>Team Members</span>
+                <span>{t("team_members", "Team Members")}</span>
                 <span className="text-foreground">{activeUsersCount} / {currentPlan === 'starter' ? 3 : currentPlan === 'professional' ? 10 : 'Unlimited'}</span>
               </div>
               <Progress value={currentPlan === 'starter' ? (activeUsersCount / 3) * 100 : currentPlan === 'professional' ? (activeUsersCount / 10) * 100 : 12} className="h-2 bg-muted/40 [&>div]:bg-primary" />
@@ -926,7 +967,7 @@ function BillingSettings({ company }) {
 
             <div className="space-y-2">
               <div className="flex justify-between text-xs font-semibold text-muted-foreground">
-                <span>Active Case Files</span>
+                <span>{t("active_case_files", "Active Case Files")}</span>
                 <span className="text-foreground">{activeCasesCount} / {currentPlan === 'starter' ? 10 : 'Unlimited'}</span>
               </div>
               <Progress value={currentPlan === 'starter' ? (activeCasesCount / 10) * 100 : 8} className="h-2 bg-muted/40 [&>div]:bg-primary" />
@@ -934,60 +975,66 @@ function BillingSettings({ company }) {
           </div>
         </div>
       </SectionCard>
-
       <div className="bg-card/45 backdrop-blur-md rounded-2xl border border-border/80 p-6 space-y-6 shadow-md">
         <div>
-          <h2 className="text-base font-bold text-foreground">Upgrade Platform Model</h2>
-          <p className="text-sm text-muted-foreground mt-0.5">Scale up features, team counts, and client space instantly.</p>
+          <h2 className="text-base font-bold text-foreground">{t("upgrade_platform_model", "Upgrade Platform Model")}</h2>
+          <p className="text-sm text-muted-foreground mt-0.5">{t(
+            "scale_up_features_team_counts_",
+            "Scale up features, team counts, and client space instantly."
+          )}</p>
         </div>
         <div className="pt-2 border-t border-border/50">
           <Button 
             onClick={() => window.location.href = '/pricing'} 
             className="w-full bg-primary hover:bg-primary/95 text-white font-bold h-12 rounded-xl text-sm shadow-md transition-transform hover:-translate-y-0.5"
           >
-            Explore Corporate Pricing
+            {t("explore_corporate_pricing", "Explore Corporate Pricing")}
           </Button>
         </div>
       </div>
-
       <div className="bg-card/45 backdrop-blur-md rounded-2xl border border-border/80 p-6 space-y-5 shadow-md">
         <div>
-          <h2 className="text-base font-bold text-foreground">Invoice Ledger</h2>
-          <p className="text-sm text-muted-foreground mt-0.5">View platform service receipts processed via Paystack.</p>
+          <h2 className="text-base font-bold text-foreground">{t("invoice_ledger", "Invoice Ledger")}</h2>
+          <p className="text-sm text-muted-foreground mt-0.5">{t(
+            "view_platform_service_receipts",
+            "View platform service receipts processed via Paystack."
+          )}</p>
         </div>
 
         {invoices.length === 0 ? (
           <div className="text-center py-10 text-sm text-muted-foreground font-semibold bg-muted/10 rounded-2xl border border-dashed border-border/60">
-            No service invoices recorded.
+            {t("no_service_invoices_recorded", "No service invoices recorded.")}
           </div>
         ) : (
           <div className="overflow-x-auto rounded-xl border border-border/85 shadow-sm">
             <table className="w-full text-sm text-left border-collapse bg-card/10">
               <thead>
                 <tr className="bg-muted/40 border-b border-border/85 text-muted-foreground font-bold text-xs uppercase tracking-wider select-none">
-                  <th className="px-5 py-3.5">Settlement Date</th>
-                  <th className="px-5 py-3.5">Plan tier</th>
-                  <th className="px-5 py-3.5">Amount</th>
-                  <th className="px-5 py-3.5">Reference ID</th>
-                  <th className="px-5 py-3.5">Status</th>
+                  <th className="px-5 py-3.5">{t("settlement_date", "Settlement Date")}</th>
+                  <th className="px-5 py-3.5">{t("plan_tier", "Plan tier")}</th>
+                  <th className="px-5 py-3.5">{t("amount", "Amount")}</th>
+                  <th className="px-5 py-3.5">{t("reference_id", "Reference ID")}</th>
+                  <th className="px-5 py-3.5">{t("status", "Status")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/60">
-                {invoices.map((inv, idx) => (
-                  <tr key={idx} className="hover:bg-muted/10 transition-colors">
-                    <td className="px-5 py-3.5 text-muted-foreground font-semibold">
-                      {new Date(inv.created_date || inv.created_at).toLocaleDateString()}
-                    </td>
-                    <td className="px-5 py-3.5 font-bold text-foreground">{inv.plan_name}</td>
-                    <td className="px-5 py-3.5 font-extrabold text-foreground">${inv.amount}</td>
-                    <td className="px-5 py-3.5 font-mono text-xs text-muted-foreground/80">{inv.paystack_ref}</td>
-                    <td className="px-5 py-3.5">
-                      <span className="inline-flex py-0.5 px-2.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border border-emerald-100/50 uppercase select-none">
-                        {inv.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
+                {invoices.map((inv, idx) => {
+                  return (
+                    <tr key={idx} className="hover:bg-muted/10 transition-colors">
+                      <td className="px-5 py-3.5 text-muted-foreground font-semibold">
+                        {new Date(inv.created_date || inv.created_at).toLocaleDateString()}
+                      </td>
+                      <td className="px-5 py-3.5 font-bold text-foreground">{inv.plan_name}</td>
+                      <td className="px-5 py-3.5 font-extrabold text-foreground">${inv.amount}</td>
+                      <td className="px-5 py-3.5 font-mono text-xs text-muted-foreground/80">{inv.paystack_ref}</td>
+                      <td className="px-5 py-3.5">
+                        <span className="inline-flex py-0.5 px-2.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border border-emerald-100/50 uppercase select-none">
+                          {inv.status}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -1000,6 +1047,7 @@ function BillingSettings({ company }) {
 // ── Main Page ────────────────────────────────────────────────
 
 export default function Settings() {
+  const { t } = useTranslation();
   const { user, refreshUser } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -1089,8 +1137,11 @@ export default function Settings() {
       case "permissions":  return (
         <div className="bg-card/45 backdrop-blur-md rounded-2xl border border-border/80 p-6 space-y-6 shadow-md">
           <div>
-            <h2 className="text-lg font-bold text-foreground">Staff Access Controls</h2>
-            <p className="text-sm text-muted-foreground mt-0.5">Maintain granular security permissions across internal groups</p>
+            <h2 className="text-lg font-bold text-foreground">{t("staff_access_controls", "Staff Access Controls")}</h2>
+            <p className="text-sm text-muted-foreground mt-0.5">{t(
+              "maintain_granular_security_per",
+              "Maintain granular security permissions across internal groups"
+            )}</p>
           </div>
           <div className="pt-2">
             <StaffPermissionsSettings />

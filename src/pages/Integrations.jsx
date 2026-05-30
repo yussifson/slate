@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
@@ -120,10 +121,11 @@ const INTEGRATION_CATALOG = [
 ];
 
 export default function Integrations() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const companyId = useCompanyId();
   const { toast } = useToast();
-  
+
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
   const [connectedApps, setConnectedApps] = useState({});
@@ -391,30 +393,31 @@ export default function Integrations() {
         />
         <div className="flex items-center gap-3">
           <Badge variant="outline" className="h-8 gap-1.5 bg-emerald-50 text-emerald-700 border-emerald-200">
-            <ShieldCheck className="w-3.5 h-3.5" /> Secure OAuth 2.0
+            <ShieldCheck className="w-3.5 h-3.5" /> {t("secure_oauth_2_0", "Secure OAuth 2.0")}
           </Badge>
           <Button variant="ghost" size="sm" className="h-8 text-slate-500 hover:text-blue-600">
-            <HelpCircle className="w-4 h-4 mr-1.5" /> API Docs
+            <HelpCircle className="w-4 h-4 mr-1.5" /> {t("api_docs", "API Docs")}
           </Button>
         </div>
       </div>
-
       {/* Top Filter Bar */}
       <div className="bg-white dark:bg-slate-900/50 dark:backdrop-blur-xl rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm dark:shadow-lg flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 hide-scrollbar">
-          {categories.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all ${
-                activeCategory === cat 
-                  ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20' 
-                  : 'bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+          {categories.map(cat => {
+            return (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all ${
+                  activeCategory === cat 
+                    ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20' 
+                    : 'bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
+                }`}
+              >
+                {cat}
+              </button>
+            );
+          })}
         </div>
         <div className="relative w-full md:w-80">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -426,7 +429,6 @@ export default function Integrations() {
           />
         </div>
       </div>
-
       {/* Integration Grid */}
       {initialLoading ? (
         <div className="py-24 flex justify-center">
@@ -463,12 +465,12 @@ export default function Integrations() {
                     </div>
                     {isConnected && (
                       <Badge className="bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20 font-extrabold gap-1.5 px-3 py-1.5 rounded-full shadow-sm">
-                        <CheckCircle2 className="w-4 h-4" /> Connected
+                        <CheckCircle2 className="w-4 h-4" /> {t("connected", "Connected")}
                       </Badge>
                     )}
                     {!isConnected && app.popular && (
                       <Badge variant="outline" className="text-xs font-bold text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-500/20 bg-blue-50 dark:bg-blue-500/10 px-3 py-1 rounded-full">
-                        Popular
+                        {t("popular", "Popular")}
                       </Badge>
                     )}
                   </div>
@@ -477,7 +479,6 @@ export default function Integrations() {
                   <p className="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3.5">{app.category}</p>
                   <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{app.description}</p>
                 </div>
-
                 <div className="px-6 py-5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/50 flex items-center justify-between">
                   <a 
                     href={app.learnMore} 
@@ -485,7 +486,7 @@ export default function Integrations() {
                     rel="noopener noreferrer"
                     className="text-sm font-bold text-blue-600 dark:text-blue-500 hover:text-blue-800 dark:hover:text-blue-400 flex items-center gap-1.5 transition-colors"
                   >
-                    Learn more <ExternalLink className="w-3.5 h-3.5" />
+                    {t("learn_more", "Learn more")} <ExternalLink className="w-3.5 h-3.5" />
                   </a>
                   
                   {isConnected ? (
@@ -529,7 +530,7 @@ export default function Integrations() {
                         <Loader2 className="w-4 h-4 animate-spin" />
                       ) : (
                         <>
-                          Connect <Link2 className="w-4 h-4 ml-2 opacity-80" />
+                          {t("connect", "Connect")} <Link2 className="w-4 h-4 ml-2 opacity-80" />
                         </>
                       )}
                     </Button>
@@ -540,14 +541,16 @@ export default function Integrations() {
           })}
         </div>
       )}
-
       {!initialLoading && filteredApps.length === 0 && (
         <div className="py-24 flex flex-col items-center justify-center text-center px-4 bg-white rounded-2xl border border-slate-200 border-dashed">
           <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-5 border border-slate-100">
             <Search className="w-8 h-8 text-slate-400" />
           </div>
-          <h3 className="text-xl font-extrabold text-slate-900 mb-2">No apps found</h3>
-          <p className="text-slate-500 max-w-md leading-relaxed">We couldn't find any integrations matching your search criteria. Try a different term or clear your filters.</p>
+          <h3 className="text-xl font-extrabold text-slate-900 mb-2">{t("no_apps_found", "No apps found")}</h3>
+          <p className="text-slate-500 max-w-md leading-relaxed">{t(
+            "we_couldn_t_find_any_integrati",
+            "We couldn't find any integrations matching your search criteria. Try a different term or clear your filters."
+          )}</p>
         </div>
       )}
     </div>

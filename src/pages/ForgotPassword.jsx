@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { Input } from '@/components/ui/input';
@@ -14,6 +15,7 @@ function Logo({ className }) {
 }
 
 export default function ForgotPassword() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
@@ -49,7 +51,7 @@ export default function ForgotPassword() {
           {/* Logo */}
           <div className="flex flex-col items-center gap-3 text-center">
             <Logo className="w-12 h-12" />
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Reset your password</h1>
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{t("reset_your_password", "Reset your password")}</h1>
             <p className="text-sm text-slate-500 max-w-xs">
               {sent
                 ? 'Check your email for a password reset link.'
@@ -63,11 +65,11 @@ export default function ForgotPassword() {
                 <CheckCircle2 className="w-8 h-8 text-green-500" />
               </div>
               <p className="text-sm text-slate-600 text-center">
-                We sent a reset link to <span className="font-semibold text-slate-900">{email}</span>.
-                <br />Check your inbox (and spam folder).
+                {t("we_sent_a_reset_link_to", "We sent a reset link to")} <span className="font-semibold text-slate-900">{email}</span>.
+                                <br />{t("check_your_inbox_and_spam_fold", "Check your inbox (and spam folder).")}
               </p>
               <a href="/login" className="text-sm font-bold text-blue-600 hover:underline flex items-center gap-1 mt-2">
-                <ArrowLeft className="w-4 h-4" /> Back to login
+                <ArrowLeft className="w-4 h-4" /> {t("back_to_login", "Back to login")}
               </a>
             </div>
           ) : (
@@ -79,7 +81,7 @@ export default function ForgotPassword() {
               )}
               <div>
                 <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">
-                  Email Address
+                  {t("email_address", "Email Address")}
                 </label>
                 <div className="relative">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -104,7 +106,7 @@ export default function ForgotPassword() {
 
               <div className="text-center">
                 <a href="/login" className="text-sm font-bold text-slate-500 hover:text-slate-700 flex items-center justify-center gap-1">
-                  <ArrowLeft className="w-4 h-4" /> Back to login
+                  <ArrowLeft className="w-4 h-4" /> {t("back_to_login", "Back to login")}
                 </a>
               </div>
             </form>

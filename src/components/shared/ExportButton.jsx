@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -5,6 +6,7 @@ import { Download, FileText, FileJson } from "lucide-react";
 import { exportToCSV, exportToJSON } from "@/lib/exportUtils";
 
 export default function ExportButton({ data, filename, label = "Export" }) {
+  const { t } = useTranslation();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -16,11 +18,11 @@ export default function ExportButton({ data, filename, label = "Export" }) {
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => exportToCSV(data, filename)} className="gap-2 cursor-pointer">
           <FileText className="w-4 h-4 text-green-600" />
-          Export as CSV
+          {t("export_as_csv", "Export as CSV")}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => exportToJSON(data, filename)} className="gap-2 cursor-pointer">
           <FileJson className="w-4 h-4 text-blue-600" />
-          Export as JSON
+          {t("export_as_json", "Export as JSON")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

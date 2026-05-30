@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from "react";
 import { Outlet, useNavigate, Link } from "react-router-dom";
 import Sidebar from "./Sidebar";
@@ -11,6 +12,7 @@ import AiAssistant from "@/components/AiAssistant";
 import SpotlightSearch from "./SpotlightSearch";
 
 export default function AppLayout() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { impersonatedCompany, stopImpersonation } = useImpersonation();
   const navigate = useNavigate();
@@ -135,8 +137,11 @@ export default function AppLayout() {
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
               </span>
               <WifiOff className="w-4 h-4 shrink-0" />
-              <span className="font-semibold uppercase tracking-wider text-[11px]">Offline Mode Active</span>
-              <span className="hidden md:inline font-medium text-red-100">· You are currently disconnected. Changes will sync automatically when you reconnect.</span>
+              <span className="font-semibold uppercase tracking-wider text-[11px]">{t("offline_mode_active", "Offline Mode Active")}</span>
+              <span className="hidden md:inline font-medium text-red-100">{t(
+                "you_are_currently_disconnected",
+                "· You are currently disconnected. Changes will sync automatically when you reconnect."
+              )}</span>
             </div>
             <button 
               onClick={() => setHideOfflineBanner(true)}
@@ -153,8 +158,8 @@ export default function AppLayout() {
           <div className="bg-gradient-to-r from-amber-500 to-orange-600 text-white px-4 py-2 flex items-center justify-between gap-3 text-xs md:text-sm shrink-0 shadow-sm font-sans">
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4 shrink-0 animate-pulse" />
-              <span className="font-semibold">Free Trial Active:</span>
-              <span>You have <strong className="font-extrabold">{trialDaysLeft} days</strong> remaining on your LexAfrica trial.</span>
+              <span className="font-semibold">{t("free_trial_active", "Free Trial Active:")}</span>
+              <span>{t("you_have", "You have")} <strong className="font-extrabold">{trialDaysLeft} {t("days", "days")}</strong> {t("remaining_on_your_lexafrica_tr", "remaining on your LexAfrica trial.")}</span>
             </div>
             <div className="flex items-center gap-3">
               <Link to="/settings">
@@ -162,7 +167,7 @@ export default function AppLayout() {
                   size="sm"
                   className="h-7 bg-white hover:bg-slate-50 text-orange-700 hover:text-orange-850 font-bold text-[11px] gap-1 shrink-0 rounded-lg shadow-sm"
                 >
-                  <CreditCard className="w-3.5 h-3.5" /> Upgrade Plan
+                  <CreditCard className="w-3.5 h-3.5" /> {t("upgrade_plan", "Upgrade Plan")}
                 </Button>
               </Link>
               <button 
@@ -179,7 +184,7 @@ export default function AppLayout() {
           <div className="bg-amber-500 text-white px-4 py-2 flex items-center justify-between gap-3 text-sm shrink-0">
             <div className="flex items-center gap-2">
               <Building2 className="w-4 h-4 shrink-0" />
-              <span className="font-semibold">Managing as:</span>
+              <span className="font-semibold">{t("managing_as", "Managing as:")}</span>
               <span>{impersonatedCompany.name}</span>
               <span className="text-amber-100">· {impersonatedCompany.country} · {impersonatedCompany.subscription_plan}</span>
             </div>
@@ -189,7 +194,7 @@ export default function AppLayout() {
               className="h-7 text-white hover:bg-amber-600 hover:text-white gap-1.5 shrink-0"
               onClick={handleStopImpersonation}
             >
-              <X className="w-3.5 h-3.5" /> Exit Firm View
+              <X className="w-3.5 h-3.5" /> {t("exit_firm_view", "Exit Firm View")}
             </Button>
           </div>
         )}
