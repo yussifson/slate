@@ -46,7 +46,7 @@ export const useMeeting = () => {
     } catch (error) {
       console.error("Meeting Error:", error);
       toast.error(`Meeting Generation Failed: ${error.message}`);
-      throw error;
+      return { error: error.message };
     } finally {
       setIsGenerating(false);
     }
