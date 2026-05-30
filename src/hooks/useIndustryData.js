@@ -48,13 +48,23 @@ const syncIdrOutbox = async () => {
   for (const item of outbox) {
     try {
       if (item.op === 'upsert') {
-        await supabase.from('industry_records').upsert(item.record);
+        // Try to check if it exists first, or just use upsert but properly check for error
+        const { error } = await supabase.from('industry_records').upsert(item.record);
+        if (error) {
+          console.error(`[IDR Offline Sync] Upsert failed for ${item.record.id}:`, error.message);
+          throw error;
+        }
       } else if (item.op === 'delete') {
-        await supabase.from('industry_records').delete().eq('id', item.id).eq('company_id', item.companyId);
+        const { error } = await supabase.from('industry_records').delete().eq('id', item.id).eq('company_id', item.companyId);
+        if (error) {
+          console.error(`[IDR Offline Sync] Delete failed for ${item.id}:`, error.message);
+          throw error;
+        }
       }
       console.log(`[IDR Offline Sync] Synced ${item.op} for ${item.record?.record_type || item.id}`);
     } catch (err) {
       console.error(`[IDR Offline Sync] Failed, re-queuing.`, err);
+      // Keep it in the outbox if it's a network error or RLS error so we don't lose data
       remaining.push(item);
     }
   }
@@ -89,7 +99,23 @@ export function useIndustryRecords(recordType) {
       if (!companyId || !industry || !recordType) return [];
 
       if (!navigator.onLine) {
-        return await getIdrCache(cacheKey);
+        const cached = await getIdrCache(cacheKey);
+        
+        // Ensure pending outbox items are merged into the offline cache
+        const outbox = await getIdrOutbox();
+        const pendingUpserts = outbox.filter(item => item.op === 'upsert' && item.record.record_type === recordType && item.record.company_id === companyId).map(i => i.record);
+        const pendingDeletes = outbox.filter(item => item.op === 'delete' && item.companyId === companyId).map(i => i.id);
+        
+        let mergedData = [...cached];
+        mergedData = mergedData.filter(d => !pendingDeletes.includes(d.id));
+        
+        for (const upsert of pendingUpserts) {
+          const idx = mergedData.findIndex(d => d.id === upsert.id);
+          if (idx >= 0) mergedData[idx] = upsert;
+          else mergedData.push(upsert);
+        }
+        
+        return mergedData;
       }
 
       try {
@@ -127,7 +153,22 @@ export function useIndustryRecords(recordType) {
         // Network error or timeout — fall back to local cache silently
         console.warn(`[Offline Mode] useIndustryRecords(${recordType}) failed, using cache.`, err.message);
         const cached = await getIdrCache(cacheKey);
-        return cached;
+        
+        // Ensure pending outbox items are merged into the offline cache as well!
+        const outbox = await getIdrOutbox();
+        const pendingUpserts = outbox.filter(item => item.op === 'upsert' && item.record.record_type === recordType && item.record.company_id === companyId).map(i => i.record);
+        const pendingDeletes = outbox.filter(item => item.op === 'delete' && item.companyId === companyId).map(i => i.id);
+        
+        let mergedData = [...cached];
+        mergedData = mergedData.filter(d => !pendingDeletes.includes(d.id));
+        
+        for (const upsert of pendingUpserts) {
+          const idx = mergedData.findIndex(d => d.id === upsert.id);
+          if (idx >= 0) mergedData[idx] = upsert;
+          else mergedData.push(upsert);
+        }
+        
+        return mergedData;
       }
     },
     enabled: !!companyId && !!industry && !!recordType,
