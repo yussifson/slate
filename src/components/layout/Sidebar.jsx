@@ -155,7 +155,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
       {/* Mobile toggle */}
       <button
         onClick={() => setMobileOpen(true)}
-        className="lg:hidden fixed top-3 left-4 z-50 p-2.5 rounded-xl bg-sidebar border border-sidebar-border shadow-sm text-foreground/80 hover:text-foreground hover:bg-sidebar-accent hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
+        className="lg:hidden fixed top-3 start-4 z-50 p-2.5 rounded-xl bg-sidebar border border-sidebar-border shadow-sm text-foreground/80 hover:text-foreground hover:bg-sidebar-accent hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
       >
         <PanelLeft className="w-5 h-5" />
       </button>
@@ -164,10 +164,10 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
       {mobileOpen && (
         <div className="lg:hidden fixed inset-0 z-50 flex">
           <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
-          <div className="relative w-72 flex flex-col shadow-2xl h-full bg-sidebar transition-transform animate-in slide-in-from-left-4">
+          <div className="relative w-72 flex flex-col shadow-2xl h-full bg-sidebar transition-transform animate-in ltr:slide-in-from-left-4 rtl:slide-in-from-right-4">
             <button 
               onClick={() => setMobileOpen(false)} 
-              className="absolute top-4 -right-16 w-12 h-12 rounded-full bg-white shadow-xl flex items-center justify-center text-slate-600 hover:text-slate-900 hover:scale-105 transition-all z-10"
+              className="absolute top-4 -end-16 w-12 h-12 rounded-full bg-white shadow-xl flex items-center justify-center text-slate-600 hover:text-slate-900 hover:scale-105 transition-all z-10"
             >
               <X className="w-6 h-6" />
             </button>
@@ -178,7 +178,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
 
       {/* Desktop sidebar */}
       <aside className={cn(
-        "hidden lg:flex flex-col h-screen sticky top-0 border-r-[3px] border-r-blue-500 shadow-sm transition-all duration-300 relative z-40",
+        "hidden lg:flex flex-col h-screen sticky top-0 border-e-[3px] border-e-blue-500 shadow-sm transition-all duration-300 relative z-40",
         isCollapsed ? "w-[80px] min-w-[80px] max-w-[80px]" : "w-[256px] min-w-[256px] max-w-[256px]"
       )}>
         {renderNavContent(isCollapsed)}

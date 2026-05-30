@@ -31,8 +31,18 @@ const LANGUAGES = {
   en: { name: "English", flag: "🇬🇧" },
   es: { name: "Español", flag: "🇪🇸" },
   fr: { name: "Français", flag: "🇫🇷" },
+  de: { name: "Deutsch", flag: "🇩🇪" },
+  it: { name: "Italiano", flag: "🇮🇹" },
+  pt: { name: "Português", flag: "🇵🇹" },
+  nl: { name: "Nederlands", flag: "🇳🇱" },
+  ru: { name: "Русский", flag: "🇷🇺" },
+  zh: { name: "中文", flag: "🇨🇳" },
+  ja: { name: "日本語", flag: "🇯🇵" },
+  ko: { name: "한국어", flag: "🇰🇷" },
   ar: { name: "العربية", flag: "🇸🇦" },
   he: { name: "עברית", flag: "🇮🇱" },
+  hi: { name: "हिन्दी", flag: "🇮🇳" },
+  tr: { name: "Türkçe", flag: "🇹🇷" },
 };
 
 export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOpen, toggleAI }) {
