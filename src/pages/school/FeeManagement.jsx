@@ -15,7 +15,6 @@ import { useCompanyId } from "@/hooks/useCompanyId";
 export default function FeeManagement() {
   const { t } = useTranslation();
   const companyId = useCompanyId();
-  const { processPayment } = usePayment();
   const { processPayment, isProcessing } = usePayment();
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('student');
   const mutateRecord = useMutateIndustryRecord();

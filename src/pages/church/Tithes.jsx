@@ -16,7 +16,6 @@ import { CreditCard } from "lucide-react";
 export default function Tithes() {
   const { t } = useTranslation();
   const companyId = useCompanyId();
-  const { processPayment } = usePayment();
   const { processPayment, isProcessing } = usePayment();
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('tithe');
   const mutateRecord = useMutateIndustryRecord();
