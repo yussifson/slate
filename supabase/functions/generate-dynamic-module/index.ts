@@ -54,32 +54,71 @@ Intents:
 Return ONLY one word: build, build_system, edit, populate_data, or chat`
 
 async function callCloudflareAI(messages: any[], maxTokens = 2048) {
-  const cloudflareToken = Deno.env.get('CLOUDFLARE_API_TOKEN')
-  const accountId = Deno.env.get('CLOUDFLARE_ACCOUNT_ID')
+  // Try up to 5 different accounts for failover
+  const accounts = [];
+  
+  // Try the default un-numbered keys first
+  const defaultToken = Deno.env.get('CLOUDFLARE_API_TOKEN');
+  const defaultAccountId = Deno.env.get('CLOUDFLARE_ACCOUNT_ID');
+  if (defaultToken && defaultAccountId) {
+    accounts.push({ token: defaultToken, accountId: defaultAccountId });
+  }
 
-  if (!cloudflareToken || !accountId) {
+  // Look for numbered keys (e.g. CLOUDFLARE_API_TOKEN_2)
+  for (let i = 2; i <= 5; i++) {
+    const token = Deno.env.get(`CLOUDFLARE_API_TOKEN_${i}`);
+    const accountId = Deno.env.get(`CLOUDFLARE_ACCOUNT_ID_${i}`);
+    if (token && accountId) {
+      accounts.push({ token, accountId });
+    }
+  }
+
+  if (accounts.length === 0) {
     throw new Error('Cloudflare AI credentials not configured in Supabase secrets.')
   }
 
-  const cfResponse = await fetch(
-    `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/@cf/meta/llama-3.1-8b-instruct`,
-    {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${cloudflareToken}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ messages, max_tokens: maxTokens }),
-    }
-  )
+  let lastError = null;
 
-  if (!cfResponse.ok) {
-    const errText = await cfResponse.text()
-    throw new Error(`Cloudflare AI Error (${cfResponse.status}): ${errText}`)
+  for (const acc of accounts) {
+    try {
+      const cfResponse = await fetch(
+        `https://api.cloudflare.com/client/v4/accounts/${acc.accountId}/ai/run/@cf/meta/llama-3.1-8b-instruct`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${acc.token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ messages, max_tokens: maxTokens }),
+        }
+      )
+
+      if (!cfResponse.ok) {
+        const errText = await cfResponse.text()
+        const isRateLimit = cfResponse.status === 429 || errText.includes('10,000 neurons');
+        
+        if (isRateLimit) {
+          lastError = new Error(`Cloudflare AI Error (${cfResponse.status}): ${errText}`);
+          console.warn(`Account ${acc.accountId} hit limit. Failing over to next account...`);
+          continue; // Try next account
+        } else {
+          // If it's a different error (e.g. 400 Bad Request), throw immediately
+          throw new Error(`Cloudflare AI Error (${cfResponse.status}): ${errText}`);
+        }
+      }
+
+      const result = await cfResponse.json()
+      return result?.result?.response ?? ''
+      
+    } catch (err) {
+      lastError = err;
+      // If it's a network error, we can also fail over
+      console.warn(`Network/Fetch error for account ${acc.accountId}:`, err);
+    }
   }
 
-  const result = await cfResponse.json()
-  return result?.result?.response ?? ''
+  // If we get here, all accounts failed
+  throw lastError || new Error("All Cloudflare AI accounts have reached their rate limits or failed.");
 }
 
 function extractJson(text: string) {
