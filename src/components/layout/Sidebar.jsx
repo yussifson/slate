@@ -54,7 +54,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
           .from('module_definitions')
           .select('id, name, icon')
           .eq('is_active', 'true')
-          .eq('company_id', user?.company_id || '');
+          .or(`company_id.eq.${user?.company_id || ''},shared_with.ilike.%${user?.company_id || ''}%`);
         setDynamicModules(data || []);
       } catch (err) {
         console.error("Failed to load dynamic nav", err);
@@ -105,9 +105,10 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
 
   const baseNav = user?.role === "client" ? clientNav : filteredCompanyNav;
   const appBuilderItem = { label: "Module Builder", icon: "Blocks", path: "/modules/create" };
+  const marketplaceItem = { label: "Marketplace", icon: "ShoppingCart", path: "/marketplace" };
   let navItems = isAdmin
-    ? [...baseNav, ...dynamicNavItems, appBuilderItem, { label: "Firm Setup", icon: "Settings", path: "/firm-setup" }]
-    : [...baseNav, ...dynamicNavItems];
+    ? [...baseNav, ...dynamicNavItems, appBuilderItem, marketplaceItem, { label: "Firm Setup", icon: "Settings", path: "/firm-setup" }]
+    : [...baseNav, ...dynamicNavItems, marketplaceItem];
     
   if (user?.role === "super_admin") {
     navItems = [...navItems, { label: "Super Admin Portal", icon: "Shield", path: "/system-admin" }];

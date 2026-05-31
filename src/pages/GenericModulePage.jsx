@@ -20,6 +20,10 @@ export default function GenericModulePage({ title: propTitle, description: propD
   const [records, setRecords] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [visibility, setVisibility] = useState('private');
+  const [sharedWith, setSharedWith] = useState('');
+  const [isSavingSettings, setIsSavingSettings] = useState(false);
 
   const fetchDynamicData = async () => {
     try {
@@ -32,8 +36,8 @@ export default function GenericModulePage({ title: propTitle, description: propD
       const { data: allModules } = await supabase
         .from('module_definitions')
         .select('*')
-        .eq('company_id', companyId)
-        .eq('is_active', 'true');
+        .eq('is_active', 'true')
+        .or(`company_id.eq.${companyId},shared_with.ilike.%${companyId}%`);
 
       const matched = (allModules || []).find(
         m => m.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') === slug
@@ -43,6 +47,8 @@ export default function GenericModulePage({ title: propTitle, description: propD
       if (!mod) return;
 
       setModuleDef(mod);
+      setVisibility(mod.visibility || 'private');
+      setSharedWith(mod.shared_with || '');
 
       const { data: fields } = await supabase
         .from('field_definitions')
@@ -76,6 +82,27 @@ export default function GenericModulePage({ title: propTitle, description: propD
     fetchDynamicData(); // Refresh records
   };
 
+  const handleSaveSettings = async () => {
+    setIsSavingSettings(true);
+    try {
+      const { error } = await supabase
+        .from('module_definitions')
+        .update({ visibility, shared_with: sharedWith })
+        .eq('id', moduleDef.id);
+        
+      if (error) throw error;
+      
+      toast({ title: "Settings Saved", description: "Module visibility updated." });
+      setIsSettingsOpen(false);
+      fetchDynamicData();
+    } catch (err) {
+      console.error(err);
+      toast({ title: "Error", description: "Failed to save settings.", variant: "destructive" });
+    } finally {
+      setIsSavingSettings(false);
+    }
+  };
+
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
       <PageHeader
@@ -83,6 +110,9 @@ export default function GenericModulePage({ title: propTitle, description: propD
         subtitle={description}
         actions={
           <div className="flex gap-2">
+            <Button onClick={() => setIsSettingsOpen(true)} variant="outline" size="sm" className="gap-1.5 shadow-sm">
+              <ShieldCheck className="w-4 h-4" /> Share
+            </Button>
             <Button onClick={() => setIsAddModalOpen(true)} size="sm" className="gap-1.5 shadow-sm bg-blue-600 hover:bg-blue-700 text-white">
               <Plus className="w-4 h-4" /> Add Record
             </Button>
@@ -161,6 +191,56 @@ export default function GenericModulePage({ title: propTitle, description: propD
                 onCancel={() => setIsAddModalOpen(false)}
               />
             )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
+        <DialogContent className="sm:max-w-[450px]">
+          <DialogHeader>
+            <DialogTitle>Module Sharing Settings</DialogTitle>
+            <DialogDescription>Control who has access to this module.</DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 mt-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Visibility</label>
+              <select 
+                value={visibility} 
+                onChange={e => setVisibility(e.target.value)}
+                className="w-full border rounded-md px-3 py-2 text-sm"
+              >
+                <option value="private">Private (Only my workspace)</option>
+                <option value="shared">Shared (Specific workspaces)</option>
+                <option value="public">Public (Marketplace Template)</option>
+              </select>
+              <p className="text-xs text-slate-500 mt-1">
+                {visibility === 'public' && "This module's configuration will be available in the public Marketplace for anyone to install."}
+                {visibility === 'private' && "Only users in your firm can access this module."}
+                {visibility === 'shared' && "Users from the specified workspaces can access this module."}
+              </p>
+            </div>
+
+            {visibility === 'shared' && (
+              <div className="animate-in fade-in zoom-in-95 duration-200">
+                <label className="block text-sm font-medium mb-1">Shared Workspace IDs</label>
+                <input 
+                  type="text" 
+                  value={sharedWith}
+                  onChange={e => setSharedWith(e.target.value)}
+                  placeholder="Comma-separated workspace IDs"
+                  className="w-full border rounded-md px-3 py-2 text-sm"
+                />
+                <p className="text-xs text-slate-500 mt-1">Enter the Company ID of the workspace you want to share with.</p>
+              </div>
+            )}
+
+            <div className="pt-4 flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setIsSettingsOpen(false)}>Cancel</Button>
+              <Button onClick={handleSaveSettings} disabled={isSavingSettings} className="bg-blue-600 hover:bg-blue-700 text-white">
+                {isSavingSettings ? "Saving..." : "Save Settings"}
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>

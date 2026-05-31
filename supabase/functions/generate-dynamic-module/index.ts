@@ -75,8 +75,15 @@ serve(async (req) => {
     const result = await cfResponse.json()
     const resultText = result.result?.response || '{}'
     
-    // Clean potential markdown blocks
-    const cleanText = resultText.replace(/```json/g, '').replace(/```/g, '').trim()
+    // Extract JSON block using regex to ignore conversational text
+    const jsonMatch = resultText.match(/\{[\s\S]*\}/);
+    let cleanText = '{}';
+    if (jsonMatch) {
+      cleanText = jsonMatch[0];
+    } else {
+      // Fallback if match fails
+      cleanText = resultText.replace(/```json/g, '').replace(/```/g, '').trim();
+    }
     const generatedModule = JSON.parse(cleanText)
 
     return new Response(JSON.stringify({ success: true, schema: generatedModule }), {
