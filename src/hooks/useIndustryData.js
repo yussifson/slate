@@ -189,14 +189,15 @@ export function useMutateIndustryRecord() {
 
   return useMutation({
     mutationFn: async ({ id, recordType, payload, status, searchText }) => {
-      if (!companyId || !industry || !recordType) {
+      if (!companyId || !recordType) {
         throw new Error("Missing context to save record.");
       }
+      const resolvedIndustry = industry || 'core';
 
       const record = {
         id: id || crypto.randomUUID(),
         company_id: companyId,
-        industry: industry || 'core',
+        industry: resolvedIndustry,
         record_type: recordType,
         data: payload,
         status: status || null,
