@@ -48,9 +48,10 @@ Intents:
 - "build" = user wants to create a new module (mentions: create, build, design, make, generate, set up a module/system/tracker/manager)
 - "build_system" = user wants to create a COMPLEX SYSTEM with MULTIPLE modules (mentions: complete system, operating system, management system, or describes multiple departments/entities/workflows)
 - "edit" = user wants to modify an existing module (mentions: edit, change, modify, update, add field, remove field, rename, adjust)
+- "populate_data" = user wants to add/insert data records into an existing module using natural language (mentions: add patient, insert these records, populate data, log this, record this data)
 - "chat" = user is asking a question, having a conversation, or anything else that doesn't involve creating/editing modules
 
-Return ONLY one word: build, build_system, edit, or chat`
+Return ONLY one word: build, build_system, edit, populate_data, or chat`
 
 async function callCloudflareAI(messages: any[], maxTokens = 2048) {
   const cloudflareToken = Deno.env.get('CLOUDFLARE_API_TOKEN')
@@ -169,7 +170,7 @@ serve(async (req) => {
       ], 16)
       
       const intent = raw.trim().toLowerCase().replace(/[^a-z_]/g, '')
-      const validIntents = ['build', 'build_system', 'edit', 'chat']
+      const validIntents = ['build', 'build_system', 'edit', 'populate_data', 'chat']
       const detectedIntent = validIntents.includes(intent) ? intent : 'chat'
 
       return new Response(JSON.stringify({ success: true, intent: detectedIntent }), {
@@ -261,6 +262,34 @@ Return ONLY the updated JSON schema, no explanations.`
       })
     }
 
+    // ─── MODE: populate_data ───
+    if (mode === 'populate_data') {
+      if (!currentSchema) throw new Error('currentSchema is required for populate_data mode')
+
+      const populatePrompt = `You are a data entry assistant. Given the following module schema, extract the user's natural language data and return ONLY a valid JSON object representing a new record.
+Here is the current schema:
+${JSON.stringify(currentSchema, null, 2)}
+
+Match the extracted data to the exact "snake_case_field_name"s in the schema. For fields you cannot find in the user's prompt, omit them or provide null if they are not required.
+DO NOT use markdown formatting. Return ONLY the raw JSON object.
+Example: {"first_name": "John", "age": 30, "status": "active"}`;
+
+      const raw = await callCloudflareAI([
+        { role: 'system', content: populatePrompt },
+        { role: 'user', content: prompt }
+      ], 2048)
+
+      const recordData = extractJson(raw)
+      if (!recordData) {
+        throw new Error('Could not parse data record from AI response')
+      }
+
+      return new Response(JSON.stringify({ success: true, recordData }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200,
+      })
+    }
+
     // ─── MODE: chat (conversational, no schema) ───
     if (mode === 'chat') {
       const chatSystemPrompt = `You are OrbitBolt — an AI module architect assistant in Optalflow. You are having a conversation with the user about module design, business processes, or data architecture. Answer their questions helpfully. Do NOT generate JSON schemas unless explicitly asked. Be concise, friendly, and professional.`
@@ -327,7 +356,7 @@ Return ONLY the updated JSON schema, no explanations.`
     console.error('generate-dynamic-module error:', error.message)
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 400,
+      status: 200, // Returning 200 so supabase-js correctly returns response.data
     })
   }
 })

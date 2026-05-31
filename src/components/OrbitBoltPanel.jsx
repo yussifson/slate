@@ -12,12 +12,13 @@ import { useCompanyId } from '@/hooks/useCompanyId';
 
 // ─── Intent keywords for client-side pre-classification ───
 const BUILD_KEYWORDS = ['create', 'build', 'design', 'make', 'generate', 'set up', 'setup', 'develop'];
-const EDIT_KEYWORDS = ['edit', 'change', 'modify', 'update', 'add field', 'remove field', 'rename', 'adjust', 'fix'];
+const EDIT_KEYWORDS = ['edit', 'change', 'modify', 'update', 'add field', 'remove field', 'rename', 'adjust', 'fix', 'switch', 'convert', 'transform'];
 const SYSTEM_KEYWORDS = ['complete system', 'operating system', 'management system', 'full system', 'entire system', 'all modules', 'comprehensive', 'enterprise system', 'business system', 'operational system'];
+const POPULATE_KEYWORDS = ['add this', 'insert this', 'populate', 'log this', 'record this', 'enter this data', 'add patient', 'add record', 'add entry', 'fill in', 'upload data', 'save this data'];
 
-function detectIntentLocal(text) {
+function detectIntentLocal(text, hasCurrentSchema = false) {
   const lower = text.toLowerCase();
-  // Check for system-level builds first (most specific)
+  const hasPopulateKeyword = POPULATE_KEYWORDS.some(k => lower.includes(k));
   const hasSystemKeyword = SYSTEM_KEYWORDS.some(k => lower.includes(k));
   const hasBuildKeyword = BUILD_KEYWORDS.some(k => lower.includes(k));
   const hasEditKeyword = EDIT_KEYWORDS.some(k => lower.includes(k));
@@ -26,6 +27,13 @@ function detectIntentLocal(text) {
   const entityPatterns = /\b(patients?|doctors?|nurses?|appointments?|billing|inventory|staff|employees?|departments?|modules?|projects?|donors?|volunteers?|beneficiar|grants?|prescriptions?|pharmacy|laboratory|rooms?|wards?|claims?|invoices?)\b/gi;
   const entityCount = (lower.match(entityPatterns) || []).length;
   
+  // If we're in context of an existing module, bias toward edit/populate
+  if (hasCurrentSchema) {
+    if (hasPopulateKeyword) return 'populate_data';
+    if (!hasBuildKeyword) return 'edit'; // default to edit when schema exists
+  }
+  
+  if (hasPopulateKeyword) return 'populate_data';
   if ((hasSystemKeyword || entityCount >= 5) && hasBuildKeyword) return 'build_system';
   if (hasEditKeyword && !hasBuildKeyword) return 'edit';
   if (hasBuildKeyword) return 'build';
@@ -68,8 +76,9 @@ export default function OrbitBoltPanel({ isOpen, onClose, onApplySchema, current
   // System build state
   const [systemPlan, setSystemPlan] = useState(null);
   const [generatedModules, setGeneratedModules] = useState([]);
-  const [buildProgress, setBuildProgress] = useState({ current: 0, total: 0, status: 'idle' });
+  const [buildProgress, setBuildProgress] = useState({ current: 0, total: 0, status: 'idle', label: '' });
   const [isSavingSystem, setIsSavingSystem] = useState(false);
+  const [saveProgress, setSaveProgress] = useState({ current: 0, total: 0, active: false });
   
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
@@ -102,7 +111,7 @@ export default function OrbitBoltPanel({ isOpen, onClose, onApplySchema, current
 
     try {
       // Step 1: Detect intent (client-side fast classification)
-      const intent = currentSchema ? 'edit' : detectIntentLocal(text);
+      const intent = detectIntentLocal(text, !!currentSchema);
 
       if (intent === 'chat') {
         // ─── CHAT MODE ───
@@ -122,6 +131,68 @@ export default function OrbitBoltPanel({ isOpen, onClose, onApplySchema, current
           content: data.message || "I'm here to help! Could you rephrase your question?"
         }]);
 
+      } else if (intent === 'populate_data') {
+        // ─── POPULATE DATA MODE ───
+        const schemaForPopulate = currentSchema || lastSchema;
+        if (!schemaForPopulate) {
+          setMessages(prev => [...prev, {
+            role: 'assistant',
+            content: "I don't have an active module to add data to. Please navigate to a module first, then open OrbitBolt and share the data you'd like to add."
+          }]);
+          setIsLoading(false);
+          return;
+        }
+
+        setMessages(prev => [...prev, {
+          role: 'assistant',
+          content: `📥 **Extracting data...** I'm mapping your input to the **${schemaForPopulate.module?.name || 'module'}** fields.`
+        }]);
+
+        const data = await callEdgeFunction({
+          prompt: text,
+          mode: 'populate_data',
+          currentSchema: schemaForPopulate,
+          company_id: user?.company_id,
+        });
+
+        if (data.recordData) {
+          // Insert the record into dynamic_records
+          const moduleId = currentSchema?.module?.id || schemaForPopulate?.module?.id;
+          if (moduleId) {
+            const { error: insertError } = await supabase.from('dynamic_records').insert({
+              id: crypto.randomUUID(),
+              module_id: moduleId,
+              company_id: user?.company_id,
+              data: data.recordData,
+              created_at: new Date().toISOString()
+            });
+            if (insertError) throw new Error(`Failed to save record: ${insertError.message}`);
+          }
+
+          const fieldSummary = Object.entries(data.recordData)
+            .filter(([, v]) => v !== null && v !== undefined)
+            .map(([k, v]) => `• **${k.replace(/_/g,' ')}**: ${v}`)
+            .join('\n');
+
+          setMessages(prev => {
+            const updated = [...prev];
+            updated[updated.length - 1] = {
+              role: 'assistant',
+              content: `✅ **Record Added Successfully!**\n\n${fieldSummary}\n\nThe record has been saved to your module. Refresh the page to see it.`
+            };
+            return updated;
+          });
+        } else {
+          setMessages(prev => {
+            const updated = [...prev];
+            updated[updated.length - 1] = {
+              role: 'assistant',
+              content: data.message || "I couldn't extract the data. Please try providing the information in a clearer format."
+            };
+            return updated;
+          });
+        }
+
       } else if (intent === 'edit') {
         // ─── EDIT MODE (smart, non-destructive) ───
         const schemaToEdit = currentSchema || lastSchema;
@@ -136,7 +207,7 @@ export default function OrbitBoltPanel({ isOpen, onClose, onApplySchema, current
 
         setMessages(prev => [...prev, {
           role: 'assistant',
-          content: "🔧 Editing your module... I'll only change what you asked for and keep everything else intact."
+          content: `🔧 **Editing ${schemaToEdit.module?.name || 'your module'}...** I'll only change what you asked for and keep everything else intact.`
         }]);
 
         const data = await callEdgeFunction({
@@ -312,12 +383,16 @@ export default function OrbitBoltPanel({ isOpen, onClose, onApplySchema, current
     if (!modules || modules.length === 0 || !companyId) return;
     
     setIsSavingSystem(true);
+    setSaveProgress({ current: 0, total: modules.length, active: true });
     let saved = 0;
 
     try {
-      for (const schema of modules) {
+      for (let idx = 0; idx < modules.length; idx++) {
+        const schema = modules[idx];
+        setSaveProgress({ current: idx + 1, total: modules.length, active: true });
+        setBuildProgress({ current: idx + 1, total: modules.length, status: 'saving', label: schema.module?.name || '' });
+
         const moduleId = crypto.randomUUID();
-        const slug = schema.module.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
         // Check if module with same name already exists
         const { data: existing } = await supabase
@@ -328,8 +403,7 @@ export default function OrbitBoltPanel({ isOpen, onClose, onApplySchema, current
           .eq('is_active', 'true');
 
         if (existing && existing.length > 0) {
-          // Skip duplicate
-          continue;
+          continue; // Skip duplicate
         }
 
         // Insert module definition
@@ -358,7 +432,7 @@ export default function OrbitBoltPanel({ isOpen, onClose, onApplySchema, current
         // Insert field definitions
         const validFields = (schema.fields || []).filter(f => f.name);
         if (validFields.length > 0) {
-          const fieldsToInsert = validFields.map((f, idx) => ({
+          const fieldsToInsert = validFields.map((f, i) => ({
             id: crypto.randomUUID(),
             company_id: companyId,
             module_id: moduleId,
@@ -366,16 +440,16 @@ export default function OrbitBoltPanel({ isOpen, onClose, onApplySchema, current
             field_type: f.field_type || 'text',
             is_required: !!f.is_required,
             options: Array.isArray(f.options) ? f.options : [],
-            order_index: idx,
+            order_index: i,
             created_at: new Date().toISOString()
           }));
-
           await supabase.from('field_definitions').insert(fieldsToInsert);
         }
 
         saved++;
       }
 
+      setBuildProgress({ current: modules.length, total: modules.length, status: 'complete', label: '' });
       toast.success(`🎉 ${saved} modules saved to your workspace!`);
       
       setMessages(prev => [...prev, {
@@ -385,7 +459,10 @@ export default function OrbitBoltPanel({ isOpen, onClose, onApplySchema, current
 
       setSystemPlan(null);
       setGeneratedModules([]);
-      setBuildProgress({ current: 0, total: 0, status: 'idle' });
+      setTimeout(() => {
+        setBuildProgress({ current: 0, total: 0, status: 'idle', label: '' });
+        setSaveProgress({ current: 0, total: 0, active: false });
+      }, 2500);
 
     } catch (err) {
       toast.error(`Error saving modules: ${err.message}`);
@@ -524,22 +601,43 @@ export default function OrbitBoltPanel({ isOpen, onClose, onApplySchema, current
           </div>
         </div>
 
-        {/* Build Progress Bar */}
+        {/* Build / Save Progress Bar */}
         {buildProgress.status !== 'idle' && (
-          <div className="px-3 py-2 border-b border-border bg-blue-50/60 dark:bg-blue-950/10 shrink-0">
+          <div className={`px-3 py-2 border-b border-border shrink-0 ${
+            buildProgress.status === 'saving' || buildProgress.status === 'complete'
+              ? 'bg-emerald-50/60 dark:bg-emerald-950/10'
+              : 'bg-blue-50/60 dark:bg-blue-950/10'
+          }`}>
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[10px] font-bold text-blue-700 dark:text-blue-400 uppercase tracking-wider">
-                {buildProgress.status === 'planning' ? '📋 Planning...' : 
-                 buildProgress.status === 'building' ? `⚡ Building module ${buildProgress.current}/${buildProgress.total}` :
-                 '✅ Build Complete'}
+              <span className={`text-[10px] font-bold uppercase tracking-wider ${
+                buildProgress.status === 'saving' || buildProgress.status === 'complete'
+                  ? 'text-emerald-700 dark:text-emerald-400'
+                  : 'text-blue-700 dark:text-blue-400'
+              }`}>
+                {buildProgress.status === 'planning' && '📋 Planning system...'}
+                {buildProgress.status === 'building' && `⚡ Building module ${buildProgress.current}/${buildProgress.total}${buildProgress.label ? `: ${buildProgress.label}` : ''}`}
+                {buildProgress.status === 'saving' && `💾 Saving module ${buildProgress.current}/${buildProgress.total}${buildProgress.label ? `: ${buildProgress.label}` : ''}`}
+                {buildProgress.status === 'complete' && `✅ All ${buildProgress.total} modules installed!`}
               </span>
-              <span className="text-[10px] text-blue-600 font-mono">
+              <span className={`text-[10px] font-mono ${
+                buildProgress.status === 'saving' || buildProgress.status === 'complete'
+                  ? 'text-emerald-600'
+                  : 'text-blue-600'
+              }`}>
                 {Math.round((buildProgress.current / Math.max(buildProgress.total, 1)) * 100)}%
               </span>
             </div>
-            <div className="w-full h-1.5 bg-blue-100 dark:bg-blue-900/40 rounded-full overflow-hidden">
+            <div className={`w-full h-1.5 rounded-full overflow-hidden ${
+              buildProgress.status === 'saving' || buildProgress.status === 'complete'
+                ? 'bg-emerald-100 dark:bg-emerald-900/40'
+                : 'bg-blue-100 dark:bg-blue-900/40'
+            }`}>
               <div 
-                className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full transition-all duration-500 ease-out"
+                className={`h-full rounded-full transition-all duration-500 ease-out ${
+                  buildProgress.status === 'saving' || buildProgress.status === 'complete'
+                    ? 'bg-gradient-to-r from-emerald-500 to-teal-500'
+                    : 'bg-gradient-to-r from-blue-500 to-indigo-500'
+                }`}
                 style={{ width: `${(buildProgress.current / Math.max(buildProgress.total, 1)) * 100}%` }}
               />
             </div>

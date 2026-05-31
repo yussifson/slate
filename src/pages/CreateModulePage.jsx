@@ -11,8 +11,22 @@ import { Blocks, Sparkles, Plus, Trash2, Play, Undo2, Redo2, ChevronLeft, Chevro
 import DynamicTable from "@/components/ui/DynamicTable";
 import DynamicGrid from "@/components/ui/DynamicGrid";
 import { IconPicker } from "@/components/ui/IconPicker";
+import DynamicDashboard from "@/components/ui/DynamicDashboard";
+import DynamicKanbanView from "@/components/ui/DynamicKanbanView";
 import { useUndoableState } from "@/hooks/useUndoableState";
 import OrbitBoltPanel from "@/components/OrbitBoltPanel";
+
+// Lazy-loaded view components for new module types
+const DynamicCalendarView = React.lazy(() => import("@/components/ui/DynamicCalendarView"));
+const DynamicTimelineView = React.lazy(() => import("@/components/ui/DynamicTimelineView"));
+const DynamicDirectoryView = React.lazy(() => import("@/components/ui/DynamicDirectoryView"));
+const DynamicGalleryView = React.lazy(() => import("@/components/ui/DynamicGalleryView"));
+const DynamicSpreadsheetView = React.lazy(() => import("@/components/ui/DynamicSpreadsheetView"));
+const DynamicReportView = React.lazy(() => import("@/components/ui/DynamicReportView"));
+const DynamicPipelineView = React.lazy(() => import("@/components/ui/DynamicPipelineView"));
+const DynamicApprovalView = React.lazy(() => import("@/components/ui/DynamicApprovalView"));
+const DynamicFormWizard = React.lazy(() => import("@/components/ui/DynamicFormWizard"));
+const DynamicInventoryView = React.lazy(() => import("@/components/ui/DynamicInventoryView"));
 
 const generateDummyData = (fields) => {
   const records = [];
@@ -478,18 +492,49 @@ export default function CreateModulePage() {
                         <p className="text-sm text-muted-foreground">{description || "No description provided."}</p>
                       </div>
                     </div>
-                    {layout === 'table' ? (
-                      <DynamicTable
-                        data={generateDummyData(fields)}
-                        fieldDefinitions={fields.map((f, i) => ({ ...f, name: f.name.trim().replace(/ /g, '_').toLowerCase(), order_index: i }))}
-                      />
-                    ) : (
-                      <DynamicGrid
-                        data={generateDummyData(fields)}
-                        fieldDefinitions={fields.map((f, i) => ({ ...f, name: f.name.trim().replace(/ /g, '_').toLowerCase(), order_index: i }))}
-                        theme={theme}
-                      />
-                    )}
+                    
+                    <React.Suspense fallback={<div className="p-8 text-center text-muted-foreground animate-pulse">Loading preview...</div>}>
+                      {(() => {
+                        const dummyData = generateDummyData(fields);
+                        const fieldDefs = fields.map((f, i) => ({ ...f, name: f.name.trim().replace(/ /g, '_').toLowerCase(), order_index: i }));
+                        
+                        switch (moduleType) {
+                          case 'dashboard':
+                            return <DynamicDashboard data={dummyData} fieldDefinitions={fieldDefs} />;
+                          case 'kanban':
+                            return <DynamicKanbanView data={dummyData} fieldDefinitions={fieldDefs} />;
+                          case 'calendar_view':
+                            return <DynamicCalendarView data={dummyData} fieldDefinitions={fieldDefs} />;
+                          case 'document_manager':
+                            return <DynamicGrid data={dummyData} fieldDefinitions={fieldDefs} theme={theme} isDocumentManager={true} />;
+                          case 'directory':
+                            return <DynamicDirectoryView data={dummyData} fieldDefinitions={fieldDefs} />;
+                          case 'timeline':
+                            return <DynamicTimelineView data={dummyData} fieldDefinitions={fieldDefs} />;
+                          case 'gallery':
+                            return <DynamicGalleryView data={dummyData} fieldDefinitions={fieldDefs} />;
+                          case 'spreadsheet':
+                            return <DynamicSpreadsheetView data={dummyData} fieldDefinitions={fieldDefs} />;
+                          case 'report':
+                            return <DynamicReportView data={dummyData} fieldDefinitions={fieldDefs} />;
+                          case 'inventory':
+                            return <DynamicInventoryView data={dummyData} fieldDefinitions={fieldDefs} />;
+                          case 'crm_pipeline':
+                            return <DynamicPipelineView data={dummyData} fieldDefinitions={fieldDefs} />;
+                          case 'approval_workflow':
+                            return <DynamicApprovalView data={dummyData} fieldDefinitions={fieldDefs} />;
+                          case 'form_builder':
+                            return <DynamicFormWizard data={dummyData} fieldDefinitions={fieldDefs} />;
+                          case 'data_module':
+                          default:
+                            return layout === 'table' ? (
+                              <DynamicTable data={dummyData} fieldDefinitions={fieldDefs} />
+                            ) : (
+                              <DynamicGrid data={dummyData} fieldDefinitions={fieldDefs} theme={theme} />
+                            );
+                        }
+                      })()}
+                    </React.Suspense>
                   </div>
                 ) : (
                   <div className="h-full flex flex-col items-center justify-center text-muted-foreground">
