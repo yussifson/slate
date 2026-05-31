@@ -233,6 +233,11 @@ export default function CreateModulePage() {
                       />
                       Required Field
                     </label>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             <div className="space-y-4">
               <div className="flex items-center justify-between border-b border-border pb-2">
                 <h3 className="font-semibold text-foreground">Design & Layout</h3>
