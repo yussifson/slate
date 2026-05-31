@@ -15,7 +15,7 @@ import {
   Award, Library, Building2, AlertCircle, Clock,
   Network, AlertTriangle, Gift, Banknote, CalendarOff,
   HandCoins, Users2, Blocks, Map, Warehouse, Car, MapPin,
-  FileSearch, LayoutGrid, BedDouble, BellRing
+  FileSearch, LayoutGrid, BedDouble, BellRing, MoreHorizontal, Pencil, Trash2
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useImpersonation } from "@/lib/ImpersonationContext";
@@ -45,6 +45,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dynamicModules, setDynamicModules] = useState([]);
+  const [openMenuId, setOpenMenuId] = useState(null);
   const isAdmin = ["super_admin", "admin", "company_admin", "managing_partner"].includes(user?.role);
   
   useEffect(() => {
@@ -97,6 +98,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   });
 
   const dynamicNavItems = dynamicModules.map(m => ({
+    id: m.id,
     label: m.name,
     icon: m.icon || "Sparkles",
     path: `/m/${m.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`,
@@ -113,6 +115,19 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   if (user?.role === "super_admin") {
     navItems = [...navItems, { label: "Super Admin Portal", icon: "Shield", path: "/system-admin" }];
   }
+
+  const handleDeleteModule = async (id, name) => {
+    if (window.confirm(`Are you sure you want to delete '${name}' and all its records? This cannot be undone.`)) {
+      await supabase.from('module_definitions').delete().eq('id', id);
+    }
+  };
+
+  const handleRenameModule = async (id, currentName) => {
+    const newName = window.prompt("Enter new name for module:", currentName);
+    if (newName && newName.trim() !== "" && newName !== currentName) {
+      await supabase.from('module_definitions').update({ name: newName }).eq('id', id);
+    }
+  };
 
   const renderNavContent = (collapsed) => (
     <div className="flex flex-col h-full bg-sidebar overflow-x-hidden">
@@ -141,28 +156,55 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
         <div className="pt-5" />
       )}
 
-      {/* Nav */}
       <nav className="flex-1 px-3 pb-3 space-y-1 overflow-y-auto overflow-x-hidden scrollbar-hide">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path || (item.path !== "/" && location.pathname.startsWith(item.path));
           const IconComp = typeof item.icon === 'string' ? ICON_MAP[item.icon] || LayoutDashboard : item.icon;
           return (
-            <Link
-              key={item.path}
-              to={item.path}
-              onClick={() => setMobileOpen(false)}
-              title={collapsed ? t(item.label.toLowerCase().replace(/\s+/g, '_'), item.label) : undefined}
-              className={cn(
-                "flex items-center rounded-lg text-sm font-medium transition-all duration-150",
-                collapsed ? "justify-center p-2" : "gap-3 px-3 py-2",
-                isActive
-                  ? "bg-primary text-white shadow-sm"
-                  : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"
+            <div key={item.path} className="relative group">
+              <Link
+                to={item.path}
+                onClick={() => setMobileOpen(false)}
+                title={collapsed ? t(item.label.toLowerCase().replace(/\s+/g, '_'), item.label) : undefined}
+                className={cn(
+                  "flex items-center rounded-lg text-sm font-medium transition-all duration-150 relative",
+                  collapsed ? "justify-center p-2" : "gap-3 px-3 py-2 pr-8",
+                  isActive
+                    ? "bg-primary text-white shadow-sm"
+                    : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"
+                )}
+              >
+                <IconComp className={cn("flex-shrink-0 transition-all", collapsed ? "w-5 h-5" : "w-4 h-4")} />
+                {!collapsed && <span className="whitespace-nowrap animate-in fade-in duration-200">{t(item.label.toLowerCase().replace(/\s+/g, '_'), item.label)}</span>}
+              </Link>
+              
+              {!collapsed && item.isDynamic && (
+                <div className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button 
+                    onClick={(e) => { e.preventDefault(); setOpenMenuId(openMenuId === item.id ? null : item.id); }}
+                    className="p-1 rounded hover:bg-black/10 text-sidebar-foreground/50 hover:text-sidebar-foreground"
+                  >
+                    <MoreHorizontal className="w-4 h-4" />
+                  </button>
+                  
+                  {openMenuId === item.id && (
+                    <div className="absolute right-0 mt-1 w-36 bg-popover border border-border shadow-lg rounded-md overflow-hidden z-50">
+                      <div className="py-1">
+                        <button onClick={(e) => { e.preventDefault(); handleRenameModule(item.id, item.label); setOpenMenuId(null); }} className="w-full text-left px-3 py-1.5 text-xs text-popover-foreground hover:bg-muted flex items-center gap-2">
+                          <Pencil className="w-3 h-3" /> Rename
+                        </button>
+                        <button onClick={(e) => { e.preventDefault(); window.location.href = item.path; setOpenMenuId(null); }} className="w-full text-left px-3 py-1.5 text-xs text-popover-foreground hover:bg-muted flex items-center gap-2">
+                          <Settings className="w-3 h-3" /> Customize
+                        </button>
+                        <button onClick={(e) => { e.preventDefault(); handleDeleteModule(item.id, item.label); setOpenMenuId(null); }} className="w-full text-left px-3 py-1.5 text-xs text-destructive hover:bg-muted flex items-center gap-2">
+                          <Trash2 className="w-3 h-3" /> Delete
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               )}
-            >
-              <IconComp className={cn("flex-shrink-0 transition-all", collapsed ? "w-5 h-5" : "w-4 h-4")} />
-              {!collapsed && <span className="whitespace-nowrap animate-in fade-in duration-200">{t(item.label.toLowerCase().replace(/\s+/g, '_'), item.label)}</span>}
-            </Link>
+            </div>
           );
         })}
       </nav>

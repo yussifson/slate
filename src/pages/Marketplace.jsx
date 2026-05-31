@@ -80,8 +80,8 @@ export default function Marketplace() {
       }
 
       toast({
-        title: "Module Installed!",
-        description: `${mod.name} has been added to your workspace.`,
+        title: "🎉 Module Installed Successfully!",
+        description: `${mod.name} is now ready to use in your workspace.`,
       });
       
     } catch (err) {

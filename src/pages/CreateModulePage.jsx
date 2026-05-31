@@ -15,6 +15,8 @@ export default function CreateModulePage() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [icon, setIcon] = useState("Blocks");
+  const [layout, setLayout] = useState("table");
+  const [theme, setTheme] = useState("primary");
   const [fields, setFields] = useState([{ name: "name", field_type: "text", is_required: true, options: "" }]);
   
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -53,6 +55,8 @@ export default function CreateModulePage() {
         setName(data.schema.module.name || "");
         setDescription(data.schema.module.description || "");
         setIcon(data.schema.module.icon || "Blocks");
+        setLayout(data.schema.module.layout || "table");
+        setTheme(data.schema.module.theme || "primary");
         
         if (data.schema.fields && data.schema.fields.length > 0) {
           const mappedFields = data.schema.fields.map(f => ({
@@ -64,7 +68,7 @@ export default function CreateModulePage() {
           setFields(mappedFields);
         }
         
-        toast({ title: "Module Schema Generated", description: "Review and save your new module!" });
+        toast({ title: "OrbitBolt Generation Complete", description: "Review and customize your new module layout!" });
         setIsAiModalOpen(false);
         setAiPrompt("");
       } else {
@@ -92,6 +96,7 @@ export default function CreateModulePage() {
         description,
         icon,
         is_active: 'true',
+        config: { layout, theme },
         created_at: new Date().toISOString()
       });
 
@@ -113,8 +118,8 @@ export default function CreateModulePage() {
       if (fieldError) throw fieldError;
 
       toast({
-        title: "Module Saved",
-        description: `Successfully created ${name}.`,
+        title: "✨ Module Successfully Built!",
+        description: `Your custom module '${name}' is ready to use. Redirecting...`,
       });
 
       const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -130,13 +135,13 @@ export default function CreateModulePage() {
   return (
     <div className="space-y-6 animate-in fade-in duration-300 pb-20">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <PageHeader title="Visual Module Builder" subtitle="Design custom records and workflows." />
+        <PageHeader title="Module Builder" subtitle="Design custom records and workflows." />
         <Button onClick={() => setIsAiModalOpen(true)} className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 font-bold shadow-md">
-          <Sparkles className="w-4 h-4" /> Generate with AI
+          <Sparkles className="w-4 h-4" /> OrbitBolt AI
         </Button>
       </div>
 
-      <div className="bg-card rounded-xl border border-border p-6 shadow-sm max-w-4xl mx-auto">
+      <div className="bg-card rounded-xl border border-border p-6 shadow-sm max-w-5xl mx-auto">
         <form onSubmit={handleSubmit} className="space-y-8">
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -228,8 +233,80 @@ export default function CreateModulePage() {
                       />
                       Required Field
                     </label>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between border-b border-border pb-2">
+                <h3 className="font-semibold text-foreground">Design & Layout</h3>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">Layout Style</label>
+                <div className="grid grid-cols-2 gap-3">
+                  <button 
+                    type="button"
+                    onClick={() => setLayout("table")}
+                    className={`flex flex-col items-center justify-center p-3 rounded-lg border text-sm font-medium transition-all ${layout === 'table' ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card text-muted-foreground hover:bg-muted'}`}
+                  >
+                    <svg className="w-6 h-6 mb-2 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                    Table View
+                  </button>
+                  <button 
+                    type="button"
+                    onClick={() => setLayout("grid")}
+                    className={`flex flex-col items-center justify-center p-3 rounded-lg border text-sm font-medium transition-all ${layout === 'grid' ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card text-muted-foreground hover:bg-muted'}`}
+                  >
+                    <svg className="w-6 h-6 mb-2 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+                    Grid / Cards
+                  </button>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <label className="block text-sm font-medium text-foreground mb-3">Theme Color</label>
+                <div className="flex flex-wrap gap-3">
+                  {[
+                    { id: "primary", hex: "#4f46e5" },
+                    { id: "blue", hex: "#2563eb" },
+                    { id: "emerald", hex: "#059669" },
+                    { id: "rose", hex: "#e11d48" },
+                    { id: "amber", hex: "#d97706" },
+                    { id: "purple", hex: "#9333ea" },
+                  ].map((t) => (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => setTheme(t.id)}
+                      className={`w-8 h-8 rounded-full transition-all flex items-center justify-center ${theme === t.id ? 'ring-2 ring-offset-2 ring-offset-background ring-foreground scale-110' : 'hover:scale-105'}`}
+                      style={{ backgroundColor: t.hex }}
+                      title={t.id.charAt(0).toUpperCase() + t.id.slice(1)}
+                    >
+                      {theme === t.id && <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-8 p-4 bg-muted border border-border rounded-lg">
+                <p className="text-xs text-muted-foreground mb-2">Live Preview Outline</p>
+                <div className={`p-3 rounded-md shadow-sm border bg-card ${theme === 'primary' ? 'border-primary/30' : `border-${theme}-200`}`}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className={`w-6 h-6 rounded flex items-center justify-center ${theme === 'primary' ? 'bg-primary/20 text-primary' : `bg-${theme}-100 text-${theme}-600`}`}>
+                      <Blocks className="w-3 h-3" />
+                    </div>
+                    <div className="h-3 w-20 bg-muted-foreground/20 rounded"></div>
                   </div>
-                ))}
+                  {layout === 'table' ? (
+                    <div className="space-y-2">
+                      <div className="h-2 w-full bg-muted-foreground/10 rounded"></div>
+                      <div className="h-2 w-full bg-muted-foreground/10 rounded"></div>
+                      <div className="h-2 w-full bg-muted-foreground/10 rounded"></div>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="h-10 bg-muted-foreground/10 rounded"></div>
+                      <div className="h-10 bg-muted-foreground/10 rounded"></div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>

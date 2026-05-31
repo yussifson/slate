@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Sparkles, Plus, RefreshCw, BarChart2, ShieldCheck, FileText } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import DynamicTable from "@/components/ui/DynamicTable";
+import DynamicGrid from "@/components/ui/DynamicGrid";
 import DynamicForm from "@/components/ui/DynamicForm";
 import DynamicDashboard from "@/components/ui/DynamicDashboard";
 import { supabase } from "@/api/supabaseClient";
@@ -24,6 +25,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
   const [visibility, setVisibility] = useState('private');
   const [sharedWith, setSharedWith] = useState('');
   const [isSavingSettings, setIsSavingSettings] = useState(false);
+  const isAdmin = ["super_admin", "admin", "company_admin", "managing_partner"].includes(user?.role);
 
   const fetchDynamicData = async () => {
     try {
@@ -104,8 +106,11 @@ export default function GenericModulePage({ title: propTitle, description: propD
     }
   };
 
+  const layoutConfig = moduleDef?.config?.layout || 'table';
+  const themeConfig = moduleDef?.config?.theme || 'primary';
+
   return (
-    <div className="space-y-6 animate-in fade-in duration-300">
+    <div className={`space-y-6 animate-in fade-in duration-300 ${themeConfig !== 'primary' ? `theme-${themeConfig}` : ''}`}>
       <PageHeader
         title={title}
         subtitle={description}
@@ -114,7 +119,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
             <Button onClick={() => setIsSettingsOpen(true)} variant="outline" size="sm" className="gap-1.5 shadow-sm">
               <ShieldCheck className="w-4 h-4" /> Share
             </Button>
-            <Button onClick={() => setIsAddModalOpen(true)} size="sm" className="gap-1.5 shadow-sm bg-blue-600 hover:bg-blue-700 text-white">
+            <Button onClick={() => setIsAddModalOpen(true)} size="sm" className={`gap-1.5 shadow-sm text-white ${themeConfig === 'primary' ? 'bg-primary hover:bg-primary/90' : `bg-${themeConfig}-600 hover:bg-${themeConfig}-700`}`}>
               <Plus className="w-4 h-4" /> Add Record
             </Button>
           </div>
@@ -157,20 +162,22 @@ export default function GenericModulePage({ title: propTitle, description: propD
         <DynamicDashboard records={records} moduleDef={moduleDef} />
       )}
 
-      <div className="bg-card rounded-xl border border-border overflow-hidden shadow-sm p-6 mt-6">
+      <div className={`${layoutConfig === 'table' ? 'bg-card rounded-xl border border-border overflow-hidden shadow-sm p-6' : ''} mt-6`}>
         {isLoading ? (
-          <div className="h-64 flex flex-col items-center justify-center text-muted-foreground">
+          <div className="h-64 flex flex-col items-center justify-center text-muted-foreground bg-card rounded-xl border border-border">
             <RefreshCw className="w-8 h-8 animate-spin mb-4" />
             <p>Loading module definitions...</p>
           </div>
         ) : !moduleDef ? (
-          <div className="h-64 flex flex-col items-center justify-center text-muted-foreground">
+          <div className="h-64 flex flex-col items-center justify-center text-muted-foreground bg-card rounded-xl border border-border">
             <Sparkles className="w-12 h-12 text-muted-foreground/50 mb-4" />
             <p className="font-medium text-foreground text-lg">No Dynamic Modules Found</p>
             <p className="text-sm mt-1">Use the AI Assistant to generate a new module.</p>
           </div>
-        ) : (
+        ) : layoutConfig === 'table' ? (
           <DynamicTable data={records} fieldDefinitions={fieldDefs} />
+        ) : (
+          <DynamicGrid data={records} fieldDefinitions={fieldDefs} theme={themeConfig} />
         )}
       </div>
 
@@ -232,7 +239,18 @@ export default function GenericModulePage({ title: propTitle, description: propD
                   placeholder="Comma-separated workspace IDs"
                   className="w-full border border-input bg-background text-foreground rounded-md px-3 py-2 text-sm"
                 />
-                <p className="text-xs text-muted-foreground mt-1">Enter the Company ID of the workspace you want to share with.</p>
+                <p className="text-xs text-muted-foreground mt-1">Enter the Secure Workspace ID of the workspace you want to share with.</p>
+              </div>
+            )}
+
+            {isAdmin && (
+              <div className="mt-4 p-3 bg-muted rounded-lg border border-border">
+                <p className="text-xs font-semibold text-foreground mb-1">Your Secure Workspace ID</p>
+                <p className="text-xs text-muted-foreground mb-2">Give this ID to other workspaces so they can share modules with you.</p>
+                <div className="flex gap-2">
+                  <code className="flex-1 bg-background px-2 py-1.5 rounded border border-border text-xs select-all">{user?.company_id || "No ID available"}</code>
+                  <Button variant="outline" size="sm" className="h-auto py-1" onClick={() => { navigator.clipboard.writeText(user?.company_id); toast({title:"Copied!", description:"Workspace ID copied to clipboard."})}}>Copy</Button>
+                </div>
               </div>
             )}
 

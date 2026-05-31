@@ -32,7 +32,9 @@ Use this exact structure:
   "module": {
     "name": "string",
     "description": "string",
-    "icon": "string (a valid lucide-react icon name like Briefcase, Users, Package, FileText, Calendar, Truck, Heart, Building)"
+    "icon": "string (a valid lucide-react icon name like Briefcase, Users, Package, FileText, Calendar, Truck, Heart, Building)",
+    "layout": "string (either 'table' or 'grid')",
+    "theme": "string (choose one: primary, blue, emerald, rose, amber, purple)"
   },
   "fields": [
     {
