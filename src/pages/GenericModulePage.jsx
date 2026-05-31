@@ -22,9 +22,23 @@ export default function GenericModulePage({ title: propTitle, description: propD
   const fetchDynamicData = async () => {
     try {
       setIsLoading(true);
-      const modResults = await powerSync.getAll(`
-        SELECT * FROM module_definitions WHERE is_active = 'true' LIMIT 1
-      `);
+      // Clean path, e.g. "/m/patient-referral" -> "patient-referral"
+      const slug = window.location.pathname.replace(/^\/m\//, '').replace(/^\//, '');
+      
+      let modResults = [];
+      if (slug) {
+        // Find matching module by slugifying the names in JS or a simple ILIKE
+        // Since sqlite doesn't have a simple slugify, we fetch active modules and find it
+        const allActive = await powerSync.getAll(`SELECT * FROM module_definitions WHERE is_active = 'true'`);
+        const matched = allActive.find(m => m.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') === slug);
+        if (matched) {
+          modResults = [matched];
+        } else {
+          modResults = await powerSync.getAll(`SELECT * FROM module_definitions WHERE is_active = 'true' LIMIT 1`);
+        }
+      } else {
+        modResults = await powerSync.getAll(`SELECT * FROM module_definitions WHERE is_active = 'true' LIMIT 1`);
+      }
       
       if (modResults.length > 0) {
         const mod = modResults[0];

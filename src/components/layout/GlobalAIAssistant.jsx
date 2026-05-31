@@ -292,13 +292,28 @@ export default function GlobalAIAssistant({ onClose }) {
           }
           case 'navigate_to':
             if (action.route) {
+              // If generating a module in the same sequence, ignore navigate_to
+              if (actions.some(a => a.tool === 'generate_module')) {
+                results.push(`Ignored navigate_to(${action.route}) because generate_module handles navigation automatically.`);
+                break;
+              }
+
               const dangerousRoutes = ['/logout', '/login', '/register', '/auth'];
-              if (dangerousRoutes.some(r => action.route.includes(r))) {
-                results.push(`Security Block: Navigation to ${action.route} is prohibited for AI agents.`);
-                toast.error(`Blocked AI from navigating to ${action.route}`);
+              // Ensure path is absolute and block known hallucinated relative paths
+              let targetRoute = action.route;
+              if (!targetRoute.startsWith('/')) {
+                targetRoute = '/' + targetRoute;
+              }
+              
+              if (dangerousRoutes.some(r => targetRoute.includes(r))) {
+                results.push(`Security Block: Navigation to ${targetRoute} is prohibited for AI agents.`);
+                toast.error(`Blocked AI from navigating to ${targetRoute}`);
+              } else if (targetRoute.split('/').length > 2 && !targetRoute.startsWith('/m/')) {
+                // Block deeply nested hallucinated paths like /patients/referrals/form
+                results.push(`Navigation Block: Route ${targetRoute} does not exist in the route map.`);
               } else {
-                setTimeout(() => navigate(action.route), 200);
-                results.push(`Navigated to ${action.route}`);
+                setTimeout(() => navigate(targetRoute), 200);
+                results.push(`Navigated to ${targetRoute}`);
               }
             }
             break;
@@ -338,6 +353,203 @@ export default function GlobalAIAssistant({ onClose }) {
             break;
           }
           case 'delete_record': {
+            if (action.id && action.recordType) {
+              const rt = action.recordType.toLowerCase();
+              const isCore = ['case', 'client', 'lead', 'staff', 'invoice', 'task'].includes(rt);
+              if (isCore) {
+                const entityMap = { 'case': 'LegalCase', 'client': 'Client', 'lead': 'Lead', 'staff': 'StaffRecord', 'invoice': 'Invoice', 'task': 'Task' };
+                const entityName = entityMap[rt];
+                await base44.entities[entityName].delete(action.id);
+                queryClient.invalidateQueries([rt + 's']);
+                queryClient.invalidateQueries(['cases']);
+                results.push(`Success: deleted ${rt} with ID ${action.id}`);
+              } else {
+                await deleteRecord.mutateAsync({ id: action.id, recordType: rt });
+                results.push(`Success: deleted ${rt} with ID ${action.id}`);
+              }
+            }
+            break;
+          }
+          case 'generate_module': {
+            if (action.prompt) {
+              results.push(`Generating module... This might take a moment.`);
+              try {
+                const response = await supabase.functions.invoke('generate-dynamic-module', {
+                  body: { prompt: action.prompt, company_id: companyId }
+                });
+                if (response.error) throw response.error;
+                
+                const data = response.data;
+                if (data?.success) {
+                  results.push(`Success! Module '${data.module.name}' generated. Navigating...`);
+                  const slug = data.module.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+                  setTimeout(() => window.location.href = `/m/${slug}`, 1500);
+                } else {
+                  results.push(`Error generating module: ${data?.error}`);
+                }
+              } catch (err) {
+                results.push(`Error executing generate-dynamic-module: ${err.message}`);
+              }
+            }
+            break;
+          }
+          default:
+            results.push(`Error: unknown tool ${action.tool}`);
+            break;
+        }
+      } catch (err) {
+        results.push(`Error executing ${action.tool}: ${err.message}`);
+      }
+    }
+    return results;
+  };
+
+  const handleSend = useCallback(async (overrideText) => {
+    const text = (overrideText !== undefined ? overrideText : input).trim();
+    if (!text && !uploadedFile) return;
+
+    const sid = activeId;
+    const currentSessions = sessions;
+
+    let userContent = text;
+    if (uploadedFile) {
+      userContent = text
+        ? `${text}\n\n[Attached: ${uploadedFile.name}]`
+        : `[Attached: ${uploadedFile.name}]`;
+    }
+
+    addMessages(sid, [{ role: 'user', content: userContent }]);
+    setInput('');
+    const fileSnap = uploadedFile;
+    setUploadedFile(null);
+    setIsLoading(true);
+
+    try {
+      let responseText;
+
+      if (fileSnap?.type === 'image') {
+        const promptText = `You are an AI agent embedded in Optalflow enterprise SaaS. ${getPageContext()}\n\nUser says: ${text || 'Please analyze this image.'}\n\nDescribe the image and provide relevant business insights.`;
+        responseText = await analyzeImage(fileSnap.bytes, promptText);
+      } else {
+        const ctx = PAGE_CONTEXT[location.pathname] || { title: 'Unknown', suite: 'Unknown' };
+        const systemPrompt = `You are Orbit — an intelligent, proactive enterprise assistant embedded in Optalflow SaaS.
+Your current context is the ${ctx.suite} suite, specifically the '${ctx.title}' page.
+
+CRITICAL INSTRUCTIONS:
+- You have Long-Term Memory. You can remember facts about the user across sessions. Always check your memory or save important details when asked.
+- The user is currently on page: ${location.pathname}
+
+EXACT VERIFIED ROUTE MAP — ALWAYS USE THESE EXACT PATHS FOR navigate_to. NEVER GUESS OR INVENT PATHS:
+# Core / Legal Suite
+/ → Dashboard
+/cases → Cases
+/clients → Clients
+/calendar → Calendar
+/invoices → Invoices
+/tasks → Tasks
+/documents → Documents
+/team → Team
+/settings → Settings
+/client-portal → Client Portal
+/leads → Leads
+/billing → Billing
+/pipeline → Case Pipeline
+/research → Legal Research
+/audit → Audit Log
+/leave → Leave Management
+/performance → Performance Dashboard
+/outcomes → Case Outcomes
+/conflict-check → Conflict Checker
+/email-inbox → Email Inbox
+/reports → Reports
+/export → Data Export
+/whatsapp → WhatsApp Messenger
+/hr → HR Dashboard
+/my-dashboard → My Dashboard
+
+# School Suite
+/students → Students
+/classes → Classes
+/timetable → Timetable
+/attendance → Attendance
+/grades → Grades
+/exams → Exams
+/fees → Fee Management
+/library → Library
+/parent-portal → Parent Portal
+
+# Hospital Suite
+/patients → Patients
+/appointments → Appointments
+/wards → Wards
+/prescriptions → Prescriptions
+/lab-results → Lab Results
+/pharmacy → Pharmacy
+
+# Hotel Suite
+/front-desk → Front Desk
+/reservations → Reservations
+/rooms → Rooms
+/housekeeping → Housekeeping
+/restaurant → Restaurant
+/guest-requests → Guest Requests
+
+# Church Suite
+/members → Members
+/ministries → Ministries
+/events → Events
+/tithes → Tithes
+/volunteers → Volunteers
+/sermons → Sermons
+/small-groups → Small Groups
+/prayers → Prayers
+
+# Insurance Suite
+/policies → Policies
+/claims → Claims
+/premiums → Premiums
+/underwriting → Underwriting
+/agent-performance → Agent Performance
+
+# Retail Suite
+/pos → Point of Sale
+/inventory → Inventory
+/orders → Orders/Sales
+/suppliers → Suppliers
+/retail-customers → Customers
+
+# Logistics Suite
+/shipments → Shipments
+/fleet → Fleet
+/drivers → Drivers
+/warehouse → Warehouses
+
+# HR Suite
+/employees → Employees
+/recruitment → Recruitment
+/payroll → Payroll
+/hr-leave → HR Leave
+
+AGENT POWERS (return EXACTLY this JSON format inline to act):
+- Search: <AGENT_ACTION>{"tool":"search_records","recordType":"patient|case|client|student|staff","query":"John"}</AGENT_ACTION>
+- Navigate: <AGENT_ACTION>{"tool":"navigate_to","route":"/patients"}</AGENT_ACTION>
+- Create: <AGENT_ACTION>{"tool":"create_record","recordType":"patient","payload":{"name":"John Doe","age":30,"status":"active"}}</AGENT_ACTION>
+- Update: <AGENT_ACTION>{"tool":"update_record","recordType":"patient","id":"uuid","payload":{"status":"discharged"}}</AGENT_ACTION>
+- Delete: <AGENT_ACTION>{"tool":"delete_record","recordType":"patient","id":"uuid"}</AGENT_ACTION>
+- Toast: <AGENT_ACTION>{"tool":"show_toast","message":"Done!"}</AGENT_ACTION>
+- Remember: <AGENT_ACTION>{"tool":"remember","fact":"User prefers dark mode"}</AGENT_ACTION>
+- Search Memory: <AGENT_ACTION>{"tool":"search_memory","query":"preferences"}</AGENT_ACTION>
+- Request Confirmation: <AGENT_ACTION>{"tool":"ask_confirmation","actionToConfirm":{"tool":"navigate_to","route":"/classes"},"message":"Did you mean the Classes page?"}</AGENT_ACTION>
+- Generate Module: <AGENT_ACTION>{"tool":"generate_module","prompt":"Create a Patient Referral Management module"}</AGENT_ACTION>
+
+RULES FOR MULTI-STEP REASONING:
+1. NEVER explain how the user can do something. YOU MUST do it for them.
+2. When asked to CREATE something, create the record first, THEN navigate to the correct page to show it. If asked to create an ENTIRE NEW MODULE, use the generate_module tool and DO NOT output any navigate_to actions (the system navigates automatically).
+3. ALWAYS use the exact routes from the ROUTE MAP above. NEVER invent paths like /hospital/patients or /patients/referrals/new.
+4. DO NOT output markdown hyperlinks for navigation (e.g. [PageName](url)). All navigation must be handled autonomously by the system.
+5. You can chain actions: create a record, then navigate to show it.
+6. DO NOT wrap <AGENT_ACTION> in markdown code blocks. Output it raw inline.
+7. Once all tasks are complete, summarize what you did in plain language and STOP outputting <AGENT_ACTION> blocks.
 7. For 'case' records, use 'title' instead of 'name'.
 8. If the user's input has a typo, is ambiguous, or if you are unsure which page they mean, ALWAYS use the 'ask_confirmation' tool first and wait for approval.
 9. If the user asks for multiple distinct actions (e.g. "create a task and a lead"), ensure you output an <AGENT_ACTION> block for EACH request before summarizing.`;
@@ -385,6 +597,13 @@ export default function GlobalAIAssistant({ onClose }) {
           
           apiMessages.push({ role: 'assistant', content: responseText });
           apiMessages.push({ role: 'user', content: `[System Status / Action Results]:\n${actionResults.join('\n')}` });
+
+          // If the AI generated a module, the system is automatically navigating.
+          // We MUST break the loop immediately to prevent the AI from generating hallucinated
+          // navigate_to steps in subsequent iterations.
+          if (actions.some(a => a.tool === 'generate_module')) {
+            break;
+          }
         }
 
         if (finalCleanText) {

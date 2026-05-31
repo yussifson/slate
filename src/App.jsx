@@ -285,6 +285,9 @@ function PlatformRoutes() {
       <Route path="/loyalty" element={<GenericModulePage />} />
       <Route path="/pickups" element={<GenericModulePage />} />
       <Route path="/orders" element={<GenericModulePage />} />
+      
+      {/* Dynamic AI Generated Modules Route */}
+      <Route path="/m/*" element={<GenericModulePage />} />
     </>
   );
 }

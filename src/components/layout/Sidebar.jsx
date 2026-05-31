@@ -84,7 +84,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   const dynamicNavItems = dynamicModules.map(m => ({
     label: m.name,
     icon: m.icon || "Sparkles",
-    path: `/${m.name.toLowerCase().replace(/\s+/g, '-')}`,
+    path: `/m/${m.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`,
     isDynamic: true
   }));
 
