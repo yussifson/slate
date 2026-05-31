@@ -202,9 +202,14 @@ export default function GlobalAIAssistant({ onClose }) {
         const s = newSession();
         setSessions([s]);
         setActiveId(s.id);
-        supabase.from('industry_records').upsert({
-          id: s.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: s
-        }).then();
+        if (user?.email) {
+          mutateRecord.mutateAsync({
+            id: s.id, 
+            recordType: 'ai_session', 
+            searchText: user.email, 
+            payload: s
+          }).catch(e => console.error("Failed to save ai_session", e));
+        }
       }
       setIsInitialized(true);
     };
@@ -229,10 +234,13 @@ export default function GlobalAIAssistant({ onClose }) {
           : s.title;
         const newS = { ...s, messages: upMsgs, title: title || 'New Chat' };
         
-        if (companyId && user?.email) {
-          supabase.from('industry_records').upsert({
-            id: newS.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: newS
-          }).then();
+        if (user?.email) {
+          mutateRecord.mutateAsync({
+            id: newS.id, 
+            recordType: 'ai_session', 
+            searchText: user.email, 
+            payload: newS
+          }).catch(e => console.error("Failed to save ai_session", e));
         }
         return newS;
       });
@@ -757,10 +765,13 @@ RULES FOR MULTI-STEP REASONING:
       const rest = prev.filter(s => s.id !== sid);
       if (rest.length === 0) {
         const fresh = newSession();
-        if (companyId && user?.email) {
-          supabase.from('industry_records').upsert({
-            id: fresh.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: fresh
-          }).then();
+        if (user?.email) {
+          mutateRecord.mutateAsync({
+            id: fresh.id, 
+            recordType: 'ai_session', 
+            searchText: user.email, 
+            payload: fresh
+          }).catch(e => console.error("Failed to save ai_session", e));
         }
         setActiveId(fresh.id);
         return [fresh];
