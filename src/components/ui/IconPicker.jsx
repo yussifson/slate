@@ -4,45 +4,61 @@ import { Search } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 
+// Only icons that are verified to exist in current lucide-react
+const VALID_ICON_NAMES = [
+  'Blocks', 'Users', 'Settings', 'Briefcase', 'Folder', 'FileText', 'Calendar',
+  'Truck', 'Heart', 'Building2', 'Activity', 'BarChart2', 'BarChart3', 'Bell',
+  'BookOpen', 'Bookmark', 'Box', 'Camera', 'CheckCircle', 'Clipboard', 'Clock',
+  'Cloud', 'Code2', 'Coffee', 'Compass', 'CreditCard', 'Database', 'DollarSign',
+  'Pencil', 'Eye', 'Feather', 'Filter', 'Flag', 'Gift', 'Globe', 'Headphones',
+  'Home', 'Image', 'Inbox', 'Info', 'Key', 'Layers', 'LayoutDashboard', 'Link',
+  'List', 'Lock', 'Mail', 'Map', 'MessageCircle', 'MessageSquare', 'Monitor',
+  'Package', 'Paperclip', 'Phone', 'PieChart', 'Printer', 'Radio', 'Save',
+  'Search', 'Send', 'Server', 'Shield', 'ShoppingBag', 'ShoppingCart', 'Smartphone',
+  'Smile', 'Star', 'Sun', 'Tablet', 'Tag', 'Target', 'Wrench', 'Trash2',
+  'TrendingUp', 'Type', 'Umbrella', 'Unlock', 'Upload', 'User', 'UserCheck',
+  'UserPlus', 'Video', 'Volume2', 'Watch', 'Wifi', 'Zap', 'Award', 'Truck',
+  'Stethoscope', 'GraduationCap', 'ChurchIcon', 'FlaskConical', 'Pill', 'Bed',
+  'Users2', 'Network', 'MapPin', 'Warehouse', 'Car', 'HandCoins', 'Banknote',
+  'FileSearch', 'Receipt', 'Package2', 'LayoutGrid', 'Table2', 'Kanban',
+  'ClipboardList', 'ClipboardCheck', 'CheckSquare', 'Scale', 'BookMarked',
+  'Lightbulb', 'Rocket', 'Flame', 'Diamond', 'Hexagon', 'Triangle',
+];
+
+// Filter to only icons that actually exist in this version of lucide-react
+const ICON_NAMES = VALID_ICON_NAMES.filter(name => {
+  const icon = LucideIcons[name];
+  return typeof icon === 'function' || (icon && typeof icon === 'object');
+});
+
 export function IconPicker({ value, onChange }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [isOpen, setIsOpen] = useState(false);
 
-  // Extract a list of commonly used icons for business apps
-  const commonIconNames = [
-    'Blocks', 'Users', 'Settings', 'Briefcase', 'Folder', 'FileText', 'Calendar',
-    'Truck', 'Heart', 'Building', 'Activity', 'BarChart', 'BarChart2', 'Bell',
-    'Book', 'Bookmark', 'Box', 'Camera', 'CheckCircle', 'Clipboard', 'Clock',
-    'Cloud', 'Code', 'Coffee', 'Compass', 'CreditCard', 'Database', 'DollarSign',
-    'Edit', 'Eye', 'Feather', 'Filter', 'Flag', 'Gift', 'Globe', 'Headphones',
-    'Home', 'Image', 'Inbox', 'Info', 'Key', 'Layers', 'Layout', 'Link', 'List',
-    'Lock', 'Mail', 'Map', 'MessageCircle', 'MessageSquare', 'Monitor', 'Package',
-    'Paperclip', 'Phone', 'PieChart', 'Printer', 'Radio', 'Save', 'Search',
-    'Send', 'Server', 'Shield', 'ShoppingBag', 'ShoppingCart', 'Smartphone',
-    'Smile', 'Star', 'Sun', 'Tablet', 'Tag', 'Target', 'Tool', 'Trash',
-    'TrendingUp', 'Type', 'Umbrella', 'Unlock', 'Upload', 'User', 'UserCheck',
-    'UserPlus', 'Users', 'Video', 'Volume', 'Watch', 'Wifi', 'Zap'
-  ];
-
-  const filteredIcons = commonIconNames.filter(name => 
+  const filteredIcons = ICON_NAMES.filter(name =>
     name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const CurrentIcon = LucideIcons[value] || LucideIcons.Blocks;
+  const CurrentIcon = (value && LucideIcons[value] && (typeof LucideIcons[value] === 'function' || typeof LucideIcons[value] === 'object'))
+    ? LucideIcons[value]
+    : LucideIcons.Blocks;
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" className="w-full flex items-center justify-start gap-3 h-10 px-3 bg-background font-normal border-input text-foreground">
+        <Button
+          variant="outline"
+          className="w-full flex items-center justify-start gap-3 h-10 px-3 bg-background font-normal border-input text-foreground"
+        >
           <CurrentIcon className="w-5 h-5 text-primary" />
-          <span className="flex-1 text-left">{value || "Select Icon"}</span>
+          <span className="flex-1 text-left">{value || 'Select Icon'}</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[300px] p-0" align="start">
         <div className="flex items-center border-b px-3">
-          <Search className="w-4 h-4 text-muted-foreground mr-2" />
+          <Search className="w-4 h-4 text-muted-foreground mr-2 shrink-0" />
           <input
-            className="flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground"
             placeholder="Search icons..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -53,11 +69,17 @@ export function IconPicker({ value, onChange }) {
             {filteredIcons.length > 0 ? (
               filteredIcons.map((name) => {
                 const IconComp = LucideIcons[name];
+                if (!IconComp || (typeof IconComp !== 'function' && typeof IconComp !== 'object')) return null;
                 return (
                   <button
                     key={name}
                     title={name}
-                    className={`flex aspect-square items-center justify-center rounded-md border transition-colors hover:bg-primary/10 hover:text-primary ${value === name ? 'bg-primary/15 border-primary text-primary' : 'bg-transparent border-transparent text-muted-foreground'}`}
+                    type="button"
+                    className={`flex aspect-square items-center justify-center rounded-md border transition-colors hover:bg-primary/10 hover:text-primary ${
+                      value === name
+                        ? 'bg-primary/15 border-primary text-primary'
+                        : 'bg-transparent border-transparent text-muted-foreground'
+                    }`}
                     onClick={() => {
                       onChange(name);
                       setIsOpen(false);

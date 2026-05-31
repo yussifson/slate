@@ -1,16 +1,17 @@
 import { useTranslation } from "react-i18next";
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Scale, Building2, Users, Briefcase, ArrowRight, ArrowLeft, Check, Sparkles, Loader2 } from 'lucide-react';
+import { Scale, Building2, Users, Briefcase, ArrowRight, ArrowLeft, Check, Sparkles, Loader2, X } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useToast } from '@/components/ui/use-toast';
 import { getSubdomainAndBase } from '@/lib/domainUtils';
 import { getTerm, INDUSTRIES } from '@/config/industries';
+
 export default function OnboardingWizard() {
   const { t } = useTranslation();
   const { user, refreshUser } = useAuth();
@@ -18,6 +19,14 @@ export default function OnboardingWizard() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const scrollRef = useRef(null);
+
+  // Scroll to top on step change
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [step]);
 
   // Step 1: Firm profile
   const [firmName, setFirmName] = useState(user?.company_name || '');
@@ -30,13 +39,13 @@ export default function OnboardingWizard() {
   const [setupMode, setSetupMode] = useState('template'); // 'template', 'orbit', 'custom'
   const [selectedModules, setSelectedModules] = useState([]);
 
-  // Step 2: Staff invites
+  // Step 3: Staff invites
   const [staffEmail, setStaffEmail] = useState('');
-  const [staffRole, setStaffRole] = useState('');
+  const [staffRole, setStaffRole] = useState('primary_role');
   const [staffName, setStaffName] = useState('');
   const [invitedStaff, setInvitedStaff] = useState([]);
 
-  // Step 3: First Case
+  // Step 4: First Case
   const [caseTitle, setCaseTitle] = useState('');
   const [clientName, setClientName] = useState('');
   const [clientEmail, setClientEmail] = useState('');
@@ -46,6 +55,8 @@ export default function OnboardingWizard() {
     setInvitedStaff([...invitedStaff, { name: staffName, email: staffEmail, role: staffRole }]);
     setStaffEmail('');
     setStaffName('');
+    // Reset role to default based on industry, handled simply here
+    setStaffRole('primary_role');
   };
 
   const handleRemoveStaff = (index) => {
@@ -80,8 +91,8 @@ export default function OnboardingWizard() {
          const { error: profErr } = await supabase.from('profiles').update({
             company_id: companyIdToUse,
             company_name: firmName,
-            role: 'company_admin',
-            onboarding_completed: true
+            role: 'company_admin'
+            // Removed onboarding_completed to fix schema error
          }).eq('id', user.id);
          
          if (profErr) throw profErr;
@@ -98,9 +109,6 @@ export default function OnboardingWizard() {
           .eq('id', companyIdToUse);
 
         if (compError) throw compError;
-        
-        // Ensure profile is marked completed even if company existed
-        await supabase.from('profiles').update({ onboarding_completed: true }).eq('id', user.id);
       }
 
       // 2. Insert invited staff records
@@ -181,416 +189,518 @@ export default function OnboardingWizard() {
       if (errMsg.includes('Failed to fetch')) {
          errMsg += " (This is often caused by a network issue, ad-blocker, or a problem connecting to the database)";
       }
-      alert("Error setting up workspace: " + errMsg);
+      toast({ title: "Setup Failed", description: errMsg, variant: "destructive" });
     } finally {
       setLoading(false);
     }
   };
 
+  const steps = [
+    { num: 1, title: 'Profile' },
+    { num: 2, title: 'Setup' },
+    { num: 3, title: 'Team' },
+    { num: 4, title: 'Launch' }
+  ];
+
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-between py-12 px-6">
-      {/* Top Header */}
-      <div className="max-w-4xl mx-auto w-full flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center text-white">
-            <Scale className="w-4 h-4" />
-          </div>
-          <span className="font-bold text-base text-slate-900 tracking-tight">{t("workspace_setup_wizard", "Workspace Setup Wizard")}</span>
-        </div>
-        <div className="text-xs font-semibold text-slate-400">
-          {t("step", "Step")} {step} {t("of_4", "of 4")}
-        </div>
-      </div>
-      {/* Main card */}
-      <div className="max-w-xl mx-auto w-full glass-card bg-card rounded-3xl p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] my-8 relative overflow-hidden animate-in slide-in-from-bottom-8 duration-500">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-blue-400 to-primary"></div>
-        {/* Progress indicator */}
-        <div className="flex justify-between items-center mb-8">
-          {[1, 2, 3, 4].map(s => {
-            return (
-              <div key={s} className="flex items-center flex-1 last:flex-none">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs transition-colors ${
-                  step >= s 
-                    ? 'bg-primary text-white shadow-md shadow-primary/20' 
-                    : 'bg-slate-100 text-slate-400'
-                }`}>
-                  {step > s ? <Check className="w-4 h-4" /> : s}
-                </div>
-                {s < 4 && (
-                  <div className={`h-1 flex-1 mx-2 rounded-full transition-colors ${
-                    step > s ? 'bg-primary' : 'bg-slate-100'
-                  }`} />
-                )}
-              </div>
-            );
-          })}
-        </div>
+    <div className="min-h-screen bg-[#f8fafc] flex flex-col justify-center items-center py-12 px-4 sm:px-6 relative overflow-hidden font-sans">
+      
+      {/* Background Decorative Elements */}
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-100 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-indigo-100 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
-        {/* Step 1: Company Profile */}
-        {step === 1 && (
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <h2 className="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-1.5">
-                <Building2 className="w-5 h-5 text-primary" /> {t("setup_your", "Setup your")} {INDUSTRIES[user?.company_industry || 'law']?.name || 'Workspace'}
-              </h2>
-              <p className="text-sm text-slate-500 leading-relaxed">
-                {t(
-                  "provide_your_organization_s_ph",
-                  "Provide your organization's physical coordinates and standard operating currency for dynamic billing templates."
-                )}
-              </p>
+      {/* Main Container */}
+      <div className="w-full max-w-2xl bg-white rounded-3xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] border border-slate-100 relative z-10 flex flex-col max-h-[85vh]">
+        
+        {/* Header Section */}
+        <div className="px-8 pt-8 pb-6 border-b border-slate-100 shrink-0">
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md">
+                <Scale className="w-5 h-5" />
+              </div>
+              <h1 className="text-xl font-bold text-slate-900 tracking-tight">{t("workspace_setup_wizard", "Workspace Setup")}</h1>
             </div>
+          </div>
 
-            <div className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{INDUSTRIES[industry]?.name || 'Workspace'} {t("name", "Name")}</label>
-                <Input 
-                  type="text"
-                  value={firmName}
-                  onChange={(e) => setFirmName(e.target.value)}
-                  placeholder="E.g. Mensah & Partners"
-                  className="py-5"
-                />
-              </div>
+          {/* Progress Indicator */}
+          <div className="relative">
+            <div className="absolute top-1/2 left-0 w-full h-1 bg-slate-100 -translate-y-1/2 rounded-full"></div>
+            <div 
+              className="absolute top-1/2 left-0 h-1 bg-blue-600 -translate-y-1/2 rounded-full transition-all duration-500 ease-in-out"
+              style={{ width: `${((step - 1) / (steps.length - 1)) * 100}%` }}
+            ></div>
+            
+            <div className="relative flex justify-between">
+              {steps.map((s) => {
+                const isCompleted = step > s.num;
+                const isCurrent = step === s.num;
+                return (
+                  <div key={s.num} className="flex flex-col items-center">
+                    <div 
+                      className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ring-4 ring-white
+                        ${isCompleted ? 'bg-blue-600 text-white shadow-md' : 
+                          isCurrent ? 'bg-white border-2 border-blue-600 text-blue-600 shadow-md' : 
+                          'bg-slate-100 text-slate-400 border-2 border-slate-100'}`}
+                    >
+                      {isCompleted ? <Check className="w-4 h-4" /> : s.num}
+                    </div>
+                    <span className={`text-xs mt-2 font-medium transition-colors duration-300 ${isCurrent ? 'text-blue-600' : isCompleted ? 'text-slate-700' : 'text-slate-400'}`}>
+                      {s.title}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
 
-              {!user?.company_id && (
-                <>
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("workspace_url_subdomain", "Workspace URL (Subdomain)")}</label>
+        {/* Scrollable Content Area */}
+        <div ref={scrollRef} className="flex-1 overflow-y-auto px-8 py-8 scroll-smooth hide-scrollbar">
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            
+            {/* Step 1: Company Profile */}
+            {step === 1 && (
+              <div className="space-y-8">
+                <div className="space-y-2">
+                  <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+                    {t("setup_your", "Setup your")} {INDUSTRIES[industry]?.name || 'Workspace'}
+                  </h2>
+                  <p className="text-slate-500 text-sm leading-relaxed">
+                    {t(
+                      "provide_your_organization_s_ph",
+                      "Provide your organization's physical coordinates and standard operating currency for dynamic billing templates."
+                    )}
+                  </p>
+                </div>
+
+                <div className="space-y-5">
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{INDUSTRIES[industry]?.name || 'Workspace'} {t("name", "Name")}</label>
                     <Input 
                       type="text"
-                      value={subdomain}
-                      onChange={(e) => setSubdomain(e.target.value)}
-                      placeholder="e.g. mycompany"
-                      className="py-5"
+                      value={firmName}
+                      onChange={(e) => setFirmName(e.target.value)}
+                      placeholder="E.g. Mensah & Partners"
+                      className="h-12 bg-white border-slate-200 focus:border-blue-500 focus:ring-blue-500 text-slate-900 rounded-xl"
                     />
                   </div>
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("industry", "Industry")}</label>
-                    <Select value={industry} onValueChange={setIndustry}>
-                      <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="law">{t("law_firm", "Law Firm")}</SelectItem>
-                        <SelectItem value="hospital">{t("hospital_healthcare", "Hospital & Healthcare")}</SelectItem>
-                        <SelectItem value="school">{t("school_education", "School & Education")}</SelectItem>
-                        <SelectItem value="hotel">{t("hotel_hospitality", "Hotel & Hospitality")}</SelectItem>
-                        <SelectItem value="church">{t("church_religion", "Church & Religion")}</SelectItem>
-                        <SelectItem value="insurance">{t("insurance", "Insurance")}</SelectItem>
-                        <SelectItem value="retail">{t("retail_pos", "Retail / POS")}</SelectItem>
-                        <SelectItem value="logistics">{t("logistics_delivery", "Logistics & Delivery")}</SelectItem>
-                        <SelectItem value="hr">{t("hr_erp", "HR & ERP")}</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </>
-              )}
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("country", "Country")}</label>
-                  <Select value={country} onValueChange={(v) => {
-                    setCountry(v);
-                    if (v === 'Ghana') setCurrency('GHS');
-                    else if (v === 'Nigeria') setCurrency('NGN');
-                    else if (v === 'Sierra Leone') setCurrency('SLL');
-                    else setCurrency('USD');
-                  }}>
-                    <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Nigeria">{t("nigeria", "Nigeria")}</SelectItem>
-                      <SelectItem value="Ghana">{t("ghana", "Ghana")}</SelectItem>
-                      <SelectItem value="Sierra Leone">{t("sierra_leone", "Sierra Leone")}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("currency", "Currency")}</label>
-                  <Select value={currency} onValueChange={setCurrency}>
-                    <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="NGN">{t("ngn", "NGN (₦)")}</SelectItem>
-                      <SelectItem value="GHS">{t("ghs", "GHS (₵)")}</SelectItem>
-                      <SelectItem value="SLL">{t("sll_le", "SLL (Le)")}</SelectItem>
-                      <SelectItem value="ZAR">{t("zar_r", "ZAR (R)")}</SelectItem>
-                      <SelectItem value="USD">{t("usd", "USD ($)")}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </div>
-
-            <div className="pt-4">
-              <Button 
-                onClick={() => setStep(2)}
-                disabled={!firmName}
-                className="w-full bg-primary hover:bg-primary/95 text-white font-semibold py-5 rounded-xl shadow-md group"
-              >
-                {t("continue_setup", "Continue Setup")}
-                <ArrowRight className="w-4 h-4 ml-1.5 transition-transform group-hover:translate-x-0.5" />
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {/* Step 2: Setup Mode */}
-        {step === 2 && (
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <h2 className="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-1.5">
-                <Sparkles className="w-5 h-5 text-primary" /> Choose Your Setup Mode
-              </h2>
-              <p className="text-sm text-slate-500 leading-relaxed">
-                How would you like to initialize your workspace?
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              <div 
-                className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${setupMode === 'template' ? 'border-primary bg-primary/5' : 'border-slate-200 hover:border-primary/50'}`}
-                onClick={() => setSetupMode('template')}
-              >
-                <h3 className="font-bold text-slate-900">Build with Template</h3>
-                <p className="text-xs text-slate-500 mt-1">Initializes your dashboard with all standard predefined pages and modules for a {INDUSTRIES[industry]?.name || 'business'}.</p>
-              </div>
-              
-              <div 
-                className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${setupMode === 'orbit' ? 'border-primary bg-primary/5' : 'border-slate-200 hover:border-primary/50'}`}
-                onClick={() => setSetupMode('orbit')}
-              >
-                <h3 className="font-bold text-slate-900">Build with Orbit (Blank Slate)</h3>
-                <p className="text-xs text-slate-500 mt-1">Start fresh with only universal pages (Settings, Welcome). Use Orbit AI to build your own custom pages later.</p>
-              </div>
-
-              <div 
-                className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${setupMode === 'custom' ? 'border-primary bg-primary/5' : 'border-slate-200 hover:border-primary/50'}`}
-                onClick={() => setSetupMode('custom')}
-              >
-                <h3 className="font-bold text-slate-900">Custom Selection</h3>
-                <p className="text-xs text-slate-500 mt-1">Hand-pick exactly which predefined pages you want to include in your workspace.</p>
-                
-                {setupMode === 'custom' && (
-                  <div className="mt-4 pt-4 border-t border-slate-200 space-y-2 max-h-48 overflow-y-auto pr-2">
-                    {INDUSTRIES[industry]?.nav?.filter(n => !['/', '/settings', '/integrations', '/admin'].includes(n.path)).map((navItem) => (
-                      <label key={navItem.path} className="flex items-center space-x-3 p-2 hover:bg-slate-50 rounded-lg cursor-pointer">
-                        <input 
-                          type="checkbox" 
-                          checked={selectedModules.includes(navItem.path)}
-                          onChange={(e) => {
-                            if (e.target.checked) setSelectedModules([...selectedModules, navItem.path]);
-                            else setSelectedModules(selectedModules.filter(p => p !== navItem.path));
-                          }}
-                          className="w-4 h-4 rounded text-primary focus:ring-primary border-slate-300"
-                        />
-                        <span className="text-sm font-medium text-slate-700">{navItem.label}</span>
-                      </label>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="pt-4 flex justify-between gap-4">
-              <Button 
-                variant="outline"
-                onClick={() => setStep(1)}
-                className="flex-1 rounded-xl text-slate-700 border-slate-200"
-              >
-                <ArrowLeft className="w-4 h-4 mr-1.5" /> {t("back", "Back")}
-              </Button>
-              <Button 
-                onClick={() => setStep(3)}
-                disabled={setupMode === 'custom' && selectedModules.length === 0}
-                className="flex-1 bg-primary hover:bg-primary/95 text-white font-semibold rounded-xl shadow-md group"
-              >
-                {t("continue_setup", "Continue Setup")}
-                <ArrowRight className="w-4 h-4 ml-1.5 transition-transform group-hover:translate-x-0.5" />
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {/* Step 3: Invite Team */}
-        {step === 3 && (
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <h2 className="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-1.5">
-                <Users className="w-5 h-5 text-primary" /> {t("invite_your_team", "Invite your team")}
-              </h2>
-              <p className="text-sm text-slate-500 leading-relaxed">
-                {t("add_your", "Add your")} {getTerm(industry, 'lawyer').toLowerCase()}{t(
-                  "s_and_staff_members_to_collabo",
-                  "s and staff members to collaborate in real-time."
-                )}
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <Input 
-                    type="text"
-                    placeholder="Full Name"
-                    value={staffName}
-                    onChange={(e) => setStaffName(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <Input 
-                    type="email"
-                    placeholder="email@company.com"
-                    value={staffEmail}
-                    onChange={(e) => setStaffEmail(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="flex gap-2 items-center">
-                <Select value={staffRole} onValueChange={setStaffRole} className="w-full">
-                  <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="primary_role">{getTerm(industry, 'lawyer')}</SelectItem>
-                    <SelectItem value="partner">{t("manager_partner", "Manager / Partner")}</SelectItem>
-                    <SelectItem value="secretary">{t("admin_secretary", "Admin / Secretary")}</SelectItem>
-                    <SelectItem value="clerk">{t("assistant_clerk", "Assistant / Clerk")}</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Button 
-                  onClick={handleAddStaff}
-                  disabled={!staffEmail || !staffName}
-                  className="bg-slate-900 hover:bg-slate-800 text-white rounded-xl py-3 px-5 text-xs font-bold"
-                >
-                  {t("add_team", "Add Team")}
-                </Button>
-              </div>
-
-              {/* Invited List */}
-              {invitedStaff.length > 0 && (
-                <div className="border border-slate-150 rounded-xl overflow-hidden divide-y divide-slate-100 bg-slate-50/50">
-                  {invitedStaff.map((staff, idx) => {
-                    return (
-                      <div key={idx} className="flex justify-between items-center p-3 text-xs">
-                        <div>
-                          <span className="font-bold text-slate-900">{staff.name}</span>
-                          <span className="text-slate-400 font-mono ml-2">({staff.email})</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="bg-slate-200 text-slate-700 py-0.5 px-2 rounded font-medium capitalize text-[10px]">{staff.role}</span>
-                          <button 
-                            onClick={() => handleRemoveStaff(idx)}
-                            className="text-red-500 hover:text-red-700"
-                          >
-                            ✕
-                          </button>
+                  {!user?.company_id && (
+                    <>
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("workspace_url_subdomain", "Workspace URL (Subdomain)")}</label>
+                        <div className="flex items-center relative">
+                          <Input 
+                            type="text"
+                            value={subdomain}
+                            onChange={(e) => setSubdomain(e.target.value)}
+                            placeholder="mycompany"
+                            className="h-12 bg-white border-slate-200 focus:border-blue-500 focus:ring-blue-500 text-slate-900 rounded-xl pl-4 pr-32"
+                          />
+                          <span className="absolute right-4 text-slate-400 font-medium text-sm pointer-events-none">.optalflow.com</span>
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("industry", "Industry")}</label>
+                        <Select value={industry} onValueChange={setIndustry}>
+                          <SelectTrigger className="h-12 bg-white border-slate-200 rounded-xl text-slate-900 focus:ring-blue-500">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="law">{t("law_firm", "Law Firm")}</SelectItem>
+                            <SelectItem value="hospital">{t("hospital_healthcare", "Hospital & Healthcare")}</SelectItem>
+                            <SelectItem value="school">{t("school_education", "School & Education")}</SelectItem>
+                            <SelectItem value="hotel">{t("hotel_hospitality", "Hotel & Hospitality")}</SelectItem>
+                            <SelectItem value="church">{t("church_religion", "Church & Religion")}</SelectItem>
+                            <SelectItem value="insurance">{t("insurance", "Insurance")}</SelectItem>
+                            <SelectItem value="retail">{t("retail_pos", "Retail / POS")}</SelectItem>
+                            <SelectItem value="logistics">{t("logistics_delivery", "Logistics & Delivery")}</SelectItem>
+                            <SelectItem value="hr">{t("hr_erp", "HR & ERP")}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </>
+                  )}
 
-            <div className="pt-4 flex justify-between gap-4">
+                  <div className="grid grid-cols-2 gap-5">
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("country", "Country")}</label>
+                      <Select value={country} onValueChange={(v) => {
+                        setCountry(v);
+                        if (v === 'Ghana') setCurrency('GHS');
+                        else if (v === 'Nigeria') setCurrency('NGN');
+                        else if (v === 'Sierra Leone') setCurrency('SLL');
+                        else setCurrency('USD');
+                      }}>
+                        <SelectTrigger className="h-12 bg-white border-slate-200 rounded-xl text-slate-900 focus:ring-blue-500">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Nigeria">{t("nigeria", "Nigeria")}</SelectItem>
+                          <SelectItem value="Ghana">{t("ghana", "Ghana")}</SelectItem>
+                          <SelectItem value="Sierra Leone">{t("sierra_leone", "Sierra Leone")}</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("currency", "Currency")}</label>
+                      <Select value={currency} onValueChange={setCurrency}>
+                        <SelectTrigger className="h-12 bg-white border-slate-200 rounded-xl text-slate-900 focus:ring-blue-500">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="NGN">{t("ngn", "NGN (₦)")}</SelectItem>
+                          <SelectItem value="GHS">{t("ghs", "GHS (₵)")}</SelectItem>
+                          <SelectItem value="SLL">{t("sll_le", "SLL (Le)")}</SelectItem>
+                          <SelectItem value="ZAR">{t("zar_r", "ZAR (R)")}</SelectItem>
+                          <SelectItem value="USD">{t("usd", "USD ($)")}</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Step 2: Setup Mode */}
+            {step === 2 && (
+              <div className="space-y-8">
+                <div className="space-y-2">
+                  <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+                    Choose Your Setup Mode
+                  </h2>
+                  <p className="text-slate-500 text-sm leading-relaxed">
+                    How would you like to initialize your workspace?
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  {/* Template Option */}
+                  <label className={`block relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${setupMode === 'template' ? 'border-blue-600 bg-blue-50/50 shadow-sm' : 'border-slate-200 hover:border-blue-300 bg-white'}`}>
+                    <input 
+                      type="radio" 
+                      name="setupMode" 
+                      value="template" 
+                      checked={setupMode === 'template'} 
+                      onChange={() => setSetupMode('template')} 
+                      className="sr-only" 
+                    />
+                    <div className="flex items-start gap-4">
+                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center mt-0.5 shrink-0 transition-colors ${setupMode === 'template' ? 'border-blue-600 bg-blue-600' : 'border-slate-300'}`}>
+                        {setupMode === 'template' && <div className="w-2 h-2 rounded-full bg-white"></div>}
+                      </div>
+                      <div>
+                        <h3 className={`font-bold ${setupMode === 'template' ? 'text-blue-900' : 'text-slate-900'}`}>Build with Template</h3>
+                        <p className="text-sm text-slate-500 mt-1 leading-relaxed">Initializes your dashboard with all standard predefined pages and modules for a {INDUSTRIES[industry]?.name || 'business'}. Recommended for quick starts.</p>
+                      </div>
+                    </div>
+                  </label>
+                  
+                  {/* Orbit Option */}
+                  <label className={`block relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${setupMode === 'orbit' ? 'border-indigo-600 bg-indigo-50/50 shadow-sm' : 'border-slate-200 hover:border-indigo-300 bg-white'}`}>
+                    <input 
+                      type="radio" 
+                      name="setupMode" 
+                      value="orbit" 
+                      checked={setupMode === 'orbit'} 
+                      onChange={() => setSetupMode('orbit')} 
+                      className="sr-only" 
+                    />
+                    <div className="flex items-start gap-4">
+                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center mt-0.5 shrink-0 transition-colors ${setupMode === 'orbit' ? 'border-indigo-600 bg-indigo-600' : 'border-slate-300'}`}>
+                        {setupMode === 'orbit' && <div className="w-2 h-2 rounded-full bg-white"></div>}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h3 className={`font-bold ${setupMode === 'orbit' ? 'text-indigo-900' : 'text-slate-900'}`}>Build with Orbit</h3>
+                          <span className="px-2 py-0.5 rounded-md bg-indigo-100 text-indigo-700 text-[10px] font-bold uppercase tracking-wider">AI Powered</span>
+                        </div>
+                        <p className="text-sm text-slate-500 mt-1 leading-relaxed">Start fresh with a blank slate. Use Orbit AI to dynamically generate custom pages and databases exactly how you want them.</p>
+                      </div>
+                    </div>
+                  </label>
+
+                  {/* Custom Option */}
+                  <div className={`relative p-5 rounded-2xl border-2 transition-all duration-200 ${setupMode === 'custom' ? 'border-slate-800 bg-slate-50' : 'border-slate-200 hover:border-slate-300 bg-white'}`}>
+                    <label className="flex items-start gap-4 cursor-pointer">
+                      <input 
+                        type="radio" 
+                        name="setupMode" 
+                        value="custom" 
+                        checked={setupMode === 'custom'} 
+                        onChange={() => setSetupMode('custom')} 
+                        className="sr-only" 
+                      />
+                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center mt-0.5 shrink-0 transition-colors ${setupMode === 'custom' ? 'border-slate-800 bg-slate-800' : 'border-slate-300'}`}>
+                        {setupMode === 'custom' && <div className="w-2 h-2 rounded-full bg-white"></div>}
+                      </div>
+                      <div>
+                        <h3 className={`font-bold ${setupMode === 'custom' ? 'text-slate-900' : 'text-slate-900'}`}>Custom Selection</h3>
+                        <p className="text-sm text-slate-500 mt-1 leading-relaxed">Hand-pick exactly which predefined pages you want to include in your workspace.</p>
+                      </div>
+                    </label>
+                    
+                    {setupMode === 'custom' && (
+                      <div className="mt-5 pt-5 border-t border-slate-200 pl-9">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
+                          {INDUSTRIES[industry]?.nav?.filter(n => !['/', '/settings', '/integrations', '/admin'].includes(n.path)).map((navItem) => (
+                            <label key={navItem.path} className="flex items-center space-x-3 p-3 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-slate-400 transition-colors group">
+                              <div className="relative flex items-center justify-center">
+                                <input 
+                                  type="checkbox" 
+                                  checked={selectedModules.includes(navItem.path)}
+                                  onChange={(e) => {
+                                    if (e.target.checked) setSelectedModules([...selectedModules, navItem.path]);
+                                    else setSelectedModules(selectedModules.filter(p => p !== navItem.path));
+                                  }}
+                                  className="peer sr-only"
+                                />
+                                <div className="w-5 h-5 border-2 border-slate-300 rounded peer-checked:bg-slate-800 peer-checked:border-slate-800 transition-colors"></div>
+                                <Check className="absolute w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" strokeWidth={3} />
+                              </div>
+                              <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900 transition-colors">{navItem.label}</span>
+                            </label>
+                          ))}
+                        </div>
+                        {selectedModules.length === 0 && (
+                          <p className="text-xs text-amber-600 font-medium mt-3 bg-amber-50 p-2 rounded-lg inline-block">Please select at least one module to continue.</p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Step 3: Invite Team */}
+            {step === 3 && (
+              <div className="space-y-8">
+                <div className="space-y-2">
+                  <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+                    {t("invite_your_team", "Invite your team")}
+                  </h2>
+                  <p className="text-slate-500 text-sm leading-relaxed">
+                    {t("add_your", "Add your")} {getTerm(industry, 'lawyer').toLowerCase()}{t(
+                      "s_and_staff_members_to_collabo",
+                      "s and staff members to collaborate in real-time."
+                    )}
+                  </p>
+                </div>
+
+                <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100 space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Full Name</label>
+                      <Input 
+                        type="text"
+                        placeholder="e.g. Jane Doe"
+                        value={staffName}
+                        onChange={(e) => setStaffName(e.target.value)}
+                        className="h-11 bg-white border-slate-200 text-slate-900 rounded-xl"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Email Address</label>
+                      <Input 
+                        type="email"
+                        placeholder="jane@example.com"
+                        value={staffEmail}
+                        onChange={(e) => setStaffEmail(e.target.value)}
+                        className="h-11 bg-white border-slate-200 text-slate-900 rounded-xl"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3 items-end">
+                    <div className="flex-1 space-y-2">
+                      <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Role</label>
+                      <Select value={staffRole} onValueChange={setStaffRole}>
+                        <SelectTrigger className="h-11 bg-white border-slate-200 rounded-xl text-slate-900">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="primary_role">{getTerm(industry, 'lawyer')}</SelectItem>
+                          <SelectItem value="partner">{t("manager_partner", "Manager / Partner")}</SelectItem>
+                          <SelectItem value="secretary">{t("admin_secretary", "Admin / Secretary")}</SelectItem>
+                          <SelectItem value="clerk">{t("assistant_clerk", "Assistant / Clerk")}</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <Button 
+                      onClick={handleAddStaff}
+                      disabled={!staffEmail || !staffName}
+                      className="h-11 px-6 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold shadow-sm transition-all active:scale-95"
+                    >
+                      {t("add_team", "Add")}
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Invited List */}
+                {invitedStaff.length > 0 ? (
+                  <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm">
+                    <div className="bg-slate-50 px-4 py-2 border-b border-slate-200">
+                      <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Pending Invites ({invitedStaff.length})</h4>
+                    </div>
+                    <div className="divide-y divide-slate-100 max-h-48 overflow-y-auto">
+                      {invitedStaff.map((staff, idx) => (
+                        <div key={idx} className="flex justify-between items-center p-4 hover:bg-slate-50 transition-colors">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">
+                              {staff.name.charAt(0).toUpperCase()}
+                            </div>
+                            <div>
+                              <p className="font-bold text-slate-900 text-sm leading-none">{staff.name}</p>
+                              <p className="text-slate-500 text-xs mt-1">{staff.email}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <Badge role={staff.role} industry={industry} />
+                            <button 
+                              onClick={() => handleRemoveStaff(idx)}
+                              className="text-slate-400 hover:text-red-500 transition-colors p-1 rounded-md hover:bg-red-50"
+                              title="Remove"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="border-2 border-dashed border-slate-200 rounded-2xl p-8 text-center bg-slate-50/50">
+                    <Users className="w-8 h-8 text-slate-300 mx-auto mb-3" />
+                    <p className="text-sm text-slate-500 font-medium">No team members added yet.</p>
+                    <p className="text-xs text-slate-400 mt-1">You can always invite them later from settings.</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Step 4: First Case */}
+            {step === 4 && (
+              <div className="space-y-8">
+                <div className="space-y-2">
+                  <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+                    {t("initialize_your_first", "Initialize your first")} {getTerm(industry, 'case')}
+                  </h2>
+                  <p className="text-slate-500 text-sm leading-relaxed">
+                    {t("create_a", "Create a")} {getTerm(industry, 'case').toLowerCase()} {t("and_link_it_to_your_first_acti", "and link it to your first active")} {getTerm(industry, 'client').toLowerCase()} {t("to_test_the_pipeline", "to test the pipeline.")}
+                  </p>
+                </div>
+
+                <div className="bg-blue-50/50 border border-blue-100 rounded-2xl p-6 space-y-5">
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(industry, 'case')} {t("title", "Title")}</label>
+                    <Input 
+                      type="text"
+                      value={caseTitle}
+                      onChange={(e) => setCaseTitle(e.target.value)}
+                      placeholder={`E.g., Initial ${getTerm(industry, 'case')} for setup`}
+                      className="h-12 bg-white border-blue-200 focus:border-blue-500 text-slate-900 rounded-xl"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(industry, 'client')} {t("full_name", "Full Name")}</label>
+                      <Input 
+                        type="text"
+                        value={clientName}
+                        onChange={(e) => setClientName(e.target.value)}
+                        placeholder="Adama Mensah"
+                        className="h-12 bg-white border-blue-200 focus:border-blue-500 text-slate-900 rounded-xl"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(industry, 'client')} {t("email", "Email")} <span className="text-slate-400 font-normal lowercase">(Optional)</span></label>
+                      <Input 
+                        type="email"
+                        value={clientEmail}
+                        onChange={(e) => setClientEmail(e.target.value)}
+                        placeholder="contact@email.com"
+                        className="h-12 bg-white border-blue-200 focus:border-blue-500 text-slate-900 rounded-xl"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+          </div>
+        </div>
+
+        {/* Footer Navigation */}
+        <div className="px-8 py-5 border-t border-slate-100 bg-slate-50/50 rounded-b-3xl shrink-0">
+          <div className="flex justify-between items-center gap-4">
+            {step > 1 ? (
               <Button 
                 variant="outline"
-                onClick={() => setStep(2)}
-                className="flex-1 rounded-xl text-slate-700 border-slate-200"
+                onClick={() => setStep(step - 1)}
+                className="h-12 px-6 rounded-xl text-slate-700 border-slate-200 bg-white hover:bg-slate-50 transition-colors"
               >
-                <ArrowLeft className="w-4 h-4 mr-1.5" /> {t("back", "Back")}
+                <ArrowLeft className="w-4 h-4 mr-2" /> {t("back", "Back")}
               </Button>
+            ) : (
+              <div></div> // Empty div for spacing if no back button
+            )}
+            
+            {step < 4 ? (
               <Button 
-                onClick={() => setStep(4)}
-                className="flex-1 bg-primary hover:bg-primary/95 text-white font-semibold rounded-xl shadow-md group"
+                onClick={() => setStep(step + 1)}
+                disabled={
+                  (step === 1 && !firmName) || 
+                  (step === 2 && setupMode === 'custom' && selectedModules.length === 0)
+                }
+                className="h-12 px-8 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md shadow-blue-600/20 group transition-all"
               >
                 {t("continue_setup", "Continue Setup")}
-                <ArrowRight className="w-4 h-4 ml-1.5 transition-transform group-hover:translate-x-0.5" />
+                <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
               </Button>
-            </div>
-          </div>
-        )}
-
-        {/* Step 4: First Case */}
-        {step === 4 && (
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <h2 className="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-1.5">
-                <Briefcase className="w-5 h-5 text-primary" /> {t("initialize_your_first", "Initialize your first")} {getTerm(industry, 'case')}
-              </h2>
-              <p className="text-sm text-slate-500 leading-relaxed">
-                {t("create_a", "Create a")} {getTerm(industry, 'case').toLowerCase()} {t("and_link_it_to_your_first_acti", "and link it to your first active")} {getTerm(industry, 'client').toLowerCase()} {t("to_test_the_pipeline", "to test the pipeline.")}
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(industry, 'case')} {t("title", "Title")}</label>
-                <Input 
-                  type="text"
-                  value={caseTitle}
-                  onChange={(e) => setCaseTitle(e.target.value)}
-                  placeholder={`E.g., Initial ${getTerm(industry, 'case')} for setup`}
-                  className="py-5"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(industry, 'client')} {t("full_name", "Full Name")}</label>
-                  <Input 
-                    type="text"
-                    value={clientName}
-                    onChange={(e) => setClientName(e.target.value)}
-                    placeholder="Adama Mensah"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(industry, 'client')} {t("email", "Email")}</label>
-                  <Input 
-                    type="email"
-                    value={clientEmail}
-                    onChange={(e) => setClientEmail(e.target.value)}
-                    placeholder="contact@email.com"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="pt-4 flex justify-between gap-4">
-              <Button 
-                variant="outline"
-                onClick={() => setStep(3)}
-                className="flex-1 rounded-xl text-slate-700 border-slate-200"
-              >
-                <ArrowLeft className="w-4 h-4 mr-1.5" /> {t("back", "Back")}
-              </Button>
+            ) : (
               <Button 
                 onClick={handleCompleteOnboarding}
                 disabled={loading || !caseTitle || !clientName}
-                className="flex-1 bg-primary hover:bg-primary/95 text-white font-semibold rounded-xl shadow-md flex items-center justify-center gap-1.5"
+                className="h-12 px-8 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-blue-600/20 flex items-center gap-2 transition-all hover:-translate-y-0.5 active:translate-y-0"
               >
                 {loading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    {t("finalizing_workspace", "Finalizing Workspace...")}
+                    <span>{t("finalizing_workspace", "Finalizing Workspace...")}</span>
                   </>
                 ) : (
                   <>
-                    <Sparkles className="w-4 h-4" />
-                    {t("complete_setup", "Complete Setup!")}
+                    <span>{t("complete_setup", "Complete Setup!")}</span>
+                    <Sparkles className="w-4 h-4 ml-1" />
                   </>
                 )}
               </Button>
-            </div>
+            )}
           </div>
-        )}
-      </div>
-      {/* Bottom info */}
-      <div className="max-w-4xl mx-auto w-full text-center text-xs text-slate-400">
-        {t(
-          "skip_steps_to_finalize_details",
-          "Skip steps to finalize details inside the main settings panel later."
-        )}
+        </div>
       </div>
     </div>
+  );
+}
+
+// Helper component for role badges
+function Badge({ role, industry }) {
+  const getRoleInfo = () => {
+    switch(role) {
+      case 'primary_role': return { bg: 'bg-indigo-100', text: 'text-indigo-700', label: getTerm(industry, 'lawyer') };
+      case 'partner': return { bg: 'bg-purple-100', text: 'text-purple-700', label: 'Partner/Manager' };
+      case 'secretary': return { bg: 'bg-emerald-100', text: 'text-emerald-700', label: 'Admin' };
+      case 'clerk': return { bg: 'bg-amber-100', text: 'text-amber-700', label: 'Assistant' };
+      default: return { bg: 'bg-slate-100', text: 'text-slate-700', label: role };
+    }
+  };
+  const info = getRoleInfo();
+  return (
+    <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${info.bg} ${info.text}`}>
+      {info.label}
+    </span>
   );
 }
