@@ -200,27 +200,27 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
               </Link>
               
               {!collapsed && item.isDynamic && (
-                <div className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className={cn("absolute right-2 top-1/2 -translate-y-1/2 transition-opacity", openMenuId === item.id ? "opacity-100 z-50" : "opacity-0 group-hover:opacity-100 z-10")}>
                   <button 
                     onClick={(e) => { e.preventDefault(); setOpenMenuId(openMenuId === item.id ? null : item.id); }}
-                    className="p-1 rounded hover:bg-black/10 text-sidebar-foreground/50 hover:text-sidebar-foreground"
+                    className="p-1 rounded hover:bg-sidebar-accent text-sidebar-foreground/50 hover:text-sidebar-foreground"
                   >
                     <MoreHorizontal className="w-4 h-4" />
                   </button>
                   
                   {openMenuId === item.id && (
-                    <div className="absolute right-0 mt-1 w-36 bg-popover border border-border shadow-lg rounded-md overflow-hidden z-50">
+                    <div className="absolute right-0 mt-1 w-36 bg-sidebar border border-sidebar-border shadow-xl rounded-md overflow-hidden">
                       <div className="py-1">
-                        <button onClick={(e) => { e.preventDefault(); handleTogglePublish(item.id, item.status); setOpenMenuId(null); }} className="w-full text-left px-3 py-1.5 text-xs text-popover-foreground hover:bg-muted flex items-center gap-2">
+                        <button onClick={(e) => { e.preventDefault(); handleTogglePublish(item.id, item.status); setOpenMenuId(null); }} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors">
                           <Eye className="w-3 h-3" /> {item.status === 'published' ? 'Unpublish' : 'Publish'}
                         </button>
-                        <button onClick={(e) => { e.preventDefault(); handleRenameModule(item.id, item.label); setOpenMenuId(null); }} className="w-full text-left px-3 py-1.5 text-xs text-popover-foreground hover:bg-muted flex items-center gap-2">
+                        <button onClick={(e) => { e.preventDefault(); handleRenameModule(item.id, item.label); setOpenMenuId(null); }} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors">
                           <Pencil className="w-3 h-3" /> Rename
                         </button>
-                        <button onClick={(e) => { e.preventDefault(); window.location.href = item.path; setOpenMenuId(null); }} className="w-full text-left px-3 py-1.5 text-xs text-popover-foreground hover:bg-muted flex items-center gap-2">
+                        <button onClick={(e) => { e.preventDefault(); window.location.href = item.path; setOpenMenuId(null); }} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors">
                           <Settings className="w-3 h-3" /> Customize
                         </button>
-                        <button onClick={(e) => { e.preventDefault(); handleDeleteModule(item.id, item.label); setOpenMenuId(null); }} className="w-full text-left px-3 py-1.5 text-xs text-destructive hover:bg-muted flex items-center gap-2">
+                        <button onClick={(e) => { e.preventDefault(); handleDeleteModule(item.id, item.label); setOpenMenuId(null); }} className="w-full text-left px-3 py-2 text-xs text-red-500 hover:bg-red-500/10 flex items-center gap-2 transition-colors">
                           <Trash2 className="w-3 h-3" /> Delete
                         </button>
                       </div>
