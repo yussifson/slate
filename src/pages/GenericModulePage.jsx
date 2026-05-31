@@ -122,33 +122,33 @@ export default function GenericModulePage({ title: propTitle, description: propD
       />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <div className="bg-white rounded-xl border border-slate-200 p-5 flex items-center justify-between shadow-sm">
+        <div className="bg-card rounded-xl border border-border p-5 flex items-center justify-between shadow-sm">
           <div>
-            <p className="text-xs text-slate-500 mb-1">Total Records</p>
-            <p className="text-2xl font-bold text-slate-900">{records.length}</p>
+            <p className="text-xs text-muted-foreground mb-1">Total Records</p>
+            <p className="text-2xl font-bold text-foreground">{records.length}</p>
           </div>
-          <div className="w-11 h-11 rounded-full bg-blue-50 flex items-center justify-center">
-            <BarChart2 className="w-5 h-5 text-blue-600" />
+          <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center">
+            <BarChart2 className="w-5 h-5 text-primary" />
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 p-5 flex items-center justify-between shadow-sm">
+        <div className="bg-card rounded-xl border border-border p-5 flex items-center justify-between shadow-sm">
           <div>
-            <p className="text-xs text-slate-500 mb-1">Module Status</p>
-            <p className="text-2xl font-bold text-slate-900">Active</p>
+            <p className="text-xs text-muted-foreground mb-1">Module Status</p>
+            <p className="text-2xl font-bold text-foreground">Active</p>
           </div>
-          <div className="w-11 h-11 rounded-full bg-emerald-50 flex items-center justify-center">
+          <div className="w-11 h-11 rounded-full bg-emerald-500/10 flex items-center justify-center">
             <ShieldCheck className="w-5 h-5 text-emerald-600" />
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 p-5 flex items-center justify-between shadow-sm">
+        <div className="bg-card rounded-xl border border-border p-5 flex items-center justify-between shadow-sm">
           <div>
-            <p className="text-xs text-slate-500 mb-1">Custom Fields</p>
-            <p className="text-2xl font-bold text-slate-900">{fieldDefs.length}</p>
+            <p className="text-xs text-muted-foreground mb-1">Custom Fields</p>
+            <p className="text-2xl font-bold text-foreground">{fieldDefs.length}</p>
           </div>
-          <div className="w-11 h-11 rounded-full bg-indigo-50 flex items-center justify-center">
-            <FileText className="w-5 h-5 text-indigo-600" />
+          <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center">
+            <FileText className="w-5 h-5 text-primary" />
           </div>
         </div>
       </div>
@@ -157,16 +157,16 @@ export default function GenericModulePage({ title: propTitle, description: propD
         <DynamicDashboard records={records} moduleDef={moduleDef} />
       )}
 
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm p-6 mt-6">
+      <div className="bg-card rounded-xl border border-border overflow-hidden shadow-sm p-6 mt-6">
         {isLoading ? (
-          <div className="h-64 flex flex-col items-center justify-center text-slate-400">
+          <div className="h-64 flex flex-col items-center justify-center text-muted-foreground">
             <RefreshCw className="w-8 h-8 animate-spin mb-4" />
             <p>Loading module definitions...</p>
           </div>
         ) : !moduleDef ? (
-          <div className="h-64 flex flex-col items-center justify-center text-slate-500">
-            <Sparkles className="w-12 h-12 text-slate-300 mb-4" />
-            <p className="font-medium text-slate-700 text-lg">No Dynamic Modules Found</p>
+          <div className="h-64 flex flex-col items-center justify-center text-muted-foreground">
+            <Sparkles className="w-12 h-12 text-muted-foreground/50 mb-4" />
+            <p className="font-medium text-foreground text-lg">No Dynamic Modules Found</p>
             <p className="text-sm mt-1">Use the AI Assistant to generate a new module.</p>
           </div>
         ) : (
@@ -175,7 +175,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
       </div>
 
       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="sm:max-w-[500px] max-h-[85vh] flex flex-col">
           <DialogHeader>
             <DialogTitle>Add New Record</DialogTitle>
             <DialogDescription>
@@ -183,7 +183,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
             </DialogDescription>
           </DialogHeader>
           
-          <div className="mt-4">
+          <div className="mt-4 overflow-y-auto flex-1 pr-2">
             {moduleDef && (
               <DynamicForm 
                 moduleDef={moduleDef} 
@@ -205,17 +205,17 @@ export default function GenericModulePage({ title: propTitle, description: propD
           
           <div className="space-y-4 mt-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Visibility</label>
+              <label className="block text-sm font-medium text-foreground mb-1">Visibility</label>
               <select 
                 value={visibility} 
                 onChange={e => setVisibility(e.target.value)}
-                className="w-full border rounded-md px-3 py-2 text-sm"
+                className="w-full border border-input bg-background text-foreground rounded-md px-3 py-2 text-sm"
               >
                 <option value="private">Private (Only my workspace)</option>
                 <option value="shared">Shared (Specific workspaces)</option>
                 <option value="public">Public (Marketplace Template)</option>
               </select>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 {visibility === 'public' && "This module's configuration will be available in the public Marketplace for anyone to install."}
                 {visibility === 'private' && "Only users in your firm can access this module."}
                 {visibility === 'shared' && "Users from the specified workspaces can access this module."}
@@ -224,21 +224,21 @@ export default function GenericModulePage({ title: propTitle, description: propD
 
             {visibility === 'shared' && (
               <div className="animate-in fade-in zoom-in-95 duration-200">
-                <label className="block text-sm font-medium mb-1">Shared Workspace IDs</label>
+                <label className="block text-sm font-medium text-foreground mb-1">Shared Workspace IDs</label>
                 <input 
                   type="text" 
                   value={sharedWith}
                   onChange={e => setSharedWith(e.target.value)}
                   placeholder="Comma-separated workspace IDs"
-                  className="w-full border rounded-md px-3 py-2 text-sm"
+                  className="w-full border border-input bg-background text-foreground rounded-md px-3 py-2 text-sm"
                 />
-                <p className="text-xs text-slate-500 mt-1">Enter the Company ID of the workspace you want to share with.</p>
+                <p className="text-xs text-muted-foreground mt-1">Enter the Company ID of the workspace you want to share with.</p>
               </div>
             )}
 
             <div className="pt-4 flex justify-end gap-2">
               <Button variant="outline" onClick={() => setIsSettingsOpen(false)}>Cancel</Button>
-              <Button onClick={handleSaveSettings} disabled={isSavingSettings} className="bg-blue-600 hover:bg-blue-700 text-white">
+              <Button onClick={handleSaveSettings} disabled={isSavingSettings} className="bg-primary hover:bg-primary/90 text-primary-foreground">
                 {isSavingSettings ? "Saving..." : "Save Settings"}
               </Button>
             </div>

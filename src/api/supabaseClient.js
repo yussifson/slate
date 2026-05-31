@@ -18,9 +18,10 @@ const customFetch = async (url, options) => {
   }
 
   const controller = new AbortController();
-  // Uploads get a longer timeout; everything else 5s for fast offline fallback
+  // Uploads and Edge Functions get a longer timeout; everything else 8s for fast offline fallback
   const isUpload = url.includes('/storage/v1/object/');
-  const timeoutDuration = isUpload ? 30000 : 5000;
+  const isEdgeFunction = url.includes('/functions/v1/');
+  const timeoutDuration = isUpload || isEdgeFunction ? 60000 : 8000;
   const timeoutId = setTimeout(() => controller.abort(), timeoutDuration);
 
   try {
