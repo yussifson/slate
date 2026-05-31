@@ -398,27 +398,8 @@ export default function GlobalAIAssistant({ onClose }) {
           }
           case 'create_module':
           case 'generate_module': {
-            if (action.prompt) {
-              results.push(`Generating module... This might take a moment.`);
-              try {
-                const response = await supabase.functions.invoke('generate-dynamic-module', {
-                  body: { prompt: action.prompt, company_id: companyId }
-                });
-                if (response.error) throw response.error;
-                
-                const data = response.data;
-                if (data?.success) {
-                  results.push(`Success! Module '${data.module.name}' generated. Navigating...`);
-                  const slug = data.module.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-                  setTimeout(() => window.location.href = `/m/${slug}`, 1500);
-                } else {
-                  throw new Error(data?.error || 'Unknown error from Edge Function');
-                }
-              } catch (err) {
-                results.push(`The AI module generator is not yet deployed. Redirecting you to the manual module builder where you can create "${action.prompt}" yourself...`);
-                setTimeout(() => navigate('/modules/create'), 1500);
-              }
-            }
+            results.push(`Redirecting to module builder...`);
+            setTimeout(() => window.location.href = `/modules/create`, 1500);
             break;
           }
           default:
@@ -568,18 +549,16 @@ AGENT POWERS (return EXACTLY this JSON format inline to act):
 - Remember: <AGENT_ACTION>{"tool":"remember","fact":"User prefers dark mode"}</AGENT_ACTION>
 - Search Memory: <AGENT_ACTION>{"tool":"search_memory","query":"preferences"}</AGENT_ACTION>
 - Request Confirmation: <AGENT_ACTION>{"tool":"ask_confirmation","actionToConfirm":{"tool":"navigate_to","route":"/classes"},"message":"Did you mean the Classes page?"}</AGENT_ACTION>
-- Generate Module: <AGENT_ACTION>{"tool":"generate_module","prompt":"Create a Patient Referral Management module"}</AGENT_ACTION>
 
 RULES FOR MULTI-STEP REASONING:
 1. NEVER explain how the user can do something. YOU MUST do it for them.
 2. When asked to CREATE a record, create the record and STOP. DO NOT use navigate_to to show the record.
-3. If asked to create an ENTIRE NEW MODULE or a page that does NOT exist in the ROUTE MAP, you MUST use generate_module ONLY. NEVER use navigate_to for modules that don't exist yet.
-4. ONLY use navigate_to for routes that EXACTLY appear in the ROUTE MAP above. Do NOT invent any path not in the list. If a route is not in the list, use generate_module instead.
+3. If asked to create an ENTIRE NEW MODULE, custom feature, or a page that does NOT exist in the ROUTE MAP, you MUST use navigate_to to route the user to "/modules/create" AND use show_toast to tell them: "I can help you build this! Just click 'Generate with AI' on this page."
+4. ONLY use navigate_to for routes that EXACTLY appear in the ROUTE MAP above, plus "/modules/create". Do NOT invent any path not in the list.
 5. DO NOT output markdown hyperlinks for navigation (e.g. [PageName](url)).
 6. DO NOT wrap <AGENT_ACTION> in markdown code blocks. Output it raw inline.
 7. Once all tasks are complete, summarize what you did in plain language and STOP outputting <AGENT_ACTION> blocks.
 8. For 'case' records, use 'title' instead of 'name'.
-9. CRITICAL: Patient Referrals, Referral Management, and any other custom workflows that are NOT in the ROUTE MAP must be created with generate_module. They will be accessible at /m/[module-slug] after creation.
 9. If the user's input has a typo, is ambiguous, or if you are unsure which page they mean, ALWAYS use the 'ask_confirmation' tool first.
 10. If the user asks for multiple distinct actions (e.g. "create a task and a lead"), ensure you output an <AGENT_ACTION> block for EACH request before summarizing.`;
 

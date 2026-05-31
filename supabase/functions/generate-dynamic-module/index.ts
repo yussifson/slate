@@ -79,40 +79,7 @@ serve(async (req) => {
     const cleanText = resultText.replace(/```json/g, '').replace(/```/g, '').trim()
     const generatedModule = JSON.parse(cleanText)
 
-    // Optional: Save to Database (we can do this directly from frontend, or do it here)
-    // If the requirement is to do it here:
-    const { data: moduleData, error: moduleError } = await supabaseClient
-      .from('module_definitions')
-      .insert({
-        company_id,
-        name: generatedModule.module.name,
-        description: generatedModule.module.description,
-        icon: generatedModule.module.icon,
-        is_active: 'true',
-        created_by: user.id
-      })
-      .select()
-      .single()
-
-    if (moduleError) throw moduleError;
-
-    const fieldsToInsert = generatedModule.fields.map((f: any, idx: number) => ({
-      company_id,
-      module_id: moduleData.id,
-      name: f.name,
-      field_type: f.field_type,
-      options: f.options || [],
-      is_required: f.is_required || false,
-      order_index: idx
-    }))
-
-    const { error: fieldsError } = await supabaseClient
-      .from('field_definitions')
-      .insert(fieldsToInsert)
-
-    if (fieldsError) throw fieldsError;
-
-    return new Response(JSON.stringify({ success: true, module: moduleData, fields: generatedModule.fields }), {
+    return new Response(JSON.stringify({ success: true, schema: generatedModule }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
     })

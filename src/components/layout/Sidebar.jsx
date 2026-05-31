@@ -60,7 +60,17 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
         console.error("Failed to load dynamic nav", err);
       }
     };
-    if (user?.company_id) fetchDynamicNav();
+    if (user?.company_id) {
+      fetchDynamicNav();
+      const channel = supabase.channel('sidebar-modules')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'module_definitions' }, () => {
+          fetchDynamicNav();
+        })
+        .subscribe();
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
   }, [user?.company_id]);
 
   const activeCompanyLogo = impersonatedCompany?.logo_url || impersonatedCompany?.logo_light_url || user?.company_logo_url;
