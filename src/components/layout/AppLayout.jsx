@@ -24,6 +24,7 @@ export default function AppLayout() {
   const [isAIOpen, setIsAIOpen] = useState(false);
   const [isPrefsLoaded, setIsPrefsLoaded] = useState(false);
   const [orbitContext, setOrbitContext] = useState(null);
+  const [uiPrefsId, setUiPrefsId] = useState(null);
 
   useEffect(() => {
     if (!user?.email || !user?.company_id || isPrefsLoaded) return;
@@ -34,14 +35,17 @@ export default function AppLayout() {
         const { supabase } = await import("@/api/supabaseClient");
         const { data } = await supabase
           .from('industry_records')
-          .select('data')
+          .select('id, data')
           .eq('company_id', user.company_id)
           .eq('record_type', 'ui_prefs')
           .eq('search_text', user.email)
           .maybeSingle();
 
-        if (data?.data) {
-          setIsAIOpen(!!data.data.isAIOpen);
+        if (data) {
+          setUiPrefsId(data.id);
+          if (data.data) {
+            setIsAIOpen(!!data.data.isAIOpen);
+          }
         }
       } catch (e) {
         console.error("Failed to fetch UI prefs", e);
@@ -59,8 +63,11 @@ export default function AppLayout() {
     if (user?.email && user?.company_id) {
       try {
         const { supabase } = await import("@/api/supabaseClient");
+        const recordId = uiPrefsId || crypto.randomUUID();
+        if (!uiPrefsId) setUiPrefsId(recordId);
+
         await supabase.from('industry_records').upsert({
-          id: `prefs_${user.email}`,
+          id: recordId,
           company_id: user.company_id,
           industry: 'core',
           record_type: 'ui_prefs',
