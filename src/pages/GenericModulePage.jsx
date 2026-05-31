@@ -235,7 +235,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
             </DialogDescription>
           </DialogHeader>
           
-          <div className="mt-4 overflow-y-auto flex-1 pr-2">
+          <div className="mt-2 flex-1 min-h-0">
             {moduleDef && (
               <DynamicForm 
                 moduleDef={moduleDef} 
