@@ -94,8 +94,53 @@ export default function GenericModulePage({ title: propTitle, description: propD
         .eq('id', moduleDef.id);
         
       if (error) throw error;
+
+      // Direct Share Cloning Logic
+      if (visibility === 'shared' && sharedWith.trim().length > 0) {
+        const ids = sharedWith.split(',').map(id => id.trim()).filter(Boolean);
+        for (const targetCompanyId of ids) {
+          // Check if already cloned to this company
+          const { data: existing } = await supabase
+            .from('module_definitions')
+            .select('id')
+            .eq('company_id', targetCompanyId)
+            .eq('name', moduleDef.name);
+
+          if (!existing || existing.length === 0) {
+            // Clone module as draft
+            const newModuleId = crypto.randomUUID();
+            await supabase.from('module_definitions').insert({
+              id: newModuleId,
+              company_id: targetCompanyId,
+              name: moduleDef.name,
+              description: moduleDef.description,
+              icon: moduleDef.icon,
+              config: moduleDef.config,
+              status: 'draft',
+              is_active: 'true',
+              created_at: new Date().toISOString()
+            });
+
+            // Clone fields
+            const newFields = fieldDefs.map(f => ({
+              id: crypto.randomUUID(),
+              company_id: targetCompanyId,
+              module_id: newModuleId,
+              name: f.name,
+              field_type: f.field_type,
+              is_required: f.is_required,
+              options: f.options,
+              order_index: f.order_index,
+              created_at: new Date().toISOString()
+            }));
+            if (newFields.length > 0) {
+              await supabase.from('field_definitions').insert(newFields);
+            }
+          }
+        }
+      }
       
-      toast({ title: "Settings Saved", description: "Module visibility updated." });
+      toast({ title: "Settings Saved", description: "Module sharing and visibility updated." });
       setIsSettingsOpen(false);
       fetchDynamicData();
     } catch (err) {
@@ -239,7 +284,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
                   placeholder="Comma-separated workspace IDs"
                   className="w-full border border-input bg-background text-foreground rounded-md px-3 py-2 text-sm"
                 />
-                <p className="text-xs text-muted-foreground mt-1">Enter the Secure Workspace ID of the workspace you want to share with.</p>
+                <p className="text-xs text-muted-foreground mt-1">Enter the Secure Workspace ID of the workspace you want to share with. They will receive a Draft copy they can publish.</p>
               </div>
             )}
 

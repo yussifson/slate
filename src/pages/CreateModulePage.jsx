@@ -82,9 +82,11 @@ export default function CreateModulePage() {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!name.trim() || fields.length === 0) return;
+  const saveModule = async (status = 'published') => {
+    if (!name.trim() || fields.length === 0) {
+      toast({ title: "Validation Error", description: "Module Name and at least 1 field are required.", variant: "destructive" });
+      return;
+    }
 
     setIsSubmitting(true);
     try {
@@ -95,6 +97,7 @@ export default function CreateModulePage() {
         name,
         description,
         icon,
+        status, // 'draft' or 'published'
         is_active: 'true',
         config: { layout, theme },
         created_at: new Date().toISOString()
@@ -118,8 +121,8 @@ export default function CreateModulePage() {
       if (fieldError) throw fieldError;
 
       toast({
-        title: "✨ Module Successfully Built!",
-        description: `Your custom module '${name}' is ready to use. Redirecting...`,
+        title: status === 'draft' ? "📝 Saved as Draft" : "✨ Module Successfully Published!",
+        description: `Your custom module '${name}' is ready. Redirecting...`,
       });
 
       const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -142,7 +145,7 @@ export default function CreateModulePage() {
       </div>
 
       <div className="bg-card rounded-xl border border-border p-6 shadow-sm max-w-5xl mx-auto">
-        <form onSubmit={handleSubmit} className="space-y-8">
+        <div className="space-y-8">
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
@@ -316,12 +319,15 @@ export default function CreateModulePage() {
             </div>
           </div>
 
-          <div className="pt-6 border-t border-border flex justify-end">
-            <Button type="submit" disabled={isSubmitting} className="bg-primary hover:bg-primary/90 text-primary-foreground min-w-[150px]">
-              {isSubmitting ? "Saving..." : "Save Module"}
+          <div className="pt-6 border-t border-border flex justify-end gap-3">
+            <Button type="button" variant="outline" onClick={() => saveModule('draft')} disabled={isSubmitting} className="min-w-[120px]">
+              {isSubmitting ? "Saving..." : "Save as Draft"}
+            </Button>
+            <Button type="button" onClick={() => saveModule('published')} disabled={isSubmitting} className="bg-primary hover:bg-primary/90 text-primary-foreground min-w-[150px]">
+              {isSubmitting ? "Saving..." : "Publish Module"}
             </Button>
           </div>
-        </form>
+        </div>
       </div>
 
       {isAiModalOpen && (

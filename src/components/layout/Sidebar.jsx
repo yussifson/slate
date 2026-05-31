@@ -15,7 +15,7 @@ import {
   Award, Library, Building2, AlertCircle, Clock,
   Network, AlertTriangle, Gift, Banknote, CalendarOff,
   HandCoins, Users2, Blocks, Map, Warehouse, Car, MapPin,
-  FileSearch, LayoutGrid, BedDouble, BellRing, MoreHorizontal, Pencil, Trash2
+  FileSearch, LayoutGrid, BedDouble, BellRing, MoreHorizontal, Pencil, Trash2, Eye
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useImpersonation } from "@/lib/ImpersonationContext";
@@ -51,11 +51,19 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   useEffect(() => {
     const fetchDynamicNav = async () => {
       try {
-        const { data } = await supabase
+        let query = supabase
           .from('module_definitions')
-          .select('id, name, icon')
+          .select('id, name, icon, status')
           .eq('is_active', 'true')
           .or(`company_id.eq.${user?.company_id || ''},shared_with.ilike.%${user?.company_id || ''}%`);
+        
+        if (!isAdmin) {
+          query = query.eq('status', 'published');
+        } else {
+          query = query.in('status', ['published', 'draft']);
+        }
+
+        const { data } = await query;
         setDynamicModules(data || []);
       } catch (err) {
         console.error("Failed to load dynamic nav", err);
@@ -101,6 +109,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
     id: m.id,
     label: m.name,
     icon: m.icon || "Sparkles",
+    status: m.status || "published",
     path: `/m/${m.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`,
     isDynamic: true
   }));
@@ -127,6 +136,11 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
     if (newName && newName.trim() !== "" && newName !== currentName) {
       await supabase.from('module_definitions').update({ name: newName }).eq('id', id);
     }
+  };
+
+  const handleTogglePublish = async (id, currentStatus) => {
+    const newStatus = currentStatus === 'published' ? 'draft' : 'published';
+    await supabase.from('module_definitions').update({ status: newStatus }).eq('id', id);
   };
 
   const renderNavContent = (collapsed) => (
@@ -175,7 +189,14 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
                 )}
               >
                 <IconComp className={cn("flex-shrink-0 transition-all", collapsed ? "w-5 h-5" : "w-4 h-4")} />
-                {!collapsed && <span className="whitespace-nowrap animate-in fade-in duration-200">{t(item.label.toLowerCase().replace(/\s+/g, '_'), item.label)}</span>}
+                {!collapsed && (
+                  <div className="flex items-center gap-2 overflow-hidden flex-1 animate-in fade-in duration-200">
+                    <span className="whitespace-nowrap truncate">{t(item.label.toLowerCase().replace(/\s+/g, '_'), item.label)}</span>
+                    {item.status === 'draft' && (
+                      <span className="text-[9px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-500 px-1.5 py-0.5 rounded-sm">Draft</span>
+                    )}
+                  </div>
+                )}
               </Link>
               
               {!collapsed && item.isDynamic && (
@@ -190,6 +211,9 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
                   {openMenuId === item.id && (
                     <div className="absolute right-0 mt-1 w-36 bg-popover border border-border shadow-lg rounded-md overflow-hidden z-50">
                       <div className="py-1">
+                        <button onClick={(e) => { e.preventDefault(); handleTogglePublish(item.id, item.status); setOpenMenuId(null); }} className="w-full text-left px-3 py-1.5 text-xs text-popover-foreground hover:bg-muted flex items-center gap-2">
+                          <Eye className="w-3 h-3" /> {item.status === 'published' ? 'Unpublish' : 'Publish'}
+                        </button>
                         <button onClick={(e) => { e.preventDefault(); handleRenameModule(item.id, item.label); setOpenMenuId(null); }} className="w-full text-left px-3 py-1.5 text-xs text-popover-foreground hover:bg-muted flex items-center gap-2">
                           <Pencil className="w-3 h-3" /> Rename
                         </button>
