@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { prompt, company_id } = await req.json()
+    const { prompt, company_id, currentSchema } = await req.json()
 
     if (!prompt) {
       throw new Error('Prompt is required')
@@ -25,7 +25,7 @@ serve(async (req) => {
       throw new Error('Cloudflare AI credentials not configured in Supabase secrets.')
     }
 
-    const systemPrompt = `You are an AI that generates business module configurations for a platform called OptalFlow.
+    let systemPrompt = `You are an AI that generates business module configurations for a platform called OptalFlow.
 Given a user request, return ONLY a valid JSON object — no explanations, no markdown, no code fences.
 Use this exact structure:
 {
@@ -48,6 +48,13 @@ field_type must be one of: text, number, date, select, boolean
 For select fields, add an "options" array of strings.
 Generate 5-10 relevant fields. Return ONLY the JSON object.`
 
+    let userMessage = `Create a module for: ${prompt}`
+
+    if (currentSchema) {
+      systemPrompt += `\n\nIMPORTANT: The user is requesting EDITS to an existing module. You must merge their request with the current schema and return the FULL UPDATED SCHEMA.`
+      userMessage = `Current Schema: ${JSON.stringify(currentSchema)}\n\nUser Request: ${prompt}`
+    }
+
     const cfResponse = await fetch(
       `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/@cf/meta/llama-3.1-8b-instruct`,
       {
@@ -59,7 +66,7 @@ Generate 5-10 relevant fields. Return ONLY the JSON object.`
         body: JSON.stringify({
           messages: [
             { role: 'system', content: systemPrompt },
-            { role: 'user', content: `Create a module for: ${prompt}` },
+            { role: 'user', content: userMessage },
           ],
           max_tokens: 1024,
         }),

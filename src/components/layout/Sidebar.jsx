@@ -140,6 +140,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
 
   const confirmDelete = async () => {
     if (deleteData) {
+      setDynamicModules(prev => prev.filter(m => m.id !== deleteData.id));
       await supabase.from('module_definitions').delete().eq('id', deleteData.id);
       setDeleteData(null);
     }
@@ -147,6 +148,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
 
   const confirmRename = async () => {
     if (renameData && renameData.newName.trim() !== "" && renameData.newName !== renameData.currentName) {
+      setDynamicModules(prev => prev.map(m => m.id === renameData.id ? { ...m, name: renameData.newName } : m));
       await supabase.from('module_definitions').update({ name: renameData.newName }).eq('id', renameData.id);
       setRenameData(null);
     } else {
@@ -156,6 +158,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
 
   const handleTogglePublish = async (id, currentStatus) => {
     const newStatus = currentStatus === 'published' ? 'draft' : 'published';
+    setDynamicModules(prev => prev.map(m => m.id === id ? { ...m, status: newStatus } : m));
     await supabase.from('module_definitions').update({ status: newStatus }).eq('id', id);
   };
 

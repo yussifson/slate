@@ -5,7 +5,33 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/api/supabaseClient";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCompanyId } from "@/hooks/useCompanyId";
-import { Blocks, Sparkles, Plus, Trash2, X } from "lucide-react";
+import { Blocks, Sparkles, Plus, Trash2, X, Play } from "lucide-react";
+import DynamicTable from "@/components/ui/DynamicTable";
+import DynamicGrid from "@/components/ui/DynamicGrid";
+
+const generateDummyData = (fields) => {
+  const dummyCount = 5;
+  const records = [];
+  for (let i = 0; i < dummyCount; i++) {
+    const data = {};
+    fields.forEach(f => {
+      const name = f.name.trim().replace(/ /g, '_').toLowerCase();
+      if (!name) return;
+      if (f.field_type === 'text') data[name] = `Sample ${f.name} ${i+1}`;
+      else if (f.field_type === 'number') data[name] = Math.floor(Math.random() * 1000);
+      else if (f.field_type === 'date') data[name] = new Date(Date.now() - Math.random() * 10000000000).toISOString().split('T')[0];
+      else if (f.field_type === 'boolean') data[name] = Math.random() > 0.5;
+      else if (f.field_type === 'select') {
+        const opts = f.options ? f.options.split(',').map(o => o.trim()).filter(Boolean) : [];
+        data[name] = opts.length > 0 ? opts[Math.floor(Math.random() * opts.length)] : 'Option 1';
+      } else {
+        data[name] = `Data ${i+1}`;
+      }
+    });
+    records.push({ id: `dummy-${i}`, data, created_at: new Date().toISOString() });
+  }
+  return records;
+};
 
 export default function CreateModulePage() {
   const { toast } = useToast();
@@ -70,8 +96,24 @@ export default function CreateModulePage() {
     
     setIsGenerating(true);
     try {
+      const payload = {
+        prompt: aiPrompt, 
+        company_id: companyId
+      };
+      
+      if (isEditing) {
+        payload.currentSchema = {
+          name,
+          description,
+          icon,
+          layout,
+          theme,
+          fields: fields.map(f => ({ name: f.name, field_type: f.field_type, is_required: f.is_required, options: f.options }))
+        };
+      }
+
       const response = await supabase.functions.invoke('generate-dynamic-module', {
-        body: { prompt: aiPrompt, company_id: companyId }
+        body: payload
       });
       
       if (response.error) throw response.error;
@@ -174,19 +216,26 @@ export default function CreateModulePage() {
     }
   };
 
-  return (
-    <div className="space-y-6 animate-in fade-in duration-300 pb-20">
+    <div className="space-y-6 animate-in fade-in duration-300 pb-20 max-w-[1600px] mx-auto w-full">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <PageHeader title={isEditing ? "Edit Module" : "Module Builder"} subtitle="Design custom records and workflows." />
-        <Button onClick={() => setIsAiModalOpen(true)} className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 font-bold shadow-md">
-          <Sparkles className="w-4 h-4" /> OrbitBolt AI
-        </Button>
+        <div className="flex gap-2">
+          {isEditing && (
+            <Button onClick={() => setIsAiModalOpen(true)} variant="outline" className="gap-2 font-semibold">
+              <Sparkles className="w-4 h-4 text-purple-600" /> AI Edit Module
+            </Button>
+          )}
+          {!isEditing && (
+            <Button onClick={() => setIsAiModalOpen(true)} className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 font-bold shadow-md">
+              <Sparkles className="w-4 h-4" /> Generate with AI
+            </Button>
+          )}
+        </div>
       </div>
 
-      <div className="bg-card rounded-xl border border-border p-6 shadow-sm max-w-5xl mx-auto">
-        <div className="space-y-8">
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className="xl:col-span-1 space-y-6">
+          <div className="bg-card rounded-xl border border-border p-5 shadow-sm space-y-6">
             <div className="space-y-4">
               <h3 className="font-semibold text-foreground border-b border-border pb-2">Module Details</h3>
               <div>
@@ -221,15 +270,9 @@ export default function CreateModulePage() {
               </div>
             </div>
 
-            <div className="space-y-4">
-              <div className="flex items-center justify-between border-b border-border pb-2">
-                <h3 className="font-semibold text-foreground">Data Fields</h3>
-                <Button type="button" variant="outline" size="sm" onClick={handleAddField} className="h-7 px-2 text-xs gap-1">
-                  <Plus className="w-3 h-3" /> Add Field
-                </Button>
-              </div>
+              <h3 className="font-semibold text-foreground border-b border-border pb-2 mt-6">Data Fields</h3>
               
-              <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2">
+              <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
                 {fields.map((f, i) => (
                   <div key={i} className="bg-muted border border-border rounded-lg p-3 relative group">
                     <button type="button" onClick={() => handleRemoveField(i)} className="absolute top-2 right-2 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity">
@@ -278,10 +321,13 @@ export default function CreateModulePage() {
                   </div>
                 ))}
               </div>
+              <Button type="button" variant="outline" size="sm" onClick={handleAddField} className="w-full mt-2 h-8 text-xs gap-1">
+                <Plus className="w-3 h-3" /> Add New Field
+              </Button>
             </div>
 
             <div className="space-y-4">
-              <div className="flex items-center justify-between border-b border-border pb-2">
+              <div className="flex items-center justify-between border-b border-border pb-2 mt-6">
                 <h3 className="font-semibold text-foreground">Design & Layout</h3>
               </div>
               
@@ -331,40 +377,62 @@ export default function CreateModulePage() {
                   ))}
                 </div>
               </div>
+            </div>
 
-              <div className="mt-8 p-4 bg-muted border border-border rounded-lg">
-                <p className="text-xs text-muted-foreground mb-2">Live Preview Outline</p>
-                <div className={`p-3 rounded-md shadow-sm border bg-card ${theme === 'primary' ? 'border-primary/30' : `border-${theme}-200`}`}>
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className={`w-6 h-6 rounded flex items-center justify-center ${theme === 'primary' ? 'bg-primary/20 text-primary' : `bg-${theme}-100 text-${theme}-600`}`}>
-                      <Blocks className="w-3 h-3" />
-                    </div>
-                    <div className="h-3 w-20 bg-muted-foreground/20 rounded"></div>
-                  </div>
-                  {layout === 'table' ? (
-                    <div className="space-y-2">
-                      <div className="h-2 w-full bg-muted-foreground/10 rounded"></div>
-                      <div className="h-2 w-full bg-muted-foreground/10 rounded"></div>
-                      <div className="h-2 w-full bg-muted-foreground/10 rounded"></div>
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-2 gap-2">
-                      <div className="h-10 bg-muted-foreground/10 rounded"></div>
-                      <div className="h-10 bg-muted-foreground/10 rounded"></div>
-                    </div>
-                  )}
-                </div>
-              </div>
+            <div className="pt-6 border-t border-border flex justify-end gap-3 mt-6">
+              <Button type="button" variant="outline" onClick={() => saveModule('draft')} disabled={isSubmitting} className="flex-1">
+                {isSubmitting ? "Saving..." : "Save Draft"}
+              </Button>
+              <Button type="button" onClick={() => saveModule('published')} disabled={isSubmitting} className="bg-primary hover:bg-primary/90 text-primary-foreground flex-1">
+                {isSubmitting ? "Saving..." : (isEditing ? "Update Module" : "Publish")}
+              </Button>
             </div>
           </div>
+        </div>
 
-          <div className="pt-6 border-t border-border flex justify-end gap-3">
-            <Button type="button" variant="outline" onClick={() => saveModule('draft')} disabled={isSubmitting} className="min-w-[120px]">
-              {isSubmitting ? "Saving..." : "Save as Draft"}
-            </Button>
-            <Button type="button" onClick={() => saveModule('published')} disabled={isSubmitting} className="bg-primary hover:bg-primary/90 text-primary-foreground min-w-[150px]">
-              {isSubmitting ? "Saving..." : "Publish Module"}
-            </Button>
+        <div className="xl:col-span-2">
+          <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden h-full flex flex-col">
+            <div className="p-4 border-b border-border flex items-center justify-between bg-muted/30">
+              <div className="flex items-center gap-2 text-foreground font-medium">
+                <Play className="w-4 h-4 text-primary" />
+                Live Preview
+              </div>
+              <div className="text-xs text-muted-foreground px-2 py-1 bg-background border border-border rounded-md">
+                Interactive Environment
+              </div>
+            </div>
+            <div className="p-6 flex-1 min-h-[600px] bg-background/50">
+              {fields.filter(f => f.name.trim()).length > 0 ? (
+                <div className="animate-in fade-in zoom-in-95 duration-300">
+                  <div className="mb-6 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                      <Blocks className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-bold text-foreground">{name || "Untitled Module"}</h2>
+                      <p className="text-sm text-muted-foreground">{description || "No description provided."}</p>
+                    </div>
+                  </div>
+                  {layout === 'table' ? (
+                    <DynamicTable 
+                      data={generateDummyData(fields)} 
+                      fieldDefinitions={fields.map((f, i) => ({ ...f, name: f.name.trim().replace(/ /g, '_').toLowerCase(), order_index: i }))} 
+                    />
+                  ) : (
+                    <DynamicGrid 
+                      data={generateDummyData(fields)} 
+                      fieldDefinitions={fields.map((f, i) => ({ ...f, name: f.name.trim().replace(/ /g, '_').toLowerCase(), order_index: i }))} 
+                      theme={theme}
+                    />
+                  )}
+                </div>
+              ) : (
+                <div className="h-full flex flex-col items-center justify-center text-muted-foreground">
+                  <Sparkles className="w-12 h-12 mb-4 opacity-20" />
+                  <p>Add fields to see a live preview</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
