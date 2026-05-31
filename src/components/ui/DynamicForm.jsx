@@ -11,12 +11,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { powerSync } from '@/api/PowerSyncConnector';
+import { supabase } from '@/api/supabaseClient';
 import { useToast } from '@/components/ui/use-toast';
+import { useAuth } from '@/lib/AuthContext';
 import { Loader2 } from 'lucide-react';
 
 export default function DynamicForm({ moduleDef, fieldDefinitions = [], onSuccess, onCancel }) {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm();
 
@@ -24,24 +26,18 @@ export default function DynamicForm({ moduleDef, fieldDefinitions = [], onSucces
     if (!moduleDef) return;
     setIsSubmitting(true);
     try {
-      // In a real app, you would get the user's company_id and auth info
-      const companyId = 'default_company';
-      
       const record = {
         id: crypto.randomUUID(),
         module_id: moduleDef.id,
-        company_id: companyId,
-        data: JSON.stringify(data),
+        company_id: user?.company_id || moduleDef.company_id,
+        data: data,
         status: 'active',
-        created_date: new Date().toISOString(),
-        updated_date: new Date().toISOString(),
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       };
 
-      await powerSync.execute(
-        `INSERT INTO dynamic_records (id, module_id, company_id, data, status, created_date, updated_date) 
-         VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        [record.id, record.module_id, record.company_id, record.data, record.status, record.created_date, record.updated_date]
-      );
+      const { error } = await supabase.from('dynamic_records').insert(record);
+      if (error) throw error;
 
       toast({
         title: "Success",
@@ -53,7 +49,7 @@ export default function DynamicForm({ moduleDef, fieldDefinitions = [], onSucces
       console.error("Error creating record", err);
       toast({
         title: "Error",
-        description: "Failed to create record. Please try again.",
+        description: err.message || "Failed to create record. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -83,7 +79,7 @@ export default function DynamicForm({ moduleDef, fieldDefinitions = [], onSucces
       case 'select':
         let options = [];
         try {
-          options = typeof field.options === 'string' ? JSON.parse(field.options) : field.options;
+          options = typeof field.options === 'string' ? JSON.parse(field.options) : (field.options || []);
         } catch (e) {
           options = [];
         }
@@ -101,7 +97,6 @@ export default function DynamicForm({ moduleDef, fieldDefinitions = [], onSucces
                 ))}
               </SelectContent>
             </Select>
-            {/* hidden input for react-hook-form */}
             <input type="hidden" {...register(fieldName, { required: isRequired })} />
             {errors[fieldName] && <span className="text-xs text-red-500">This field is required</span>}
           </div>

@@ -1,6 +1,5 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-import { Configuration, OpenAIApi } from 'https://esm.sh/openai@3.3.0'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -14,17 +13,10 @@ serve(async (req) => {
 
   try {
     const { prompt, company_id } = await req.json()
-    
-    // Create Supabase Client
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
-    )
 
-    // Verify User Auth
-    const { data: { user } } = await supabaseClient.auth.getUser()
-    if (!user) throw new Error('Unauthorized')
+    if (!prompt) {
+      throw new Error('Prompt is required')
+    }
 
     const cloudflareToken = Deno.env.get('CLOUDFLARE_API_TOKEN')
     const accountId = Deno.env.get('CLOUDFLARE_ACCOUNT_ID')
@@ -33,64 +25,76 @@ serve(async (req) => {
       throw new Error('Cloudflare AI credentials not configured in Supabase secrets.')
     }
 
-    const systemPrompt = `You are an AI architect for OptalFlow, a dynamic business operating system. 
-    Your goal is to take a natural language request to create a business module and return a JSON configuration.
-    The response must strictly follow this JSON schema:
+    const systemPrompt = `You are an AI that generates business module configurations for a platform called OptalFlow.
+Given a user request, return ONLY a valid JSON object — no explanations, no markdown, no code fences.
+Use this exact structure:
+{
+  "module": {
+    "name": "string",
+    "description": "string",
+    "icon": "string (a valid lucide-react icon name like Briefcase, Users, Package, FileText, Calendar, Truck, Heart, Building)"
+  },
+  "fields": [
     {
-      "module": {
-        "name": "string",
-        "description": "string",
-        "icon": "string (lucide-react icon name like 'Briefcase')"
-      },
-      "fields": [
-        {
-          "name": "string (lowercase_snake_case)",
-          "field_type": "text | number | date | select | boolean",
-          "options": ["array of strings, only for select type"],
-          "is_required": boolean
-        }
-      ]
+      "name": "snake_case_field_name",
+      "field_type": "text",
+      "is_required": true
     }
-    IMPORTANT: Return ONLY valid JSON. No markdown formatting, no code blocks, no explanations.`
+  ]
+}
+field_type must be one of: text, number, date, select, boolean
+For select fields, add an "options" array of strings.
+Generate 5-10 relevant fields. Return ONLY the JSON object.`
 
-    const cfResponse = await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/@cf/meta/llama-3.1-8b-instruct`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${cloudflareToken}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: prompt }
-        ]
-      })
-    })
+    const cfResponse = await fetch(
+      `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/@cf/meta/llama-3.1-8b-instruct`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${cloudflareToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: `Create a module for: ${prompt}` },
+          ],
+          max_tokens: 1024,
+        }),
+      }
+    )
 
     if (!cfResponse.ok) {
       const errText = await cfResponse.text()
-      throw new Error(`Cloudflare API Error: ${errText}`)
+      throw new Error(`Cloudflare AI Error (${cfResponse.status}): ${errText}`)
     }
 
     const result = await cfResponse.json()
-    const resultText = result.result?.response || '{}'
-    
-    // Extract JSON block using regex to ignore conversational text
-    const jsonMatch = resultText.match(/\{[\s\S]*\}/);
-    let cleanText = '{}';
-    if (jsonMatch) {
-      cleanText = jsonMatch[0];
-    } else {
-      // Fallback if match fails
-      cleanText = resultText.replace(/```json/g, '').replace(/```/g, '').trim();
+    const rawText = result?.result?.response ?? ''
+
+    if (!rawText) {
+      throw new Error('Empty response from Cloudflare AI')
     }
-    const generatedModule = JSON.parse(cleanText)
+
+    // Robustly extract JSON — ignore any conversational text before/after
+    const jsonMatch = rawText.match(/\{[\s\S]*\}/)
+    if (!jsonMatch) {
+      throw new Error(`Could not find JSON in AI response: ${rawText.substring(0, 200)}`)
+    }
+
+    const generatedModule = JSON.parse(jsonMatch[0])
+
+    // Validate the structure
+    if (!generatedModule.module || !generatedModule.fields) {
+      throw new Error('AI returned invalid schema structure')
+    }
 
     return new Response(JSON.stringify({ success: true, schema: generatedModule }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
     })
   } catch (error) {
+    console.error('generate-dynamic-module error:', error.message)
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 400,

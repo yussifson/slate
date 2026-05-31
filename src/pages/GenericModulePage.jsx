@@ -60,7 +60,8 @@ export default function GenericModulePage({ title: propTitle, description: propD
       const { data: recs } = await supabase
         .from('dynamic_records')
         .select('*')
-        .eq('module_id', mod.id);
+        .eq('module_id', mod.id)
+        .order('created_at', { ascending: false });
       const parsedRecords = (recs || []).map(r => ({ ...r, data: typeof r.data === 'string' ? JSON.parse(r.data || '{}') : (r.data || {}) }));
       setRecords(parsedRecords);
     } catch (err) {
