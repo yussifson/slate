@@ -96,7 +96,7 @@ export default function CreateModulePage() {
             icon: mod.icon || "Blocks",
             layout: mod.config?.layout || "table",
             theme: mod.config?.theme || "primary",
-            moduleType: mod.config?.page_type || mod.type || "data_module",
+            moduleType: mod.config?.page_type || mod.module_type || "data_module",
             fields: loadedFields
           });
         } catch (err) {
@@ -162,8 +162,8 @@ export default function CreateModulePage() {
         description,
         icon,
         status,
-        is_active: 'true',
-        type: moduleType === 'data_module' ? 'custom' : moduleType,
+        is_active: true,
+        module_type: moduleType === 'data_module' ? 'custom' : moduleType,
         config: { layout, theme, page_type: moduleType }
       };
 
@@ -223,9 +223,9 @@ export default function CreateModulePage() {
   } : null;
 
   return (
-    <div className="flex h-full min-h-screen">
+    <div className="flex h-[calc(100vh-4rem)] w-full overflow-hidden">
       {/* Main content area */}
-      <div className="flex-1 min-w-0 space-y-6 animate-in fade-in duration-300 pb-20 p-6">
+      <div className="flex-1 min-w-0 space-y-6 animate-in fade-in duration-300 pb-20 p-6 overflow-y-auto">
         {/* Top bar */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <PageHeader
@@ -244,10 +244,10 @@ export default function CreateModulePage() {
               onClick={() => setIsBoltOpen(!isBoltOpen)}
               className={`gap-2 font-bold shadow-md transition-all ${
                 isBoltOpen
-                  ? 'bg-gradient-to-r from-purple-700 to-pink-700 text-white'
+                  ? 'bg-gradient-to-r from-blue-700 to-indigo-700 text-white'
                   : isEditing
-                  ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700'
-                  : 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700'
+                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700'
+                  : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700'
               }`}
             >
               <Zap className="w-4 h-4" />
@@ -257,7 +257,7 @@ export default function CreateModulePage() {
         </div>
 
         {/* Builder grid */}
-        <div className={`grid grid-cols-1 ${isSidebarOpen ? 'xl:grid-cols-3' : 'xl:grid-cols-1'} gap-6 transition-all duration-300`}>
+        <div className={`grid grid-cols-1 ${isSidebarOpen && !isBoltOpen ? 'xl:grid-cols-3' : ''} gap-6 transition-all duration-300`}>
           {isSidebarOpen && (
             <div className="xl:col-span-1 space-y-6 animate-in slide-in-from-left duration-300">
               <div className="bg-card rounded-xl border border-border p-5 shadow-sm space-y-6">
@@ -431,7 +431,7 @@ export default function CreateModulePage() {
           )}
 
           {/* Preview Panel */}
-          <div className={isSidebarOpen ? "xl:col-span-2" : "xl:col-span-1 h-full"}>
+          <div className={isSidebarOpen && !isBoltOpen ? "xl:col-span-2" : isSidebarOpen ? "lg:col-span-2 xl:col-span-1" : "xl:col-span-1 h-full"}>
             <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden h-full flex flex-col transition-all duration-300">
               <div className="p-4 border-b border-border flex items-center justify-between bg-muted/30">
                 <div className="flex items-center gap-3 text-foreground font-medium">
@@ -482,7 +482,7 @@ export default function CreateModulePage() {
                     <p className="font-medium">Add fields or use OrbitBolt to generate your module</p>
                     <button
                       onClick={() => setIsBoltOpen(true)}
-                      className="mt-4 px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white text-sm font-bold hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg hover:shadow-purple-500/30"
+                      className="mt-4 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-bold hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg hover:shadow-blue-500/30"
                     >
                       ⚡ Launch OrbitBolt
                     </button>

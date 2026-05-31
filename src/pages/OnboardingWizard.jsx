@@ -41,7 +41,7 @@ export default function OnboardingWizard() {
 
   // Step 3: Staff invites
   const [staffEmail, setStaffEmail] = useState('');
-  const [staffRole, setStaffRole] = useState('primary_role');
+  const [staffRole, setStaffRole] = useState('');
   const [staffName, setStaffName] = useState('');
   const [invitedStaff, setInvitedStaff] = useState([]);
 
@@ -55,8 +55,7 @@ export default function OnboardingWizard() {
     setInvitedStaff([...invitedStaff, { name: staffName, email: staffEmail, role: staffRole }]);
     setStaffEmail('');
     setStaffName('');
-    // Reset role to default based on industry, handled simply here
-    setStaffRole('primary_role');
+    setStaffRole('');
   };
 
   const handleRemoveStaff = (index) => {
@@ -307,7 +306,7 @@ export default function OnboardingWizard() {
                           <SelectTrigger className="h-12 bg-white border-slate-200 rounded-xl text-slate-900 focus:ring-blue-500">
                             <SelectValue />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="bg-white text-slate-900 border-slate-200">
                             <SelectItem value="law">{t("law_firm", "Law Firm")}</SelectItem>
                             <SelectItem value="hospital">{t("hospital_healthcare", "Hospital & Healthcare")}</SelectItem>
                             <SelectItem value="school">{t("school_education", "School & Education")}</SelectItem>
@@ -336,7 +335,7 @@ export default function OnboardingWizard() {
                         <SelectTrigger className="h-12 bg-white border-slate-200 rounded-xl text-slate-900 focus:ring-blue-500">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="bg-white text-slate-900 border-slate-200">
                           <SelectItem value="Nigeria">{t("nigeria", "Nigeria")}</SelectItem>
                           <SelectItem value="Ghana">{t("ghana", "Ghana")}</SelectItem>
                           <SelectItem value="Sierra Leone">{t("sierra_leone", "Sierra Leone")}</SelectItem>
@@ -350,7 +349,7 @@ export default function OnboardingWizard() {
                         <SelectTrigger className="h-12 bg-white border-slate-200 rounded-xl text-slate-900 focus:ring-blue-500">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="bg-white text-slate-900 border-slate-200">
                           <SelectItem value="NGN">{t("ngn", "NGN (₦)")}</SelectItem>
                           <SelectItem value="GHS">{t("ghs", "GHS (₵)")}</SelectItem>
                           <SelectItem value="SLL">{t("sll_le", "SLL (Le)")}</SelectItem>
@@ -518,19 +517,20 @@ export default function OnboardingWizard() {
                       <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Role</label>
                       <Select value={staffRole} onValueChange={setStaffRole}>
                         <SelectTrigger className="h-11 bg-white border-slate-200 rounded-xl text-slate-900">
-                          <SelectValue />
+                          <SelectValue placeholder="Select a role" />
                         </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="primary_role">{getTerm(industry, 'lawyer')}</SelectItem>
-                          <SelectItem value="partner">{t("manager_partner", "Manager / Partner")}</SelectItem>
-                          <SelectItem value="secretary">{t("admin_secretary", "Admin / Secretary")}</SelectItem>
-                          <SelectItem value="clerk">{t("assistant_clerk", "Assistant / Clerk")}</SelectItem>
+                        <SelectContent className="bg-white text-slate-900 border-slate-200 shadow-xl">
+                          {(INDUSTRIES[industry]?.roles || INDUSTRIES.law.roles)
+                            .filter(r => r.value !== 'company_admin')
+                            .map((r) => (
+                              <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
+                            ))}
                         </SelectContent>
                       </Select>
                     </div>
                     <Button 
                       onClick={handleAddStaff}
-                      disabled={!staffEmail || !staffName}
+                      disabled={!staffEmail || !staffName || !staffRole}
                       className="h-11 px-6 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold shadow-sm transition-all active:scale-95"
                     >
                       {t("add_team", "Add")}
@@ -688,19 +688,13 @@ export default function OnboardingWizard() {
 
 // Helper component for role badges
 function Badge({ role, industry }) {
-  const getRoleInfo = () => {
-    switch(role) {
-      case 'primary_role': return { bg: 'bg-indigo-100', text: 'text-indigo-700', label: getTerm(industry, 'lawyer') };
-      case 'partner': return { bg: 'bg-purple-100', text: 'text-purple-700', label: 'Partner/Manager' };
-      case 'secretary': return { bg: 'bg-emerald-100', text: 'text-emerald-700', label: 'Admin' };
-      case 'clerk': return { bg: 'bg-amber-100', text: 'text-amber-700', label: 'Assistant' };
-      default: return { bg: 'bg-slate-100', text: 'text-slate-700', label: role };
-    }
-  };
-  const info = getRoleInfo();
+  const roles = INDUSTRIES[industry]?.roles || INDUSTRIES.law.roles;
+  const roleDef = roles.find(r => r.value === role);
+  const label = roleDef ? roleDef.label : role;
+  
   return (
-    <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${info.bg} ${info.text}`}>
-      {info.label}
+    <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-100">
+      {label}
     </span>
   );
 }
