@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Link } from 'react-router-dom';
-import { Briefcase, Users, CreditCard, Mail, Shield, Clock, Check, ArrowRight } from 'lucide-react';
+import { Briefcase, Users, CreditCard, Mail, Shield, Clock, Check, ArrowRight, Globe, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function Features() {
@@ -110,6 +110,36 @@ export default function Features() {
       icon: Briefcase,
       align: "left",
       image: "/images/spotlight_search_ui.png"
+    },
+    {
+      badge: "Global Localization",
+      title: "Break language barriers instantly",
+      description:
+        "Translate your entire workspace, client portal, invoices, and system templates with one click. Support international clients in their preferred native language with high-fidelity system translations.",
+      bullets: [
+        "Complete multilingual system translation with full i18n support",
+        "Tenant-level default language configurations",
+        "Client-specific localized portal interfaces",
+        "Dynamic date, number, and currency localization based on region",
+      ],
+      icon: Globe,
+      align: "right",
+      image: "/images/internationalization_ui.png"
+    },
+    {
+      badge: "AI Workspace Generation",
+      title: "Build complex modules using natural language",
+      description:
+        "Describe your custom industry requirement or pipeline in natural language, and OptalFlow's secure LLM compiler instantly builds the forms, schemas, workflows, and navigation routes for you—no coding required.",
+      bullets: [
+        "Zero-code layout rendering compiled completely from JSON schemas",
+        "AI-driven schema optimization with secure Postgres JSONB storage",
+        "Dynamic pipeline routing and state transitions mapped automatically",
+        "RLS tenant-isolated security policies applied dynamically to new tables",
+      ],
+      icon: Sparkles,
+      align: "left",
+      image: "/images/dynamic_modules_ui.png"
     },
   ];
 
