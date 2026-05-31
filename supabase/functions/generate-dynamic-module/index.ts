@@ -6,99 +6,263 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
-  }
-
-  try {
-    const { prompt, company_id, currentSchema, moduleType } = await req.json()
-
-    if (!prompt) {
-      throw new Error('Prompt is required')
-    }
-
-    const cloudflareToken = Deno.env.get('CLOUDFLARE_API_TOKEN')
-    const accountId = Deno.env.get('CLOUDFLARE_ACCOUNT_ID')
-
-    if (!cloudflareToken || !accountId) {
-      throw new Error('Cloudflare AI credentials not configured in Supabase secrets.')
-    }
-
-    const targetType = moduleType || 'data_module'
-    let systemPrompt = `You are an AI that generates business module configurations for a platform called OptalFlow.
-The target module type is: ${targetType}.
+// System prompt for single module generation
+const SINGLE_MODULE_PROMPT = `You are an AI that generates business module configurations for a platform called OptalFlow.
 Given a user request, return ONLY a valid JSON object — no explanations, no markdown, no code fences.
 Use this exact structure:
 {
   "module": {
     "name": "string",
     "description": "string",
-    "icon": "string (a valid lucide-react icon name like Briefcase, Users, Package, FileText, Calendar, Truck, Heart, Building)",
-    "layout": "string (either 'table' or 'grid')",
-    "theme": "string (choose one: primary, blue, emerald, rose, amber, purple)",
-    "module_type": "${targetType}"
+    "icon": "string (a valid lucide-react icon name like Briefcase, Users, Package, FileText, Calendar, Truck, Heart, Building, Activity, ShoppingBag, Stethoscope, GraduationCap, Church, Hotel, Shield, Warehouse, BarChart, ClipboardList, Receipt, UserPlus)",
+    "layout": "string (one of: table, grid)",
+    "theme": "string (one of: primary, blue, emerald, rose, amber, purple)",
+    "module_type": "string (one of: data_module, dashboard, kanban, document_manager, calendar_view, form_builder, directory, timeline, gallery, spreadsheet, report, inventory, crm_pipeline, approval_workflow)"
   },
   "fields": [
     {
       "name": "snake_case_field_name",
-      "field_type": "text",
-      "is_required": true
+      "field_type": "text|number|date|select|boolean",
+      "is_required": true,
+      "options": []
     }
   ]
 }
-field_type must be one of: text, number, date, select, boolean
+field_type must be one of: text, number, date, select, boolean.
 For select fields, add an "options" array of strings.
-Generate 5-10 relevant fields. Return ONLY the JSON object.`
+Generate 5-15 relevant fields covering the full business use case.
+Choose the best module_type for the use case.
+Return ONLY the JSON object.`
+
+// System prompt for system plan generation
+const SYSTEM_PLAN_PROMPT = `You are an AI system architect for OptalFlow enterprise platform.
+Given a complex business requirement, analyze what modules are needed and return ONLY a valid JSON array of module plans.
+Each plan has: name, description, icon (lucide-react icon name), module_type (one of: data_module, dashboard, kanban, calendar_view, directory, timeline, spreadsheet, report, inventory, crm_pipeline, approval_workflow), field_count (estimated number of fields needed).
+Return 5-20 modules depending on complexity. Return ONLY the JSON array, no explanations.
+Example: [{"name":"Patients","description":"Patient records management","icon":"Stethoscope","module_type":"data_module","field_count":10},...]`
+
+// System prompt for intent classification
+const INTENT_PROMPT = `Classify the user's message into exactly one intent. Return ONLY the intent word, nothing else.
+Intents:
+- "build" = user wants to create a new module (mentions: create, build, design, make, generate, set up a module/system/tracker/manager)
+- "build_system" = user wants to create a COMPLEX SYSTEM with MULTIPLE modules (mentions: complete system, operating system, management system, or describes multiple departments/entities/workflows)
+- "edit" = user wants to modify an existing module (mentions: edit, change, modify, update, add field, remove field, rename, adjust)
+- "chat" = user is asking a question, having a conversation, or anything else that doesn't involve creating/editing modules
+
+Return ONLY one word: build, build_system, edit, or chat`
+
+async function callCloudflareAI(messages: any[], maxTokens = 2048) {
+  const cloudflareToken = Deno.env.get('CLOUDFLARE_API_TOKEN')
+  const accountId = Deno.env.get('CLOUDFLARE_ACCOUNT_ID')
+
+  if (!cloudflareToken || !accountId) {
+    throw new Error('Cloudflare AI credentials not configured in Supabase secrets.')
+  }
+
+  const cfResponse = await fetch(
+    `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/@cf/meta/llama-3.1-8b-instruct`,
+    {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${cloudflareToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ messages, max_tokens: maxTokens }),
+    }
+  )
+
+  if (!cfResponse.ok) {
+    const errText = await cfResponse.text()
+    throw new Error(`Cloudflare AI Error (${cfResponse.status}): ${errText}`)
+  }
+
+  const result = await cfResponse.json()
+  return result?.result?.response ?? ''
+}
+
+function extractJson(text: string) {
+  // Try to find JSON array first
+  const arrayMatch = text.match(/\[[\s\S]*\]/)
+  if (arrayMatch) {
+    try { return JSON.parse(arrayMatch[0]) } catch {}
+  }
+  // Then try JSON object
+  const objMatch = text.match(/\{[\s\S]*\}/)
+  if (objMatch) {
+    try { return JSON.parse(objMatch[0]) } catch {}
+  }
+  return null
+}
+
+serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders })
+  }
+
+  try {
+    const body = await req.json()
+    const { prompt, company_id, currentSchema, moduleType, isBoltChat, chatHistory, mode } = body
+
+    if (!prompt) {
+      throw new Error('Prompt is required')
+    }
+
+    // ─── MODE: detect_intent ───
+    if (mode === 'detect_intent') {
+      const raw = await callCloudflareAI([
+        { role: 'system', content: INTENT_PROMPT },
+        { role: 'user', content: prompt }
+      ], 16)
+      
+      const intent = raw.trim().toLowerCase().replace(/[^a-z_]/g, '')
+      const validIntents = ['build', 'build_system', 'edit', 'chat']
+      const detectedIntent = validIntents.includes(intent) ? intent : 'chat'
+
+      return new Response(JSON.stringify({ success: true, intent: detectedIntent }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200,
+      })
+    }
+
+    // ─── MODE: plan_system ───
+    if (mode === 'plan_system') {
+      const raw = await callCloudflareAI([
+        { role: 'system', content: SYSTEM_PLAN_PROMPT },
+        { role: 'user', content: `Design a complete system for: ${prompt}` }
+      ], 4096)
+
+      const plan = extractJson(raw)
+      if (!plan || !Array.isArray(plan)) {
+        throw new Error('Could not parse system plan from AI response')
+      }
+
+      return new Response(JSON.stringify({ success: true, plan }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200,
+      })
+    }
+
+    // ─── MODE: generate_module (single module from plan item) ───
+    if (mode === 'generate_module') {
+      const targetType = body.targetModuleType || moduleType || 'data_module'
+      const moduleName = body.moduleName || ''
+      const moduleDescription = body.moduleDescription || ''
+
+      const raw = await callCloudflareAI([
+        { role: 'system', content: SINGLE_MODULE_PROMPT.replace(
+          'module_type": "string',
+          `module_type": "${targetType}`
+        )},
+        { role: 'user', content: `Create a detailed module called "${moduleName}" — ${moduleDescription}. Context: ${prompt}. Use module_type: ${targetType}. Generate comprehensive fields (8-15) that fully cover this use case.` }
+      ], 2048)
+
+      const schema = extractJson(raw)
+      if (!schema || !schema.module || !schema.fields) {
+        throw new Error('Could not parse module schema from AI response')
+      }
+
+      // Ensure the name matches what was planned
+      schema.module.name = moduleName || schema.module.name
+      schema.module.module_type = targetType
+
+      return new Response(JSON.stringify({ success: true, schema }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200,
+      })
+    }
+
+    // ─── MODE: edit_module ───
+    if (mode === 'edit') {
+      if (!currentSchema) throw new Error('currentSchema is required for edit mode')
+
+      const editPrompt = `You are editing an EXISTING module. Here is the current schema:
+${JSON.stringify(currentSchema, null, 2)}
+
+The user wants to make this SPECIFIC change: "${prompt}"
+
+IMPORTANT RULES:
+- Only modify what the user specifically asked for
+- Keep ALL existing fields that weren't mentioned
+- Keep ALL existing module settings that weren't mentioned
+- If the user asks to add a field, ADD it to the existing fields array — do NOT remove other fields
+- If the user asks to remove a field, REMOVE only that specific field
+- If the user asks to rename something, RENAME only that specific thing
+- Return the COMPLETE updated schema with ALL fields (modified + unchanged)
+
+Return ONLY the updated JSON schema, no explanations.`
+
+      const raw = await callCloudflareAI([
+        { role: 'system', content: editPrompt },
+        { role: 'user', content: prompt }
+      ], 2048)
+
+      const schema = extractJson(raw)
+      if (!schema || !schema.module || !schema.fields) {
+        throw new Error('Could not parse edited schema from AI response')
+      }
+
+      return new Response(JSON.stringify({ success: true, schema }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200,
+      })
+    }
+
+    // ─── MODE: chat (conversational, no schema) ───
+    if (mode === 'chat') {
+      const chatSystemPrompt = `You are OrbitBolt — an AI module architect assistant in Optalflow. You are having a conversation with the user about module design, business processes, or data architecture. Answer their questions helpfully. Do NOT generate JSON schemas unless explicitly asked. Be concise, friendly, and professional.`
+
+      const messages = chatHistory || [
+        { role: 'system', content: chatSystemPrompt },
+        { role: 'user', content: prompt }
+      ]
+
+      if (!messages.find((m: any) => m.role === 'system')) {
+        messages.unshift({ role: 'system', content: chatSystemPrompt })
+      }
+
+      const raw = await callCloudflareAI(messages, 1024)
+
+      return new Response(JSON.stringify({ success: true, message: raw }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200,
+      })
+    }
+
+    // ─── DEFAULT: Legacy single module generation (backward compatible) ───
+    const targetType = moduleType || 'data_module'
+    let systemPrompt = SINGLE_MODULE_PROMPT
 
     let userMessage = `Create a module for: ${prompt}`
 
     if (currentSchema) {
-      systemPrompt += `\n\nIMPORTANT: The user is requesting EDITS to an existing module. You must merge their request with the current schema and return the FULL UPDATED SCHEMA.`
+      systemPrompt += `\n\nIMPORTANT: The user is requesting EDITS to an existing module. You must merge their request with the current schema and return the FULL UPDATED SCHEMA. Only change what they specifically asked for.`
       userMessage = `Current Schema: ${JSON.stringify(currentSchema)}\n\nUser Request: ${prompt}`
     }
 
-    const cfResponse = await fetch(
-      `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/@cf/meta/llama-3.1-8b-instruct`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${cloudflareToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: userMessage },
-          ],
-          max_tokens: 1024,
-        }),
-      }
-    )
-
-    if (!cfResponse.ok) {
-      const errText = await cfResponse.text()
-      throw new Error(`Cloudflare AI Error (${cfResponse.status}): ${errText}`)
+    // If isBoltChat, use the chat history for context
+    let messages: any[]
+    if (isBoltChat && chatHistory) {
+      messages = chatHistory
+    } else {
+      messages = [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userMessage },
+      ]
     }
 
-    const result = await cfResponse.json()
-    const rawText = result?.result?.response ?? ''
+    const rawText = await callCloudflareAI(messages, 2048)
 
     if (!rawText) {
       throw new Error('Empty response from Cloudflare AI')
     }
 
-    // Robustly extract JSON — ignore any conversational text before/after
-    const jsonMatch = rawText.match(/\{[\s\S]*\}/)
-    if (!jsonMatch) {
-      throw new Error(`Could not find JSON in AI response: ${rawText.substring(0, 200)}`)
-    }
-
-    const generatedModule = JSON.parse(jsonMatch[0])
-
-    // Validate the structure
-    if (!generatedModule.module || !generatedModule.fields) {
-      throw new Error('AI returned invalid schema structure')
+    const generatedModule = extractJson(rawText)
+    if (!generatedModule || !generatedModule.module || !generatedModule.fields) {
+      // It might be a conversational response
+      return new Response(JSON.stringify({ success: true, message: rawText }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200,
+      })
     }
 
     return new Response(JSON.stringify({ success: true, schema: generatedModule }), {

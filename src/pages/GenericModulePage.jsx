@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense, lazy } from "react";
 import PageHeader from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Plus, RefreshCw, BarChart2, ShieldCheck, FileText } from "lucide-react";
@@ -11,6 +11,18 @@ import DynamicKanbanView from "@/components/ui/DynamicKanbanView";
 import { supabase } from "@/api/supabaseClient";
 import { useAuth } from "@/lib/AuthContext";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+
+// Lazy-loaded view components for new module types
+const DynamicCalendarView = lazy(() => import("@/components/ui/DynamicCalendarView"));
+const DynamicTimelineView = lazy(() => import("@/components/ui/DynamicTimelineView"));
+const DynamicDirectoryView = lazy(() => import("@/components/ui/DynamicDirectoryView"));
+const DynamicGalleryView = lazy(() => import("@/components/ui/DynamicGalleryView"));
+const DynamicSpreadsheetView = lazy(() => import("@/components/ui/DynamicSpreadsheetView"));
+const DynamicReportView = lazy(() => import("@/components/ui/DynamicReportView"));
+const DynamicPipelineView = lazy(() => import("@/components/ui/DynamicPipelineView"));
+const DynamicApprovalView = lazy(() => import("@/components/ui/DynamicApprovalView"));
+const DynamicFormWizard = lazy(() => import("@/components/ui/DynamicFormWizard"));
+const DynamicInventoryView = lazy(() => import("@/components/ui/DynamicInventoryView"));
 
 export default function GenericModulePage({ title: propTitle, description: propDescription }) {
   const { toast } = useToast();
@@ -175,37 +187,92 @@ export default function GenericModulePage({ title: propTitle, description: propD
       );
     }
 
-    if (pageType === 'dashboard') {
-      return (
-        <div className="mt-6">
-          <DynamicDashboard records={records} moduleDef={moduleDef} />
-        </div>
-      );
-    }
+    // Standard props for all dynamic views
+    const viewProps = {
+      data: records,
+      fieldDefinitions: fieldDefs,
+      moduleDef: moduleDef,
+      onRefresh: fetchDynamicData,
+    };
 
-    if (pageType === 'kanban') {
-      return (
-        <div className="mt-6 bg-card rounded-xl border border-border shadow-sm p-4 overflow-hidden">
-          <DynamicKanbanView 
-            records={records} 
-            moduleDef={moduleDef} 
-            fieldDefinitions={fieldDefs} 
-            onRecordUpdated={fetchDynamicData} 
-          />
-        </div>
-      );
-    }
-
-    // Default: data_module
-    return (
-      <div className={`${layoutConfig === 'table' ? 'bg-card rounded-xl border border-border overflow-hidden shadow-sm p-6' : ''} mt-6`}>
-        {layoutConfig === 'table' ? (
-          <DynamicTable data={records} fieldDefinitions={fieldDefs} />
-        ) : (
-          <DynamicGrid data={records} fieldDefinitions={fieldDefs} theme={themeConfig} />
-        )}
+    const suspenseFallback = (
+      <div className="h-64 flex flex-col items-center justify-center text-muted-foreground bg-card rounded-xl border border-border">
+        <RefreshCw className="w-6 h-6 animate-spin mb-3" />
+        <p className="text-sm">Loading view...</p>
       </div>
     );
+
+    const wrapView = (ViewComponent, extraProps = {}) => (
+      <div className="mt-6">
+        <Suspense fallback={suspenseFallback}>
+          <ViewComponent {...viewProps} {...extraProps} />
+        </Suspense>
+      </div>
+    );
+
+    switch (pageType) {
+      case 'dashboard':
+        return (
+          <div className="mt-6">
+            <DynamicDashboard records={records} moduleDef={moduleDef} />
+          </div>
+        );
+
+      case 'kanban':
+        return (
+          <div className="mt-6 bg-card rounded-xl border border-border shadow-sm p-4 overflow-hidden">
+            <DynamicKanbanView 
+              records={records} 
+              moduleDef={moduleDef} 
+              fieldDefinitions={fieldDefs} 
+              onRecordUpdated={fetchDynamicData} 
+            />
+          </div>
+        );
+
+      case 'calendar_view':
+        return wrapView(DynamicCalendarView);
+
+      case 'timeline':
+        return wrapView(DynamicTimelineView);
+
+      case 'directory':
+        return wrapView(DynamicDirectoryView);
+
+      case 'gallery':
+        return wrapView(DynamicGalleryView);
+
+      case 'spreadsheet':
+        return wrapView(DynamicSpreadsheetView);
+
+      case 'report':
+        return wrapView(DynamicReportView);
+
+      case 'crm_pipeline':
+        return wrapView(DynamicPipelineView);
+
+      case 'approval_workflow':
+        return wrapView(DynamicApprovalView);
+
+      case 'form_builder':
+        return wrapView(DynamicFormWizard);
+
+      case 'inventory':
+        return wrapView(DynamicInventoryView);
+
+      case 'data_module':
+      case 'document_manager':
+      default:
+        return (
+          <div className={`${layoutConfig === 'table' ? 'bg-card rounded-xl border border-border overflow-hidden shadow-sm p-6' : ''} mt-6`}>
+            {layoutConfig === 'table' ? (
+              <DynamicTable data={records} fieldDefinitions={fieldDefs} moduleDef={moduleDef} onRefresh={fetchDynamicData} />
+            ) : (
+              <DynamicGrid data={records} fieldDefinitions={fieldDefs} theme={themeConfig} onRefresh={fetchDynamicData} />
+            )}
+          </div>
+        );
+    }
   };
 
   return (

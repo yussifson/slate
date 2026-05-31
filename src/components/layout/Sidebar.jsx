@@ -97,6 +97,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   
   const savedModulesStr = localStorage.getItem(`active_modules_${user?.company_id}`);
   const activeModules = savedModulesStr ? JSON.parse(savedModulesStr) : null;
+  const isOrbitMode = activeModules?.length === 1 && activeModules[0] === '__orbit__';
   
   const ROLE_PERMISSIONS = {
     lawyer: ["/my-dashboard", "/cases", "/leads", "/clients", "/calendar", "/tasks", "/documents", "/conflict-check", "/research", "/email-inbox", "/team"],
@@ -108,12 +109,12 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
 
   const allowedPaths = isAdmin ? null : (ROLE_PERMISSIONS[user?.role] || ROLE_PERMISSIONS.support);
 
-  const filteredCompanyNav = industryNav.filter(item => {
+  const filteredCompanyNav = isOrbitMode ? [] : industryNav.filter(item => {
     if (activeModules && !['/', '/settings', '/integrations', '/admin'].includes(item.path)) {
       if (!activeModules.includes(item.path)) return false;
     }
     if (isAdmin) return true;
-    if (activeIndustry !== 'law') return true; // Only apply strict law role filtering in law mode for now
+    if (activeIndustry !== 'law') return true;
     return allowedPaths.includes(item.path);
   });
 
@@ -197,6 +198,16 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
       )}
 
       <nav className="flex-1 px-3 pb-3 space-y-1 overflow-y-auto overflow-x-hidden scrollbar-hide">
+        {isOrbitMode && !collapsed && dynamicNavItems.length === 0 && (
+          <div className="mx-1 my-3 p-3 rounded-xl bg-indigo-50 border border-indigo-100 text-center">
+            <div className="text-2xl mb-1">⚡</div>
+            <p className="text-xs font-bold text-indigo-700 mb-1">Orbit Mode Active</p>
+            <p className="text-[11px] text-indigo-500 leading-snug mb-2">Use the Module Builder to create your custom pages with AI.</p>
+            <Link to="/modules/create" className="inline-block text-[11px] font-bold px-3 py-1.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors">
+              + New Module
+            </Link>
+          </div>
+        )}
         {navItems.map((item) => {
           const isActive = location.pathname === item.path || (item.path !== "/" && location.pathname.startsWith(item.path));
           const IconComp = typeof item.icon === 'string' ? ICON_MAP[item.icon] || LayoutDashboard : item.icon;

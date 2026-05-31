@@ -284,6 +284,16 @@ export default function CreateModulePage() {
                       <option value="dashboard">Dashboard (Charts & Stats)</option>
                       <option value="kanban">Kanban Board (Workflow)</option>
                       <option value="document_manager">Document Manager</option>
+                      <option value="calendar_view">Calendar View (Timeline)</option>
+                      <option value="form_builder">Multi-Step Form Wizard</option>
+                      <option value="directory">Directory (People/Contacts)</option>
+                      <option value="timeline">Activity Timeline</option>
+                      <option value="gallery">Gallery (Visual Cards)</option>
+                      <option value="spreadsheet">Spreadsheet (Inline Edit)</option>
+                      <option value="report">Report & Analytics</option>
+                      <option value="inventory">Inventory Tracker</option>
+                      <option value="crm_pipeline">Sales Pipeline (CRM)</option>
+                      <option value="approval_workflow">Approval Workflow</option>
                     </select>
                   </div>
                   <div>

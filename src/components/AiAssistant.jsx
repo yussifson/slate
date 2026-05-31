@@ -517,7 +517,8 @@ RULES FOR MULTI-STEP REASONING:
 5. DO NOT wrap <AGENT_ACTION> in markdown code blocks. Output it raw inline.
 6. Once all tasks are complete, summarize what you did in plain language and STOP outputting <AGENT_ACTION> blocks.
 7. For 'case' records, use 'title' instead of 'name'.
-8. If the user's input has a typo, is ambiguous, or if you are unsure which page they mean, ALWAYS use the 'ask_confirmation' tool first and wait for approval.`;
+8. If the user's input has a typo, is ambiguous, or if you are unsure which page they mean, ALWAYS use the 'ask_confirmation' tool first and wait for approval.
+9. DO NOT generate JSON schemas or build complex modules/systems. If the user asks you to build, create, or design a module or system, politely tell them to use the "OrbitBolt System Architect" tool (the lightning bolt icon) instead.`;
 
         const sessionMessages = currentSessions.find(s => s.id === sid)?.messages || [];
         const allMessages = [...sessionMessages, { role: 'user', content: userContent }];

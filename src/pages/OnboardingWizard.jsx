@@ -69,34 +69,44 @@ export default function OnboardingWizard() {
       let companyIdToUse = user?.company_id;
 
       if (!companyIdToUse) {
-         if (!subdomain || !firmName) throw new Error("Please provide a workspace name and subdomain.");
-         const cleanSubdomain = subdomain.toLowerCase().replace(/[^a-z0-9-]/g, '');
-         
-         const { data: compData, error: compErr } = await supabase.from('companies').insert({
-            name: firmName,
-            subdomain: cleanSubdomain,
-            email: user?.email,
-            industry_type: industry,
-            country: country,
-            currency: currency,
-            subscription_plan: 'starter',
-            subscription_status: 'trial',
-            status: 'active'
-         }).select().single();
+         // Check if a company was already created by this user in a previous partial attempt
+         const { data: existingComp, error: existingErr } = await supabase
+            .from('companies')
+            .select('id, subdomain')
+            .eq('email', user?.email)
+            .single();
 
-         if (compErr) {
-            if (compErr.code === '23505' && compErr.message.includes('companies_subdomain_key')) {
-               throw new Error("This workspace URL (subdomain) is already taken. Please choose another one.");
+         if (existingComp) {
+            companyIdToUse = existingComp.id;
+         } else {
+            if (!subdomain || !firmName) throw new Error("Please provide a workspace name and subdomain.");
+            const cleanSubdomain = subdomain.toLowerCase().replace(/[^a-z0-9-]/g, '');
+            
+            const { data: compData, error: compErr } = await supabase.from('companies').insert({
+               name: firmName,
+               subdomain: cleanSubdomain,
+               email: user?.email,
+               industry_type: industry,
+               country: country,
+               currency: currency,
+               subscription_plan: 'starter',
+               subscription_status: 'trial',
+               status: 'active'
+            }).select().single();
+
+            if (compErr) {
+               if (compErr.code === '23505' && compErr.message.includes('companies_subdomain_key')) {
+                  throw new Error(`The workspace URL "${cleanSubdomain}" is already taken. Please choose another one.`);
+               }
+               throw compErr;
             }
-            throw compErr;
+            companyIdToUse = compData.id;
          }
-         companyIdToUse = compData.id;
 
          const { error: profErr } = await supabase.from('profiles').update({
             company_id: companyIdToUse,
             company_name: firmName,
             role: 'company_admin'
-            // Removed onboarding_completed to fix schema error
          }).eq('id', user.id);
          
          if (profErr) throw profErr;
@@ -165,11 +175,13 @@ export default function OnboardingWizard() {
       // Store onboarding completion in localStorage to prevent repeat redirects
       localStorage.setItem(`onboarding_done_${companyIdToUse}`, 'true');
 
-      // Store selected modules in localStorage
+      // Store setup mode and selected modules in localStorage
+      localStorage.setItem(`setup_mode_${companyIdToUse}`, setupMode);
       if (setupMode === 'template') {
         localStorage.removeItem(`active_modules_${companyIdToUse}`); // Template implies all modules
       } else if (setupMode === 'orbit') {
-        localStorage.setItem(`active_modules_${companyIdToUse}`, JSON.stringify([])); // Orbit implies no predefined modules
+        // Orbit = blank slate — only dynamic modules appear, no predefined industry pages
+        localStorage.setItem(`active_modules_${companyIdToUse}`, JSON.stringify(['__orbit__']));
       } else if (setupMode === 'custom') {
         localStorage.setItem(`active_modules_${companyIdToUse}`, JSON.stringify(selectedModules));
       }

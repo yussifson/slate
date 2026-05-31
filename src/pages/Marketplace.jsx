@@ -5,9 +5,10 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from "@/hooks/useCompanyId";
-import { Search, Loader2, CheckCircle2, Download, ExternalLink, ShieldCheck, Blocks } from "lucide-react";
+import { Search, Loader2, CheckCircle2, Download, Trash2, ShieldCheck, Blocks } from "lucide-react";
 import PageHeader from "@/components/shared/PageHeader";
 import * as LucideIcons from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 
 export default function Marketplace() {
   const { toast } = useToast();
@@ -15,20 +16,24 @@ export default function Marketplace() {
   const [modules, setModules] = useState([]);
   const [loading, setLoading] = useState(true);
   const [installingId, setInstallingId] = useState(null);
-  const [installedIds, setInstalledIds] = useState(new Set());
+  const [uninstallingId, setUninstallingId] = useState(null);
+  // Maps source module ID -> installed module ID in user's company
+  const [installedMap, setInstalledMap] = useState({});
   const [ownedIds, setOwnedIds] = useState(new Set());
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
+  const [confirmUninstall, setConfirmUninstall] = useState(null);
 
   const categories = ["All", "CRM", "Finance", "HR", "Operations", "Healthcare", "Custom"];
 
   useEffect(() => {
-    fetchPublicModules();
+    if (companyId) fetchPublicModules();
   }, [companyId]);
 
   const fetchPublicModules = async () => {
     setLoading(true);
     try {
+      // 1. Fetch all public marketplace modules
       const { data, error } = await supabase
         .from('module_definitions')
         .select('*')
@@ -36,15 +41,35 @@ export default function Marketplace() {
         .eq('is_active', 'true');
 
       if (error) throw error;
-
       const mods = data || [];
       setModules(mods);
 
-      // Identify which ones this company already owns (was the creator)
-      if (companyId) {
-        const owned = new Set(mods.filter(m => m.company_id === companyId).map(m => m.id));
-        setOwnedIds(owned);
+      // Identify which ones this company created (owned)
+      const owned = new Set(mods.filter(m => m.company_id === companyId).map(m => m.id));
+      setOwnedIds(owned);
+
+      // 2. Fetch all modules this company has installed (private clones)
+      //    We match by name against public modules to find the mapping
+      const { data: myModules } = await supabase
+        .from('module_definitions')
+        .select('id, name, source_module_id')
+        .eq('company_id', companyId)
+        .eq('is_active', 'true');
+
+      const installed = {};
+      for (const myMod of (myModules || [])) {
+        // If it has a source_module_id, use that for direct mapping
+        if (myMod.source_module_id) {
+          installed[myMod.source_module_id] = myMod.id;
+        } else {
+          // Fallback: match by name against public modules (for legacy installs)
+          const matchingPublic = mods.find(pm => pm.name === myMod.name && pm.company_id !== companyId);
+          if (matchingPublic) {
+            installed[matchingPublic.id] = myMod.id;
+          }
+        }
       }
+      setInstalledMap(installed);
     } catch (err) {
       console.error(err);
       toast({ title: "Error", description: "Failed to load marketplace modules.", variant: "destructive" });
@@ -67,11 +92,13 @@ export default function Marketplace() {
         visibility: 'private',
         status: 'published',
         config: mod.config || {},
+        source_module_id: mod.id, // Track which marketplace module this was cloned from
         created_at: new Date().toISOString()
       });
 
       if (moduleError) throw moduleError;
 
+      // Clone fields
       const { data: originalFields, error: fetchFieldsError } = await supabase
         .from('field_definitions')
         .select('*')
@@ -95,10 +122,10 @@ export default function Marketplace() {
         if (fieldsError) throw fieldsError;
       }
 
-      setInstalledIds(prev => new Set([...prev, mod.id]));
+      setInstalledMap(prev => ({ ...prev, [mod.id]: newModuleId }));
       toast({
         title: "🎉 Module Installed!",
-        description: `${mod.name} is now in your workspace.`,
+        description: `${mod.name} is now in your workspace sidebar.`,
       });
 
     } catch (err) {
@@ -109,14 +136,46 @@ export default function Marketplace() {
     }
   };
 
+  const handleUninstall = async (mod) => {
+    const installedModuleId = installedMap[mod.id];
+    if (!installedModuleId) return;
+
+    setUninstallingId(mod.id);
+    try {
+      // Delete all records for this module
+      await supabase.from('dynamic_records').delete().eq('module_id', installedModuleId);
+      // Delete all field definitions
+      await supabase.from('field_definitions').delete().eq('module_id', installedModuleId);
+      // Delete the module definition itself
+      const { error } = await supabase.from('module_definitions').delete().eq('id', installedModuleId);
+      if (error) throw error;
+
+      setInstalledMap(prev => {
+        const next = { ...prev };
+        delete next[mod.id];
+        return next;
+      });
+
+      toast({
+        title: "Module Uninstalled",
+        description: `${mod.name} has been removed from your workspace.`,
+      });
+    } catch (err) {
+      console.error(err);
+      toast({ title: "Uninstall Failed", description: err.message, variant: "destructive" });
+    } finally {
+      setUninstallingId(null);
+      setConfirmUninstall(null);
+    }
+  };
+
   const filteredModules = modules.filter(m => {
     const matchesSearch = m.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (m.description || '').toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = activeCategory === 'All'; // Categories will be added dynamically when modules have them
+    const matchesCategory = activeCategory === 'All';
     return matchesSearch && matchesCategory;
   });
 
-  // Derive a safe icon component
   const getIconComp = (iconName) => {
     if (!iconName) return Blocks;
     const ic = LucideIcons[iconName];
@@ -139,7 +198,7 @@ export default function Marketplace() {
         </div>
       </div>
 
-      {/* Filter Bar — matches Integrations exactly */}
+      {/* Filter Bar */}
       <div className="bg-white dark:bg-slate-900/50 dark:backdrop-blur-xl rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm dark:shadow-lg flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 hide-scrollbar">
           {categories.map(cat => (
@@ -167,7 +226,7 @@ export default function Marketplace() {
         </div>
       </div>
 
-      {/* Module Grid — matches Integrations card layout exactly */}
+      {/* Module Grid */}
       {loading ? (
         <div className="py-24 flex justify-center">
           <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
@@ -188,8 +247,9 @@ export default function Marketplace() {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {filteredModules.map((mod) => {
             const isInstalling = installingId === mod.id;
+            const isUninstalling = uninstallingId === mod.id;
             const isOwned = ownedIds.has(mod.id);
-            const isInstalled = installedIds.has(mod.id);
+            const isInstalled = !!installedMap[mod.id];
             const IconComp = getIconComp(mod.icon);
 
             return (
@@ -203,7 +263,6 @@ export default function Marketplace() {
               >
                 <div className="p-6 sm:p-7 flex-1">
                   <div className="flex justify-between items-start mb-6">
-                    {/* Icon box — same style as Integrations logo box */}
                     <div className="w-16 h-16 rounded-2xl bg-white border border-slate-200 dark:border-slate-700 flex items-center justify-center p-3 shadow-sm">
                       <IconComp className="w-8 h-8 text-blue-600" />
                     </div>
@@ -228,7 +287,7 @@ export default function Marketplace() {
                   </p>
                 </div>
 
-                {/* Card Footer — matches Integrations */}
+                {/* Card Footer */}
                 <div className="px-6 py-5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/50 flex items-center justify-between">
                   <span className="text-sm font-bold text-slate-500 dark:text-slate-400">
                     {mod.fields_count ? `${mod.fields_count} fields` : 'Custom module'}
@@ -239,9 +298,18 @@ export default function Marketplace() {
                       Your Module
                     </Badge>
                   ) : isInstalled ? (
-                    <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 font-bold gap-1.5 px-4 py-2 rounded-xl">
-                      <CheckCircle2 className="w-3.5 h-3.5" /> Installed
-                    </Badge>
+                    <Button
+                      variant="outline"
+                      disabled={isUninstalling}
+                      onClick={() => setConfirmUninstall(mod)}
+                      className="h-10 px-5 rounded-xl border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-300 font-bold gap-2 transition-all"
+                    >
+                      {isUninstalling ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <><Trash2 className="w-4 h-4" /> Uninstall</>
+                      )}
+                    </Button>
                   ) : (
                     <Button
                       disabled={isInstalling}
@@ -261,6 +329,24 @@ export default function Marketplace() {
           })}
         </div>
       )}
+
+      {/* Uninstall Confirmation Dialog */}
+      <Dialog open={!!confirmUninstall} onOpenChange={(open) => !open && setConfirmUninstall(null)}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Uninstall Module</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to uninstall <strong>{confirmUninstall?.name}</strong>? This will remove the module, all its fields, and all records from your workspace. This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="mt-4">
+            <Button variant="outline" onClick={() => setConfirmUninstall(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={() => handleUninstall(confirmUninstall)} disabled={!!uninstallingId}>
+              {uninstallingId ? 'Uninstalling...' : 'Uninstall Module'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
