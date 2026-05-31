@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Sparkles, X, Send, Maximize2, Minimize2, Loader2, ChevronDown, Zap, RotateCcw } from 'lucide-react';
+import { Sparkles, X, Send, Maximize2, Minimize2, Loader2, Zap, RotateCcw, User, Mic, Paperclip, MicOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { toast } from 'react-hot-toast';
 
 const BOLT_SYSTEM_PROMPT = `You are OrbitBolt — a hyper-intelligent, precision-engineered AI module architect embedded in Optalflow's Module Builder.
 
@@ -74,13 +75,14 @@ export default function OrbitBoltPanel({ isOpen, onClose, onApplySchema, current
   const [isExpanded, setIsExpanded] = useState(false);
   const [messages, setMessages] = useState([{
     role: 'assistant',
-    content: "⚡ I'm **OrbitBolt** — your AI module architect.\n\nDescribe any workflow, database, or business process and I'll instantly design a complete, professional module schema for you.\n\nTry something like: *\"Build me a Client CRM with deal tracking\"* or *\"Create an HR Leave Management module\"*"
+    content: "Hello! I'm **OrbitBolt** — your AI module architect.\n\nDescribe any workflow, database, or business process and I'll instantly design a complete, professional module schema for you.\n\nTry something like: *\"Build me a Client CRM with deal tracking\"* or *\"Create an HR Leave Management module\"*"
   }]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [lastSchema, setLastSchema] = useState(null);
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
+  const [isRecording, setIsRecording] = useState(false);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -109,7 +111,6 @@ export default function OrbitBoltPanel({ isOpen, onClose, onApplySchema, current
     setIsLoading(true);
 
     try {
-      // Build context-aware prompt with current schema if editing
       let contextNote = '';
       if (currentSchema) {
         contextNote = `\n\n[CONTEXT: The user is currently editing an existing module. Current module: ${JSON.stringify(currentSchema)}. Refine or modify it based on the user's request.]`;
@@ -120,7 +121,6 @@ export default function OrbitBoltPanel({ isOpen, onClose, onApplySchema, current
         ...newMessages.slice(-10).map(m => ({ role: m.role, content: m.content }))
       ];
 
-      // Call the generate-dynamic-module edge function for consistency
       const response = await supabase.functions.invoke('generate-dynamic-module', {
         body: {
           prompt: text,
@@ -135,8 +135,6 @@ export default function OrbitBoltPanel({ isOpen, onClose, onApplySchema, current
       let schema = null;
 
       if (response.error || !response.data?.success) {
-        // Fallback: construct a direct AI request via Cloudflare or a simple fetch
-        // Try to use what we got back
         assistantText = "I encountered an issue. Please try rephrasing your request.";
         if (response.data?.schema) {
           schema = response.data.schema;
@@ -192,167 +190,183 @@ export default function OrbitBoltPanel({ isOpen, onClose, onApplySchema, current
   const handleReset = () => {
     setMessages([{
       role: 'assistant',
-      content: "⚡ Ready for a new module design! What would you like to build?"
+      content: "Hello! I'm **OrbitBolt** — your AI module architect.\n\nWhat would you like to build?"
     }]);
     setLastSchema(null);
     setInput('');
   };
 
+  const handleNotSupported = (feature) => {
+    toast(`OrbitBolt is optimized for text descriptions. ${feature} is not needed for module generation.`, { icon: 'ℹ️' });
+  };
+
   if (!isOpen) return null;
 
   return (
-    <div className={`flex h-full shrink-0 border-l-[3px] border-l-purple-500 bg-card shadow-[-8px_0_30px_rgba(0,0,0,0.07)] z-40 transition-all duration-300 ${isOpen ? (isExpanded ? 'w-[700px] opacity-100' : 'w-[420px] opacity-100') : 'w-0 opacity-0 overflow-hidden border-none pointer-events-none'}`}>
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+    <div className={`flex h-full shrink-0 border-l-[3px] border-l-blue-500 bg-card shadow-[-8px_0_30px_rgba(0,0,0,0.07)] z-40 transition-all duration-300 ${isOpen ? (isExpanded ? 'w-[680px] opacity-100' : 'w-[400px] opacity-100') : 'w-0 opacity-0 overflow-hidden border-none pointer-events-none'}`}>
+      <div className="flex-1 flex flex-col min-w-0">
         
-        {/* Header */}
-        <div className="flex items-center gap-2 px-4 py-3 border-b border-border bg-gradient-to-r from-purple-500/10 via-indigo-500/5 to-pink-500/5 shrink-0">
-          <div className="flex items-center gap-2 flex-1 min-w-0">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center shadow-md shrink-0">
-              <Zap className="w-4 h-4 text-white" />
+        {/* Header - Styled like AiAssistant */}
+        <div className="flex items-center gap-2 px-3 py-2.5 border-b border-border bg-gradient-to-r from-blue-500/8 to-indigo-500/5 shrink-0 justify-between">
+          <div className="flex items-center gap-2 mb-0">
+            <div className="w-5 h-5 rounded flex items-center justify-center bg-blue-600/20 text-blue-600 shrink-0">
+              <Zap className="w-3.5 h-3.5" />
             </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <p className="text-sm font-bold text-foreground leading-none">OrbitBolt</p>
-                <div className="flex items-center gap-1 bg-gradient-to-r from-purple-600 to-pink-600 px-2 py-0.5 rounded-full">
-                  <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse shrink-0"></span>
-                  <span className="text-[10px] text-white font-semibold">AI Builder</span>
-                </div>
+            <div className="flex items-center gap-1.5 flex-1">
+              <p className="text-[11px] font-bold text-foreground leading-none">OrbitBolt</p>
+              <div className="flex items-center gap-1 bg-gradient-to-r from-blue-600 to-indigo-600 px-1.5 py-0.5 rounded-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse shrink-0"></span>
+                <span className="text-[9px] font-bold uppercase tracking-wider text-white truncate">AI Builder</span>
               </div>
-              <p className="text-[10px] text-muted-foreground mt-0.5">Module Architect</p>
             </div>
           </div>
-          <div className="flex items-center gap-1 shrink-0">
+          <div className="flex items-center gap-0.5 shrink-0">
             <button
               onClick={handleReset}
-              className="p-1.5 rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+              className="p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground rounded-md transition-colors"
               title="Start fresh"
             >
-              <RotateCcw className="w-3.5 h-3.5" />
+              <RotateCcw className="w-4 h-4" />
             </button>
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="p-1.5 rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-              title={isExpanded ? "Shrink panel" : "Expand panel"}
+              className="p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground rounded-md transition-colors"
             >
               {isExpanded ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
             </button>
             <button
               onClick={onClose}
-              className="p-1.5 rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-              title="Close OrbitBolt"
+              className="p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground rounded-md transition-colors"
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="w-4 h-4" />
             </button>
           </div>
         </div>
 
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 min-h-0">
-          {messages.map((msg, idx) => (
-            <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-              {msg.role === 'assistant' && (
-                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
-                  <Zap className="w-3.5 h-3.5 text-white" />
-                </div>
-              )}
-              <div className={`flex flex-col gap-2 max-w-[85%] ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
-                <div className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+        {/* Messages - Styled like AiAssistant */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 relative bg-[radial-gradient(circle,#e2e8f0_1px,transparent_1px)] dark:bg-[radial-gradient(circle,#1e293b_1px,transparent_1px)] [background-size:18px_18px]">
+          <div className="absolute inset-0 bg-card/65 pointer-events-none z-0"></div>
+          <div className="relative z-10 space-y-4">
+            {messages.map((msg, idx) => (
+              <div key={idx} className={`flex gap-2.5 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-0.5 shadow-sm ${
                   msg.role === 'user'
-                    ? 'bg-gradient-to-br from-purple-600 to-indigo-600 text-white rounded-tr-sm shadow-md'
-                    : 'bg-muted/60 border border-border text-foreground rounded-tl-sm'
+                    ? 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
+                    : 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white'
                 }`}>
-                  {msg.role === 'assistant' ? (
-                    <FormatMessage content={msg.content} />
-                  ) : (
-                    <p>{msg.content}</p>
+                  {msg.role === 'user' ? <User className="w-3.5 h-3.5" /> : <Zap className="w-3.5 h-3.5" />}
+                </div>
+                <div className={`flex flex-col gap-2 max-w-[88%] ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
+                  <div className={`px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed shadow-sm ${
+                    msg.role === 'user'
+                      ? 'bg-blue-600 text-white rounded-tr-sm'
+                      : 'bg-card border border-border rounded-tl-sm text-foreground'
+                  }`}>
+                    {msg.role === 'assistant' ? (
+                      <FormatMessage content={msg.content} />
+                    ) : (
+                      <p>{msg.content}</p>
+                    )}
+                  </div>
+
+                  {/* Apply Schema Button */}
+                  {msg.schema && (
+                    <button
+                      onClick={() => handleApplySchema(msg.schema)}
+                      className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-bold shadow-sm hover:from-blue-700 hover:to-indigo-700 hover:scale-[1.02] transition-all duration-200"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      Apply to Builder
+                    </button>
                   )}
                 </div>
-
-                {/* Apply Schema Button */}
-                {msg.schema && (
-                  <button
-                    onClick={() => handleApplySchema(msg.schema)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs font-bold shadow-lg hover:shadow-purple-500/30 hover:scale-105 transition-all duration-200"
-                  >
-                    <Sparkles className="w-3.5 h-3.5" />
-                    Apply to Builder
-                  </button>
-                )}
               </div>
-              {msg.role === 'user' && (
-                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shrink-0 mt-0.5 shadow-sm text-white text-xs font-bold">
-                  {user?.email?.[0]?.toUpperCase() || 'U'}
+            ))}
+
+            {isLoading && (
+              <div className="flex gap-2.5">
+                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shrink-0 shadow-sm">
+                  <Zap className="w-3.5 h-3.5 text-white animate-spin" />
                 </div>
-              )}
-            </div>
-          ))}
-
-          {isLoading && (
-            <div className="flex gap-3 justify-start">
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center shrink-0 shadow-sm">
-                <Zap className="w-3.5 h-3.5 text-white" />
-              </div>
-              <div className="bg-muted/60 border border-border rounded-2xl rounded-tl-sm px-4 py-3">
-                <div className="flex items-center gap-2">
-                  <div className="flex gap-1">
-                    <span className="w-2 h-2 rounded-full bg-purple-500 animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                    <span className="w-2 h-2 rounded-full bg-pink-500 animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                    <span className="w-2 h-2 rounded-full bg-indigo-500 animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                <div className="px-4 py-3 bg-card border border-border rounded-2xl rounded-tl-sm shadow-sm">
+                  <div className="flex gap-1.5 items-center">
+                    <span className="w-2 h-2 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <span className="w-2 h-2 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <span className="w-2 h-2 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: '300ms' }} />
                   </div>
-                  <span className="text-xs text-muted-foreground">Designing your module...</span>
+                  <p className="text-[10px] text-muted-foreground mt-1.5 italic">OrbitBolt is thinking...</p>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
-          <div ref={messagesEndRef} />
+            {/* Starter Prompts */}
+            {messages.length <= 1 && (
+              <div className="pt-2 flex flex-wrap gap-1.5 shrink-0">
+                {STARTER_PROMPTS.map((prompt, i) => (
+                  <button
+                    key={i}
+                    onClick={() => handleSend(prompt)}
+                    className="text-[10px] font-medium px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors truncate max-w-[200px]"
+                  >
+                    ⚡ {prompt}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <div ref={messagesEndRef} />
+          </div>
         </div>
 
-        {/* Starter Prompts — show only at start */}
-        {messages.length <= 1 && (
-          <div className="px-4 pb-3 shrink-0">
-            <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider mb-2">Quick start</p>
-            <div className="flex flex-col gap-1.5 max-h-[180px] overflow-y-auto">
-              {STARTER_PROMPTS.map((prompt, i) => (
-                <button
-                  key={i}
-                  onClick={() => handleSend(prompt)}
-                  className="text-left text-xs px-3 py-2 rounded-lg border border-border bg-muted/40 hover:bg-muted hover:border-purple-400/50 hover:text-purple-600 transition-all duration-150 truncate"
-                >
-                  ⚡ {prompt}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Input */}
-        <div className="p-3 border-t border-border bg-card shrink-0">
-          <div className="flex gap-2 items-end bg-muted/40 rounded-xl border border-border focus-within:border-purple-400 focus-within:ring-2 focus-within:ring-purple-400/20 transition-all p-2">
+        {/* Input Area - Styled exactly like AiAssistant */}
+        <div className="p-3 border-t border-border bg-card/80 backdrop-blur-sm shrink-0">
+          <div className="border border-border focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-500/15 rounded-xl bg-background transition-all overflow-hidden shadow-sm">
             <textarea
               ref={textareaRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Describe a module to build... (Enter to send)"
-              className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground resize-none outline-none min-h-[44px] max-h-[120px] leading-relaxed py-1"
+              placeholder={isRecording ? ' Listening speak now' : 'Ask anything or give a command'}
               rows={2}
+              className={`w-full bg-transparent border-none focus:ring-0 resize-none px-3 pt-3 pb-1 text-sm text-foreground outline-none leading-relaxed ${
+                isRecording ? 'placeholder:text-red-400 placeholder:animate-pulse' : 'placeholder:text-muted-foreground/50'
+              }`}
               disabled={isLoading}
             />
-            <button
-              onClick={() => handleSend()}
-              disabled={!input.trim() || isLoading}
-              className="shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600 to-pink-600 text-white flex items-center justify-center hover:scale-105 disabled:opacity-40 disabled:hover:scale-100 transition-all shadow-md"
-            >
-              {isLoading ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-              ) : (
-                <Send className="w-3.5 h-3.5" />
-              )}
-            </button>
+            <div className="flex items-center justify-between px-2 pb-2">
+              <div className="flex items-center gap-0.5">
+                <button
+                  type="button"
+                  onClick={() => handleNotSupported('File upload')}
+                  className="p-1.5 text-muted-foreground hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/30 rounded-md transition-colors"
+                  title="Attach file or image"
+                >
+                  <Paperclip className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleNotSupported('Voice input')}
+                  className="p-1.5 text-muted-foreground hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/30 rounded-md transition-colors"
+                  title="Voice input"
+                >
+                  {isRecording ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                </button>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-[9px] text-muted-foreground/40 uppercase tracking-wider hidden sm:block"> Send  Shift+ Newline</span>
+                <button
+                  type="button"
+                  disabled={!input.trim() || isLoading}
+                  onClick={() => handleSend()}
+                  className="h-8 w-8 bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-lg flex items-center justify-center transition-colors shadow-sm"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
           </div>
-          <p className="text-[10px] text-muted-foreground text-center mt-1.5">⚡ Shift+Enter for new line • Enter to send</p>
         </div>
+
       </div>
     </div>
   );
