@@ -318,9 +318,15 @@ export default function OrbitBoltPanel({ isOpen, onClose, onApplySchema, current
       }
 
     } catch (err) {
+      let errorMessage = err.message;
+      if (errorMessage.includes('Cloudflare AI Error (429)') || errorMessage.includes('10,000 neurons')) {
+        errorMessage = user?.role === 'super_admin' 
+          ? err.message 
+          : "Our AI servers are experiencing heavy traffic. Please try again in a few moments.";
+      }
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: `⚠️ Error: ${err.message}. Please try again.`
+        content: `⚠️ Error: ${errorMessage}. Please try again.`
       }]);
     } finally {
       setIsLoading(false);
