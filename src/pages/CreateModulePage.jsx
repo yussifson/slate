@@ -3,13 +3,15 @@ import PageHeader from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/api/supabaseClient";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { Blocks, Sparkles, Plus, Trash2, X } from "lucide-react";
 
 export default function CreateModulePage() {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { id } = useParams();
+  const isEditing = !!id;
   const companyId = useCompanyId();
   
   const [name, setName] = useState("");
@@ -23,6 +25,30 @@ export default function CreateModulePage() {
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
   const [aiPrompt, setAiPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
+
+  React.useEffect(() => {
+    if (isEditing) {
+      const loadModule = async () => {
+        const { data: mod } = await supabase.from('module_definitions').select('*').eq('id', id).single();
+        if (mod) {
+          setName(mod.name || "");
+          setDescription(mod.description || "");
+          setIcon(mod.icon || "Blocks");
+          setLayout(mod.config?.layout || "table");
+          setTheme(mod.config?.theme || "primary");
+          
+          const { data: f } = await supabase.from('field_definitions').select('*').eq('module_id', id).order('order_index');
+          if (f && f.length > 0) {
+            setFields(f.map(x => ({ 
+              ...x, 
+              options: Array.isArray(x.options) ? x.options.join(', ') : x.options || "" 
+            })));
+          }
+        }
+      };
+      loadModule();
+    }
+  }, [id, isEditing]);
 
   const handleAddField = () => {
     setFields([...fields, { name: "", field_type: "text", is_required: false, options: "" }]);
@@ -90,20 +116,33 @@ export default function CreateModulePage() {
 
     setIsSubmitting(true);
     try {
-      const moduleId = crypto.randomUUID();
-      const { error: moduleError } = await supabase.from('module_definitions').insert({
-        id: moduleId,
-        company_id: companyId || '00000000-0000-0000-0000-000000000000',
+      const moduleId = isEditing ? id : crypto.randomUUID();
+      
+      const moduleData = {
         name,
         description,
         icon,
         status, // 'draft' or 'published'
         is_active: 'true',
         config: { layout, theme },
-        created_at: new Date().toISOString()
-      });
+        updated_at: new Date().toISOString()
+      };
+
+      if (!isEditing) {
+        moduleData.id = moduleId;
+        moduleData.company_id = companyId || '00000000-0000-0000-0000-000000000000';
+        moduleData.created_at = new Date().toISOString();
+      }
+
+      const { error: moduleError } = isEditing 
+        ? await supabase.from('module_definitions').update(moduleData).eq('id', id)
+        : await supabase.from('module_definitions').insert(moduleData);
 
       if (moduleError) throw moduleError;
+
+      if (isEditing) {
+        await supabase.from('field_definitions').delete().eq('module_id', moduleId);
+      }
 
       const fieldsToInsert = fields.map((f, idx) => ({
         id: crypto.randomUUID(),
@@ -121,7 +160,7 @@ export default function CreateModulePage() {
       if (fieldError) throw fieldError;
 
       toast({
-        title: status === 'draft' ? "📝 Saved as Draft" : "✨ Module Successfully Published!",
+        title: status === 'draft' ? "📝 Saved as Draft" : (isEditing ? "✨ Module Updated!" : "✨ Module Successfully Published!"),
         description: `Your custom module '${name}' is ready. Redirecting...`,
       });
 
@@ -138,7 +177,7 @@ export default function CreateModulePage() {
   return (
     <div className="space-y-6 animate-in fade-in duration-300 pb-20">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <PageHeader title="Module Builder" subtitle="Design custom records and workflows." />
+        <PageHeader title={isEditing ? "Edit Module" : "Module Builder"} subtitle="Design custom records and workflows." />
         <Button onClick={() => setIsAiModalOpen(true)} className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 font-bold shadow-md">
           <Sparkles className="w-4 h-4" /> OrbitBolt AI
         </Button>
@@ -333,9 +372,9 @@ export default function CreateModulePage() {
       {isAiModalOpen && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
           <div className="bg-card rounded-xl shadow-2xl max-w-lg w-full overflow-hidden animate-in zoom-in-95 duration-200 border border-border">
-            <div className="p-4 border-b border-white/20 flex justify-between items-center bg-gradient-to-r from-purple-600 to-blue-600 text-white">
+            <div className="p-4 border-b border-border flex justify-between items-center bg-primary text-primary-foreground">
               <h2 className="font-semibold flex items-center gap-2"><Sparkles className="w-5 h-5"/> AI Module Generator</h2>
-              <button onClick={() => !isGenerating && setIsAiModalOpen(false)} className="hover:bg-white/20 p-1 rounded-full"><X className="w-5 h-5"/></button>
+              <button onClick={() => !isGenerating && setIsAiModalOpen(false)} className="hover:bg-primary-foreground/20 p-1 rounded-full"><X className="w-5 h-5"/></button>
             </div>
             <form onSubmit={handleAiGenerate} className="p-6 bg-card">
               <label className="block text-sm font-medium text-foreground mb-2">
@@ -356,7 +395,7 @@ export default function CreateModulePage() {
               )}
               <div className="mt-6 flex justify-end gap-3">
                 <Button type="button" variant="outline" onClick={() => setIsAiModalOpen(false)} disabled={isGenerating}>Cancel</Button>
-                <Button type="submit" className="bg-purple-600 hover:bg-purple-700 text-white min-w-[140px]" disabled={isGenerating}>
+                <Button type="submit" className="bg-primary hover:bg-primary/90 text-primary-foreground min-w-[140px]" disabled={isGenerating}>
                   {isGenerating ? "Generating..." : "Generate Schema"}
                 </Button>
               </div>

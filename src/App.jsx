@@ -290,6 +290,7 @@ function PlatformRoutes() {
       
       {/* Dynamic AI Generated Modules Route */}
       <Route path="/modules/create" element={<CreateModulePage />} />
+      <Route path="/modules/edit/:id" element={<CreateModulePage />} />
       <Route path="/marketplace" element={<Marketplace />} />
       <Route path="/m/*" element={<GenericModulePage />} />
     </>
