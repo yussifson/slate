@@ -216,6 +216,7 @@ export default function CreateModulePage() {
     }
   };
 
+  return (
     <div className="space-y-6 animate-in fade-in duration-300 pb-20 max-w-[1600px] mx-auto w-full">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <PageHeader title={isEditing ? "Edit Module" : "Module Builder"} subtitle="Design custom records and workflows." />
