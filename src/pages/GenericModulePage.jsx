@@ -227,7 +227,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
       </div>
 
       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
-        <DialogContent className="sm:max-w-[500px] max-h-[85vh] flex flex-col">
+        <DialogContent className="sm:max-w-[500px] max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Add New Record</DialogTitle>
             <DialogDescription>
@@ -235,7 +235,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
             </DialogDescription>
           </DialogHeader>
           
-          <div className="mt-2 flex-1 min-h-0">
+          <div className="mt-4">
             {moduleDef && (
               <DynamicForm 
                 moduleDef={moduleDef} 

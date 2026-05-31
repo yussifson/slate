@@ -143,8 +143,8 @@ export default function DynamicForm({ moduleDef, fieldDefinitions = [], onSucces
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col h-full">
-      <div className="space-y-4 pb-6 flex-1 overflow-y-auto pr-1">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <div className="space-y-4">
         {fieldDefinitions.map(renderField)}
       </div>
 
