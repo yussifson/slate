@@ -36,7 +36,8 @@ const ICON_MAP = {
   FileSearch, LayoutGrid, BedDouble, BellRing, CheckSquare2: CheckSquare
 };
 
-import { powerSync } from "@/api/PowerSyncConnector";
+import { supabase } from "@/api/supabaseClient";
+import { useAuth } from "@/lib/AuthContext";
 
 export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   const { t } = useTranslation();
@@ -49,14 +50,18 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   useEffect(() => {
     const fetchDynamicNav = async () => {
       try {
-        const res = await powerSync.getAll(`SELECT id, name, icon FROM module_definitions WHERE is_active = 'true'`);
-        setDynamicModules(res);
+        const { data } = await supabase
+          .from('module_definitions')
+          .select('id, name, icon')
+          .eq('is_active', 'true')
+          .eq('company_id', user?.company_id || '');
+        setDynamicModules(data || []);
       } catch (err) {
         console.error("Failed to load dynamic nav", err);
       }
     };
-    fetchDynamicNav();
-  }, []);
+    if (user?.company_id) fetchDynamicNav();
+  }, [user?.company_id]);
 
   const activeCompanyLogo = impersonatedCompany?.logo_url || impersonatedCompany?.logo_light_url || user?.company_logo_url;
   const activeCompanyName = impersonatedCompany?.name || user?.company_name || "LexAfrica";

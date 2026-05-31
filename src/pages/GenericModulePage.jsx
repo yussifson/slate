@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
 import PageHeader from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Calendar, Plus, RefreshCw, BarChart2, ShieldCheck, FileText } from "lucide-react";
+import { Sparkles, Plus, RefreshCw, BarChart2, ShieldCheck, FileText } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import DynamicTable from "@/components/ui/DynamicTable";
 import DynamicForm from "@/components/ui/DynamicForm";
 import DynamicDashboard from "@/components/ui/DynamicDashboard";
-import { powerSync } from "@/api/PowerSyncConnector";
+import { supabase } from "@/api/supabaseClient";
+import { useAuth } from "@/lib/AuthContext";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 export default function GenericModulePage({ title: propTitle, description: propDescription }) {
   const { toast } = useToast();
-  const path = window.location.pathname.replace('/', '');
+  const { user } = useAuth();
+  const path = window.location.pathname;
   
   const [moduleDef, setModuleDef] = useState(null);
   const [fieldDefs, setFieldDefs] = useState([]);
@@ -22,39 +24,39 @@ export default function GenericModulePage({ title: propTitle, description: propD
   const fetchDynamicData = async () => {
     try {
       setIsLoading(true);
-      // Clean path, e.g. "/m/patient-referral" -> "patient-referral"
-      const slug = window.location.pathname.replace(/^\/m\//, '').replace(/^\//, '');
-      
-      let modResults = [];
-      if (slug) {
-        // Find matching module by slugifying the names in JS or a simple ILIKE
-        // Since sqlite doesn't have a simple slugify, we fetch active modules and find it
-        const allActive = await powerSync.getAll(`SELECT * FROM module_definitions WHERE is_active = 'true'`);
-        const matched = allActive.find(m => m.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') === slug);
-        if (matched) {
-          modResults = [matched];
-        } else {
-          modResults = await powerSync.getAll(`SELECT * FROM module_definitions WHERE is_active = 'true' LIMIT 1`);
-        }
-      } else {
-        modResults = await powerSync.getAll(`SELECT * FROM module_definitions WHERE is_active = 'true' LIMIT 1`);
-      }
-      
-      if (modResults.length > 0) {
-        const mod = modResults[0];
-        setModuleDef(mod);
-        
-        const fields = await powerSync.getAll(`
-          SELECT * FROM field_definitions WHERE module_id = ? ORDER BY order_index ASC
-        `, [mod.id]);
-        setFieldDefs(fields);
+      const slug = window.location.pathname.replace(/^\/m\//, '').replace(/^\//, '').split('/')[0];
+      const companyId = user?.company_id;
+      if (!companyId || !slug) return;
 
-        const recs = await powerSync.getAll(`
-          SELECT * FROM dynamic_records WHERE module_id = ?
-        `, [mod.id]);
-        const parsedRecords = recs.map(r => ({ ...r, data: JSON.parse(r.data || '{}') }));
-        setRecords(parsedRecords);
-      }
+      // Fetch all active modules for this company directly from Supabase
+      const { data: allModules } = await supabase
+        .from('module_definitions')
+        .select('*')
+        .eq('company_id', companyId)
+        .eq('is_active', 'true');
+
+      const matched = (allModules || []).find(
+        m => m.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') === slug
+      );
+
+      const mod = matched || (allModules && allModules[0]);
+      if (!mod) return;
+
+      setModuleDef(mod);
+
+      const { data: fields } = await supabase
+        .from('field_definitions')
+        .select('*')
+        .eq('module_id', mod.id)
+        .order('order_index', { ascending: true });
+      setFieldDefs(fields || []);
+
+      const { data: recs } = await supabase
+        .from('dynamic_records')
+        .select('*')
+        .eq('module_id', mod.id);
+      const parsedRecords = (recs || []).map(r => ({ ...r, data: typeof r.data === 'string' ? JSON.parse(r.data || '{}') : (r.data || {}) }));
+      setRecords(parsedRecords);
     } catch (err) {
       console.error("Failed to load dynamic module", err);
     } finally {
@@ -63,8 +65,8 @@ export default function GenericModulePage({ title: propTitle, description: propD
   };
 
   useEffect(() => {
-    fetchDynamicData();
-  }, [path]);
+    if (user?.company_id) fetchDynamicData();
+  }, [path, user?.company_id]);
 
   const title = propTitle || moduleDef?.name || "Dynamic Workspace";
   const description = propDescription || moduleDef?.description || "Loading configuration...";

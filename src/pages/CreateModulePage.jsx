@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import PageHeader from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { powerSync } from "@/api/PowerSyncConnector";
+import { supabase } from "@/api/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import { useCompany } from "@/hooks/useCompanyId";
 import { Blocks } from "lucide-react";
@@ -23,16 +23,31 @@ export default function CreateModulePage() {
     setIsSubmitting(true);
     try {
       const moduleId = crypto.randomUUID();
-      await powerSync.execute(
-        `INSERT INTO module_definitions (id, company_id, name, description, icon, is_active, created_at) VALUES (?, ?, ?, ?, ?, 'true', ?)`,
-        [moduleId, company?.id || '00000000-0000-0000-0000-000000000000', name, description, icon, new Date().toISOString()]
-      );
+      const { error: moduleError } = await supabase.from('module_definitions').insert({
+        id: moduleId,
+        company_id: company?.id || '00000000-0000-0000-0000-000000000000',
+        name,
+        description,
+        icon,
+        is_active: 'true',
+        created_at: new Date().toISOString()
+      });
+
+      if (moduleError) throw moduleError;
 
       // Default fields
-      await powerSync.execute(
-        `INSERT INTO field_definitions (id, company_id, module_id, name, field_type, is_required, order_index, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-        [crypto.randomUUID(), company?.id || '00000000-0000-0000-0000-000000000000', moduleId, "Name", "text", "true", 0, new Date().toISOString()]
-      );
+      const { error: fieldError } = await supabase.from('field_definitions').insert({
+        id: crypto.randomUUID(),
+        company_id: company?.id || '00000000-0000-0000-0000-000000000000',
+        module_id: moduleId,
+        name: "Name",
+        field_type: "text",
+        is_required: true,
+        order_index: 0,
+        created_at: new Date().toISOString()
+      });
+
+      if (fieldError) throw fieldError;
 
       toast({
         title: "Module Created",
