@@ -3,6 +3,7 @@ import { Sparkles, X, Send, Maximize2, Minimize2, Loader2, Zap, RotateCcw, User,
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
+import { useImpersonation } from '@/lib/ImpersonationContext';
 import { useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -52,6 +53,9 @@ export default function OrbitBoltPanel({ isOpen, onClose, onApplySchema, current
   const { user } = useAuth();
   const navigate = useNavigate();
   const companyId = useCompanyId();
+  const { impersonatedCompany } = useImpersonation();
+  const activeIndustry = sessionStorage.getItem('optalflow_industry_override') || impersonatedCompany?.industry_type || user?.company_industry || 'law';
+
   const [isExpanded, setIsExpanded] = useState(false);
   const [messages, setMessages] = useState([{
     role: 'assistant',
@@ -336,6 +340,7 @@ export default function OrbitBoltPanel({ isOpen, onClose, onApplySchema, current
           icon: schema.module.icon,
           status: 'published',
           is_active: 'true',
+          industry_type: activeIndustry,
           config: {
             layout: schema.module.layout || 'table',
             theme: schema.module.theme || 'primary',

@@ -10,6 +10,8 @@ import DynamicDashboard from "@/components/ui/DynamicDashboard";
 import DynamicKanbanView from "@/components/ui/DynamicKanbanView";
 import { supabase } from "@/api/supabaseClient";
 import { useAuth } from "@/lib/AuthContext";
+import { useImpersonation } from "@/lib/ImpersonationContext";
+import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 // Lazy-loaded view components for new module types
@@ -27,8 +29,12 @@ const DynamicInventoryView = lazy(() => import("@/components/ui/DynamicInventory
 export default function GenericModulePage({ title: propTitle, description: propDescription }) {
   const { toast } = useToast();
   const { user } = useAuth();
+  const { impersonatedCompany } = useImpersonation();
+  const navigate = useNavigate();
   const path = window.location.pathname;
   
+  const activeIndustry = sessionStorage.getItem('optalflow_industry_override') || impersonatedCompany?.industry_type || user?.company_industry || 'law';
+
   const [moduleDef, setModuleDef] = useState(null);
   const [fieldDefs, setFieldDefs] = useState([]);
   const [records, setRecords] = useState([]);
@@ -51,7 +57,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
       const { data: allModules } = await supabase
         .from('module_definitions')
         .select('*')
-        .eq('is_active', 'true')
+        .eq('is_active', true)
         .or(`company_id.eq.${companyId},shared_with.ilike.%${companyId}%`);
 
       const matched = (allModules || []).find(
@@ -60,6 +66,13 @@ export default function GenericModulePage({ title: propTitle, description: propD
 
       const mod = matched || (allModules && allModules[0]);
       if (!mod) return;
+      
+      // Enforce industry isolation — redirect on mismatch (prevents URL forgery)
+      if (mod.industry_type && mod.industry_type !== activeIndustry) {
+        toast({ title: "Access Denied", description: "This module is not available in the current workspace.", variant: "destructive" });
+        navigate('/', { replace: true });
+        return;
+      }
 
       setModuleDef(mod);
       setVisibility(mod.visibility || 'private');

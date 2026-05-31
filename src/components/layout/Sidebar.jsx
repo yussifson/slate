@@ -53,14 +53,15 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   const [renameData, setRenameData] = useState(null);
   const [deleteData, setDeleteData] = useState(null);
   const isAdmin = ["super_admin", "admin", "company_admin", "managing_partner"].includes(user?.role);
+  const activeIndustry = sessionStorage.getItem('optalflow_industry_override') || impersonatedCompany?.industry_type || user?.company_industry || 'law';
   
   useEffect(() => {
     const fetchDynamicNav = async () => {
       try {
         let query = supabase
           .from('module_definitions')
-          .select('id, name, icon, status')
-          .eq('is_active', 'true')
+          .select('id, name, icon, status, industry_type')
+          .eq('is_active', true)
           .or(`company_id.eq.${user?.company_id || ''},shared_with.ilike.%${user?.company_id || ''}%`);
         
         if (!isAdmin) {
@@ -70,7 +71,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
         }
 
         const { data } = await query;
-        setDynamicModules(data || []);
+        const filteredData = (data || []).filter(m => !m.industry_type || m.industry_type === activeIndustry);
+        setDynamicModules(filteredData);
       } catch (err) {
         console.error("Failed to load dynamic nav", err);
       }
@@ -86,12 +88,11 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
         supabase.removeChannel(channel);
       };
     }
-  }, [user?.company_id]);
+  }, [user?.company_id, activeIndustry, isAdmin]);
 
   const activeCompanyLogo = impersonatedCompany?.logo_url || impersonatedCompany?.logo_light_url || user?.company_logo_url;
   const activeCompanyName = impersonatedCompany?.name || user?.company_name || "LexAfrica";
 
-  const activeIndustry = sessionStorage.getItem('optalflow_industry_override') || impersonatedCompany?.industry_type || user?.company_industry || 'law';
   const industryData = INDUSTRIES[activeIndustry] || INDUSTRIES.law;
   const industryNav = getIndustryNav(activeIndustry);
   

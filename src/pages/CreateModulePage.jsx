@@ -5,6 +5,8 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/api/supabaseClient";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCompanyId } from "@/hooks/useCompanyId";
+import { useAuth } from "@/lib/AuthContext";
+import { useImpersonation } from "@/lib/ImpersonationContext";
 import { Blocks, Sparkles, Plus, Trash2, Play, Undo2, Redo2, ChevronLeft, ChevronRight, Zap } from "lucide-react";
 import DynamicTable from "@/components/ui/DynamicTable";
 import DynamicGrid from "@/components/ui/DynamicGrid";
@@ -41,6 +43,9 @@ export default function CreateModulePage() {
   const { id } = useParams();
   const isEditing = !!id;
   const companyId = useCompanyId();
+  const { user } = useAuth();
+  const { impersonatedCompany } = useImpersonation();
+  const activeIndustry = sessionStorage.getItem('optalflow_industry_override') || impersonatedCompany?.industry_type || user?.company_industry || 'law';
 
   const initialState = {
     name: "",
@@ -163,6 +168,7 @@ export default function CreateModulePage() {
         icon,
         status,
         is_active: true,
+        industry_type: activeIndustry,
         config: { layout, theme, page_type: moduleType }
       };
 

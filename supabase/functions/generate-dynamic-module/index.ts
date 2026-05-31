@@ -38,8 +38,9 @@ Return ONLY the JSON object.`
 const SYSTEM_PLAN_PROMPT = `You are an AI system architect for OptalFlow enterprise platform.
 Given a complex business requirement, analyze what modules are needed and return ONLY a valid JSON array of module plans.
 Each plan has: name, description, icon (lucide-react icon name), module_type (one of: data_module, dashboard, kanban, calendar_view, directory, timeline, spreadsheet, report, inventory, crm_pipeline, approval_workflow), field_count (estimated number of fields needed).
-Return 5-20 modules depending on complexity. Return ONLY the JSON array, no explanations.
-Example: [{"name":"Patients","description":"Patient records management","icon":"Stethoscope","module_type":"data_module","field_count":10},...]`
+Return 5-20 modules depending on complexity.
+DO NOT use markdown formatting. DO NOT wrap the output in \`\`\`json. DO NOT add conversational text. Return ONLY the raw JSON array.
+Example: [{"name":"Patients","description":"Patient records management","icon":"Stethoscope","module_type":"data_module","field_count":10}]`
 
 // System prompt for intent classification
 const INTENT_PROMPT = `Classify the user's message into exactly one intent. Return ONLY the intent word, nothing else.
@@ -81,17 +82,20 @@ async function callCloudflareAI(messages: any[], maxTokens = 2048) {
 }
 
 function extractJson(text: string) {
+  // Strip markdown code fences if present
+  let cleanText = text.replace(/```(?:json)?\s*([\s\S]*?)\s*```/ig, '$1').trim();
+  
   // Try to find JSON array first
-  const arrayMatch = text.match(/\[[\s\S]*\]/)
+  const arrayMatch = cleanText.match(/\[[\s\S]*\]/);
   if (arrayMatch) {
     try { return JSON.parse(arrayMatch[0]) } catch {}
   }
   // Then try JSON object
-  const objMatch = text.match(/\{[\s\S]*\}/)
+  const objMatch = cleanText.match(/\{[\s\S]*\}/);
   if (objMatch) {
     try { return JSON.parse(objMatch[0]) } catch {}
   }
-  return null
+  return null;
 }
 
 serve(async (req) => {

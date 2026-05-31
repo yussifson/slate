@@ -10,6 +10,8 @@ CREATE TABLE IF NOT EXISTS public.module_definitions (
   description TEXT,
   icon TEXT,
   config JSONB DEFAULT '{}'::jsonb,
+  industry_type TEXT,
+  status TEXT DEFAULT 'published',
   is_active BOOLEAN DEFAULT true
 );
 
