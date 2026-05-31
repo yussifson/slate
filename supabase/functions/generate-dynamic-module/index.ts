@@ -201,6 +201,65 @@ serve(async (req) => {
       throw new Error('Prompt is required')
     }
 
+    // ─── AI CREDIT LIMIT CHECK ───
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+    )
+
+    let plan = 'free'
+    let creditsUsed = 0
+
+    if (company_id) {
+      const { data: company, error: fetchErr } = await supabaseClient
+        .from('companies')
+        .select('subscription_plan, ai_credits_used')
+        .eq('id', company_id)
+        .single()
+        
+      if (company && !fetchErr) {
+        plan = company.subscription_plan || 'free'
+        creditsUsed = company.ai_credits_used || 0
+      }
+    }
+
+    // Define limits (all-time/monthly depending on when the DB is reset)
+    const limits: Record<string, number> = {
+      'free': 100,
+      'starter': 500,
+      'pro': 2000,
+      'enterprise': 100000
+    }
+    
+    // detect_intent is a cheap call, we might not count it, but let's just count all for simplicity 
+    // unless we explicitly want to skip it. Let's skip counting for detect_intent so we don't double charge.
+    const isChargeable = mode !== 'detect_intent'
+
+    if (isChargeable) {
+      const limit = limits[plan] || 100
+      if (creditsUsed >= limit) {
+        return new Response(JSON.stringify({ 
+          success: false, 
+          error: `Your firm has reached its AI limit (${limit} actions) for the ${plan} plan. Please upgrade your plan to continue using AI features.` 
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200,
+        })
+      }
+    }
+
+    // ─── HELPER: Increment Credits ───
+    const incrementCredits = async () => {
+      if (isChargeable && company_id) {
+        // Simple increment using an update. 
+        // In high concurrency, an RPC is better, but this suffices for now.
+        await supabaseClient
+          .from('companies')
+          .update({ ai_credits_used: creditsUsed + 1 })
+          .eq('id', company_id)
+      }
+    }
+
     // ─── MODE: detect_intent ───
     if (mode === 'detect_intent') {
       const raw = await callCloudflareAI([
@@ -225,12 +284,14 @@ serve(async (req) => {
         { role: 'user', content: `Design a complete system for: ${prompt}` }
       ], 4096)
 
-      const plan = extractJson(raw)
-      if (!plan || !Array.isArray(plan)) {
+      const planResponse = extractJson(raw)
+      if (!planResponse || !Array.isArray(planResponse)) {
         throw new Error('Could not parse system plan from AI response')
       }
 
-      return new Response(JSON.stringify({ success: true, plan }), {
+      await incrementCredits();
+
+      return new Response(JSON.stringify({ success: true, plan: planResponse }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
       })
@@ -295,6 +356,8 @@ Return ONLY the updated JSON schema, no explanations.`
         throw new Error('Could not parse edited schema from AI response')
       }
 
+      await incrementCredits();
+
       return new Response(JSON.stringify({ success: true, schema }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
@@ -323,6 +386,8 @@ Example: {"first_name": "John", "age": 30, "status": "active"}`;
         throw new Error('Could not parse data record from AI response')
       }
 
+      await incrementCredits();
+
       return new Response(JSON.stringify({ success: true, recordData }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
@@ -343,6 +408,8 @@ Example: {"first_name": "John", "age": 30, "status": "active"}`;
       }
 
       const raw = await callCloudflareAI(messages, 1024)
+
+      await incrementCredits();
 
       return new Response(JSON.stringify({ success: true, message: raw }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

@@ -13,6 +13,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { useImpersonation } from "@/lib/ImpersonationContext";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import OrbitBoltPanel from "@/components/OrbitBoltPanel";
 
 // Lazy-loaded view components for new module types
 const DynamicCalendarView = lazy(() => import("@/components/ui/DynamicCalendarView"));
@@ -41,6 +42,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
   const [isLoading, setIsLoading] = useState(true);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isBoltOpen, setIsBoltOpen] = useState(false);
   const [visibility, setVisibility] = useState('private');
   const [sharedWith, setSharedWith] = useState('');
   const [isSavingSettings, setIsSavingSettings] = useState(false);
@@ -294,10 +296,15 @@ export default function GenericModulePage({ title: propTitle, description: propD
         title={title}
         subtitle={description}
         actions={
-          <div className="flex gap-2">
+                  <div className="flex gap-2">
             <Button onClick={() => setIsSettingsOpen(true)} variant="outline" size="sm" className="gap-1.5 shadow-sm">
               <ShieldCheck className="w-4 h-4" /> Share
             </Button>
+            {isAdmin && (
+              <Button onClick={() => setIsBoltOpen(true)} variant="outline" size="sm" className="gap-1.5 shadow-sm border-purple-300 text-purple-700 hover:bg-purple-50 dark:border-purple-700 dark:text-purple-400 dark:hover:bg-purple-900/20">
+                <Sparkles className="w-4 h-4" /> OrbitBolt
+              </Button>
+            )}
             <Button onClick={() => setIsAddModalOpen(true)} size="sm" className={`gap-1.5 shadow-sm text-white ${themeConfig === 'primary' ? 'bg-primary hover:bg-primary/90' : `bg-${themeConfig}-600 hover:bg-${themeConfig}-700`}`}>
               <Plus className="w-4 h-4" /> Add Record
             </Button>
@@ -421,6 +428,33 @@ export default function GenericModulePage({ title: propTitle, description: propD
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* OrbitBolt AI Panel — for editing and data population on live modules */}
+      {moduleDef && (
+        <OrbitBoltPanel
+          isOpen={isBoltOpen}
+          onClose={() => setIsBoltOpen(false)}
+          onApplySchema={null}
+          currentSchema={moduleDef ? {
+            module: {
+              id: moduleDef.id,
+              name: moduleDef.name,
+              description: moduleDef.description,
+              icon: moduleDef.icon,
+              layout: moduleDef.config?.layout,
+              theme: moduleDef.config?.theme,
+              module_type: moduleDef.config?.page_type || 'data_module',
+            },
+            fields: fieldDefs.map(f => ({
+              name: f.name,
+              field_type: f.field_type,
+              is_required: f.is_required,
+              options: f.options,
+            }))
+          } : null}
+          onRefresh={fetchDynamicData}
+        />
+      )}
     </div>
   );
 }

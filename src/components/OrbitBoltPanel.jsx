@@ -57,7 +57,7 @@ const STARTER_PROMPTS = [
   "Design a complete Logistics & Fleet Management system with shipments, drivers, and tracking",
 ];
 
-export default function OrbitBoltPanel({ isOpen, onClose, onApplySchema, currentSchema }) {
+export default function OrbitBoltPanel({ isOpen, onClose, onApplySchema, currentSchema, onRefresh }) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const companyId = useCompanyId();
@@ -156,18 +156,30 @@ export default function OrbitBoltPanel({ isOpen, onClose, onApplySchema, current
         });
 
         if (data.recordData) {
-          // Insert the record into dynamic_records
-          const moduleId = currentSchema?.module?.id || schemaForPopulate?.module?.id;
-          if (moduleId) {
-            const { error: insertError } = await supabase.from('dynamic_records').insert({
-              id: crypto.randomUUID(),
-              module_id: moduleId,
-              company_id: user?.company_id,
-              data: data.recordData,
-              created_at: new Date().toISOString()
+          // Extract the real module DB id from currentSchema.module.id
+          const moduleId = currentSchema?.module?.id;
+          if (!moduleId) {
+            // Schema exists but no DB id — module hasn't been saved yet
+            setMessages(prev => {
+              const updated = [...prev];
+              updated[updated.length - 1] = {
+                role: 'assistant',
+                content: `⚠️ This module hasn't been saved to the database yet. Please click **"Apply to Builder"** and then **Publish** the module first, then you can populate it with data.`
+              };
+              return updated;
             });
-            if (insertError) throw new Error(`Failed to save record: ${insertError.message}`);
+            setIsLoading(false);
+            return;
           }
+
+          const { error: insertError } = await supabase.from('dynamic_records').insert({
+            id: crypto.randomUUID(),
+            module_id: moduleId,
+            company_id: user?.company_id,
+            data: data.recordData,
+            created_at: new Date().toISOString()
+          });
+          if (insertError) throw new Error(`Failed to save record: ${insertError.message}`);
 
           const fieldSummary = Object.entries(data.recordData)
             .filter(([, v]) => v !== null && v !== undefined)
@@ -178,10 +190,13 @@ export default function OrbitBoltPanel({ isOpen, onClose, onApplySchema, current
             const updated = [...prev];
             updated[updated.length - 1] = {
               role: 'assistant',
-              content: `✅ **Record Added Successfully!**\n\n${fieldSummary}\n\nThe record has been saved to your module. Refresh the page to see it.`
+              content: `✅ **Record Added Successfully!**\n\n${fieldSummary}\n\nYour module has been updated with the new record.`
             };
             return updated;
           });
+
+          // Instantly refresh the module page so records appear without manual refresh
+          if (onRefresh) onRefresh();
         } else {
           setMessages(prev => {
             const updated = [...prev];
@@ -324,9 +339,12 @@ export default function OrbitBoltPanel({ isOpen, onClose, onApplySchema, current
           ? err.message 
           : "Our AI servers are experiencing heavy traffic. Please try again in a few moments.";
       }
+      
+      const suffix = errorMessage.includes('upgrade your plan') ? '' : ' Please try again.';
+      
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: `⚠️ Error: ${errorMessage}. Please try again.`
+        content: `⚠️ Error: ${errorMessage}${suffix}`
       }]);
     } finally {
       setIsLoading(false);
