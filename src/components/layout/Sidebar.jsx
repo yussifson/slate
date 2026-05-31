@@ -38,6 +38,9 @@ const ICON_MAP = {
 
 import { supabase } from "@/api/supabaseClient";
 import { useAuth } from "@/lib/AuthContext";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   const { t } = useTranslation();
@@ -46,6 +49,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dynamicModules, setDynamicModules] = useState([]);
   const [openMenuId, setOpenMenuId] = useState(null);
+  const [renameData, setRenameData] = useState(null);
+  const [deleteData, setDeleteData] = useState(null);
   const isAdmin = ["super_admin", "admin", "company_admin", "managing_partner"].includes(user?.role);
   
   useEffect(() => {
@@ -125,16 +130,27 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
     navItems = [...navItems, { label: "Super Admin Portal", icon: "Shield", path: "/system-admin" }];
   }
 
-  const handleDeleteModule = async (id, name) => {
-    if (window.confirm(`Are you sure you want to delete '${name}' and all its records? This cannot be undone.`)) {
-      await supabase.from('module_definitions').delete().eq('id', id);
+  const handleDeleteModule = (id, name) => {
+    setDeleteData({ id, name });
+  };
+
+  const handleRenameModule = (id, currentName) => {
+    setRenameData({ id, currentName, newName: currentName });
+  };
+
+  const confirmDelete = async () => {
+    if (deleteData) {
+      await supabase.from('module_definitions').delete().eq('id', deleteData.id);
+      setDeleteData(null);
     }
   };
 
-  const handleRenameModule = async (id, currentName) => {
-    const newName = window.prompt("Enter new name for module:", currentName);
-    if (newName && newName.trim() !== "" && newName !== currentName) {
-      await supabase.from('module_definitions').update({ name: newName }).eq('id', id);
+  const confirmRename = async () => {
+    if (renameData && renameData.newName.trim() !== "" && renameData.newName !== renameData.currentName) {
+      await supabase.from('module_definitions').update({ name: renameData.newName }).eq('id', renameData.id);
+      setRenameData(null);
+    } else {
+      setRenameData(null);
     }
   };
 
@@ -288,6 +304,46 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
       )}>
         {renderNavContent(isCollapsed)}
       </aside>
+
+      <Dialog open={!!renameData} onOpenChange={(open) => !open && setRenameData(null)}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Rename Module</DialogTitle>
+            <DialogDescription>
+              Enter a new name for this module.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <Input 
+              value={renameData?.newName || ''} 
+              onChange={e => setRenameData({...renameData, newName: e.target.value})}
+              placeholder="Module Name"
+              onKeyDown={e => {
+                if (e.key === 'Enter') confirmRename();
+              }}
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRenameData(null)}>Cancel</Button>
+            <Button onClick={confirmRename}>Save changes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!deleteData} onOpenChange={(open) => !open && setDeleteData(null)}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Delete Module</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete '{deleteData?.name}' and all its records? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="mt-4">
+            <Button variant="outline" onClick={() => setDeleteData(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={confirmDelete}>Delete Module</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
