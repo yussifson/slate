@@ -196,6 +196,7 @@ export function useMutateIndustryRecord() {
       const record = {
         id: id || crypto.randomUUID(),
         company_id: companyId,
+        industry: industry || 'core',
         record_type: recordType,
         data: payload,
         status: status || null,
