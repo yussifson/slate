@@ -26,6 +26,10 @@ export default function OnboardingWizard() {
   const [subdomain, setSubdomain] = useState('');
   const [industry, setIndustry] = useState(user?.company_industry || 'law');
 
+  // Step 2: Setup Mode
+  const [setupMode, setSetupMode] = useState('template'); // 'template', 'orbit', 'custom'
+  const [selectedModules, setSelectedModules] = useState([]);
+
   // Step 2: Staff invites
   const [staffEmail, setStaffEmail] = useState('');
   const [staffRole, setStaffRole] = useState('');
@@ -148,6 +152,15 @@ export default function OnboardingWizard() {
       
       // Store onboarding completion in localStorage to prevent repeat redirects
       localStorage.setItem(`onboarding_done_${companyIdToUse}`, 'true');
+
+      // Store selected modules in localStorage
+      if (setupMode === 'template') {
+        localStorage.removeItem(`active_modules_${companyIdToUse}`); // Template implies all modules
+      } else if (setupMode === 'orbit') {
+        localStorage.setItem(`active_modules_${companyIdToUse}`, JSON.stringify([])); // Orbit implies no predefined modules
+      } else if (setupMode === 'custom') {
+        localStorage.setItem(`active_modules_${companyIdToUse}`, JSON.stringify(selectedModules));
+      }
       
       toast({ title: "Setup Complete!", description: "Welcome to your new digital workspace." });
       
@@ -185,7 +198,7 @@ export default function OnboardingWizard() {
           <span className="font-bold text-base text-slate-900 tracking-tight">{t("workspace_setup_wizard", "Workspace Setup Wizard")}</span>
         </div>
         <div className="text-xs font-semibold text-slate-400">
-          {t("step", "Step")} {step} {t("of_3", "of 3")}
+          {t("step", "Step")} {step} {t("of_4", "of 4")}
         </div>
       </div>
       {/* Main card */}
@@ -193,7 +206,7 @@ export default function OnboardingWizard() {
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-blue-400 to-primary"></div>
         {/* Progress indicator */}
         <div className="flex justify-between items-center mb-8">
-          {[1, 2, 3].map(s => {
+          {[1, 2, 3, 4].map(s => {
             return (
               <div key={s} className="flex items-center flex-1 last:flex-none">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs transition-colors ${
@@ -203,7 +216,7 @@ export default function OnboardingWizard() {
                 }`}>
                   {step > s ? <Check className="w-4 h-4" /> : s}
                 </div>
-                {s < 3 && (
+                {s < 4 && (
                   <div className={`h-1 flex-1 mx-2 rounded-full transition-colors ${
                     step > s ? 'bg-primary' : 'bg-slate-100'
                   }`} />
@@ -320,8 +333,85 @@ export default function OnboardingWizard() {
           </div>
         )}
 
-        {/* Step 2: Invite Team */}
+        {/* Step 2: Setup Mode */}
         {step === 2 && (
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <h2 className="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-1.5">
+                <Sparkles className="w-5 h-5 text-primary" /> Choose Your Setup Mode
+              </h2>
+              <p className="text-sm text-slate-500 leading-relaxed">
+                How would you like to initialize your workspace?
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <div 
+                className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${setupMode === 'template' ? 'border-primary bg-primary/5' : 'border-slate-200 hover:border-primary/50'}`}
+                onClick={() => setSetupMode('template')}
+              >
+                <h3 className="font-bold text-slate-900">Build with Template</h3>
+                <p className="text-xs text-slate-500 mt-1">Initializes your dashboard with all standard predefined pages and modules for a {INDUSTRIES[industry]?.name || 'business'}.</p>
+              </div>
+              
+              <div 
+                className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${setupMode === 'orbit' ? 'border-primary bg-primary/5' : 'border-slate-200 hover:border-primary/50'}`}
+                onClick={() => setSetupMode('orbit')}
+              >
+                <h3 className="font-bold text-slate-900">Build with Orbit (Blank Slate)</h3>
+                <p className="text-xs text-slate-500 mt-1">Start fresh with only universal pages (Settings, Welcome). Use Orbit AI to build your own custom pages later.</p>
+              </div>
+
+              <div 
+                className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${setupMode === 'custom' ? 'border-primary bg-primary/5' : 'border-slate-200 hover:border-primary/50'}`}
+                onClick={() => setSetupMode('custom')}
+              >
+                <h3 className="font-bold text-slate-900">Custom Selection</h3>
+                <p className="text-xs text-slate-500 mt-1">Hand-pick exactly which predefined pages you want to include in your workspace.</p>
+                
+                {setupMode === 'custom' && (
+                  <div className="mt-4 pt-4 border-t border-slate-200 space-y-2 max-h-48 overflow-y-auto pr-2">
+                    {INDUSTRIES[industry]?.nav?.filter(n => !['/', '/settings', '/integrations', '/admin'].includes(n.path)).map((navItem) => (
+                      <label key={navItem.path} className="flex items-center space-x-3 p-2 hover:bg-slate-50 rounded-lg cursor-pointer">
+                        <input 
+                          type="checkbox" 
+                          checked={selectedModules.includes(navItem.path)}
+                          onChange={(e) => {
+                            if (e.target.checked) setSelectedModules([...selectedModules, navItem.path]);
+                            else setSelectedModules(selectedModules.filter(p => p !== navItem.path));
+                          }}
+                          className="w-4 h-4 rounded text-primary focus:ring-primary border-slate-300"
+                        />
+                        <span className="text-sm font-medium text-slate-700">{navItem.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="pt-4 flex justify-between gap-4">
+              <Button 
+                variant="outline"
+                onClick={() => setStep(1)}
+                className="flex-1 rounded-xl text-slate-700 border-slate-200"
+              >
+                <ArrowLeft className="w-4 h-4 mr-1.5" /> {t("back", "Back")}
+              </Button>
+              <Button 
+                onClick={() => setStep(3)}
+                disabled={setupMode === 'custom' && selectedModules.length === 0}
+                className="flex-1 bg-primary hover:bg-primary/95 text-white font-semibold rounded-xl shadow-md group"
+              >
+                {t("continue_setup", "Continue Setup")}
+                <ArrowRight className="w-4 h-4 ml-1.5 transition-transform group-hover:translate-x-0.5" />
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 3: Invite Team */}
+        {step === 3 && (
           <div className="space-y-6">
             <div className="space-y-2">
               <h2 className="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-1.5">
@@ -403,13 +493,13 @@ export default function OnboardingWizard() {
             <div className="pt-4 flex justify-between gap-4">
               <Button 
                 variant="outline"
-                onClick={() => setStep(1)}
+                onClick={() => setStep(2)}
                 className="flex-1 rounded-xl text-slate-700 border-slate-200"
               >
                 <ArrowLeft className="w-4 h-4 mr-1.5" /> {t("back", "Back")}
               </Button>
               <Button 
-                onClick={() => setStep(3)}
+                onClick={() => setStep(4)}
                 className="flex-1 bg-primary hover:bg-primary/95 text-white font-semibold rounded-xl shadow-md group"
               >
                 {t("continue_setup", "Continue Setup")}
@@ -419,8 +509,8 @@ export default function OnboardingWizard() {
           </div>
         )}
 
-        {/* Step 3: First Case */}
-        {step === 3 && (
+        {/* Step 4: First Case */}
+        {step === 4 && (
           <div className="space-y-6">
             <div className="space-y-2">
               <h2 className="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-1.5">
@@ -468,7 +558,7 @@ export default function OnboardingWizard() {
             <div className="pt-4 flex justify-between gap-4">
               <Button 
                 variant="outline"
-                onClick={() => setStep(2)}
+                onClick={() => setStep(3)}
                 className="flex-1 rounded-xl text-slate-700 border-slate-200"
               >
                 <ArrowLeft className="w-4 h-4 mr-1.5" /> {t("back", "Back")}

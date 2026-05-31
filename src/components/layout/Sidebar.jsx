@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import {
@@ -46,6 +46,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   const { t } = useTranslation();
   const { impersonatedCompany } = useImpersonation();
   const location = useLocation();
+  const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dynamicModules, setDynamicModules] = useState([]);
   const [openMenuId, setOpenMenuId] = useState(null);
@@ -94,6 +95,9 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   const industryData = INDUSTRIES[activeIndustry] || INDUSTRIES.law;
   const industryNav = getIndustryNav(activeIndustry);
   
+  const savedModulesStr = localStorage.getItem(`active_modules_${user?.company_id}`);
+  const activeModules = savedModulesStr ? JSON.parse(savedModulesStr) : null;
+  
   const ROLE_PERMISSIONS = {
     lawyer: ["/my-dashboard", "/cases", "/leads", "/clients", "/calendar", "/tasks", "/documents", "/conflict-check", "/research", "/email-inbox", "/team"],
     paralegal: ["/my-dashboard", "/cases", "/clients", "/calendar", "/tasks", "/documents", "/research", "/email-inbox"],
@@ -105,6 +109,9 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   const allowedPaths = isAdmin ? null : (ROLE_PERMISSIONS[user?.role] || ROLE_PERMISSIONS.support);
 
   const filteredCompanyNav = industryNav.filter(item => {
+    if (activeModules && !['/', '/settings', '/integrations', '/admin'].includes(item.path)) {
+      if (!activeModules.includes(item.path)) return false;
+    }
     if (isAdmin) return true;
     if (activeIndustry !== 'law') return true; // Only apply strict law role filtering in law mode for now
     return allowedPaths.includes(item.path);
@@ -236,7 +243,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
                         <button onClick={(e) => { e.preventDefault(); handleRenameModule(item.id, item.label); setOpenMenuId(null); }} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors">
                           <Pencil className="w-3 h-3" /> Rename
                         </button>
-                        <button onClick={(e) => { e.preventDefault(); window.location.href = `/modules/edit/${item.id}`; setOpenMenuId(null); }} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors">
+                        <button onClick={(e) => { e.preventDefault(); navigate(`/modules/edit/${item.id}`); setOpenMenuId(null); }} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors">
                           <Settings className="w-3 h-3" /> Customize
                         </button>
                         <button onClick={(e) => { e.preventDefault(); handleDeleteModule(item.id, item.label); setOpenMenuId(null); }} className="w-full text-left px-3 py-2 text-xs text-red-500 hover:bg-red-500/10 flex items-center gap-2 transition-colors">

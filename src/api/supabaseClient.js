@@ -21,7 +21,7 @@ const customFetch = async (url, options) => {
   // Uploads and Edge Functions get a longer timeout; everything else 8s for fast offline fallback
   const isUpload = url.includes('/storage/v1/object/');
   const isEdgeFunction = url.includes('/functions/v1/');
-  const timeoutDuration = isUpload || isEdgeFunction ? 60000 : 8000;
+  const timeoutDuration = isUpload || isEdgeFunction ? 60000 : 30000;
   const timeoutId = setTimeout(() => controller.abort(), timeoutDuration);
 
   try {

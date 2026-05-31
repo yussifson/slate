@@ -5,9 +5,11 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/api/supabaseClient";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCompanyId } from "@/hooks/useCompanyId";
-import { Blocks, Sparkles, Plus, Trash2, X, Play } from "lucide-react";
+import { Blocks, Sparkles, Plus, Trash2, X, Play, Undo2, Redo2, ChevronLeft, ChevronRight } from "lucide-react";
 import DynamicTable from "@/components/ui/DynamicTable";
 import DynamicGrid from "@/components/ui/DynamicGrid";
+import { IconPicker } from "@/components/ui/IconPicker";
+import { useUndoableState } from "@/hooks/useUndoableState";
 
 const generateDummyData = (fields) => {
   const dummyCount = 5;
@@ -40,12 +42,20 @@ export default function CreateModulePage() {
   const isEditing = !!id;
   const companyId = useCompanyId();
   
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [icon, setIcon] = useState("Blocks");
-  const [layout, setLayout] = useState("table");
-  const [theme, setTheme] = useState("primary");
-  const [fields, setFields] = useState([{ name: "name", field_type: "text", is_required: true, options: "" }]);
+  const initialState = {
+    name: "",
+    description: "",
+    icon: "Blocks",
+    layout: "table",
+    theme: "primary",
+    moduleType: "data_module",
+    fields: [{ name: "name", field_type: "text", is_required: true, options: "" }]
+  };
+
+  const [state, setState, undo, redo, canUndo, canRedo, setWithoutHistory] = useUndoableState(initialState);
+  const { name, description, icon, layout, theme, moduleType, fields } = state;
+
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
@@ -57,19 +67,20 @@ export default function CreateModulePage() {
       const loadModule = async () => {
         const { data: mod } = await supabase.from('module_definitions').select('*').eq('id', id).single();
         if (mod) {
-          setName(mod.name || "");
-          setDescription(mod.description || "");
-          setIcon(mod.icon || "Blocks");
-          setLayout(mod.config?.layout || "table");
-          setTheme(mod.config?.theme || "primary");
-          
-          const { data: f } = await supabase.from('field_definitions').select('*').eq('module_id', id).order('order_index');
-          if (f && f.length > 0) {
-            setFields(f.map(x => ({ 
-              ...x, 
-              options: Array.isArray(x.options) ? x.options.join(', ') : x.options || "" 
-            })));
-          }
+          const loadedFields = f && f.length > 0 ? f.map(x => ({ 
+            ...x, 
+            options: Array.isArray(x.options) ? x.options.join(', ') : x.options || "" 
+          })) : [{ name: "name", field_type: "text", is_required: true, options: "" }];
+
+          setWithoutHistory({
+            name: mod.name || "",
+            description: mod.description || "",
+            icon: mod.icon || "Blocks",
+            layout: mod.config?.layout || "table",
+            theme: mod.config?.theme || "primary",
+            moduleType: mod.config?.page_type || mod.type || "data_module",
+            fields: loadedFields
+          });
         }
       };
       loadModule();
@@ -77,17 +88,17 @@ export default function CreateModulePage() {
   }, [id, isEditing]);
 
   const handleAddField = () => {
-    setFields([...fields, { name: "", field_type: "text", is_required: false, options: "" }]);
+    setState({ ...state, fields: [...fields, { name: "", field_type: "text", is_required: false, options: "" }] });
   };
 
   const handleRemoveField = (index) => {
-    setFields(fields.filter((_, i) => i !== index));
+    setState({ ...state, fields: fields.filter((_, i) => i !== index) });
   };
 
   const handleFieldChange = (index, key, value) => {
     const newFields = [...fields];
-    newFields[index][key] = value;
-    setFields(newFields);
+    newFields[index] = { ...newFields[index], [key]: value };
+    setState({ ...state, fields: newFields });
   };
 
   const handleAiGenerate = async (e) => {
@@ -98,7 +109,8 @@ export default function CreateModulePage() {
     try {
       const payload = {
         prompt: aiPrompt, 
-        company_id: companyId
+        company_id: companyId,
+        moduleType: moduleType
       };
       
       if (isEditing) {
@@ -108,6 +120,7 @@ export default function CreateModulePage() {
           icon,
           layout,
           theme,
+          module_type: moduleType,
           fields: fields.map(f => ({ name: f.name, field_type: f.field_type, is_required: f.is_required, options: f.options }))
         };
       }
@@ -120,21 +133,22 @@ export default function CreateModulePage() {
       
       const data = response.data;
       if (data?.success && data?.schema) {
-        setName(data.schema.module.name || "");
-        setDescription(data.schema.module.description || "");
-        setIcon(data.schema.module.icon || "Blocks");
-        setLayout(data.schema.module.layout || "table");
-        setTheme(data.schema.module.theme || "primary");
-        
-        if (data.schema.fields && data.schema.fields.length > 0) {
-          const mappedFields = data.schema.fields.map(f => ({
-            name: f.name || "",
-            field_type: f.field_type || "text",
-            is_required: !!f.is_required,
-            options: Array.isArray(f.options) ? f.options.join(", ") : ""
-          }));
-          setFields(mappedFields);
-        }
+        const mappedFields = (data.schema.fields && data.schema.fields.length > 0) ? data.schema.fields.map(f => ({
+          name: f.name || "",
+          field_type: f.field_type || "text",
+          is_required: !!f.is_required,
+          options: Array.isArray(f.options) ? f.options.join(", ") : ""
+        })) : state.fields;
+
+        setState({
+          name: data.schema.module.name || "",
+          description: data.schema.module.description || "",
+          icon: data.schema.module.icon || "Blocks",
+          layout: data.schema.module.layout || "table",
+          theme: data.schema.module.theme || "primary",
+          moduleType: data.schema.module.module_type || moduleType,
+          fields: mappedFields
+        });
         
         toast({ title: "OrbitBolt Generation Complete", description: "Review and customize your new module layout!" });
         setIsAiModalOpen(false);
@@ -166,8 +180,8 @@ export default function CreateModulePage() {
         icon,
         status, // 'draft' or 'published'
         is_active: 'true',
-        config: { layout, theme },
-        updated_at: new Date().toISOString()
+        type: moduleType === 'data_module' ? 'custom' : moduleType,
+        config: { layout, theme, page_type: moduleType }
       };
 
       if (!isEditing) {
@@ -221,12 +235,18 @@ export default function CreateModulePage() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <PageHeader title={isEditing ? "Edit Module" : "Module Builder"} subtitle="Design custom records and workflows." />
         <div className="flex gap-2">
-          {isEditing && (
+          <Button variant="ghost" size="icon" onClick={undo} disabled={!canUndo} title="Undo">
+            <Undo2 className="w-4 h-4" />
+          </Button>
+          <Button variant="ghost" size="icon" onClick={redo} disabled={!canRedo} title="Redo">
+            <Redo2 className="w-4 h-4" />
+          </Button>
+          <div className="w-px h-8 bg-border mx-1"></div>
+          {isEditing ? (
             <Button onClick={() => setIsAiModalOpen(true)} variant="outline" className="gap-2 font-semibold">
               <Sparkles className="w-4 h-4 text-purple-600" /> AI Edit Module
             </Button>
-          )}
-          {!isEditing && (
+          ) : (
             <Button onClick={() => setIsAiModalOpen(true)} className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 font-bold shadow-md">
               <Sparkles className="w-4 h-4" /> Generate with AI
             </Button>
@@ -234,170 +254,191 @@ export default function CreateModulePage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <div className="xl:col-span-1 space-y-6">
-          <div className="bg-card rounded-xl border border-border p-5 shadow-sm space-y-6">
-            <div className="space-y-4">
-              <h3 className="font-semibold text-foreground border-b border-border pb-2">Module Details</h3>
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Module Name</label>
-                <input 
-                  type="text" 
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. Patient Referrals"
-                  className="w-full rounded-md border border-input bg-background text-foreground px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                  required
-                />
+      <div className={`grid grid-cols-1 ${isSidebarOpen ? 'xl:grid-cols-3' : 'xl:grid-cols-1'} gap-6 transition-all duration-300`}>
+        {isSidebarOpen && (
+          <div className="xl:col-span-1 space-y-6 animate-in slide-in-from-left duration-300">
+            <div className="bg-card rounded-xl border border-border p-5 shadow-sm space-y-6">
+              <div className="space-y-4">
+                <h3 className="font-semibold text-foreground border-b border-border pb-2">Module Details</h3>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1">Module Name</label>
+                  <input 
+                    type="text" 
+                    value={name}
+                    onChange={(e) => setState({ ...state, name: e.target.value })}
+                    placeholder="e.g. Patient Referrals"
+                    className="w-full rounded-md border border-input bg-background text-foreground px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1">Module Type</label>
+                  <select 
+                    value={moduleType}
+                    onChange={(e) => setState({ ...state, moduleType: e.target.value })}
+                    className="w-full rounded-md border border-input bg-background text-foreground px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                  >
+                    <option value="data_module">Data Module (Table/Grid)</option>
+                    <option value="dashboard">Dashboard (Charts & Stats)</option>
+                    <option value="kanban">Kanban Board (Workflow)</option>
+                    <option value="document_manager">Document Manager</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1">Description</label>
+                  <textarea 
+                    value={description}
+                    onChange={(e) => setState({ ...state, description: e.target.value })}
+                    placeholder="Brief description of what this module tracks..."
+                    className="w-full rounded-md border border-input bg-background text-foreground px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring h-20"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1">Icon</label>
+                  <IconPicker 
+                    value={icon}
+                    onChange={(val) => setState({ ...state, icon: val })}
+                  />
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Description</label>
-                <textarea 
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Brief description of what this module tracks..."
-                  className="w-full rounded-md border border-input bg-background text-foreground px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring h-20"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Icon (Lucide React Name)</label>
-                <input 
-                  type="text" 
-                  value={icon}
-                  onChange={(e) => setIcon(e.target.value)}
-                  placeholder="e.g. Blocks, Users, Settings"
-                  className="w-full rounded-md border border-input bg-background text-foreground px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                />
-              </div>
-            </div>
 
-            <div className="space-y-4">
-              <h3 className="font-semibold text-foreground border-b border-border pb-2 mt-6">Data Fields</h3>
-              
-              <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
-                {fields.map((f, i) => (
-                  <div key={i} className="bg-muted border border-border rounded-lg p-3 relative group">
-                    <button type="button" onClick={() => handleRemoveField(i)} className="absolute top-2 right-2 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                    <div className="grid grid-cols-2 gap-3 mb-2 pr-6">
-                      <input 
-                        type="text" 
-                        value={f.name} 
-                        onChange={e => handleFieldChange(i, 'name', e.target.value)} 
-                        placeholder="Field Name" 
-                        className="w-full rounded border border-input bg-background text-foreground px-2 py-1.5 text-sm" required 
-                      />
-                      <select 
-                        value={f.field_type} 
-                        onChange={e => handleFieldChange(i, 'field_type', e.target.value)} 
-                        className="w-full rounded border border-input bg-background text-foreground px-2 py-1.5 text-sm"
-                      >
-                        <option value="text">Text</option>
-                        <option value="number">Number</option>
-                        <option value="date">Date</option>
-                        <option value="boolean">Checkbox (Yes/No)</option>
-                        <option value="select">Dropdown Select</option>
-                      </select>
-                    </div>
-                    {f.field_type === 'select' && (
-                      <div className="mb-2">
+              <div className="space-y-4">
+                <h3 className="font-semibold text-foreground border-b border-border pb-2 mt-6">Data Fields</h3>
+                
+                <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
+                  {fields.map((f, i) => (
+                    <div key={i} className="bg-muted border border-border rounded-lg p-3 relative group">
+                      <button type="button" onClick={() => handleRemoveField(i)} className="absolute top-2 right-2 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                      <div className="grid grid-cols-2 gap-3 mb-2 pr-6">
                         <input 
                           type="text" 
-                          value={f.options} 
-                          onChange={e => handleFieldChange(i, 'options', e.target.value)} 
-                          placeholder="Comma separated options (e.g. High, Medium, Low)" 
+                          value={f.name} 
+                          onChange={e => handleFieldChange(i, 'name', e.target.value)} 
+                          placeholder="Field Name" 
                           className="w-full rounded border border-input bg-background text-foreground px-2 py-1.5 text-sm" required 
                         />
+                        <select 
+                          value={f.field_type} 
+                          onChange={e => handleFieldChange(i, 'field_type', e.target.value)} 
+                          className="w-full rounded border border-input bg-background text-foreground px-2 py-1.5 text-sm"
+                        >
+                          <option value="text">Text</option>
+                          <option value="number">Number</option>
+                          <option value="date">Date</option>
+                          <option value="boolean">Checkbox (Yes/No)</option>
+                          <option value="select">Dropdown Select</option>
+                        </select>
                       </div>
-                    )}
-                    <label className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <input 
-                        type="checkbox" 
-                        checked={f.is_required} 
-                        onChange={e => handleFieldChange(i, 'is_required', e.target.checked)} 
-                        className="rounded border-input" 
-                      />
-                      Required Field
-                    </label>
-                  </div>
-                ))}
-              </div>
-              <Button type="button" variant="outline" size="sm" onClick={handleAddField} className="w-full mt-2 h-8 text-xs gap-1">
-                <Plus className="w-3 h-3" /> Add New Field
-              </Button>
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex items-center justify-between border-b border-border pb-2 mt-6">
-                <h3 className="font-semibold text-foreground">Design & Layout</h3>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Layout Style</label>
-                <div className="grid grid-cols-2 gap-3">
-                  <button 
-                    type="button"
-                    onClick={() => setLayout("table")}
-                    className={`flex flex-col items-center justify-center p-3 rounded-lg border text-sm font-medium transition-all ${layout === 'table' ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card text-muted-foreground hover:bg-muted'}`}
-                  >
-                    <svg className="w-6 h-6 mb-2 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
-                    Table View
-                  </button>
-                  <button 
-                    type="button"
-                    onClick={() => setLayout("grid")}
-                    className={`flex flex-col items-center justify-center p-3 rounded-lg border text-sm font-medium transition-all ${layout === 'grid' ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card text-muted-foreground hover:bg-muted'}`}
-                  >
-                    <svg className="w-6 h-6 mb-2 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
-                    Grid / Cards
-                  </button>
-                </div>
-              </div>
-
-              <div className="pt-2">
-                <label className="block text-sm font-medium text-foreground mb-3">Theme Color</label>
-                <div className="flex flex-wrap gap-3">
-                  {[
-                    { id: "primary", hex: "#4f46e5" },
-                    { id: "blue", hex: "#2563eb" },
-                    { id: "emerald", hex: "#059669" },
-                    { id: "rose", hex: "#e11d48" },
-                    { id: "amber", hex: "#d97706" },
-                    { id: "purple", hex: "#9333ea" },
-                  ].map((t) => (
-                    <button
-                      key={t.id}
-                      type="button"
-                      onClick={() => setTheme(t.id)}
-                      className={`w-8 h-8 rounded-full transition-all flex items-center justify-center ${theme === t.id ? 'ring-2 ring-offset-2 ring-offset-background ring-foreground scale-110' : 'hover:scale-105'}`}
-                      style={{ backgroundColor: t.hex }}
-                      title={t.id.charAt(0).toUpperCase() + t.id.slice(1)}
-                    >
-                      {theme === t.id && <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
-                    </button>
+                      {f.field_type === 'select' && (
+                        <div className="mb-2">
+                          <input 
+                            type="text" 
+                            value={f.options} 
+                            onChange={e => handleFieldChange(i, 'options', e.target.value)} 
+                            placeholder="Comma separated options (e.g. High, Medium, Low)" 
+                            className="w-full rounded border border-input bg-background text-foreground px-2 py-1.5 text-sm" required 
+                          />
+                        </div>
+                      )}
+                      <label className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <input 
+                          type="checkbox" 
+                          checked={f.is_required} 
+                          onChange={e => handleFieldChange(i, 'is_required', e.target.checked)} 
+                          className="rounded border-input" 
+                        />
+                        Required Field
+                      </label>
+                    </div>
                   ))}
                 </div>
+                <Button type="button" variant="outline" size="sm" onClick={handleAddField} className="w-full mt-2 h-8 text-xs gap-1">
+                  <Plus className="w-3 h-3" /> Add New Field
+                </Button>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between border-b border-border pb-2 mt-6">
+                  <h3 className="font-semibold text-foreground">Design & Layout</h3>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1">Layout Style</label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button 
+                      type="button"
+                      onClick={() => setState({ ...state, layout: "table" })}
+                      className={`flex flex-col items-center justify-center p-3 rounded-lg border text-sm font-medium transition-all ${layout === 'table' ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card text-muted-foreground hover:bg-muted'}`}
+                    >
+                      <svg className="w-6 h-6 mb-2 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                      Table View
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={() => setState({ ...state, layout: "grid" })}
+                      className={`flex flex-col items-center justify-center p-3 rounded-lg border text-sm font-medium transition-all ${layout === 'grid' ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card text-muted-foreground hover:bg-muted'}`}
+                    >
+                      <svg className="w-6 h-6 mb-2 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+                      Grid / Cards
+                    </button>
+                  </div>
+                </div>
+
+                <div className="pt-2">
+                  <label className="block text-sm font-medium text-foreground mb-3">Theme Color</label>
+                  <div className="flex flex-wrap gap-3">
+                    {[
+                      { id: "primary", hex: "#4f46e5" },
+                      { id: "blue", hex: "#2563eb" },
+                      { id: "emerald", hex: "#059669" },
+                      { id: "rose", hex: "#e11d48" },
+                      { id: "amber", hex: "#d97706" },
+                      { id: "purple", hex: "#9333ea" },
+                    ].map((t) => (
+                      <button
+                        key={t.id}
+                        type="button"
+                        onClick={() => setState({ ...state, theme: t.id })}
+                        className={`w-8 h-8 rounded-full transition-all flex items-center justify-center ${theme === t.id ? 'ring-2 ring-offset-2 ring-offset-background ring-foreground scale-110' : 'hover:scale-105'}`}
+                        style={{ backgroundColor: t.hex }}
+                        title={t.id.charAt(0).toUpperCase() + t.id.slice(1)}
+                      >
+                        {theme === t.id && <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-6 border-t border-border flex justify-end gap-3 mt-6">
+                <Button type="button" variant="outline" onClick={() => saveModule('draft')} disabled={isSubmitting} className="flex-1">
+                  {isSubmitting ? "Saving..." : "Save Draft"}
+                </Button>
+                <Button type="button" onClick={() => saveModule('published')} disabled={isSubmitting} className="bg-primary hover:bg-primary/90 text-primary-foreground flex-1">
+                  {isSubmitting ? "Saving..." : (isEditing ? "Update Module" : "Publish")}
+                </Button>
               </div>
             </div>
-
-            <div className="pt-6 border-t border-border flex justify-end gap-3 mt-6">
-              <Button type="button" variant="outline" onClick={() => saveModule('draft')} disabled={isSubmitting} className="flex-1">
-                {isSubmitting ? "Saving..." : "Save Draft"}
-              </Button>
-              <Button type="button" onClick={() => saveModule('published')} disabled={isSubmitting} className="bg-primary hover:bg-primary/90 text-primary-foreground flex-1">
-                {isSubmitting ? "Saving..." : (isEditing ? "Update Module" : "Publish")}
-              </Button>
-            </div>
           </div>
-        </div>
+        )}
 
-        <div className="xl:col-span-2">
-          <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden h-full flex flex-col">
+        <div className={isSidebarOpen ? "xl:col-span-2" : "xl:col-span-1 h-full"}>
+          <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden h-full flex flex-col transition-all duration-300">
             <div className="p-4 border-b border-border flex items-center justify-between bg-muted/30">
-              <div className="flex items-center gap-2 text-foreground font-medium">
-                <Play className="w-4 h-4 text-primary" />
-                Live Preview
+              <div className="flex items-center gap-3 text-foreground font-medium">
+                <button 
+                  onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                  className="p-1.5 rounded-md hover:bg-background border border-transparent hover:border-border transition-colors text-muted-foreground hover:text-foreground"
+                  title={isSidebarOpen ? "Collapse Configuration" : "Expand Configuration"}
+                >
+                  {isSidebarOpen ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                </button>
+                <div className="flex items-center gap-2">
+                  <Play className="w-4 h-4 text-primary" />
+                  Live Preview
+                </div>
               </div>
               <div className="text-xs text-muted-foreground px-2 py-1 bg-background border border-border rounded-md">
                 Interactive Environment

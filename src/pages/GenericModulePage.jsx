@@ -7,6 +7,7 @@ import DynamicTable from "@/components/ui/DynamicTable";
 import DynamicGrid from "@/components/ui/DynamicGrid";
 import DynamicForm from "@/components/ui/DynamicForm";
 import DynamicDashboard from "@/components/ui/DynamicDashboard";
+import DynamicKanbanView from "@/components/ui/DynamicKanbanView";
 import { supabase } from "@/api/supabaseClient";
 import { useAuth } from "@/lib/AuthContext";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -153,6 +154,59 @@ export default function GenericModulePage({ title: propTitle, description: propD
 
   const layoutConfig = moduleDef?.config?.layout || 'table';
   const themeConfig = moduleDef?.config?.theme || 'primary';
+  const pageType = moduleDef?.config?.page_type || 'data_module';
+
+  const renderModuleContent = () => {
+    if (isLoading) {
+      return (
+        <div className="h-64 flex flex-col items-center justify-center text-muted-foreground bg-card rounded-xl border border-border mt-6">
+          <RefreshCw className="w-8 h-8 animate-spin mb-4" />
+          <p>Loading module definitions...</p>
+        </div>
+      );
+    }
+    if (!moduleDef) {
+      return (
+        <div className="h-64 flex flex-col items-center justify-center text-muted-foreground bg-card rounded-xl border border-border mt-6">
+          <Sparkles className="w-12 h-12 text-muted-foreground/50 mb-4" />
+          <p className="font-medium text-foreground text-lg">No Dynamic Modules Found</p>
+          <p className="text-sm mt-1">Use the AI Assistant to generate a new module.</p>
+        </div>
+      );
+    }
+
+    if (pageType === 'dashboard') {
+      return (
+        <div className="mt-6">
+          <DynamicDashboard records={records} moduleDef={moduleDef} />
+        </div>
+      );
+    }
+
+    if (pageType === 'kanban') {
+      return (
+        <div className="mt-6 bg-card rounded-xl border border-border shadow-sm p-4 overflow-hidden">
+          <DynamicKanbanView 
+            records={records} 
+            moduleDef={moduleDef} 
+            fieldDefinitions={fieldDefs} 
+            onRecordUpdated={fetchDynamicData} 
+          />
+        </div>
+      );
+    }
+
+    // Default: data_module
+    return (
+      <div className={`${layoutConfig === 'table' ? 'bg-card rounded-xl border border-border overflow-hidden shadow-sm p-6' : ''} mt-6`}>
+        {layoutConfig === 'table' ? (
+          <DynamicTable data={records} fieldDefinitions={fieldDefs} />
+        ) : (
+          <DynamicGrid data={records} fieldDefinitions={fieldDefs} theme={themeConfig} />
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className={`space-y-6 animate-in fade-in duration-300 ${themeConfig !== 'primary' ? `theme-${themeConfig}` : ''}`}>
@@ -203,28 +257,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
         </div>
       </div>
 
-      {!isLoading && moduleDef && (
-        <DynamicDashboard records={records} moduleDef={moduleDef} />
-      )}
-
-      <div className={`${layoutConfig === 'table' ? 'bg-card rounded-xl border border-border overflow-hidden shadow-sm p-6' : ''} mt-6`}>
-        {isLoading ? (
-          <div className="h-64 flex flex-col items-center justify-center text-muted-foreground bg-card rounded-xl border border-border">
-            <RefreshCw className="w-8 h-8 animate-spin mb-4" />
-            <p>Loading module definitions...</p>
-          </div>
-        ) : !moduleDef ? (
-          <div className="h-64 flex flex-col items-center justify-center text-muted-foreground bg-card rounded-xl border border-border">
-            <Sparkles className="w-12 h-12 text-muted-foreground/50 mb-4" />
-            <p className="font-medium text-foreground text-lg">No Dynamic Modules Found</p>
-            <p className="text-sm mt-1">Use the AI Assistant to generate a new module.</p>
-          </div>
-        ) : layoutConfig === 'table' ? (
-          <DynamicTable data={records} fieldDefinitions={fieldDefs} />
-        ) : (
-          <DynamicGrid data={records} fieldDefinitions={fieldDefs} theme={themeConfig} />
-        )}
-      </div>
+      {renderModuleContent()}
 
       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
         <DialogContent className="sm:max-w-[500px] max-h-[85vh] overflow-y-auto">

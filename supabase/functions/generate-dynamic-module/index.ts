@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { prompt, company_id, currentSchema } = await req.json()
+    const { prompt, company_id, currentSchema, moduleType } = await req.json()
 
     if (!prompt) {
       throw new Error('Prompt is required')
@@ -25,7 +25,9 @@ serve(async (req) => {
       throw new Error('Cloudflare AI credentials not configured in Supabase secrets.')
     }
 
+    const targetType = moduleType || 'data_module'
     let systemPrompt = `You are an AI that generates business module configurations for a platform called OptalFlow.
+The target module type is: ${targetType}.
 Given a user request, return ONLY a valid JSON object — no explanations, no markdown, no code fences.
 Use this exact structure:
 {
@@ -34,7 +36,8 @@ Use this exact structure:
     "description": "string",
     "icon": "string (a valid lucide-react icon name like Briefcase, Users, Package, FileText, Calendar, Truck, Heart, Building)",
     "layout": "string (either 'table' or 'grid')",
-    "theme": "string (choose one: primary, blue, emerald, rose, amber, purple)"
+    "theme": "string (choose one: primary, blue, emerald, rose, amber, purple)",
+    "module_type": "${targetType}"
   },
   "fields": [
     {
