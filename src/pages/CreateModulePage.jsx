@@ -271,6 +271,7 @@ export default function CreateModulePage() {
               </div>
             </div>
 
+            <div className="space-y-4">
               <h3 className="font-semibold text-foreground border-b border-border pb-2 mt-6">Data Fields</h3>
               
               <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
