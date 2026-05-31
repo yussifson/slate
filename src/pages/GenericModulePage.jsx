@@ -1,73 +1,63 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import PageHeader from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Calendar, Plus, RefreshCw, BarChart2, ShieldCheck } from "lucide-react";
+import { Sparkles, Calendar, Plus, RefreshCw, BarChart2, ShieldCheck, FileText } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-
-const MODULE_DETAILS = {
-  "/products": {
-    title: "Product Catalog",
-    description: "Manage your inventory item pricing, variations, barcode mappings, and stock alert levels."
-  },
-  "/org-chart": {
-    title: "Organization Chart",
-    description: "Visualize, search, and manage department hierarchies, reporting lines, and staffing structures."
-  },
-  "/disciplinary": {
-    title: "Disciplinary Cases",
-    description: "Securely document, investigate, and resolve employee incidents, hearings, and compliance actions."
-  },
-  "/dispatch": {
-    title: "Logistics Dispatch Board",
-    description: "Real-time fleet scheduling, route optimization, driver assignment, and manifest tracking."
-  },
-  "/shifts": {
-    title: "Shift Scheduling",
-    description: "Optimize staff rosters, manage shift swaps, track attendance times, and review clock-in logs."
-  },
-  "/benefits": {
-    title: "Employee Benefits",
-    description: "Administer employee health insurance tiers, retirement contributions, perks, and wellness programs."
-  },
-  "/routes": {
-    title: "Route Planning",
-    description: "Define optimization pathways, geo-fenced delivery routes, stop sequences, and transit estimates."
-  },
-  "/training": {
-    title: "Training & Certifications",
-    description: "Coordinate staff onboarding modules, mandatory skills training, certifications, and progress records."
-  },
-  "/loyalty": {
-    title: "Customer Loyalty",
-    description: "Configure reward points multipliers, customer tier thresholds, discounts, and rewards redemption."
-  },
-  "/pickups": {
-    title: "Pickup Schedule",
-    description: "Log, schedule, and assign customer pickup requests, dispatch vehicles, and track load statuses."
-  },
-  "/orders": {
-    title: "Sales Orders",
-    description: "Track customer purchase orders from receipt to fulfillment, packaging, shipping, and billing."
-  }
-};
+import DynamicTable from "@/components/ui/DynamicTable";
+import DynamicForm from "@/components/ui/DynamicForm";
+import DynamicDashboard from "@/components/ui/DynamicDashboard";
+import { powerSync } from "@/api/PowerSyncConnector";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 export default function GenericModulePage({ title: propTitle, description: propDescription }) {
   const { toast } = useToast();
-  const path = window.location.pathname;
+  const path = window.location.pathname.replace('/', '');
   
-  const matched = MODULE_DETAILS[path] || {
-    title: "Industry Workspace Module",
-    description: "Operational space for advanced multi-industry transaction logs, metrics, and workflows."
+  const [moduleDef, setModuleDef] = useState(null);
+  const [fieldDefs, setFieldDefs] = useState([]);
+  const [records, setRecords] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  const fetchDynamicData = async () => {
+    try {
+      setIsLoading(true);
+      const modResults = await powerSync.getAll(`
+        SELECT * FROM module_definitions WHERE is_active = 'true' LIMIT 1
+      `);
+      
+      if (modResults.length > 0) {
+        const mod = modResults[0];
+        setModuleDef(mod);
+        
+        const fields = await powerSync.getAll(`
+          SELECT * FROM field_definitions WHERE module_id = ? ORDER BY order_index ASC
+        `, [mod.id]);
+        setFieldDefs(fields);
+
+        const recs = await powerSync.getAll(`
+          SELECT * FROM dynamic_records WHERE module_id = ?
+        `, [mod.id]);
+        const parsedRecords = recs.map(r => ({ ...r, data: JSON.parse(r.data || '{}') }));
+        setRecords(parsedRecords);
+      }
+    } catch (err) {
+      console.error("Failed to load dynamic module", err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const title = propTitle || matched.title;
-  const description = propDescription || matched.description;
+  useEffect(() => {
+    fetchDynamicData();
+  }, [path]);
 
-  const handleAction = (actionName) => {
-    toast({
-      title: `${actionName} initiated`,
-      description: `This high-fidelity feature is operating in live multi-industry sandbox mode.`
-    });
+  const title = propTitle || moduleDef?.name || "Dynamic Workspace";
+  const description = propDescription || moduleDef?.description || "Loading configuration...";
+
+  const handleAddSuccess = () => {
+    setIsAddModalOpen(false);
+    fetchDynamicData(); // Refresh records
   };
 
   return (
@@ -77,7 +67,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
         subtitle={description}
         actions={
           <div className="flex gap-2">
-            <Button onClick={() => handleAction("Quick Action")} size="sm" className="gap-1.5 shadow-sm">
+            <Button onClick={() => setIsAddModalOpen(true)} size="sm" className="gap-1.5 shadow-sm bg-blue-600 hover:bg-blue-700 text-white">
               <Plus className="w-4 h-4" /> Add Record
             </Button>
           </div>
@@ -85,71 +75,79 @@ export default function GenericModulePage({ title: propTitle, description: propD
       />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {/* Metric 1 */}
-        <div className="bg-card rounded-xl border border-border p-5 flex items-center justify-between shadow-sm">
+        <div className="bg-white rounded-xl border border-slate-200 p-5 flex items-center justify-between shadow-sm">
           <div>
-            <p className="text-xs text-muted-foreground mb-1">Total Records</p>
-            <p className="text-2xl font-bold text-foreground">124</p>
-            <p className="text-xs text-green-600 mt-1 font-medium">+12% this month</p>
+            <p className="text-xs text-slate-500 mb-1">Total Records</p>
+            <p className="text-2xl font-bold text-slate-900">{records.length}</p>
           </div>
-          <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center">
-            <BarChart2 className="w-5 h-5 text-primary" />
+          <div className="w-11 h-11 rounded-full bg-blue-50 flex items-center justify-center">
+            <BarChart2 className="w-5 h-5 text-blue-600" />
           </div>
         </div>
 
-        {/* Metric 2 */}
-        <div className="bg-card rounded-xl border border-border p-5 flex items-center justify-between shadow-sm">
+        <div className="bg-white rounded-xl border border-slate-200 p-5 flex items-center justify-between shadow-sm">
           <div>
-            <p className="text-xs text-muted-foreground mb-1">Active Status</p>
-            <p className="text-2xl font-bold text-foreground">98.4%</p>
-            <p className="text-xs text-muted-foreground mt-1">Excellent performance</p>
+            <p className="text-xs text-slate-500 mb-1">Module Status</p>
+            <p className="text-2xl font-bold text-slate-900">Active</p>
           </div>
-          <div className="w-11 h-11 rounded-full bg-emerald-100 flex items-center justify-center">
+          <div className="w-11 h-11 rounded-full bg-emerald-50 flex items-center justify-center">
             <ShieldCheck className="w-5 h-5 text-emerald-600" />
           </div>
         </div>
 
-        {/* Metric 3 */}
-        <div className="bg-card rounded-xl border border-border p-5 flex items-center justify-between shadow-sm">
+        <div className="bg-white rounded-xl border border-slate-200 p-5 flex items-center justify-between shadow-sm">
           <div>
-            <p className="text-xs text-muted-foreground mb-1">Pending Updates</p>
-            <p className="text-2xl font-bold text-foreground">3</p>
-            <p className="text-xs text-amber-600 mt-1 font-medium">Requires review</p>
+            <p className="text-xs text-slate-500 mb-1">Custom Fields</p>
+            <p className="text-2xl font-bold text-slate-900">{fieldDefs.length}</p>
           </div>
-          <div className="w-11 h-11 rounded-full bg-amber-100 flex items-center justify-center">
-            <Sparkles className="w-5 h-5 text-amber-500" />
+          <div className="w-11 h-11 rounded-full bg-indigo-50 flex items-center justify-center">
+            <FileText className="w-5 h-5 text-indigo-600" />
           </div>
         </div>
       </div>
 
-      {/* Main Workspace Simulation Area */}
-      <div className="bg-card rounded-xl border border-border overflow-hidden shadow-sm">
-        <div className="p-5 border-b border-border flex items-center justify-between">
-          <div>
-            <h3 className="font-semibold text-slate-800">Operational Workspace</h3>
-            <p className="text-xs text-muted-foreground">Standard record management system & analytics pipeline</p>
-          </div>
-          <Button variant="outline" size="sm" onClick={() => handleAction("Sync")} className="gap-1.5 text-xs">
-            <RefreshCw className="w-3.5 h-3.5" /> Sync Data
-          </Button>
-        </div>
+      {!isLoading && moduleDef && (
+        <DynamicDashboard records={records} moduleDef={moduleDef} />
+      )}
 
-        <div className="p-8 flex flex-col items-center justify-center text-center space-y-4">
-          <div className="w-16 h-16 rounded-2xl bg-primary/5 flex items-center justify-center border border-primary/10">
-            <Sparkles className="w-8 h-8 text-primary animate-pulse" />
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm p-6 mt-6">
+        {isLoading ? (
+          <div className="h-64 flex flex-col items-center justify-center text-slate-400">
+            <RefreshCw className="w-8 h-8 animate-spin mb-4" />
+            <p>Loading module definitions...</p>
           </div>
-          <div className="max-w-md space-y-1">
-            <h4 className="font-bold text-slate-800 text-base">{title} Workspace Loaded</h4>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              This space manages your specific industry pipeline records, automated status trackers, and dynamic reporting tools.
-            </p>
+        ) : !moduleDef ? (
+          <div className="h-64 flex flex-col items-center justify-center text-slate-500">
+            <Sparkles className="w-12 h-12 text-slate-300 mb-4" />
+            <p className="font-medium text-slate-700 text-lg">No Dynamic Modules Found</p>
+            <p className="text-sm mt-1">Use the AI Assistant to generate a new module.</p>
           </div>
-          <div className="flex gap-2.5 pt-2">
-            <Button size="sm" variant="outline" onClick={() => handleAction("Template Import")}>Import Template</Button>
-            <Button size="sm" onClick={() => handleAction("Create Schema")}>Define Custom Fields</Button>
-          </div>
-        </div>
+        ) : (
+          <DynamicTable data={records} fieldDefinitions={fieldDefs} />
+        )}
       </div>
+
+      <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Add New Record</DialogTitle>
+            <DialogDescription>
+              Fill out the form below to create a new record in {title}.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="mt-4">
+            {moduleDef && (
+              <DynamicForm 
+                moduleDef={moduleDef} 
+                fieldDefinitions={fieldDefs} 
+                onSuccess={handleAddSuccess}
+                onCancel={() => setIsAddModalOpen(false)}
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

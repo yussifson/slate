@@ -130,12 +130,12 @@ export default function Features() {
       badge: "AI Workspace Generation",
       title: "Build complex modules using natural language",
       description:
-        "Describe your custom industry requirement or pipeline in natural language, and OptalFlow's secure LLM compiler instantly builds the forms, schemas, workflows, and navigation routes for you—no coding required.",
+        "Describe your custom industry requirement or pipeline in natural language, and OptalFlow instantly builds the forms, data structures, workflows, and navigation routes for you—no coding required.",
       bullets: [
-        "Zero-code layout rendering compiled completely from JSON schemas",
-        "AI-driven schema optimization with secure Postgres JSONB storage",
+        "Zero-code layout rendering for instantaneous deployment",
+        "Intelligent data structure optimization tailored to your industry",
         "Dynamic pipeline routing and state transitions mapped automatically",
-        "RLS tenant-isolated security policies applied dynamically to new tables",
+        "Enterprise-grade security policies applied dynamically to new modules",
       ],
       icon: Sparkles,
       align: "left",

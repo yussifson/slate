@@ -1,0 +1,11 @@
+bucket_definitions:
+  user_tenant_bucket:
+    parameters:
+      - SELECT auth.uid() AS user_id
+    data:
+      # Existing tables...
+      
+      # New Dynamic Module Tables
+      - SELECT * FROM module_definitions WHERE company_id = (SELECT company_id FROM profiles WHERE id = request.user_id())
+      - SELECT * FROM field_definitions WHERE company_id = (SELECT company_id FROM profiles WHERE id = request.user_id())
+      - SELECT * FROM dynamic_records WHERE company_id = (SELECT company_id FROM profiles WHERE id = request.user_id())

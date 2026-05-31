@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
@@ -36,13 +36,28 @@ const ICON_MAP = {
   FileSearch, LayoutGrid, BedDouble, BellRing, CheckSquare2: CheckSquare
 };
 
+import { powerSync } from "@/api/PowerSyncConnector";
+
 export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   const { t } = useTranslation();
   const { impersonatedCompany } = useImpersonation();
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [dynamicModules, setDynamicModules] = useState([]);
   const isAdmin = ["super_admin", "admin", "company_admin", "managing_partner"].includes(user?.role);
   
+  useEffect(() => {
+    const fetchDynamicNav = async () => {
+      try {
+        const res = await powerSync.getAll(`SELECT id, name, icon FROM module_definitions WHERE is_active = 'true'`);
+        setDynamicModules(res);
+      } catch (err) {
+        console.error("Failed to load dynamic nav", err);
+      }
+    };
+    fetchDynamicNav();
+  }, []);
+
   const activeCompanyLogo = impersonatedCompany?.logo_url || impersonatedCompany?.logo_light_url || user?.company_logo_url;
   const activeCompanyName = impersonatedCompany?.name || user?.company_name || "LexAfrica";
 
@@ -66,10 +81,17 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
     return allowedPaths.includes(item.path);
   });
 
+  const dynamicNavItems = dynamicModules.map(m => ({
+    label: m.name,
+    icon: m.icon || "Sparkles",
+    path: `/${m.name.toLowerCase().replace(/\s+/g, '-')}`,
+    isDynamic: true
+  }));
+
   const baseNav = user?.role === "client" ? clientNav : filteredCompanyNav;
   let navItems = isAdmin
-    ? [...baseNav, { label: "Firm Setup", icon: "Settings", path: "/firm-setup" }]
-    : baseNav;
+    ? [...baseNav, ...dynamicNavItems, { label: "Firm Setup", icon: "Settings", path: "/firm-setup" }]
+    : [...baseNav, ...dynamicNavItems];
     
   if (user?.role === "super_admin") {
     navItems = [...navItems, { label: "Super Admin Portal", icon: "Shield", path: "/system-admin" }];
