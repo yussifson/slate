@@ -88,6 +88,7 @@ serve(async (req) => {
         name: generatedModule.module.name,
         description: generatedModule.module.description,
         icon: generatedModule.module.icon,
+        is_active: 'true',
         created_by: user.id
       })
       .select()
