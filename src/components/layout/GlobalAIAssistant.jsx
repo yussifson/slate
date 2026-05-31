@@ -136,7 +136,21 @@ function parseAgentActions(text) {
 function FormatMessage({ content }) {
   return (
     <div className="prose prose-sm dark:prose-invert max-w-none break-words [&>p]:mb-2 [&>p:last-child]:mb-0 [&>ul]:mt-1 [&>ul]:mb-2 [&>ol]:mt-1 [&>ol]:mb-2 [&>ul]:pl-4 [&>ol]:pl-4">
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+      <ReactMarkdown 
+        remarkPlugins={[remarkGfm]}
+        components={{
+          a: ({node, ...props}) => (
+            <a 
+              {...props} 
+              onClick={(e) => {
+                e.preventDefault();
+                toast.error("AI-generated links are disabled for security.");
+              }} 
+              className="text-blue-500 hover:text-blue-600 underline decoration-dotted cursor-pointer"
+            />
+          )
+        }}
+      >
         {content}
       </ReactMarkdown>
     </div>
@@ -293,24 +307,28 @@ export default function GlobalAIAssistant({ onClose }) {
           case 'navigate_to':
             if (action.route) {
               // If generating a module in the same sequence, ignore navigate_to
-              if (actions.some(a => a.tool === 'generate_module')) {
+              if (actions.some(a => a.tool === 'generate_module' || a.tool === 'create_module')) {
                 results.push(`Ignored navigate_to(${action.route}) because generate_module handles navigation automatically.`);
                 break;
               }
 
               const dangerousRoutes = ['/logout', '/login', '/register', '/auth'];
-              // Ensure path is absolute and block known hallucinated relative paths
+              // Ensure path is absolute
               let targetRoute = action.route;
               if (!targetRoute.startsWith('/')) {
                 targetRoute = '/' + targetRoute;
               }
               
+              // Validate against known routes
+              const knownRoutes = Object.keys(PAGE_CONTEXT);
+              const isValidRoute = knownRoutes.includes(targetRoute) || targetRoute.startsWith('/m/');
+
               if (dangerousRoutes.some(r => targetRoute.includes(r))) {
                 results.push(`Security Block: Navigation to ${targetRoute} is prohibited for AI agents.`);
                 toast.error(`Blocked AI from navigating to ${targetRoute}`);
-              } else if (targetRoute.split('/').length > 2 && !targetRoute.startsWith('/m/')) {
-                // Block deeply nested hallucinated paths like /patients/referrals/form
-                results.push(`Navigation Block: Route ${targetRoute} does not exist in the route map.`);
+              } else if (!isValidRoute) {
+                // Block any path not explicitly defined in our PAGE_CONTEXT or dynamic modules
+                results.push(`Navigation Block: Route ${targetRoute} is hallucinated and does not exist.`);
               } else {
                 setTimeout(() => navigate(targetRoute), 200);
                 results.push(`Navigated to ${targetRoute}`);
@@ -370,6 +388,7 @@ export default function GlobalAIAssistant({ onClose }) {
             }
             break;
           }
+          case 'create_module':
           case 'generate_module': {
             if (action.prompt) {
               results.push(`Generating module... This might take a moment.`);
@@ -544,15 +563,15 @@ AGENT POWERS (return EXACTLY this JSON format inline to act):
 
 RULES FOR MULTI-STEP REASONING:
 1. NEVER explain how the user can do something. YOU MUST do it for them.
-2. When asked to CREATE something, create the record first, THEN navigate to the correct page to show it. If asked to create an ENTIRE NEW MODULE, use the generate_module tool and DO NOT output any navigate_to actions (the system navigates automatically).
-3. ALWAYS use the exact routes from the ROUTE MAP above. NEVER invent paths like /hospital/patients or /patients/referrals/new.
-4. DO NOT output markdown hyperlinks for navigation (e.g. [PageName](url)). All navigation must be handled autonomously by the system.
-5. You can chain actions: create a record, then navigate to show it.
+2. When asked to CREATE a record, create the record and STOP. DO NOT use navigate_to to show the record. The user will view it themselves.
+3. If asked to create an ENTIRE NEW MODULE, use the generate_module tool and DO NOT output any navigate_to actions.
+4. ALWAYS use the exact routes from the ROUTE MAP above. NEVER invent paths like /referrals or /patients/referrals.
+5. DO NOT output markdown hyperlinks for navigation (e.g. [PageName](url)). 
 6. DO NOT wrap <AGENT_ACTION> in markdown code blocks. Output it raw inline.
 7. Once all tasks are complete, summarize what you did in plain language and STOP outputting <AGENT_ACTION> blocks.
-7. For 'case' records, use 'title' instead of 'name'.
-8. If the user's input has a typo, is ambiguous, or if you are unsure which page they mean, ALWAYS use the 'ask_confirmation' tool first and wait for approval.
-9. If the user asks for multiple distinct actions (e.g. "create a task and a lead"), ensure you output an <AGENT_ACTION> block for EACH request before summarizing.`;
+8. For 'case' records, use 'title' instead of 'name'.
+9. If the user's input has a typo, is ambiguous, or if you are unsure which page they mean, ALWAYS use the 'ask_confirmation' tool first.
+10. If the user asks for multiple distinct actions (e.g. "create a task and a lead"), ensure you output an <AGENT_ACTION> block for EACH request before summarizing.`;
 
         const sessionMessages = currentSessions.find(s => s.id === sid)?.messages || [];
         const allMessages = [...sessionMessages, { role: 'user', content: userContent }];
@@ -601,7 +620,7 @@ RULES FOR MULTI-STEP REASONING:
           // If the AI generated a module, the system is automatically navigating.
           // We MUST break the loop immediately to prevent the AI from generating hallucinated
           // navigate_to steps in subsequent iterations.
-          if (actions.some(a => a.tool === 'generate_module')) {
+          if (actions.some(a => a.tool === 'generate_module' || a.tool === 'create_module')) {
             break;
           }
         }

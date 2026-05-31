@@ -225,21 +225,11 @@ export function useMutateIndustryRecord() {
       }
 
       try {
-        let result;
-        if (id) {
-          result = await supabase
-            .from('industry_records')
-            .update(record)
-            .eq('id', id)
-            .select()
-            .single();
-        } else {
-          result = await supabase
-            .from('industry_records')
-            .insert(record)
-            .select()
-            .single();
-        }
+        const result = await supabase
+          .from('industry_records')
+          .upsert(record)
+          .select()
+          .single();
 
         if (result.error) throw result.error;
         return result.data;

@@ -160,6 +160,7 @@ import LegalDocs from './pages/marketing/LegalDocs';
 import OnboardingWizard from './pages/OnboardingWizard';
 import AppIntegrations from './pages/Integrations';
 import GenericModulePage from './pages/GenericModulePage';
+import CreateModulePage from './pages/CreateModulePage';
 
 // Admin Ecosystem Pages
 import AdminOverview from './pages/admin/AdminOverview';
@@ -287,6 +288,7 @@ function PlatformRoutes() {
       <Route path="/orders" element={<GenericModulePage />} />
       
       {/* Dynamic AI Generated Modules Route */}
+      <Route path="/modules/create" element={<CreateModulePage />} />
       <Route path="/m/*" element={<GenericModulePage />} />
     </>
   );

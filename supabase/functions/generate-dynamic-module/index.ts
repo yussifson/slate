@@ -26,9 +26,12 @@ serve(async (req) => {
     const { data: { user } } = await supabaseClient.auth.getUser()
     if (!user) throw new Error('Unauthorized')
 
-    // Initialize OpenAI
-    const configuration = new Configuration({ apiKey: Deno.env.get('OPENAI_API_KEY') })
-    const openai = new OpenAIApi(configuration)
+    const cloudflareToken = Deno.env.get('CLOUDFLARE_API_TOKEN')
+    const accountId = Deno.env.get('CLOUDFLARE_ACCOUNT_ID')
+
+    if (!cloudflareToken || !accountId) {
+      throw new Error('Cloudflare AI credentials not configured in Supabase secrets.')
+    }
 
     const systemPrompt = `You are an AI architect for OptalFlow, a dynamic business operating system. 
     Your goal is to take a natural language request to create a business module and return a JSON configuration.
@@ -47,19 +50,34 @@ serve(async (req) => {
           "is_required": boolean
         }
       ]
-    }`
+    }
+    IMPORTANT: Return ONLY valid JSON. No markdown formatting, no code blocks, no explanations.`
 
-    const response = await openai.createChatCompletion({
-      model: 'gpt-4',
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: prompt }
-      ],
-      temperature: 0.2,
+    const cfResponse = await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/@cf/meta/llama-3.1-8b-instruct`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${cloudflareToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: prompt }
+        ]
+      })
     })
 
-    const resultText = response.data.choices[0].message?.content || '{}'
-    const generatedModule = JSON.parse(resultText)
+    if (!cfResponse.ok) {
+      const errText = await cfResponse.text()
+      throw new Error(`Cloudflare API Error: ${errText}`)
+    }
+
+    const result = await cfResponse.json()
+    const resultText = result.result?.response || '{}'
+    
+    // Clean potential markdown blocks
+    const cleanText = resultText.replace(/```json/g, '').replace(/```/g, '').trim()
+    const generatedModule = JSON.parse(cleanText)
 
     // Optional: Save to Database (we can do this directly from frontend, or do it here)
     // If the requirement is to do it here:
