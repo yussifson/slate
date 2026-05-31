@@ -86,6 +86,7 @@ export default function OrbitBoltPanel({ isOpen, onClose, onApplySchema, current
   const callEdgeFunction = async (body) => {
     const response = await supabase.functions.invoke('generate-dynamic-module', { body });
     if (response.error && !response.data) throw new Error(response.error.message || 'Edge function error');
+    if (response.data?.error) throw new Error(response.data.error);
     return response.data;
   };
 

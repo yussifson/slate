@@ -85,16 +85,66 @@ function extractJson(text: string) {
   // Strip markdown code fences if present
   let cleanText = text.replace(/```(?:json)?\s*([\s\S]*?)\s*```/ig, '$1').trim();
   
-  // Try to find JSON array first
-  const arrayMatch = cleanText.match(/\[[\s\S]*\]/);
-  if (arrayMatch) {
-    try { return JSON.parse(arrayMatch[0]) } catch {}
+  // Find the first '[' or '{'
+  const firstBracket = cleanText.indexOf('[');
+  const firstBrace = cleanText.indexOf('{');
+  
+  let startIdx = -1;
+  let isArray = false;
+  
+  if (firstBracket !== -1 && (firstBrace === -1 || firstBracket < firstBrace)) {
+    startIdx = firstBracket;
+    isArray = true;
+  } else if (firstBrace !== -1) {
+    startIdx = firstBrace;
+  } else {
+    return null; // No JSON found
   }
-  // Then try JSON object
-  const objMatch = cleanText.match(/\{[\s\S]*\}/);
-  if (objMatch) {
-    try { return JSON.parse(objMatch[0]) } catch {}
+  
+  let openChar = isArray ? '[' : '{';
+  let closeChar = isArray ? ']' : '}';
+  let braces = 0;
+  let inString = false;
+  let escape = false;
+  let endIdx = -1;
+  
+  for (let i = startIdx; i < cleanText.length; i++) {
+    let char = cleanText[i];
+    
+    if (char === '\\' && !escape) {
+      escape = true;
+      continue;
+    }
+    if (char === '"' && !escape) {
+      inString = !inString;
+    }
+    
+    if (!inString) {
+      if (char === openChar) braces++;
+      else if (char === closeChar) braces--;
+    }
+    escape = false;
+    
+    if (braces === 0 && i > startIdx) {
+      endIdx = i;
+      break;
+    }
   }
+  
+  if (endIdx !== -1) {
+    try {
+      return JSON.parse(cleanText.substring(startIdx, endIdx + 1));
+    } catch (e) {
+      console.error("JSON parse error:", e);
+    }
+  }
+  
+  // Fallback to naive greedy if the parser fails
+  const greedyMatch = isArray ? cleanText.match(/\[[\s\S]*\]/) : cleanText.match(/\{[\s\S]*\}/);
+  if (greedyMatch) {
+    try { return JSON.parse(greedyMatch[0]) } catch {}
+  }
+  
   return null;
 }
 
