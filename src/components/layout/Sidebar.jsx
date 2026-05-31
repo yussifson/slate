@@ -104,8 +104,9 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   }));
 
   const baseNav = user?.role === "client" ? clientNav : filteredCompanyNav;
+  const appBuilderItem = { label: "Module Builder", icon: "Blocks", path: "/modules/create" };
   let navItems = isAdmin
-    ? [...baseNav, ...dynamicNavItems, { label: "Firm Setup", icon: "Settings", path: "/firm-setup" }]
+    ? [...baseNav, ...dynamicNavItems, appBuilderItem, { label: "Firm Setup", icon: "Settings", path: "/firm-setup" }]
     : [...baseNav, ...dynamicNavItems];
     
   if (user?.role === "super_admin") {
