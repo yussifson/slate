@@ -412,10 +412,11 @@ export default function GlobalAIAssistant({ onClose }) {
                   const slug = data.module.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
                   setTimeout(() => window.location.href = `/m/${slug}`, 1500);
                 } else {
-                  results.push(`Error generating module: ${data?.error}`);
+                  throw new Error(data?.error || 'Unknown error from Edge Function');
                 }
               } catch (err) {
-                results.push(`Error executing generate-dynamic-module: ${err.message}`);
+                results.push(`The AI module generator is not yet deployed. Redirecting you to the manual module builder where you can create "${action.prompt}" yourself...`);
+                setTimeout(() => navigate('/modules/create'), 1500);
               }
             }
             break;
@@ -571,13 +572,14 @@ AGENT POWERS (return EXACTLY this JSON format inline to act):
 
 RULES FOR MULTI-STEP REASONING:
 1. NEVER explain how the user can do something. YOU MUST do it for them.
-2. When asked to CREATE a record, create the record and STOP. DO NOT use navigate_to to show the record. The user will view it themselves.
-3. If asked to create an ENTIRE NEW MODULE, use the generate_module tool and DO NOT output any navigate_to actions.
-4. ALWAYS use the exact routes from the ROUTE MAP above. NEVER invent paths like /referrals or /patients/referrals.
-5. DO NOT output markdown hyperlinks for navigation (e.g. [PageName](url)). 
+2. When asked to CREATE a record, create the record and STOP. DO NOT use navigate_to to show the record.
+3. If asked to create an ENTIRE NEW MODULE or a page that does NOT exist in the ROUTE MAP, you MUST use generate_module ONLY. NEVER use navigate_to for modules that don't exist yet.
+4. ONLY use navigate_to for routes that EXACTLY appear in the ROUTE MAP above. Do NOT invent any path not in the list. If a route is not in the list, use generate_module instead.
+5. DO NOT output markdown hyperlinks for navigation (e.g. [PageName](url)).
 6. DO NOT wrap <AGENT_ACTION> in markdown code blocks. Output it raw inline.
 7. Once all tasks are complete, summarize what you did in plain language and STOP outputting <AGENT_ACTION> blocks.
 8. For 'case' records, use 'title' instead of 'name'.
+9. CRITICAL: Patient Referrals, Referral Management, and any other custom workflows that are NOT in the ROUTE MAP must be created with generate_module. They will be accessible at /m/[module-slug] after creation.
 9. If the user's input has a typo, is ambiguous, or if you are unsure which page they mean, ALWAYS use the 'ask_confirmation' tool first.
 10. If the user asks for multiple distinct actions (e.g. "create a task and a lead"), ensure you output an <AGENT_ACTION> block for EACH request before summarizing.`;
 
