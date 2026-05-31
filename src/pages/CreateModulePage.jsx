@@ -163,7 +163,6 @@ export default function CreateModulePage() {
         icon,
         status,
         is_active: true,
-        module_type: moduleType === 'data_module' ? 'custom' : moduleType,
         config: { layout, theme, page_type: moduleType }
       };
 

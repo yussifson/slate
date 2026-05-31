@@ -84,7 +84,12 @@ export default function OnboardingWizard() {
             status: 'active'
          }).select().single();
 
-         if (compErr) throw compErr;
+         if (compErr) {
+            if (compErr.code === '23505' && compErr.message.includes('companies_subdomain_key')) {
+               throw new Error("This workspace URL (subdomain) is already taken. Please choose another one.");
+            }
+            throw compErr;
+         }
          companyIdToUse = compData.id;
 
          const { error: profErr } = await supabase.from('profiles').update({
@@ -215,9 +220,7 @@ export default function OnboardingWizard() {
         <div className="px-8 pt-8 pb-6 border-b border-slate-100 shrink-0">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md">
-                <Scale className="w-5 h-5" />
-              </div>
+              <img src="/optalflow-logo.svg" alt="Optalflow" className="h-10" />
               <h1 className="text-xl font-bold text-slate-900 tracking-tight">{t("workspace_setup_wizard", "Workspace Setup")}</h1>
             </div>
           </div>
@@ -281,7 +284,7 @@ export default function OnboardingWizard() {
                       value={firmName}
                       onChange={(e) => setFirmName(e.target.value)}
                       placeholder="E.g. Mensah & Partners"
-                      className="h-12 bg-white border-slate-200 focus:border-blue-500 focus:ring-blue-500 text-slate-900 rounded-xl"
+                      className="h-12 bg-white border-slate-200 focus:bg-white focus-visible:bg-white focus:border-blue-500 focus:ring-blue-500 text-slate-900 rounded-xl"
                     />
                   </div>
 
@@ -295,7 +298,7 @@ export default function OnboardingWizard() {
                             value={subdomain}
                             onChange={(e) => setSubdomain(e.target.value)}
                             placeholder="mycompany"
-                            className="h-12 bg-white border-slate-200 focus:border-blue-500 focus:ring-blue-500 text-slate-900 rounded-xl pl-4 pr-32"
+                            className="h-12 bg-white border-slate-200 focus:bg-white focus-visible:bg-white focus:border-blue-500 focus:ring-blue-500 text-slate-900 rounded-xl pl-4 pr-32"
                           />
                           <span className="absolute right-4 text-slate-400 font-medium text-sm pointer-events-none">.optalflow.com</span>
                         </div>
@@ -497,7 +500,7 @@ export default function OnboardingWizard() {
                         placeholder="e.g. Jane Doe"
                         value={staffName}
                         onChange={(e) => setStaffName(e.target.value)}
-                        className="h-11 bg-white border-slate-200 text-slate-900 rounded-xl"
+                        className="h-11 bg-white border-slate-200 focus:bg-white focus-visible:bg-white text-slate-900 rounded-xl"
                       />
                     </div>
                     <div className="space-y-2">
@@ -507,7 +510,7 @@ export default function OnboardingWizard() {
                         placeholder="jane@example.com"
                         value={staffEmail}
                         onChange={(e) => setStaffEmail(e.target.value)}
-                        className="h-11 bg-white border-slate-200 text-slate-900 rounded-xl"
+                        className="h-11 bg-white border-slate-200 focus:bg-white focus-visible:bg-white text-slate-900 rounded-xl"
                       />
                     </div>
                   </div>
@@ -600,7 +603,7 @@ export default function OnboardingWizard() {
                       value={caseTitle}
                       onChange={(e) => setCaseTitle(e.target.value)}
                       placeholder={`E.g., Initial ${getTerm(industry, 'case')} for setup`}
-                      className="h-12 bg-white border-blue-200 focus:border-blue-500 text-slate-900 rounded-xl"
+                      className="h-12 bg-white border-blue-200 focus:bg-white focus-visible:bg-white focus:border-blue-500 text-slate-900 rounded-xl"
                     />
                   </div>
 
@@ -612,7 +615,7 @@ export default function OnboardingWizard() {
                         value={clientName}
                         onChange={(e) => setClientName(e.target.value)}
                         placeholder="Adama Mensah"
-                        className="h-12 bg-white border-blue-200 focus:border-blue-500 text-slate-900 rounded-xl"
+                        className="h-12 bg-white border-blue-200 focus:bg-white focus-visible:bg-white focus:border-blue-500 text-slate-900 rounded-xl"
                       />
                     </div>
                     <div className="space-y-2">
@@ -622,7 +625,7 @@ export default function OnboardingWizard() {
                         value={clientEmail}
                         onChange={(e) => setClientEmail(e.target.value)}
                         placeholder="contact@email.com"
-                        className="h-12 bg-white border-blue-200 focus:border-blue-500 text-slate-900 rounded-xl"
+                        className="h-12 bg-white border-blue-200 focus:bg-white focus-visible:bg-white focus:border-blue-500 text-slate-900 rounded-xl"
                       />
                     </div>
                   </div>
@@ -663,7 +666,7 @@ export default function OnboardingWizard() {
             ) : (
               <Button 
                 onClick={handleCompleteOnboarding}
-                disabled={loading || !caseTitle || !clientName}
+                disabled={loading}
                 className="h-12 px-8 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-blue-600/20 flex items-center gap-2 transition-all hover:-translate-y-0.5 active:translate-y-0"
               >
                 {loading ? (
@@ -673,7 +676,7 @@ export default function OnboardingWizard() {
                   </>
                 ) : (
                   <>
-                    <span>{t("complete_setup", "Complete Setup!")}</span>
+                    <span>{(!caseTitle || !clientName) ? t("skip_and_complete", "Skip & Complete Setup!") : t("complete_setup", "Complete Setup!")}</span>
                     <Sparkles className="w-4 h-4 ml-1" />
                   </>
                 )}
