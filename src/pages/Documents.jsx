@@ -37,7 +37,7 @@ export default function Documents() {
   const [previewDoc, setPreviewDoc] = useState(null);
 
   const isAdmin = ["super_admin", "company_admin", "managing_partner"].includes(user?.role);
-  const industry = user?.company_industry || "law";
+  const industry = sessionStorage.getItem("optalflow_industry_override") || user?.company_industry || "law";
   const caseTerm = getTerm(industry, "case");
 
   const { data: documents = [], isLoading } = useQuery({

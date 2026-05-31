@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
+import { getTerm } from "@/config/industries";
 import { Plus, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -26,6 +27,8 @@ export default function CalendarPage() {
   const isAdminUser = ["super_admin", "company_admin", "managing_partner"].includes(user?.role);
   const [showAdminCalendar, setShowAdminCalendar] = useState(true);
   const [showStaffCalendar, setShowStaffCalendar] = useState(true);
+
+  const activeIndustry = sessionStorage.getItem("optalflow_industry_override") || user?.company_industry || "law";
 
   const { data: hearings = [] } = useQuery({
     queryKey: ["hearings", companyId],
@@ -78,12 +81,16 @@ export default function CalendarPage() {
     .sort((a, b) => new Date(a.date) - new Date(b.date))
     .slice(0, 8);
 
+  const hearingTerm = getTerm(activeIndustry, "hearing");
+  const hearingTermPlural = getTerm(activeIndustry, "hearings");
+  const venueTerm = getTerm(activeIndustry, "venue");
+
   return (
     <div className="space-y-4 font-sans">
       <PageHeader
-        title="Calendar"
-        subtitle="Court hearings and important dates"
-        actions={<Button onClick={() => setShowForm(true)} size="sm"><Plus className="w-4 h-4 mr-1" /> {t("add_hearing", "Add Hearing")}</Button>}
+        title={getTerm(activeIndustry, "hearing", true) + " Calendar"}
+        subtitle={`${hearingTermPlural} and important dates`}
+        actions={<Button onClick={() => setShowForm(true)} size="sm"><Plus className="w-4 h-4 mr-1" /> Add {getTerm(activeIndustry, "hearing", true)}</Button>}
       />
       {/* Calendar Controls (Admin / Staff visibility toggles) */}
       {isAdminUser && (
@@ -152,7 +159,7 @@ export default function CalendarPage() {
                       );
                     })}
                     {dayHearings.length > 2 && (
-                      <span className="text-[10px] text-muted-foreground">+{dayHearings.length - 2} {t("more", "more")}</span>
+                      <span className="text-[10px] text-muted-foreground">+{dayHearings.length - 2} more</span>
                     )}
                   </div>
                 </div>
@@ -165,18 +172,18 @@ export default function CalendarPage() {
         <div className="bg-card rounded-xl border border-border">
           <div className="p-4 border-b border-border">
             <h3 className="text-sm font-semibold flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-primary" /> {t("upcoming_hearings", "Upcoming Hearings")}
+              <Calendar className="w-4 h-4 text-primary" /> Upcoming {getTerm(activeIndustry, "hearing", true)}s
             </h3>
           </div>
           <div className="divide-y divide-border">
             {upcomingHearings.length === 0 ? (
-              <div className="p-8 text-center text-sm text-muted-foreground">{t("no_upcoming_hearings", "No upcoming hearings")}</div>
+              <div className="p-8 text-center text-sm text-muted-foreground">No upcoming {hearingTerm}s</div>
             ) : upcomingHearings.map(h => {
               return (
                 <div key={h.id} className="px-4 py-3">
                   <p className="text-sm font-medium">{h.title}</p>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    {format(new Date(h.date), "MMM d, yyyy")} · {h.time || "TBD"} · {h.court_name || "Court TBD"}
+                    {format(new Date(h.date), "MMM d, yyyy")} · {h.time || "TBD"} · {h.court_name || `${getTerm(activeIndustry, "venue", true)} TBD`}
                   </p>
                   <div className="flex gap-1 mt-1.5">
                     <Badge variant="outline" className="text-[10px]">{h.case_number || h.case_title || "—"}</Badge>
@@ -197,12 +204,13 @@ export default function CalendarPage() {
         initialDate={selectedDate}
         cases={cases}
         staff={staff}
+        activeIndustry={activeIndustry}
       />
     </div>
   );
 }
 
-function HearingFormDialog({ open, onClose, onSubmit, initialDate, cases, staff }) {
+function HearingFormDialog({ open, onClose, onSubmit, initialDate, cases, staff, activeIndustry }) {
   const { t } = useTranslation();
   const [form, setForm] = useState({ title: "", date: "", time: "", court_name: "", judge_name: "", case_id: "", case_title: "", case_number: "", lawyer_email: "", lawyer_name: "", notes: "" });
 
@@ -224,10 +232,15 @@ function HearingFormDialog({ open, onClose, onSubmit, initialDate, cases, staff 
 
   const handleSubmit = (e) => { e.preventDefault(); onSubmit(form); };
 
+  const hearingTerm = getTerm(activeIndustry, "hearing", true);
+  const venueTerm = getTerm(activeIndustry, "venue", true);
+  const caseTerm = getTerm(activeIndustry, "case", true);
+  const staffTerm = getTerm(activeIndustry, "staff", true);
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
-        <DialogHeader><DialogTitle>{t("new_hearing", "New Hearing")}</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle>New {hearingTerm}</DialogTitle></DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div><Label>{t("title", "Title *")}</Label><Input value={form.title} onChange={(e) => handleChange("title", e.target.value)} required /></div>
           <div className="grid grid-cols-2 gap-4">
@@ -235,23 +248,23 @@ function HearingFormDialog({ open, onClose, onSubmit, initialDate, cases, staff 
             <div><Label>{t("time", "Time")}</Label><Input type="time" value={form.time} onChange={(e) => handleChange("time", e.target.value)} /></div>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <div><Label>{t("court", "Court")}</Label><Input value={form.court_name} onChange={(e) => handleChange("court_name", e.target.value)} /></div>
-            <div><Label>{t("judge", "Judge")}</Label><Input value={form.judge_name} onChange={(e) => handleChange("judge_name", e.target.value)} /></div>
+            <div><Label>{venueTerm}</Label><Input value={form.court_name} onChange={(e) => handleChange("court_name", e.target.value)} /></div>
+            <div><Label>{activeIndustry === "law" ? "Judge" : "Supervisor / Host"}</Label><Input value={form.judge_name} onChange={(e) => handleChange("judge_name", e.target.value)} /></div>
           </div>
           <div>
-            <Label>{t("case", "Case")}</Label>
+            <Label>{caseTerm}</Label>
             <Select value={form.case_id} onValueChange={handleCaseChange}>
-              <SelectTrigger><SelectValue placeholder="Link to case" /></SelectTrigger>
+              <SelectTrigger><SelectValue placeholder={`Link to ${caseTerm.toLowerCase()}`} /></SelectTrigger>
               <SelectContent>{cases?.map(c => {
                 return <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>;
               })}</SelectContent>
             </Select>
           </div>
           <div>
-            <Label>{t("lawyer", "Lawyer")}</Label>
+            <Label>{staffTerm}</Label>
             <Select value={form.lawyer_email} onValueChange={handleLawyerChange}>
-              <SelectTrigger><SelectValue placeholder="Assign lawyer" /></SelectTrigger>
-              <SelectContent>{staff?.filter(s => ["lawyer", "company_admin"].includes(s.role)).map(s => {
+              <SelectTrigger><SelectValue placeholder={`Assign ${staffTerm.toLowerCase()}`} /></SelectTrigger>
+              <SelectContent>{staff?.filter(s => ["lawyer", "company_admin", "teacher", "doctor", "staff"].includes(s.role) || s.role?.includes("admin")).map(s => {
                 return <SelectItem key={s.user_email} value={s.user_email}>{s.full_name}</SelectItem>;
               })}</SelectContent>
             </Select>
@@ -259,7 +272,7 @@ function HearingFormDialog({ open, onClose, onSubmit, initialDate, cases, staff 
           <div><Label>{t("notes", "Notes")}</Label><Textarea value={form.notes} onChange={(e) => handleChange("notes", e.target.value)} rows={2} /></div>
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={onClose}>{t("cancel", "Cancel")}</Button>
-            <Button type="submit">{t("create_hearing", "Create Hearing")}</Button>
+            <Button type="submit">Create {hearingTerm}</Button>
           </div>
         </form>
       </DialogContent>

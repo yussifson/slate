@@ -290,6 +290,12 @@ function CurrencySettings({ activeIndustry, company, onSave, saving }) {
     decimal_places: "2",
   });
 
+  useEffect(() => {
+    if (company?.currency) {
+      setForm(prev => ({ ...prev, currency: company.currency }));
+    }
+  }, [company]);
+
   return (
     <SectionCard title="Currency Settings" subtitle="Configure defaults for billing values, separator layout, and local symbols" onSave={() => onSave({ currency: form.currency })} saving={saving}>
       <FormRow>
@@ -626,8 +632,19 @@ function NotificationSettings({ activeIndustry, onSave, saving }) {
   );
 }
 
-function SlackSettings({ activeIndustry, onSave, saving }) {
+function SlackSettings({ activeIndustry, onSave, saving, initialData }) {
   const [form, setForm] = useState({ webhook_url: "", channel: "#general", notify_new_case: true, notify_overdue: true });
+
+  useEffect(() => {
+    if (initialData) {
+      setForm({
+        webhook_url: initialData.access_token || "",
+        channel: initialData.metadata?.channel || "#general",
+        notify_new_case: initialData.metadata?.notify_new_case !== false,
+        notify_overdue: initialData.metadata?.notify_overdue !== false,
+      });
+    }
+  }, [initialData]);
 
   return (
     <SectionCard title="Slack Integration" subtitle="Push realtime case updates and reminders directly to channels" onSave={() => onSave(form)} saving={saving}>
@@ -656,8 +673,19 @@ function SlackSettings({ activeIndustry, onSave, saving }) {
   );
 }
 
-function TwilioSettings({ activeIndustry, onSave, saving }) {
+function TwilioSettings({ activeIndustry, onSave, saving, initialData }) {
   const [form, setForm] = useState({ account_sid: "", auth_token: "", from_number: "", sms_enabled: false });
+
+  useEffect(() => {
+    if (initialData) {
+      setForm({
+        account_sid: initialData.provider_user_id || "",
+        auth_token: initialData.access_token || "",
+        from_number: initialData.metadata?.from_number || "",
+        sms_enabled: !!initialData.metadata?.sms_enabled,
+      });
+    }
+  }, [initialData]);
 
   return (
     <SectionCard title="Twilio SMS Delivery" subtitle={"Broadcast automatic text messages for " + getTerm(activeIndustry, "hearing").toLowerCase() + "s and " + getTerm(activeIndustry, "case").toLowerCase() + " status updates"} onSave={() => onSave(form)} saving={saving}>
@@ -686,8 +714,20 @@ function TwilioSettings({ activeIndustry, onSave, saving }) {
   );
 }
 
-function PaymentSettings({ activeIndustry, onSave, saving }) {
+function PaymentSettings({ activeIndustry, onSave, saving, initialData }) {
   const [form, setForm] = useState({ provider: "stripe", public_key: "", secret_key: "", webhook_secret: "", live_mode: false });
+
+  useEffect(() => {
+    if (initialData) {
+      setForm({
+        provider: initialData.metadata?.provider || initialData.provider || "stripe",
+        public_key: initialData.provider_user_id || "",
+        secret_key: initialData.access_token || "",
+        webhook_secret: initialData.metadata?.webhook_secret || "",
+        live_mode: !!initialData.metadata?.live_mode,
+      });
+    }
+  }, [initialData]);
 
   return (
     <SectionCard title="Payment Integrations" subtitle="Connect regional card/transfer systems for instant invoice settlement" onSave={() => onSave(form)} saving={saving}>
@@ -727,8 +767,19 @@ function PaymentSettings({ activeIndustry, onSave, saving }) {
   );
 }
 
-function GoogleCalendarSettings({ activeIndustry, onSave, saving }) {
+function GoogleCalendarSettings({ activeIndustry, onSave, saving, initialData }) {
   const [form, setForm] = useState({ client_id: "", client_secret: "", sync_enabled: false, calendar_id: "" });
+
+  useEffect(() => {
+    if (initialData) {
+      setForm({
+        client_id: initialData.provider_user_id || "",
+        client_secret: initialData.access_token || "",
+        sync_enabled: !!initialData.metadata?.sync_enabled,
+        calendar_id: initialData.metadata?.calendar_id || "",
+      });
+    }
+  }, [initialData]);
 
   return (
     <SectionCard title="Google Calendar Sync" subtitle={"Synchronize files and schedule " + getTerm(activeIndustry, "hearing").toLowerCase() + "s with corporate calendars"} onSave={() => onSave(form)} saving={saving}>
@@ -1053,7 +1104,7 @@ export default function Settings() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const companyId = user?.company_id || null;
-  const activeIndustry = user?.company_industry || "law";
+  const activeIndustry = sessionStorage.getItem("optalflow_industry_override") || user?.company_industry || "law";
   const [activeSection, setActiveSection] = useState("system");
   const [saving, setSaving] = useState(false);
 
@@ -1065,6 +1116,16 @@ export default function Settings() {
       return data;
     },
     enabled: !!companyId,
+  });
+
+  const { data: connectedApps = [], refetch: refetchApps } = useQuery({
+    queryKey: ["connected_apps", companyId],
+    queryFn: async () => {
+      if (!companyId) return [];
+      const { data } = await supabase.from('connected_apps').select('*').eq('company_id', companyId);
+      return data || [];
+    },
+    enabled: !!companyId
   });
 
   const updateCompany = async (data) => {
@@ -1082,6 +1143,82 @@ export default function Settings() {
       }
       toast({ title: "Failed to save settings", description: err.message, variant: "destructive" });
       throw err;
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const saveAppSetting = async (provider, formFields) => {
+    if (!companyId) return;
+    setSaving(true);
+    try {
+      let access_token = "";
+      let provider_user_id = "";
+      let metadata = {};
+
+      if (provider === "slack") {
+        access_token = formFields.webhook_url;
+        metadata = {
+          channel: formFields.channel,
+          notify_new_case: formFields.notify_new_case,
+          notify_overdue: formFields.notify_overdue
+        };
+      } else if (provider === "twilio") {
+        access_token = formFields.auth_token;
+        provider_user_id = formFields.account_sid;
+        metadata = {
+          from_number: formFields.from_number,
+          sms_enabled: formFields.sms_enabled
+        };
+      } else if (provider === "stripe" || provider === "paystack" || provider === "flutterwave" || provider === "momo") {
+        access_token = formFields.secret_key;
+        provider_user_id = formFields.public_key;
+        metadata = {
+          provider: formFields.provider || provider,
+          webhook_secret: formFields.webhook_secret,
+          live_mode: formFields.live_mode
+        };
+      } else if (provider === "google_calendar") {
+        access_token = formFields.client_secret;
+        provider_user_id = formFields.client_id;
+        metadata = {
+          sync_enabled: formFields.sync_enabled,
+          calendar_id: formFields.calendar_id
+        };
+      }
+
+      // Check if already exists
+      const existing = connectedApps.find(app => app.provider === provider);
+      if (existing) {
+        const { error } = await supabase
+          .from('connected_apps')
+          .update({
+            access_token,
+            provider_user_id,
+            metadata,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', existing.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from('connected_apps')
+          .insert({
+            company_id: companyId,
+            provider,
+            access_token,
+            provider_user_id,
+            metadata,
+            status: 'active'
+          });
+        if (error) throw error;
+      }
+      
+      toast({ title: "Integration settings saved successfully" });
+      refetchApps();
+    } catch (err) {
+      console.error(err);
+      toast({ title: "Failed to save integration settings", description: err.message, variant: "destructive" });
     } finally {
       setSaving(false);
     }
@@ -1131,10 +1268,10 @@ export default function Settings() {
       case "currency":     return <CurrencySettings activeIndustry={activeIndustry} company={company} onSave={company ? d => updateCompany({ currency: d.currency }) : fakeSuccess} saving={saving} />;
       case "email":        return <EmailSettings activeIndustry={activeIndustry} company={company} onSave={company ? d => updateCompany(d) : fakeSuccess} saving={saving} />;
       case "notifications": return <NotificationSettings activeIndustry={activeIndustry} onSave={fakeSuccess} saving={saving} />;
-      case "slack":        return <SlackSettings activeIndustry={activeIndustry} onSave={fakeSuccess} saving={saving} />;
-      case "twilio":       return <TwilioSettings activeIndustry={activeIndustry} onSave={fakeSuccess} saving={saving} />;
-      case "payment":      return <PaymentSettings activeIndustry={activeIndustry} companyId={companyId} />;
-      case "gcalendar":    return <GoogleCalendarSettings activeIndustry={activeIndustry} onSave={fakeSuccess} saving={saving} />;
+      case "slack":        return <SlackSettings activeIndustry={activeIndustry} onSave={d => saveAppSetting("slack", d)} saving={saving} initialData={connectedApps.find(a => a.provider === "slack")} />;
+      case "twilio":       return <TwilioSettings activeIndustry={activeIndustry} onSave={d => saveAppSetting("twilio", d)} saving={saving} initialData={connectedApps.find(a => a.provider === "twilio")} />;
+      case "payment":      return <PaymentSettings activeIndustry={activeIndustry} onSave={d => saveAppSetting(d.provider, d)} saving={saving} initialData={connectedApps.find(a => ["stripe", "paystack", "flutterwave", "momo"].includes(a.provider))} />;
+      case "gcalendar":    return <GoogleCalendarSettings activeIndustry={activeIndustry} onSave={d => saveAppSetting("google_calendar", d)} saving={saving} initialData={connectedApps.find(a => a.provider === "google_calendar")} />;
       case "security":     return <SecuritySettings />;
       case "permissions":  return (
         <div className="bg-card/45 backdrop-blur-md rounded-2xl border border-border/80 p-6 space-y-6 shadow-md">

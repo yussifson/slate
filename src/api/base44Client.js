@@ -35,11 +35,16 @@ const industryPrefixes = {
 const getTableName = (prop) => {
     let industry = 'law';
     try {
-        const userStr = localStorage.getItem('optalflow_cached_user');
-        if (userStr) {
-            const user = JSON.parse(userStr);
-            if (user && user.company_industry) {
-                industry = user.company_industry;
+        const override = sessionStorage.getItem('optalflow_industry_override');
+        if (override) {
+            industry = override;
+        } else {
+            const userStr = localStorage.getItem('optalflow_cached_user');
+            if (userStr) {
+                const user = JSON.parse(userStr);
+                if (user && user.company_industry) {
+                    industry = user.company_industry;
+                }
             }
         }
     } catch(e) {}
@@ -57,6 +62,19 @@ const getTableName = (prop) => {
         else name += 's';
     }
     return name;
+};
+
+const getValidCols = (tableName) => {
+    if (tableName.endsWith('_students') || tableName.endsWith('_patients') || tableName.endsWith('_guests') || tableName.endsWith('_members') || tableName.endsWith('_policyholders') || tableName.endsWith('_customers') || tableName.endsWith('_shippers') || tableName.endsWith('_employees')) {
+        return SCHEMA_COLUMNS['clients'];
+    }
+    if (tableName.endsWith('_classes') || tableName.endsWith('_admissions') || tableName.endsWith('_bookings') || tableName.endsWith('_ministries') || tableName.endsWith('_claims') || tableName.endsWith('_orders') || tableName.endsWith('_shipments') || tableName.endsWith('_projects')) {
+        return SCHEMA_COLUMNS['legal_cases'];
+    }
+    if (tableName.endsWith('_sessions') || tableName.endsWith('_appointments') || tableName.endsWith('_reservations') || tableName.endsWith('_events') || tableName.endsWith('_meetings') || tableName.endsWith('_shifts') || tableName.endsWith('_dispatches') || tableName.endsWith('_interviews')) {
+        return SCHEMA_COLUMNS['hearings'];
+    }
+    return SCHEMA_COLUMNS[tableName];
 };
 
 // --- E2EE Configuration ---
@@ -243,7 +261,7 @@ export const base44 = {
                 },
                 create: async (payload) => {
                     try {
-                        const validCols = SCHEMA_COLUMNS[tableName];
+                        const validCols = getValidCols(tableName);
                         let cleanedPayload = Object.fromEntries(Object.entries(payload).map(([k, v]) => [k, v === "" ? null : v]));
                         if (validCols) {
                             cleanedPayload = Object.fromEntries(Object.entries(cleanedPayload).filter(([k]) => validCols.includes(k)));
@@ -270,7 +288,7 @@ export const base44 = {
                 },
                 update: async (id, payload) => {
                     try {
-                        const validCols = SCHEMA_COLUMNS[tableName];
+                        const validCols = getValidCols(tableName);
                         let cleanedPayload = Object.fromEntries(Object.entries(payload).map(([k, v]) => [k, v === "" ? null : v]));
                         if (validCols) {
                             cleanedPayload = Object.fromEntries(Object.entries(cleanedPayload).filter(([k]) => validCols.includes(k)));

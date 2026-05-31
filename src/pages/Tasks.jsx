@@ -204,7 +204,7 @@ export default function Tasks() {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
 
-  const industry = company?.industry_type || user?.company_industry || "law";
+  const industry = sessionStorage.getItem("optalflow_industry_override") || company?.industry_type || user?.company_industry || "law";
   const caseTerm = getTerm(industry, "case");
 
   const { data: tasks = [], isLoading } = useQuery({
