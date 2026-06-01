@@ -122,12 +122,14 @@ export default function GlobalChatPanel({ isOpen, onClose }) {
 
       // Pre-load participant profiles based on message senders instead of room participants
       if (data && data.length > 0) {
-        const senderIds = [...new Set(data.map(m => m.sender_id))];
-        const { data: profiles } = await supabase.from('profiles').select('id, full_name, avatar_url').in('id', senderIds);
-        if (profiles) {
-          const pMap = {};
-          profiles.forEach(p => pMap[p.id] = p);
-          setParticipantProfiles(pMap);
+        const senderIds = [...new Set(data.map(m => m.sender_id).filter(Boolean))];
+        if (senderIds.length > 0) {
+          const { data: profiles } = await supabase.from('profiles').select('id, full_name, avatar_url').in('id', senderIds);
+          if (profiles) {
+            const pMap = {};
+            profiles.forEach(p => pMap[p.id] = p);
+            setParticipantProfiles(pMap);
+          }
         }
       }
     } catch (err) {

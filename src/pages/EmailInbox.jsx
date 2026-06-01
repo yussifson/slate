@@ -82,17 +82,7 @@ export default function EmailInbox() {
   const userEmail = user?.email?.toLowerCase() || '';
   const userName = user?.full_name?.toLowerCase() || '';
 
-  const myEmails = emails.filter(e => {
-    const senderEmail = (e.sender_email || '').toLowerCase();
-    const recipientEmail = (e.recipient_email || '').toLowerCase();
-    
-    const isSender = senderEmail === userEmail || (userName && senderEmail.includes(userName));
-    const isRecipient = recipientEmail.includes(userEmail) || (userName && recipientEmail.includes(userName));
-    
-    return isSender || isRecipient;
-  });
-
-  const filteredEmails = myEmails.filter(e =>
+  const filteredEmails = emails.filter(e =>
     !search ||
     e.subject?.toLowerCase().includes(search.toLowerCase()) ||
     e.sender_email?.toLowerCase().includes(search.toLowerCase()) ||
@@ -101,19 +91,18 @@ export default function EmailInbox() {
 
   let displayedEmails = filteredEmails;
   if (activeTab === "sent") {
-    // Sent folder: only emails I sent
+    // Show emails sent by this user
     displayedEmails = filteredEmails.filter(e => {
-      const senderEmail = (e.sender_email || '').toLowerCase();
-      return senderEmail === userEmail || (userName && senderEmail.includes(userName));
+      const sender = (e.sender_email || '').toLowerCase();
+      return sender === userEmail || (userName && sender.includes(userName));
     });
   } else if (activeTab === "inbox") {
-    // Inbox folder: only emails sent TO me
+    // Show all other emails (sent to this user, or sent to the company if shared inbox)
     displayedEmails = filteredEmails.filter(e => {
-      const recipientEmail = (e.recipient_email || '').toLowerCase();
-      return recipientEmail.includes(userEmail) || (userName && recipientEmail.includes(userName));
+      const sender = (e.sender_email || '').toLowerCase();
+      return sender !== userEmail && !(userName && sender.includes(userName));
     });
   } else if (activeTab === "starred") {
-    // Starred folder
     displayedEmails = filteredEmails.filter(e => starredEmails.includes(e.id));
   }
 
