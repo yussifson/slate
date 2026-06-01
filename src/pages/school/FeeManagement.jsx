@@ -6,7 +6,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { base44 } from "@/api/base44Client";
 import { usePayment } from '@/hooks/integrations/usePayment';
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
@@ -16,19 +17,31 @@ export default function FeeManagement() {
   const { t } = useTranslation();
   const companyId = useCompanyId();
   const { processPayment, isProcessing } = usePayment();
-  const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('student');
-  const mutateRecord = useMutateIndustryRecord();
+  const queryClient = useQueryClient();
+  const { data: dbRecords = [], isLoading: isDbLoading } = useQuery({ 
+    queryKey: ["clients", companyId], 
+    queryFn: () => base44.entities.Client.filter({ company_id: companyId, type: 'student' }), 
+    enabled: !!companyId 
+  });
+  
+  const mutateRecord = useMutation({
+    mutationFn: (data) => base44.entities.Client.update(data.id, data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["clients", companyId] })
+  });
 
   // Map student records to fee listings
   const studentsFees = dbRecords.map(r => {
-    const feeStatus = r.data?.feeStatus || 'Owing';
+    let extra = {};
+    try { extra = JSON.parse(r.notes || '{}'); } catch(e) {}
+    
+    const feeStatus = extra.feeStatus || 'Owing';
     const totalDue = feeStatus === 'Paid' ? 1200 : (feeStatus === 'Partial' ? 1200 : 1200);
     const paid = feeStatus === 'Paid' ? 1200 : (feeStatus === 'Partial' ? 400 : 0);
     return {
       id: r.id,
-      student: r.data?.name || 'Unknown Student',
-      studentId: r.data?.studentId || 'STU-000',
-      class: r.data?.class || 'Grade 7B',
+      student: r.name || 'Unknown Student',
+      studentId: r.id_number || 'STU-000',
+      class: extra.class || 'Grade 7B',
       totalDue,
       paid,
       balance: totalDue - paid,
@@ -74,17 +87,13 @@ export default function FeeManagement() {
         const isFull = paymentAmount >= selectedStudent.balance;
         const nextStatus = isFull ? 'Paid' : 'Partial';
 
-        const updatedData = {
-          ...currentRaw.data,
-          feeStatus: nextStatus
-        };
+        let extra = {};
+        try { extra = JSON.parse(currentRaw.notes || '{}'); } catch(e) {}
+        extra.feeStatus = nextStatus;
 
         mutateRecord.mutate({
           id: currentRaw.id,
-          recordType: 'student',
-          payload: updatedData,
-          status: currentRaw.status || 'Active',
-          searchText: `${updatedData.name} ${updatedData.studentId}`
+          notes: JSON.stringify(extra)
         }, {
           onSuccess: () => {
             toast.success(`Recorded payment of $${paymentAmount} for ${selectedStudent.student}`);
