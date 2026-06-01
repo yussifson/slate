@@ -393,3 +393,11 @@ export const getIndustryRoles = (industryKey) => {
   const ind = INDUSTRIES[industryKey] || INDUSTRIES.law;
   return ind.roles;
 };
+
+export const clientNav = [
+  { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
+  { label: 'Cases / Projects', path: '/client-cases', icon: 'Briefcase' },
+  { label: 'Invoices', path: '/invoices', icon: 'Receipt' },
+  { label: 'Documents', path: '/documents', icon: 'FolderOpen' },
+  { label: 'Settings', path: '/settings', icon: 'Settings' }
+];

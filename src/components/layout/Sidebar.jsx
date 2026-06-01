@@ -308,12 +308,11 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
 
   return (
     <>
-      <div 
-        className={cn(
-          "hidden md:flex flex-col bg-sidebar border-r border-sidebar-border transition-all duration-300 relative z-30 h-screen",
-          isCollapsed ? "w-16" : "w-64"
-        )}
-      >
+      {/* Mobile overlay (opened from bottom nav "More") */}
+      {mobileOpen && (
+        <div className="lg:hidden fixed inset-0 z-[100] flex">
+          <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
+          <div className="relative w-72 flex flex-col shadow-2xl h-full bg-sidebar transition-transform animate-in slide-in-from-left">
             <div className="flex items-center justify-between p-4 border-b border-sidebar-border">
               <h2 className="text-lg font-bold text-sidebar-foreground">{t('menu', 'Menu')}</h2>
               <button 
@@ -369,8 +368,6 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
           </button>
         </div>
       </nav>
-
-
 
       {/* Desktop sidebar */}
       <aside className={cn(
