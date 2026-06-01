@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/api/supabaseClient";
+import { base44 } from "@/api/base44Client";
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { useAuth } from "@/lib/AuthContext";
 import { Loader2, Search, Users, Briefcase } from "lucide-react";
@@ -30,25 +31,21 @@ export default function AddChatDialog({ open, onOpenChange, onChatCreated }) {
     }
   }, [open, companyId]);
 
+  const getRecordEmail = (record) =>
+    (record?.user_email || record?.email || "").trim().toLowerCase();
+
   const loadUsers = async () => {
     setLoading(true);
     try {
-      // Load staff
-      const { data: staffData } = await supabase
-        .from('staff_records')
-        .select('*')
-        .eq('company_id', companyId);
-      
-      // Load clients (using generic clients mapping or fallback)
-      const { data: clientsData } = await supabase
-        .from('clients')
-        .select('*')
-        .eq('company_id', companyId);
-
+      const [staffData, clientsData] = await Promise.all([
+        base44.entities.StaffRecord.filter({ company_id: companyId }),
+        base44.entities.Client.filter({ company_id: companyId }),
+      ]);
       setStaff(staffData || []);
       setClients(clientsData || []);
     } catch (err) {
       console.error(err);
+      toast({ title: "Error", description: "Could not load team and clients.", variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -100,24 +97,84 @@ export default function AddChatDialog({ open, onOpenChange, onChatCreated }) {
         role: 'admin'
       });
 
-      // We need to find the auth IDs of the selected staff/clients.
-      // We will match by email.
-      const selectedRecords = [...staff, ...clients].filter(r => selectedUsers.includes(r.id));
-      const emails = selectedRecords.map(r => r.email).filter(Boolean);
+      const selectedRecords = [...staff, ...clients].filter((r) => selectedUsers.includes(r.id));
+      const directUserIds = [
+        ...new Set(selectedRecords.map((r) => r.user_id).filter(Boolean)),
+      ];
+      const emails = [
+        ...new Set(
+          selectedRecords
+            .filter((r) => !r.user_id)
+            .map(getRecordEmail)
+            .filter(Boolean)
+        ),
+      ];
 
-      const { data: profiles } = await supabase.from('profiles').select('id, email').in('email', emails);
-      
-      const participantInserts = profiles.map(p => ({
-        room_id: room.id,
-        user_id: p.id,
-        role: 'member'
-      }));
-
-      if (participantInserts.length > 0) {
-         await supabase.from('chat_participants').insert(participantInserts);
+      if (directUserIds.length === 0 && emails.length === 0) {
+        throw new Error(
+          "Selected people need an email on their profile. Team members must log in once before chat works."
+        );
       }
 
-      toast({ title: "Success", description: "Chat created successfully" });
+      let profileList = [];
+      if (emails.length > 0) {
+        const { data: profiles, error: profilesError } = await supabase
+          .from("profiles")
+          .select("id, email")
+          .eq("company_id", companyId)
+          .in("email", emails);
+
+        if (!profilesError) {
+          profileList = profiles ?? [];
+        } else {
+          const { data: byCompany } = await supabase
+            .from("profiles")
+            .select("id")
+            .eq("company_id", companyId);
+          const emailSet = new Set(emails);
+          const { data: staffMatches } = await supabase
+            .from("staff_records")
+            .select("user_id, user_email")
+            .eq("company_id", companyId)
+            .in("user_email", emails);
+          profileList = (staffMatches || [])
+            .filter((s) => s.user_id && emailSet.has(getRecordEmail(s)))
+            .map((s) => ({ id: s.user_id }));
+          if (!profileList.length && byCompany?.length) {
+            console.warn("Profile email lookup failed; run latest DB migration.", profilesError);
+          }
+        }
+      }
+
+      const participantUserIds = [
+        ...new Set([...directUserIds, ...profileList.map((p) => p.id)]),
+      ];
+      const participantInserts = participantUserIds.map((userId) => ({
+        room_id: room.id,
+        user_id: userId,
+        role: "member",
+      }));
+
+      if (participantInserts.length === 0) {
+        throw new Error(
+          "No registered accounts found for the selected emails. They must sign in once before you can start a chat."
+        );
+      }
+
+      const { error: participantsError } = await supabase
+        .from("chat_participants")
+        .insert(participantInserts);
+      if (participantsError) throw participantsError;
+
+      const expectedCount = selectedRecords.length;
+      if (participantInserts.length < expectedCount) {
+        toast({
+          title: "Chat created",
+          description: `${participantInserts.length} of ${expectedCount} participants added (others need to log in first).`,
+        });
+      } else {
+        toast({ title: "Success", description: "Chat created successfully" });
+      }
       onOpenChange(false);
       if (onChatCreated) onChatCreated(room);
 
@@ -172,7 +229,7 @@ export default function AddChatDialog({ open, onOpenChange, onChatCreated }) {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium leading-none">{item.full_name || item.name || item.first_name}</p>
-                        <p className="text-xs text-muted-foreground mt-1 truncate">{item.email}</p>
+                        <p className="text-xs text-muted-foreground mt-1 truncate">{item.user_email || item.email || "No email"}</p>
                       </div>
                     </div>
                   ))}

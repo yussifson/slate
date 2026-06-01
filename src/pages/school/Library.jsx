@@ -1,21 +1,31 @@
 import { useTranslation } from "react-i18next";
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Book, Search, Plus, BookOpen, Trash2, Clock, AlertCircle, MoreVertical } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
+import AddOptionInline from "@/components/shared/AddOptionInline";
 
 export default function Library() {
   const { t } = useTranslation();
   // Supabase Real-time Sync Hooks
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('book');
+  const { data: categoryRecords = [] } = useIndustryRecords('library_category');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
+
+  const DEFAULT_CATEGORIES = ['Science', 'Literature', 'Mathematics', 'History', 'Technology', 'Geography'];
+  const categories = useMemo(() => {
+    const custom = categoryRecords.map((r) => r.data?.name || r.search_text).filter(Boolean);
+    return [...new Set([...DEFAULT_CATEGORIES, ...custom])];
+  }, [categoryRecords]);
 
   const books = dbRecords.map(r => ({
     id: r.id,
@@ -29,15 +39,13 @@ export default function Library() {
   const [editingId, setEditingId] = useState(null);
   const [viewDetails, setViewDetails] = useState(null);
 
+  // New Issue Book State
+  const [issueBookTarget, setIssueBookTarget] = useState(null);
+  const [borrowerName, setBorrowerName] = useState('');
+
   // Form State
   const [formData, setFormData] = useState({
-    title: '',
-    author: '',
-    isbn: '',
-    category: 'Science',
-    total: 10,
-    cover_url: '',
-    ebook_url: ''
+    title: '', author: '', isbn: '', category: 'Science', total: 10, cover_url: '', ebook_url: ''
   });
 
   const handleCreateBook = () => {
@@ -98,25 +106,31 @@ export default function Library() {
     }
   };
 
-  const handleIssueBook = (book) => {
-    if (book.available <= 0) return toast.error("No copies available for checkout.");
+  const submitIssueBook = () => {
+    if (!borrowerName.trim()) return toast.error("Please enter the borrower's name.");
+    if (issueBookTarget.available <= 0) return toast.error("No copies available for checkout.");
 
     const updatedPayload = {
-      ...book,
-      available: book.available - 1,
-      borrowed: book.borrowed + 1
+      ...issueBookTarget,
+      available: issueBookTarget.available - 1,
+      borrowed: issueBookTarget.borrowed + 1,
+      current_borrower: borrowerName.trim(),
+      issued_at: new Date().toISOString(),
     };
     delete updatedPayload.id;
+    delete updatedPayload.status;
 
     mutateRecord.mutate({
-      id: book.id,
+      id: issueBookTarget.id,
       recordType: 'book',
       payload: updatedPayload,
-      status: book.status,
-      searchText: `${book.title} ${book.author}`
+      status: issueBookTarget.status,
+      searchText: `${issueBookTarget.title} ${issueBookTarget.author}`
     }, {
       onSuccess: () => {
-        toast.success(`Checked out "${book.title}" successfully!`);
+        toast.success(`Issued "${issueBookTarget.title}" to ${borrowerName}!`);
+        setIssueBookTarget(null);
+        setBorrowerName('');
       }
     });
   };
@@ -160,7 +174,7 @@ export default function Library() {
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-950/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
+          <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600">
             <Book className="w-5 h-5" />
           </div>
           <div>
@@ -169,7 +183,7 @@ export default function Library() {
           </div>
         </div>
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-green-100 dark:bg-green-950/50 flex items-center justify-center text-green-600 dark:text-green-400">
+          <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center text-green-600">
             <BookOpen className="w-5 h-5" />
           </div>
           <div>
@@ -178,7 +192,7 @@ export default function Library() {
           </div>
         </div>
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-orange-100 dark:bg-orange-950/50 flex items-center justify-center text-orange-600 dark:text-orange-400">
+          <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center text-orange-600">
             <Clock className="w-5 h-5" />
           </div>
           <div>
@@ -223,8 +237,8 @@ export default function Library() {
                   return (
                     <tr key={b.id} className="hover:bg-muted/50 transition-colors">
                       <td className="px-6 py-4">
-                        <p className="font-semibold text-card-foreground">{b.title}</p>
-                        <p className="text-xs text-muted-foreground font-mono">{t("isbn", "ISBN:")} {b.isbn}</p>
+                         <p className="font-semibold text-card-foreground">{b.title}</p>
+                         <p className="text-xs text-muted-foreground font-mono">{t("isbn", "ISBN:")} {b.isbn}</p>
                       </td>
                       <td className="px-6 py-4 text-muted-foreground">{b.author}</td>
                       <td className="px-6 py-4">
@@ -247,7 +261,7 @@ export default function Library() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-40">
                             <DropdownMenuItem onClick={() => setViewDetails(b)}>{t("view_details", "View Details")}</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleIssueBook(b)} disabled={b.available === 0}>{t("issue_book", "Issue Book")}</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setIssueBookTarget(b)} disabled={b.available === 0}>{t("issue_book", "Issue Book")}</DropdownMenuItem>
                             <DropdownMenuItem onClick={() => {
                               setEditingId(b.id);
                               setFormData({
@@ -273,6 +287,8 @@ export default function Library() {
           )}
         </div>
       </div>
+      
+      {/* Add/Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-border">
@@ -310,18 +326,26 @@ export default function Library() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-xs font-bold text-muted-foreground uppercase">{t("category", "Category")}</label>
-                  <select
-                    value={formData.category}
-                    onChange={e => setFormData({ ...formData, category: e.target.value })}
-                    className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
-                  >
-                    <option>{t("science", "Science")}</option>
-                    <option>{t("literature", "Literature")}</option>
-                    <option>{t("mathematics", "Mathematics")}</option>
-                    <option>{t("history", "History")}</option>
-                    <option>{t("technology", "Technology")}</option>
-                    <option>{t("geography", "Geography")}</option>
-                  </select>
+                  <Select value={formData.category} onValueChange={(v) => setFormData({ ...formData, category: v })}>
+                    <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {categories.map(c => (
+                        <SelectItem key={c} value={c}>{c}</SelectItem>
+                      ))}
+                      <AddOptionInline
+                        onAdd={(v) => {
+                          mutateRecord.mutate({
+                            recordType: 'library_category',
+                            payload: { name: v },
+                            searchText: v,
+                            status: 'Active',
+                          });
+                          setFormData({ ...formData, category: v });
+                        }}
+                        placeholder="New category..."
+                      />
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
                   <label className="text-xs font-bold text-muted-foreground uppercase">{t("total_copies_stocked", "Total Copies Stocked")}</label>
@@ -362,6 +386,37 @@ export default function Library() {
           </div>
         </div>
       )}
+
+      {/* Issue Book Modal */}
+      <Dialog open={!!issueBookTarget} onOpenChange={(open) => !open && setIssueBookTarget(null)}>
+        <DialogContent aria-describedby={undefined}>
+          <DialogHeader>
+            <DialogTitle>Issue Book</DialogTitle>
+            <DialogDescription>Assign a book to a student or staff member.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div>
+              <p className="text-sm font-semibold">{issueBookTarget?.title}</p>
+              <p className="text-xs text-muted-foreground">Available copies: {issueBookTarget?.available}</p>
+            </div>
+            <div>
+              <label className="text-xs font-bold text-muted-foreground uppercase">Borrower Name (Student/Staff)</label>
+              <Input
+                value={borrowerName}
+                onChange={e => setBorrowerName(e.target.value)}
+                className="mt-1"
+                placeholder="e.g. Jane Doe"
+                autoFocus
+              />
+            </div>
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={() => setIssueBookTarget(null)}>Cancel</Button>
+            <Button onClick={submitIssueBook} disabled={!borrowerName.trim()}>Issue Book</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <ConfirmationModal
         isOpen={deleteTargetId !== null}
         onClose={() => setDeleteTargetId(null)}

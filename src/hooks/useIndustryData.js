@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/api/supabaseClient';
 import { useCompany } from './useCompanyId';
 import { get, set } from 'idb-keyval';
+import { useAuth } from "@/lib/AuthContext";
 
 // --- IndexedDB Cache Helpers (mirrors base44Client pattern) ---
 const IDR_OUTBOX_KEY = 'idr_offline_outbox';
@@ -90,7 +91,9 @@ if (typeof window !== 'undefined') {
 export function useIndustryRecords(recordType) {
   const { company } = useCompany();
   const companyId = company?.id;
-  const industry = company?.industry_type;
+  const { user } = useAuth();
+  const override = typeof window !== 'undefined' ? sessionStorage.getItem('optalflow_industry_override') : null;
+  const industry = override || company?.industry_type || user?.company_industry || 'law';
   const cacheKey = `idr_cache_${companyId}_${recordType}`;
 
   return useQuery({
@@ -185,7 +188,9 @@ export function useMutateIndustryRecord() {
   const queryClient = useQueryClient();
   const { company } = useCompany();
   const companyId = company?.id;
-  const industry = company?.industry_type;
+  const { user } = useAuth();
+  const override = typeof window !== 'undefined' ? sessionStorage.getItem('optalflow_industry_override') : null;
+  const industry = override || company?.industry_type || user?.company_industry || 'law';
 
   return useMutation({
     mutationFn: async ({ id, recordType, payload, status, searchText }) => {

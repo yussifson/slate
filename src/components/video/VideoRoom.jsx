@@ -24,34 +24,74 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode }) {
   const { screens, isSharingScreen, startScreenShare, stopScreenShare } = useScreenShare();
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOff, setIsVideoOff] = useState(false);
+  const [joined, setJoined] = useState(false);
   const { toast } = useToast();
   const [isAiLoading, setIsAiLoading] = useState(false);
   
   const [aiResponse, setAiResponse] = useState(null);
 
+  useDailyEvent('joined-meeting', () => {
+    setJoined(true);
+  });
+
   useDailyEvent('left-meeting', () => {
+    setJoined(false);
     onLeave();
   });
 
-  const toggleAudio = () => {
-    if (!daily) return;
+  useDailyEvent('error', (ev) => {
+    console.error('Daily error:', ev);
+    toast({
+      title: 'Video connection error',
+      description: ev?.errorMsg || 'Could not connect to the meeting room.',
+      variant: 'destructive',
+    });
+  });
+
+  const ensureJoined = () => {
+    if (joined && daily) return true;
+    toast({
+      title: 'Connecting…',
+      description: 'Wait until the call has connected before using camera or mic.',
+    });
+    return false;
+  };
+
+  const toggleAudio = async () => {
+    if (!ensureJoined()) return;
     const newMutedState = !isMuted;
-    daily.setLocalAudio(!newMutedState); // false means muted
-    setIsMuted(newMutedState);
+    try {
+      await daily.setLocalAudio(!newMutedState);
+      setIsMuted(newMutedState);
+    } catch (err) {
+      console.error(err);
+      toast({ title: 'Microphone error', description: err?.message || 'Could not access microphone.', variant: 'destructive' });
+    }
   };
 
-  const toggleVideo = () => {
-    if (!daily) return;
+  const toggleVideo = async () => {
+    if (!ensureJoined()) return;
     const newVideoOffState = !isVideoOff;
-    daily.setLocalVideo(!newVideoOffState); // false means video off
-    setIsVideoOff(newVideoOffState);
+    try {
+      await daily.setLocalVideo(!newVideoOffState);
+      setIsVideoOff(newVideoOffState);
+    } catch (err) {
+      console.error(err);
+      toast({ title: 'Camera error', description: err?.message || 'Could not access camera.', variant: 'destructive' });
+    }
   };
 
-  const toggleScreenShare = () => {
-    if (isSharingScreen) {
-      stopScreenShare();
-    } else {
-      startScreenShare();
+  const toggleScreenShare = async () => {
+    if (!ensureJoined()) return;
+    try {
+      if (isSharingScreen) {
+        await stopScreenShare();
+      } else {
+        await startScreenShare();
+      }
+    } catch (err) {
+      console.error(err);
+      toast({ title: 'Screen share failed', description: err?.message || 'Could not share screen.', variant: 'destructive' });
     }
   };
 
@@ -260,16 +300,29 @@ export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePi
 
   useEffect(() => {
     if (!roomUrl) return;
+    let callObject = null;
+    let cancelled = false;
+
     import('@daily-co/daily-js').then((DailyIframe) => {
-      const newDaily = DailyIframe.default.createCallObject();
-      setDaily(newDaily);
-      newDaily.join({ url: roomUrl, token });
+      if (cancelled) return;
+      callObject = DailyIframe.default.createCallObject();
+      const joinOpts = { url: roomUrl };
+      if (typeof token === 'string' && token.length > 0) {
+        joinOpts.token = token;
+      }
+      callObject
+        .join(joinOpts)
+        .catch((err) => console.error('Daily join failed:', err));
+      setDaily(callObject);
     });
 
     return () => {
-      if (daily) {
-        daily.destroy();
+      cancelled = true;
+      if (callObject) {
+        callObject.leave().catch(() => {});
+        callObject.destroy();
       }
+      setDaily(null);
     };
   }, [roomUrl, token]);
 

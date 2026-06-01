@@ -121,6 +121,7 @@ export const AuthProvider = ({ children }) => {
             role: staffRecord.role || 'lawyer',
             company_id: staffRecord.company_id,
             company_name: companyName,
+            email: sessionUser.email?.toLowerCase() || null,
             phone: staffRecord.phone || null,
             department: staffRecord.department || null,
             bar_number: staffRecord.bar_number || null
@@ -136,12 +137,14 @@ export const AuthProvider = ({ children }) => {
             profile.company_id !== staffRecord.company_id ||
             profile.department !== staffRecord.department ||
             profile.bar_number !== staffRecord.bar_number ||
-            !profile.company_name
+            !profile.company_name ||
+            profile.email?.toLowerCase() !== sessionUser.email?.toLowerCase()
           ) {
             const { data: updatedProfile, error: updateError } = await supabase.from('profiles').update({
               role: staffRecord.role,
               company_id: staffRecord.company_id,
               company_name: companyName || profile.company_name,
+              email: sessionUser.email?.toLowerCase() || profile.email || null,
               phone: staffRecord.phone || profile.phone || null,
               department: staffRecord.department || null,
               bar_number: staffRecord.bar_number || null
@@ -151,17 +154,38 @@ export const AuthProvider = ({ children }) => {
             }
           }
         }
+
+        if (staffRecord.id && !staffRecord.user_id) {
+          await supabase
+            .from('staff_records')
+            .update({ user_id: sessionUser.id })
+            .eq('id', staffRecord.id);
+        }
       } else if (profileError && profileError.code === 'PGRST116') {
-        // No staff record and profile is missing, fallback to default brand new company admin
+        const invitedCompanyId =
+          sessionUser.user_metadata?.company_id || null;
         const { data: newProfile, error: insertError } = await supabase.from('profiles').insert({
           id: sessionUser.id,
-          role: 'company_admin',
-          company_name: sessionUser.user_metadata?.company_name || null
+          role: invitedCompanyId ? (sessionUser.user_metadata?.role || 'lawyer') : 'company_admin',
+          company_id: invitedCompanyId,
+          company_name: sessionUser.user_metadata?.company_name || null,
+          email: sessionUser.email?.toLowerCase() || null,
         }).select().single();
         if (!insertError) {
           profile = newProfile;
           profileError = null;
         }
+      } else if (profile && !profile.company_id && sessionUser.user_metadata?.company_id) {
+        const { data: updatedProfile, error: updateError } = await supabase
+          .from('profiles')
+          .update({
+            company_id: sessionUser.user_metadata.company_id,
+            email: sessionUser.email?.toLowerCase() || profile.email || null,
+          })
+          .eq('id', sessionUser.id)
+          .select()
+          .single();
+        if (!updateError) profile = updatedProfile;
       }
 
       setAuthStep("Checking firm subdomain...");

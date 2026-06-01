@@ -40,7 +40,7 @@ export default function Documents() {
   const industry = sessionStorage.getItem("optalflow_industry_override") || user?.company_industry || "law";
   const caseTerm = getTerm(industry, "case");
 
-  const { data: documents = [], isLoading } = useQuery({
+  const { data: documents = [], isLoading, isError } = useQuery({
     queryKey: ["documents", companyId, user?.email, isAdmin],
     queryFn: async () => {
       const list = await base44.entities.Document.filter({ company_id: companyId });
@@ -48,6 +48,8 @@ export default function Documents() {
       return list.filter(d => d.uploaded_by === user?.email || d.created_by === user?.id);
     },
     enabled: !!companyId,
+    retry: 2,
+    staleTime: 30_000,
   });
 
   const { data: cases = [] } = useQuery({
@@ -147,12 +149,15 @@ export default function Documents() {
           </SelectContent>
         </Select>
       </div>
+      {isError && (
+        <p className="text-sm text-destructive">Could not load documents. Check your connection and refresh.</p>
+      )}
       <DataTable
         columns={columns}
         data={filtered}
-        isLoading={isLoading}
+        isLoading={isLoading && !!companyId}
         onRowClick={(row) => setPreviewDoc(row)}
-        emptyTitle="No documents yet"
+        emptyTitle={companyId ? "No documents yet" : "Sign in to a workspace to view documents"}
         emptyIcon={FolderOpen}
       />
       <DocumentUploadDialog

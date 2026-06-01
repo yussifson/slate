@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SUBSCRIPTION_PLANS, PRIORITY_COLORS, formatCurrency } from "@/lib/constants";
 import { format, isAfter } from "date-fns";
+import { buildMonthlyRevenueChart, buildDistributionChart } from "@/lib/dashboardCharts";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/components/ui/use-toast";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, BarChart, Bar } from "recharts";
@@ -78,23 +79,8 @@ export default function LawDashboard({ companyId, company, isAdmin }) {
   const hearingsTermPlural = getTerm(industry, "hearings");
   const caseTerm = getTerm(industry, "case");
 
-  // Calculate high-fidelity charts dataset
-  const chartData = [
-    { name: "Jan", Revenue: Math.round(totalRevenue * 0.15 + 120) },
-    { name: "Feb", Revenue: Math.round(totalRevenue * 0.28 + 180) },
-    { name: "Mar", Revenue: Math.round(totalRevenue * 0.45 + 240) },
-    { name: "Apr", Revenue: Math.round(totalRevenue * 0.62 + 350) },
-    { name: "May", Revenue: Math.round(totalRevenue * 0.82 + 420) },
-    { name: "Jun", Revenue: Math.round(totalRevenue + 500) }
-  ];
-
-  const caseDistribution = [
-    { name: "Intake", count: cases.filter(c => c.stage === 'intake').length || 1 },
-    { name: "Pleading", count: cases.filter(c => c.stage === 'pleading').length || 2 },
-    { name: "Trial", count: cases.filter(c => c.stage === 'trial' || c.stage === 'pending_hearing').length || 1 },
-    { name: "Appeal", count: cases.filter(c => c.stage === 'appeal').length || 0 },
-    { name: "Closed", count: cases.filter(c => c.stage === 'closed' || c.stage === 'resolved').length || 1 }
-  ];
+  const chartData = buildMonthlyRevenueChart(invoices);
+  const caseDistribution = buildDistributionChart(cases, "stage");
 
   const upcomingHearings = hearings
     .filter(h => h.status === "scheduled" && h.date && isAfter(new Date(h.date), new Date()))
@@ -127,7 +113,7 @@ export default function LawDashboard({ companyId, company, isAdmin }) {
           <h1 className="text-3xl font-bold text-slate-900 tracking-tight">{t('welcome_to_workspace', "Welcome to your workspace")}</h1>
           <p className="text-slate-500 text-lg">{t('setup_firm_prompt', "You haven't set up your law firm yet. Configure your firm's details to unlock your dashboard and features.")}</p>
         </div>
-        <Button onClick={() => window.location.href = '/firm-setup'} size="lg" className="mt-4 shadow-md px-8 h-12 text-md">
+        <Button onClick={() => window.location.href = '/onboarding'} size="lg" className="mt-4 shadow-md px-8 h-12 text-md">
           <Settings2 className="w-5 h-5 mr-2" />
           {t('setup_firm_now', "Setup Firm Now")}
         </Button>

@@ -130,6 +130,46 @@ export const syncOfflineOutbox = async () => {
     console.log('[PowerSync] Native sync engine active. Ignoring manual outbox trigger.');
 };
 
+/** Mirror CRUD to Supabase so data survives refresh even if PowerSync upload lags. */
+async function mirrorToSupabase(tableName, record, operation = 'upsert') {
+    if (!navigator.onLine || !record) return;
+
+    const { data: { user } } = await supabase.auth.getUser();
+    const row = { ...record };
+    if (!row.created_by && user?.id) row.created_by = user.id;
+
+    if (operation === 'upsert') {
+        const { error } = await supabase.from(tableName).upsert(row);
+        if (error) throw error;
+    } else if (operation === 'delete') {
+        const id = typeof record === 'string' ? record : record.id;
+        const { error } = await supabase.from(tableName).delete().eq('id', id);
+        if (error) throw error;
+    }
+}
+
+async function fetchFromSupabase(tableName, filter = {}, sort = []) {
+    let query = supabase.from(tableName).select('*');
+    for (const [key, value] of Object.entries(filter)) {
+        if (value === undefined || value === null) continue;
+        if (Array.isArray(value)) query = query.in(key, value);
+        else query = query.eq(key, value);
+    }
+    if (sort) {
+        if (typeof sort === 'string') {
+            const direction = sort.startsWith('-') ? { ascending: false } : { ascending: true };
+            const field = sort.startsWith('-') ? sort.slice(1) : sort;
+            query = query.order(field, direction);
+        } else if (Array.isArray(sort) && sort.length > 0) {
+            const s = sort[0];
+            query = query.order(s.field, { ascending: s.direction === 'asc' });
+        }
+    }
+    const { data, error } = await query;
+    if (error) throw error;
+    return data || [];
+}
+
 export const base44 = {
     auth: {
         me: async () => {
@@ -139,8 +179,11 @@ export const base44 = {
             const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
             return profile;
         },
-        register: async ({ email, password }) => {
-            const { data, error } = await supabase.auth.signUp({ email, password });
+        register: async ({ email, password, company_id, role }) => {
+            const options = company_id
+                ? { data: { company_id, role: role || 'lawyer' } }
+                : {};
+            const { data, error } = await supabase.auth.signUp({ email, password, options });
             if (error) throw error;
             return data;
         },
@@ -238,11 +281,22 @@ export const base44 = {
                         }
 
                         const data = await powerSync.getAll(query, params);
-                        return revealResults(data);
+                        if (data?.length > 0 || !navigator.onLine) {
+                            return revealResults(data);
+                        }
                     } catch (err) {
-                        console.error(`[PowerSync] Filter failed on ${tableName}:`, err);
-                        return [];
+                        console.warn(`[PowerSync] Filter failed on ${tableName}, trying Supabase:`, err.message);
                     }
+
+                    if (navigator.onLine) {
+                        try {
+                            const remote = await fetchFromSupabase(tableName, filter, sort);
+                            return revealResults(remote);
+                        } catch (remoteErr) {
+                            console.error(`[Supabase] Filter failed on ${tableName}:`, remoteErr);
+                        }
+                    }
+                    return [];
                 },
                 list: async (sort = []) => {
                     try {
@@ -301,10 +355,30 @@ export const base44 = {
                         const values = Object.values(securedPayload);
 
                         await powerSync.execute(`INSERT INTO ${tableName} (${keys.join(', ')}) VALUES (${placeholders})`, values);
+
+                        if (navigator.onLine) {
+                            await mirrorToSupabase(tableName, securedPayload, 'upsert');
+                        }
                         
                         return revealResults(securedPayload);
                     } catch (err) {
                         console.error(`[PowerSync] Create failed on ${tableName}:`, err);
+                        if (navigator.onLine) {
+                            try {
+                                const validCols = getValidCols(tableName);
+                                let cleanedPayload = Object.fromEntries(Object.entries(payload).map(([k, v]) => [k, v === "" ? null : v]));
+                                if (validCols) {
+                                    cleanedPayload = Object.fromEntries(Object.entries(cleanedPayload).filter(([k]) => validCols.includes(k)));
+                                }
+                                const securedPayload = await securePayload(cleanedPayload);
+                                securedPayload.id = securedPayload.id || crypto.randomUUID();
+                                if (!securedPayload.created_date) securedPayload.created_date = new Date().toISOString();
+                                await mirrorToSupabase(tableName, securedPayload, 'upsert');
+                                return revealResults(securedPayload);
+                            } catch (mirrorErr) {
+                                throw mirrorErr;
+                            }
+                        }
                         throw err;
                     }
                 },
@@ -324,8 +398,11 @@ export const base44 = {
                         const values = [...Object.values(securedPayload), id];
 
                         await powerSync.execute(`UPDATE ${tableName} SET ${assignments} WHERE id = ?`, values);
-                        
+
                         const updatedData = await powerSync.getOptional(`SELECT * FROM ${tableName} WHERE id = ?`, [id]);
+                        if (navigator.onLine && updatedData) {
+                            await mirrorToSupabase(tableName, updatedData, 'upsert');
+                        }
                         return revealResults(updatedData);
                     } catch (err) {
                         console.error(`[PowerSync] Update failed on ${tableName}:`, err);
@@ -335,6 +412,9 @@ export const base44 = {
                 delete: async (id) => {
                     try {
                         await powerSync.execute(`DELETE FROM ${tableName} WHERE id = ?`, [id]);
+                        if (navigator.onLine) {
+                            await mirrorToSupabase(tableName, id, 'delete');
+                        }
                         return { id };
                     } catch (err) {
                         console.error(`[PowerSync] Delete failed on ${tableName}:`, err);

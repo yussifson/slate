@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { supabase } from "@/api/supabaseClient";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
 import { UserCog, Search, Trash2, UserPlus, Eye, EyeOff } from "lucide-react";
@@ -57,7 +58,7 @@ export default function Team() {
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.StaffRecord.create({ ...data, company_id: companyId }),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["staff"] }); setShowCreate(false); },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["staff"] }); },
     onError: (err) => { console.error(err); toast({ title: "Error creating staff", description: err.message, variant: "destructive" }); }
   });
 
@@ -161,23 +162,44 @@ export default function Team() {
         onSubmit={async (data, password) => {
           if (editingStaff) {
             await updateMutation.mutateAsync({ id: editingStaff.id, data });
-          } else {
-            try {
-              await base44.auth.register({ email: data.user_email, password });
-              await createMutation.mutateAsync(data);
-              
-              await notify({
-                recipientEmail: data.user_email,
-                title: "Welcome to Optalflow!",
-                message: `Your account has been created by ${user?.full_name || 'an Admin'}. You can now log in using this email address and the temporary password provided to you.`,
-                type: "WELCOME"
-              });
-
-              toast({ title: `✓ Account created for ${data.full_name}`, description: `They can log in and change their password anytime.` });
-            } catch (err) {
-              toast({ title: "Account creation failed", description: err?.message || "Please try again.", variant: "destructive" });
-            }
+            setShowCreate(false);
+            setEditingStaff(null);
+            toast({ title: "Staff updated" });
+            return;
           }
+          const reg = await base44.auth.register({
+            email: data.user_email,
+            password,
+            company_id: companyId,
+            role: data.role,
+          });
+          const authUserId = reg?.user?.id;
+          await createMutation.mutateAsync({
+            ...data,
+            user_id: authUserId || null,
+          });
+
+          if (authUserId && data.user_email) {
+            await supabase
+              .from("staff_records")
+              .update({ user_id: authUserId })
+              .eq("company_id", companyId)
+              .ilike("user_email", data.user_email);
+          }
+
+          notify({
+            recipientEmail: data.user_email,
+            title: "Welcome to Optalflow!",
+            message: `Your account has been created by ${user?.full_name || "an Admin"}. Log in with this email and the temporary password you were given.`,
+            type: "WELCOME",
+          }).catch(() => {});
+
+          toast({
+            title: `Account created for ${data.full_name}`,
+            description: "They can log in and change their password anytime.",
+          });
+          setShowCreate(false);
+          setEditingStaff(null);
         }}
         initialData={editingStaff}
         isNew={!editingStaff}
@@ -211,13 +233,22 @@ function StaffDialog({ open, onClose, onSubmit, initialData, isNew, industryRole
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-    await onSubmit(form, password);
-    setSubmitting(false);
+    try {
+      await onSubmit(form, password);
+    } catch (err) {
+      toast({
+        title: isNew ? "Account creation failed" : "Save failed",
+        description: err?.message || "Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const triggerReset = async () => {
     try {
-      await base44.auth.resetPasswordForEmail(form.user_email);
+      await base44.auth.resetPassword(form.user_email);
       toast({ title: "Password reset email sent!" });
     } catch (err) {
       toast({ title: "Failed to send reset email", description: err.message, variant: "destructive" });

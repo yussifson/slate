@@ -31,12 +31,12 @@ export default function Classes() {
   
   const mutateClass = useMutation({
     mutationFn: (data) => data.id ? base44.entities.LegalCase.update(data.id, data) : base44.entities.LegalCase.create(data),
-    onSuccess: () => queryClient.invalidateQueries(["cases", companyId])
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["cases", companyId] })
   });
 
   const deleteClass = useMutation({
     mutationFn: (id) => base44.entities.LegalCase.delete(id),
-    onSuccess: () => queryClient.invalidateQueries(["cases", companyId])
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["cases", companyId] })
   });
 
   // Form State
@@ -61,6 +61,7 @@ export default function Classes() {
   });
 
   const handleCreateClass = () => {
+    if (!companyId) return toast.error("Workspace not loaded. Refresh the page and try again.");
     if (!formData.name.trim() || !formData.subject.trim()) {
       return toast.error("Please enter a class name and subject");
     }
@@ -79,29 +80,20 @@ export default function Classes() {
       })
     };
 
+    const onDone = {
+      onSuccess: () => {
+        toast.success(editingId ? "Class updated successfully!" : "Class saved successfully!");
+        setShowModal(false);
+        setEditingId(null);
+        setFormData({ name: '', subject: '', teacher: 'Mr. John Doe', room: '', schedule: '' });
+      },
+      onError: (err) => toast.error(err?.message || "Failed to save class"),
+    };
+
     if (editingId) {
-      mutateClass.mutate({ id: editingId, ...payload }, {
-        onSuccess: () => {
-          toast.success("Class updated successfully!");
-          setShowModal(false);
-          setEditingId(null);
-          setFormData({ name: '', subject: '', teacher: 'Mr. John Doe', room: '', schedule: '' });
-        },
-        onError: (err) => {
-          toast.error("Failed to update class: " + err.message);
-        }
-      });
+      mutateClass.mutate({ id: editingId, ...payload }, onDone);
     } else {
-      mutateClass.mutate(payload, {
-        onSuccess: () => {
-          toast.success("Class saved successfully!");
-          setShowModal(false);
-          setFormData({ name: '', subject: '', teacher: 'Mr. John Doe', room: '', schedule: '' });
-        },
-        onError: (err) => {
-          toast.error("Failed to save class: " + err.message);
-        }
-      });
+      mutateClass.mutate(payload, onDone);
     }
   };
 

@@ -36,12 +36,12 @@ export default function Students() {
   
   const mutateStudent = useMutation({
     mutationFn: (data) => data.id ? base44.entities.Client.update(data.id, data) : base44.entities.Client.create(data),
-    onSuccess: () => queryClient.invalidateQueries(["clients", companyId])
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["clients", companyId] })
   });
 
   const deleteStudent = useMutation({
     mutationFn: (id) => base44.entities.Client.delete(id),
-    onSuccess: () => queryClient.invalidateQueries(["clients", companyId])
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["clients", companyId] })
   });
 
   // Form State
@@ -84,6 +84,7 @@ export default function Students() {
   ];
 
   const handleEnroll = () => {
+    if (!companyId) return toast.error("Workspace not loaded. Refresh the page and try again.");
     const fullName = formData.firstName ? `${formData.firstName} ${formData.lastName}`.trim() : formData.name;
     if (!fullName) return toast.error("Please enter student name");
     
@@ -108,23 +109,20 @@ export default function Students() {
       })
     };
 
+    const onDone = {
+      onSuccess: () => {
+        toast.success(editingId ? "Student updated successfully!" : "Student enrolled successfully!");
+        setShowModal(false);
+        setEditingId(null);
+        setFormData({ firstName: '', lastName: '', dateOfBirth: '', gender: 'Female', class: 'Grade 7B', parentName: '', parentPhone: '' });
+      },
+      onError: (err) => toast.error(err?.message || "Failed to save student"),
+    };
+
     if (editingId) {
-      mutateStudent.mutate({ id: editingId, ...payload }, {
-        onSuccess: () => {
-          toast.success("Student updated successfully!");
-          setShowModal(false);
-          setEditingId(null);
-          setFormData({ firstName: '', lastName: '', dateOfBirth: '', gender: 'Female', class: 'Grade 7B', parentName: '', parentPhone: '' });
-        }
-      });
+      mutateStudent.mutate({ id: editingId, ...payload }, onDone);
     } else {
-      mutateStudent.mutate(payload, {
-        onSuccess: () => {
-          toast.success("Student enrolled successfully!");
-          setShowModal(false);
-          setFormData({ firstName: '', lastName: '', dateOfBirth: '', gender: 'Female', class: 'Grade 7B', parentName: '', parentPhone: '' });
-        }
-      });
+      mutateStudent.mutate(payload, onDone);
     }
   };
 

@@ -73,7 +73,7 @@ export default function ParentPortal() {
     ...r.data
   })).slice(0, 3);
 
-  if (isStudentsLoading || isExamsLoading) {
+  if (isStudentsLoading) {
     return <div className="py-12 text-center text-muted-foreground">{t("loading_family_profile", "Loading family profile...")}</div>;
   }
 

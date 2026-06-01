@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SUBSCRIPTION_PLANS, PRIORITY_COLORS, formatCurrency } from "@/lib/constants";
 import { format, isAfter } from "date-fns";
+import { buildMonthlyRevenueChart, buildDistributionChart } from "@/lib/dashboardCharts";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/components/ui/use-toast";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, BarChart, Bar } from "recharts";
@@ -77,31 +78,8 @@ export default function GenericDashboard({ companyId, company, isAdmin, industry
   const hearingsTermPlural = getTerm(industry, "hearings");
   const caseTerm = getTerm(industry, "case");
 
-  // Calculate high-fidelity charts dataset
-  const chartData = [
-    { name: "Jan", Revenue: Math.round(totalRevenue * 0.15 + 120) },
-    { name: "Feb", Revenue: Math.round(totalRevenue * 0.28 + 180) },
-    { name: "Mar", Revenue: Math.round(totalRevenue * 0.45 + 240) },
-    { name: "Apr", Revenue: Math.round(totalRevenue * 0.62 + 350) },
-    { name: "May", Revenue: Math.round(totalRevenue * 0.82 + 420) },
-    { name: "Jun", Revenue: Math.round(totalRevenue + 500) }
-  ];
-
-  // Group cases by stage generically
-  const stages = cases.reduce((acc, c) => {
-    const stage = c.stage || c.status || 'unknown';
-    acc[stage] = (acc[stage] || 0) + 1;
-    return acc;
-  }, {});
-
-  const caseDistribution = Object.entries(stages).map(([name, count]) => ({
-    name: name.charAt(0).toUpperCase() + name.slice(1).replace('_', ' '),
-    count
-  })).slice(0, 5);
-
-  if (caseDistribution.length === 0) {
-    caseDistribution.push({ name: "No Data", count: 1 });
-  }
+  const chartData = buildMonthlyRevenueChart(invoices);
+  const caseDistribution = buildDistributionChart(cases, "stage");
 
   const upcomingHearings = hearings
     .filter(h => h.status === "scheduled" && h.date && isAfter(new Date(h.date), new Date()))
@@ -135,7 +113,7 @@ export default function GenericDashboard({ companyId, company, isAdmin, industry
             "You haven't set up your firm yet. Configure your details to unlock your dashboard and features."
           )}</p>
         </div>
-        <Button onClick={() => window.location.href = '/firm-setup'} size="lg" className="mt-4 shadow-md px-8 h-12 text-md">
+        <Button onClick={() => window.location.href = '/onboarding'} size="lg" className="mt-4 shadow-md px-8 h-12 text-md">
           <Settings2 className="w-5 h-5 mr-2" />
           {t("setup_now", "Setup Now")}
         </Button>

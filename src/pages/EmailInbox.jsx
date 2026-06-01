@@ -295,6 +295,7 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
   const [message, setMessage] = useState("");
   const [showCc, setShowCc] = useState(false);
   const [isAiLoading, setIsAiLoading] = useState(false);
+  const [recipientPickerOpen, setRecipientPickerOpen] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -420,19 +421,39 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
                           </span>
                         ))}
                       </div>
-                      <div className="group relative">
-                        <input type="text" placeholder="Select team members..." className="w-full outline-none text-sm peer" />
-                        <div className="hidden peer-focus:block hover:block absolute top-full left-0 w-full max-h-40 overflow-y-auto bg-white border border-border rounded-md shadow-lg z-10 mt-1">
-                           {staff.map(member => (
-                             <div key={member.id} className="flex items-center gap-3 p-2 hover:bg-slate-50 cursor-pointer" onMouseDown={(e) => { e.preventDefault(); toggleStaff(member.id); }}>
-                               <Checkbox checked={selectedStaffIds.includes(member.id)} className="pointer-events-none" />
-                               <div className="flex flex-col">
-                                  <span className="text-sm font-medium text-slate-800">{member.full_name}</span>
-                                  <span className="text-xs text-slate-500">{member.user_email}</span>
-                               </div>
-                             </div>
-                           ))}
-                        </div>
+                      <div className="relative">
+                        <button
+                          type="button"
+                          className="w-full text-left text-sm text-slate-600 border border-dashed border-slate-300 rounded-md px-2 py-1.5 hover:bg-slate-50"
+                          onClick={() => setRecipientPickerOpen((o) => !o)}
+                        >
+                          {staff.length === 0
+                            ? "No team members loaded"
+                            : selectedStaffIds.length
+                              ? `${selectedStaffIds.length} selected — click to change`
+                              : "Click to select team members..."}
+                        </button>
+                        {recipientPickerOpen && (
+                          <div className="absolute top-full left-0 w-full max-h-40 overflow-y-auto bg-white border border-border rounded-md shadow-lg z-20 mt-1">
+                            {staff.length === 0 ? (
+                              <p className="p-3 text-xs text-muted-foreground">Add team members on the Team page first.</p>
+                            ) : (
+                              staff.map((member) => (
+                                <div
+                                  key={member.id}
+                                  className="flex items-center gap-3 p-2 hover:bg-slate-50 cursor-pointer"
+                                  onClick={() => toggleStaff(member.id)}
+                                >
+                                  <Checkbox checked={selectedStaffIds.includes(member.id)} className="pointer-events-none" />
+                                  <div className="flex flex-col">
+                                    <span className="text-sm font-medium text-slate-800">{member.full_name}</span>
+                                    <span className="text-xs text-slate-500">{member.user_email}</span>
+                                  </div>
+                                </div>
+                              ))
+                            )}
+                          </div>
+                        )}
                       </div>
                     </>
                   ) : (
@@ -445,19 +466,39 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
                           </span>
                         ))}
                       </div>
-                      <div className="group relative">
-                        <input type="text" placeholder="Select clients..." className="w-full outline-none text-sm peer" />
-                        <div className="hidden peer-focus:block hover:block absolute top-full left-0 w-full max-h-40 overflow-y-auto bg-white border border-border rounded-md shadow-lg z-10 mt-1">
-                           {clients.map(client => (
-                             <div key={client.id} className="flex items-center gap-3 p-2 hover:bg-slate-50 cursor-pointer" onMouseDown={(e) => { e.preventDefault(); toggleClient(client.id); }}>
-                               <Checkbox checked={selectedClientIds.includes(client.id)} className="pointer-events-none" />
-                               <div className="flex flex-col">
-                                  <span className="text-sm font-medium text-slate-800">{client.name}</span>
-                                  <span className="text-xs text-slate-500">{client.email}</span>
-                               </div>
-                             </div>
-                           ))}
-                        </div>
+                      <div className="relative">
+                        <button
+                          type="button"
+                          className="w-full text-left text-sm text-slate-600 border border-dashed border-slate-300 rounded-md px-2 py-1.5 hover:bg-slate-50"
+                          onClick={() => setRecipientPickerOpen((o) => !o)}
+                        >
+                          {clients.length === 0
+                            ? "No clients loaded"
+                            : selectedClientIds.length
+                              ? `${selectedClientIds.length} selected — click to change`
+                              : "Click to select clients..."}
+                        </button>
+                        {recipientPickerOpen && (
+                          <div className="absolute top-full left-0 w-full max-h-40 overflow-y-auto bg-white border border-border rounded-md shadow-lg z-20 mt-1">
+                            {clients.length === 0 ? (
+                              <p className="p-3 text-xs text-muted-foreground">Add clients in the directory first.</p>
+                            ) : (
+                              clients.map((client) => (
+                                <div
+                                  key={client.id}
+                                  className="flex items-center gap-3 p-2 hover:bg-slate-50 cursor-pointer"
+                                  onClick={() => toggleClient(client.id)}
+                                >
+                                  <Checkbox checked={selectedClientIds.includes(client.id)} className="pointer-events-none" />
+                                  <div className="flex flex-col">
+                                    <span className="text-sm font-medium text-slate-800">{client.name}</span>
+                                    <span className="text-xs text-slate-500">{client.email || "No email"}</span>
+                                  </div>
+                                </div>
+                              ))
+                            )}
+                          </div>
+                        )}
                       </div>
                     </>
                   )}

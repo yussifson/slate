@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
@@ -11,9 +11,11 @@ import { useToast } from "@/components/ui/use-toast";
 import CompanyFormDialog from "@/components/superadmin/CompanyFormDialog";
 import FirmStaffManager from "@/components/superadmin/FirmStaffManager";
 import { useCompany } from "@/hooks/useCompanyId";
+import { useNavigate } from "react-router-dom";
 
 export default function SuperAdminDashboard() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { company, isLoading } = useCompany();
@@ -21,6 +23,13 @@ export default function SuperAdminDashboard() {
   const [managingStaff, setManagingStaff] = useState(false);
   const { user, refreshUser } = useAuth();
   const activeIndustry = user?.company_industry || "law";
+
+  useEffect(() => {
+    if (!isLoading && user?.company_id && company) {
+      navigate("/my-dashboard", { replace: true });
+    }
+  }, [isLoading, user?.company_id, company, navigate]);
+
   const createMutation = useMutation({
     mutationFn: async ({ form, adminName }) => {
       const created = await base44.entities.Company.create(form);

@@ -66,7 +66,6 @@ import ReportsDashboard from './pages/ReportsDashboard';
 import DataExport from './pages/DataExport';
 import WhatsAppMessenger from './pages/WhatsAppMessenger';
 import HRDashboard from './pages/HRDashboard';
-import FirmSetup from './pages/SuperAdminDashboard';
 import Chat from './pages/Chat';
 import Board from './pages/Board';
 
@@ -207,7 +206,7 @@ function PlatformRoutes() {
       <Route path="/export" element={<DataExport />} />
       <Route path="/whatsapp" element={<WhatsAppMessenger />} />
       <Route path="/hr" element={<HRDashboard />} />
-      <Route path="/firm-setup" element={<FirmSetup />} />
+      <Route path="/firm-setup" element={<OnboardingWizard />} />
       <Route path="/chat" element={<Chat />} />
       <Route path="/board" element={<Board />} />
 
