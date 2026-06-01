@@ -24,6 +24,23 @@ export default function EmailInbox() {
   const [showCompose, setShowCompose] = useState(false);
   const [isComposeMinimized, setIsComposeMinimized] = useState(false);
   const [search, setSearch] = useState("");
+  const [starredEmails, setStarredEmails] = useState(() => {
+    try {
+      const saved = localStorage.getItem('starredEmails');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+
+  React.useEffect(() => {
+    localStorage.setItem('starredEmails', JSON.stringify(starredEmails));
+  }, [starredEmails]);
+
+  const toggleStar = (e, emailId) => {
+    e.stopPropagation();
+    setStarredEmails(prev => prev.includes(emailId) ? prev.filter(id => id !== emailId) : [...prev, emailId]);
+  };
 
   const { data: emails = [], isLoading } = useQuery({
     queryKey: ["case-emails", companyId],
@@ -47,7 +64,12 @@ export default function EmailInbox() {
   });
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.CaseEmail.create({ ...data, company_id: companyId, logged_by: user?.email }),
+    mutationFn: (data) => base44.entities.CaseEmail.create({ 
+      ...data, 
+      company_id: companyId, 
+      logged_by: user?.email,
+      sender_email: user?.email // Fix anomaly 1: ensure sender is recorded
+    }),
     onSuccess: () => { 
       queryClient.invalidateQueries({ queryKey: ["case-emails"] }); 
       setShowCompose(false); 
@@ -55,7 +77,14 @@ export default function EmailInbox() {
     },
   });
 
-  const filteredEmails = emails.filter(e =>
+  // Fix Anomaly 2: Only show emails where the user is sender or recipient
+  const myEmails = emails.filter(e => {
+    const isSender = e.sender_email === user?.email;
+    const isRecipient = e.recipient_email && e.recipient_email.toLowerCase().includes(user?.email?.toLowerCase());
+    return isSender || isRecipient;
+  });
+
+  const filteredEmails = myEmails.filter(e =>
     !search ||
     e.subject?.toLowerCase().includes(search.toLowerCase()) ||
     e.sender_email?.toLowerCase().includes(search.toLowerCase()) ||
@@ -64,11 +93,14 @@ export default function EmailInbox() {
 
   let displayedEmails = filteredEmails;
   if (activeTab === "sent") {
+    // Sent folder: only emails I sent
     displayedEmails = filteredEmails.filter(e => e.sender_email === user?.email);
   } else if (activeTab === "inbox") {
-    displayedEmails = filteredEmails.filter(e => e.sender_email !== user?.email || !e.sender_email);
+    // Inbox folder: only emails sent TO me
+    displayedEmails = filteredEmails.filter(e => e.recipient_email && e.recipient_email.toLowerCase().includes(user?.email?.toLowerCase()));
   } else if (activeTab === "starred") {
-    displayedEmails = []; 
+    // Starred folder
+    displayedEmails = filteredEmails.filter(e => starredEmails.includes(e.id));
   }
 
   const handleComposeSubmit = (data) => {
@@ -125,7 +157,9 @@ export default function EmailInbox() {
                   key={email.id} 
                   email={email} 
                   isSelected={selectedEmail?.id === email.id}
-                  onClick={() => setSelectedEmail(email)} 
+                  onClick={() => setSelectedEmail(email)}
+                  isStarred={starredEmails.includes(email.id)}
+                  onToggleStar={(e) => toggleStar(e, email.id)}
                 />
               ))}
             </div>
@@ -136,7 +170,12 @@ export default function EmailInbox() {
       {/* Right Pane - Email Reader */}
       <div className={cn("flex-1 flex-col bg-white min-w-0 relative", selectedEmail ? "flex" : "hidden lg:flex")}>
         {selectedEmail ? (
-          <EmailDetail email={selectedEmail} onBack={() => setSelectedEmail(null)} />
+          <EmailDetail 
+            email={selectedEmail} 
+            onBack={() => setSelectedEmail(null)} 
+            isStarred={starredEmails.includes(selectedEmail.id)}
+            onToggleStar={(e) => toggleStar(e, selectedEmail.id)}
+          />
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-slate-50/30">
             <div className="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center mb-6">
@@ -185,7 +224,7 @@ function TabButton({ icon: Icon, label, active, onClick, count }) {
   );
 }
 
-function EmailRow({ email, isSelected, onClick }) {
+function EmailRow({ email, isSelected, onClick, isStarred, onToggleStar }) {
   const senderName = email.sender_name || email.sender_email?.split('@')[0] || 'Unknown';
   const isRead = email.is_read || false;
   const avatarUrl = `https://api.dicebear.com/7.x/initials/svg?seed=${senderName}&backgroundColor=e2e8f0,bfdbfe`;
@@ -212,6 +251,9 @@ function EmailRow({ email, isSelected, onClick }) {
           <span className={cn("text-[11px] shrink-0 ml-2", isUnread && !isSelected ? "font-bold text-blue-600" : "text-slate-400 font-medium")}>
             {email.created_date ? formatDistanceToNow(new Date(email.created_date), { addSuffix: false }) : ''}
           </span>
+          <button onClick={onToggleStar} className={cn("ml-2 p-1 rounded-full transition-colors", isStarred ? "text-amber-400" : "text-slate-200 hover:text-slate-400")}>
+             <Star className="w-4 h-4" fill={isStarred ? "currentColor" : "none"} />
+          </button>
         </div>
       </div>
       <div className="pl-9 pr-2">
@@ -226,7 +268,7 @@ function EmailRow({ email, isSelected, onClick }) {
   );
 }
 
-function EmailDetail({ email, onBack }) {
+function EmailDetail({ email, onBack, isStarred, onToggleStar }) {
   const senderName = email.sender_name || email.sender_email?.split('@')[0] || 'Unknown';
   const avatarUrl = `https://api.dicebear.com/7.x/initials/svg?seed=${senderName}&backgroundColor=e2e8f0,bfdbfe`;
 
@@ -255,8 +297,8 @@ function EmailDetail({ email, onBack }) {
       <div className="flex-1 overflow-y-auto px-6 py-8 md:px-10">
         <div className="flex items-start justify-between gap-4 mb-8">
           <h1 className="text-2xl font-semibold text-slate-900 leading-tight">{email.subject || '(No subject)'}</h1>
-          <button className="mt-1 p-1.5 text-slate-300 hover:text-amber-400 transition-colors shrink-0">
-            <Star className="w-5 h-5" />
+          <button onClick={onToggleStar} className={cn("mt-1 p-1.5 transition-colors shrink-0", isStarred ? "text-amber-400" : "text-slate-300 hover:text-amber-400")}>
+            <Star className="w-5 h-5" fill={isStarred ? "currentColor" : "none"} />
           </button>
         </div>
         

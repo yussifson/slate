@@ -10,7 +10,7 @@ import {
   useDailyEvent,
   useScreenShare
 } from '@daily-co/daily-react';
-import { Mic, MicOff, Video, VideoOff, PhoneOff, MonitorUp, Sparkles, LayoutGrid, Maximize2, Minimize2 } from 'lucide-react';
+import { Mic, MicOff, Video, VideoOff, PhoneOff, MonitorUp, Sparkles, LayoutGrid, Maximize2, Minimize2, ExternalLink } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { generateText } from "@/lib/cloudflareAI";
 import { useToast } from "@/components/ui/use-toast";
@@ -298,22 +298,40 @@ function ParticipantTile({ id, isLocal }) {
 export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePipMode }) {
   const [daily, setDaily] = useState(null);
   
-  if (roomUrl && (roomUrl.includes('meet.jit.si') || roomUrl.includes('meet.ffmuc.net'))) {
+  if (roomUrl && (roomUrl.includes('meet.jit.si') || roomUrl.includes('meet.ffmuc.net') || roomUrl.includes('jitsi'))) {
     return (
-      <div className="flex flex-col h-full bg-slate-950 rounded-xl relative overflow-hidden">
+      <div className="flex flex-col h-full bg-slate-950 rounded-xl relative overflow-hidden items-center justify-center text-white">
         <div className="absolute top-0 right-0 z-50 p-2 flex gap-2">
-           <Button variant="secondary" size="icon" onClick={togglePipMode} className="w-8 h-8 rounded-full opacity-50 hover:opacity-100">
-             {isPipMode ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
-           </Button>
            <Button variant="destructive" size="sm" onClick={onLeave} className="rounded-full h-8 px-4 font-semibold opacity-80 hover:opacity-100">
-             <PhoneOff className="w-4 h-4 mr-2" /> Leave
+             <PhoneOff className="w-4 h-4 mr-2" /> End Session
            </Button>
         </div>
-        <iframe
-          allow="camera; microphone; display-capture; fullscreen; clipboard-read; clipboard-write; autoplay"
-          src={roomUrl}
-          className="w-full h-full border-none"
-        />
+        
+        <div className="flex flex-col items-center max-w-md text-center p-8 bg-slate-900/50 rounded-2xl border border-slate-800 shadow-xl">
+           <div className="w-20 h-20 bg-blue-600/20 rounded-full flex items-center justify-center mb-6">
+             <Video className="w-10 h-10 text-blue-500" />
+           </div>
+           <h2 className="text-2xl font-bold mb-2">Secure Video Meeting</h2>
+           <p className="text-slate-400 mb-8 leading-relaxed">
+             To ensure maximum performance and bypass browser embedding limits, your enterprise video call will open in a new secure window.
+           </p>
+           
+           <div className="flex flex-col gap-3 w-full">
+             <Button 
+               size="lg" 
+               className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold h-12 text-lg rounded-xl shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.5)] transition-all"
+               onClick={() => window.open(roomUrl, '_blank')}
+             >
+               Launch Meeting
+               <ExternalLink className="w-5 h-5 ml-2" />
+             </Button>
+             <Button variant="ghost" className="text-slate-400 hover:text-white" onClick={() => {
+                navigator.clipboard.writeText(roomUrl);
+             }}>
+               Copy Link
+             </Button>
+           </div>
+        </div>
       </div>
     );
   }
