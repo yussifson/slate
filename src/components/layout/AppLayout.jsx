@@ -12,6 +12,7 @@ import Paywall from "@/pages/Paywall";
 import AiAssistant from "@/components/AiAssistant";
 import GlobalChatPanel from "@/components/chat/GlobalChatPanel";
 import SpotlightSearch from "./SpotlightSearch";
+import GlobalVideoOverlay from "@/components/video/GlobalVideoOverlay";
 
 export default function AppLayout() {
   const { t } = useTranslation();
@@ -224,9 +225,12 @@ export default function AppLayout() {
           isChatOpen={isChatOpen}
           toggleChat={toggleChat}
         />
-        <main className="flex-1 p-2 sm:p-4 lg:p-6 max-w-[1400px] w-full mx-auto pb-24 md:pb-6">
-          <Outlet />
-        </main>
+        <div className="flex-1 relative flex flex-col overflow-hidden">
+          <main className="flex-1 p-2 sm:p-4 lg:p-6 max-w-[1400px] w-full mx-auto pb-24 md:pb-6 overflow-y-auto">
+            <Outlet />
+          </main>
+          <GlobalVideoOverlay />
+        </div>
       </div>
       <MobileBottomNav />
       <AiAssistant isOpen={isAIOpen} onClose={toggleAI} injectedContext={orbitContext} onContextConsumed={() => setOrbitContext(null)} />

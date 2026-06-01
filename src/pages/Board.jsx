@@ -8,14 +8,15 @@ import { supabase } from "@/api/supabaseClient";
 import { useAuth } from "@/lib/AuthContext";
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { format } from "date-fns";
+import { useVideo } from "@/lib/VideoContext";
 
 export default function Board() {
   const { t } = useTranslation();
   const { toast } = useToast();
   const { user } = useAuth();
   const companyId = useCompanyId();
+  const { activeRoomUrl, joinRoom } = useVideo();
   
-  const [activeRoomUrl, setActiveRoomUrl] = useState(null);
   const [rooms, setRooms] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
@@ -86,7 +87,7 @@ export default function Board() {
         daily_room_name: `demo-${newRoom.id.slice(0,8)}`
       }).eq('id', newRoom.id);
 
-      setActiveRoomUrl(realUrl);
+      joinRoom(realUrl);
     } catch (err) {
       toast({ title: "Error", description: "Failed to start call", variant: "destructive" });
     } finally {
@@ -95,7 +96,7 @@ export default function Board() {
   };
 
   const joinCall = (url) => {
-    setActiveRoomUrl(url);
+    joinRoom(url);
   };
 
   const copyLink = (url) => {
@@ -109,7 +110,7 @@ export default function Board() {
   if (activeRoomUrl) {
     return (
       <div className="h-[calc(100vh-140px)] md:h-[calc(100vh-100px)] -mt-4 -mb-6 md:-mb-0 md:-mt-0">
-        <VideoRoom roomUrl={activeRoomUrl} onLeave={() => setActiveRoomUrl(null)} />
+        {/* Video is rendered globally via GlobalVideoOverlay */}
       </div>
     );
   }

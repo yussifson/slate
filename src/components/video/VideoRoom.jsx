@@ -7,22 +7,23 @@ import {
   useVideoTrack, 
   useAudioTrack,
   useDaily,
-  useDailyEvent
+  useDailyEvent,
+  useScreenShare
 } from '@daily-co/daily-react';
-import { Mic, MicOff, Video, VideoOff, PhoneOff, MonitorUp, Sparkles, LayoutGrid } from 'lucide-react';
+import { Mic, MicOff, Video, VideoOff, PhoneOff, MonitorUp, Sparkles, LayoutGrid, Maximize2, Minimize2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { generateText } from "@/lib/cloudflareAI";
 import { useToast } from "@/components/ui/use-toast";
 
 // Inner component that actually uses the Daily hooks
-function VideoRoomInner({ roomUrl, onLeave }) {
+function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode }) {
   const { t } = useTranslation();
   const daily = useDaily();
   const localSessionId = useLocalSessionId();
   const participantIds = useParticipantIds();
+  const { screens, isSharingScreen, startScreenShare, stopScreenShare } = useScreenShare();
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOff, setIsVideoOff] = useState(false);
-  const [isScreenSharing, setIsScreenSharing] = useState(false);
   const { toast } = useToast();
   const [isAiLoading, setIsAiLoading] = useState(false);
   
@@ -45,13 +46,11 @@ function VideoRoomInner({ roomUrl, onLeave }) {
   };
 
   const toggleScreenShare = () => {
-    if (!daily) return;
-    if (isScreenSharing) {
-      daily.stopScreenShare();
+    if (isSharingScreen) {
+      stopScreenShare();
     } else {
-      daily.startScreenShare();
+      startScreenShare();
     }
-    setIsScreenSharing(!isScreenSharing);
   };
 
   const leaveCall = () => {
@@ -78,9 +77,22 @@ function VideoRoomInner({ roomUrl, onLeave }) {
   };
 
   return (
-    <div className="flex flex-col h-full bg-background rounded-xl overflow-hidden relative border border-border shadow-sm">
+    <div className="flex flex-col h-full bg-background rounded-xl overflow-hidden relative border border-border shadow-sm group">
+      {/* PiP Toggle Button */}
+      <Button 
+        variant="secondary" 
+        size="icon" 
+        onClick={togglePipMode}
+        className="absolute top-2 right-2 z-50 rounded-full w-8 h-8 opacity-0 group-hover:opacity-100 transition-opacity"
+      >
+        {isPipMode ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
+      </Button>
+
       {/* Video Grid */}
       <div className="flex-1 p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-fr overflow-y-auto bg-muted/30">
+        {screens.map(screen => (
+          <ScreenShareTile key={screen.screenId} screen={screen} />
+        ))}
         {participantIds.map(id => (
           <ParticipantTile key={id} id={id} isLocal={id === localSessionId} />
         ))}
@@ -92,46 +104,91 @@ function VideoRoomInner({ roomUrl, onLeave }) {
       </div>
 
       {/* Control Bar */}
-      <div className="h-20 bg-card border-t border-border flex items-center justify-center gap-4 px-6 z-10">
+      <div className={`bg-card border-t border-border flex items-center justify-center z-10 transition-all ${isPipMode ? 'h-12 px-2 gap-2' : 'h-20 px-6 gap-4'}`}>
         <Button 
           onClick={toggleAudio}
           variant={isMuted ? "destructive" : "secondary"}
           size="icon"
-          className="w-12 h-12 rounded-full"
+          className={`${isPipMode ? 'w-8 h-8' : 'w-12 h-12'} rounded-full`}
         >
-          {isMuted ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+          {isMuted ? <MicOff className={isPipMode ? "w-3 h-3" : "w-5 h-5"} /> : <Mic className={isPipMode ? "w-3 h-3" : "w-5 h-5"} />}
         </Button>
         <Button 
           onClick={toggleVideo}
           variant={isVideoOff ? "destructive" : "secondary"}
           size="icon"
-          className="w-12 h-12 rounded-full"
+          className={`${isPipMode ? 'w-8 h-8' : 'w-12 h-12'} rounded-full`}
         >
-          {isVideoOff ? <VideoOff className="w-5 h-5" /> : <Video className="w-5 h-5" />}
+          {isVideoOff ? <VideoOff className={isPipMode ? "w-3 h-3" : "w-5 h-5"} /> : <Video className={isPipMode ? "w-3 h-3" : "w-5 h-5"} />}
         </Button>
-        <Button 
-          onClick={toggleScreenShare}
-          variant={isScreenSharing ? "default" : "secondary"}
-          size="icon"
-          className="w-12 h-12 rounded-full hidden sm:flex"
-        >
-          <MonitorUp className="w-5 h-5" />
-        </Button>
-        <Button 
-          variant="secondary"
-          onClick={handleAiAssist}
-          disabled={isAiLoading}
-          className="h-12 px-6 rounded-full font-semibold gap-2 hover:bg-primary hover:text-primary-foreground transition-colors"
-        >
-          <Sparkles className="w-4 h-4" /> {isAiLoading ? "Processing..." : "AI Assistant"}
-        </Button>
+        {!isPipMode && (
+          <>
+            <Button 
+              onClick={toggleScreenShare}
+              variant={isSharingScreen ? "default" : "secondary"}
+              size="icon"
+              className="w-12 h-12 rounded-full hidden sm:flex"
+            >
+              <MonitorUp className="w-5 h-5" />
+            </Button>
+            <Button 
+              variant="secondary"
+              onClick={handleAiAssist}
+              disabled={isAiLoading}
+              className="h-12 px-6 rounded-full font-semibold gap-2 hover:bg-primary hover:text-primary-foreground transition-colors"
+            >
+              <Sparkles className="w-4 h-4" /> {isAiLoading ? "Processing..." : "AI Assistant"}
+            </Button>
+          </>
+        )}
         <Button 
           onClick={leaveCall}
           variant="destructive"
-          className="h-12 px-8 rounded-full font-bold ml-4"
+          className={`${isPipMode ? 'h-8 w-8 p-0' : 'h-12 px-8 ml-4'} rounded-full font-bold flex items-center justify-center`}
         >
-          <PhoneOff className="w-5 h-5 mr-2" /> Leave
+          {isPipMode ? <PhoneOff className="w-3 h-3" /> : <><PhoneOff className="w-5 h-5 mr-2" /> Leave</>}
         </Button>
+      </div>
+    </div>
+  );
+}
+
+function ScreenShareTile({ screen }) {
+  const videoRef = useRef(null);
+  const audioRef = useRef(null);
+
+  useEffect(() => {
+    if (screen.screenVideo?.track && videoRef.current) {
+      videoRef.current.srcObject = new MediaStream([screen.screenVideo.track]);
+    }
+  }, [screen.screenVideo?.track]);
+
+  useEffect(() => {
+    if (!screen.local && screen.screenAudio?.track && audioRef.current) {
+      audioRef.current.srcObject = new MediaStream([screen.screenAudio.track]);
+    }
+  }, [screen.screenAudio?.track, screen.local]);
+
+  return (
+    <div className="relative bg-slate-800 rounded-lg overflow-hidden group shadow-lg flex items-center justify-center md:col-span-2 lg:col-span-3">
+      {screen.screenVideo?.state === 'playable' ? (
+        <video 
+          ref={videoRef}
+          autoPlay 
+          muted={screen.local} 
+          playsInline 
+          className="w-full h-full object-contain"
+        />
+      ) : (
+        <div className="w-20 h-20 bg-slate-700 rounded-full flex items-center justify-center">
+          <MonitorUp className="w-8 h-8 text-slate-400" />
+        </div>
+      )}
+      
+      {!screen.local && <audio ref={audioRef} autoPlay playsInline />}
+      
+      <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur-sm px-3 py-1 rounded-md flex items-center gap-2">
+        <span className="text-white text-xs font-medium">{screen.local ? "Your Screen" : "Shared Screen"}</span>
       </div>
     </div>
   );
@@ -182,7 +239,7 @@ function ParticipantTile({ id, isLocal }) {
 }
 
 // Wrapper to initialize Daily provider
-export default function VideoRoom({ roomUrl, token, onLeave }) {
+export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePipMode }) {
   const [daily, setDaily] = useState(null);
 
   useEffect(() => {
@@ -211,7 +268,7 @@ export default function VideoRoom({ roomUrl, token, onLeave }) {
 
   return (
     <DailyProvider callObject={daily}>
-      <VideoRoomInner roomUrl={roomUrl} onLeave={onLeave} />
+      <VideoRoomInner roomUrl={roomUrl} onLeave={onLeave} isPipMode={isPipMode} togglePipMode={togglePipMode} />
     </DailyProvider>
   );
 }

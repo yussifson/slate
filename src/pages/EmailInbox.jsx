@@ -284,10 +284,12 @@ function EmailDetail({ email, onBack }) {
   );
 }
 
-function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, staff, isLoading }) {
+function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, staff, clients = [], isLoading }) {
   const { t } = useTranslation();
   const [recipientType, setRecipientType] = useState("internal"); // internal | external | both
+  const [internalTarget, setInternalTarget] = useState("team"); // team | client
   const [selectedStaffIds, setSelectedStaffIds] = useState([]);
+  const [selectedClientIds, setSelectedClientIds] = useState([]);
   const [externalEmails, setExternalEmails] = useState("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
@@ -298,7 +300,11 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
     e.preventDefault();
     let recipients = [];
     if (recipientType === "internal" || recipientType === "both") {
-      recipients = [...recipients, ...staff.filter(s => selectedStaffIds.includes(s.id)).map(s => s.user_email)];
+      if (internalTarget === "team") {
+        recipients = [...recipients, ...staff.filter(s => selectedStaffIds.includes(s.id)).map(s => s.user_email)];
+      } else {
+        recipients = [...recipients, ...clients.filter(c => selectedClientIds.includes(c.id)).map(c => c.email)];
+      }
     }
     if (recipientType === "external" || recipientType === "both") {
       const extList = externalEmails.split(',').map(e => e.trim()).filter(Boolean);
@@ -315,6 +321,12 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
 
   const toggleStaff = (id) => {
     setSelectedStaffIds(prev => 
+      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    );
+  };
+
+  const toggleClient = (id) => {
+    setSelectedClientIds(prev => 
       prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
     );
   };
@@ -351,10 +363,10 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
       >
         <span className="font-medium text-sm truncate">{isMinimized ? "New Message" : "New Message"}</span>
         <div className="flex items-center gap-1 shrink-0">
-          <button className="p-1.5 hover:bg-white/10 rounded transition-colors" onClick={(e) => { e.stopPropagation(); onToggleMinimize(); }}>
+          <button type="button" className="p-1.5 hover:bg-white/10 rounded transition-colors" onClick={(e) => { e.stopPropagation(); onToggleMinimize(); }}>
             {isMinimized ? <Maximize2 className="w-3.5 h-3.5" /> : <Minimize2 className="w-3.5 h-3.5" />}
           </button>
-          <button className="p-1.5 hover:bg-white/10 rounded transition-colors" onClick={(e) => { e.stopPropagation(); onClose(); }}>
+          <button type="button" className="p-1.5 hover:bg-white/10 rounded transition-colors" onClick={(e) => { e.stopPropagation(); onClose(); }}>
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -368,11 +380,11 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
             <div className="flex gap-4">
               <label className="flex items-center gap-1.5 cursor-pointer">
                 <input type="radio" checked={recipientType === "internal"} onChange={() => setRecipientType("internal")} className="text-blue-600 focus:ring-blue-500" />
-                <span className="text-slate-700">Team (Internal)</span>
+                <span className="text-slate-700">Internal</span>
               </label>
               <label className="flex items-center gap-1.5 cursor-pointer">
                 <input type="radio" checked={recipientType === "external"} onChange={() => setRecipientType("external")} className="text-blue-600 focus:ring-blue-500" />
-                <span className="text-slate-700">Clients (External)</span>
+                <span className="text-slate-700">External</span>
               </label>
               <label className="flex items-center gap-1.5 cursor-pointer">
                 <input type="radio" checked={recipientType === "both"} onChange={() => setRecipientType("both")} className="text-blue-600 focus:ring-blue-500" />
@@ -383,33 +395,75 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
 
           {/* Internal Selection */}
           {(recipientType === "internal" || recipientType === "both") && (
-            <div className="px-4 py-2 border-b border-border text-sm flex gap-2">
-              <span className="text-slate-500 pt-1 shrink-0 w-16">Internal</span>
-              <div className="flex-1 max-h-24 overflow-y-auto">
-                <div className="flex flex-wrap gap-1 mb-1">
-                  {staff.filter(s => selectedStaffIds.includes(s.id)).map(s => (
-                    <span key={s.id} className="bg-blue-50 border border-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs flex items-center gap-1">
-                      {s.full_name}
-                      <X className="w-3 h-3 cursor-pointer hover:text-blue-900" onClick={() => toggleStaff(s.id)} />
-                    </span>
-                  ))}
-                </div>
-                <div className="group relative">
-                  <input type="text" placeholder="Select team members..." className="w-full outline-none text-sm peer" />
-                  <div className="hidden peer-focus:block hover:block absolute top-full left-0 w-full max-h-40 overflow-y-auto bg-white border border-border rounded-md shadow-lg z-10 mt-1">
-                     {staff.map(member => (
-                       <div key={member.id} className="flex items-center gap-3 p-2 hover:bg-slate-50 cursor-pointer" onMouseDown={(e) => { e.preventDefault(); toggleStaff(member.id); }}>
-                         <Checkbox checked={selectedStaffIds.includes(member.id)} className="pointer-events-none" />
-                         <div className="flex flex-col">
-                            <span className="text-sm font-medium text-slate-800">{member.full_name}</span>
-                            <span className="text-xs text-slate-500">{member.user_email}</span>
-                         </div>
-                       </div>
-                     ))}
-                  </div>
-                </div>
+            <div className="px-4 py-2 border-b border-border text-sm flex flex-col gap-2">
+              <div className="flex items-center gap-4 border-b border-slate-100 pb-2 mb-1">
+                <span className="text-slate-500 shrink-0 w-16">Internal:</span>
+                <label className="flex items-center gap-1.5 cursor-pointer text-xs">
+                  <input type="radio" checked={internalTarget === "team"} onChange={() => setInternalTarget("team")} className="text-blue-600 focus:ring-blue-500" />
+                  <span className="text-slate-700">Team Members</span>
+                </label>
+                <label className="flex items-center gap-1.5 cursor-pointer text-xs">
+                  <input type="radio" checked={internalTarget === "client"} onChange={() => setInternalTarget("client")} className="text-blue-600 focus:ring-blue-500" />
+                  <span className="text-slate-700">Clients</span>
+                </label>
               </div>
-              {recipientType === "internal" && <button type="button" className="text-slate-400 hover:text-slate-700 text-xs font-semibold shrink-0" onClick={() => setShowCc(!showCc)}>Cc/Bcc</button>}
+              <div className="flex gap-2">
+                <span className="text-slate-500 pt-1 shrink-0 w-16">Select:</span>
+                <div className="flex-1 max-h-24 overflow-y-auto">
+                  {internalTarget === "team" ? (
+                    <>
+                      <div className="flex flex-wrap gap-1 mb-1">
+                        {staff.filter(s => selectedStaffIds.includes(s.id)).map(s => (
+                          <span key={s.id} className="bg-blue-50 border border-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs flex items-center gap-1">
+                            {s.full_name}
+                            <X className="w-3 h-3 cursor-pointer hover:text-blue-900" onClick={() => toggleStaff(s.id)} />
+                          </span>
+                        ))}
+                      </div>
+                      <div className="group relative">
+                        <input type="text" placeholder="Select team members..." className="w-full outline-none text-sm peer" />
+                        <div className="hidden peer-focus:block hover:block absolute top-full left-0 w-full max-h-40 overflow-y-auto bg-white border border-border rounded-md shadow-lg z-10 mt-1">
+                           {staff.map(member => (
+                             <div key={member.id} className="flex items-center gap-3 p-2 hover:bg-slate-50 cursor-pointer" onMouseDown={(e) => { e.preventDefault(); toggleStaff(member.id); }}>
+                               <Checkbox checked={selectedStaffIds.includes(member.id)} className="pointer-events-none" />
+                               <div className="flex flex-col">
+                                  <span className="text-sm font-medium text-slate-800">{member.full_name}</span>
+                                  <span className="text-xs text-slate-500">{member.user_email}</span>
+                               </div>
+                             </div>
+                           ))}
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex flex-wrap gap-1 mb-1">
+                        {clients.filter(c => selectedClientIds.includes(c.id)).map(c => (
+                          <span key={c.id} className="bg-blue-50 border border-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs flex items-center gap-1">
+                            {c.name}
+                            <X className="w-3 h-3 cursor-pointer hover:text-blue-900" onClick={() => toggleClient(c.id)} />
+                          </span>
+                        ))}
+                      </div>
+                      <div className="group relative">
+                        <input type="text" placeholder="Select clients..." className="w-full outline-none text-sm peer" />
+                        <div className="hidden peer-focus:block hover:block absolute top-full left-0 w-full max-h-40 overflow-y-auto bg-white border border-border rounded-md shadow-lg z-10 mt-1">
+                           {clients.map(client => (
+                             <div key={client.id} className="flex items-center gap-3 p-2 hover:bg-slate-50 cursor-pointer" onMouseDown={(e) => { e.preventDefault(); toggleClient(client.id); }}>
+                               <Checkbox checked={selectedClientIds.includes(client.id)} className="pointer-events-none" />
+                               <div className="flex flex-col">
+                                  <span className="text-sm font-medium text-slate-800">{client.name}</span>
+                                  <span className="text-xs text-slate-500">{client.email}</span>
+                               </div>
+                             </div>
+                           ))}
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+                {recipientType === "internal" && <button type="button" className="text-slate-400 hover:text-slate-700 text-xs font-semibold shrink-0" onClick={() => setShowCc(!showCc)}>Cc/Bcc</button>}
+              </div>
             </div>
           )}
 

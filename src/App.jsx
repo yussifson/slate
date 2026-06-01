@@ -6,6 +6,7 @@ import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import { ThemeProvider } from '@/lib/ThemeContext';
 import { ImpersonationProvider } from '@/lib/ImpersonationContext';
+import { VideoProvider } from '@/lib/VideoContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import React, { useEffect } from 'react';
 import { PowerSyncContext } from '@powersync/react';
@@ -338,7 +339,8 @@ function App() {
     <AuthProvider>
       <ThemeProvider>
         <ImpersonationProvider>
-          <QueryClientProvider client={queryClientInstance}>
+          <VideoProvider>
+            <QueryClientProvider client={queryClientInstance}>
             <Router>
               <ErrorBoundary>
                 {isBaseDomain ? (
@@ -409,6 +411,7 @@ function App() {
               </ErrorBoundary>
             </Router>
           </QueryClientProvider>
+          </VideoProvider>
         </ImpersonationProvider>
       </ThemeProvider>
     </AuthProvider>
