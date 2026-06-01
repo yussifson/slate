@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
+import { supabase } from "@/api/supabaseClient";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
 import { Mail, Send, Star, Inbox, Trash2, ArrowLeft, MoreVertical, Reply, CornerUpRight, Paperclip, Search, X, Minimize2, Maximize2, Check, Sparkles } from "lucide-react";
@@ -32,7 +33,10 @@ export default function EmailInbox() {
 
   const { data: staff = [] } = useQuery({
     queryKey: ["staff", companyId],
-    queryFn: () => base44.entities.StaffRecord.filter({ company_id: companyId }),
+    queryFn: async () => {
+      const { data } = await supabase.from('profiles').select('*').eq('company_id', companyId);
+      return data || [];
+    },
     enabled: !!companyId,
   });
 
@@ -183,6 +187,7 @@ function TabButton({ icon: Icon, label, active, onClick, count }) {
 
 function EmailRow({ email, isSelected, onClick }) {
   const senderName = email.sender_name || email.sender_email?.split('@')[0] || 'Unknown';
+  const isRead = email.is_read || false;
   const avatarUrl = `https://api.dicebear.com/7.x/initials/svg?seed=${senderName}&backgroundColor=e2e8f0,bfdbfe`;
   
   // Fake read status based on ID just for visual testing
@@ -286,8 +291,8 @@ function EmailDetail({ email, onBack }) {
 
 function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, staff, clients = [], isLoading }) {
   const { t } = useTranslation();
-  const [recipientType, setRecipientType] = useState("internal"); // internal | external | both
-  const [internalTarget, setInternalTarget] = useState("team"); // team | client
+  const [recipientType, setRecipientType] = useState("internal"); 
+  const [internalTarget, setInternalTarget] = useState("team"); 
   const [selectedStaffIds, setSelectedStaffIds] = useState([]);
   const [selectedClientIds, setSelectedClientIds] = useState([]);
   const [externalEmails, setExternalEmails] = useState("");
@@ -295,6 +300,7 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
   const [message, setMessage] = useState("");
   const [showCc, setShowCc] = useState(false);
   const [isAiLoading, setIsAiLoading] = useState(false);
+  const [recipientQuery, setRecipientQuery] = useState("");
   const [recipientPickerOpen, setRecipientPickerOpen] = useState(false);
 
   const handleSubmit = (e) => {
@@ -302,7 +308,7 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
     let recipients = [];
     if (recipientType === "internal" || recipientType === "both") {
       if (internalTarget === "team") {
-        recipients = [...recipients, ...staff.filter(s => selectedStaffIds.includes(s.id)).map(s => s.user_email)];
+        recipients = [...recipients, ...staff.filter(s => selectedStaffIds.includes(s.id)).map(s => s.user_email || s.email)];
       } else {
         recipients = [...recipients, ...clients.filter(c => selectedClientIds.includes(c.id)).map(c => c.email)];
       }
@@ -314,22 +320,18 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
     
     onSubmit({
       subject,
-      recipient_email: recipients.join(', '),
+      recipient_email: recipients.filter(Boolean).join(', '),
       body_preview: message,
       received_date: new Date().toISOString(),
     });
   };
 
   const toggleStaff = (id) => {
-    setSelectedStaffIds(prev => 
-      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
-    );
+    setSelectedStaffIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
   };
 
   const toggleClient = (id) => {
-    setSelectedClientIds(prev => 
-      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
-    );
+    setSelectedClientIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
   };
 
   const handleAiAssist = async () => {
@@ -339,7 +341,7 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
     setMessage("AI is polishing your email...");
     try {
       const msgs = [
-        { role: 'system', content: 'You are an AI assistant helping a user write a better, more professional email. Rewrite the user\'s message to be clear, concise, and highly professional. Return ONLY the rewritten email body text, nothing else.' },
+        { role: 'system', content: 'You are an AI assistant helping a user write a better, more professional email. Rewrite the users message to be clear, concise, and highly professional. Return ONLY the rewritten email body text, nothing else.' },
         { role: 'user', content: originalMsg }
       ];
       const response = await generateText(msgs);
@@ -354,20 +356,20 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
 
   return (
     <div className={cn(
-      "fixed right-4 sm:right-16 md:right-24 bottom-0 bg-white rounded-t-xl shadow-[0_0_24px_rgba(0,0,0,0.15)] flex flex-col z-50 border border-border border-b-0 transition-all duration-200 overflow-hidden",
-      isMinimized ? "w-72 h-12" : "w-full sm:w-[550px] h-[600px] max-h-[85vh]"
+      "fixed right-4 sm:right-16 md:right-24 bottom-0 bg-white rounded-t-xl shadow-[0_8px_30px_rgb(0,0,0,0.24)] flex flex-col z-50 transition-all duration-200 overflow-hidden",
+      isMinimized ? "w-72 h-12" : "w-full sm:w-[500px] h-[550px] max-h-[85vh]"
     )}>
       {/* Header */}
       <div 
-        className="h-12 bg-primary text-primary-foreground flex items-center justify-between px-4 cursor-pointer shrink-0"
+        className="h-10 bg-[#f2f6fc] text-slate-700 flex items-center justify-between px-4 cursor-pointer shrink-0 rounded-t-xl"
         onClick={onToggleMinimize}
       >
-        <span className="font-medium text-sm truncate">{isMinimized ? "New Message" : "New Message"}</span>
-        <div className="flex items-center gap-1 shrink-0">
-          <button type="button" className="p-1.5 hover:bg-white/10 rounded transition-colors" onClick={(e) => { e.stopPropagation(); onToggleMinimize(); }}>
-            {isMinimized ? <Maximize2 className="w-3.5 h-3.5" /> : <Minimize2 className="w-3.5 h-3.5" />}
+        <span className="font-semibold text-sm truncate">{isMinimized ? "New Message" : "New Message"}</span>
+        <div className="flex items-center gap-1 shrink-0 text-slate-500">
+          <button type="button" className="p-1 hover:bg-slate-200 rounded transition-colors" onClick={(e) => { e.stopPropagation(); onToggleMinimize(); }}>
+            {isMinimized ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
           </button>
-          <button type="button" className="p-1.5 hover:bg-white/10 rounded transition-colors" onClick={(e) => { e.stopPropagation(); onClose(); }}>
+          <button type="button" className="p-1 hover:bg-slate-200 rounded transition-colors" onClick={(e) => { e.stopPropagation(); onClose(); }}>
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -375,175 +377,66 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
 
       {!isMinimized && (
         <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0 bg-white">
-          {/* Recipient Type Toggle */}
-          <div className="px-4 py-2 border-b border-border bg-slate-50/50 flex items-center gap-4 text-sm shrink-0">
-            <span className="text-slate-500 font-medium">Send to:</span>
-            <div className="flex gap-4">
-              <label className="flex items-center gap-1.5 cursor-pointer">
-                <input type="radio" checked={recipientType === "internal"} onChange={() => setRecipientType("internal")} className="text-blue-600 focus:ring-blue-500" />
-                <span className="text-slate-700">Internal</span>
-              </label>
-              <label className="flex items-center gap-1.5 cursor-pointer">
-                <input type="radio" checked={recipientType === "external"} onChange={() => setRecipientType("external")} className="text-blue-600 focus:ring-blue-500" />
-                <span className="text-slate-700">External</span>
-              </label>
-              <label className="flex items-center gap-1.5 cursor-pointer">
-                <input type="radio" checked={recipientType === "both"} onChange={() => setRecipientType("both")} className="text-blue-600 focus:ring-blue-500" />
-                <span className="text-slate-700">Both</span>
-              </label>
-            </div>
+          
+          <div className="px-4 py-2 border-b border-border flex items-center gap-2 text-sm">
+             <span className="text-slate-500 shrink-0 w-8">To</span>
+             <div className="flex-1 flex flex-wrap gap-1 items-center relative">
+               {/* Selected Chips */}
+               {staff.filter(s => selectedStaffIds.includes(s.id)).map(s => (
+                  <div key={s.id} className="bg-white border border-slate-300 text-slate-700 px-2 py-0.5 rounded-full text-xs flex items-center gap-1 hover:bg-slate-50">
+                    {s.full_name || s.email}
+                    <X className="w-3 h-3 cursor-pointer text-slate-400 hover:text-slate-700" onClick={() => toggleStaff(s.id)} />
+                  </div>
+               ))}
+               
+               <input 
+                 type="text" 
+                 placeholder="Search team members..." 
+                 className="flex-1 min-w-[120px] outline-none border-none text-sm bg-transparent py-1"
+                 value={recipientQuery}
+                 onChange={e => setRecipientQuery(e.target.value)}
+                 onFocus={() => setRecipientPickerOpen(true)}
+               />
+               
+               {recipientPickerOpen && (
+                 <div className="absolute top-full left-0 w-full max-h-48 overflow-y-auto bg-white border border-border shadow-lg rounded-md mt-1 z-20">
+                    <div className="p-1">
+                      {staff.filter(s => !recipientQuery || (s.full_name || s.email || "").toLowerCase().includes(recipientQuery.toLowerCase())).map(member => (
+                        <div 
+                          key={member.id} 
+                          className="flex flex-col px-3 py-2 hover:bg-slate-100 cursor-pointer rounded-sm"
+                          onClick={() => { toggleStaff(member.id); setRecipientQuery(""); setRecipientPickerOpen(false); }}
+                        >
+                          <span className="text-sm font-semibold text-slate-800">{member.full_name || member.email}</span>
+                          <span className="text-xs text-slate-500">{member.email || "No email"}</span>
+                        </div>
+                      ))}
+                      {staff.length === 0 && <div className="p-3 text-xs text-slate-500">No team members found in profiles.</div>}
+                    </div>
+                 </div>
+               )}
+             </div>
+             <button type="button" className="text-slate-500 hover:text-slate-800 text-sm font-medium" onClick={() => setShowCc(!showCc)}>Cc</button>
           </div>
 
-          {/* Internal Selection */}
-          {(recipientType === "internal" || recipientType === "both") && (
-            <div className="px-4 py-2 border-b border-border text-sm flex flex-col gap-2">
-              <div className="flex items-center gap-4 border-b border-slate-100 pb-2 mb-1">
-                <span className="text-slate-500 shrink-0 w-16">Internal:</span>
-                <label className="flex items-center gap-1.5 cursor-pointer text-xs">
-                  <input type="radio" checked={internalTarget === "team"} onChange={() => setInternalTarget("team")} className="text-blue-600 focus:ring-blue-500" />
-                  <span className="text-slate-700">Team Members</span>
-                </label>
-                <label className="flex items-center gap-1.5 cursor-pointer text-xs">
-                  <input type="radio" checked={internalTarget === "client"} onChange={() => setInternalTarget("client")} className="text-blue-600 focus:ring-blue-500" />
-                  <span className="text-slate-700">Clients</span>
-                </label>
-              </div>
-              <div className="flex gap-2">
-                <span className="text-slate-500 pt-1 shrink-0 w-16">Select:</span>
-                <div className="flex-1 max-h-24 overflow-y-auto">
-                  {internalTarget === "team" ? (
-                    <>
-                      <div className="flex flex-wrap gap-1 mb-1">
-                        {staff.filter(s => selectedStaffIds.includes(s.id)).map(s => (
-                          <span key={s.id} className="bg-blue-50 border border-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs flex items-center gap-1">
-                            {s.full_name}
-                            <X className="w-3 h-3 cursor-pointer hover:text-blue-900" onClick={() => toggleStaff(s.id)} />
-                          </span>
-                        ))}
-                      </div>
-                      <div className="relative">
-                        <button
-                          type="button"
-                          className="w-full text-left text-sm text-slate-600 border border-dashed border-slate-300 rounded-md px-2 py-1.5 hover:bg-slate-50"
-                          onClick={() => setRecipientPickerOpen((o) => !o)}
-                        >
-                          {staff.length === 0
-                            ? "No team members loaded"
-                            : selectedStaffIds.length
-                              ? `${selectedStaffIds.length} selected — click to change`
-                              : "Click to select team members..."}
-                        </button>
-                        {recipientPickerOpen && (
-                          <div className="absolute top-full left-0 w-full max-h-40 overflow-y-auto bg-white border border-border rounded-md shadow-lg z-20 mt-1">
-                            {staff.length === 0 ? (
-                              <p className="p-3 text-xs text-muted-foreground">Add team members on the Team page first.</p>
-                            ) : (
-                              staff.map((member) => (
-                                <div
-                                  key={member.id}
-                                  className="flex items-center gap-3 p-2 hover:bg-slate-50 cursor-pointer"
-                                  onClick={() => toggleStaff(member.id)}
-                                >
-                                  <Checkbox checked={selectedStaffIds.includes(member.id)} className="pointer-events-none" />
-                                  <div className="flex flex-col">
-                                    <span className="text-sm font-medium text-slate-800">{member.full_name}</span>
-                                    <span className="text-xs text-slate-500">{member.user_email}</span>
-                                  </div>
-                                </div>
-                              ))
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="flex flex-wrap gap-1 mb-1">
-                        {clients.filter(c => selectedClientIds.includes(c.id)).map(c => (
-                          <span key={c.id} className="bg-blue-50 border border-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs flex items-center gap-1">
-                            {c.name}
-                            <X className="w-3 h-3 cursor-pointer hover:text-blue-900" onClick={() => toggleClient(c.id)} />
-                          </span>
-                        ))}
-                      </div>
-                      <div className="relative">
-                        <button
-                          type="button"
-                          className="w-full text-left text-sm text-slate-600 border border-dashed border-slate-300 rounded-md px-2 py-1.5 hover:bg-slate-50"
-                          onClick={() => setRecipientPickerOpen((o) => !o)}
-                        >
-                          {clients.length === 0
-                            ? "No clients loaded"
-                            : selectedClientIds.length
-                              ? `${selectedClientIds.length} selected — click to change`
-                              : "Click to select clients..."}
-                        </button>
-                        {recipientPickerOpen && (
-                          <div className="absolute top-full left-0 w-full max-h-40 overflow-y-auto bg-white border border-border rounded-md shadow-lg z-20 mt-1">
-                            {clients.length === 0 ? (
-                              <p className="p-3 text-xs text-muted-foreground">Add clients in the directory first.</p>
-                            ) : (
-                              clients.map((client) => (
-                                <div
-                                  key={client.id}
-                                  className="flex items-center gap-3 p-2 hover:bg-slate-50 cursor-pointer"
-                                  onClick={() => toggleClient(client.id)}
-                                >
-                                  <Checkbox checked={selectedClientIds.includes(client.id)} className="pointer-events-none" />
-                                  <div className="flex flex-col">
-                                    <span className="text-sm font-medium text-slate-800">{client.name}</span>
-                                    <span className="text-xs text-slate-500">{client.email || "No email"}</span>
-                                  </div>
-                                </div>
-                              ))
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </>
-                  )}
-                </div>
-                {recipientType === "internal" && <button type="button" className="text-slate-400 hover:text-slate-700 text-xs font-semibold shrink-0" onClick={() => setShowCc(!showCc)}>Cc/Bcc</button>}
-              </div>
-            </div>
-          )}
-
-          {/* External Selection */}
-          {(recipientType === "external" || recipientType === "both") && (
-            <div className="px-4 py-2 border-b border-border text-sm flex gap-2 items-center">
-              <span className="text-slate-500 shrink-0 w-16">External</span>
-              <input 
-                type="text" 
-                placeholder="Enter email addresses separated by commas..." 
-                className="flex-1 outline-none text-sm bg-transparent" 
-                value={externalEmails}
-                onChange={e => setExternalEmails(e.target.value)}
-              />
-              {recipientType === "external" && <button type="button" className="text-slate-400 hover:text-slate-700 text-xs font-semibold shrink-0" onClick={() => setShowCc(!showCc)}>Cc/Bcc</button>}
-            </div>
-          )}
-
-          {/* CC */}
           {showCc && (
-             <div className="px-4 py-2 border-b border-border text-sm flex items-center gap-2">
-               <span className="text-slate-500 shrink-0 w-16">Cc</span>
-               <input type="text" className="flex-1 outline-none text-sm bg-transparent" />
+             <div className="px-4 py-2 border-b border-border flex items-center gap-2 text-sm">
+               <span className="text-slate-500 shrink-0 w-8">Cc</span>
+               <input type="text" className="flex-1 outline-none text-sm bg-transparent py-1" />
              </div>
           )}
 
-          {/* Subject */}
-          <div className="px-4 py-3 border-b border-border">
+          <div className="px-4 py-2 border-b border-border text-sm flex">
             <input 
               type="text"
               placeholder="Subject"
-              className="w-full text-sm font-semibold text-slate-800 placeholder:text-slate-400 outline-none bg-transparent"
+              className="w-full text-sm font-semibold text-slate-800 placeholder:text-slate-400 outline-none bg-transparent py-1"
               value={subject}
               onChange={e => setSubject(e.target.value)}
               required
             />
           </div>
 
-          {/* Body */}
           <div className="flex-1 p-4 relative min-h-0">
             <textarea
               className="w-full h-full text-sm text-slate-800 outline-none resize-none bg-transparent"
@@ -555,24 +448,24 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
             />
           </div>
 
-          {/* Footer */}
-          <div className="p-3 border-t border-border flex items-center justify-between bg-slate-50/50 shrink-0">
-            <div className="flex items-center gap-2">
+          <div className="px-4 py-3 border-t border-border flex items-center justify-between bg-white shrink-0">
+            <div className="flex items-center gap-3">
               <Button type="submit" disabled={isLoading} className="bg-blue-600 hover:bg-blue-700 text-white px-6 rounded-full font-bold shadow-sm h-9">
                 {isLoading ? "Sending..." : t("send", "Send")}
               </Button>
-              <Button 
+              <button type="button" className="w-8 h-8 flex items-center justify-center text-slate-500 hover:bg-slate-100 rounded-full transition-colors"><Paperclip className="w-5 h-5" /></button>
+            </div>
+            
+            <div className="flex items-center gap-2">
+               <Button 
                 type="button" 
                 onClick={handleAiAssist} 
                 disabled={isAiLoading || !message.trim()} 
-                className="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 rounded-full h-9 px-4 flex items-center gap-2 shadow-sm font-medium"
+                className="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 rounded-full h-8 px-3 flex items-center gap-1 shadow-sm font-medium text-xs"
               >
-                <Sparkles className="w-4 h-4" /> AI Polish
+                <Sparkles className="w-3 h-3" /> AI Polish
               </Button>
-            </div>
-            <div className="flex items-center gap-1 text-slate-400">
-               <Button type="button" variant="ghost" size="icon" className="hover:text-slate-600 w-8 h-8 rounded-full"><Paperclip className="w-4 h-4" /></Button>
-               <Button type="button" variant="ghost" size="icon" className="hover:text-red-600 w-8 h-8 rounded-full ml-2" onClick={onClose}><Trash2 className="w-4 h-4" /></Button>
+               <button type="button" className="w-8 h-8 flex items-center justify-center text-slate-500 hover:bg-slate-100 rounded-full transition-colors" onClick={onClose}><Trash2 className="w-5 h-5" /></button>
             </div>
           </div>
         </form>
