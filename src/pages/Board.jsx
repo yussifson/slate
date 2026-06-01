@@ -58,12 +58,25 @@ export default function Board() {
   const handleStartCall = async () => {
     setIsCreating(true);
     try {
+      const roomName = `room-${Math.random().toString(36).substring(2, 10)}`;
+      
+      // Call our Supabase Edge function to create a Daily room securely
+      const { data: dailyData, error: functionError } = await supabase.functions.invoke('create-daily-room', {
+        body: { roomName }
+      });
+      
+      if (functionError) {
+        throw new Error(functionError.message || "Failed to create Daily room via edge function");
+      }
+
+      const realUrl = dailyData.url;
+
       // Create new room record
       const { data: newRoom, error } = await supabase.from('video_rooms').insert({
         company_id: companyId,
         title: `${user?.full_name?.split(' ')[0] || 'User'}'s Instant Meeting`,
-        daily_room_url: 'pending', // We will update it after generating UUID
-        daily_room_name: 'pending',
+        daily_room_url: realUrl,
+        daily_room_name: dailyData.name || roomName,
         host_id: user.id,
         status: 'active'
       }).select().single();
@@ -80,15 +93,10 @@ export default function Board() {
         throw error;
       }
 
-      const realUrl = getRoomUrl(newRoom.id);
-      await supabase.from('video_rooms').update({
-        daily_room_url: realUrl,
-        daily_room_name: `room-${newRoom.id.slice(0,8)}`
-      }).eq('id', newRoom.id);
-
       joinRoom(realUrl);
     } catch (err) {
-      toast({ title: "Error", description: "Failed to start call", variant: "destructive" });
+      console.error(err);
+      toast({ title: "Error", description: err.message || "Failed to start call", variant: "destructive" });
     } finally {
       setIsCreating(false);
     }

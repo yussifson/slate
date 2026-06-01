@@ -120,11 +120,10 @@ export default function GlobalChatPanel({ isOpen, onClose }) {
         .order('created_at', { ascending: true });
       setMessages(data || []);
 
-      // Pre-load participant profiles for avatars/names
-      const room = rooms.find(r => r.id === roomId);
-      if (room && room.chat_participants) {
-        const userIds = room.chat_participants.map(p => p.user_id);
-        const { data: profiles } = await supabase.from('profiles').select('id, full_name, avatar_url').in('id', userIds);
+      // Pre-load participant profiles based on message senders instead of room participants
+      if (data && data.length > 0) {
+        const senderIds = [...new Set(data.map(m => m.sender_id))];
+        const { data: profiles } = await supabase.from('profiles').select('id, full_name, avatar_url').in('id', senderIds);
         if (profiles) {
           const pMap = {};
           profiles.forEach(p => pMap[p.id] = p);
@@ -440,10 +439,26 @@ export default function GlobalChatPanel({ isOpen, onClose }) {
                       </div>
                     </div>
                     
-                    {/* Message Actions (Hover) */}
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 bg-white/50 dark:bg-black/20 rounded-full px-1 py-0.5 shadow-sm mb-1 self-center">
+                    {/* Message Actions - Always slightly visible to be easily discoverable */}
+                    <div className="opacity-40 hover:opacity-100 transition-opacity flex flex-wrap items-center gap-1 bg-white/50 dark:bg-black/20 rounded-full px-1 py-0.5 shadow-sm mb-1 self-center">
                       <button onClick={() => setReplyTo(msg)} className="p-1 hover:bg-black/10 rounded-full text-muted-foreground" title="Reply">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>
+                      </button>
+                      <button 
+                        onClick={async () => {
+                          const currentLikes = msg.reactions?.likes || 0;
+                          const { error } = await supabase.from('chat_messages').update({
+                            reactions: { ...msg.reactions, likes: currentLikes + 1 }
+                          }).eq('id', msg.id);
+                          if (!error) {
+                            setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, reactions: { ...m.reactions, likes: currentLikes + 1 } } : m));
+                          }
+                        }} 
+                        className="p-1 hover:bg-black/10 rounded-full text-muted-foreground flex items-center gap-0.5" 
+                        title="Like"
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        {msg.reactions?.likes > 0 && <span className="text-[10px]">{msg.reactions.likes}</span>}
                       </button>
                       {isMe && (
                         <>
