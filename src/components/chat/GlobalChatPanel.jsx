@@ -398,8 +398,6 @@ export default function GlobalChatPanel({ isOpen, onClose }) {
                    </Button>
                 </PopoverContent>
               </Popover>
-                {isUploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-6 h-6" />}
-              </Button>
               
               <div className="flex-1 bg-white dark:bg-[#2a3942] rounded-lg relative flex items-center shadow-sm">
                 <input

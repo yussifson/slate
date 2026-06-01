@@ -21,9 +21,9 @@ export default function Board() {
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
   
-  // For demonstration, use a public Daily.co room. 
-  // In production, this would be generated via the Daily.co REST API using a secure backend function.
-  const getDemoUrl = (id) => `https://optalflow.daily.co/demo-${id.slice(0,8)}`;
+  // For demonstration, use a public Jitsi Meet room. 
+  // In production, this would be generated via a secure backend function.
+  const getDemoUrl = (id) => `https://meet.jit.si/optalflow-demo-${id.slice(0,8)}`;
 
   useEffect(() => {
     if (!companyId) return;

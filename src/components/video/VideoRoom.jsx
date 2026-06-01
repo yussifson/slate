@@ -297,6 +297,26 @@ function ParticipantTile({ id, isLocal }) {
 // Wrapper to initialize Daily provider
 export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePipMode }) {
   const [daily, setDaily] = useState(null);
+  
+  if (roomUrl && roomUrl.includes('meet.jit.si')) {
+    return (
+      <div className="flex flex-col h-full bg-slate-950 rounded-xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 z-50 p-2 flex gap-2">
+           <Button variant="secondary" size="icon" onClick={togglePipMode} className="w-8 h-8 rounded-full opacity-50 hover:opacity-100">
+             {isPipMode ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
+           </Button>
+           <Button variant="destructive" size="sm" onClick={onLeave} className="rounded-full h-8 px-4 font-semibold opacity-80 hover:opacity-100">
+             <PhoneOff className="w-4 h-4 mr-2" /> Leave
+           </Button>
+        </div>
+        <iframe
+          allow="camera; microphone; display-capture; fullscreen; clipboard-read; clipboard-write; autoplay"
+          src={roomUrl}
+          className="w-full h-full border-none"
+        />
+      </div>
+    );
+  }
 
   useEffect(() => {
     if (!roomUrl) return;
