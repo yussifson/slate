@@ -46,17 +46,6 @@ export default function Team() {
   const canManage = ["super_admin", "company_admin"].includes(user?.role);
 
   const handleAddClick = () => {
-    const currentPlan = SUBSCRIPTION_PLANS[company?.subscription_plan] || SUBSCRIPTION_PLANS.free_trial;
-    const userLimit = currentPlan.maxUsers || 5;
-    
-    if (staff.length >= userLimit) {
-      toast({ 
-        title: "Limit Reached", 
-        description: `Your ${currentPlan.name} plan allows up to ${userLimit} team members. Please upgrade your plan.`, 
-        variant: "destructive" 
-      });
-      return;
-    }
     setShowCreate(true);
   };
 
@@ -69,11 +58,13 @@ export default function Team() {
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.StaffRecord.create({ ...data, company_id: companyId }),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["staff"] }); setShowCreate(false); },
+    onError: (err) => { console.error(err); toast({ title: "Error creating staff", description: err.message, variant: "destructive" }); }
   });
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.StaffRecord.update(id, data),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["staff"] }); setEditingStaff(null); },
+    onError: (err) => { console.error(err); toast({ title: "Error updating staff", description: err.message, variant: "destructive" }); }
   });
 
   const removeMutation = useMutation({
@@ -82,6 +73,7 @@ export default function Team() {
       queryClient.invalidateQueries({ queryKey: ["staff"] });
       toast({ title: "Staff member removed" });
     },
+    onError: (err) => { console.error(err); toast({ title: "Error removing staff", description: err.message, variant: "destructive" }); }
   });
 
   const filtered = staff.filter(s => !search || s.full_name?.toLowerCase().includes(search.toLowerCase()) || s.user_email?.toLowerCase().includes(search.toLowerCase()));
@@ -168,11 +160,11 @@ export default function Team() {
         industryRoles={getIndustryRoles(user?.company_industry)}
         onSubmit={async (data, password) => {
           if (editingStaff) {
-            updateMutation.mutate({ id: editingStaff.id, data });
+            await updateMutation.mutateAsync({ id: editingStaff.id, data });
           } else {
             try {
               await base44.auth.register({ email: data.user_email, password });
-              createMutation.mutate(data);
+              await createMutation.mutateAsync(data);
               
               await notify({
                 recipientEmail: data.user_email,
