@@ -300,33 +300,34 @@ export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePi
   
   if (roomUrl && (roomUrl.includes('meet.jit.si') || roomUrl.includes('meet.ffmuc.net') || roomUrl.includes('jitsi'))) {
     return (
-      <div className="flex flex-col h-full bg-slate-950 rounded-xl relative overflow-hidden items-center justify-center text-white">
+      <div className="flex flex-col h-full bg-slate-50/50 dark:bg-slate-950 rounded-xl relative overflow-hidden items-center justify-center text-foreground border border-border">
         <div className="absolute top-0 right-0 z-50 p-2 flex gap-2">
-           <Button variant="destructive" size="sm" onClick={onLeave} className="rounded-full h-8 px-4 font-semibold opacity-80 hover:opacity-100">
+           <Button variant="destructive" size="sm" onClick={onLeave} className="rounded-full h-8 px-4 font-semibold opacity-80 hover:opacity-100 shadow-sm">
              <PhoneOff className="w-4 h-4 mr-2" /> End Session
            </Button>
         </div>
         
-        <div className="flex flex-col items-center max-w-md text-center p-8 bg-slate-900/50 rounded-2xl border border-slate-800 shadow-xl">
-           <div className="w-20 h-20 bg-blue-600/20 rounded-full flex items-center justify-center mb-6">
-             <Video className="w-10 h-10 text-blue-500" />
+        <div className="flex flex-col items-center max-w-md text-center p-8 bg-white dark:bg-slate-900 rounded-3xl border border-border shadow-xl">
+           <div className="w-24 h-24 bg-blue-50 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-6 shadow-sm border border-blue-100 dark:border-blue-800">
+             <Video className="w-10 h-10 text-blue-600 dark:text-blue-400" />
            </div>
-           <h2 className="text-2xl font-bold mb-2">Secure Video Meeting</h2>
-           <p className="text-slate-400 mb-8 leading-relaxed">
-             To ensure maximum performance and bypass browser embedding limits, your enterprise video call will open in a new secure window.
+           <h2 className="text-2xl font-bold mb-3 text-slate-800 dark:text-white tracking-tight">Secure Video Meeting</h2>
+           <p className="text-slate-500 dark:text-slate-400 mb-8 leading-relaxed text-sm max-w-sm">
+             To ensure maximum performance and bypass browser limits, your enterprise video call will open in a new secure window.
            </p>
            
            <div className="flex flex-col gap-3 w-full">
              <Button 
                size="lg" 
-               className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold h-12 text-lg rounded-xl shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.5)] transition-all"
+               className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold h-12 text-[15px] rounded-xl shadow-md hover:shadow-lg transition-all"
                onClick={() => window.open(roomUrl, '_blank')}
              >
                Launch Meeting
-               <ExternalLink className="w-5 h-5 ml-2" />
+               <ExternalLink className="w-5 h-5 ml-2 opacity-80" />
              </Button>
-             <Button variant="ghost" className="text-slate-400 hover:text-white" onClick={() => {
+             <Button variant="ghost" className="text-slate-500 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl h-11" onClick={() => {
                 navigator.clipboard.writeText(roomUrl);
+                toast({ description: "Meeting link copied to clipboard!" });
              }}>
                Copy Link
              </Button>
