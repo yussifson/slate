@@ -20,39 +20,7 @@ const TABLE_MAP = {
 };
 
 
-const industryPrefixes = {
-  law: { Client: 'clients', LegalCase: 'legal_cases', Hearing: 'hearings' },
-  school: { Client: 'school_students', LegalCase: 'school_classes', Hearing: 'school_sessions' },
-  hospital: { Client: 'hospital_patients', LegalCase: 'hospital_admissions', Hearing: 'hospital_appointments' },
-  hotel: { Client: 'hotel_guests', LegalCase: 'hotel_bookings', Hearing: 'hotel_reservations' },
-  church: { Client: 'church_members', LegalCase: 'church_ministries', Hearing: 'church_events' },
-  insurance: { Client: 'insurance_policyholders', LegalCase: 'insurance_claims', Hearing: 'insurance_meetings' },
-  retail: { Client: 'retail_customers', LegalCase: 'retail_orders', Hearing: 'retail_shifts' },
-  logistics: { Client: 'logistics_shippers', LegalCase: 'logistics_shipments', Hearing: 'logistics_dispatches' },
-  hr: { Client: 'hr_employees', LegalCase: 'hr_projects', Hearing: 'hr_interviews' }
-};
-
 const getTableName = (prop) => {
-    let industry = 'law';
-    try {
-        const override = sessionStorage.getItem('optalflow_industry_override');
-        if (override) {
-            industry = override;
-        } else {
-            const userStr = localStorage.getItem('optalflow_cached_user');
-            if (userStr) {
-                const user = JSON.parse(userStr);
-                if (user && user.company_industry) {
-                    industry = user.company_industry;
-                }
-            }
-        }
-    } catch(e) {}
-
-    if (industryPrefixes[industry] && industryPrefixes[industry][prop]) {
-        return industryPrefixes[industry][prop];
-    }
-
     if (TABLE_MAP[prop]) return TABLE_MAP[prop];
 
     // Fallback just in case
@@ -65,15 +33,6 @@ const getTableName = (prop) => {
 };
 
 const getValidCols = (tableName) => {
-    if (tableName.endsWith('_students') || tableName.endsWith('_patients') || tableName.endsWith('_guests') || tableName.endsWith('_members') || tableName.endsWith('_policyholders') || tableName.endsWith('_customers') || tableName.endsWith('_shippers') || tableName.endsWith('_employees')) {
-        return SCHEMA_COLUMNS['clients'];
-    }
-    if (tableName.endsWith('_classes') || tableName.endsWith('_admissions') || tableName.endsWith('_bookings') || tableName.endsWith('_ministries') || tableName.endsWith('_claims') || tableName.endsWith('_orders') || tableName.endsWith('_shipments') || tableName.endsWith('_projects')) {
-        return SCHEMA_COLUMNS['legal_cases'];
-    }
-    if (tableName.endsWith('_sessions') || tableName.endsWith('_appointments') || tableName.endsWith('_reservations') || tableName.endsWith('_events') || tableName.endsWith('_meetings') || tableName.endsWith('_shifts') || tableName.endsWith('_dispatches') || tableName.endsWith('_interviews')) {
-        return SCHEMA_COLUMNS['hearings'];
-    }
     return SCHEMA_COLUMNS[tableName];
 };
 
