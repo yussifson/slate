@@ -23,6 +23,7 @@ export default function EmailInbox() {
   const [selectedEmail, setSelectedEmail] = useState(null);
   const [showCompose, setShowCompose] = useState(false);
   const [isComposeMinimized, setIsComposeMinimized] = useState(false);
+  const [composeInitialData, setComposeInitialData] = useState(null);
   const [search, setSearch] = useState("");
   const [starredEmails, setStarredEmails] = useState(() => {
     try {
@@ -128,6 +129,7 @@ export default function EmailInbox() {
           <Button 
             className="w-full h-12 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-md flex justify-center items-center"
             onClick={() => {
+              setComposeInitialData(null);
               setShowCompose(true);
               setIsComposeMinimized(false);
             }}
@@ -188,6 +190,27 @@ export default function EmailInbox() {
             onBack={() => setSelectedEmail(null)} 
             isStarred={starredEmails.includes(selectedEmail.id)}
             onToggleStar={(e) => toggleStar(e, selectedEmail.id)}
+            onDelete={async () => {
+               await base44.entities.CaseEmail.delete(selectedEmail.id);
+               queryClient.invalidateQueries({ queryKey: ["case-emails"] });
+               setSelectedEmail(null);
+            }}
+            onReply={() => {
+               setComposeInitialData({
+                 subject: selectedEmail.subject?.startsWith("Re:") ? selectedEmail.subject : `Re: ${selectedEmail.subject}`,
+                 message: `\n\n\n--- On ${format(new Date(selectedEmail.created_date || new Date()), 'MMM d, yyyy')} ${selectedEmail.sender_email} wrote:\n> ${selectedEmail.body_preview?.replace(/\n/g, '\n> ')}`
+               });
+               setShowCompose(true);
+               setIsComposeMinimized(false);
+            }}
+            onForward={() => {
+               setComposeInitialData({
+                 subject: selectedEmail.subject?.startsWith("Fwd:") ? selectedEmail.subject : `Fwd: ${selectedEmail.subject}`,
+                 message: `\n\n\n--- Forwarded Message ---\nFrom: ${selectedEmail.sender_email}\nDate: ${format(new Date(selectedEmail.created_date || new Date()), 'MMM d, yyyy')}\nSubject: ${selectedEmail.subject}\n\n${selectedEmail.body_preview}`
+               });
+               setShowCompose(true);
+               setIsComposeMinimized(false);
+            }}
           />
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-slate-50/30">
@@ -210,6 +233,7 @@ export default function EmailInbox() {
           staff={staff}
           clients={clients}
           isLoading={createMutation.isPending}
+          initialData={composeInitialData}
         />
       )}
     </div>
@@ -281,7 +305,7 @@ function EmailRow({ email, isSelected, onClick, isStarred, onToggleStar }) {
   );
 }
 
-function EmailDetail({ email, onBack, isStarred, onToggleStar }) {
+export function EmailDetail({ email, onBack, isStarred, onToggleStar, onDelete, onReply, onForward }) {
   const senderName = email.sender_name || email.sender_email?.split('@')[0] || 'Unknown';
   const avatarUrl = `https://api.dicebear.com/7.x/initials/svg?seed=${senderName}&backgroundColor=e2e8f0,bfdbfe`;
 
@@ -292,14 +316,14 @@ function EmailDetail({ email, onBack, isStarred, onToggleStar }) {
         <button onClick={onBack} className="lg:hidden p-2 hover:bg-slate-100 rounded-full text-slate-500 transition-colors mr-1">
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <button className="p-2 hover:bg-slate-100 rounded-full text-slate-500 transition-colors" title="Reply">
+        <button onClick={onReply} className="p-2 hover:bg-slate-100 rounded-full text-slate-500 transition-colors" title="Reply">
           <Reply className="w-4 h-4" />
         </button>
-        <button className="p-2 hover:bg-slate-100 rounded-full text-slate-500 transition-colors" title="Forward">
+        <button onClick={onForward} className="p-2 hover:bg-slate-100 rounded-full text-slate-500 transition-colors" title="Forward">
           <CornerUpRight className="w-4 h-4" />
         </button>
         <div className="h-5 w-px bg-border mx-1"></div>
-        <button className="p-2 hover:bg-red-50 text-red-500 rounded-full transition-colors" title="Delete">
+        <button onClick={onDelete} className="p-2 hover:bg-red-50 text-red-500 rounded-full transition-colors" title="Delete">
           <Trash2 className="w-4 h-4" />
         </button>
         <button className="p-2 hover:bg-slate-100 rounded-full text-slate-500 transition-colors ml-auto">
@@ -344,7 +368,7 @@ function EmailDetail({ email, onBack, isStarred, onToggleStar }) {
   );
 }
 
-function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, staff, clients = [], isLoading }) {
+function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, staff, clients = [], isLoading, initialData }) {
   const { t } = useTranslation();
   const [recipientType, setRecipientType] = useState("internal"); 
   const [internalTarget, setInternalTarget] = useState("team"); 
@@ -357,6 +381,13 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [recipientQuery, setRecipientQuery] = useState("");
   const [recipientPickerOpen, setRecipientPickerOpen] = useState(false);
+
+  React.useEffect(() => {
+    if (initialData) {
+      if (initialData.subject) setSubject(initialData.subject);
+      if (initialData.message) setMessage(initialData.message);
+    }
+  }, [initialData]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
