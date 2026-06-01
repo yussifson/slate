@@ -386,7 +386,16 @@ export const getTerm = (industryKey, termKey) => {
 
 export const getIndustryNav = (industryKey) => {
   const ind = INDUSTRIES[industryKey] || INDUSTRIES.law;
-  return ind.nav;
+  const nav = [...ind.nav];
+  
+  // Ensure Email Inbox exists globally across all industries
+  if (!nav.find(n => n.path === '/email-inbox')) {
+    // Insert it right before Integrations/Settings
+    const insertIndex = Math.max(0, nav.length - 2);
+    nav.splice(insertIndex, 0, { label: 'Email Inbox', path: '/email-inbox', icon: 'Mail' });
+  }
+  
+  return nav;
 };
 
 export const getIndustryRoles = (industryKey) => {

@@ -336,15 +336,6 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
         </DropdownMenu>
       </div>
 
-      <button
-        onClick={() => setIsCollapsed(!collapsed)}
-        className={cn(
-          "hidden md:flex absolute -right-3 top-6 bg-background border border-border text-foreground rounded-full p-1.5 shadow-md hover:bg-muted transition-transform hover:scale-110 z-50",
-          collapsed && "rotate-180"
-        )}
-      >
-        <ChevronLeft className="w-3.5 h-3.5" />
-      </button>
     </div>
   );
 
