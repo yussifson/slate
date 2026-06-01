@@ -272,37 +272,67 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
         })}
       </nav>
 
-      <div className={cn("border-t border-sidebar-border bg-sidebar flex items-center transition-all", collapsed ? "p-3 justify-center flex-col gap-3" : "p-3 gap-3")}>
+      {/* Modern User Profile & Logout Section */}
+      <div className={cn(
+        "mt-auto border-t border-sidebar-border bg-sidebar/50 p-4 transition-all duration-300 backdrop-blur-sm",
+        collapsed ? "flex flex-col items-center gap-4" : "flex flex-col gap-4"
+      )}>
+        <div className={cn("flex items-center gap-3", collapsed && "justify-center")}>
+          <button 
+            onClick={() => setShowAvatarDialog(true)}
+            className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-primary/60 p-0.5 shadow-md flex items-center justify-center flex-shrink-0 hover:scale-105 hover:shadow-lg transition-all overflow-hidden relative group"
+            title="Update Avatar"
+          >
+            <div className="w-full h-full rounded-full border-2 border-background overflow-hidden bg-muted flex items-center justify-center">
+              {user?.avatar_url ? (
+                <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-sm font-bold text-primary">
+                  {(user?.full_name?.[0] || user?.company_name?.[0] || "A").toUpperCase()}
+                </span>
+              )}
+            </div>
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-full">
+              <Pencil className="w-4 h-4 text-white" />
+            </div>
+          </button>
+
+          {!collapsed && (
+            <div className="flex-1 min-w-0 animate-in fade-in duration-300">
+              <p className="text-sm font-bold text-foreground truncate">
+                {user?.full_name || user?.company_name || "Admin"}
+              </p>
+              <p className="text-[11px] font-medium text-muted-foreground capitalize truncate tracking-wide">
+                {user?.role?.replace("_", " ")}
+              </p>
+            </div>
+          )}
+        </div>
+
         <button 
-          onClick={() => setShowAvatarDialog(true)}
-          className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 hover:ring-2 hover:ring-primary transition-all overflow-hidden"
-        >
-          {user?.avatar_url ? (
-            <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
-          ) : (
-            <span className="text-sm font-bold text-primary">
-              {(user?.full_name?.[0] || user?.company_name?.[0] || "A").toUpperCase()}
-            </span>
-          )}
-        </button>
-        {!collapsed && (
-          <div className="flex-1 min-w-0 animate-in fade-in duration-200">
-            <p className="text-xs font-semibold text-sidebar-foreground truncate">
-              {user?.full_name || user?.company_name || "Admin"}
-            </p>
-            <p className="text-[10px] text-muted-foreground capitalize truncate">{user?.role?.replace("_", " ")}</p>
-          </div>
-        )}
-        <button
-          onClick={() => setIsCollapsed(!collapsed)}
+          onClick={() => base44.auth.logout()} 
           className={cn(
-            "hidden md:flex absolute -right-3 top-6 bg-primary text-primary-foreground rounded-full p-1 shadow-md hover:bg-primary/90 transition-transform hover:scale-110",
-            collapsed && "rotate-180"
+            "flex items-center justify-center gap-2 w-full rounded-xl transition-all duration-200 font-semibold group relative overflow-hidden",
+            collapsed 
+              ? "h-10 w-10 bg-red-50 hover:bg-red-100 dark:bg-red-500/10 dark:hover:bg-red-500/20 text-red-600" 
+              : "h-10 bg-red-50 hover:bg-red-100 dark:bg-red-500/10 dark:hover:bg-red-500/20 text-red-600 hover:shadow-sm"
           )}
+          title={collapsed ? "Log out" : undefined}
         >
-          <ChevronLeft className="w-4 h-4" />
+          <LogOut className={cn("transition-transform group-hover:-translate-x-1", collapsed ? "w-5 h-5" : "w-4 h-4")} />
+          {!collapsed && <span className="text-sm">Log out</span>}
         </button>
       </div>
+
+      <button
+        onClick={() => setIsCollapsed(!collapsed)}
+        className={cn(
+          "hidden md:flex absolute -right-3 top-6 bg-background border border-border text-foreground rounded-full p-1.5 shadow-md hover:bg-muted transition-transform hover:scale-110 z-50",
+          collapsed && "rotate-180"
+        )}
+      >
+        <ChevronLeft className="w-3.5 h-3.5" />
+      </button>
     </div>
   );
 

@@ -32,7 +32,8 @@ export function useNavigation(user, impersonatedCompany) {
     };
     if (user?.company_id) {
       fetchDynamicNav();
-      const channel = supabase.channel('sidebar-modules')
+      const channelName = `sidebar-modules-${Date.now()}-${Math.random()}`;
+      const channel = supabase.channel(channelName)
         .on('postgres_changes', { event: '*', schema: 'public', table: 'module_definitions' }, () => {
           fetchDynamicNav();
         })
