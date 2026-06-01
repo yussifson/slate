@@ -19,14 +19,14 @@ import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tool
 
 function MetricCard({ title, value, icon: Icon, iconBg, iconColor, subtitle, subtitleColor }) {
   return (
-    <div className="bg-card rounded-xl border border-border p-5 flex items-center justify-between">
+    <div className="bg-card rounded-xl border border-border p-4 sm:p-5 flex items-center justify-between shadow-sm">
       <div>
-        <p className="text-xs text-muted-foreground mb-1">{title}</p>
-        <p className="text-2xl font-bold text-foreground">{value}</p>
-        {subtitle && <p className={`text-xs mt-1 ${subtitleColor || "text-muted-foreground"}`}>{subtitle}</p>}
+        <p className="text-xs text-muted-foreground mb-1 font-medium">{title}</p>
+        <p className="text-xl sm:text-2xl font-bold text-foreground leading-tight">{value}</p>
+        {subtitle && <p className={`text-[10px] sm:text-xs mt-1 font-medium ${subtitleColor || "text-muted-foreground"}`}>{subtitle}</p>}
       </div>
-      <div className={`w-11 h-11 rounded-full ${iconBg} flex items-center justify-center`}>
-        <Icon className={`w-5 h-5 ${iconColor}`} />
+      <div className={`w-10 h-10 sm:w-11 sm:h-11 rounded-full ${iconBg} flex items-center justify-center shrink-0`}>
+        <Icon className={`w-4 h-4 sm:w-5 sm:h-5 ${iconColor}`} />
       </div>
     </div>
   );
@@ -136,7 +136,7 @@ export default function LawDashboard({ companyId, company, isAdmin }) {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4 sm:space-y-5 pb-6">
       {/* 24h Hearing Reminders */}
       <HearingReminders hearings={hearings} userEmail={user?.email} isAdmin={isAdmin} />
       {/* Header */}

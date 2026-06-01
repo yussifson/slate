@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { isSuperAdmin } from "@/lib/constants";
-import { CreditCard, AlertCircle, CheckCircle, Clock, Send, RefreshCw, DollarSign, MoreVertical, Pencil, Plus, Search, Receipt } from "lucide-react";
+import { CreditCard, AlertCircle, CheckCircle, Clock, Send, RefreshCw, DollarSign, MoreVertical, Pencil, Plus, Search, Receipt, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -100,6 +100,11 @@ function CompanyBilling({ companyId }) {
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["expenses", companyId] }); setEditingExpense(null); toast({ title: "Expense updated" }); },
   });
 
+  const deleteExpenseMutation = useMutation({
+    mutationFn: (id) => base44.entities.Expense.delete(id),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["expenses", companyId] }); toast({ title: "Expense deleted" }); },
+  });
+
   const addExpenseToInvoice = (expense) => {
     setShowForm(true);
     // pre-seed an invoice with this expense as a line item
@@ -133,6 +138,11 @@ function CompanyBilling({ companyId }) {
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Invoice.update(id, data),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["invoices"] }); setEditingInvoice(null); toast({ title: "Invoice updated" }); },
+  });
+
+  const deleteInvoiceMutation = useMutation({
+    mutationFn: (id) => base44.entities.Invoice.delete(id),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["invoices"] }); toast({ title: "Invoice deleted" }); },
   });
 
   const currency = company?.currency || "GHS";
@@ -276,6 +286,13 @@ function CompanyBilling({ companyId }) {
                                 <DropdownMenuItem className="text-destructive" onClick={() => updateMutation.mutate({ id: inv.id, data: { status: "cancelled" } })}>
                                   {t("cancel_invoice", "Cancel Invoice")}
                                 </DropdownMenuItem>
+                                <DropdownMenuItem className="text-destructive" onClick={() => {
+                                  if (window.confirm(t("confirm_delete_invoice", "Are you sure you want to delete this invoice?"))) {
+                                    deleteInvoiceMutation.mutate(inv.id);
+                                  }
+                                }}>
+                                  <Trash2 className="w-4 h-4 mr-2" /> {t("delete_invoice", "Delete Invoice")}
+                                </DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
                           </div>
@@ -328,6 +345,13 @@ function CompanyBilling({ companyId }) {
                       <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => { setEditingExpense(exp); setShowExpenseForm(true); }}>
                         <Pencil className="w-3.5 h-3.5" />
                       </Button>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 text-destructive hover:bg-destructive/10" onClick={() => {
+                        if (window.confirm(t("confirm_delete_expense", "Are you sure you want to delete this expense?"))) {
+                          deleteExpenseMutation.mutate(exp.id);
+                        }
+                      }}>
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </Button>
                     </div>
                   );
                 })}
@@ -364,6 +388,7 @@ function CompanyBilling({ companyId }) {
 // ─── Super-admin billing view ──────────────────────────────────────────────────
 
 function SuperAdminBilling() {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [statusFilter, setStatusFilter] = useState("all");
@@ -377,6 +402,11 @@ function SuperAdminBilling() {
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.SubscriptionInvoice.update(id, data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["subscription-invoices"] }),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => base44.entities.SubscriptionInvoice.delete(id),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["subscription-invoices"] }); toast({ title: "Invoice deleted" }); },
   });
 
   const runBilling = async () => {
@@ -492,6 +522,13 @@ function SuperAdminBilling() {
                       )}
                       <DropdownMenuItem onClick={() => updateMutation.mutate({ id: inv.id, data: { status: "cancelled" } })} className="text-destructive">
                         {t("cancel_invoice", "Cancel Invoice")}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => {
+                        if (window.confirm(t("confirm_delete_invoice", "Are you sure you want to delete this subscription invoice?"))) {
+                          deleteMutation.mutate(inv.id);
+                        }
+                      }} className="text-destructive">
+                        <Trash2 className="w-4 h-4 mr-2" /> {t("delete_invoice", "Delete Invoice")}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>

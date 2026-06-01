@@ -76,24 +76,160 @@ export default function SignUp() {
       }, 2000);
 
     } catch (err) {
-      setError(err.message || 'An error occurred during sign up.');
+            <p className="text-xs text-slate-500 font-medium mt-1">{t(
+              "create_an_account_to_start_man",
+              "Create an account to start managing your business"
+            )}</p>
+          </div>
+          
+          <form className="space-y-3" onSubmit={handleSignUp}>
+            {error && <div className="rounded-xl bg-red-50 p-3 text-xs text-red-600 border border-red-100 font-medium">{error}</div>}
+            {success && <div className="rounded-xl bg-green-50 p-3 text-xs text-green-600 border border-green-100 font-medium">{success}</div>}
+            
+            <div className="space-y-2">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                    {t("company_name", "Company Name")}
+                  </label>
+                  <Input
+                    required
+                    placeholder="Acme Corp"
+                    value={companyName}
+                    onChange={(e) => setCompanyName(e.target.value)}
+                    className="w-full h-10 text-sm"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                    {t("subdomain", "Subdomain")}
+                  </label>
+                  <Input
+                    required
+                    placeholder="acmecorp"
+                    value={subdomain}
+                    onChange={(e) => setSubdomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+                    className="w-full h-10 text-sm"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">{t("workspace_region", "Workspace Region")}</label>
+                <Select value={country} onValueChange={setCountry}>
+                  <SelectTrigger className="w-full h-10 text-sm">
+                    <SelectValue placeholder="Select a region" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Ghana">{t("ghana", "Ghana")}</SelectItem>
+                    <SelectItem value="Nigeria">{t("nigeria", "Nigeria")}</SelectItem>
+                    <SelectItem value="Sierra Leone">{t("sierra_leone", "Sierra Leone")}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">{t("admin_email", "Admin Email")}</label>
+                <Input
+                  type="email"
+                  required
+                  placeholder="admin@company.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full h-10 text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">{t("admin_password", "Admin Password")}</label>
+                <Input
+                  type="password"
+  const { t } = useTranslation();
+  const [companyName, setCompanyName] = useState('');
+  const [subdomain, setSubdomain] = useState('');
+  const [industryType, setIndustryType] = useState('law');
+  const [country, setCountry] = useState('Ghana');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      // 1. Sign up the user
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+
+      if (authError) throw authError;
+
+      const user = authData.user;
+      if (!user) throw new Error("Could not create user account.");
+
+      const cleanSubdomain = subdomain.toLowerCase().replace(/[^a-z0-9-]/g, '');
+      if (!cleanSubdomain) throw new Error("Please enter a valid subdomain");
+
+      // 2. Create the company
+      const { data: companyData, error: compError } = await supabase.from('companies').insert({
+        name: companyName,
+        subdomain: cleanSubdomain,
+        email: email,
+        industry_type: industryType,
+        country: country,
+        subscription_plan: 'starter',
+        subscription_status: 'trial',
+        status: 'active'
+      }).select().single();
+
+      if (compError) throw compError;
+
+      // 3. Update the profile
+      const { error: profError } = await supabase.from('profiles').update({
+        company_id: companyData.id,
+        company_name: companyData.name,
+        role: 'company_admin'
+      }).eq('id', user.id);
+
+      if (profError) throw profError;
+
+      setSuccess("Account and Workspace successfully created! Redirecting to your login portal...");
+      
+      // Auto-redirect to their new subdomain
+      setTimeout(() => {
+        const { baseDomain } = getSubdomainAndBase();
+        const port = window.location.port ? `:${window.location.port}` : '';
+        const targetHost = `${companyData.subdomain}.${baseDomain}${port}`;
+        
+        window.location.href = `${window.location.protocol}//${targetHost}/login`;
+      }, 2000);
+
+    } catch (err) {
+      setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-white">
+    <div className="min-h-screen flex flex-col lg:flex-row">
       {/* Left Side: Form */}
-      <div className="w-full lg:w-[45%] xl:w-[40%] flex flex-col justify-center px-6 sm:px-12 md:px-16 lg:px-20 relative z-10 bg-white shadow-[10px_0_40px_-15px_rgba(0,0,0,0.05)] border-r border-slate-100 overflow-y-auto py-8">
-        <div className="absolute top-6 right-6 lg:hidden">
-          <ThemeToggle />
-        </div>
-        
-        <div className="w-full max-w-sm mx-auto">
-          <div className="mb-4 text-center lg:text-left">
-            <Logo className="w-8 h-8 mx-auto lg:mx-0 mb-3" />
-            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">{t("register_workspace", "Register Workspace")}</h2>
+      <div className="flex-1 flex flex-col justify-center px-8 lg:px-16 py-12">
+        <div className="max-w-md w-full mx-auto">
+          <div className="flex items-center justify-between mb-8">
+            <Logo />
+            <ThemeToggle />
+          </div>
+          
+          <div className="mb-8">
+            <h1 className="text-2xl font-bold text-slate-900">{t("create_an_account", "Create your account")}</h1>
             <p className="text-xs text-slate-500 font-medium mt-1">{t(
               "create_an_account_to_start_man",
               "Create an account to start managing your business"
@@ -181,7 +317,7 @@ export default function SignUp() {
             </Button>
           </form>
 
-            <div className="text-center mt-4">
+            <div className="text-center mt-4 pb-12 lg:pb-0">
               <span className="text-xs text-slate-500 font-medium">{t("already_have_an_account", "Already have an account?")} </span>
               <a href="/login" className="text-xs font-bold text-blue-600 hover:underline">
                 {t("sign_in", "Sign in")}

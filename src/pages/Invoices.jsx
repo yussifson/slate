@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
 import { useCompanyId } from "@/hooks/useCompanyId";
-import { Plus, Receipt, Search, CheckCircle2, Clock, AlertCircle } from "lucide-react";
+import { Plus, Receipt, Search, CheckCircle2, Clock, AlertCircle, Trash2 } from "lucide-react";
 import ExportButton from "@/components/shared/ExportButton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +17,7 @@ import { INVOICE_STATUS_COLORS, formatCurrency } from "@/lib/constants";
 import { format } from "date-fns";
 import { usePayment } from "@/hooks/integrations/usePayment";
 import { RefreshCcw, CreditCard } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function Invoices() {
   const { t } = useTranslation();
@@ -24,6 +25,7 @@ export default function Invoices() {
   const { user } = useAuth();
   const companyId = useCompanyId();
   const queryClient = useQueryClient();
+  const { toast } = useToast();
   const [showForm, setShowForm] = useState(false);
   const [editingInvoice, setEditingInvoice] = useState(null);
   const [search, setSearch] = useState("");
@@ -52,12 +54,17 @@ export default function Invoices() {
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.Invoice.create({ ...data, company_id: companyId, currency: data.currency || company?.currency || "GHS" }),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["invoices"] }); setShowForm(false); },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["invoices"] }); setShowForm(false); toast({ title: "Invoice created" }); },
   });
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Invoice.update(id, data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["invoices"] }); setEditingInvoice(null); },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["invoices"] }); setEditingInvoice(null); toast({ title: "Invoice updated" }); },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => base44.entities.Invoice.delete(id),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["invoices"] }); toast({ title: "Invoice deleted" }); },
   });
 
   const currency = company?.currency || "GHS";
@@ -104,6 +111,26 @@ export default function Invoices() {
     { header: "Paid Date", render: row => {
       return <span className="text-xs text-muted-foreground">{row.paid_date ? format(new Date(row.paid_date), "MMM d, yyyy") : "—"}</span>;
     } },
+    {
+      header: "Actions",
+      render: row => {
+        return (
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="h-8 w-8 text-destructive hover:bg-destructive/10" 
+            onClick={(e) => { 
+              e.stopPropagation(); 
+              if (window.confirm(t("confirm_delete_invoice", "Are you sure you want to delete this invoice?"))) {
+                deleteMutation.mutate(row.id);
+              }
+            }}
+          >
+            <Trash2 className="w-4 h-4" />
+          </Button>
+        );
+      }
+    }
   ];
 
   return (

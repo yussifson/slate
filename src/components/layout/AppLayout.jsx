@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Outlet, useNavigate, Link } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
+import MobileBottomNav from "./MobileBottomNav";
 import { useAuth } from "@/lib/AuthContext";
 import { useImpersonation } from "@/lib/ImpersonationContext";
 import { Building2, X, Clock, CreditCard, WifiOff } from "lucide-react";
@@ -212,10 +213,11 @@ export default function AppLayout() {
           isAIOpen={isAIOpen}
           toggleAI={toggleAI}
         />
-        <main className="flex-1 p-4 lg:p-6 max-w-[1400px] w-full mx-auto">
+        <main className="flex-1 p-2 sm:p-4 lg:p-6 max-w-[1400px] w-full mx-auto pb-24 md:pb-6">
           <Outlet />
         </main>
       </div>
+      <MobileBottomNav />
       <AiAssistant isOpen={isAIOpen} onClose={toggleAI} injectedContext={orbitContext} onContextConsumed={() => setOrbitContext(null)} />
       <SpotlightSearch />
     </div>

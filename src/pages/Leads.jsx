@@ -1,9 +1,9 @@
 import { useTranslation } from "react-i18next";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
-import { Users, Search, ExternalLink, Mail, Phone, CheckCircle, XCircle } from "lucide-react";
+import { Users, Search, ExternalLink, Mail, Phone, CheckCircle, XCircle, Trash2, Pencil, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -51,6 +51,15 @@ export default function Leads() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["leads"] });
       toast({ title: "Lead updated" });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => base44.entities.Lead.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["leads"] });
+      toast({ title: "Lead deleted" });
+      setSelectedLead(null);
     },
   });
 
@@ -119,6 +128,14 @@ export default function Leads() {
                 <Phone className="w-3.5 h-3.5" />
               </Button>
             )}
+            <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:bg-destructive/10" title="Delete lead" onClick={e => {
+              e.stopPropagation();
+              if (window.confirm(t("confirm_delete_lead", "Are you sure you want to delete this lead?"))) {
+                deleteMutation.mutate(row.id);
+              }
+            }}>
+              <Trash2 className="w-3.5 h-3.5" />
+            </Button>
           </div>
         );
       }
@@ -176,7 +193,19 @@ export default function Leads() {
         <LeadDetailDialog
           lead={selectedLead}
           onClose={() => setSelectedLead(null)}
-          onUpdateStatus={(status) => updateMutation.mutate({ id: selectedLead.id, data: { status } })}
+          onSave={(data) => {
+            updateMutation.mutate({ id: selectedLead.id, data });
+            setSelectedLead({ ...selectedLead, ...data });
+          }}
+          onDelete={() => {
+            if (window.confirm(t("confirm_delete_lead", "Are you sure you want to delete this lead?"))) {
+              deleteMutation.mutate(selectedLead.id);
+            }
+          }}
+          onUpdateStatus={(status) => {
+            updateMutation.mutate({ id: selectedLead.id, data: { status } });
+            setSelectedLead({ ...selectedLead, status });
+          }}
           onConvert={() => convertToClientMutation.mutate(selectedLead)}
           isConverting={convertToClientMutation.isPending}
         />
@@ -185,29 +214,132 @@ export default function Leads() {
   );
 }
 
-function LeadDetailDialog({ lead, onClose, onUpdateStatus, onConvert, isConverting }) {
+function LeadDetailDialog({ lead, onClose, onUpdateStatus, onConvert, onSave, onDelete, isConverting }) {
   const { t } = useTranslation();
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({ ...lead });
+
+  useEffect(() => {
+    setFormData({ ...lead });
+  }, [lead]);
+
+  const handleSave = () => {
+    onSave(formData);
+    setIsEditing(false);
+  };
+
   return (
     <Dialog open={!!lead} onOpenChange={onClose}>
       <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            {lead.full_name}
+            {isEditing ? (
+              <Input 
+                value={formData.full_name} 
+                onChange={(e) => setFormData({ ...formData, full_name: e.target.value })} 
+                className="h-8 w-48 font-bold"
+              />
+            ) : (
+              lead.full_name
+            )}
             <Badge className={`text-[10px] ${STATUS_COLORS[lead.status]}`}>{lead.status}</Badge>
+            <div className="ml-auto flex items-center gap-1">
+              {!isEditing ? (
+                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setIsEditing(true)}>
+                  <Pencil className="w-3.5 h-3.5" />
+                </Button>
+              ) : (
+                <Button variant="ghost" size="icon" className="h-7 w-7 text-green-600" onClick={handleSave}>
+                  <Save className="w-3.5 h-3.5" />
+                </Button>
+              )}
+              <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={onDelete}>
+                <Trash2 className="w-3.5 h-3.5" />
+              </Button>
+            </div>
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-3 text-sm">
-            <div><Label className="text-xs">{t("email", "Email")}</Label><p className="mt-0.5">{lead.email}</p></div>
-            <div><Label className="text-xs">{t("phone", "Phone")}</Label><p className="mt-0.5">{lead.phone || "—"}</p></div>
-            <div><Label className="text-xs">{t("organization", "Organization")}</Label><p className="mt-0.5">{lead.organization || "Individual"}</p></div>
-            <div><Label className="text-xs">{t("case_type", "Case Type")}</Label><p className="mt-0.5 capitalize">{lead.case_type?.replace("_", " ") || "—"}</p></div>
-            <div><Label className="text-xs">{t("urgency", "Urgency")}</Label><Badge className={`text-[10px] mt-0.5 ${URGENCY_COLORS[lead.urgency]}`}>{lead.urgency}</Badge></div>
-            <div><Label className="text-xs">{t("preferred_contact", "Preferred Contact")}</Label><p className="mt-0.5 capitalize">{lead.preferred_contact || "—"}</p></div>
+            <div>
+              <Label className="text-xs">{t("email", "Email")}</Label>
+              {isEditing ? (
+                <Input value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="h-7 text-xs mt-1" />
+              ) : (
+                <p className="mt-0.5">{lead.email}</p>
+              )}
+            </div>
+            <div>
+              <Label className="text-xs">{t("phone", "Phone")}</Label>
+              {isEditing ? (
+                <Input value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className="h-7 text-xs mt-1" />
+              ) : (
+                <p className="mt-0.5">{lead.phone || "—"}</p>
+              )}
+            </div>
+            <div>
+              <Label className="text-xs">{t("organization", "Organization")}</Label>
+              {isEditing ? (
+                <Input value={formData.organization} onChange={(e) => setFormData({ ...formData, organization: e.target.value })} className="h-7 text-xs mt-1" />
+              ) : (
+                <p className="mt-0.5">{lead.organization || "Individual"}</p>
+              )}
+            </div>
+            <div>
+              <Label className="text-xs">{t("case_type", "Case Type")}</Label>
+              {isEditing ? (
+                <Select value={formData.case_type} onValueChange={(val) => setFormData({ ...formData, case_type: val })}>
+                  <SelectTrigger className="h-7 text-xs mt-1"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="litigation">Litigation</SelectItem>
+                    <SelectItem value="corporate">Corporate</SelectItem>
+                    <SelectItem value="family_law">Family Law</SelectItem>
+                    <SelectItem value="real_estate">Real Estate</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              ) : (
+                <p className="mt-0.5 capitalize">{lead.case_type?.replace("_", " ") || "—"}</p>
+              )}
+            </div>
+            <div>
+              <Label className="text-xs">{t("urgency", "Urgency")}</Label>
+              {isEditing ? (
+                <Select value={formData.urgency} onValueChange={(val) => setFormData({ ...formData, urgency: val })}>
+                  <SelectTrigger className="h-7 text-xs mt-1"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="low">Low</SelectItem>
+                    <SelectItem value="medium">Medium</SelectItem>
+                    <SelectItem value="high">High</SelectItem>
+                    <SelectItem value="urgent">Urgent</SelectItem>
+                  </SelectContent>
+                </Select>
+              ) : (
+                <Badge className={`text-[10px] mt-0.5 ${URGENCY_COLORS[lead.urgency]}`}>{lead.urgency}</Badge>
+              )}
+            </div>
+            <div>
+              <Label className="text-xs">{t("preferred_contact", "Preferred Contact")}</Label>
+              {isEditing ? (
+                <Select value={formData.preferred_contact} onValueChange={(val) => setFormData({ ...formData, preferred_contact: val })}>
+                  <SelectTrigger className="h-7 text-xs mt-1"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="email">Email</SelectItem>
+                    <SelectItem value="phone">Phone</SelectItem>
+                  </SelectContent>
+                </Select>
+              ) : (
+                <p className="mt-0.5 capitalize">{lead.preferred_contact || "—"}</p>
+              )}
+            </div>
           </div>
           <div>
             <Label className="text-xs">{t("case_description", "Case Description")}</Label>
-            <p className="mt-1 text-sm bg-muted/40 rounded-lg p-3">{lead.case_description}</p>
+            {isEditing ? (
+              <Input value={formData.case_description} onChange={(e) => setFormData({ ...formData, case_description: e.target.value })} className="mt-1" />
+            ) : (
+              <p className="mt-1 text-sm bg-muted/40 rounded-lg p-3">{lead.case_description}</p>
+            )}
           </div>
           <div>
             <Label className="text-xs">{t("update_status", "Update Status")}</Label>

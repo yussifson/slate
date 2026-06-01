@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import ProfileAvatarDialog from "@/components/shared/ProfileAvatarDialog";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard, Briefcase, Users, Calendar,
@@ -52,6 +53,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   const [openMenuId, setOpenMenuId] = useState(null);
   const [renameData, setRenameData] = useState(null);
   const [deleteData, setDeleteData] = useState(null);
+  const [showAvatarDialog, setShowAvatarDialog] = useState(false);
   const isAdmin = ["super_admin", "admin", "company_admin", "managing_partner"].includes(user?.role);
   const activeIndustry = sessionStorage.getItem('optalflow_industry_override') || impersonatedCompany?.industry_type || user?.company_industry || 'law';
   
@@ -216,7 +218,6 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
             <div key={item.path} className="relative group">
               <Link
                 to={item.path}
-                onClick={() => setMobileOpen(false)}
                 title={collapsed ? t(item.label.toLowerCase().replace(/\s+/g, '_'), item.label) : undefined}
                 className={cn(
                   "flex items-center rounded-lg text-sm font-medium transition-all duration-150 relative",
@@ -271,13 +272,19 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
         })}
       </nav>
 
-      {/* User */}
       <div className={cn("border-t border-sidebar-border bg-sidebar flex items-center transition-all", collapsed ? "p-3 justify-center flex-col gap-3" : "p-3 gap-3")}>
-        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-          <span className="text-xs font-bold text-primary">
-            {(user?.full_name?.[0] || user?.company_name?.[0] || "A").toUpperCase()}
-          </span>
-        </div>
+        <button 
+          onClick={() => setShowAvatarDialog(true)}
+          className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 hover:ring-2 hover:ring-primary transition-all overflow-hidden"
+        >
+          {user?.avatar_url ? (
+            <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+          ) : (
+            <span className="text-sm font-bold text-primary">
+              {(user?.full_name?.[0] || user?.company_name?.[0] || "A").toUpperCase()}
+            </span>
+          )}
+        </button>
         {!collapsed && (
           <div className="flex-1 min-w-0 animate-in fade-in duration-200">
             <p className="text-xs font-semibold text-sidebar-foreground truncate">
@@ -286,8 +293,14 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
             <p className="text-[10px] text-muted-foreground capitalize truncate">{user?.role?.replace("_", " ")}</p>
           </div>
         )}
-        <button onClick={() => base44.auth.logout()} className="text-muted-foreground hover:text-sidebar-foreground transition-colors" title={collapsed ? "Log out" : undefined}>
-          <LogOut className={cn(collapsed ? "w-5 h-5" : "w-4 h-4")} />
+        <button
+          onClick={() => setIsCollapsed(!collapsed)}
+          className={cn(
+            "hidden md:flex absolute -right-3 top-6 bg-primary text-primary-foreground rounded-full p-1 shadow-md hover:bg-primary/90 transition-transform hover:scale-110",
+            collapsed && "rotate-180"
+          )}
+        >
+          <ChevronLeft className="w-4 h-4" />
         </button>
       </div>
     </div>
@@ -295,29 +308,69 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
 
   return (
     <>
-      {/* Mobile toggle */}
-      <button
-        onClick={() => setMobileOpen(true)}
-        className="lg:hidden fixed top-3 start-4 z-50 p-2.5 rounded-xl bg-sidebar border border-sidebar-border shadow-sm text-foreground/80 hover:text-foreground hover:bg-sidebar-accent hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
+      <div 
+        className={cn(
+          "hidden md:flex flex-col bg-sidebar border-r border-sidebar-border transition-all duration-300 relative z-30 h-screen",
+          isCollapsed ? "w-16" : "w-64"
+        )}
       >
-        <PanelLeft className="w-5 h-5" />
-      </button>
-
-      {/* Mobile overlay */}
-      {mobileOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 flex">
-          <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
-          <div className="relative w-72 flex flex-col shadow-2xl h-full bg-sidebar transition-transform animate-in ltr:slide-in-from-left-4 rtl:slide-in-from-right-4">
-            <button 
-              onClick={() => setMobileOpen(false)} 
-              className="absolute top-4 -end-16 w-12 h-12 rounded-full bg-white shadow-xl flex items-center justify-center text-slate-600 hover:text-slate-900 hover:scale-105 transition-all z-10"
-            >
-              <X className="w-6 h-6" />
-            </button>
-            {renderNavContent(false)}
+            <div className="flex items-center justify-between p-4 border-b border-sidebar-border">
+              <h2 className="text-lg font-bold text-sidebar-foreground">{t('menu', 'Menu')}</h2>
+              <button 
+                onClick={() => setMobileOpen(false)} 
+                className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground hover:scale-105 transition-all"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto pb-[env(safe-area-inset-bottom)]">
+              {renderNavContent(false)}
+            </div>
           </div>
         </div>
       )}
+
+      {/* Mobile Bottom Navigation */}
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-xl border-t border-border shadow-[0_-4px_20px_rgba(0,0,0,0.06)] pb-[env(safe-area-inset-bottom)]">
+        <div className="flex items-center justify-around h-16 px-1">
+          {navItems.slice(0, 4).map((item) => {
+            const isActive = location.pathname === item.path || (item.path !== "/" && location.pathname.startsWith(item.path));
+            const IconComp = typeof item.icon === 'string' ? ICON_MAP[item.icon] || LayoutDashboard : item.icon;
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={cn(
+                  "flex flex-col items-center justify-center gap-1 py-1 px-2 rounded-xl min-w-[64px] transition-all",
+                  isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                <div className={cn("w-8 h-8 rounded-full flex items-center justify-center transition-colors", isActive ? "bg-primary/10" : "")}>
+                  <IconComp className={cn("w-5 h-5 transition-transform", isActive ? "scale-110" : "")} />
+                </div>
+                <span className={cn("text-[10px] font-semibold leading-none", isActive ? "text-primary" : "")}>
+                  {t(item.label.toLowerCase().replace(/\s+/g, '_'), item.label)}
+                </span>
+              </Link>
+            );
+          })}
+          
+          {/* More Tab */}
+          <button
+            onClick={() => setMobileOpen(true)}
+            className="flex flex-col items-center justify-center gap-1 py-1 px-2 rounded-xl min-w-[64px] transition-all text-muted-foreground hover:text-foreground"
+          >
+            <div className="w-8 h-8 rounded-full flex items-center justify-center transition-colors">
+              <MoreHorizontal className="w-5 h-5 transition-transform" />
+            </div>
+            <span className="text-[10px] font-semibold leading-none">
+              {t("more", "More")}
+            </span>
+          </button>
+        </div>
+      </nav>
+
+
 
       {/* Desktop sidebar */}
       <aside className={cn(
@@ -366,6 +419,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      
+      <ProfileAvatarDialog open={showAvatarDialog} onOpenChange={setShowAvatarDialog} />
     </>
   );
 }

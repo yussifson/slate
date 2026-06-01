@@ -219,17 +219,17 @@ export default function OnboardingWizard() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex flex-col justify-center items-center py-12 px-4 sm:px-6 relative overflow-hidden font-sans">
+    <div className="min-h-[100dvh] bg-[#f8fafc] flex flex-col justify-center items-center sm:py-12 sm:px-6 relative overflow-hidden font-sans">
       
       {/* Background Decorative Elements */}
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-100 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
       <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-indigo-100 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
       {/* Main Container */}
-      <div className="w-full max-w-2xl bg-white rounded-3xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] border border-slate-100 relative z-10 flex flex-col max-h-[85vh]">
+      <div className="w-full h-[100dvh] sm:h-auto sm:max-w-2xl bg-white sm:rounded-3xl sm:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] sm:border border-slate-100 relative z-10 flex flex-col sm:max-h-[85vh]">
         
         {/* Header Section */}
-        <div className="px-8 pt-8 pb-6 border-b border-slate-100 shrink-0">
+        <div className="px-5 sm:px-8 pt-6 sm:pt-8 pb-6 border-b border-slate-100 shrink-0">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
               <img src="/optalflow-logo.svg" alt="Optalflow" className="h-10" />
@@ -270,7 +270,7 @@ export default function OnboardingWizard() {
         </div>
 
         {/* Scrollable Content Area */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto px-8 py-8 scroll-smooth hide-scrollbar">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto px-5 sm:px-8 py-6 sm:py-8 scroll-smooth hide-scrollbar">
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             
             {/* Step 1: Company Profile */}
@@ -649,7 +649,7 @@ export default function OnboardingWizard() {
         </div>
 
         {/* Footer Navigation */}
-        <div className="px-8 py-5 border-t border-slate-100 bg-slate-50/50 rounded-b-3xl shrink-0">
+        <div className="px-5 sm:px-8 py-4 sm:py-5 border-t border-slate-100 bg-slate-50/50 sm:rounded-b-3xl shrink-0">
           <div className="flex justify-between items-center gap-4">
             {step > 1 ? (
               <Button 

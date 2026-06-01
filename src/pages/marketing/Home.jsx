@@ -306,7 +306,7 @@ function SuitesSection() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <section className="py-24 md:py-32 bg-white relative overflow-hidden">
+    <section className="py-16 md:py-24 lg:py-32 bg-white relative overflow-hidden">
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-500/10 blur-[120px] rounded-full pointer-events-none transform translate-x-1/3 -translate-y-1/3"></div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <FadeIn>
@@ -641,7 +641,7 @@ export default function Home() {
       {/* ============================================================ */}
       {/*  HOW IT WORKS                                                */}
       {/* ============================================================ */}
-      <section className="py-20 md:py-32 bg-slate-50 border-t border-slate-100">
+      <section className="py-16 md:py-24 lg:py-32 bg-slate-50 border-t border-slate-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16 md:mb-24">
             <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-600 text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
@@ -658,7 +658,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 relative">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 relative">
             {/* Connecting line for desktop */}
             <div className="hidden md:block absolute top-[52px] left-[15%] right-[15%] h-0.5 bg-slate-200" />
             
@@ -741,7 +741,7 @@ export default function Home() {
       {/* ============================================================ */}
       {/*  FEATURES GRID (Bento Box Style)                           */}
       {/* ============================================================ */}
-      <section className="py-24 md:py-32 bg-slate-50 border-y border-slate-100 relative overflow-hidden">
+      <section className="py-16 md:py-24 lg:py-32 bg-slate-50 border-y border-slate-100 relative overflow-hidden">
         {/* Decorative Grid */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
         
@@ -819,7 +819,7 @@ export default function Home() {
       {/* ============================================================ */}
       {/*  TESTIMONIALS                                                */}
       {/* ============================================================ */}
-      <section className="py-24 md:py-32 bg-white relative">
+      <section className="py-16 md:py-24 lg:py-32 bg-white relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <FadeIn>
             <div className="text-center max-w-2xl mx-auto mb-20">
@@ -832,7 +832,7 @@ export default function Home() {
             </div>
           </FadeIn>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {testimonials.map((item, idx) => {
               return (
                 <FadeIn key={idx} delay={`delay-[${idx * 120}ms]`}>
@@ -881,7 +881,7 @@ export default function Home() {
       {/* ============================================================ */}
       {/*  CTA BANNER                                                  */}
       {/* ============================================================ */}
-      <section className="py-24 md:py-32">
+      <section className="py-16 md:py-24 lg:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="relative bg-gradient-to-br from-primary to-blue-700 rounded-3xl px-6 py-20 md:py-24 md:px-12 text-center overflow-hidden shadow-[0_20px_60px_hsl(var(--primary)/0.3)]">

@@ -155,11 +155,156 @@ export default function Login() {
           <div>
             <h2 className="text-2xl font-bold tracking-tight text-foreground">{t("workspace_not_found", "Workspace Not Found")}</h2>
             <p className="mt-2 text-sm text-muted-foreground">
+  const { t } = useTranslation();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [branding, setBranding] = useState({ name: 'Optalflow', logo_url: null, tagline: 'Enter your credentials to access your account' });
+
+  const { currentSubdomain, baseDomain } = getSubdomainAndBase();
+
+  const [checkingSubdomain, setCheckingSubdomain] = useState(!!currentSubdomain);
+  const [invalidSubdomain, setInvalidSubdomain] = useState(false);
+
+  useEffect(() => {
+    const fetchBranding = async () => {
+      if (currentSubdomain) {
+        try {
+          // Use RPC to bypass RLS securely for public branding info
+          const { data, error } = await supabase.rpc('get_company_by_subdomain', { p_subdomain: currentSubdomain });
+          
+          if (error) {
+             console.error("Could not fetch branding via RPC", error);
+             // Fallback to table query if RPC is not created yet (for development)
+             const { data: tableData, error: tableError } = await supabase.from('companies').select('name, logo_url').eq('subdomain', currentSubdomain).single();
+             if (tableData) {
+               setBranding({ name: tableData.name || 'Optalflow', logo_url: tableData.logo_url, tagline: `Sign in to ${tableData.name || 'your workspace'}` });
+             } else if (tableError) {
+               console.error("Table fallback error:", tableError);
+               setInvalidSubdomain(true);
+             }
+          } else if (data) {
+            // Handle both object and array responses (depending on how the RPC was created)
+            const brandData = Array.isArray(data) ? data[0] : data;
+            if (brandData && brandData.name) {
+              setBranding({
+                name: brandData.name || 'Optalflow',
+                logo_url: brandData.logo_url,
+                tagline: `Sign in to ${brandData.name || 'your workspace'}`
+              });
+            } else {
+              setInvalidSubdomain(true);
+            }
+          } else {
+             // RPC succeeded but returned null/empty
+             setInvalidSubdomain(true);
+          }
+        } catch (err) {
+          console.error("Could not fetch branding", err);
+        } finally {
+          setCheckingSubdomain(false);
+        }
+      }
+    };
+    fetchBranding();
+  }, [currentSubdomain]);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (signInError) {
+      setError(signInError.message);
+      setLoading(false);
+      return;
+    }
+
+    if (currentSubdomain) {
+      // Check if user belongs to this subdomain
+      const { data: profile } = await supabase.from('profiles').select('company_id, role').eq('id', authData.user.id).single();
+      if (profile?.company_id) {
+        const { data: company } = await supabase.from('companies').select('name, subdomain').eq('id', profile.company_id).single();
+        const companySubdomain = company?.subdomain || company?.name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
+        
+        if (companySubdomain && companySubdomain !== currentSubdomain) {
+          const port = window.location.port ? `:${window.location.port}` : '';
+          let url = `${window.location.protocol}//${companySubdomain}.${baseDomain}${port}/`;
+          if (authData?.session?.access_token && authData?.session?.refresh_token) {
+            url += `?access_token=${authData.session.access_token}&refresh_token=${authData.session.refresh_token}`;
+          }
+          window.location.href = url;
+          return;
+        }
+      }
+      window.location.href = '/';
+    } else {
+      // Base domain login
+      const { data: profile } = await supabase.from('profiles').select('company_id, role, onboarding_completed').eq('id', authData.user.id).single();
+      
+      // If Super Admin logs into the Base Domain, route directly to the admin command center
+      if (profile?.role === 'super_admin') {
+        window.location.href = '/admin';
+        return;
+      }
+
+      if (profile?.company_id) {
+        const { data: company } = await supabase.from('companies').select('name, subdomain').eq('id', profile.company_id).single();
+        const companySubdomain = company?.subdomain || company?.name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
+        
+        if (companySubdomain) {
+          const port = window.location.port ? `:${window.location.port}` : '';
+          let url = `${window.location.protocol}//${companySubdomain}.${baseDomain}${port}/`;
+          if (authData?.session?.access_token && authData?.session?.refresh_token) {
+            url += `?access_token=${authData.session.access_token}&refresh_token=${authData.session.refresh_token}`;
+          }
+          window.location.href = url;
+          return;
+        }
+      }
+      // Only send to onboarding if they don't have a company AND haven't completed it
+      if (!profile?.company_id && !profile?.onboarding_completed) {
+        window.location.href = '/onboarding';
+      } else {
+        window.location.href = '/';
+      }
+    }
+  };
+
+  if (checkingSubdomain) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="animate-pulse text-muted-foreground font-medium">{t("checking_workspace_access", "Checking workspace access...")}</div>
+      </div>
+    );
+  }
+
+  if (invalidSubdomain) {
+    const mainUrl = `${getMainAppUrl()}/login`;
+
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background p-4 relative">
+        <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
+          <ThemeToggle />
+        </div>
+        <div className="w-full max-w-md space-y-6 rounded-xl bg-card p-8 shadow-xl text-center border border-border">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10">
+            <AlertCircle className="h-8 w-8 text-red-500" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">{t("workspace_not_found", "Workspace Not Found")}</h2>
+            <p className="mt-2 text-sm text-muted-foreground">
               {t(
                 "we_couldn_t_find_an_organizati",
                 "We couldn't find an organization matching the web address"
               )} <span className="font-semibold text-foreground">"{currentSubdomain}"</span>.
-                          </p>
+            </p>
           </div>
           <div className="pt-4 border-t border-border">
             <Button onClick={() => window.location.href = mainUrl} variant="outline" className="w-full">
@@ -172,17 +317,17 @@ export default function Login() {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-white">
+    <div className="min-h-screen flex flex-col lg:flex-row bg-white">
       {/* Left Side: Form */}
-      <div className="w-full lg:w-[45%] xl:w-[40%] flex flex-col justify-center px-6 sm:px-12 md:px-16 lg:px-20 relative z-10 bg-white shadow-[10px_0_40px_-15px_rgba(0,0,0,0.05)] border-r border-slate-100 overflow-y-auto py-12">
-        <div className="absolute top-6 right-6 lg:hidden">
-          <ThemeToggle />
-        </div>
-        
-        <div className="w-full max-w-sm mx-auto">
-          <div className="mb-10 text-center lg:text-left">
-            <Logo className="w-10 h-10 mx-auto lg:mx-0 mb-6" />
-            <h2 className="text-3xl font-bold tracking-tight text-slate-900">{t("sign_in_to", "Sign in to")} {branding.name}</h2>
+      <div className="flex-1 flex flex-col justify-center px-8 lg:px-16 py-12">
+        <div className="max-w-md w-full mx-auto">
+          <div className="flex items-center justify-between mb-8">
+            <Logo />
+            <ThemeToggle />
+          </div>
+          
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900">{t("sign_in_to", "Sign in to")} {branding.name}</h1>
             <p className="mt-2 text-sm text-slate-500 font-medium">{branding.tagline}</p>
           </div>
           
@@ -221,7 +366,7 @@ export default function Login() {
               {loading ? 'Signing in...' : 'Sign in to workspace'}
             </Button>
 
-            <div className="text-center mt-8">
+            <div className="text-center mt-8 pb-12 lg:pb-0">
               <span className="text-sm text-slate-500 font-medium">{t("don_t_have_an_account", "Don't have an account?")} </span>
               <a href="/signup" className="text-sm font-bold text-blue-600 hover:underline">
                 {t("create_workspace", "Create workspace")}

@@ -11,6 +11,7 @@ import NotificationBell from "./NotificationBell";
 import TimeTracker from "../shared/TimeTracker";
 import { useCompany } from "@/hooks/useCompanyId";
 import { INDUSTRIES } from "@/config/industries";
+import ProfileAvatarDialog from "@/components/shared/ProfileAvatarDialog";
 
 const PAGE_TITLES = {
   "/": "Dashboard",
@@ -52,6 +53,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [showAvatarDialog, setShowAvatarDialog] = useState(false);
   const { company } = useCompany();
 
   const handleRefresh = async () => {
@@ -99,7 +101,8 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
   return (
     <div className="h-12 border-t-[3px] border-t-blue-500 border-b border-border bg-card sticky top-0 z-30 flex items-center pl-4 pr-5 lg:px-5 gap-3">
       {/* Sidebar Toggle & Breadcrumb */}
-      <div className="flex items-center gap-3 text-sm flex-1">
+      {/* Sidebar Toggle & Breadcrumb */}
+      <div className="flex items-center gap-2 sm:gap-3 text-sm flex-1 min-w-0">
         <button 
           onClick={toggleSidebar}
           className="hidden lg:flex p-1.5 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
@@ -108,14 +111,14 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
           <PanelLeft className="w-5 h-5" />
         </button>
         <div className="h-4 w-px bg-border hidden lg:block mx-1"></div>
-        <LayoutDashboard className="w-4 h-4 text-muted-foreground hidden sm:block" />
-        <span className="font-medium text-foreground">{title}</span>
+        <LayoutDashboard className="w-4 h-4 text-muted-foreground hidden sm:block shrink-0" />
+        <span className="font-bold sm:font-medium text-foreground truncate max-w-[100px] sm:max-w-none text-base sm:text-sm">{title}</span>
       </div>
       {/* Right */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1 sm:gap-2 shrink-0">
         {/* Super Admin Industry Switcher */}
         {user?.role === 'super_admin' && (
-          <div className="flex items-center gap-1.5 border border-amber-200 dark:border-amber-900 bg-amber-500/10 dark:bg-amber-950/20 px-2 py-1 rounded-md text-xs font-bold text-amber-700 dark:text-amber-400">
+          <div className="hidden sm:flex items-center gap-1.5 border border-amber-200 dark:border-amber-900 bg-amber-500/10 dark:bg-amber-950/20 px-2 py-1 rounded-md text-xs font-bold text-amber-700 dark:text-amber-400">
             <Layers className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '6s' }} />
             <select
               value={currentIndustry}
@@ -155,42 +158,48 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
         <Button
           onClick={toggleAI}
           variant="ghost"
-          size="sm"
-          className={`relative overflow-hidden gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg border transition-all duration-300 ${
+          size="icon"
+          className={`relative overflow-hidden sm:w-auto sm:px-3 sm:py-1.5 text-xs font-bold rounded-lg border transition-all duration-300 ${
             isAIOpen
               ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)] scale-95"
-              : "bg-card text-foreground border-border hover:border-blue-500/50 hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-indigo-50/50 dark:hover:from-blue-950/20 dark:hover:to-indigo-950/20 hover:text-blue-600 dark:hover:text-blue-400 hover:shadow-[0_0_10px_rgba(59,130,246,0.15)]"
+              : "bg-card text-foreground border-border hover:border-blue-500/50 hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-indigo-50/50 hover:text-blue-600 hover:shadow-[0_0_10px_rgba(59,130,246,0.15)]"
           }`}
         >
           <span className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 opacity-0 hover:opacity-100 transition-opacity duration-300" />
-          <Sparkles className={`w-3.5 h-3.5 ${isAIOpen ? "animate-spin text-white" : "text-blue-500"}`} style={{ animationDuration: '3s' }} />
-          <span>{t("orbit_ai", "Orbit AI")}</span>
-          <span className="flex h-1.5 w-1.5 relative">
+          <Sparkles className={`w-4 h-4 sm:w-3.5 sm:h-3.5 ${isAIOpen ? "animate-spin text-white" : "text-blue-500"} sm:mr-1.5`} style={{ animationDuration: '3s' }} />
+          <span className="hidden sm:inline">{t("orbit_ai", "Orbit AI")}</span>
+          <span className="flex h-1.5 w-1.5 relative absolute sm:static right-1 top-1 sm:right-auto sm:top-auto">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
           </span>
         </Button>
 
         {/* Global Time Tracker */}
-        {currentIndustry === 'law' && <TimeTracker />}
+        <div className="hidden sm:block">
+          {currentIndustry === 'law' && <TimeTracker />}
+        </div>
 
         {/* Premium Theme Toggle & Notifications */}
         <ThemeToggle />
         <NotificationBell user={user} />
 
         {/* User */}
-        <div className="flex items-center gap-2 ml-1">
+        <button onClick={() => setShowAvatarDialog(true)} className="flex items-center gap-2 sm:ml-1 hover:bg-muted/50 p-1 rounded-lg transition-colors">
           <span className="hidden sm:block text-sm font-medium text-foreground">{displayName}</span>
-          <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center shadow-sm">
-            <span className="text-[11px] font-bold text-white">{initials}</span>
+          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary flex items-center justify-center shadow-sm hover:ring-2 hover:ring-primary transition-all overflow-hidden">
+            {user?.avatar_url ? (
+              <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-[10px] sm:text-[11px] font-bold text-white">{initials}</span>
+            )}
           </div>
-        </div>
+        </button>
 
         {/* Refresh */}
         <Button
           variant="ghost"
           size="sm"
-          className="gap-1.5 text-xs text-muted-foreground hover:text-foreground"
+          className="hidden md:flex gap-1.5 text-xs text-muted-foreground hover:text-foreground"
           onClick={handleRefresh}
           disabled={isRefreshing}
         >
@@ -198,6 +207,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
           <span className="hidden sm:block">{isRefreshing ? "Refreshing..." : "Refresh"}</span>
         </Button>
       </div>
+      <ProfileAvatarDialog open={showAvatarDialog} onOpenChange={setShowAvatarDialog} />
     </div>
   );
 }
