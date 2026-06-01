@@ -419,6 +419,8 @@ export const getIndustryRoles = (industryKey) => {
 export const clientNav = [
   { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
   { label: 'Cases / Projects', path: '/client-cases', icon: 'Briefcase' },
+  { label: 'Team Chat', path: '/chat', icon: 'MessageSquare' },
+  { label: 'Video Calls', path: '/board', icon: 'Video' },
   { label: 'Invoices', path: '/invoices', icon: 'Receipt' },
   { label: 'Documents', path: '/documents', icon: 'FolderOpen' },
   { label: 'Settings', path: '/settings', icon: 'Settings' }

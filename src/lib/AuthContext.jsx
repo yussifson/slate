@@ -220,6 +220,7 @@ export const AuthProvider = ({ children }) => {
         company_industry: companyData?.industry_type || 'law',
         email: sessionUser.email, 
         full_name: staffRecord?.full_name || profile?.full_name || sessionUser.user_metadata?.full_name || "Admin",
+        avatar_url: sessionUser.user_metadata?.avatar_url || profile?.avatar_url || null,
         subscription_plan: companyData?.subscription_plan || 'starter',
         subscription_status: companyData?.subscription_status || 'trial',
         company_created_date: companyData?.created_date || null

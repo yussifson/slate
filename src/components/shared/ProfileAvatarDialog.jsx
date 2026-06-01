@@ -21,8 +21,13 @@ export default function ProfileAvatarDialog({ open, onOpenChange }) {
   const handleSaveAvatar = async (url) => {
     setIsSaving(true);
     try {
-      // Because base44.entities.Profile maps to 'profiles', we update it
-      await base44.entities.Profile.update(user.id, { avatar_url: url });
+      // Update the profiles table directly
+      const { error: profileError } = await base44.supabase.from('profiles').update({ avatar_url: url }).eq('id', user.id);
+      if (profileError) throw profileError;
+      
+      // Also update auth user metadata just in case
+      await base44.supabase.auth.updateUser({ data: { avatar_url: url } });
+
       await refreshUser();
       toast({ title: t("avatar_updated", "Avatar Updated"), description: t("your_avatar_has_been_saved", "Your new avatar has been saved successfully.") });
       onOpenChange(false);

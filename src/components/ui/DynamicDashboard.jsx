@@ -2,25 +2,26 @@ import React, { useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, AreaChart, Area } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-export default function DynamicDashboard({ records, moduleDef }) {
+export default function DynamicDashboard({ data, records, moduleDef }) {
+  const items = data || records || [];
   // Simple data aggregation for charts
   const statusData = useMemo(() => {
     const counts = {};
-    records.forEach(r => {
+    items.forEach(r => {
       const status = r.status || 'Active';
       counts[status] = (counts[status] || 0) + 1;
     });
     return Object.keys(counts).map(key => ({ name: key, value: counts[key] }));
-  }, [records]);
+  }, [data, records]);
 
   const timelineData = useMemo(() => {
     const counts = {};
-    records.forEach(r => {
+    items.forEach(r => {
       const date = new Date(r.created_date || Date.now()).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
       counts[date] = (counts[date] || 0) + 1;
     });
     return Object.keys(counts).map(key => ({ date: key, count: counts[key] }));
-  }, [records]);
+  }, [data, records]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">

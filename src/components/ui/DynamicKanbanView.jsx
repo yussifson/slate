@@ -5,9 +5,10 @@ import { supabase } from '@/api/supabaseClient';
 import { useToast } from '@/components/ui/use-toast';
 
 // A simple Kanban board for any module that has a "status" field
-export default function DynamicKanbanView({ records, moduleDef, fieldDefinitions, onRecordUpdated }) {
+export default function DynamicKanbanView({ data, records, moduleDef, fieldDefinitions, onRecordUpdated }) {
   const { toast } = useToast();
   const [columns, setColumns] = useState({});
+  const items = data || records || [];
 
   useEffect(() => {
     // Find if there is a 'status' or 'stage' field
@@ -25,7 +26,7 @@ export default function DynamicKanbanView({ records, moduleDef, fieldDefinitions
     colKeys.forEach(k => newCols[k] = []);
     newCols['Uncategorized'] = [];
 
-    records.forEach(r => {
+    items.forEach(r => {
       const statusVal = r.data?.status || r.data?.stage;
       if (statusVal && newCols[statusVal]) {
         newCols[statusVal].push(r);
@@ -43,7 +44,7 @@ export default function DynamicKanbanView({ records, moduleDef, fieldDefinitions
     }
 
     setColumns(newCols);
-  }, [records, fieldDefinitions]);
+  }, [data, records, fieldDefinitions]);
 
   const onDragEnd = async (result) => {
     if (!result.destination) return;

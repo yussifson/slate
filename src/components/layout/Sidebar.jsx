@@ -121,7 +121,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   const allowedPaths = isAdmin ? null : (ROLE_PERMISSIONS[user?.role] || ROLE_PERMISSIONS.support);
 
   const filteredCompanyNav = isOrbitMode ? [] : industryNav.filter(item => {
-    if (activeModules && !['/', '/settings', '/integrations', '/admin'].includes(item.path)) {
+    if (activeModules && !['/', '/settings', '/integrations', '/admin', '/email-inbox', '/chat', '/board'].includes(item.path)) {
       if (!activeModules.includes(item.path)) return false;
     }
     if (isAdmin) return true;

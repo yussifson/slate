@@ -28,14 +28,16 @@ function VideoRoomInner({ roomUrl, onLeave }) {
 
   const toggleAudio = () => {
     if (!daily) return;
-    daily.setLocalAudio(!isMuted);
-    setIsMuted(!isMuted);
+    const newMutedState = !isMuted;
+    daily.setLocalAudio(!newMutedState); // false means muted
+    setIsMuted(newMutedState);
   };
 
   const toggleVideo = () => {
     if (!daily) return;
-    daily.setLocalVideo(!isVideoOff);
-    setIsVideoOff(!isVideoOff);
+    const newVideoOffState = !isVideoOff;
+    daily.setLocalVideo(!newVideoOffState); // false means video off
+    setIsVideoOff(newVideoOffState);
   };
 
   const toggleScreenShare = () => {
@@ -54,21 +56,21 @@ function VideoRoomInner({ roomUrl, onLeave }) {
   };
 
   return (
-    <div className="flex flex-col h-full bg-slate-950 rounded-xl overflow-hidden relative">
+    <div className="flex flex-col h-full bg-background rounded-xl overflow-hidden relative border border-border shadow-sm">
       {/* Video Grid */}
-      <div className="flex-1 p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-fr overflow-y-auto">
+      <div className="flex-1 p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-fr overflow-y-auto bg-muted/30">
         {participantIds.map(id => (
           <ParticipantTile key={id} id={id} isLocal={id === localSessionId} />
         ))}
         {participantIds.length === 0 && (
           <div className="absolute inset-0 flex items-center justify-center">
-             <div className="w-12 h-12 rounded-full border-[3px] border-blue-500/30 border-t-blue-500 animate-spin"></div>
+             <div className="w-12 h-12 rounded-full border-[3px] border-primary/30 border-t-primary animate-spin"></div>
           </div>
         )}
       </div>
 
       {/* Control Bar */}
-      <div className="h-20 bg-slate-900 border-t border-slate-800 flex items-center justify-center gap-4 px-6 z-10">
+      <div className="h-20 bg-card border-t border-border flex items-center justify-center gap-4 px-6 z-10">
         <Button 
           onClick={toggleAudio}
           variant={isMuted ? "destructive" : "secondary"}
@@ -95,7 +97,7 @@ function VideoRoomInner({ roomUrl, onLeave }) {
         </Button>
         <Button 
           variant="secondary"
-          className="h-12 px-6 rounded-full font-semibold gap-2 hover:bg-blue-600 hover:text-white transition-colors"
+          className="h-12 px-6 rounded-full font-semibold gap-2 hover:bg-primary hover:text-primary-foreground transition-colors"
         >
           <Sparkles className="w-4 h-4" /> AI Assistant
         </Button>
