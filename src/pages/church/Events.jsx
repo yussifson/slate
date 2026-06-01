@@ -90,7 +90,7 @@ export default function Events() {
       ...(editRecord ? { id: editRecord.id } : {}),
       recordType: 'event',
       payload,
-      status: 'Active',
+      status: 'active',
       searchText: `${formData.title} ${formData.venue} ${formData.type}`
     }, {
       onSuccess: () => {

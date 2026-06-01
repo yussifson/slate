@@ -73,7 +73,7 @@ export default function Employees() {
       mutateRecord.mutate({
         recordType: 'employee',
         payload,
-        status: 'Active',
+        status: 'active',
         searchText: `${formData.name} ${formData.department} ${formData.role} ${employeeId}`
       }, {
         onSuccess: () => {

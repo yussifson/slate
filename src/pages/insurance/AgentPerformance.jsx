@@ -48,7 +48,7 @@ export default function AgentPerformance() {
         id: editTargetId,
         recordType: 'agent',
         payload: { ...formData },
-        status: formData.status || 'Active',
+        status: formData.status || 'active',
         searchText: `${formData.agentName} ${formData.region}`
       }, {
         onSuccess: () => {
@@ -66,7 +66,7 @@ export default function AgentPerformance() {
       mutateRecord.mutate({
         recordType: 'agent',
         payload: { ...formData, agentCode },
-        status: 'Active',
+        status: 'active',
         searchText: `${formData.agentName} ${formData.region} ${agentCode}`
       }, {
         onSuccess: () => {

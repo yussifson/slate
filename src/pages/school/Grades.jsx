@@ -116,7 +116,7 @@ export default function Grades() {
         id: editingId,
         recordType: 'grade',
         payload,
-        status: 'Active',
+        status: 'active',
         searchText: `${formData.studentName} ${formData.className} ${formData.subject} ${formData.examName}`,
       }, {
         onSuccess: () => {
@@ -131,7 +131,7 @@ export default function Grades() {
       mutateRecord.mutate({
         recordType: 'grade',
         payload,
-        status: 'Active',
+        status: 'active',
         searchText: `${formData.studentName} ${formData.className} ${formData.subject} ${formData.examName}`,
       }, {
         onSuccess: () => {

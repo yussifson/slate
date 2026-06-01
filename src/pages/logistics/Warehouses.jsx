@@ -28,7 +28,7 @@ const EMPTY_FORM = {
   manager: '',
   phone: '',
   categories: '',
-  status: 'Active',
+  status: 'active',
 };
 
 function generateCode() {

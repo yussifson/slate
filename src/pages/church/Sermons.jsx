@@ -62,7 +62,7 @@ export default function Sermons() {
       ...(editRecord ? { id: editRecord.id } : {}),
       recordType: 'sermon',
       payload,
-      status: 'Active',
+      status: 'active',
       searchText: `${formData.title} ${formData.preacher} ${formData.series}`
     }, {
       onSuccess: () => {

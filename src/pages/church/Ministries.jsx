@@ -71,7 +71,7 @@ export default function Ministries() {
       ...(editRecord ? { id: editRecord.id } : {}),
       recordType: 'ministry',
       payload,
-      status: 'Active',
+      status: 'active',
       searchText: `${formData.name} ${formData.leader}`
     }, {
       onSuccess: () => {

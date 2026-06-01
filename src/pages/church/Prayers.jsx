@@ -57,7 +57,7 @@ export default function Prayers() {
       ...(editRecord ? { id: editRecord.id } : {}),
       recordType: 'prayer',
       payload,
-      status: 'Active',
+      status: 'active',
       searchText: `${payload.name} ${formData.request}`
     }, {
       onSuccess: () => {

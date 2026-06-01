@@ -81,7 +81,7 @@ export default function Suppliers() {
       ...(editingId ? { id: editingId } : {}),
       recordType: 'supplier',
       payload,
-      status: 'Active',
+      status: 'active',
       searchText: `${formData.name} ${formData.category} ${formData.contact}`
     }, {
       onSuccess: () => {

@@ -50,7 +50,7 @@ export default function Policies() {
         id: editTargetId,
         recordType: 'policy',
         payload: { ...formData },
-        status: formData.status || 'Active',
+        status: formData.status || 'active',
         searchText: `${formData.holderName} ${formData.policyType}`
       }, {
         onSuccess: () => {
@@ -70,7 +70,7 @@ export default function Policies() {
       mutateRecord.mutate({
         recordType: 'policy',
         payload: { ...formData, policyNumber },
-        status: 'Active',
+        status: 'active',
         searchText: `${formData.holderName} ${formData.policyType} ${policyNumber}`
       }, {
         onSuccess: () => {

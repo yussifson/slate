@@ -67,7 +67,7 @@ export default function Members() {
       ...(editRecord ? { id: editRecord.id } : {}),
       recordType: 'member',
       payload,
-      status: 'Active',
+      status: 'active',
       searchText: `${memberId} ${formData.name} ${formData.group}`
     }, {
       onSuccess: () => {

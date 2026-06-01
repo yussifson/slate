@@ -61,7 +61,7 @@ export default function Volunteers() {
       ...(editRecord ? { id: editRecord.id } : {}),
       recordType: 'volunteer',
       payload,
-      status: 'Active',
+      status: 'active',
       searchText: `${formData.name} ${formData.ministry} ${formData.role}`
     }, {
       onSuccess: () => {

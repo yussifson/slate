@@ -34,7 +34,7 @@ const EMPTY_FORM = {
   email: '',
   vehicleAssigned: '',
   totalTrips: '0',
-  status: 'Active',
+  status: 'active',
 };
 
 function generateDriverId() {

@@ -61,7 +61,7 @@ export default function CSVImportModal({ isOpen, onClose, recordType, onComplete
           await mutateRecord.mutateAsync({
             recordType,
             payload,
-            status: 'Active',
+            status: 'active',
             searchText: Object.values(payload).join(' ')
           });
           successCount++;

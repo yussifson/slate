@@ -42,7 +42,7 @@ export default function Restaurant() {
     mutateRecord.mutate({
       recordType: 'menu',
       payload,
-      status: 'Active',
+      status: 'active',
       searchText: `${newMenu.name} ${newMenu.category}`
     }, {
       onSuccess: () => {

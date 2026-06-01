@@ -76,7 +76,7 @@ export default function Tithes() {
           ...(editRecord ? { id: editRecord.id } : {}),
           recordType: 'tithe',
           payload,
-          status: 'Active',
+          status: 'active',
           searchText: `${trxId} ${formData.member} ${formData.type}`
         }, {
           onSuccess: () => {

@@ -74,7 +74,7 @@ export default function Library() {
           available: payload.total - (books.find(b => b.id === editingId)?.borrowed || 0),
           borrowed: books.find(b => b.id === editingId)?.borrowed || 0
         },
-        status: 'Active',
+        status: 'active',
         searchText: `${formData.title} ${formData.author} ${formData.isbn}`
       }, {
         onSuccess: () => {
@@ -91,7 +91,7 @@ export default function Library() {
       mutateRecord.mutate({
         recordType: 'book',
         payload,
-        status: 'Active',
+        status: 'active',
         searchText: `${formData.title} ${formData.author} ${formData.isbn}`
       }, {
         onSuccess: () => {
@@ -338,7 +338,7 @@ export default function Library() {
                             recordType: 'library_category',
                             payload: { name: v },
                             searchText: v,
-                            status: 'Active',
+                            status: 'active',
                           });
                           setFormData({ ...formData, category: v });
                         }}

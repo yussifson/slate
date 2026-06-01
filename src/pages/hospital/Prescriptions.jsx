@@ -64,7 +64,7 @@ export default function Prescriptions() {
       id: editingRx?.id,
       recordType: 'prescription',
       payload,
-      status: 'Active',
+      status: 'active',
       searchText: `${formData.patient} ${formData.drug} ${rxId}`
     }, {
       onSuccess: () => {

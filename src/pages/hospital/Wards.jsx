@@ -108,7 +108,7 @@ export default function Wards() {
       id: wardId,
       recordType: 'ward',
       payload,
-      status: 'Active',
+      status: 'active',
       searchText: `${targetWard.name}`
     }, {
       onSuccess: async () => {
@@ -152,7 +152,7 @@ export default function Wards() {
     mutateRecord.mutate({
       recordType: 'ward',
       payload,
-      status: 'Active',
+      status: 'active',
       searchText: `${newWardData.name}`
     }, {
       onSuccess: () => {

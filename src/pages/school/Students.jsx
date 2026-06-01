@@ -98,7 +98,7 @@ export default function Students() {
       name: fullName,
       id_number: formData.studentId || studentId,
       phone: formData.parentPhone,
-      status: formData.status || 'Active',
+      status: formData.status || 'active',
       notes: JSON.stringify({
         class: formData.class,
         age,

@@ -37,7 +37,7 @@ export default function MemberPortal() {
         date: new Date().toISOString().split('T')[0],
         member: user?.name || 'Anonymous'
       },
-      status: 'Active',
+      status: 'active',
       searchText: `${prayerData.title} ${prayerData.detail}`
     }, {
       onSuccess: () => {

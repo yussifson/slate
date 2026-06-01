@@ -126,7 +126,7 @@ export default function Timetable() {
         id: editingId,
         recordType: 'timetable_slot',
         payload,
-        status: 'Active',
+        status: 'active',
         searchText: `${formData.className} ${formData.day} ${formData.subject} ${formData.teacher}`,
       }, {
         onSuccess: () => {
@@ -141,7 +141,7 @@ export default function Timetable() {
       mutateRecord.mutate({
         recordType: 'timetable_slot',
         payload,
-        status: 'Active',
+        status: 'active',
         searchText: `${formData.className} ${formData.day} ${formData.subject} ${formData.teacher}`,
       }, {
         onSuccess: () => {

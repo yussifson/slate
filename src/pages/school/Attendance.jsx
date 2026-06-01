@@ -88,7 +88,7 @@ export default function Attendance() {
         takenBy: takenBy || 'Staff',
         records,
       },
-      status: 'Active',
+      status: 'active',
       searchText: `${selectedClass} ${date} ${takenBy}`,
     }, {
       onSuccess: () => {

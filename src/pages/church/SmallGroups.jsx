@@ -61,7 +61,7 @@ export default function SmallGroups() {
       ...(editRecord ? { id: editRecord.id } : {}),
       recordType: 'group',
       payload,
-      status: 'Active',
+      status: 'active',
       searchText: `${formData.name} ${formData.leader} ${formData.location}`
     }, {
       onSuccess: () => {

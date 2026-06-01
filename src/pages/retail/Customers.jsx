@@ -100,7 +100,7 @@ export default function Customers() {
       ...(editingId ? { id: editingId } : {}),
       recordType: 'customer',
       payload,
-      status: 'Active',
+      status: 'active',
       searchText: `${custId} ${formData.name} ${formData.email}`
     }, {
       onSuccess: () => {
