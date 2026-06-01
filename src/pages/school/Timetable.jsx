@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import { useMeeting } from '@/hooks/integrations/useMeeting';
 import { useCalendar } from '@/hooks/integrations/useCalendar';
+import { useCompanyId } from '@/hooks/useCompanyId';
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
 
@@ -49,6 +50,7 @@ const defaultForm = {
 
 export default function Timetable() {
   const { t } = useTranslation();
+  const companyId = useCompanyId();
   const [selectedClass, setSelectedClass] = useState('Grade 9A');
   const [showModal, setShowModal] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState(null);
@@ -56,7 +58,7 @@ export default function Timetable() {
   const [formData, setFormData] = useState({ ...defaultForm, createZoomLink: false, addCalendar: false });
 
   const { generateMeetingLink, isGenerating } = useMeeting();
-  const { addToCalendar, isAdding } = useCalendar();
+  const { syncEvent, isSyncing } = useCalendar();
   const { data: dbRecords = [], isLoading } = useIndustryRecords('timetable_slot');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
@@ -112,7 +114,11 @@ export default function Timetable() {
     }
 
     if (formData.addCalendar) {
-      await addToCalendar({ title: `${payload.subject} (${payload.className})`, date: payload.day, time: payload.startTime, details: payload.room });
+      await syncEvent({ 
+        companyId, 
+        provider: 'google', 
+        eventDetails: { title: `${payload.subject} (${payload.className})`, date: payload.day, time: payload.startTime, description: payload.room } 
+      });
     }
 
     if (editingId) {

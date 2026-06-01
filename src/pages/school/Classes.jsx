@@ -6,12 +6,15 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { base44 } from "@/api/base44Client";
 import { toast } from 'react-hot-toast';
+import { useCompanyId } from "@/hooks/useCompanyId";
 import ConfirmationModal from '@/components/ConfirmationModal';
 
 export default function Classes() {
   const { t } = useTranslation();
+  const companyId = useCompanyId();
   const [search, setSearch] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState(null);
@@ -19,9 +22,22 @@ export default function Classes() {
   const [viewDetails, setViewDetails] = useState(null);
 
   // Real Database Hooks
-  const { data: records = [], isLoading: isDbLoading } = useIndustryRecords('class');
-  const mutateClass = useMutateIndustryRecord();
-  const deleteClass = useDeleteIndustryRecord();
+  const queryClient = useQueryClient();
+  const { data: records = [], isLoading: isDbLoading } = useQuery({ 
+    queryKey: ["cases", companyId], 
+    queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId }), 
+    enabled: !!companyId 
+  });
+  
+  const mutateClass = useMutation({
+    mutationFn: (data) => data.id ? base44.entities.LegalCase.update(data.id, data) : base44.entities.LegalCase.create(data),
+    onSuccess: () => queryClient.invalidateQueries(["cases", companyId])
+  });
+
+  const deleteClass = useMutation({
+    mutationFn: (id) => base44.entities.LegalCase.delete(id),
+    onSuccess: () => queryClient.invalidateQueries(["cases", companyId])
+  });
 
   // Form State
   const [formData, setFormData] = useState({
@@ -29,10 +45,20 @@ export default function Classes() {
   });
 
   // Map DB records to UI format
-  const classesData = records.map(r => ({
-    id: r.id,
-    ...r.data
-  }));
+  const classesData = records.map(r => {
+    let extra = {};
+    try { extra = JSON.parse(r.description || '{}'); } catch(e) {}
+    return {
+      id: r.id,
+      name: r.title || 'Untitled Class',
+      subject: r.case_type || 'General',
+      teacher: r.assigned_staff_name || 'Unassigned',
+      room: extra.room || 'TBD',
+      schedule: extra.schedule || 'TBD',
+      students: extra.students || 0,
+      stage: r.stage || 'active'
+    };
+  });
 
   const handleCreateClass = () => {
     if (!formData.name.trim() || !formData.subject.trim()) {
@@ -40,22 +66,21 @@ export default function Classes() {
     }
 
     const payload = {
-      name: formData.name,
-      subject: formData.subject,
-      teacher: formData.teacher,
-      room: formData.room || 'TBD',
-      schedule: formData.schedule || 'TBD',
-      students: 0
+      company_id: companyId,
+      title: formData.name,
+      case_type: formData.subject,
+      assigned_staff_name: formData.teacher,
+      status: 'active',
+      stage: 'primary', // Default stage for dashboard
+      description: JSON.stringify({
+        room: formData.room || 'TBD',
+        schedule: formData.schedule || 'TBD',
+        students: 0
+      })
     };
 
     if (editingId) {
-      mutateClass.mutate({
-        id: editingId,
-        recordType: 'class',
-        payload,
-        status: 'Active',
-        searchText: `${formData.name} ${formData.teacher}`
-      }, {
+      mutateClass.mutate({ id: editingId, ...payload }, {
         onSuccess: () => {
           toast.success("Class updated successfully!");
           setShowModal(false);
@@ -67,12 +92,7 @@ export default function Classes() {
         }
       });
     } else {
-      mutateClass.mutate({
-        recordType: 'class',
-        payload,
-        status: 'Active',
-        searchText: `${formData.name} ${formData.teacher}`
-      }, {
+      mutateClass.mutate(payload, {
         onSuccess: () => {
           toast.success("Class saved successfully!");
           setShowModal(false);
@@ -87,7 +107,7 @@ export default function Classes() {
 
   const handleDeleteClass = () => {
     if (!deleteTargetId) return;
-    deleteClass.mutate({ id: deleteTargetId, recordType: 'class' }, {
+    deleteClass.mutate(deleteTargetId, {
       onSuccess: () => {
         toast.success("Class removed successfully!");
         setDeleteTargetId(null);

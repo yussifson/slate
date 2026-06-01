@@ -113,6 +113,7 @@ export default function Exams() {
   const handleUpdateStatus = (exam, newStatus) => {
     const updatedPayload = { ...exam };
     delete updatedPayload.id;
+    delete updatedPayload.status;
 
     mutateRecord.mutate({
       id: exam.id,

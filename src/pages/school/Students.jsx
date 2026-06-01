@@ -7,8 +7,8 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/lib/AuthContext';
-
-import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { base44 } from "@/api/base44Client";
 import { toast } from 'react-hot-toast';
 import { useNotifications } from "@/hooks/integrations/useNotifications";
 import { useCompanyId } from "@/hooks/useCompanyId";
@@ -27,9 +27,22 @@ export default function Students() {
   const [showModal, setShowModal] = useState(false);
 
   // Real Database Hooks
-  const { data: records = [], isLoading } = useIndustryRecords('student');
-  const mutateStudent = useMutateIndustryRecord();
-  const deleteStudent = useDeleteIndustryRecord();
+  const queryClient = useQueryClient();
+  const { data: records = [], isLoading } = useQuery({ 
+    queryKey: ["clients", companyId], 
+    queryFn: () => base44.entities.Client.filter({ company_id: companyId, type: 'student' }), 
+    enabled: !!companyId 
+  });
+  
+  const mutateStudent = useMutation({
+    mutationFn: (data) => data.id ? base44.entities.Client.update(data.id, data) : base44.entities.Client.create(data),
+    onSuccess: () => queryClient.invalidateQueries(["clients", companyId])
+  });
+
+  const deleteStudent = useMutation({
+    mutationFn: (id) => base44.entities.Client.delete(id),
+    onSuccess: () => queryClient.invalidateQueries(["clients", companyId])
+  });
 
   // Form State
   const [formData, setFormData] = useState({
@@ -39,11 +52,23 @@ export default function Students() {
   const [viewDetails, setViewDetails] = useState(null);
 
   // Map DB records to UI format
-  const students = records.map(r => ({
-    id: r.id,
-    status: r.status || 'Active',
-    ...r.data
-  }));
+  const students = records.map(r => {
+    let extra = {};
+    try { extra = JSON.parse(r.notes || '{}'); } catch(e) {}
+    return {
+      id: r.id,
+      name: r.name,
+      studentId: r.id_number,
+      phone: r.phone,
+      status: r.status || 'Active',
+      class: extra.class || 'Unknown',
+      age: extra.age || 0,
+      gender: extra.gender || 'Unknown',
+      parent: extra.parent || '',
+      feeStatus: extra.feeStatus || 'Unknown',
+      avatar: extra.avatar || r.name?.substring(0,2).toUpperCase()
+    };
+  });
 
   const classes = ['All', 'Grade 7B', 'Grade 8C', 'Grade 9A', 'Grade 9B', 'Grade 10A', 'Grade 10B', 'Grade 11A', 'Grade 12A'];
   const filtered = students.filter(s =>
@@ -64,28 +89,27 @@ export default function Students() {
     
     // Auto-generate a random student ID
     const studentId = `STU-${Math.floor(1000 + Math.random() * 9000)}`;
-    const age = formData.dateOfBirth ? new Date().getFullYear() - new Date(formData.dateOfBirth).getFullYear() : 0;
+    const age = formData.dateOfBirth ? new Date().getFullYear() - new Date(formData.dateOfBirth).getFullYear() : formData.age || 0;
     
     const payload = {
+      company_id: companyId,
+      type: 'student',
       name: fullName,
-      studentId,
-      class: formData.class,
-      age,
-      gender: formData.gender,
-      parent: formData.parentName,
+      id_number: formData.studentId || studentId,
       phone: formData.parentPhone,
-      feeStatus: 'Owing',
-      avatar: fullName.substring(0,2).toUpperCase()
+      status: formData.status || 'Active',
+      notes: JSON.stringify({
+        class: formData.class,
+        age,
+        gender: formData.gender,
+        parent: formData.parentName,
+        feeStatus: formData.feeStatus || 'Owing',
+        avatar: fullName.substring(0,2).toUpperCase()
+      })
     };
 
     if (editingId) {
-      mutateStudent.mutate({
-        id: editingId,
-        recordType: 'student',
-        payload: payload,
-        status: formData.status || 'Active',
-        searchText: `${fullName} ${studentId}`
-      }, {
+      mutateStudent.mutate({ id: editingId, ...payload }, {
         onSuccess: () => {
           toast.success("Student updated successfully!");
           setShowModal(false);
@@ -94,12 +118,7 @@ export default function Students() {
         }
       });
     } else {
-      mutateStudent.mutate({
-        recordType: 'student',
-        payload: payload,
-        status: 'Active',
-        searchText: `${fullName} ${studentId}`
-      }, {
+      mutateStudent.mutate(payload, {
         onSuccess: () => {
           toast.success("Student enrolled successfully!");
           setShowModal(false);
@@ -111,7 +130,7 @@ export default function Students() {
 
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this student?")) {
-      deleteStudent.mutate({ id, recordType: 'student' });
+      deleteStudent.mutate(id);
     }
   };
 
@@ -123,12 +142,14 @@ export default function Students() {
           <h1 className="text-2xl font-bold text-card-foreground">{t("students", "Students")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("manage_student_enrollment_and_", "Manage student enrollment and records")}</p>
         </div>
-        <Button variant="outline" onClick={() => { notifyTeam({ companyId, provider: 'twilio', message: 'School announcement for all parents.', recipientPhone: '+1234567890' }).then(()=>toast.success("SMS Sent to Parents!")).catch(()=>{}) }} className="gap-2 border-blue-200 text-blue-700 hover:bg-blue-50">
-             <MessageSquare className="w-4 h-4 text-blue-500" /> Message Parents
-           </Button>
-           <Button onClick={() => setShowModal(true)} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
-          <Plus className="w-4 h-4" /> {t("enroll_student", "Enroll Student")}
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => { notifyTeam({ companyId, provider: 'twilio', message: 'School announcement for all parents.', recipientPhone: '+1234567890' }).then(()=>toast.success("SMS Sent to Parents!")).catch(()=>{}) }} className="gap-2 border-blue-200 text-blue-700 hover:bg-blue-50">
+            <MessageSquare className="w-4 h-4 text-blue-500" /> Message Parents
+          </Button>
+          <Button onClick={() => setShowModal(true)} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+            <Plus className="w-4 h-4" /> {t("enroll_student", "Enroll Student")}
+          </Button>
+        </div>
       </div>
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -200,7 +221,7 @@ export default function Students() {
                         <p className="text-xs text-muted-foreground">{s.phone}</p>
                       </div>
                     </td>
-                    <td className="px-4 py-3"><span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${feeColors[s.feeStatus]}`}>{s.feeStatus}</span></td>
+                    <td className="px-4 py-3"><span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${feeColors[s.feeStatus] || 'bg-gray-100 text-gray-700'}`}>{s.feeStatus}</span></td>
                     <td className="px-4 py-3"><span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${statusColors[s.status] || 'bg-blue-100 text-blue-700'}`}>{s.status}</span></td>
                     <td className="px-4 py-3">
                       <DropdownMenu>
@@ -309,7 +330,7 @@ export default function Students() {
                 </div>
                 <div className="bg-muted/50 p-3 rounded-lg">
                   <p className="text-xs text-muted-foreground uppercase font-semibold">{t("fee_status", "Fee Status")}</p>
-                  <span className={`inline-block text-xs font-semibold px-2 py-0.5 rounded-full mt-1 ${feeColors[viewDetails.feeStatus]}`}>
+                  <span className={`inline-block text-xs font-semibold px-2 py-0.5 rounded-full mt-1 ${feeColors[viewDetails.feeStatus] || 'bg-gray-100 text-gray-700'}`}>
                     {viewDetails.feeStatus}
                   </span>
                 </div>

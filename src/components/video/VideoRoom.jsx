@@ -27,6 +27,8 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode }) {
   const { toast } = useToast();
   const [isAiLoading, setIsAiLoading] = useState(false);
   
+  const [aiResponse, setAiResponse] = useState(null);
+
   useDailyEvent('left-meeting', () => {
     onLeave();
   });
@@ -60,6 +62,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode }) {
 
   const handleAiAssist = async () => {
     setIsAiLoading(true);
+    setAiResponse(null);
     toast({ title: "Orbit Meeting AI", description: "Generating meeting summary via Cloudflare AI..." });
     try {
       const messages = [
@@ -67,7 +70,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode }) {
         { role: 'user', content: 'John: We need to finalize the quarterly report by Friday. Jane: I have the numbers ready, just need to format the charts. John: Great, lets review it Thursday morning. Jane: Sounds good.' }
       ];
       const response = await generateText(messages);
-      toast({ title: "Meeting Summary", description: response || "Meeting concluded without action items." });
+      setAiResponse(response || "Meeting concluded without action items.");
     } catch (err) {
       console.error(err);
       toast({ title: "AI Error", description: "Failed to connect to Cloudflare AI.", variant: "destructive" });
@@ -76,8 +79,21 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode }) {
     }
   };
 
+  const allParticipants = localSessionId ? [localSessionId, ...participantIds] : participantIds;
+
   return (
     <div className="flex flex-col h-full bg-background rounded-xl overflow-hidden relative border border-border shadow-sm group">
+      {/* AI Response Overlay */}
+      {aiResponse && (
+        <div className="absolute top-4 left-4 right-16 z-40 bg-card/95 backdrop-blur-md border border-border p-4 rounded-xl shadow-2xl animate-in fade-in slide-in-from-top-4 max-h-[80%] overflow-y-auto">
+          <div className="flex items-center justify-between mb-3 border-b border-border pb-2">
+            <h3 className="font-bold flex items-center gap-2 text-primary"><Sparkles className="w-4 h-4"/> AI Meeting Notes</h3>
+            <Button variant="ghost" size="sm" onClick={() => setAiResponse(null)} className="h-6 px-2 text-xs">Close</Button>
+          </div>
+          <div className="text-sm prose prose-sm dark:prose-invert" dangerouslySetInnerHTML={{ __html: aiResponse.replace(/\n/g, '<br/>') }} />
+        </div>
+      )}
+
       {/* PiP Toggle Button */}
       <Button 
         variant="secondary" 
@@ -93,10 +109,10 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode }) {
         {screens.map(screen => (
           <ScreenShareTile key={screen.screenId} screen={screen} />
         ))}
-        {participantIds.map(id => (
+        {allParticipants.map(id => (
           <ParticipantTile key={id} id={id} isLocal={id === localSessionId} />
         ))}
-        {participantIds.length === 0 && (
+        {allParticipants.length === 0 && (
           <div className="absolute inset-0 flex items-center justify-center">
              <div className="w-12 h-12 rounded-full border-[3px] border-primary/30 border-t-primary animate-spin"></div>
           </div>

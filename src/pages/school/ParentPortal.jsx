@@ -5,22 +5,40 @@ import { useIndustryRecords } from '@/hooks/useIndustryData';
 import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useCompanyId } from '@/hooks/useCompanyId';
 import { UploadDocumentDialog } from "@/components/cases/CaseDocumentRepo";
 import { Button } from "@/components/ui/button";
 import { toast } from 'react-hot-toast';
 import { format } from "date-fns";
+
 export default function ParentPortal() {
   const { t } = useTranslation();
+  const companyId = useCompanyId();
   // Real Database Hooks
-  const { data: students = [], isLoading: isStudentsLoading } = useIndustryRecords('student');
+  const { data: studentRecords = [], isLoading: isStudentsLoading } = useQuery({
+    queryKey: ['clients', companyId],
+    queryFn: () => base44.entities.Client.filter({ company_id: companyId, type: 'student' }),
+    enabled: !!companyId
+  });
   const { data: exams = [], isLoading: isExamsLoading } = useIndustryRecords('exam');
+  const { data: attendanceRecords = [] } = useIndustryRecords('attendance');
+  const { data: gradeRecords = [] } = useIndustryRecords('grade');
+
   const queryClient = useQueryClient();
   const [showUpload, setShowUpload] = useState(false);
 
-  const mappedStudents = students.map(r => ({
-    id: r.id,
-    ...r.data
-  }));
+  const mappedStudents = studentRecords.map(r => {
+    let extra = {};
+    try { extra = JSON.parse(r.notes || '{}'); } catch(e) {}
+    return {
+      id: r.id,
+      name: r.name,
+      studentId: r.id_number,
+      company_id: r.company_id,
+      class: extra.class || 'Unknown',
+      feeStatus: extra.feeStatus || 'Owing'
+    };
+  });
 
   const activeStudent = mappedStudents[0];
 
@@ -75,6 +93,35 @@ export default function ParentPortal() {
   const feeStatus = activeStudent.feeStatus || 'Owing';
   const balance = feeStatus === 'Paid' ? 0 : (feeStatus === 'Partial' ? 800 : 1200);
 
+  let attendancePct = 0;
+  let averageGrade = 'N/A';
+
+  if (activeStudent) {
+    // Calculate Attendance
+    let present = 0, totalDays = 0;
+    attendanceRecords.forEach(att => {
+      const rec = att.data?.records?.find(r => r.studentId === activeStudent.studentId);
+      if (rec) {
+        totalDays++;
+        if (rec.status === 'Present') present++;
+      }
+    });
+    if (totalDays > 0) attendancePct = Math.round((present / totalDays) * 100);
+
+    // Calculate Average Grade
+    const studentGrades = gradeRecords.filter(g => g.data?.studentName === activeStudent.name);
+    if (studentGrades.length > 0) {
+      const totalScore = studentGrades.reduce((sum, g) => sum + (g.data?.score || 0), 0);
+      const totalMax = studentGrades.reduce((sum, g) => sum + (g.data?.maxScore || 100), 0);
+      const pct = totalMax > 0 ? (totalScore / totalMax) * 100 : 0;
+      if (pct >= 90) averageGrade = 'A';
+      else if (pct >= 80) averageGrade = 'B';
+      else if (pct >= 70) averageGrade = 'C';
+      else if (pct >= 60) averageGrade = 'D';
+      else averageGrade = 'F';
+    }
+  }
+
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       {/* Header */}
@@ -122,7 +169,7 @@ export default function ParentPortal() {
                 <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-950/20 flex items-center justify-center text-green-600"><CheckCircle className="w-4 h-4" /></div>
                 <h3 className="font-bold text-foreground">{t("attendance", "Attendance")}</h3>
               </div>
-              <p className="text-4xl font-extrabold text-card-foreground mb-1">{t("96", "96%")}</p>
+              <p className="text-4xl font-extrabold text-card-foreground mb-1">{attendancePct}%</p>
               <p className="text-xs text-muted-foreground">{t("present_for_the_term", "Present for the term")}</p>
             </div>
             
@@ -131,7 +178,7 @@ export default function ParentPortal() {
                 <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-950/20 flex items-center justify-center text-blue-600"><BookOpen className="w-4 h-4" /></div>
                 <h3 className="font-bold text-foreground">{t("performance", "Performance")}</h3>
               </div>
-              <p className="text-4xl font-extrabold text-blue-600 mb-1">A</p>
+              <p className="text-4xl font-extrabold text-blue-600 mb-1">{averageGrade}</p>
               <p className="text-xs text-muted-foreground">{t("term_report_card", "Term Report Card")}</p>
             </div>
           </div>

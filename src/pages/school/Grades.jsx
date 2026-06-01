@@ -9,6 +9,9 @@ import { Input } from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
+import { useQuery } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
+import { useCompanyId } from '@/hooks/useCompanyId';
 
 const CLASS_LIST = ['Grade 7B', 'Grade 8C', 'Grade 9A', 'Grade 9B', 'Grade 10A', 'Grade 10B', 'Grade 11A', 'Grade 12A'];
 const SUBJECTS = ['Mathematics', 'Science', 'English', 'History', 'Chemistry', 'Physics', 'Geography', 'ICT'];
@@ -42,6 +45,7 @@ const defaultForm = {
 
 export default function Grades() {
   const { t } = useTranslation();
+  const companyId = useCompanyId();
   const [search, setSearch] = useState('');
   const [filterClass, setFilterClass] = useState('All');
   const [showModal, setShowModal] = useState(false);
@@ -53,6 +57,18 @@ export default function Grades() {
   const { data: dbRecords = [], isLoading } = useIndustryRecords('grade');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
+
+  const { data: studentRecords = [] } = useQuery({
+    queryKey: ['clients', companyId],
+    queryFn: () => base44.entities.Client.filter({ company_id: companyId, type: 'student' }),
+    enabled: !!companyId
+  });
+
+  const availableStudents = studentRecords.filter(r => {
+    let extra = {};
+    try { extra = JSON.parse(r.notes || '{}'); } catch(e) {}
+    return extra.class === formData.className;
+  }).map(r => ({ id: r.id, name: r.name || 'Unknown' }));
 
   const grades = dbRecords.map(r => ({
     id: r.id,
@@ -309,12 +325,19 @@ export default function Grades() {
             <div className="space-y-3">
               <div>
                 <label className="text-xs font-bold text-muted-foreground uppercase">{t("student_name", "Student Name")}</label>
-                <Input
+                <select
                   value={formData.studentName}
                   onChange={e => setFormData({ ...formData, studentName: e.target.value })}
-                  className="mt-1"
-                  placeholder="e.g. Ama Owusu"
-                />
+                  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
+                >
+                  <option value="">{t("select_student", "Select Student...")}</option>
+                  {availableStudents.map(s => (
+                    <option key={s.id} value={s.name}>{s.name}</option>
+                  ))}
+                </select>
+                {availableStudents.length === 0 && (
+                  <p className="text-xs text-amber-600 mt-1">{t("no_students_found_in_this_clas", "No students found in this class.")}</p>
+                )}
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>

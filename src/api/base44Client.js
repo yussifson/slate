@@ -139,6 +139,11 @@ export const base44 = {
             const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
             return profile;
         },
+        register: async ({ email, password }) => {
+            const { data, error } = await supabase.auth.signUp({ email, password });
+            if (error) throw error;
+            return data;
+        },
         signIn: async (email, password) => {
             const { data, error } = await supabase.auth.signInWithPassword({ email, password });
             if (error) throw error;

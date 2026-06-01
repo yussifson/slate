@@ -7,7 +7,7 @@ import { UserCog, Search, Trash2, UserPlus, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import PageHeader from "@/components/shared/PageHeader";
@@ -226,15 +226,14 @@ function StaffDialog({ open, onClose, onSubmit, initialData, isNew, industryRole
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
+      <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto" aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             {isNew ? <><UserPlus className="w-4 h-4" /> {t("add_team_member", "Add Team Member")}</> : <><UserCog className="w-4 h-4" /> {t("edit_staff_member", "Edit Staff Member")}</>}
           </DialogTitle>
-          {isNew && <p className="text-xs text-muted-foreground mt-1">{t(
-            "create_an_account_with_a_tempo",
-            "Create an account with a temporary password. The team member can change it after logging in."
-          )}</p>}
+          <DialogDescription>
+            {isNew ? t("create_an_account_with_a_tempo", "Create an account with a temporary password.") : "Edit the staff member's details."}
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
@@ -275,8 +274,8 @@ function StaffDialog({ open, onClose, onSubmit, initialData, isNew, industryRole
               <Select value={form.role} onValueChange={(v) => handleChange("role", v)}>
                 <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  {industryRoles.map(r => {
-                    return <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>;
+                  {roles.map(r => {
+                    return <SelectItem key={r} value={r} className="capitalize">{r.replace(/_/g, " ")}</SelectItem>;
                   })}
                   <AddOptionInline onAdd={(v) => { addRole(v); handleChange("role", v); }} placeholder="New custom role..." />
                 </SelectContent>

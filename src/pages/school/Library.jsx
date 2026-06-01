@@ -35,7 +35,9 @@ export default function Library() {
     author: '',
     isbn: '',
     category: 'Science',
-    total: 10
+    total: 10,
+    cover_url: '',
+    ebook_url: ''
   });
 
   const handleCreateBook = () => {
@@ -50,7 +52,9 @@ export default function Library() {
       category: formData.category,
       total: parseInt(formData.total) || 1,
       available: parseInt(formData.total) || 1,
-      borrowed: 0
+      borrowed: 0,
+      cover_url: formData.cover_url,
+      ebook_url: formData.ebook_url
     };
 
     if (editingId) {
@@ -69,7 +73,7 @@ export default function Library() {
           toast.success('Book updated successfully!');
           setShowModal(false);
           setEditingId(null);
-          setFormData({ title: '', author: '', isbn: '', category: 'Science', total: 10 });
+          setFormData({ title: '', author: '', isbn: '', category: 'Science', total: 10, cover_url: '', ebook_url: '' });
         },
         onError: (err) => {
           toast.error('Failed to update book: ' + err.message);
@@ -85,7 +89,7 @@ export default function Library() {
         onSuccess: () => {
           toast.success('Book cataloged successfully!');
           setShowModal(false);
-          setFormData({ title: '', author: '', isbn: '', category: 'Science', total: 10 });
+          setFormData({ title: '', author: '', isbn: '', category: 'Science', total: 10, cover_url: '', ebook_url: '' });
         },
         onError: (err) => {
           toast.error('Failed to catalog book: ' + err.message);
@@ -251,7 +255,9 @@ export default function Library() {
                                 author: b.author,
                                 isbn: b.isbn,
                                 category: b.category,
-                                total: b.total
+                                total: b.total,
+                                cover_url: b.cover_url || '',
+                                ebook_url: b.ebook_url || ''
                               });
                               setShowModal(true);
                             }}>{t("edit", "Edit")}</DropdownMenuItem>
@@ -328,9 +334,29 @@ export default function Library() {
                   />
                 </div>
               </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("cover_image_url", "Cover Image URL")}</label>
+                  <Input
+                    value={formData.cover_url}
+                    onChange={e => setFormData({ ...formData, cover_url: e.target.value })}
+                    className="mt-1"
+                    placeholder="e.g. https://example.com/cover.jpg"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("e_book_url", "E-Book / PDF Link")}</label>
+                  <Input
+                    value={formData.ebook_url}
+                    onChange={e => setFormData({ ...formData, ebook_url: e.target.value })}
+                    className="mt-1"
+                    placeholder="e.g. https://drive.google.com/..."
+                  />
+                </div>
+              </div>
             </div>
             <div className="flex gap-3 pt-4">
-              <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditingId(null); setFormData({ title: '', author: '', isbn: '', category: 'Science', total: 10 }); }}>{t("cancel", "Cancel")}</Button>
+              <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditingId(null); setFormData({ title: '', author: '', isbn: '', category: 'Science', total: 10, cover_url: '', ebook_url: '' }); }}>{t("cancel", "Cancel")}</Button>
               <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleCreateBook}>{editingId ? 'Save Changes' : 'Catalog Book'}</Button>
             </div>
           </div>
@@ -355,10 +381,14 @@ export default function Library() {
           {viewDetails && (
             <div className="mt-6 space-y-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 font-bold text-xl">
-                  <Book className="w-8 h-8" />
+                <div className="w-16 h-20 shrink-0 rounded-md bg-blue-50 overflow-hidden flex items-center justify-center text-blue-600 font-bold text-xl border border-border">
+                  {viewDetails.cover_url ? (
+                    <img src={viewDetails.cover_url} alt="Cover" className="w-full h-full object-cover" />
+                  ) : (
+                    <Book className="w-8 h-8" />
+                  )}
                 </div>
-                <div>
+                <div className="flex-1">
                   <h3 className="text-xl font-bold text-card-foreground">{viewDetails.title}</h3>
                   <p className="text-sm font-medium text-muted-foreground">{viewDetails.author}</p>
                 </div>
@@ -392,6 +422,14 @@ export default function Library() {
                   <p className="font-bold text-2xl text-orange-600 mt-1">{viewDetails.borrowed}</p>
                 </div>
               </div>
+              {viewDetails.ebook_url && (
+                <div className="pt-2 border-t border-border mt-4">
+                  <a href={viewDetails.ebook_url} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold py-3 rounded-xl transition-colors">
+                    <Book className="w-5 h-5" />
+                    {t("read_e_book_now", "Read E-Book Now")}
+                  </a>
+                </div>
+              )}
             </div>
           )}
         </SheetContent>

@@ -80,6 +80,7 @@ import SchoolExams from './pages/school/Exams';
 import SchoolFees from './pages/school/FeeManagement';
 import SchoolLibrary from './pages/school/Library';
 import SchoolParentPortal from './pages/school/ParentPortal';
+import SchoolStudentPortal from './pages/school/StudentPortal';
 
 // Hospital Pages
 import HospitalPatients from './pages/hospital/Patients';
@@ -220,6 +221,7 @@ function PlatformRoutes() {
       <Route path="/fees" element={<SchoolFees />} />
       <Route path="/library" element={<SchoolLibrary />} />
       <Route path="/parent-portal" element={<SchoolParentPortal />} />
+      <Route path="/student-portal" element={<SchoolStudentPortal />} />
 
       {/* Hospital Suite */}
       <Route path="/patients" element={<HospitalPatients />} />

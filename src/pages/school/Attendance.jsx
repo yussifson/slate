@@ -9,11 +9,15 @@ import { Input } from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
+import { useQuery } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
+import { useCompanyId } from '@/hooks/useCompanyId';
 
 const CLASS_LIST = ['Grade 7B', 'Grade 8C', 'Grade 9A', 'Grade 9B', 'Grade 10A', 'Grade 10B', 'Grade 11A', 'Grade 12A'];
 
 export default function Attendance() {
   const { t } = useTranslation();
+  const companyId = useCompanyId();
   const today = new Date().toISOString().split('T')[0];
   const [selectedClass, setSelectedClass] = useState('Grade 9A');
   const [date, setDate] = useState(today);
@@ -25,7 +29,11 @@ export default function Attendance() {
   const [editingId, setEditingId] = useState(null);
 
   // Fetch student list for populating the sheet
-  const { data: studentRecords = [] } = useIndustryRecords('student');
+  const { data: studentRecords = [] } = useQuery({
+    queryKey: ['clients', companyId],
+    queryFn: () => base44.entities.Client.filter({ company_id: companyId, type: 'student' }),
+    enabled: !!companyId
+  });
   // Fetch saved attendance records
   const { data: attendanceRecords = [], isLoading } = useIndustryRecords('attendance');
   const mutateRecord = useMutateIndustryRecord();
@@ -33,8 +41,12 @@ export default function Attendance() {
 
   // Students in selected class
   const classStudents = studentRecords
-    .filter(r => r.data?.class === selectedClass)
-    .map(r => ({ id: r.id, name: r.data?.name || 'Unknown', studentId: r.data?.studentId || '' }));
+    .filter(r => {
+      let extra = {};
+      try { extra = JSON.parse(r.notes || '{}'); } catch(e) {}
+      return extra.class === selectedClass;
+    })
+    .map(r => ({ id: r.id, name: r.name || 'Unknown', studentId: r.id_number || '' }));
 
   // Attendance records for this class/date combo
   const savedAttendance = attendanceRecords.map(r => ({
