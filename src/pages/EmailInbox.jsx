@@ -36,6 +36,12 @@ export default function EmailInbox() {
     enabled: !!companyId,
   });
 
+  const { data: clients = [] } = useQuery({
+    queryKey: ["clients", companyId],
+    queryFn: () => base44.entities.Client.filter({ company_id: companyId }),
+    enabled: !!companyId,
+  });
+
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.CaseEmail.create({ ...data, company_id: companyId, logged_by: user?.email }),
     onSuccess: () => { 
@@ -146,6 +152,7 @@ export default function EmailInbox() {
           onClose={() => setShowCompose(false)}
           onSubmit={handleComposeSubmit}
           staff={staff}
+          clients={clients}
           isLoading={createMutation.isPending}
         />
       )}

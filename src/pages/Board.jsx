@@ -68,7 +68,17 @@ export default function Board() {
         status: 'active'
       }).select().single();
 
-      if (error) throw error;
+      if (error) {
+        if (error.code === 'PGRST205' || error.message?.includes('schema cache')) {
+           toast({ 
+             title: "Database Schema Outdated", 
+             description: "Please run 'NOTIFY pgrst, reload_schema;' in your Supabase SQL editor to enable video rooms.", 
+             variant: "destructive" 
+           });
+           return;
+        }
+        throw error;
+      }
 
       const realUrl = getDemoUrl(newRoom.id);
       await supabase.from('video_rooms').update({

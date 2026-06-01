@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/AuthContext";
 import { base44 } from "@/api/base44Client";
+import { supabase } from "@/api/supabaseClient";
 import { useToast } from "@/components/ui/use-toast";
 import { Camera, Loader2 } from "lucide-react";
 
@@ -22,11 +23,11 @@ export default function ProfileAvatarDialog({ open, onOpenChange }) {
     setIsSaving(true);
     try {
       // Update the profiles table directly
-      const { error: profileError } = await base44.supabase.from('profiles').update({ avatar_url: url }).eq('id', user.id);
+      const { error: profileError } = await supabase.from('profiles').update({ avatar_url: url }).eq('id', user.id);
       if (profileError) throw profileError;
       
       // Also update auth user metadata just in case
-      await base44.supabase.auth.updateUser({ data: { avatar_url: url } });
+      await supabase.auth.updateUser({ data: { avatar_url: url } });
 
       await refreshUser();
       toast({ title: t("avatar_updated", "Avatar Updated"), description: t("your_avatar_has_been_saved", "Your new avatar has been saved successfully.") });

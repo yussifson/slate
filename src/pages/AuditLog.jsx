@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { base44 } from "@/api/base44Client";
+import { supabase } from "@/api/supabaseClient";
 import PageHeader from "@/components/shared/PageHeader";
 import DataTable from "@/components/shared/DataTable";
 import { format } from "date-fns";
@@ -18,7 +19,7 @@ export default function AuditLog() {
       // In a real implementation this would fetch from 'system_activity_logs'
       // We will mock this or use the actual table if it exists
       try {
-        const { data, error } = await base44.supabase
+        const { data, error } = await supabase
           .from("system_activity_logs")
           .select("*")
           .eq("company_id", companyId)
