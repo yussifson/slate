@@ -221,9 +221,15 @@ export const base44 = {
                             }).join(' AND ');
                         }
 
-                        if (sort.length > 0) {
-                            query += ' ORDER BY ';
-                            query += sort.map(s => `${s.field} ${s.direction === 'asc' ? 'ASC' : 'DESC'}`).join(', ');
+                        if (sort) {
+                            if (typeof sort === 'string') {
+                                const direction = sort.startsWith('-') ? 'DESC' : 'ASC';
+                                const field = sort.startsWith('-') ? sort.slice(1) : sort;
+                                query += ` ORDER BY ${field} ${direction}`;
+                            } else if (Array.isArray(sort) && sort.length > 0) {
+                                query += ' ORDER BY ';
+                                query += sort.map(s => `${s.field} ${s.direction === 'asc' ? 'ASC' : 'DESC'}`).join(', ');
+                            }
                         }
 
                         const data = await powerSync.getAll(query, params);
@@ -233,9 +239,20 @@ export const base44 = {
                         return [];
                     }
                 },
-                list: async () => {
+                list: async (sort = []) => {
                     try {
-                        const data = await powerSync.getAll(`SELECT * FROM ${tableName}`);
+                        let query = `SELECT * FROM ${tableName}`;
+                        if (sort) {
+                            if (typeof sort === 'string') {
+                                const direction = sort.startsWith('-') ? 'DESC' : 'ASC';
+                                const field = sort.startsWith('-') ? sort.slice(1) : sort;
+                                query += ` ORDER BY ${field} ${direction}`;
+                            } else if (Array.isArray(sort) && sort.length > 0) {
+                                query += ' ORDER BY ';
+                                query += sort.map(s => `${s.field} ${s.direction === 'asc' ? 'ASC' : 'DESC'}`).join(', ');
+                            }
+                        }
+                        const data = await powerSync.getAll(query);
                         return revealResults(data);
                     } catch (err) {
                         console.error(`[PowerSync] List failed on ${tableName}:`, err);
@@ -320,8 +337,18 @@ export const base44 = {
                     }
                 },
                 subscribe: (callback) => {
-                    console.warn(`[PowerSync] Legacy subscribe called on ${tableName}. Consider migrating to watched queries.`);
-                    return () => {};
+                    const channel = supabase.channel(`public:${tableName}`)
+                        .on('postgres_changes', { event: '*', schema: 'public', table: tableName }, payload => {
+                            let type = 'update';
+                            if (payload.eventType === 'INSERT') type = 'create';
+                            if (payload.eventType === 'DELETE') type = 'delete';
+                            callback({ type, data: payload.new || payload.old });
+                        })
+                        .subscribe();
+                    
+                    return () => {
+                        supabase.removeChannel(channel);
+                    };
                 }
             };
         }
