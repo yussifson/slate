@@ -10,7 +10,7 @@ import {
   useDailyEvent,
   useScreenShare
 } from '@daily-co/daily-react';
-import { Mic, MicOff, Video, VideoOff, PhoneOff, MonitorUp, Sparkles, LayoutGrid, Maximize2, Minimize2, ExternalLink } from 'lucide-react';
+import { Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff, MonitorUp, Sparkles, LayoutGrid, Maximize2, Minimize2, ExternalLink, MessageSquare, Send, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { generateText } from "@/lib/cloudflareAI";
 import { useToast } from "@/components/ui/use-toast";
@@ -119,44 +119,108 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode }) {
     }
   };
 
-  const allParticipants = localSessionId ? [localSessionId, ...participantIds] : participantIds;
+  const [chatMessages, setChatMessages] = useState([]);
+  const [chatInput, setChatInput] = useState("");
+  const [showChat, setShowChat] = useState(false);
+
+  // Handle incoming Daily text messages
+  useDailyEvent('app-message', (ev) => {
+    if (ev.data && ev.data.type === 'chat') {
+      setChatMessages(prev => [...prev, { from: ev.fromId, name: ev.data.name, text: ev.data.text, time: new Date() }]);
+    }
+  });
+
+  const sendChatMessage = () => {
+    if (!chatInput.trim() || !daily) return;
+    const msg = { type: 'chat', text: chatInput.trim(), name: 'Me' };
+    daily.sendAppMessage(msg, '*');
+    setChatMessages(prev => [...prev, { from: 'local', name: 'Me', text: chatInput.trim(), time: new Date() }]);
+    setChatInput("");
+  };
 
   return (
-    <div className="flex flex-col h-full bg-background rounded-xl overflow-hidden relative border border-border shadow-sm group">
-      {/* AI Response Overlay */}
-      {aiResponse && (
-        <div className="absolute top-4 left-4 right-16 z-40 bg-card/95 backdrop-blur-md border border-border p-4 rounded-xl shadow-2xl animate-in fade-in slide-in-from-top-4 max-h-[80%] overflow-y-auto">
-          <div className="flex items-center justify-between mb-3 border-b border-border pb-2">
-            <h3 className="font-bold flex items-center gap-2 text-primary"><Sparkles className="w-4 h-4"/> AI Meeting Notes</h3>
-            <Button variant="ghost" size="sm" onClick={() => setAiResponse(null)} className="h-6 px-2 text-xs">Close</Button>
+    <div className="flex h-full bg-background rounded-xl overflow-hidden relative border border-border shadow-sm group">
+      
+      {/* Video Content Area */}
+      <div className="flex-1 flex flex-col relative min-w-0">
+        {/* AI Response Overlay */}
+        {aiResponse && (
+          <div className="absolute top-4 left-4 right-4 z-40 bg-card/95 backdrop-blur-md border border-border p-4 rounded-xl shadow-2xl animate-in fade-in max-h-[80%] overflow-y-auto">
+            <div className="flex items-center justify-between mb-3 border-b border-border pb-2">
+              <h3 className="font-bold flex items-center gap-2 text-primary"><Sparkles className="w-4 h-4"/> AI Meeting Notes</h3>
+              <Button variant="ghost" size="sm" onClick={() => setAiResponse(null)} className="h-6 px-2 text-xs">Close</Button>
+            </div>
+            <div className="text-sm prose prose-sm dark:prose-invert" dangerouslySetInnerHTML={{ __html: aiResponse.replace(/\n/g, '<br/>') }} />
           </div>
-          <div className="text-sm prose prose-sm dark:prose-invert" dangerouslySetInnerHTML={{ __html: aiResponse.replace(/\n/g, '<br/>') }} />
-        </div>
-      )}
+        )}
 
-      {/* PiP Toggle Button */}
-      <Button 
-        variant="secondary" 
-        size="icon" 
-        onClick={togglePipMode}
-        className="absolute top-2 right-2 z-50 rounded-full w-8 h-8 opacity-0 group-hover:opacity-100 transition-opacity"
-      >
-        {isPipMode ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
-      </Button>
+        {/* PiP Toggle Button */}
+        <Button 
+          variant="secondary" 
+          size="icon" 
+          onClick={togglePipMode}
+          className="absolute top-2 right-2 z-50 rounded-full w-8 h-8 opacity-0 group-hover:opacity-100 transition-opacity"
+        >
+          {isPipMode ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
+        </Button>
 
       {/* Video Grid */}
       <div className="flex-1 p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-fr overflow-y-auto bg-muted/30">
         {screens.map(screen => (
           <ScreenShareTile key={screen.screenId} screen={screen} />
         ))}
-        {allParticipants.map(id => (
-          <ParticipantTile key={id} id={id} isLocal={id === localSessionId} />
-        ))}
-        {allParticipants.length === 0 && (
-          <div className="absolute inset-0 flex items-center justify-center">
-             <div className="w-12 h-12 rounded-full border-[3px] border-primary/30 border-t-primary animate-spin"></div>
+        {(() => {
+          const allParticipants = localSessionId ? [localSessionId, ...participantIds] : participantIds;
+          return allParticipants.map(id => (
+            <ParticipantTile key={id} id={id} isLocal={id === localSessionId} />
+          )).concat(allParticipants.length === 0 ? (
+            <div key="loader" className="absolute inset-0 flex items-center justify-center">
+               <div className="w-12 h-12 rounded-full border-[3px] border-primary/30 border-t-primary animate-spin"></div>
+            </div>
+          ) : []);
+        })()}
+      </div>
+
+      {/* Chat Sidebar */}
+      {showChat && (
+        <div className="w-80 border-l border-border bg-card flex flex-col shrink-0 animate-in slide-in-from-right">
+          <div className="h-14 border-b border-border flex items-center justify-between px-4">
+            <h3 className="font-semibold flex items-center gap-2"><MessageSquare className="w-4 h-4" /> Meeting Chat</h3>
+            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setShowChat(false)}>
+              <X className="w-4 h-4" />
+            </Button>
           </div>
-        )}
+          <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
+            {chatMessages.map((msg, idx) => (
+              <div key={idx} className={`flex flex-col ${msg.from === 'local' ? 'items-end' : 'items-start'}`}>
+                <span className="text-[11px] text-muted-foreground mb-1">{msg.name}</span>
+                <div className={`px-3 py-2 rounded-xl max-w-[85%] text-sm ${msg.from === 'local' ? 'bg-primary text-primary-foreground rounded-tr-none' : 'bg-muted rounded-tl-none'}`}>
+                  {msg.text}
+                </div>
+              </div>
+            ))}
+            {chatMessages.length === 0 && (
+              <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm flex-col gap-2 opacity-50">
+                <MessageSquare className="w-8 h-8" />
+                <p>No messages yet.</p>
+              </div>
+            )}
+          </div>
+          <div className="p-3 border-t border-border flex gap-2">
+            <input 
+              type="text" 
+              placeholder="Send a message..." 
+              className="flex-1 bg-muted/50 rounded-full px-4 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+              value={chatInput}
+              onChange={(e) => setChatInput(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && sendChatMessage()}
+            />
+            <Button size="icon" className="rounded-full shrink-0" onClick={sendChatMessage} disabled={!chatInput.trim()}>
+              <Send className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+      )}
       </div>
 
       {/* Control Bar */}
@@ -175,7 +239,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode }) {
           size="icon"
           className={`${isPipMode ? 'w-8 h-8' : 'w-12 h-12'} rounded-full`}
         >
-          {isVideoOff ? <VideoOff className={isPipMode ? "w-3 h-3" : "w-5 h-5"} /> : <Video className={isPipMode ? "w-3 h-3" : "w-5 h-5"} />}
+          {isVideoOff ? <VideoOff className={isPipMode ? "w-3 h-3" : "w-5 h-5"} /> : <VideoIcon className={isPipMode ? "w-3 h-3" : "w-5 h-5"} />}
         </Button>
         {!isPipMode && (
           <>
@@ -186,6 +250,14 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode }) {
               className="w-12 h-12 rounded-full hidden sm:flex"
             >
               <MonitorUp className="w-5 h-5" />
+            </Button>
+            <Button 
+              onClick={() => setShowChat(!showChat)}
+              variant={showChat ? "default" : "secondary"}
+              size="icon"
+              className="w-12 h-12 rounded-full hidden sm:flex relative"
+            >
+              <MessageSquare className="w-5 h-5" />
             </Button>
             <Button 
               variant="secondary"
@@ -309,7 +381,7 @@ export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePi
         
         <div className="flex flex-col items-center max-w-md text-center p-8 bg-white dark:bg-slate-900 rounded-3xl border border-border shadow-xl">
            <div className="w-24 h-24 bg-blue-50 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-6 shadow-sm border border-blue-100 dark:border-blue-800">
-             <Video className="w-10 h-10 text-blue-600 dark:text-blue-400" />
+             <VideoIcon className="w-10 h-10 text-blue-600 dark:text-blue-400" />
            </div>
            <h2 className="text-2xl font-bold mb-3 text-slate-800 dark:text-white tracking-tight">Secure Video Meeting</h2>
            <p className="text-slate-500 dark:text-slate-400 mb-8 leading-relaxed text-sm max-w-sm">

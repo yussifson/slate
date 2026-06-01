@@ -77,10 +77,17 @@ export default function EmailInbox() {
     },
   });
 
-  // Fix Anomaly 2: Only show emails where the user is sender or recipient
+  // Fix Anomaly 2 & Inbox Visibility: Show emails where user is sender or recipient
+  const userEmail = user?.email?.toLowerCase() || '';
+  const userName = user?.full_name?.toLowerCase() || '';
+
   const myEmails = emails.filter(e => {
-    const isSender = e.sender_email === user?.email;
-    const isRecipient = e.recipient_email && e.recipient_email.toLowerCase().includes(user?.email?.toLowerCase());
+    const senderEmail = (e.sender_email || '').toLowerCase();
+    const recipientEmail = (e.recipient_email || '').toLowerCase();
+    
+    const isSender = senderEmail === userEmail || (userName && senderEmail.includes(userName));
+    const isRecipient = recipientEmail.includes(userEmail) || (userName && recipientEmail.includes(userName));
+    
     return isSender || isRecipient;
   });
 
@@ -94,10 +101,16 @@ export default function EmailInbox() {
   let displayedEmails = filteredEmails;
   if (activeTab === "sent") {
     // Sent folder: only emails I sent
-    displayedEmails = filteredEmails.filter(e => e.sender_email === user?.email);
+    displayedEmails = filteredEmails.filter(e => {
+      const senderEmail = (e.sender_email || '').toLowerCase();
+      return senderEmail === userEmail || (userName && senderEmail.includes(userName));
+    });
   } else if (activeTab === "inbox") {
     // Inbox folder: only emails sent TO me
-    displayedEmails = filteredEmails.filter(e => e.recipient_email && e.recipient_email.toLowerCase().includes(user?.email?.toLowerCase()));
+    displayedEmails = filteredEmails.filter(e => {
+      const recipientEmail = (e.recipient_email || '').toLowerCase();
+      return recipientEmail.includes(userEmail) || (userName && recipientEmail.includes(userName));
+    });
   } else if (activeTab === "starred") {
     // Starred folder
     displayedEmails = filteredEmails.filter(e => starredEmails.includes(e.id));
@@ -350,9 +363,14 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
     let recipients = [];
     if (recipientType === "internal" || recipientType === "both") {
       if (internalTarget === "team") {
-        recipients = [...recipients, ...staff.filter(s => selectedStaffIds.includes(s.id)).map(s => s.user_email || s.email)];
+        recipients = [...recipients, ...staff.filter(s => selectedStaffIds.includes(s.id)).map(s => {
+          const email = s.user_email || s.email;
+          return email ? `${s.full_name || 'Staff'} <${email}>` : (s.full_name || 'Unknown Staff');
+        })];
       } else {
-        recipients = [...recipients, ...clients.filter(c => selectedClientIds.includes(c.id)).map(c => c.email)];
+        recipients = [...recipients, ...clients.filter(c => selectedClientIds.includes(c.id)).map(c => {
+          return c.email ? `${c.full_name || c.name || 'Client'} <${c.email}>` : (c.full_name || c.name || 'Unknown Client');
+        })];
       }
     }
     if (recipientType === "external" || recipientType === "both") {
