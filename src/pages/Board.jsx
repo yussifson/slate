@@ -180,16 +180,16 @@ export default function Board() {
 
         {/* Right Column: AI Insights */}
         <div className="space-y-6">
-          <div className="bg-gradient-to-br from-indigo-900 to-slate-900 rounded-xl p-5 text-white shadow-md relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -mr-10 -mt-10"></div>
+          <div className="bg-primary rounded-xl p-5 text-primary-foreground shadow-md relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
             <h3 className="font-bold text-lg mb-2 flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-indigo-300" /> Orbit Meeting AI
+              <Sparkles className="w-5 h-5 text-blue-200" /> Orbit Meeting AI
             </h3>
-            <p className="text-sm text-indigo-200 mb-4">Your AI assistant is ready to join your calls to transcribe, summarize, and extract action items.</p>
-            <ul className="space-y-2 text-sm text-indigo-100">
-              <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-indigo-400"></div> Real-time transcription</li>
-              <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-indigo-400"></div> Post-meeting summaries</li>
-              <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-indigo-400"></div> Action item detection</li>
+            <p className="text-sm text-blue-100 mb-4">Your AI assistant is ready to join your calls to transcribe, summarize, and extract action items.</p>
+            <ul className="space-y-2 text-sm text-blue-50">
+              <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-blue-300"></div> Real-time transcription</li>
+              <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-blue-300"></div> Post-meeting summaries</li>
+              <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-blue-300"></div> Action item detection</li>
             </ul>
           </div>
           

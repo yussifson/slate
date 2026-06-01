@@ -226,7 +226,7 @@ export default function OnboardingWizard() {
       <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-indigo-100 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
       {/* Main Container */}
-      <div className="w-full h-[100dvh] sm:h-auto sm:max-w-2xl bg-white sm:rounded-3xl sm:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] sm:border border-slate-100 relative z-10 flex flex-col sm:max-h-[85vh]">
+      <div className="w-full h-[100dvh] sm:h-auto sm:max-w-3xl bg-white sm:rounded-3xl sm:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] sm:border border-slate-100 relative z-10 flex flex-col sm:my-10">
         
         {/* Header Section */}
         <div className="px-5 sm:px-8 pt-6 sm:pt-8 pb-6 border-b border-slate-100 shrink-0">
@@ -458,7 +458,7 @@ export default function OnboardingWizard() {
                     
                     {setupMode === 'custom' && (
                       <div className="mt-5 pt-5 border-t border-slate-200 pl-9">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                           {INDUSTRIES[industry]?.nav?.filter(n => !['/', '/settings', '/integrations', '/admin'].includes(n.path)).map((navItem) => (
                             <label key={navItem.path} className="flex items-center space-x-3 p-3 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-slate-400 transition-colors group">
                               <div className="relative flex items-center justify-center">

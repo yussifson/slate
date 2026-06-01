@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { X, MessageSquare, Plus, Search, MoreVertical, Send, Sparkles, Image as ImageIcon, FileText, Loader2, Check, CheckCheck } from "lucide-react";
+import { Search, Plus, MessageSquare, MoreVertical, Send, Sparkles, Hash, Users, UserCircle, Phone, Video, Loader2, X, Paperclip, CheckCheck, Image as ImageIcon, FileText, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/AuthContext";
 import { Button } from "@/components/ui/button";
+import { generateText } from "@/lib/cloudflareAI";
 import { supabase } from "@/api/supabaseClient";
 import AddChatDialog from "./AddChatDialog";
 import { useToast } from "@/components/ui/use-toast";
@@ -163,9 +164,25 @@ export default function GlobalChatPanel({ isOpen, onClose }) {
     }
   };
 
-  const handleAiAssist = () => {
+  const handleAiAssist = async () => {
     if (!inputValue.trim()) return;
-    setInputValue(`(AI Enhanced) ${inputValue}`);
+    
+    const originalInput = inputValue;
+    setInputValue("AI is thinking...");
+    
+    try {
+      const messages = [
+        { role: 'system', content: 'You are an AI assistant helping a user write a better, more professional chat message. Rewrite the user\'s message to be clearer and more professional. Return ONLY the rewritten text, nothing else.' },
+        { role: 'user', content: originalInput }
+      ];
+      
+      const response = await generateText(messages);
+      setInputValue(response || originalInput);
+    } catch (error) {
+      console.error("AI Assist failed:", error);
+      toast({ title: "AI Error", description: "Could not connect to Cloudflare AI.", variant: "destructive" });
+      setInputValue(originalInput);
+    }
   };
 
   return (

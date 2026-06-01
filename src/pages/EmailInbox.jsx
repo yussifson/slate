@@ -3,13 +3,14 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
-import { Mail, Send, Star, Inbox, Trash2, ArrowLeft, MoreVertical, Reply, CornerUpRight, Paperclip, Search, X, Minimize2, Maximize2, Check } from "lucide-react";
+import { Mail, Send, Star, Inbox, Trash2, ArrowLeft, MoreVertical, Reply, CornerUpRight, Paperclip, Search, X, Minimize2, Maximize2, Check, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { formatDistanceToNow, format } from "date-fns";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
+import { generateText } from "@/lib/cloudflareAI";
 
 export default function EmailInbox() {
   const { t } = useTranslation();
@@ -278,17 +279,28 @@ function EmailDetail({ email, onBack }) {
 
 function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, staff, isLoading }) {
   const { t } = useTranslation();
+  const [recipientType, setRecipientType] = useState("internal"); // internal | external | both
   const [selectedStaffIds, setSelectedStaffIds] = useState([]);
+  const [externalEmails, setExternalEmails] = useState("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [showCc, setShowCc] = useState(false);
+  const [isAiLoading, setIsAiLoading] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const recipients = staff.filter(s => selectedStaffIds.includes(s.id)).map(s => s.user_email).join(', ');
+    let recipients = [];
+    if (recipientType === "internal" || recipientType === "both") {
+      recipients = [...recipients, ...staff.filter(s => selectedStaffIds.includes(s.id)).map(s => s.user_email)];
+    }
+    if (recipientType === "external" || recipientType === "both") {
+      const extList = externalEmails.split(',').map(e => e.trim()).filter(Boolean);
+      recipients = [...recipients, ...extList];
+    }
+    
     onSubmit({
       subject,
-      recipient_email: recipients,
+      recipient_email: recipients.join(', '),
       body_preview: message,
       received_date: new Date().toISOString(),
     });
@@ -300,14 +312,34 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
     );
   };
 
+  const handleAiAssist = async () => {
+    if (!message.trim()) return;
+    setIsAiLoading(true);
+    const originalMsg = message;
+    setMessage("AI is polishing your email...");
+    try {
+      const msgs = [
+        { role: 'system', content: 'You are an AI assistant helping a user write a better, more professional email. Rewrite the user\'s message to be clear, concise, and highly professional. Return ONLY the rewritten email body text, nothing else.' },
+        { role: 'user', content: originalMsg }
+      ];
+      const response = await generateText(msgs);
+      setMessage(response || originalMsg);
+    } catch (err) {
+      console.error(err);
+      setMessage(originalMsg);
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
+
   return (
     <div className={cn(
       "fixed right-4 sm:right-16 md:right-24 bottom-0 bg-white rounded-t-xl shadow-[0_0_24px_rgba(0,0,0,0.15)] flex flex-col z-50 border border-border border-b-0 transition-all duration-200 overflow-hidden",
-      isMinimized ? "w-72 h-12" : "w-full sm:w-[500px] h-[550px] max-h-[80vh]"
+      isMinimized ? "w-72 h-12" : "w-full sm:w-[550px] h-[600px] max-h-[85vh]"
     )}>
       {/* Header */}
       <div 
-        className="h-12 bg-slate-800 text-white flex items-center justify-between px-4 cursor-pointer shrink-0"
+        className="h-12 bg-primary text-primary-foreground flex items-center justify-between px-4 cursor-pointer shrink-0"
         onClick={onToggleMinimize}
       >
         <span className="font-medium text-sm truncate">{isMinimized ? "New Message" : "New Message"}</span>
@@ -322,41 +354,78 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
       </div>
 
       {!isMinimized && (
-        <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
-          {/* To Field */}
-          <div className="px-4 py-2 border-b border-border text-sm flex gap-2">
-            <span className="text-slate-500 pt-1 shrink-0">To</span>
-            <div className="flex-1 max-h-24 overflow-y-auto">
-              <div className="flex flex-wrap gap-1 mb-1">
-                {staff.filter(s => selectedStaffIds.includes(s.id)).map(s => (
-                  <span key={s.id} className="bg-blue-50 border border-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs flex items-center gap-1">
-                    {s.full_name}
-                    <X className="w-3 h-3 cursor-pointer hover:text-blue-900" onClick={() => toggleStaff(s.id)} />
-                  </span>
-                ))}
-              </div>
-              <div className="group relative">
-                <input type="text" placeholder="Select recipients..." className="w-full outline-none text-sm peer" />
-                <div className="hidden peer-focus:block hover:block absolute top-full left-0 w-full max-h-40 overflow-y-auto bg-white border border-border rounded-md shadow-lg z-10 mt-1">
-                   {staff.map(member => (
-                     <div key={member.id} className="flex items-center gap-3 p-2 hover:bg-slate-50 cursor-pointer" onMouseDown={(e) => { e.preventDefault(); toggleStaff(member.id); }}>
-                       <Checkbox checked={selectedStaffIds.includes(member.id)} className="pointer-events-none" />
-                       <div className="flex flex-col">
-                          <span className="text-sm font-medium text-slate-800">{member.full_name}</span>
-                          <span className="text-xs text-slate-500">{member.user_email}</span>
-                       </div>
-                     </div>
-                   ))}
-                </div>
-              </div>
+        <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0 bg-white">
+          {/* Recipient Type Toggle */}
+          <div className="px-4 py-2 border-b border-border bg-slate-50/50 flex items-center gap-4 text-sm shrink-0">
+            <span className="text-slate-500 font-medium">Send to:</span>
+            <div className="flex gap-4">
+              <label className="flex items-center gap-1.5 cursor-pointer">
+                <input type="radio" checked={recipientType === "internal"} onChange={() => setRecipientType("internal")} className="text-blue-600 focus:ring-blue-500" />
+                <span className="text-slate-700">Team (Internal)</span>
+              </label>
+              <label className="flex items-center gap-1.5 cursor-pointer">
+                <input type="radio" checked={recipientType === "external"} onChange={() => setRecipientType("external")} className="text-blue-600 focus:ring-blue-500" />
+                <span className="text-slate-700">Clients (External)</span>
+              </label>
+              <label className="flex items-center gap-1.5 cursor-pointer">
+                <input type="radio" checked={recipientType === "both"} onChange={() => setRecipientType("both")} className="text-blue-600 focus:ring-blue-500" />
+                <span className="text-slate-700">Both</span>
+              </label>
             </div>
-            <button type="button" className="text-slate-400 hover:text-slate-700 text-xs font-semibold" onClick={() => setShowCc(!showCc)}>Cc/Bcc</button>
           </div>
 
+          {/* Internal Selection */}
+          {(recipientType === "internal" || recipientType === "both") && (
+            <div className="px-4 py-2 border-b border-border text-sm flex gap-2">
+              <span className="text-slate-500 pt-1 shrink-0 w-16">Internal</span>
+              <div className="flex-1 max-h-24 overflow-y-auto">
+                <div className="flex flex-wrap gap-1 mb-1">
+                  {staff.filter(s => selectedStaffIds.includes(s.id)).map(s => (
+                    <span key={s.id} className="bg-blue-50 border border-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs flex items-center gap-1">
+                      {s.full_name}
+                      <X className="w-3 h-3 cursor-pointer hover:text-blue-900" onClick={() => toggleStaff(s.id)} />
+                    </span>
+                  ))}
+                </div>
+                <div className="group relative">
+                  <input type="text" placeholder="Select team members..." className="w-full outline-none text-sm peer" />
+                  <div className="hidden peer-focus:block hover:block absolute top-full left-0 w-full max-h-40 overflow-y-auto bg-white border border-border rounded-md shadow-lg z-10 mt-1">
+                     {staff.map(member => (
+                       <div key={member.id} className="flex items-center gap-3 p-2 hover:bg-slate-50 cursor-pointer" onMouseDown={(e) => { e.preventDefault(); toggleStaff(member.id); }}>
+                         <Checkbox checked={selectedStaffIds.includes(member.id)} className="pointer-events-none" />
+                         <div className="flex flex-col">
+                            <span className="text-sm font-medium text-slate-800">{member.full_name}</span>
+                            <span className="text-xs text-slate-500">{member.user_email}</span>
+                         </div>
+                       </div>
+                     ))}
+                  </div>
+                </div>
+              </div>
+              {recipientType === "internal" && <button type="button" className="text-slate-400 hover:text-slate-700 text-xs font-semibold shrink-0" onClick={() => setShowCc(!showCc)}>Cc/Bcc</button>}
+            </div>
+          )}
+
+          {/* External Selection */}
+          {(recipientType === "external" || recipientType === "both") && (
+            <div className="px-4 py-2 border-b border-border text-sm flex gap-2 items-center">
+              <span className="text-slate-500 shrink-0 w-16">External</span>
+              <input 
+                type="text" 
+                placeholder="Enter email addresses separated by commas..." 
+                className="flex-1 outline-none text-sm bg-transparent" 
+                value={externalEmails}
+                onChange={e => setExternalEmails(e.target.value)}
+              />
+              {recipientType === "external" && <button type="button" className="text-slate-400 hover:text-slate-700 text-xs font-semibold shrink-0" onClick={() => setShowCc(!showCc)}>Cc/Bcc</button>}
+            </div>
+          )}
+
+          {/* CC */}
           {showCc && (
              <div className="px-4 py-2 border-b border-border text-sm flex items-center gap-2">
-               <span className="text-slate-500 shrink-0">Cc</span>
-               <input type="text" className="flex-1 outline-none text-sm" />
+               <span className="text-slate-500 shrink-0 w-16">Cc</span>
+               <input type="text" className="flex-1 outline-none text-sm bg-transparent" />
              </div>
           )}
 
@@ -365,7 +434,7 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
             <input 
               type="text"
               placeholder="Subject"
-              className="w-full text-sm font-semibold text-slate-800 placeholder:text-slate-400 outline-none"
+              className="w-full text-sm font-semibold text-slate-800 placeholder:text-slate-400 outline-none bg-transparent"
               value={subject}
               onChange={e => setSubject(e.target.value)}
               required
@@ -375,18 +444,30 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
           {/* Body */}
           <div className="flex-1 p-4 relative min-h-0">
             <textarea
-              className="w-full h-full text-sm text-slate-800 outline-none resize-none"
+              className="w-full h-full text-sm text-slate-800 outline-none resize-none bg-transparent"
               value={message}
               onChange={e => setMessage(e.target.value)}
+              placeholder="Write your email here..."
               required
+              disabled={isAiLoading}
             />
           </div>
 
           {/* Footer */}
           <div className="p-3 border-t border-border flex items-center justify-between bg-slate-50/50 shrink-0">
-            <Button type="submit" disabled={isLoading} className="bg-blue-600 hover:bg-blue-700 text-white px-6 rounded-full font-bold shadow-sm h-9">
-              {t("send", "Send")}
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button type="submit" disabled={isLoading} className="bg-blue-600 hover:bg-blue-700 text-white px-6 rounded-full font-bold shadow-sm h-9">
+                {isLoading ? "Sending..." : t("send", "Send")}
+              </Button>
+              <Button 
+                type="button" 
+                onClick={handleAiAssist} 
+                disabled={isAiLoading || !message.trim()} 
+                className="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 rounded-full h-9 px-4 flex items-center gap-2 shadow-sm font-medium"
+              >
+                <Sparkles className="w-4 h-4" /> AI Polish
+              </Button>
+            </div>
             <div className="flex items-center gap-1 text-slate-400">
                <Button type="button" variant="ghost" size="icon" className="hover:text-slate-600 w-8 h-8 rounded-full"><Paperclip className="w-4 h-4" /></Button>
                <Button type="button" variant="ghost" size="icon" className="hover:text-red-600 w-8 h-8 rounded-full ml-2" onClick={onClose}><Trash2 className="w-4 h-4" /></Button>

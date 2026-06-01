@@ -11,6 +11,8 @@ import {
 } from '@daily-co/daily-react';
 import { Mic, MicOff, Video, VideoOff, PhoneOff, MonitorUp, Sparkles, LayoutGrid } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { generateText } from "@/lib/cloudflareAI";
+import { useToast } from "@/components/ui/use-toast";
 
 // Inner component that actually uses the Daily hooks
 function VideoRoomInner({ roomUrl, onLeave }) {
@@ -21,6 +23,8 @@ function VideoRoomInner({ roomUrl, onLeave }) {
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOff, setIsVideoOff] = useState(false);
   const [isScreenSharing, setIsScreenSharing] = useState(false);
+  const { toast } = useToast();
+  const [isAiLoading, setIsAiLoading] = useState(false);
   
   useDailyEvent('left-meeting', () => {
     onLeave();
@@ -53,6 +57,24 @@ function VideoRoomInner({ roomUrl, onLeave }) {
   const leaveCall = () => {
     if (!daily) return;
     daily.leave();
+  };
+
+  const handleAiAssist = async () => {
+    setIsAiLoading(true);
+    toast({ title: "Orbit Meeting AI", description: "Generating meeting summary via Cloudflare AI..." });
+    try {
+      const messages = [
+        { role: 'system', content: 'You are an AI meeting assistant. Summarize the following mock meeting transcription into 3 bullet points.' },
+        { role: 'user', content: 'John: We need to finalize the quarterly report by Friday. Jane: I have the numbers ready, just need to format the charts. John: Great, lets review it Thursday morning. Jane: Sounds good.' }
+      ];
+      const response = await generateText(messages);
+      toast({ title: "Meeting Summary", description: response || "Meeting concluded without action items." });
+    } catch (err) {
+      console.error(err);
+      toast({ title: "AI Error", description: "Failed to connect to Cloudflare AI.", variant: "destructive" });
+    } finally {
+      setIsAiLoading(false);
+    }
   };
 
   return (
@@ -97,9 +119,11 @@ function VideoRoomInner({ roomUrl, onLeave }) {
         </Button>
         <Button 
           variant="secondary"
+          onClick={handleAiAssist}
+          disabled={isAiLoading}
           className="h-12 px-6 rounded-full font-semibold gap-2 hover:bg-primary hover:text-primary-foreground transition-colors"
         >
-          <Sparkles className="w-4 h-4" /> AI Assistant
+          <Sparkles className="w-4 h-4" /> {isAiLoading ? "Processing..." : "AI Assistant"}
         </Button>
         <Button 
           onClick={leaveCall}
