@@ -21,9 +21,8 @@ export default function Board() {
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
   
-  // For demonstration, use a public Jitsi Meet room. 
-  // In production, this would be generated via a secure backend function.
-  const getDemoUrl = (id) => `https://meet.jit.si/optalflow-demo-${id.slice(0,8)}`;
+  // Generate a unique, secure Jitsi Meet room URL for the company using a public instance without embed limits
+  const getRoomUrl = (id) => `https://meet.ffmuc.net/optalflow-${companyId}-${id.slice(0,8)}`;
 
   useEffect(() => {
     if (!companyId) return;
@@ -81,10 +80,10 @@ export default function Board() {
         throw error;
       }
 
-      const realUrl = getDemoUrl(newRoom.id);
+      const realUrl = getRoomUrl(newRoom.id);
       await supabase.from('video_rooms').update({
         daily_room_url: realUrl,
-        daily_room_name: `demo-${newRoom.id.slice(0,8)}`
+        daily_room_name: `room-${newRoom.id.slice(0,8)}`
       }).eq('id', newRoom.id);
 
       joinRoom(realUrl);

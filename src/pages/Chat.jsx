@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { Search, Plus, MessageSquare, MoreVertical, Send, Sparkles, Hash, Users, UserCircle, Phone, Video, Loader2, CheckCheck, Check } from "lucide-react";
+import { Search, Plus, MessageSquare, MoreVertical, Send, Sparkles, Hash, Users, UserCircle, Phone, Video, Loader2, CheckCheck, Check, Smile, Paperclip, ImageIcon, FileText, File } from "lucide-react";
+import EmojiPicker from "emoji-picker-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/AuthContext";
 import { cn } from "@/lib/utils";
@@ -23,6 +25,8 @@ export default function Chat() {
   const [loadingRooms, setLoadingRooms] = useState(false);
   const [loadingMessages, setLoadingMessages] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showAttachMenu, setShowAttachMenu] = useState(false);
 
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -83,7 +87,7 @@ export default function Chat() {
     
     const messageSub = supabase.channel(`chat-page-messages-${activeRoomId}`)
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `room_id=eq.${activeRoomId}` }, (payload) => {
-        setMessages(prev => [...prev, payload.new]);
+        setMessages(prev => prev.find(m => m.id === payload.new.id) ? prev : [...prev, payload.new]);
         setRooms(prev => prev.map(r => r.id === activeRoomId ? { ...r, updated_at: new Date().toISOString() } : r));
       })
       .subscribe();
@@ -122,7 +126,7 @@ export default function Chat() {
     }
   };
 
-  const handleFileUpload = async (e) => {
+  const handleFileUpload = async (e, type = 'file') => {
     const file = e.target.files?.[0];
     if (!file || !activeRoomId) return;
     if (file.size > 50 * 1024 * 1024) {
@@ -131,7 +135,12 @@ export default function Chat() {
     }
     setIsUploading(true);
     try {
-      const mockUrl = `[File: ${file.name}]`;
+      
+      let mockUrl = `[Attachment|${file.name}|url]`;
+      if (type === 'image') {
+        mockUrl = `[Attachment|${file.name}|data:image/png;base64,mock]`;
+      }
+    
       const { error } = await supabase.from('chat_messages').insert({ room_id: activeRoomId, sender_id: user.id, content: mockUrl });
       if (error) throw error;
     } catch (err) {
@@ -302,7 +311,25 @@ export default function Chat() {
                         </svg>
                       )}
                       
-                      <div className="whitespace-pre-wrap pr-12">{msg.content}</div>
+                      {msg.content.startsWith('[Attachment|') ? (
+                          <div className="pr-12 pt-1 pb-1">
+                            <div className="flex items-center gap-2 bg-black/5 dark:bg-white/5 p-2 rounded-lg">
+                              {msg.content.split('|')[2].startsWith('data:image') ? (
+                                <img src={msg.content.split('|')[2].slice(0, -1)} alt="attachment" className="max-w-[200px] rounded object-cover" />
+                              ) : (
+                                <>
+                                  <FileText className="w-8 h-8 text-blue-500" />
+                                  <div className="flex flex-col">
+                                    <span className="text-sm font-semibold truncate max-w-[150px]">{msg.content.split('|')[1]}</span>
+                                    <span className="text-xs text-muted-foreground">Document</span>
+                                  </div>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="whitespace-pre-wrap pr-12">{msg.content}</div>
+                        )}
                       
                       <div className="float-right -mb-1 ml-2 text-[10px] text-muted-foreground flex items-center gap-1 mt-1">
                         {format(new Date(msg.created_at), 'h:mm a')}
@@ -316,15 +343,43 @@ export default function Chat() {
             </div>
 
             {/* Input Area */}
-            <div className="px-4 py-3 bg-[#f0f2f5] dark:bg-[#202c33] z-10 flex items-center gap-3">
-              <input type="file" ref={fileInputRef} className="hidden" onChange={handleFileUpload} />
+            <div className="px-4 py-3 bg-[#f0f2f5] dark:bg-[#202c33] z-10 flex items-center gap-2 border-t border-border">
+              <input type="file" ref={fileInputRef} className="hidden" onChange={(e) => handleFileUpload(e, 'file')} />
+              <input type="file" accept="image/*" id="chat-image-upload" className="hidden" onChange={(e) => handleFileUpload(e, 'image')} />
+              <input type="file" accept=".pdf,.doc,.docx,.txt" id="chat-doc-upload" className="hidden" onChange={(e) => handleFileUpload(e, 'doc')} />
               
-              <button 
-                className="text-[#54656f] dark:text-[#aebac1] hover:text-foreground transition-colors shrink-0" 
-                onClick={() => fileInputRef.current?.click()}
-              >
-                {isUploading ? <Loader2 className="w-6 h-6 animate-spin" /> : <Plus className="w-6 h-6" />}
-              </button>
+              <Popover open={showEmojiPicker} onOpenChange={setShowEmojiPicker}>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full text-[#54656f] dark:text-[#aebac1] hover:bg-black/5 shrink-0">
+                    <Smile className="w-6 h-6" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent side="top" align="start" className="w-auto p-0 border-none bg-transparent shadow-none mb-2">
+                  <EmojiPicker onEmojiClick={(e) => setInputValue(prev => prev + e.emoji)} />
+                </PopoverContent>
+              </Popover>
+
+              <Popover open={showAttachMenu} onOpenChange={setShowAttachMenu}>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full text-[#54656f] dark:text-[#aebac1] hover:bg-black/5 shrink-0">
+                    {isUploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Paperclip className="w-6 h-6" />}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent side="top" align="start" className="w-48 p-2 mb-2 rounded-2xl flex flex-col gap-1 shadow-xl">
+                   <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-blue-50 hover:text-blue-600" onClick={() => document.getElementById('chat-doc-upload')?.click()}>
+                     <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600"><FileText className="w-4 h-4"/></div>
+                     Document
+                   </Button>
+                   <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-rose-50 hover:text-rose-600" onClick={() => document.getElementById('chat-image-upload')?.click()}>
+                     <div className="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center text-rose-600"><ImageIcon className="w-4 h-4"/></div>
+                     Photos & Videos
+                   </Button>
+                   <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-violet-50 hover:text-violet-600" onClick={() => fileInputRef.current?.click()}>
+                     <div className="w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center text-violet-600"><File className="w-4 h-4"/></div>
+                     File
+                   </Button>
+                </PopoverContent>
+              </Popover>
               
               <div className="flex-1 bg-white dark:bg-[#2a3942] rounded-lg relative flex items-center shadow-sm">
                 <input
@@ -333,25 +388,21 @@ export default function Chat() {
                   onChange={e => setInputValue(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && handleSend()}
                   placeholder="Type a message"
-                  className="w-full bg-transparent border-none px-4 py-2.5 text-[15px] focus:ring-0 focus:outline-none"
+                  className="w-full bg-transparent border-none px-4 py-2.5 text-sm focus:ring-0 focus:outline-none"
                 />
-                <button onClick={handleAiAssist} className="absolute right-3 p-1.5 text-blue-500 hover:bg-blue-500/10 rounded-full transition-colors" title="AI Magic Rewrite">
+                <button onClick={handleAiAssist} className="absolute right-3 p-1 text-blue-500 hover:bg-blue-500/10 rounded-full transition-colors" title="AI Magic Rewrite">
                   <Sparkles className="w-4 h-4" />
                 </button>
               </div>
               
-              {inputValue.trim() ? (
-                <button 
-                  onClick={handleSend}
-                  className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white hover:bg-primary/90 shadow-sm shrink-0 transition-transform hover:scale-105"
-                >
-                  <Send className="w-5 h-5 ml-1" />
-                </button>
-              ) : (
-                <button className="text-[#54656f] dark:text-[#aebac1] hover:text-foreground transition-colors shrink-0">
-                  <span className="w-6 h-6 block rounded-full border-2 border-current" />
-                </button>
-              )}
+              <Button 
+                onClick={handleSend}
+                disabled={!inputValue.trim()}
+                size="icon" 
+                className="w-10 h-10 rounded-full bg-primary hover:bg-primary/90 shadow-sm shrink-0"
+              >
+                <Send className="w-4 h-4" />
+              </Button>
             </div>
           </>
         ) : (

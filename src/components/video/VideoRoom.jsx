@@ -298,7 +298,7 @@ function ParticipantTile({ id, isLocal }) {
 export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePipMode }) {
   const [daily, setDaily] = useState(null);
   
-  if (roomUrl && roomUrl.includes('meet.jit.si')) {
+  if (roomUrl && (roomUrl.includes('meet.jit.si') || roomUrl.includes('meet.ffmuc.net'))) {
     return (
       <div className="flex flex-col h-full bg-slate-950 rounded-xl relative overflow-hidden">
         <div className="absolute top-0 right-0 z-50 p-2 flex gap-2">
