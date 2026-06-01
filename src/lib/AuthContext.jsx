@@ -234,6 +234,7 @@ export const AuthProvider = ({ children }) => {
         updatedUser.company_industry !== newUser.company_industry ||
         updatedUser.full_name !== newUser.full_name ||
         updatedUser.email !== newUser.email ||
+        updatedUser.avatar_url !== newUser.avatar_url ||
         updatedUser.subscription_status !== newUser.subscription_status ||
         updatedUser.subscription_plan !== newUser.subscription_plan;
 
