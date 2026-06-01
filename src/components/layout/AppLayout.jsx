@@ -10,6 +10,7 @@ import { Building2, X, Clock, CreditCard, WifiOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Paywall from "@/pages/Paywall";
 import AiAssistant from "@/components/AiAssistant";
+import GlobalChatPanel from "@/components/chat/GlobalChatPanel";
 import SpotlightSearch from "./SpotlightSearch";
 
 export default function AppLayout() {
@@ -23,6 +24,7 @@ export default function AppLayout() {
   const [hideOfflineBanner, setHideOfflineBanner] = useState(false);
 
   const [isAIOpen, setIsAIOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const [isPrefsLoaded, setIsPrefsLoaded] = useState(false);
   const [orbitContext, setOrbitContext] = useState(null);
   const [uiPrefsId, setUiPrefsId] = useState(null);
@@ -57,9 +59,16 @@ export default function AppLayout() {
     fetchPrefs();
   }, [user, isPrefsLoaded]);
 
+  const toggleChat = () => {
+    const newState = !isChatOpen;
+    setIsChatOpen(newState);
+    if (isAIOpen && newState) setIsAIOpen(false); // Close AI if opening chat
+  };
+
   const toggleAI = async () => {
     const newState = !isAIOpen;
     setIsAIOpen(newState);
+    if (isChatOpen && newState) setIsChatOpen(false); // Close chat if opening AI
     
     if (user?.email && user?.company_id) {
       try {
@@ -212,6 +221,8 @@ export default function AppLayout() {
           toggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)} 
           isAIOpen={isAIOpen}
           toggleAI={toggleAI}
+          isChatOpen={isChatOpen}
+          toggleChat={toggleChat}
         />
         <main className="flex-1 p-2 sm:p-4 lg:p-6 max-w-[1400px] w-full mx-auto pb-24 md:pb-6">
           <Outlet />
@@ -219,6 +230,7 @@ export default function AppLayout() {
       </div>
       <MobileBottomNav />
       <AiAssistant isOpen={isAIOpen} onClose={toggleAI} injectedContext={orbitContext} onContextConsumed={() => setOrbitContext(null)} />
+      <GlobalChatPanel isOpen={isChatOpen} onClose={toggleChat} />
       <SpotlightSearch />
     </div>
   );

@@ -46,7 +46,7 @@ const LANGUAGES = {
   tr: { name: "Türkçe", flag: "🇹🇷" },
 };
 
-export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOpen, toggleAI }) {
+export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOpen, toggleAI, isChatOpen, toggleChat }) {
   const { t, i18n } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
@@ -172,6 +172,22 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
           </span>
+        </Button>
+
+        {/* Global Chat Toggle */}
+        <Button
+          onClick={toggleChat}
+          variant="ghost"
+          size="icon"
+          className={`relative overflow-hidden sm:w-auto sm:px-3 sm:py-1.5 text-xs font-bold rounded-lg border transition-all duration-300 ${
+            isChatOpen
+              ? "bg-blue-600 text-white border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)] scale-95"
+              : "bg-card text-foreground border-border hover:border-blue-500/50 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-500/10 hover:shadow-[0_0_10px_rgba(59,130,246,0.15)]"
+          }`}
+        >
+          <span className="absolute inset-0 bg-blue-500/10 opacity-0 hover:opacity-100 transition-opacity duration-300" />
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 sm:w-3.5 sm:h-3.5 ${isChatOpen ? "text-white" : "text-blue-500"} sm:mr-1.5`}><path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z"/></svg>
+          <span className="hidden sm:inline">Chat</span>
         </Button>
 
         {/* Global Time Tracker */}

@@ -394,6 +394,19 @@ export const getIndustryNav = (industryKey) => {
     const insertIndex = Math.max(0, nav.length - 2);
     nav.splice(insertIndex, 0, { label: 'Email Inbox', path: '/email-inbox', icon: 'Mail' });
   }
+
+  // Ensure Chat exists globally
+  if (!nav.find(n => n.path === '/chat')) {
+    // Insert it before Email Inbox
+    const insertIndex = Math.max(0, nav.length - 3);
+    nav.splice(insertIndex, 0, { label: 'Team Chat', path: '/chat', icon: 'MessageSquare' });
+  }
+
+  // Ensure Board exists globally
+  if (!nav.find(n => n.path === '/board')) {
+    const insertIndex = Math.max(0, nav.length - 3);
+    nav.splice(insertIndex, 0, { label: 'Video Calls', path: '/board', icon: 'Video' });
+  }
   
   return nav;
 };
