@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { Search, Plus, MessageSquare, MoreVertical, Send, Sparkles, Hash, Users, UserCircle, Phone, Video, Loader2, CheckCheck, Check, Smile, Paperclip, ImageIcon, FileText, File } from "lucide-react";
+import { Search, Plus, MessageSquare, MoreVertical, Send, Sparkles, Hash, Users, UserCircle, Phone, Video, Loader2, CheckCheck, Check, Smile, Paperclip, ImageIcon, FileText, File, X } from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,9 @@ export default function Chat() {
   const [activeRoomId, setActiveRoomId] = useState(null);
   const [rooms, setRooms] = useState([]);
   const [messages, setMessages] = useState([]);
+  const [participantProfiles, setParticipantProfiles] = useState({});
+  const [replyTo, setReplyTo] = useState(null);
+  const [editingMsg, setEditingMsg] = useState(null);
   const [inputValue, setInputValue] = useState("");
   const [isAddChatOpen, setIsAddChatOpen] = useState(false);
   const [loadingRooms, setLoadingRooms] = useState(false);
@@ -106,6 +109,18 @@ export default function Chat() {
         .eq('room_id', roomId)
         .order('created_at', { ascending: true });
       setMessages(data || []);
+
+      if (data && data.length > 0) {
+        const senderIds = [...new Set(data.map(m => m.sender_id).filter(Boolean))];
+        if (senderIds.length > 0) {
+          const { data: profiles } = await supabase.from('profiles').select('id, full_name, avatar_url').in('id', senderIds);
+          if (profiles) {
+            const pMap = {};
+            profiles.forEach(p => pMap[p.id] = p);
+            setParticipantProfiles(pMap);
+          }
+        }
+      }
     } catch (err) {
       console.error(err);
     } finally {
@@ -118,8 +133,24 @@ export default function Chat() {
     const text = inputValue.trim();
     setInputValue("");
     try {
-      const { error } = await supabase.from('chat_messages').insert({ room_id: activeRoomId, sender_id: user.id, content: text });
-      if (error) throw error;
+      if (editingMsg) {
+        const { error } = await supabase.from('chat_messages').update({
+          content: text,
+          is_edited: true
+        }).eq('id', editingMsg.id);
+        if (error) throw error;
+        setMessages(prev => prev.map(m => m.id === editingMsg.id ? { ...m, content: text, is_edited: true } : m));
+        setEditingMsg(null);
+      } else {
+        const { error } = await supabase.from('chat_messages').insert({
+          room_id: activeRoomId,
+          sender_id: user.id,
+          content: text,
+          reply_to_id: replyTo?.id || null
+        });
+        if (error) throw error;
+        setReplyTo(null);
+      }
       await supabase.from('chat_rooms').update({ updated_at: new Date().toISOString() }).eq('id', activeRoomId);
     } catch (err) {
       toast({ title: "Error", description: "Failed to send message", variant: "destructive" });
@@ -295,15 +326,38 @@ export default function Chat() {
               ) : messages.map((msg, idx) => {
                 const isMe = msg.sender_id === user.id;
                 const showTail = idx === 0 || messages[idx-1].sender_id !== msg.sender_id;
+                const profile = participantProfiles[msg.sender_id];
+                const senderName = profile?.full_name || 'User';
+                const avatarUrl = profile?.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${senderName}`;
                 
                 return (
-                  <div key={msg.id} className={cn("flex items-end gap-1 max-w-[70%]", isMe ? "ml-auto flex-row-reverse" : "mr-auto")}>
+                  <div key={msg.id} id={`msg-${msg.id}`} className={cn("flex items-end gap-2 max-w-[85%] group", isMe ? "ml-auto flex-row-reverse" : "mr-auto")}>
+                    {!isMe && showTail ? (
+                      <img src={avatarUrl} alt={senderName} className="w-7 h-7 rounded-full shrink-0 shadow-sm" />
+                    ) : (
+                      !isMe && <div className="w-7 shrink-0" />
+                    )}
+
                     <div className={cn(
                       "relative px-3 py-1.5 shadow-sm text-[14.5px] leading-snug rounded-xl",
                       isMe 
                         ? "bg-[#d9fdd3] dark:bg-[#005c4b] text-slate-900 dark:text-gray-100 rounded-tr-none" 
                         : "bg-white dark:bg-[#202c33] text-slate-900 dark:text-gray-100 rounded-tl-none"
                     )}>
+                      {msg.reply_to_id && (
+                        <div className="bg-black/5 dark:bg-white/5 border-l-4 border-primary rounded p-1.5 mb-1.5 text-xs opacity-80 cursor-pointer" onClick={() => {
+                          const el = document.getElementById(`msg-${msg.reply_to_id}`);
+                          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }}>
+                          <span className="font-semibold text-primary block">{participantProfiles[messages.find(m => m.id === msg.reply_to_id)?.sender_id]?.full_name || 'User'}</span>
+                          <span className="truncate block max-w-[200px]">{messages.find(m => m.id === msg.reply_to_id)?.content || 'Message'}</span>
+                        </div>
+                      )}
+                      
+                      {!isMe && showTail && activeRoom?.name !== null && (
+                         <div className="text-[11px] font-bold text-blue-500 mb-0.5">{senderName}</div>
+                      )}
+
                       {showTail && (
                         <svg viewBox="0 0 8 13" width="8" height="13" className={cn("absolute top-0", isMe ? "-right-2 text-[#d9fdd3] dark:text-[#005c4b]" : "-left-2 text-white dark:text-[#202c33]")}>
                           <path opacity="0.13" d="M5.188 1H0v11.193l6.467-8.625C7.526 2.156 6.958 1 5.188 1z" />
@@ -314,16 +368,18 @@ export default function Chat() {
                       {msg.content.startsWith('[Attachment|') ? (
                           <div className="pr-12 pt-1 pb-1">
                             <div className="flex items-center gap-2 bg-black/5 dark:bg-white/5 p-2 rounded-lg">
-                              {msg.content.split('|')[2].startsWith('data:image') ? (
-                                <img src={msg.content.split('|')[2].slice(0, -1)} alt="attachment" className="max-w-[200px] rounded object-cover" />
+                              {msg.content.split('|')[3] === 'data:image' ? (
+                                <img src={msg.content.split('|')[2]} alt="attachment" className="max-w-[200px] rounded object-cover cursor-pointer hover:opacity-90 transition-opacity" onClick={() => window.open(msg.content.split('|')[2], '_blank')} />
+                              ) : msg.content.split('|')[3] === 'data:video' ? (
+                                <video src={msg.content.split('|')[2]} controls className="max-w-[250px] rounded" />
                               ) : (
-                                <>
-                                  <FileText className="w-8 h-8 text-blue-500" />
-                                  <div className="flex flex-col">
-                                    <span className="text-sm font-semibold truncate max-w-[150px]">{msg.content.split('|')[1]}</span>
-                                    <span className="text-xs text-muted-foreground">Document</span>
+                                <a href={msg.content.split('|')[2]} target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-md p-1 transition-colors">
+                                  <FileText className="w-8 h-8 text-blue-500 shrink-0" />
+                                  <div className="flex flex-col min-w-0">
+                                    <span className="text-sm font-semibold truncate max-w-[150px] text-blue-600 hover:underline">{msg.content.split('|')[1]}</span>
+                                    <span className="text-xs text-muted-foreground uppercase">{msg.content.split('|')[1]?.split('.').pop() || 'DOCUMENT'}</span>
                                   </div>
-                                </>
+                                </a>
                               )}
                             </div>
                           </div>
@@ -332,15 +388,74 @@ export default function Chat() {
                         )}
                       
                       <div className="float-right -mb-1 ml-2 text-[10px] text-muted-foreground flex items-center gap-1 mt-1">
+                        {msg.is_edited && <span className="mr-1 italic">edited</span>}
                         {format(new Date(msg.created_at), 'h:mm a')}
-                        {isMe && <CheckCheck className="w-3.5 h-3.5 text-blue-500" />}
+                        {isMe && (() => {
+                          const otherParticipants = activeRoom?.chat_participants?.filter(p => p.user_id !== user.id) || [];
+                          const isReadByAny = otherParticipants.some(p => p.last_read_at && new Date(p.last_read_at) >= new Date(msg.created_at));
+                          if (isReadByAny) return <CheckCheck className="w-3.5 h-3.5 text-blue-500" />;
+                          return <CheckCheck className="w-3.5 h-3.5 text-muted-foreground" />;
+                        })()}
                       </div>
+                    </div>
+                    
+                    {/* Message Actions */}
+                    <div className="opacity-40 hover:opacity-100 transition-opacity flex flex-wrap items-center gap-1 bg-white/50 dark:bg-black/20 rounded-full px-1 py-0.5 shadow-sm mb-1 self-center">
+                      <button onClick={() => setReplyTo(msg)} className="p-1 hover:bg-black/10 rounded-full text-muted-foreground" title="Reply">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>
+                      </button>
+                      <button 
+                        onClick={async () => {
+                          const currentLikes = msg.reactions?.likes || 0;
+                          const { error } = await supabase.from('chat_messages').update({
+                            reactions: { ...msg.reactions, likes: currentLikes + 1 }
+                          }).eq('id', msg.id);
+                          if (!error) {
+                            setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, reactions: { ...m.reactions, likes: currentLikes + 1 } } : m));
+                          }
+                        }} 
+                        className="p-1 hover:bg-black/10 rounded-full text-muted-foreground flex items-center gap-0.5" 
+                        title="Like"
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        {msg.reactions?.likes > 0 && <span className="text-[10px]">{msg.reactions.likes}</span>}
+                      </button>
+                      {isMe && (
+                        <>
+                          <button onClick={() => { setEditingMsg(msg); setInputValue(msg.content); }} className="p-1 hover:bg-black/10 rounded-full text-muted-foreground" title="Edit">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                          </button>
+                          <button 
+                            className="p-1 hover:bg-rose-100 hover:text-rose-500 rounded-full text-muted-foreground" 
+                            title="Delete"
+                            onClick={() => {
+                              supabase.from('chat_messages').delete().eq('id', msg.id).then(() => {
+                                setMessages(prev => prev.filter(m => m.id !== msg.id));
+                              });
+                            }}
+                          >
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                          </button>
+                        </>
+                      )}
                     </div>
                   </div>
                 );
               })}
               <div ref={messagesEndRef} className="h-2" />
             </div>
+
+            {(replyTo || editingMsg) && (
+               <div className="px-4 py-2 bg-[#f0f2f5] dark:bg-[#202c33] border-t border-border flex items-center justify-between z-10 text-sm">
+                 <div className="flex-1 min-w-0 border-l-4 border-primary pl-3">
+                   <p className="font-semibold text-primary">{editingMsg ? "Editing Message" : `Replying to ${participantProfiles[replyTo?.sender_id]?.full_name || 'User'}`}</p>
+                   <p className="text-muted-foreground truncate">{editingMsg ? editingMsg.content : replyTo?.content}</p>
+                 </div>
+                 <button onClick={() => { setReplyTo(null); setEditingMsg(null); setInputValue(''); }} className="p-2 hover:bg-black/5 rounded-full">
+                   <X className="w-4 h-4 text-muted-foreground" />
+                 </button>
+               </div>
+            )}
 
             {/* Input Area */}
             <div className="px-4 py-3 bg-[#f0f2f5] dark:bg-[#202c33] z-10 flex items-center gap-2 border-t border-border">
