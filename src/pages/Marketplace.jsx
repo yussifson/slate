@@ -53,15 +53,15 @@ export default function Marketplace() {
       //    We match by name against public modules to find the mapping
       const { data: myModules } = await supabase
         .from('module_definitions')
-        .select('id, name, source_module_id')
+        .select('id, name, config')
         .eq('company_id', companyId)
         .eq('is_active', 'true');
 
       const installed = {};
       for (const myMod of (myModules || [])) {
-        // If it has a source_module_id, use that for direct mapping
-        if (myMod.source_module_id) {
-          installed[myMod.source_module_id] = myMod.id;
+        // If it has a source_module_id in config, use that for direct mapping
+        if (myMod.config?.source_module_id) {
+          installed[myMod.config.source_module_id] = myMod.id;
         } else {
           // Fallback: match by name against public modules (for legacy installs)
           const matchingPublic = mods.find(pm => pm.name === myMod.name && pm.company_id !== companyId);
@@ -92,8 +92,7 @@ export default function Marketplace() {
         is_active: 'true',
         visibility: 'private',
         status: 'published',
-        config: mod.config || {},
-        source_module_id: mod.id, // Track which marketplace module this was cloned from
+        config: { ...(mod.config || {}), source_module_id: mod.id }, // Track which marketplace module this was cloned from
         created_at: new Date().toISOString()
       });
 
