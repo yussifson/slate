@@ -68,6 +68,7 @@ export default function Inventory() {
   const [formData, setFormData] = useState(emptyForm);
   const [selectedItem, setSelectedItem] = useState(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
 
   const openAdd = () => { setEditingItem(null); setFormData(emptyForm); setShowModal(true); };
   const openEdit = (item) => {

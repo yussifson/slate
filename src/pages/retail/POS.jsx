@@ -168,9 +168,9 @@ export default function POS() {
       </div>
       {/* Cart Register */}
       <div className="w-full md:w-96 flex flex-col bg-card rounded-2xl shadow-lg border border-border overflow-hidden shrink-0">
-         <div className="p-4 bg-slate-900 text-white flex items-center justify-between">
+         <div className="p-4 bg-blue-600 text-white flex items-center justify-between">
             <h2 className="font-bold flex items-center gap-2 text-lg"><ShoppingCart className="w-5 h-5"/> {t("current_sale", "Current Sale")}</h2>
-            <span className="bg-slate-800 px-2 py-1 rounded text-xs font-mono">{cart.length} {t("items", "items")}</span>
+            <span className="bg-blue-700 px-2 py-1 rounded text-xs font-mono">{cart.length} {t("items", "items")}</span>
          </div>
          
          <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-muted">

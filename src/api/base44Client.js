@@ -2,6 +2,7 @@ import { supabase } from './supabaseClient';
 import { SCHEMA_COLUMNS } from './schemaColumns';
 import { encryptText, decryptText } from '../lib/encryption';
 import { powerSync } from './PowerSyncConnector';
+import { syncQueue } from '../services/syncQueue';
 
 const TABLE_MAP = {
     Company: 'companies',
@@ -97,21 +98,21 @@ export const syncOfflineOutbox = async () => {
     console.log('[PowerSync] Native sync engine active. Ignoring manual outbox trigger.');
 };
 
-/** Mirror CRUD to Supabase so data survives refresh even if PowerSync upload lags. */
+/** Push CRUD actions to syncQueue so data survives offline safely. */
 async function mirrorToSupabase(tableName, record, operation = 'upsert') {
-    if (!navigator.onLine || !record) return;
+    if (!record) return;
 
     const { data: { user } } = await supabase.auth.getUser();
-    const row = { ...record };
-    if (!row.created_by && user?.id) row.created_by = user.id;
+    const row = typeof record === 'string' ? null : { ...record };
+    if (row && !row.created_by && user?.id) row.created_by = user.id;
 
     if (operation === 'upsert') {
-        const { error } = await supabase.from(tableName).upsert(row);
-        if (error) throw error;
+        const isUpdate = !!row.updated_date; // Heuristic to know if it's PUT or POST
+        const action = isUpdate ? 'PUT' : 'POST';
+        await syncQueue.enqueue({ action, endpoint: tableName, payload: isUpdate ? { id: row.id, data: row } : row });
     } else if (operation === 'delete') {
         const id = typeof record === 'string' ? record : record.id;
-        const { error } = await supabase.from(tableName).delete().eq('id', id);
-        if (error) throw error;
+        await syncQueue.enqueue({ action: 'DELETE', endpoint: tableName, payload: { id } });
     }
 }
 
@@ -328,9 +329,7 @@ export const base44 = {
 
                         await powerSync.execute(`INSERT INTO ${tableName} (${keys.join(', ')}) VALUES (${placeholders})`, values);
 
-                        if (navigator.onLine) {
-                            await mirrorToSupabase(tableName, securedPayload, 'upsert');
-                        }
+                        await mirrorToSupabase(tableName, securedPayload, 'upsert');
                         
                         return revealResults(securedPayload);
                     } catch (err) {
@@ -377,7 +376,7 @@ export const base44 = {
                         await powerSync.execute(`UPDATE ${tableName} SET ${assignments} WHERE id = ?`, values);
 
                         const updatedData = await powerSync.getOptional(`SELECT * FROM ${tableName} WHERE id = ?`, [id]);
-                        if (navigator.onLine && updatedData) {
+                        if (updatedData) {
                             await mirrorToSupabase(tableName, updatedData, 'upsert');
                         }
                         return revealResults(updatedData);
@@ -389,9 +388,7 @@ export const base44 = {
                 delete: async (id) => {
                     try {
                         await powerSync.execute(`DELETE FROM ${tableName} WHERE id = ?`, [id]);
-                        if (navigator.onLine) {
-                            await mirrorToSupabase(tableName, id, 'delete');
-                        }
+                        await mirrorToSupabase(tableName, id, 'delete');
                         return { id };
                     } catch (err) {
                         console.error(`[PowerSync] Delete failed on ${tableName}:`, err);
