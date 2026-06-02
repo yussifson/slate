@@ -34,18 +34,18 @@ export default function SecureSandbox({ code, initialData = {} }) {
             const initialData = ${JSON.stringify(initialData)};
             
             // The raw code injected by OrbitBolt
-            ${code}
+            const rawCode = \`${code}\`;
             
-            // If the code doesn't explicitly call ReactDOM.render, we try to find the default export
-            // or assume the last expression is a React component.
-            // (For this secure sandbox, OrbitBolt is instructed to name the main component 'CustomModule'
-            // and NOT call ReactDOM.render itself).
-            
-            if (typeof CustomModule !== 'undefined') {
-              const root = ReactDOM.createRoot(document.getElementById('root'));
-              root.render(<CustomModule data={initialData} />);
+            if (!rawCode || rawCode.trim() === '') {
+              document.getElementById('root').innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;color:#6b7280;font-family:sans-serif;"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.5;margin-bottom:1rem;"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg><h2 style="font-size:1.25rem;font-weight:600;color:#374151;margin-bottom:0.5rem;">Custom Code Workspace</h2><p>No React code was generated for this sandbox. Ask the AI to write a CustomModule component!</p></div>';
             } else {
-               document.getElementById('root').innerHTML = '<div class="error">Error: Component must be named CustomModule.</div>';
+              ${code}
+              if (typeof CustomModule !== 'undefined') {
+                const root = ReactDOM.createRoot(document.getElementById('root'));
+                root.render(<CustomModule data={initialData} />);
+              } else {
+                 document.getElementById('root').innerHTML = '<div class="error">Error: Custom React code was generated, but it did not define a component named CustomModule.</div>';
+              }
             }
           } catch (err) {
             document.getElementById('root').innerHTML = '<div class="error">' + err.toString() + '</div>';

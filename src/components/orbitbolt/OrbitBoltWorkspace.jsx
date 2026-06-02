@@ -70,7 +70,7 @@ The JSON inside <SCHEMA> must follow this exact structure:
     "icon": "Layers",
     "layout": "table" | "grid",
     "theme": "primary" | "blue" | "emerald" | "amber" | "rose" | "purple",
-    "module_type": "data_module" | "dashboard" | "kanban" | "document_manager" | "calendar_view" | "form_builder" | "directory" | "timeline" | "gallery" | "spreadsheet" | "report" | "inventory" | "crm_pipeline" | "approval_workflow" | "custom_sandbox"
+    "module_type": "data_module" | "dashboard" | "kanban" | "document_manager" | "calendar_view" | "form_builder" | "directory" | "timeline" | "gallery" | "spreadsheet" | "report" | "inventory" | "crm_pipeline" | "approval_workflow"
   },
   "fields": [
     { "name": "Field Name", "field_type": "text" | "number" | "date" | "select" | "checkbox" | "file", "is_required": true|false, "options": "comma, separated, options" }
