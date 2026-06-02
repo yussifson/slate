@@ -1,21 +1,23 @@
 import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
-import { Briefcase, Calendar, Receipt, Download, FileText, FolderOpen, MessageSquare, Scale, BarChart2, CheckSquare } from "lucide-react";
+import { Briefcase, Calendar, Receipt, Download, FileText, FolderOpen, MessageSquare, Scale, BarChart2, CheckSquare, Upload } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { format, isAfter } from "date-fns";
 import { CASE_STATUS_COLORS, INVOICE_STATUS_COLORS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/components/ui/use-toast";
 import ClientMessaging from "@/components/portal/ClientMessaging";
 import { UploadDocumentDialog } from "@/components/cases/CaseDocumentRepo";
 import ClientBillingReport from "@/components/portal/ClientBillingReport";
 import ClientChecklistPanel from "@/components/portal/ClientChecklistPanel";
 import ClientAtAGlance from "@/components/portal/ClientAtAGlance";
 import { getTerm } from "@/config/industries";
+import PaymentModal from "@/components/portal/PaymentModal";
 
 function StatCard({ icon: IconComp, label, value, color }) {
   return (
@@ -36,6 +38,7 @@ export default function ClientPortal() {
   const { user } = useAuth();
   const [selectedCase, setSelectedCase] = useState(null);
   const [showUpload, setShowUpload] = useState(false);
+  const [payingInvoice, setPayingInvoice] = useState(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -119,6 +122,14 @@ export default function ClientPortal() {
       shared_with_client: true, // uploaded by client, so it's inherently shared
     });
   };
+
+  const updateInvoiceMutation = useMutation({
+    mutationFn: ({ id, data }) => base44.entities.Invoice.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["client-invoices", client?.id] });
+      setPayingInvoice(null);
+    },
+  });
 
   if (!client) {
     return (
@@ -291,6 +302,11 @@ export default function ClientPortal() {
                   <div className="flex items-center gap-3 shrink-0">
                     <span className="text-sm font-bold">{inv.currency === "NGN" ? "₦" : inv.currency === "USD" ? "$" : "GH₵"}{(inv.total_amount || 0).toLocaleString()}</span>
                     <Badge className={cn("text-[10px]", INVOICE_STATUS_COLORS[inv.status])}>{inv.status}</Badge>
+                    {inv.status !== "paid" && (
+                       <Button size="sm" className="bg-blue-600 hover:bg-blue-700 h-7 text-xs px-3" onClick={() => setPayingInvoice(inv)}>
+                         {t("pay_now", "Pay Now")}
+                       </Button>
+                    )}
                   </div>
                 </div>
               );
@@ -359,6 +375,14 @@ export default function ClientPortal() {
           caseId={selectedCase?.id || cases[0]?.id}
         />
       )}
+
+      {/* Payment Modal */}
+      <PaymentModal
+        open={!!payingInvoice}
+        onClose={() => setPayingInvoice(null)}
+        invoice={payingInvoice}
+        onSuccess={() => updateInvoiceMutation.mutate({ id: payingInvoice.id, data: { status: "paid", paid_date: new Date().toISOString().split("T")[0] } })}
+      />
     </div>
   );
 }

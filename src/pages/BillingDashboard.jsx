@@ -90,6 +90,12 @@ function CompanyBilling({ companyId }) {
     enabled: !!companyId,
   });
 
+  const { data: timeEntries = [] } = useQuery({
+    queryKey: ["time-entries", companyId],
+    queryFn: () => base44.entities.TimeEntry.filter({ company_id: companyId }),
+    enabled: !!companyId,
+  });
+
   const createExpenseMutation = useMutation({
     mutationFn: (data) => base44.entities.Expense.create({ ...data, company_id: companyId, currency: currency }),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["expenses", companyId] }); setShowExpenseForm(false); setEditingExpense(null); toast({ title: "Expense logged" }); },
@@ -146,6 +152,62 @@ function CompanyBilling({ companyId }) {
   });
 
   const currency = company?.currency || "GHS";
+  const unbilledTime = timeEntries.filter(t => t.billable && !t.billed);
+
+  const handleGenerateFromTime = async () => {
+    if (!unbilledTime.length) {
+      toast({ title: "No unbilled time", description: "All billable time has already been invoiced." });
+      return;
+    }
+    
+    const groupedByCase = {};
+    unbilledTime.forEach(entry => {
+       const key = entry.case_id;
+       if (!key) return;
+       if (!groupedByCase[key]) groupedByCase[key] = [];
+       groupedByCase[key].push(entry);
+    });
+    
+    let generatedCount = 0;
+    toast({ title: "Generating invoices...", description: "Please wait while we convert time entries." });
+    
+    for (const [caseId, entries] of Object.entries(groupedByCase)) {
+       const caseData = cases.find(c => c.id === caseId);
+       if (!caseData) continue;
+       
+       const totalAmount = entries.reduce((sum, e) => sum + ((e.hours || 0) * (e.hourly_rate || 0)), 0);
+       const items = entries.map(e => ({
+          description: `Legal Services - ${e.description || 'Time tracked'}`,
+          quantity: e.hours || 0,
+          unit_price: e.hourly_rate || 0,
+          total: (e.hours || 0) * (e.hourly_rate || 0)
+       }));
+       
+       const invoicePayload = {
+          invoice_number: `INV-${Date.now().toString().slice(-6)}-${generatedCount}`,
+          client_id: caseData.client_id,
+          client_name: caseData.client_name,
+          case_id: caseId,
+          case_title: caseData.title,
+          status: "draft",
+          currency: currency,
+          subtotal: totalAmount,
+          total_amount: totalAmount,
+          items: items,
+       };
+       
+       try {
+          const newInvoice = await createMutation.mutateAsync(invoicePayload);
+          await Promise.all(entries.map(e => base44.entities.TimeEntry.update(e.id, { billed: true, invoice_id: newInvoice.id })));
+          generatedCount++;
+       } catch (err) {
+          console.error("Failed to generate invoice for case", caseId, err);
+       }
+    }
+    
+    queryClient.invalidateQueries({ queryKey: ["time-entries", companyId] });
+    toast({ title: "Invoices Generated", description: `Successfully generated ${generatedCount} invoice(s) from unbilled time.` });
+  };
 
   const filtered = invoices.filter(inv => {
     const matchSearch = !search ||
@@ -185,7 +247,7 @@ function CompanyBilling({ companyId }) {
         <MetricCard icon={DollarSign} label="Collected" value={formatCurrency(totalCollected, currency)} color="bg-green-50 text-green-600" />
         <MetricCard icon={Clock} label="Pending" value={formatCurrency(totalPending, currency)} color="bg-blue-50 text-blue-600" />
         <MetricCard icon={AlertCircle} label="Overdue" value={overdueCount} color="bg-red-50 text-red-600" />
-        <MetricCard icon={Receipt} label="Unbilled Expenses" value={unbilledExpenses.length} color="bg-amber-50 text-amber-600" />
+        <MetricCard icon={Receipt} label="Unbilled Time/Expenses" value={`${unbilledTime.length} / ${unbilledExpenses.length}`} color="bg-amber-50 text-amber-600" />
       </div>
       <Tabs defaultValue="invoices">
         <div className="flex items-center justify-between flex-wrap gap-3">
@@ -197,6 +259,11 @@ function CompanyBilling({ companyId }) {
             <Button size="sm" variant="outline" onClick={() => { setEditingExpense(null); setShowExpenseForm(true); }}>
               <Plus className="w-4 h-4 mr-1" /> {t("log_expense", "Log Expense")}
             </Button>
+            {unbilledTime.length > 0 && (
+              <Button size="sm" variant="outline" className="text-amber-600 border-amber-200 bg-amber-50 hover:bg-amber-100" onClick={handleGenerateFromTime}>
+                <Clock className="w-4 h-4 mr-1" /> {t("invoice_unbilled_time", "Invoice Time")}
+              </Button>
+            )}
             <Button size="sm" onClick={() => { setEditingInvoice(null); setShowForm(true); }}>
               <Plus className="w-4 h-4 mr-1" /> {t("new_invoice", "New Invoice")}
             </Button>

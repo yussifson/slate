@@ -186,6 +186,7 @@ export default function EmailInbox() {
             }}
             onReply={() => {
                setComposeInitialData({
+                 recipient_email: selectedEmail.sender_email,
                  subject: selectedEmail.subject?.startsWith("Re:") ? selectedEmail.subject : `Re: ${selectedEmail.subject}`,
                  message: `\n\n\n--- On ${format(new Date(selectedEmail.created_date || new Date()), 'MMM d, yyyy')} ${selectedEmail.sender_email} wrote:\n> ${selectedEmail.body_preview?.replace(/\n/g, '\n> ')}`
                });
@@ -345,13 +346,39 @@ export function EmailDetail({ email, onBack, isStarred, onToggleStar, onDelete, 
           </div>
         </div>
 
-        <div className="prose prose-slate max-w-none text-slate-800 text-[15px] leading-relaxed break-words">
+        <div className="prose prose-slate max-w-none text-slate-800 text-[15px] leading-relaxed break-words mb-8">
           {email.body_preview ? (
              <div className="whitespace-pre-wrap">{email.body_preview}</div>
           ) : (
              <div className="italic text-slate-400">No message content.</div>
           )}
         </div>
+
+        {email.attachments && (
+          <div className="border-t border-slate-100 pt-6 mt-6">
+             <h4 className="text-sm font-semibold text-slate-700 mb-4 flex items-center gap-2">
+               <Paperclip className="w-4 h-4" /> Attachments
+             </h4>
+             <div className="flex flex-wrap gap-3">
+               {(() => {
+                  try {
+                    const atts = typeof email.attachments === 'string' ? JSON.parse(email.attachments) : email.attachments;
+                    return atts.map((att, i) => (
+                      <a key={i} href={att.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors max-w-xs group">
+                        <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                          <Paperclip className="w-5 h-5" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-slate-700 truncate group-hover:text-blue-600 transition-colors">{att.name}</p>
+                          <p className="text-xs text-slate-400">{(att.size / 1024).toFixed(1)} KB</p>
+                        </div>
+                      </a>
+                    ));
+                  } catch (e) { return null; }
+               })()}
+             </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -370,13 +397,42 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [recipientQuery, setRecipientQuery] = useState("");
   const [recipientPickerOpen, setRecipientPickerOpen] = useState(false);
+  const [attachments, setAttachments] = useState([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = React.useRef(null);
+  const { user } = useAuth();
 
   React.useEffect(() => {
     if (initialData) {
       if (initialData.subject) setSubject(initialData.subject);
       if (initialData.message) setMessage(initialData.message);
+      if (initialData.recipient_email) {
+        setRecipientType("external");
+        setExternalEmails(initialData.recipient_email);
+      }
     }
   }, [initialData]);
+
+  const handleFileChange = async (e) => {
+     const files = Array.from(e.target.files);
+     if (!files.length) return;
+     setIsUploading(true);
+     try {
+        const newAttachments = [];
+        for (const file of files) {
+           const path = `${user?.company_id || 'general'}/${Date.now()}_${file.name}`;
+           await base44.storage.upload('documents', path, file);
+           const url = base44.storage.getPublicUrl('documents', path);
+           newAttachments.push({ name: file.name, url, size: file.size });
+        }
+        setAttachments(prev => [...prev, ...newAttachments]);
+     } catch (err) {
+        console.error("Upload failed", err);
+        alert("Upload failed: " + err.message);
+     } finally {
+        setIsUploading(false);
+     }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -403,6 +459,7 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
       recipient_email: recipients.filter(Boolean).join(', '),
       body_preview: message,
       received_date: new Date().toISOString(),
+      attachments: attachments.length ? JSON.stringify(attachments) : null
     });
   };
 
@@ -469,12 +526,30 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
                   </div>
                ))}
                
+               {externalEmails.split(',').map(e => e.trim()).filter(Boolean).map(email => (
+                  <div key={email} className="bg-white border border-slate-300 text-slate-700 px-2 py-0.5 rounded-full text-xs flex items-center gap-1 hover:bg-slate-50">
+                    {email}
+                    <X className="w-3 h-3 cursor-pointer text-slate-400 hover:text-slate-700" onClick={() => {
+                       setExternalEmails(prev => prev.split(',').map(e=>e.trim()).filter(e => e !== email).join(', '));
+                    }} />
+                  </div>
+               ))}
+               
                <input 
                  type="text" 
-                 placeholder="Search team members..." 
-                 className="flex-1 min-w-[120px] outline-none border-none text-sm bg-transparent py-1"
+                 placeholder="Search team or type email and hit Enter..." 
+                 className="flex-1 min-w-[200px] outline-none border-none text-sm bg-transparent py-1"
                  value={recipientQuery}
                  onChange={e => setRecipientQuery(e.target.value)}
+                 onKeyDown={(e) => {
+                   if (e.key === 'Enter' && recipientQuery.includes('@')) {
+                      e.preventDefault();
+                      setExternalEmails(prev => prev ? `${prev}, ${recipientQuery}` : recipientQuery);
+                      setRecipientType("both");
+                      setRecipientQuery("");
+                      setRecipientPickerOpen(false);
+                   }
+                 }}
                  onFocus={() => setRecipientPickerOpen(true)}
                />
                
@@ -530,10 +605,14 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
 
           <div className="px-4 py-3 border-t border-border flex items-center justify-between bg-white shrink-0">
             <div className="flex items-center gap-3">
-              <Button type="submit" disabled={isLoading} className="bg-blue-600 hover:bg-blue-700 text-white px-6 rounded-full font-bold shadow-sm h-9">
-                {isLoading ? "Sending..." : t("send", "Send")}
+              <Button type="submit" disabled={isLoading || isUploading} className="bg-blue-600 hover:bg-blue-700 text-white px-6 rounded-full font-bold shadow-sm h-9">
+                {isLoading || isUploading ? "Sending..." : t("send", "Send")}
               </Button>
-              <button type="button" className="w-8 h-8 flex items-center justify-center text-slate-500 hover:bg-slate-100 rounded-full transition-colors"><Paperclip className="w-5 h-5" /></button>
+              <input type="file" multiple ref={fileInputRef} className="hidden" onChange={handleFileChange} />
+              <button type="button" onClick={() => fileInputRef.current?.click()} className="w-8 h-8 flex items-center justify-center text-slate-500 hover:bg-slate-100 rounded-full transition-colors relative">
+                <Paperclip className="w-5 h-5" />
+                {attachments.length > 0 && <span className="absolute -top-1 -right-1 w-4 h-4 bg-blue-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center">{attachments.length}</span>}
+              </button>
             </div>
             
             <div className="flex items-center gap-2">
