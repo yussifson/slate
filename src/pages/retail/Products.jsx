@@ -11,8 +11,14 @@ import ConfirmationModal from '@/components/ConfirmationModal';
 export default function Products() {
   const { t } = useTranslation();
   const { data: dbRecords = [], isLoading } = useIndustryRecords('product');
+  const { data: supplierRecords = [] } = useIndustryRecords('supplier');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
+  
+  const suppliers = supplierRecords.map(r => ({
+    id: r.id,
+    name: r.data?.name || 'Unnamed Supplier'
+  }));
 
   const products = dbRecords.map(r => ({
     id: r.id,
@@ -21,7 +27,8 @@ export default function Products() {
     category: r.data?.category || 'General',
     price: parseFloat(r.data?.price) || 0,
     stock: parseInt(r.data?.stock) || 0,
-    status: r.data?.stock > 0 ? 'In Stock' : 'Out of Stock'
+    status: r.data?.stock > 0 ? 'In Stock' : 'Out of Stock',
+    supplierId: r.data?.supplierId || ''
   }));
 
   const [search, setSearch] = useState('');
@@ -30,12 +37,12 @@ export default function Products() {
   const [editingId, setEditingId] = useState(null);
 
   const [formData, setFormData] = useState({
-    name: '', sku: '', category: '', price: '', stock: ''
+    name: '', sku: '', category: '', price: '', stock: '', supplierId: ''
   });
 
   const openEdit = (prod) => {
     setEditingId(prod.id);
-    setFormData({ name: prod.name, sku: prod.sku, category: prod.category, price: prod.price, stock: prod.stock });
+    setFormData({ name: prod.name, sku: prod.sku, category: prod.category, price: prod.price, stock: prod.stock, supplierId: prod.supplierId || '' });
     setShowModal(true);
   };
 
@@ -47,7 +54,8 @@ export default function Products() {
       recordType: 'product',
       payload: {
         name: formData.name, sku: formData.sku, category: formData.category,
-        price: parseFloat(formData.price) || 0, stock: parseInt(formData.stock) || 0
+        price: parseFloat(formData.price) || 0, stock: parseInt(formData.stock) || 0,
+        supplierId: formData.supplierId
       },
       status: 'active',
       searchText: `${formData.name} ${formData.sku} ${formData.category}`
@@ -109,6 +117,7 @@ export default function Products() {
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Category</th>
                   <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">Price</th>
                   <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">Stock</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Supplier</th>
                   <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">Status</th>
                   <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">Actions</th>
                 </tr>
@@ -123,6 +132,7 @@ export default function Products() {
                     <td className="px-6 py-4 text-muted-foreground">{p.category}</td>
                     <td className="px-6 py-4 text-right font-bold text-card-foreground">${p.price.toFixed(2)}</td>
                     <td className="px-6 py-4 text-center text-card-foreground font-medium">{p.stock}</td>
+                    <td className="px-6 py-4 text-muted-foreground text-xs">{suppliers.find(s => s.id === p.supplierId)?.name || 'None'}</td>
                     <td className="px-6 py-4 text-center">
                       <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${p.stock > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>{p.status}</span>
                     </td>
@@ -149,6 +159,13 @@ export default function Products() {
                <div className="grid grid-cols-2 gap-4">
                  <div><label className="text-xs font-bold text-muted-foreground uppercase">Price</label><Input type="number" value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} className="mt-1" /></div>
                  <div><label className="text-xs font-bold text-muted-foreground uppercase">Stock</label><Input type="number" value={formData.stock} onChange={e => setFormData({ ...formData, stock: e.target.value })} className="mt-1" /></div>
+               </div>
+               <div>
+                 <label className="text-xs font-bold text-muted-foreground uppercase">Supplier</label>
+                 <select value={formData.supplierId} onChange={e => setFormData({...formData, supplierId: e.target.value})} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1">
+                   <option value="">No Supplier Selected</option>
+                   {suppliers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                 </select>
                </div>
             </div>
             <div className="flex gap-3 pt-4">

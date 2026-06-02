@@ -14,6 +14,7 @@ export default function POS() {
   const { processPayment } = usePayment();
   // Supabase Real-time Sync Hooks
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('product');
+  const { data: customerRecords = [] } = useIndustryRecords('customer');
   const mutateRecord = useMutateIndustryRecord();
 
   // Map database records
@@ -24,9 +25,15 @@ export default function POS() {
     price: parseFloat(r.data?.price) || 0,
     stock: parseInt(r.data?.stock) || 0
   }));
+  
+  const customers = customerRecords.map(r => ({
+    id: r.id,
+    name: r.data?.name || 'Unnamed Customer'
+  }));
 
   const [search, setSearch] = useState('');
   const [cart, setCart] = useState([]);
+  const [selectedCustomerId, setSelectedCustomerId] = useState('');
 
   const addToCart = (product) => {
     if (product.stock <= 0) {
@@ -73,7 +80,9 @@ export default function POS() {
     const saleTotal = total;
 
     const payload = {
-      saleId,
+      orderId: saleId,
+      customerId: selectedCustomerId,
+      date: new Date().toISOString().split('T')[0],
       items: cart.map(i => ({ sku: i.sku, name: i.name, qty: i.qty, price: i.price })),
       subtotal,
       tax,
@@ -83,10 +92,10 @@ export default function POS() {
     };
 
     mutateRecord.mutate({
-      recordType: 'retail_sale',
+      recordType: 'order',
       payload,
       status: 'Completed',
-      searchText: `${saleId} ${paymentMethod}`
+      searchText: `${saleId} ${paymentMethod} ${selectedCustomerId}`
     }, {
       onSuccess: () => {
         toast.success(`Sale ${saleId} completed successfully!`);
@@ -108,6 +117,7 @@ export default function POS() {
           }
         });
         setCart([]);
+        setSelectedCustomerId('');
       },
       onError: (err) => {
         toast.error('Failed to complete checkout: ' + err.message);
@@ -173,6 +183,17 @@ export default function POS() {
             <span className="bg-blue-700 px-2 py-1 rounded text-xs font-mono">{cart.length} {t("items", "items")}</span>
          </div>
          
+         <div className="p-3 bg-muted border-b border-border">
+           <select 
+             value={selectedCustomerId} 
+             onChange={e => setSelectedCustomerId(e.target.value)} 
+             className="w-full bg-card border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
+           >
+             <option value="">Walk-in Customer</option>
+             {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+           </select>
+         </div>
+
          <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-muted">
             {cart.length === 0 ? (
                <div className="h-full flex flex-col items-center justify-center text-muted-foreground opacity-50">

@@ -39,13 +39,19 @@ const emptyForm = {
 
 export default function Inventory() {
   const { t } = useTranslation();
-  const { data: dbRecords = [], isLoading } = useIndustryRecords('inventory_item');
+  const { data: dbRecords = [], isLoading } = useIndustryRecords('product');
+  const { data: supplierRecords = [] } = useIndustryRecords('supplier');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
 
+  const suppliers = supplierRecords.map(r => ({
+    id: r.id,
+    name: r.data?.name || 'Unnamed Supplier'
+  }));
+
   const items = dbRecords.map(r => {
     const d = r.data || {};
-    const quantity = parseInt(d.quantity) || 0;
+    const quantity = parseInt(d.stock) || 0;
     const reorderLevel = parseInt(d.reorderLevel) || 10;
     return {
       id: r.id,
@@ -56,7 +62,8 @@ export default function Inventory() {
       reorderLevel,
       price: parseFloat(d.price) || 0,
       costPrice: parseFloat(d.costPrice) || 0,
-      supplier: d.supplier || '',
+      supplierId: d.supplierId || '',
+      supplierName: d.supplierId ? (suppliers.find(s => s.id === d.supplierId)?.name || 'Unknown') : (d.supplier || ''),
       expiryDate: d.expiryDate || '',
       status: getStatus(quantity, reorderLevel),
     };
@@ -81,7 +88,7 @@ export default function Inventory() {
       reorderLevel: String(item.reorderLevel),
       price: String(item.price),
       costPrice: String(item.costPrice),
-      supplier: item.supplier,
+      supplier: item.supplierId,
       expiryDate: item.expiryDate,
     });
     setShowModal(true);
@@ -99,20 +106,20 @@ export default function Inventory() {
       sku: formData.sku.trim(),
       name: formData.name.trim(),
       category: formData.category,
-      quantity: qty,
+      stock: qty,
       reorderLevel: reorder,
       price: parseFloat(formData.price) || 0,
       costPrice: parseFloat(formData.costPrice) || 0,
-      supplier: formData.supplier.trim(),
+      supplierId: formData.supplier,
       expiryDate: formData.expiryDate,
     };
 
     mutateRecord.mutate({
       ...(editingItem ? { id: editingItem.id } : {}),
-      recordType: 'inventory_item',
+      recordType: 'product',
       payload,
       status: computedStatus,
-      searchText: `${payload.sku} ${payload.name} ${payload.category} ${payload.supplier}`,
+      searchText: `${payload.sku} ${payload.name} ${payload.category} ${payload.supplierId}`,
     }, {
       onSuccess: () => {
         toast.success(editingItem ? 'Item updated!' : 'Item added to inventory!');
@@ -126,7 +133,7 @@ export default function Inventory() {
 
   const handleDelete = () => {
     if (!deleteTargetId) return;
-    deleteRecord.mutate({ id: deleteTargetId, recordType: 'inventory_item' }, {
+    deleteRecord.mutate({ id: deleteTargetId, recordType: 'product' }, {
       onSuccess: () => { toast.success('Item deleted.'); setDeleteTargetId(null); },
       onError: (err) => { toast.error('Failed: ' + err.message); setDeleteTargetId(null); },
     });
@@ -142,7 +149,7 @@ export default function Inventory() {
   const filtered = items.filter(i =>
     i.name.toLowerCase().includes(search.toLowerCase()) ||
     i.sku.toLowerCase().includes(search.toLowerCase()) ||
-    i.supplier.toLowerCase().includes(search.toLowerCase())
+    i.supplierName.toLowerCase().includes(search.toLowerCase())
   );
 
   const field = (label, key, props = {}) => {
@@ -266,7 +273,7 @@ export default function Inventory() {
                       </td>
                       <td className="px-5 py-4 text-muted-foreground">{item.category}</td>
                       <td className="px-5 py-4 text-muted-foreground">
-                        {item.supplier ? <Link to="/retail/suppliers" className="text-primary hover:underline">{item.supplier}</Link> : '—'}
+                        {item.supplierName && item.supplierName !== 'Unknown' ? <Link to="/retail/suppliers" className="text-primary hover:underline">{item.supplierName}</Link> : '—'}
                       </td>
                       <td className="px-5 py-4 text-right font-bold text-card-foreground">${item.price.toFixed(2)}</td>
                       <td className="px-5 py-4 text-right text-muted-foreground">${item.costPrice.toFixed(2)}</td>
@@ -345,7 +352,7 @@ export default function Inventory() {
               </div>
               <div className="grid grid-cols-3 gap-4 border-b pb-4">
                 <div className="col-span-1 font-semibold text-muted-foreground">{t("supplier", "Supplier")}</div>
-                <div className="col-span-2">{selectedItem.supplier ? <Link to="/retail/suppliers" className="text-primary hover:underline">{selectedItem.supplier}</Link> : '—'}</div>
+                <div className="col-span-2">{selectedItem.supplierName && selectedItem.supplierName !== 'Unknown' ? <Link to="/retail/suppliers" className="text-primary hover:underline">{selectedItem.supplierName}</Link> : '—'}</div>
               </div>
               <div className="grid grid-cols-3 gap-4 border-b pb-4">
                 <div className="col-span-1 font-semibold text-muted-foreground">{t("price", "Price")}</div>
@@ -407,7 +414,17 @@ export default function Inventory() {
                   })}
                 </select>
               </div>
-              {field('Supplier', 'supplier', { placeholder: 'e.g. Acme Wholesale' })}
+              <div>
+                 <label className="text-xs font-bold text-muted-foreground uppercase">{t("supplier", "Supplier")}</label>
+                 <select
+                   value={formData.supplier}
+                   onChange={e => setFormData(p => ({ ...p, supplier: e.target.value }))}
+                   className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                 >
+                   <option value="">No Supplier Selected</option>
+                   {suppliers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                 </select>
+              </div>
               {field('Quantity', 'quantity', { type: 'number', placeholder: '50' })}
               {field('Reorder Level', 'reorderLevel', { type: 'number', placeholder: '10' })}
               {field('Selling Price ($) *', 'price', { type: 'number', placeholder: '29.99' })}

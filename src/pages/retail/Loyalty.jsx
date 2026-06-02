@@ -10,13 +10,20 @@ import ConfirmationModal from '@/components/ConfirmationModal';
 export default function Loyalty() {
   const { t } = useTranslation();
   const { data: dbRecords = [], isLoading } = useIndustryRecords('loyalty');
+  const { data: customerRecords = [] } = useIndustryRecords('customer');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
+
+  const customers = customerRecords.map(r => ({
+    id: r.id,
+    name: r.data?.name || 'Unnamed Customer'
+  }));
 
   const members = dbRecords.map(r => ({
     id: r.id,
     memberId: r.data?.memberId || `MBR-${r.id?.slice(0, 5).toUpperCase()}`,
-    customerName: r.data?.customerName || 'Unnamed Member',
+    customerId: r.data?.customerId || '',
+    customerName: r.data?.customerId ? (customers.find(c => c.id === r.data.customerId)?.name || 'Unknown') : (r.data?.customerName || 'Unnamed Member'),
     points: parseInt(r.data?.points) || 0,
     tier: r.data?.tier || 'Bronze',
   }));
@@ -27,12 +34,12 @@ export default function Loyalty() {
   const [editingId, setEditingId] = useState(null);
 
   const [formData, setFormData] = useState({
-    customerName: '', points: '', tier: 'Bronze'
+    customerId: '', points: '', tier: 'Bronze'
   });
 
   const openEdit = (mbr) => {
     setEditingId(mbr.id);
-    setFormData({ customerName: mbr.customerName, points: mbr.points, tier: mbr.tier });
+    setFormData({ customerId: mbr.customerId || '', points: mbr.points, tier: mbr.tier });
     setShowModal(true);
   };
 
@@ -41,12 +48,12 @@ export default function Loyalty() {
       ...(editingId ? { id: editingId } : {}),
       recordType: 'loyalty',
       payload: {
-        customerName: formData.customerName,
+        customerId: formData.customerId,
         points: parseInt(formData.points) || 0,
         tier: formData.tier
       },
       status: 'active',
-      searchText: `${formData.customerName} ${formData.tier}`
+      searchText: `${formData.customerId} ${formData.tier}`
     }, {
       onSuccess: () => {
         toast.success(editingId ? 'Member updated!' : 'Member added!');
@@ -68,7 +75,7 @@ export default function Loyalty() {
           <h1 className="text-2xl font-bold text-card-foreground">Loyalty Program</h1>
           <p className="text-sm text-muted-foreground mt-0.5">Manage rewards and tiers for your best customers.</p>
         </div>
-        <Button onClick={() => { setEditingId(null); setFormData({ customerName: '', points: '', tier: 'Bronze' }); setShowModal(true); }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+        <Button onClick={() => { setEditingId(null); setFormData({ customerId: '', points: '', tier: 'Bronze' }); setShowModal(true); }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
           <Plus className="w-4 h-4" /> Add Member
         </Button>
       </div>
@@ -134,7 +141,13 @@ export default function Loyalty() {
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4">
             <h2 className="text-lg font-bold text-card-foreground">{editingId ? 'Edit Member' : 'Add Member'}</h2>
             <div className="space-y-3">
-               <div><label className="text-xs font-bold text-muted-foreground uppercase">Customer Name</label><Input value={formData.customerName} onChange={e => setFormData({ ...formData, customerName: e.target.value })} className="mt-1" /></div>
+               <div>
+                 <label className="text-xs font-bold text-muted-foreground uppercase">Customer</label>
+                 <select value={formData.customerId} onChange={e => setFormData({...formData, customerId: e.target.value})} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1">
+                   <option value="">Select a Customer</option>
+                   {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                 </select>
+               </div>
                <div><label className="text-xs font-bold text-muted-foreground uppercase">Points</label><Input type="number" value={formData.points} onChange={e => setFormData({ ...formData, points: e.target.value })} className="mt-1" /></div>
                <div>
                  <label className="text-xs font-bold text-muted-foreground uppercase">Tier</label>

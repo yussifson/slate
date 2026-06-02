@@ -17,7 +17,7 @@ import { RefreshCcw } from "lucide-react";
 export default function Sales() {
   const { t } = useTranslation();
   // Supabase Real-time Sync Hooks
-  const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('retail_sale');
+  const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('order');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
   const companyId = useCompanyId();
@@ -28,8 +28,8 @@ export default function Sales() {
     const data = r.data || {};
     return {
       id: r.id,
-      saleId: data.saleId || `SAL-${r.id?.slice(0, 4)}`,
-      date: data.timestamp ? new Date(data.timestamp).toLocaleString() : 'Just now',
+      saleId: data.orderId || data.saleId || `SAL-${r.id?.slice(0, 4)}`,
+      date: data.timestamp ? new Date(data.timestamp).toLocaleString() : (data.date || 'Just now'),
       items: data.items || [],
       total: parseFloat(data.total) || 0,
       subtotal: parseFloat(data.subtotal) || 0,
@@ -77,7 +77,7 @@ export default function Sales() {
 
     mutateRecord.mutate({
       id: editingId,
-      recordType: 'retail_sale',
+      recordType: 'order',
       payload: sale.data,
       status: formData.status,
       searchText: sale.search_text
@@ -95,7 +95,7 @@ export default function Sales() {
 
   const handleDelete = () => {
     if (!deleteTargetId) return;
-    deleteRecord.mutate({ id: deleteTargetId, recordType: 'retail_sale' }, {
+    deleteRecord.mutate({ id: deleteTargetId, recordType: 'order' }, {
       onSuccess: () => {
         toast.success('Sale record deleted.');
         setDeleteTargetId(null);

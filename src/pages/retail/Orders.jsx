@@ -10,13 +10,20 @@ import ConfirmationModal from '@/components/ConfirmationModal';
 export default function Orders() {
   const { t } = useTranslation();
   const { data: dbRecords = [], isLoading } = useIndustryRecords('order');
+  const { data: customerRecords = [] } = useIndustryRecords('customer');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
+
+  const customers = customerRecords.map(r => ({
+    id: r.id,
+    name: r.data?.name || 'Unnamed Customer'
+  }));
 
   const orders = dbRecords.map(r => ({
     id: r.id,
     orderId: r.data?.orderId || `ORD-${r.id?.slice(0, 5).toUpperCase()}`,
-    customerName: r.data?.customerName || 'Walk-in Customer',
+    customerId: r.data?.customerId || '',
+    customerName: r.data?.customerId ? (customers.find(c => c.id === r.data.customerId)?.name || 'Unknown') : (r.data?.customerName || 'Walk-in Customer'),
     date: r.data?.date || new Date().toISOString().split('T')[0],
     total: parseFloat(r.data?.total) || 0,
     status: r.data?.status || 'Pending'
@@ -28,12 +35,12 @@ export default function Orders() {
   const [editingId, setEditingId] = useState(null);
 
   const [formData, setFormData] = useState({
-    customerName: '', date: '', total: '', status: 'Pending'
+    customerId: '', date: '', total: '', status: 'Pending'
   });
 
   const openEdit = (ord) => {
     setEditingId(ord.id);
-    setFormData({ customerName: ord.customerName, date: ord.date, total: ord.total, status: ord.status });
+    setFormData({ customerId: ord.customerId || '', date: ord.date, total: ord.total, status: ord.status });
     setShowModal(true);
   };
 
@@ -42,11 +49,11 @@ export default function Orders() {
       ...(editingId ? { id: editingId } : {}),
       recordType: 'order',
       payload: {
-        customerName: formData.customerName, date: formData.date,
+        customerId: formData.customerId, date: formData.date,
         total: parseFloat(formData.total) || 0, status: formData.status
       },
       status: 'active',
-      searchText: `${formData.customerName} ${formData.status}`
+      searchText: `${formData.customerId} ${formData.status}`
     }, {
       onSuccess: () => {
         toast.success(editingId ? 'Order updated!' : 'Order added!');
@@ -68,7 +75,7 @@ export default function Orders() {
           <h1 className="text-2xl font-bold text-card-foreground">Orders Management</h1>
           <p className="text-sm text-muted-foreground mt-0.5">Track and manage customer purchases.</p>
         </div>
-        <Button onClick={() => { setEditingId(null); setFormData({ customerName: '', date: new Date().toISOString().split('T')[0], total: '', status: 'Pending' }); setShowModal(true); }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+        <Button onClick={() => { setEditingId(null); setFormData({ customerId: '', date: new Date().toISOString().split('T')[0], total: '', status: 'Pending' }); setShowModal(true); }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
           <Plus className="w-4 h-4" /> Create Order
         </Button>
       </div>
@@ -136,7 +143,13 @@ export default function Orders() {
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4">
             <h2 className="text-lg font-bold text-card-foreground">{editingId ? 'Edit Order' : 'Create Order'}</h2>
             <div className="space-y-3">
-               <div><label className="text-xs font-bold text-muted-foreground uppercase">Customer Name</label><Input value={formData.customerName} onChange={e => setFormData({ ...formData, customerName: e.target.value })} className="mt-1" /></div>
+               <div>
+                 <label className="text-xs font-bold text-muted-foreground uppercase">Customer</label>
+                 <select value={formData.customerId} onChange={e => setFormData({...formData, customerId: e.target.value})} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1">
+                   <option value="">Walk-in Customer</option>
+                   {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                 </select>
+               </div>
                <div><label className="text-xs font-bold text-muted-foreground uppercase">Date</label><Input type="date" value={formData.date} onChange={e => setFormData({ ...formData, date: e.target.value })} className="mt-1" /></div>
                <div><label className="text-xs font-bold text-muted-foreground uppercase">Total Amount</label><Input type="number" value={formData.total} onChange={e => setFormData({ ...formData, total: e.target.value })} className="mt-1" /></div>
                <div>
