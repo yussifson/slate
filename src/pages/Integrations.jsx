@@ -22,7 +22,6 @@ import quickbooksLogo from '@/assets/integrations/quickbooks.svg';
 import docusignLogo from '@/assets/integrations/docusign.svg';
 import whatsappLogo from '@/assets/integrations/whatsapp.svg';
 import stripeLogo from '@/assets/integrations/stripe.svg';
-import paystackLogo from '@/assets/integrations/paystack.svg';
 import mailchimpLogo from '@/assets/integrations/mailchimp.svg';
 import shipstationLogo from '@/assets/integrations/shipstation.svg';
 
