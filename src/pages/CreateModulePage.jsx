@@ -14,7 +14,8 @@ import { IconPicker } from "@/components/ui/IconPicker";
 import DynamicDashboard from "@/components/ui/DynamicDashboard";
 import DynamicKanbanView from "@/components/ui/DynamicKanbanView";
 import { useUndoableState } from "@/hooks/useUndoableState";
-import OrbitBoltPanel from "@/components/OrbitBoltPanel";
+import OrbitBoltWorkspace from "@/components/orbitbolt/OrbitBoltWorkspace";
+import SecureSandbox from "@/components/orbitbolt/SecureSandbox";
 
 // Lazy-loaded view components for new module types
 const DynamicCalendarView = React.lazy(() => import("@/components/ui/DynamicCalendarView"));
@@ -525,6 +526,8 @@ export default function CreateModulePage() {
                             return <DynamicApprovalView data={dummyData} fieldDefinitions={fieldDefs} />;
                           case 'form_builder':
                             return <DynamicFormWizard data={dummyData} fieldDefinitions={fieldDefs} />;
+                          case 'custom_sandbox':
+                            return <SecureSandbox code={state.config?.custom_code || ""} initialData={{ records: dummyData, fieldDefs }} />;
                           case 'data_module':
                           default:
                             return layout === 'table' ? (
@@ -554,13 +557,12 @@ export default function CreateModulePage() {
         </div>
       </div>
 
-      {/* OrbitBolt Side Panel — sits beside the main content like Orbit AI */}
-      <OrbitBoltPanel
-        isOpen={isBoltOpen}
-        onClose={() => setIsBoltOpen(false)}
-        onApplySchema={handleApplyBoltSchema}
-        currentSchema={currentSchema}
-      />
+      {/* OrbitBolt AI Full Workspace — sits as an overlay for generating modules */}
+      {isBoltOpen && (
+        <OrbitBoltWorkspace
+          onClose={() => setIsBoltOpen(false)}
+        />
+      )}
     </div>
   );
 }

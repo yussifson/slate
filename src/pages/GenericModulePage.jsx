@@ -13,7 +13,8 @@ import { useAuth } from "@/lib/AuthContext";
 import { useImpersonation } from "@/lib/ImpersonationContext";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import OrbitBoltPanel from "@/components/OrbitBoltPanel";
+import OrbitBoltWorkspace from "@/components/orbitbolt/OrbitBoltWorkspace";
+import SecureSandbox from "@/components/orbitbolt/SecureSandbox";
 
 // Lazy-loaded view components for new module types
 const DynamicCalendarView = lazy(() => import("@/components/ui/DynamicCalendarView"));
@@ -275,6 +276,16 @@ export default function GenericModulePage({ title: propTitle, description: propD
       case 'inventory':
         return wrapView(DynamicInventoryView);
 
+      case 'custom_sandbox':
+        return (
+          <div className="mt-6">
+            <SecureSandbox 
+              code={moduleDef.config?.custom_code || ""} 
+              initialData={{ records, fieldDefs, moduleDef }} 
+            />
+          </div>
+        );
+
       case 'data_module':
       case 'document_manager':
       default:
@@ -429,30 +440,10 @@ export default function GenericModulePage({ title: propTitle, description: propD
         </DialogContent>
       </Dialog>
 
-      {/* OrbitBolt AI Panel — for editing and data population on live modules */}
-      {moduleDef && (
-        <OrbitBoltPanel
-          isOpen={isBoltOpen}
+      {/* OrbitBolt AI Full Workspace — for editing and building modules contextually */}
+      {isBoltOpen && (
+        <OrbitBoltWorkspace
           onClose={() => setIsBoltOpen(false)}
-          onApplySchema={null}
-          currentSchema={moduleDef ? {
-            module: {
-              id: moduleDef.id,
-              name: moduleDef.name,
-              description: moduleDef.description,
-              icon: moduleDef.icon,
-              layout: moduleDef.config?.layout,
-              theme: moduleDef.config?.theme,
-              module_type: moduleDef.config?.page_type || 'data_module',
-            },
-            fields: fieldDefs.map(f => ({
-              name: f.name,
-              field_type: f.field_type,
-              is_required: f.is_required,
-              options: f.options,
-            }))
-          } : null}
-          onRefresh={fetchDynamicData}
         />
       )}
     </div>
