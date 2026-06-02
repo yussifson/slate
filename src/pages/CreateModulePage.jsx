@@ -128,6 +128,18 @@ export default function CreateModulePage() {
     }
   }, [id, isEditing]);
 
+  // Check for pending OrbitBolt schema on mount
+  useEffect(() => {
+    const pendingSchema = sessionStorage.getItem('orbitbolt_pending_schema');
+    if (pendingSchema) {
+      try {
+        const schema = JSON.parse(pendingSchema);
+        handleApplyBoltSchema(schema);
+        sessionStorage.removeItem('orbitbolt_pending_schema');
+      } catch(e) {}
+    }
+  }, []);
+
   const handleAddField = () => {
     setState({ ...state, fields: [...fields, { name: "", field_type: "text", is_required: false, options: "" }] });
   };
@@ -561,6 +573,7 @@ export default function CreateModulePage() {
       {isBoltOpen && (
         <OrbitBoltWorkspace
           onClose={() => setIsBoltOpen(false)}
+          onApplySchema={handleApplyBoltSchema}
         />
       )}
     </div>
