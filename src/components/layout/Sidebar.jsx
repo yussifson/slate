@@ -146,10 +146,11 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
 
   const baseNav = user?.role === "client" ? clientNav : filteredCompanyNav;
   const appBuilderItem = { label: "OrbitBolt AI Builder", icon: "Zap", path: "/modules/BOLT" };
+  const pagesItem = { label: "AI Pages (Beta)", icon: "LayoutDashboard", path: "/pages/fleet-dashboard" };
   const marketplaceItem = { label: "Marketplace", icon: "Store", path: "/marketplace" };
   let navItems = isAdmin
-    ? [...baseNav, ...dynamicNavItems, appBuilderItem, marketplaceItem, { label: "Firm Setup", icon: "Settings", path: "/firm-setup" }]
-    : [...baseNav, ...dynamicNavItems, marketplaceItem];
+    ? [...baseNav, ...dynamicNavItems, pagesItem, appBuilderItem, marketplaceItem, { label: "Firm Setup", icon: "Settings", path: "/firm-setup" }]
+    : [...baseNav, ...dynamicNavItems, pagesItem, marketplaceItem];
 
   const handleDeleteModule = (id, name) => {
     setDeleteData({ id, name });

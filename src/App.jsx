@@ -69,6 +69,7 @@ import WhatsAppMessenger from './pages/WhatsAppMessenger';
 import HRDashboard from './pages/HRDashboard';
 import Chat from './pages/Chat';
 import Board from './pages/Board';
+import CustomPageViewer from './pages/CustomPageViewer';
 
 // School Pages
 import SchoolStudents from './pages/school/Students';
@@ -217,6 +218,7 @@ function PlatformRoutes() {
       <Route path="/firm-setup" element={<OnboardingWizard />} />
       <Route path="/chat" element={<Chat />} />
       <Route path="/board" element={<Board />} />
+      <Route path="/pages/:pageId" element={<CustomPageViewer />} />
 
       {/* School Suite */}
       <Route path="/students" element={<SchoolStudents />} />
