@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import { Sparkles, Send, X, CheckCircle, RefreshCw, Layers, Terminal, MessageSquarePlus, Search, Home, FolderDot, LayoutTemplate, Star, MessageSquare } from 'lucide-react';
@@ -249,8 +250,8 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
     }
   };
 
-  return (
-    <div className="fixed inset-0 bg-background z-[1000] flex flex-col font-sans text-foreground">
+  const workspaceContent = (
+    <div className="fixed inset-0 bg-background z-[9999] flex flex-col font-sans text-foreground">
       {/* Sleek Minimal Header */}
       <div className="h-14 border-b border-border bg-card flex items-center justify-between px-4 shrink-0 shadow-sm z-[1001]">
         <div className="flex items-center gap-3">
@@ -531,4 +532,6 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
       </PanelGroup>
     </div>
   );
+
+  return createPortal(workspaceContent, document.body);
 }
