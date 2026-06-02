@@ -16,14 +16,17 @@ export default function Employees() {
   const { t } = useTranslation();
   const { user } = useAuth();
   const { notifyTeam } = useNotifications();
-  const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('employee');
+  const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('staff');
+  const { data: departmentRecords = [] } = useIndustryRecords('department');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
 
   const employees = dbRecords.map(r => ({
     id: r.id,
     status: r.status || 'Active',
-    ...r.data
+    ...r.data,
+    departmentName: departmentRecords.find(d => d.id === r.data?.departmentId)?.data?.name || r.data?.department || 'Unassigned',
+    reportsToName: dbRecords.find(s => s.id === r.data?.reportsTo)?.data?.name || 'None'
   }));
 
   const [search, setSearch] = useState('');
@@ -34,7 +37,8 @@ export default function Employees() {
 
   const [formData, setFormData] = useState({
     name: '',
-    department: '',
+    departmentId: '',
+    reportsTo: '',
     role: '',
     email: '',
     phone: '',
@@ -51,17 +55,17 @@ export default function Employees() {
       
       mutateRecord.mutate({
         id: editTargetId,
-        recordType: 'employee',
+        recordType: 'staff',
         payload,
         status: emp.status,
-        searchText: `${formData.name} ${formData.department} ${formData.role} ${emp.employeeId}`
+        searchText: `${formData.name} ${formData.role} ${emp.employeeId}`
       }, {
         onSuccess: () => {
           toast.success('Employee updated successfully!');
           setShowModal(false);
           setEditTargetId(null);
           setFormData({
-            name: '', department: '', role: '', email: '', phone: '', salary: '', startDate: new Date().toISOString().split('T')[0]
+            name: '', departmentId: '', reportsTo: '', role: '', email: '', phone: '', salary: '', startDate: new Date().toISOString().split('T')[0]
           });
         },
         onError: (err) => toast.error('Failed to update employee: ' + err.message)
@@ -71,17 +75,17 @@ export default function Employees() {
       const payload = { ...formData, employeeId };
 
       mutateRecord.mutate({
-        recordType: 'employee',
+        recordType: 'staff',
         payload,
         status: 'active',
-        searchText: `${formData.name} ${formData.department} ${formData.role} ${employeeId}`
+        searchText: `${formData.name} ${formData.role} ${employeeId}`
       }, {
         onSuccess: () => {
           toast.success('Employee added successfully!');
           notifyTeam({ companyId: user?.company_id, provider: 'slack', message: `New employee onboarded: ${formData.name} as ${formData.role}`, channel: '#general' }).catch(console.error);
           setShowModal(false);
           setFormData({
-            name: '', department: '', role: '', email: '', phone: '', salary: '', startDate: new Date().toISOString().split('T')[0]
+            name: '', departmentId: '', reportsTo: '', role: '', email: '', phone: '', salary: '', startDate: new Date().toISOString().split('T')[0]
           });
         },
         onError: (err) => toast.error('Failed to add employee: ' + err.message)
@@ -92,7 +96,8 @@ export default function Employees() {
   const openEdit = (emp) => {
     setFormData({
       name: emp.name || '',
-      department: emp.department || '',
+      departmentId: emp.departmentId || '',
+      reportsTo: emp.reportsTo || '',
       role: emp.role || '',
       email: emp.email || '',
       phone: emp.phone || '',
@@ -105,7 +110,7 @@ export default function Employees() {
 
   const openAdd = () => {
     setFormData({
-      name: '', department: '', role: '', email: '', phone: '', salary: '', startDate: new Date().toISOString().split('T')[0]
+      name: '', departmentId: '', reportsTo: '', role: '', email: '', phone: '', salary: '', startDate: new Date().toISOString().split('T')[0]
     });
     setEditTargetId(null);
     setShowModal(true);
@@ -115,13 +120,15 @@ export default function Employees() {
     const payload = { ...employee };
     delete payload.id;
     delete payload.status;
+    delete payload.departmentName;
+    delete payload.reportsToName;
     
     mutateRecord.mutate({
       id: employee.id,
-      recordType: 'employee',
+      recordType: 'staff',
       payload,
       status: newStatus,
-      searchText: `${employee.name} ${employee.department} ${employee.employeeId}`
+      searchText: `${employee.name} ${employee.employeeId}`
     }, {
       onSuccess: () => toast.success(`Status updated to ${newStatus}`)
     });
@@ -129,7 +136,7 @@ export default function Employees() {
 
   const handleDeleteEmployee = () => {
     if (!deleteTargetId) return;
-    deleteRecord.mutate({ id: deleteTargetId, recordType: 'employee' }, {
+    deleteRecord.mutate({ id: deleteTargetId, recordType: 'staff' }, {
       onSuccess: () => {
         toast.success('Employee removed successfully!');
         setDeleteTargetId(null);
@@ -143,14 +150,14 @@ export default function Employees() {
 
   const filtered = employees.filter(e => 
     e.name?.toLowerCase().includes(search.toLowerCase()) || 
-    e.department?.toLowerCase().includes(search.toLowerCase()) ||
+    e.departmentName?.toLowerCase().includes(search.toLowerCase()) ||
     e.employeeId?.toLowerCase().includes(search.toLowerCase())
   );
 
   const totalStaff = employees.length;
   const activeStaff = employees.filter(e => e.status === 'Active').length;
   const onLeave = employees.filter(e => e.status === 'On Leave').length;
-  const departments = new Set(employees.map(e => e.department).filter(Boolean)).size;
+  const departmentsCount = new Set(employees.map(e => e.departmentId).filter(Boolean)).size;
 
   return (
     <div className="space-y-6">
@@ -196,7 +203,7 @@ export default function Employees() {
             <Briefcase className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-card-foreground">{departments}</p>
+            <p className="text-2xl font-bold text-card-foreground">{departmentsCount}</p>
             <p className="text-xs text-muted-foreground">{t("departments", "Departments")}</p>
           </div>
         </div>
@@ -241,7 +248,10 @@ export default function Employees() {
                       </td>
                       <td className="px-6 py-4">
                         <p className="font-semibold text-card-foreground">{emp.role}</p>
-                        <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5"><Briefcase className="w-3 h-3"/> {emp.department}</p>
+                        <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5"><Briefcase className="w-3 h-3"/> {emp.departmentName}</p>
+                        {emp.reportsToName !== 'None' && (
+                          <p className="text-[10px] text-muted-foreground/80 mt-1 uppercase tracking-wider font-bold">Reports to: {emp.reportsToName}</p>
+                        )}
                       </td>
                       <td className="px-6 py-4 text-muted-foreground space-y-1">
                         <div className="flex items-center gap-2"><Mail className="w-3.5 h-3.5"/> {emp.email}</div>
@@ -310,12 +320,30 @@ export default function Employees() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-xs font-bold text-muted-foreground uppercase">{t("department", "Department")}</label>
-                  <Input value={formData.department} onChange={e => setFormData({...formData, department: e.target.value})} placeholder="Engineering" className="mt-1" />
+                  <select 
+                    value={formData.departmentId} 
+                    onChange={e => setFormData({...formData, departmentId: e.target.value})} 
+                    className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
+                  >
+                    <option value="">Select Department...</option>
+                    {departmentRecords.map(d => <option key={d.id} value={d.id}>{d.data?.name}</option>)}
+                  </select>
                 </div>
                 <div>
                   <label className="text-xs font-bold text-muted-foreground uppercase">{t("role", "Role")}</label>
                   <Input value={formData.role} onChange={e => setFormData({...formData, role: e.target.value})} placeholder="Senior Developer" className="mt-1" />
                 </div>
+              </div>
+              <div>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("reports_to", "Reports To (Manager/Senior)")}</label>
+                <select 
+                  value={formData.reportsTo} 
+                  onChange={e => setFormData({...formData, reportsTo: e.target.value})} 
+                  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
+                >
+                  <option value="">Select Manager/Senior...</option>
+                  {employees.filter(e => e.id !== editTargetId).map(e => <option key={e.id} value={e.id}>{e.name} - {e.role}</option>)}
+                </select>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
@@ -350,7 +378,8 @@ export default function Employees() {
                   <div className="space-y-4 text-sm">
                     <div><span className="font-semibold text-muted-foreground">{t("id", "ID:")}</span> <p className="font-medium">{emp.employeeId}</p></div>
                     <div><span className="font-semibold text-muted-foreground">{t("name", "Name:")}</span> <p className="font-medium">{emp.name}</p></div>
-                    <div><span className="font-semibold text-muted-foreground">{t("department", "Department:")}</span> <p className="font-medium">{emp.department}</p></div>
+                    <div><span className="font-semibold text-muted-foreground">{t("department", "Department:")}</span> <p className="font-medium">{emp.departmentName}</p></div>
+                    <div><span className="font-semibold text-muted-foreground">{t("reports_to", "Reports To:")}</span> <p className="font-medium">{emp.reportsToName}</p></div>
                     <div><span className="font-semibold text-muted-foreground">{t("role", "Role:")}</span> <p className="font-medium">{emp.role}</p></div>
                     <div><span className="font-semibold text-muted-foreground">{t("email", "Email:")}</span> <p className="font-medium">{emp.email}</p></div>
                     <div><span className="font-semibold text-muted-foreground">{t("phone", "Phone:")}</span> <p className="font-medium">{emp.phone}</p></div>

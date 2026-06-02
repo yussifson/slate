@@ -13,12 +13,22 @@ import { Link } from 'react-router-dom';
 export default function Payroll() {
   const { t } = useTranslation();
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('payroll_run');
+  const { data: staffRecords = [] } = useIndustryRecords('staff');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
+
+  const staffList = staffRecords.map(r => ({
+    id: r.id,
+    name: r.data?.full_name || r.data?.name || 'Unnamed Staff',
+    employeeId: r.data?.employeeId || `EMP-${r.id.slice(0,4)}`
+  }));
 
   const payrolls = dbRecords.map(r => ({
     id: r.id,
     status: r.status || 'Pending',
+    staffRecordId: r.data?.staffRecordId || '',
+    employeeName: r.data?.staffRecordId ? (staffList.find(s => s.id === r.data.staffRecordId)?.name || 'Unknown') : (r.data?.employeeName || 'Unnamed'),
+    employeeId: r.data?.staffRecordId ? (staffList.find(s => s.id === r.data.staffRecordId)?.employeeId || 'Unknown') : (r.data?.employeeId || ''),
     ...r.data
   }));
 
@@ -29,50 +39,51 @@ export default function Payroll() {
   const [viewTargetId, setViewTargetId] = useState(null);
 
   const [formData, setFormData] = useState({
-    employeeName: '',
-    employeeId: '',
+    staffRecordId: '',
     period: 'May 2026',
     grossPay: 0,
     deductions: 0
   });
 
   const handleCreateOrUpdatePayroll = () => {
-    if (!formData.employeeName.trim() || !formData.employeeId.trim()) {
-      return toast.error("Please enter employee details");
+    if (!formData.staffRecordId) {
+      return toast.error("Please select an employee");
     }
     
     const gross = parseFloat(formData.grossPay) || 0;
     const ded = parseFloat(formData.deductions) || 0;
     const netPay = gross - ded;
 
+    const selectedStaff = staffList.find(s => s.id === formData.staffRecordId);
+
     if (editTargetId) {
       const pay = payrolls.find(p => p.id === editTargetId);
       mutateRecord.mutate({
         id: editTargetId,
         recordType: 'payroll_run',
-        payload: { ...formData, grossPay: gross, deductions: ded, netPay },
+        payload: { ...formData, employeeName: selectedStaff?.name, employeeId: selectedStaff?.employeeId, grossPay: gross, deductions: ded, netPay },
         status: pay.status,
-        searchText: `${formData.employeeName} ${formData.employeeId} ${formData.period}`
+        searchText: `${selectedStaff?.name} ${selectedStaff?.employeeId} ${formData.period}`
       }, {
         onSuccess: () => {
           toast.success('Payroll record updated!');
           setShowModal(false);
           setEditTargetId(null);
-          setFormData({ employeeName: '', employeeId: '', period: 'May 2026', grossPay: 0, deductions: 0 });
+          setFormData({ staffRecordId: '', period: 'May 2026', grossPay: 0, deductions: 0 });
         },
         onError: (err) => toast.error('Failed: ' + err.message)
       });
     } else {
       mutateRecord.mutate({
         recordType: 'payroll_run',
-        payload: { ...formData, grossPay: gross, deductions: ded, netPay },
+        payload: { ...formData, employeeName: selectedStaff?.name, employeeId: selectedStaff?.employeeId, grossPay: gross, deductions: ded, netPay },
         status: 'Pending',
-        searchText: `${formData.employeeName} ${formData.employeeId} ${formData.period}`
+        searchText: `${selectedStaff?.name} ${selectedStaff?.employeeId} ${formData.period}`
       }, {
         onSuccess: () => {
           toast.success('Payroll record added!');
           setShowModal(false);
-          setFormData({ employeeName: '', employeeId: '', period: 'May 2026', grossPay: 0, deductions: 0 });
+          setFormData({ staffRecordId: '', period: 'May 2026', grossPay: 0, deductions: 0 });
         },
         onError: (err) => toast.error('Failed: ' + err.message)
       });
@@ -81,8 +92,7 @@ export default function Payroll() {
 
   const openEdit = (pay) => {
     setFormData({
-      employeeName: pay.employeeName || '',
-      employeeId: pay.employeeId || '',
+      staffRecordId: pay.staffRecordId || '',
       period: pay.period || 'May 2026',
       grossPay: pay.grossPay || 0,
       deductions: pay.deductions || 0
@@ -92,7 +102,7 @@ export default function Payroll() {
   };
 
   const openAdd = () => {
-    setFormData({ employeeName: '', employeeId: '', period: 'May 2026', grossPay: 0, deductions: 0 });
+    setFormData({ staffRecordId: '', period: 'May 2026', grossPay: 0, deductions: 0 });
     setEditTargetId(null);
     setShowModal(true);
   };
@@ -279,12 +289,11 @@ export default function Payroll() {
             <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Payslip' : 'Add Payslip'}</h2>
             <div className="space-y-3">
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">{t("employee_name", "Employee Name")}</label>
-                <Input value={formData.employeeName} onChange={e => setFormData({...formData, employeeName: e.target.value})} placeholder="Alice Johnson" className="mt-1" />
-              </div>
-              <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">{t("employee_id", "Employee ID")}</label>
-                <Input value={formData.employeeId} onChange={e => setFormData({...formData, employeeId: e.target.value})} placeholder="EMP-1234" className="mt-1" />
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("employee", "Employee")}</label>
+                <select value={formData.staffRecordId} onChange={e => setFormData({...formData, staffRecordId: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground">
+                  <option value="">Select Employee...</option>
+                  {staffList.map(s => <option key={s.id} value={s.id}>{s.name} ({s.employeeId})</option>)}
+                </select>
               </div>
               <div>
                 <label className="text-xs font-bold text-muted-foreground uppercase">{t("period", "Period")}</label>

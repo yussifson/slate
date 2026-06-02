@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { Users, Search, Plus, Mail, Star, Heart, Trash2, MoreVertical, Eye, Edit, FileText } from 'lucide-react';
+import { Users, Search, Plus, Mail, Star, Heart, Trash2, MoreVertical, Eye, Edit, FileText, LayoutGrid, List } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -21,12 +21,10 @@ const segmentColors = {
 
 export default function Customers() {
   const { t } = useTranslation();
-  // Supabase Real-time Sync Hooks
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('customer');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
 
-  // Map database records
   const customers = dbRecords.map(r => {
     const data = r.data || {};
     const totalSpent = parseFloat(data.totalSpent) || 0;
@@ -53,8 +51,8 @@ export default function Customers() {
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [viewMode, setViewMode] = useState('list');
 
-  // Form State
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -108,11 +106,7 @@ export default function Customers() {
         setShowModal(false);
         setEditingId(null);
         setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          totalSpent: '',
-          orders: ''
+          name: '', email: '', phone: '', totalSpent: '', orders: ''
         });
       },
       onError: (err) => {
@@ -150,10 +144,7 @@ export default function Customers() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-card-foreground">{t("customers", "Customers")}</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">{t(
-            "manage_customer_profiles_and_l",
-            "Manage customer profiles and loyalty tiers"
-          )}</p>
+          <p className="text-sm text-muted-foreground mt-0.5">{t("manage_customer_profiles_and_l", "Manage customer profiles and loyalty tiers")}</p>
         </div>
         <div className="flex gap-2">
           <Button onClick={() => setShowImportModal(true)} variant="outline" className="gap-2 text-primary border-primary hover:bg-primary/5">
@@ -164,6 +155,26 @@ export default function Customers() {
           </Button>
         </div>
       </div>
+
+      <div className="flex items-center justify-end gap-2 mb-4">
+        <div className="bg-card border border-border p-1 rounded-lg flex items-center shadow-sm">
+          <button 
+            onClick={() => setViewMode('list')} 
+            className={`p-1.5 rounded-md transition-colors ${viewMode === 'list' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted'}`}
+            title="List View"
+          >
+            <List className="w-4 h-4" />
+          </button>
+          <button 
+            onClick={() => setViewMode('grid')} 
+            className={`p-1.5 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted'}`}
+            title="Grid View"
+          >
+            <LayoutGrid className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
           <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-950/20 flex items-center justify-center text-blue-600"><Users className="w-5 h-5" /></div>
@@ -174,6 +185,7 @@ export default function Customers() {
           <div><p className="text-2xl font-bold text-card-foreground">{stats.vipCount}</p><p className="text-xs text-muted-foreground">{t("vip_members", "VIP Members")}</p></div>
         </div>
       </div>
+
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         <div className="p-4 border-b border-border bg-muted/50">
           <div className="relative max-w-md">
@@ -188,10 +200,42 @@ export default function Customers() {
             <div className="py-12 text-center text-muted-foreground">
                <Users className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse" />
                <p className="font-semibold">{t("no_customers_registered", "No customers registered.")}</p>
-               <p className="text-xs mt-1">{t(
-                 "add_your_first_retail_customer",
-                 "Add your first retail customer using the \"Add Customer\" button."
-               )}</p>
+               <p className="text-xs mt-1">{t("add_your_first_retail_customer", "Add your first retail customer using the \"Add Customer\" button.")}</p>
+            </div>
+          ) : viewMode === 'grid' ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+              {filtered.map(cust => (
+                <div key={cust.id} className="bg-background border border-border rounded-xl p-5 hover:shadow-lg transition-all group relative">
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-600">
+                      <Users className="w-5 h-5" />
+                    </div>
+                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openDetails(cust)}><Eye className="w-3.5 h-3.5" /></Button>
+                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(cust)}><Edit className="w-3.5 h-3.5" /></Button>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-red-600" onClick={() => setDeleteTargetId(cust.id)}><Trash2 className="w-3.5 h-3.5" /></Button>
+                    </div>
+                  </div>
+                  <h3 className="font-bold text-foreground line-clamp-1">{cust.name}</h3>
+                  <p className="text-xs text-muted-foreground mb-3">{cust.custId}</p>
+                  
+                  <div className="space-y-1 mb-4">
+                    <p className="text-xs text-muted-foreground flex items-center gap-2"><Mail className="w-3 h-3"/> {cust.email}</p>
+                  </div>
+                  
+                  <div className="flex justify-between items-end mt-4">
+                    <div>
+                      <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider mb-0.5">Spent</p>
+                      <p className="text-lg font-extrabold text-foreground">${cust.totalSpent.toFixed(2)}</p>
+                    </div>
+                    <div className="text-right">
+                      <span className={`text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider border ${segmentColors[cust.segment] || 'bg-muted'}`}>
+                        {cust.segment}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           ) : (
             <table className="w-full text-sm">
@@ -259,10 +303,7 @@ export default function Customers() {
         <SheetContent className="overflow-y-auto">
           <SheetHeader>
             <SheetTitle>{t("customer_details", "Customer Details")}</SheetTitle>
-            <SheetDescription>{t(
-              "view_detailed_information_for_",
-              "View detailed information for this customer."
-            )}</SheetDescription>
+            <SheetDescription>{t("view_detailed_information_for_", "View detailed information for this customer.")}</SheetDescription>
           </SheetHeader>
           {selectedRecord && (
             <div className="mt-6 space-y-4 text-sm">

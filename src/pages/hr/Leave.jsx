@@ -20,12 +20,20 @@ export default function Leave() {
   const { user } = useAuth();
   const { notifyTeam } = useNotifications();
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('leave_request');
+  const { data: staffRecords = [] } = useIndustryRecords('staff');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
+
+  const staffList = staffRecords.map(r => ({
+    id: r.id,
+    name: r.data?.full_name || r.data?.name || 'Unnamed Staff',
+  }));
 
   const requests = dbRecords.map(r => ({
     id: r.id,
     status: r.status || 'Pending',
+    employeeId: r.data?.employeeId || '',
+    employeeName: r.data?.employeeId ? (staffList.find(s => s.id === r.data.employeeId)?.name || 'Unknown') : (r.data?.employeeName || 'Unnamed Employee'),
     ...r.data
   }));
 
@@ -35,7 +43,7 @@ export default function Leave() {
   const [viewTargetId, setViewTargetId] = useState(null);
 
   const [formData, setFormData] = useState({
-    employeeName: '',
+    employeeId: '',
     leaveType: 'Annual',
     startDate: new Date().toISOString().split('T')[0],
     endDate: new Date(Date.now() + 86400000).toISOString().split('T')[0],
@@ -43,27 +51,30 @@ export default function Leave() {
   });
 
   const handleCreateOrUpdate = () => {
-    if (!formData.employeeName.trim()) return toast.error("Please enter employee name");
+    if (!formData.employeeId) return toast.error("Please select an employee");
     
     const start = new Date(formData.startDate);
     const end = new Date(formData.endDate);
     const days = Math.max(1, Math.ceil((end - start) / 86400000) + 1);
+    
+    const selectedStaff = staffList.find(s => s.id === formData.employeeId);
+    const employeeName = selectedStaff?.name || '';
 
     if (editTargetId) {
       const req = requests.find(r => r.id === editTargetId);
       mutateRecord.mutate({
         id: editTargetId,
         recordType: 'leave_request',
-        payload: { ...formData, days },
+        payload: { ...formData, employeeName, days },
         status: req.status,
-        searchText: `${formData.employeeName} ${formData.leaveType}`
+        searchText: `${employeeName} ${formData.leaveType}`
       }, {
         onSuccess: () => {
           toast.success('Leave request updated!');
           setShowModal(false);
           setEditTargetId(null);
           setFormData({
-            employeeName: '', leaveType: 'Annual', 
+            employeeId: '', leaveType: 'Annual', 
             startDate: new Date().toISOString().split('T')[0], 
             endDate: new Date(Date.now() + 86400000).toISOString().split('T')[0], 
             reason: ''
@@ -74,16 +85,16 @@ export default function Leave() {
     } else {
       mutateRecord.mutate({
         recordType: 'leave_request',
-        payload: { ...formData, days },
+        payload: { ...formData, employeeName, days },
         status: 'Pending',
-        searchText: `${formData.employeeName} ${formData.leaveType}`
+        searchText: `${employeeName} ${formData.leaveType}`
       }, {
         onSuccess: () => {
           toast.success('Leave request submitted!');
-          notifyTeam({ companyId: user?.company_id, provider: 'slack', message: `Leave request submitted by ${formData.employeeName} for ${formData.leaveType}`, channel: '#hr' }).catch(console.error);
+          notifyTeam({ companyId: user?.company_id, provider: 'slack', message: `Leave request submitted by ${employeeName} for ${formData.leaveType}`, channel: '#hr' }).catch(console.error);
           setShowModal(false);
           setFormData({
-            employeeName: '', leaveType: 'Annual', 
+            employeeId: '', leaveType: 'Annual', 
             startDate: new Date().toISOString().split('T')[0], 
             endDate: new Date(Date.now() + 86400000).toISOString().split('T')[0], 
             reason: ''
@@ -96,7 +107,7 @@ export default function Leave() {
 
   const openEdit = (req) => {
     setFormData({
-      employeeName: req.employeeName || '',
+      employeeId: req.employeeId || '',
       leaveType: req.leaveType || 'Annual',
       startDate: req.startDate || new Date().toISOString().split('T')[0],
       endDate: req.endDate || new Date(Date.now() + 86400000).toISOString().split('T')[0],
@@ -108,7 +119,7 @@ export default function Leave() {
 
   const openAdd = () => {
     setFormData({
-      employeeName: '', leaveType: 'Annual', 
+      employeeId: '', leaveType: 'Annual', 
       startDate: new Date().toISOString().split('T')[0], 
       endDate: new Date(Date.now() + 86400000).toISOString().split('T')[0], 
       reason: ''
@@ -278,8 +289,11 @@ export default function Leave() {
             <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Leave Request' : 'New Leave Request'}</h2>
             <div className="space-y-3">
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">{t("employee_name", "Employee Name")}</label>
-                <Input value={formData.employeeName} onChange={e => setFormData({...formData, employeeName: e.target.value})} placeholder="e.g. Alice Johnson" className="mt-1" />
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("employee_name", "Employee")}</label>
+                <select value={formData.employeeId} onChange={e => setFormData({...formData, employeeId: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground">
+                  <option value="">Select Employee...</option>
+                  {staffList.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                </select>
               </div>
               <div>
                 <label className="text-xs font-bold text-muted-foreground uppercase">{t("leave_type", "Leave Type")}</label>

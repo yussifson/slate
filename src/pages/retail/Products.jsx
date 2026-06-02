@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { Tag, Search, Plus, Package, Edit, Trash2, MoreVertical, Eye } from 'lucide-react';
+import { Tag, Search, Plus, Package, Edit, Trash2, MoreVertical, Eye, LayoutGrid, List } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
@@ -35,6 +35,7 @@ export default function Products() {
   const [showModal, setShowModal] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState(null);
   const [editingId, setEditingId] = useState(null);
+  const [viewMode, setViewMode] = useState('list');
 
   const [formData, setFormData] = useState({
     name: '', sku: '', category: '', price: '', stock: '', supplierId: ''
@@ -85,6 +86,25 @@ export default function Products() {
         </Button>
       </div>
 
+      <div className="flex items-center justify-end gap-2 mb-4">
+        <div className="bg-card border border-border p-1 rounded-lg flex items-center shadow-sm">
+          <button 
+            onClick={() => setViewMode('list')} 
+            className={`p-1.5 rounded-md transition-colors ${viewMode === 'list' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted'}`}
+            title="List View"
+          >
+            <List className="w-4 h-4" />
+          </button>
+          <button 
+            onClick={() => setViewMode('grid')} 
+            className={`p-1.5 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted'}`}
+            title="Grid View"
+          >
+            <LayoutGrid className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
           <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-950/20 flex items-center justify-center text-blue-600"><Tag className="w-5 h-5" /></div>
@@ -108,6 +128,36 @@ export default function Products() {
             <div className="py-12 text-center text-muted-foreground">
                <Tag className="w-12 h-12 mx-auto mb-3 opacity-30" />
                <p className="font-semibold">No products found.</p>
+            </div>
+          ) : viewMode === 'grid' ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+              {filtered.map(p => (
+                <div key={p.id} className="bg-background border border-border rounded-xl p-5 hover:shadow-lg transition-all group relative">
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-600">
+                      <Package className="w-5 h-5" />
+                    </div>
+                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(p)}><Edit className="w-3.5 h-3.5" /></Button>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-red-600" onClick={() => setDeleteTargetId(p.id)}><Trash2 className="w-3.5 h-3.5" /></Button>
+                    </div>
+                  </div>
+                  <h3 className="font-bold text-foreground line-clamp-1">{p.name}</h3>
+                  <p className="text-xs text-muted-foreground mb-3">{p.sku}</p>
+                  
+                  <div className="flex justify-between items-end mt-4">
+                    <div>
+                      <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider mb-0.5">Price</p>
+                      <p className="text-lg font-extrabold text-foreground">${p.price.toFixed(2)}</p>
+                    </div>
+                    <div className="text-right">
+                      <span className={`text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider ${p.stock > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                        {p.stock} in stock
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           ) : (
             <table className="w-full text-sm">

@@ -1,6 +1,6 @@
+import React, { useState } from 'react';
 import { useTranslation } from "react-i18next";
-import { useState } from 'react';
-import { Star, Search, Plus, Edit, Trash2, Award } from 'lucide-react';
+import { Star, Search, Plus, Edit, Trash2, Award, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
@@ -33,34 +33,71 @@ export default function Loyalty() {
   const [deleteTargetId, setDeleteTargetId] = useState(null);
   const [editingId, setEditingId] = useState(null);
 
+  // Use array for multi-select
   const [formData, setFormData] = useState({
-    customerId: '', points: '', tier: 'Bronze'
+    customerIds: [], points: '', tier: 'Bronze'
   });
 
   const openEdit = (mbr) => {
     setEditingId(mbr.id);
-    setFormData({ customerId: mbr.customerId || '', points: mbr.points, tier: mbr.tier });
+    setFormData({ customerIds: mbr.customerId ? [mbr.customerId] : [], points: mbr.points, tier: mbr.tier });
     setShowModal(true);
   };
 
-  const handleSave = () => {
-    mutateRecord.mutate({
-      ...(editingId ? { id: editingId } : {}),
-      recordType: 'loyalty',
-      payload: {
-        customerId: formData.customerId,
-        points: parseInt(formData.points) || 0,
-        tier: formData.tier
-      },
-      status: 'active',
-      searchText: `${formData.customerId} ${formData.tier}`
-    }, {
-      onSuccess: () => {
-        toast.success(editingId ? 'Member updated!' : 'Member added!');
-        setShowModal(false);
-        setEditingId(null);
+  const toggleCustomer = (cId) => {
+    setFormData(prev => {
+      const idx = prev.customerIds.indexOf(cId);
+      if (idx > -1) {
+        return { ...prev, customerIds: prev.customerIds.filter(id => id !== cId) };
+      } else {
+        return { ...prev, customerIds: [...prev.customerIds, cId] };
       }
     });
+  };
+
+  const handleSave = async () => {
+    if (formData.customerIds.length === 0) {
+      toast.error("Please select at least one customer.");
+      return;
+    }
+
+    try {
+      if (editingId) {
+        // Edit mode (single update, usually 1 customer anyway)
+        const cId = formData.customerIds[0];
+        await mutateRecord.mutateAsync({
+          id: editingId,
+          recordType: 'loyalty',
+          payload: {
+            customerId: cId,
+            points: parseInt(formData.points) || 0,
+            tier: formData.tier
+          },
+          status: 'active',
+          searchText: `${cId} ${formData.tier}`
+        });
+        toast.success('Member updated!');
+      } else {
+        // Create mode (multi-select assignment)
+        for (const cId of formData.customerIds) {
+          await mutateRecord.mutateAsync({
+            recordType: 'loyalty',
+            payload: {
+              customerId: cId,
+              points: parseInt(formData.points) || 0,
+              tier: formData.tier
+            },
+            status: 'active',
+            searchText: `${cId} ${formData.tier}`
+          });
+        }
+        toast.success(`Successfully assigned to ${formData.customerIds.length} customer(s)!`);
+      }
+      setShowModal(false);
+      setEditingId(null);
+    } catch (err) {
+      toast.error("Failed to save loyalty data");
+    }
   };
 
   const filtered = members.filter(m => 
@@ -75,8 +112,8 @@ export default function Loyalty() {
           <h1 className="text-2xl font-bold text-card-foreground">Loyalty Program</h1>
           <p className="text-sm text-muted-foreground mt-0.5">Manage rewards and tiers for your best customers.</p>
         </div>
-        <Button onClick={() => { setEditingId(null); setFormData({ customerId: '', points: '', tier: 'Bronze' }); setShowModal(true); }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
-          <Plus className="w-4 h-4" /> Add Member
+        <Button onClick={() => { setEditingId(null); setFormData({ customerIds: [], points: '', tier: 'Bronze' }); setShowModal(true); }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+          <Plus className="w-4 h-4" /> Add Member(s)
         </Button>
       </div>
 
@@ -138,17 +175,39 @@ export default function Loyalty() {
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4">
-            <h2 className="text-lg font-bold text-card-foreground">{editingId ? 'Edit Member' : 'Add Member'}</h2>
-            <div className="space-y-3">
+          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+            <h2 className="text-lg font-bold text-card-foreground">{editingId ? 'Edit Member' : 'Add Member(s)'}</h2>
+            <div className="space-y-4">
+               
                <div>
-                 <label className="text-xs font-bold text-muted-foreground uppercase">Customer</label>
-                 <select value={formData.customerId} onChange={e => setFormData({...formData, customerId: e.target.value})} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1">
-                   <option value="">Select a Customer</option>
-                   {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-                 </select>
+                 <label className="text-xs font-bold text-muted-foreground uppercase mb-2 block">
+                   {editingId ? 'Customer' : 'Select Customer(s)'}
+                 </label>
+                 {editingId ? (
+                   <select value={formData.customerIds[0] || ''} onChange={e => setFormData({...formData, customerIds: [e.target.value]})} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1">
+                     {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                   </select>
+                 ) : (
+                   <div className="border rounded-md max-h-48 overflow-y-auto bg-white p-2 space-y-1">
+                     {customers.length === 0 ? (
+                       <p className="text-sm text-slate-500 text-center py-2">No customers available.</p>
+                     ) : (
+                       customers.map(c => (
+                         <div 
+                           key={c.id} 
+                           onClick={() => toggleCustomer(c.id)}
+                           className={`flex items-center justify-between p-2 rounded cursor-pointer text-sm ${formData.customerIds.includes(c.id) ? 'bg-blue-50 border border-blue-200 text-blue-700 font-medium' : 'hover:bg-slate-50 text-slate-700'}`}
+                         >
+                           {c.name}
+                           {formData.customerIds.includes(c.id) && <Check className="w-4 h-4 text-blue-600" />}
+                         </div>
+                       ))
+                     )}
+                   </div>
+                 )}
                </div>
-               <div><label className="text-xs font-bold text-muted-foreground uppercase">Points</label><Input type="number" value={formData.points} onChange={e => setFormData({ ...formData, points: e.target.value })} className="mt-1" /></div>
+
+               <div><label className="text-xs font-bold text-muted-foreground uppercase">Initial Points</label><Input type="number" value={formData.points} onChange={e => setFormData({ ...formData, points: e.target.value })} className="mt-1" /></div>
                <div>
                  <label className="text-xs font-bold text-muted-foreground uppercase">Tier</label>
                  <select value={formData.tier} onChange={e => setFormData({...formData, tier: e.target.value})} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1">
@@ -156,14 +215,14 @@ export default function Loyalty() {
                  </select>
                </div>
             </div>
-            <div className="flex gap-3 pt-4">
+            <div className="flex gap-3 pt-4 border-t">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>Cancel</Button>
               <Button className="flex-1 bg-blue-600 text-white" onClick={handleSave}>Save</Button>
             </div>
           </div>
         </div>
       )}
-      <ConfirmationModal isOpen={deleteTargetId !== null} onClose={() => setDeleteTargetId(null)} onConfirm={() => { deleteRecord.mutate({ id: deleteTargetId, recordType: 'loyalty' }); setDeleteTargetId(null); }} title="Remove Member" message="Are you sure you want to remove this member from the program?" />
+      <ConfirmationModal isOpen={deleteTargetId !== null} onClose={() => setDeleteTargetId(null)} onConfirm={() => { deleteRecord.mutate({ id: deleteTargetId, recordType: 'loyalty' }); setDeleteTargetId(null); }} title="Delete Member" message="Are you sure you want to remove this member from the program?" />
     </div>
   );
 }

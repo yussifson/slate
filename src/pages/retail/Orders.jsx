@@ -1,22 +1,35 @@
+import React, { useState } from 'react';
 import { useTranslation } from "react-i18next";
-import { useState } from 'react';
-import { ClipboardList, Search, Plus, Edit, Trash2, TrendingUp } from 'lucide-react';
+import { ClipboardList, Search, Plus, Edit, Trash2, TrendingUp, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
+import { useNotifications } from '@/hooks/integrations/useNotifications';
+import { useAuth } from '@/lib/AuthContext';
 
 export default function Orders() {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const { notifyTeam } = useNotifications();
   const { data: dbRecords = [], isLoading } = useIndustryRecords('order');
   const { data: customerRecords = [] } = useIndustryRecords('customer');
+  const { data: productRecords = [] } = useIndustryRecords('product');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
 
   const customers = customerRecords.map(r => ({
     id: r.id,
     name: r.data?.name || 'Unnamed Customer'
+  }));
+
+  const products = productRecords.map(r => ({
+    id: r.id,
+    sku: r.data?.sku || '',
+    name: r.data?.name || '',
+    price: parseFloat(r.data?.price) || 0,
+    stock: parseInt(r.data?.quantity || r.data?.stock) || 0
   }));
 
   const orders = dbRecords.map(r => ({
@@ -26,7 +39,8 @@ export default function Orders() {
     customerName: r.data?.customerId ? (customers.find(c => c.id === r.data.customerId)?.name || 'Unknown') : (r.data?.customerName || 'Walk-in Customer'),
     date: r.data?.date || new Date().toISOString().split('T')[0],
     total: parseFloat(r.data?.total) || 0,
-    status: r.data?.status || 'Pending'
+    status: r.data?.status || 'Pending',
+    items: r.data?.items || []
   }));
 
   const [search, setSearch] = useState('');
@@ -35,28 +49,129 @@ export default function Orders() {
   const [editingId, setEditingId] = useState(null);
 
   const [formData, setFormData] = useState({
-    customerId: '', date: '', total: '', status: 'Pending'
+    customerId: '', date: '', total: '', status: 'Pending', items: []
   });
+  
+  const [isNewCustomer, setIsNewCustomer] = useState(false);
+  const [newCustomerData, setNewCustomerData] = useState({ name: '', phone: '' });
+  
+  const [selectedProduct, setSelectedProduct] = useState('');
+  const [productQty, setProductQty] = useState(1);
 
   const openEdit = (ord) => {
     setEditingId(ord.id);
-    setFormData({ customerId: ord.customerId || '', date: ord.date, total: ord.total, status: ord.status });
+    setFormData({ 
+      customerId: ord.customerId || '', 
+      date: ord.date, 
+      total: ord.total, 
+      status: ord.status,
+      items: ord.items || []
+    });
+    setIsNewCustomer(false);
     setShowModal(true);
   };
 
-  const handleSave = () => {
+  const handleAddItem = () => {
+    if (!selectedProduct) return;
+    const prod = products.find(p => p.id === selectedProduct);
+    if (!prod) return;
+    
+    setFormData(prev => {
+      const items = [...prev.items, { productId: prod.id, name: prod.name, price: prod.price, qty: Number(productQty) }];
+      const total = items.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      return { ...prev, items, total };
+    });
+    setSelectedProduct('');
+    setProductQty(1);
+  };
+
+  const handleRemoveItem = (index) => {
+    setFormData(prev => {
+      const items = [...prev.items];
+      items.splice(index, 1);
+      const total = items.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      return { ...prev, items, total };
+    });
+  };
+
+  const handleSave = async () => {
+    let finalCustomerId = formData.customerId;
+    
+    // Auto-create new customer if needed
+    if (isNewCustomer && newCustomerData.name) {
+      try {
+        const newCustId = `CUST-${Date.now()}`;
+        await mutateRecord.mutateAsync({
+          recordType: 'customer',
+          payload: { ...newCustomerData, id: newCustId },
+          status: 'active',
+          searchText: newCustomerData.name.toLowerCase()
+        });
+        // We might not have the ID from DB immediately, but we can store the name or wait.
+        // For simplicity, we just save the name to order if we can't reliably get the ID back immediately.
+      } catch(err) {
+         toast.error("Failed to create new customer");
+         return;
+      }
+    }
+
+    // Check inventory deduction for 'Delivered' or 'Completed'
+    if (formData.status === 'Completed' || formData.status === 'Delivered') {
+      const originalOrder = orders.find(o => o.id === editingId);
+      const wasAlreadyDeducted = originalOrder && (originalOrder.status === 'Completed' || originalOrder.status === 'Delivered');
+      
+      if (!wasAlreadyDeducted) {
+        // Deduct inventory
+        for (const item of formData.items) {
+          const prod = productRecords.find(p => p.id === item.productId);
+          if (prod) {
+            const currentStock = Number(prod.data?.quantity || prod.data?.stock || 0);
+            await mutateRecord.mutateAsync({
+              id: prod.id,
+              recordType: 'product',
+              payload: { ...prod.data, quantity: Math.max(0, currentStock - item.qty), stock: Math.max(0, currentStock - item.qty) },
+              status: prod.status,
+              searchText: prod.search_text
+            });
+          }
+        }
+      }
+    }
+
     mutateRecord.mutate({
       ...(editingId ? { id: editingId } : {}),
       recordType: 'order',
       payload: {
-        customerId: formData.customerId, date: formData.date,
-        total: parseFloat(formData.total) || 0, status: formData.status
+        customerId: finalCustomerId,
+        customerName: isNewCustomer ? newCustomerData.name : undefined,
+        date: formData.date,
+        total: parseFloat(formData.total) || 0,
+        status: formData.status,
+        items: formData.items
       },
       status: 'active',
-      searchText: `${formData.customerId} ${formData.status}`
+      searchText: `${finalCustomerId} ${formData.status}`
     }, {
       onSuccess: () => {
         toast.success(editingId ? 'Order updated!' : 'Order added!');
+        
+        // Notify team via Slack if order is high value or completed/delivered
+        if (formData.status === 'Completed' || formData.status === 'Delivered') {
+          notifyTeam({
+            companyId: user?.company_id,
+            provider: 'slack',
+            message: `📦 Retail Order ${editingId ? 'updated' : 'placed'} and marked as ${formData.status}. Total: $${parseFloat(formData.total).toFixed(2)}`,
+            channel: '#sales'
+          }).catch(console.error);
+        } else if (!editingId && parseFloat(formData.total) > 100) {
+           notifyTeam({
+            companyId: user?.company_id,
+            provider: 'slack',
+            message: `🎉 New high-value retail order placed! Total: $${parseFloat(formData.total).toFixed(2)}`,
+            channel: '#sales'
+          }).catch(console.error);
+        }
+
         setShowModal(false);
         setEditingId(null);
       }
@@ -75,7 +190,7 @@ export default function Orders() {
           <h1 className="text-2xl font-bold text-card-foreground">Orders Management</h1>
           <p className="text-sm text-muted-foreground mt-0.5">Track and manage customer purchases.</p>
         </div>
-        <Button onClick={() => { setEditingId(null); setFormData({ customerId: '', date: new Date().toISOString().split('T')[0], total: '', status: 'Pending' }); setShowModal(true); }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+        <Button onClick={() => { setEditingId(null); setIsNewCustomer(false); setNewCustomerData({name: '', phone: ''}); setFormData({ customerId: '', date: new Date().toISOString().split('T')[0], total: '', status: 'Pending', items: [] }); setShowModal(true); }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
           <Plus className="w-4 h-4" /> Create Order
         </Button>
       </div>
@@ -124,7 +239,7 @@ export default function Orders() {
                     <td className="px-6 py-4 text-muted-foreground">{o.date}</td>
                     <td className="px-6 py-4 text-right font-bold text-card-foreground">${o.total.toFixed(2)}</td>
                     <td className="px-6 py-4 text-center">
-                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${o.status === 'Completed' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>{o.status}</span>
+                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${o.status === 'Completed' || o.status === 'Delivered' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>{o.status}</span>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <Button variant="ghost" size="icon" onClick={() => openEdit(o)}><Edit className="w-4 h-4" /></Button>
@@ -140,26 +255,95 @@ export default function Orders() {
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4">
+          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
             <h2 className="text-lg font-bold text-card-foreground">{editingId ? 'Edit Order' : 'Create Order'}</h2>
-            <div className="space-y-3">
+            <div className="space-y-4">
                <div>
                  <label className="text-xs font-bold text-muted-foreground uppercase">Customer</label>
-                 <select value={formData.customerId} onChange={e => setFormData({...formData, customerId: e.target.value})} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1">
+                 <select 
+                  value={isNewCustomer ? "NEW_CUSTOMER" : formData.customerId} 
+                  onChange={e => {
+                    if (e.target.value === 'NEW_CUSTOMER') setIsNewCustomer(true);
+                    else { setIsNewCustomer(false); setFormData({...formData, customerId: e.target.value}); }
+                  }} 
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1"
+                 >
                    <option value="">Walk-in Customer</option>
+                   <option value="NEW_CUSTOMER">+ New Customer</option>
                    {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                  </select>
                </div>
-               <div><label className="text-xs font-bold text-muted-foreground uppercase">Date</label><Input type="date" value={formData.date} onChange={e => setFormData({ ...formData, date: e.target.value })} className="mt-1" /></div>
-               <div><label className="text-xs font-bold text-muted-foreground uppercase">Total Amount</label><Input type="number" value={formData.total} onChange={e => setFormData({ ...formData, total: e.target.value })} className="mt-1" /></div>
-               <div>
-                 <label className="text-xs font-bold text-muted-foreground uppercase">Status</label>
-                 <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1">
-                   <option>Pending</option><option>Completed</option><option>Cancelled</option>
-                 </select>
+               
+               {isNewCustomer && (
+                 <div className="p-3 bg-muted rounded-md space-y-3">
+                   <div><label className="text-xs font-bold text-muted-foreground uppercase">New Customer Name</label><Input value={newCustomerData.name} onChange={e => setNewCustomerData({...newCustomerData, name: e.target.value})} className="mt-1 bg-white" /></div>
+                   <div><label className="text-xs font-bold text-muted-foreground uppercase">Phone</label><Input value={newCustomerData.phone} onChange={e => setNewCustomerData({...newCustomerData, phone: e.target.value})} className="mt-1 bg-white" /></div>
+                 </div>
+               )}
+
+               <div className="grid grid-cols-2 gap-3">
+                 <div><label className="text-xs font-bold text-muted-foreground uppercase">Date</label><Input type="date" value={formData.date} onChange={e => setFormData({ ...formData, date: e.target.value })} className="mt-1" /></div>
+                 <div>
+                   <label className="text-xs font-bold text-muted-foreground uppercase">Status</label>
+                   <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1">
+                     <option>Pending</option><option>Delivered</option><option>Completed</option><option>Cancelled</option>
+                   </select>
+                 </div>
                </div>
+
+               <div className="p-4 border rounded-xl bg-slate-50/50 space-y-4">
+                 <h4 className="font-semibold text-sm">Order Items</h4>
+                 <div className="flex gap-2 items-end">
+                   <div className="flex-1">
+                     <label className="text-xs font-medium text-slate-500 mb-1 block">Product</label>
+                     <select value={selectedProduct} onChange={e => setSelectedProduct(e.target.value)} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+                       <option value="">Select product...</option>
+                       {products.map(p => <option key={p.id} value={p.id}>{p.name} (${p.price.toFixed(2)})</option>)}
+                     </select>
+                   </div>
+                   <div className="w-24">
+                     <label className="text-xs font-medium text-slate-500 mb-1 block">Qty</label>
+                     <Input type="number" min="1" value={productQty} onChange={e => setProductQty(e.target.value)} className="bg-white" />
+                   </div>
+                   <Button type="button" onClick={handleAddItem} variant="secondary">Add</Button>
+                 </div>
+
+                 {formData.items.length > 0 && (
+                   <div className="mt-4 border rounded-lg bg-white overflow-hidden">
+                     <table className="w-full text-sm">
+                       <thead className="bg-slate-50 border-b">
+                         <tr>
+                           <th className="px-3 py-2 text-left">Item</th>
+                           <th className="px-3 py-2 text-right">Price</th>
+                           <th className="px-3 py-2 text-right">Qty</th>
+                           <th className="px-3 py-2 text-right">Total</th>
+                           <th className="px-3 py-2"></th>
+                         </tr>
+                       </thead>
+                       <tbody className="divide-y">
+                         {formData.items.map((item, i) => (
+                           <tr key={i}>
+                             <td className="px-3 py-2">{item.name}</td>
+                             <td className="px-3 py-2 text-right">${item.price?.toFixed(2)}</td>
+                             <td className="px-3 py-2 text-right">{item.qty}</td>
+                             <td className="px-3 py-2 text-right">${(item.price * item.qty).toFixed(2)}</td>
+                             <td className="px-3 py-2 text-right">
+                               <Button variant="ghost" size="icon" onClick={() => handleRemoveItem(i)} className="h-6 w-6 text-red-500 hover:text-red-700">
+                                 <X className="w-3 h-3" />
+                               </Button>
+                             </td>
+                           </tr>
+                         ))}
+                       </tbody>
+                     </table>
+                   </div>
+                 )}
+               </div>
+
+               <div><label className="text-xs font-bold text-muted-foreground uppercase">Total Amount ($)</label><Input type="number" value={formData.total} onChange={e => setFormData({ ...formData, total: e.target.value })} className="mt-1" /></div>
+
             </div>
-            <div className="flex gap-3 pt-4">
+            <div className="flex gap-3 pt-4 border-t">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>Cancel</Button>
               <Button className="flex-1 bg-blue-600 text-white" onClick={handleSave}>Save</Button>
             </div>

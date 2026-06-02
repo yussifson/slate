@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from "react-i18next";
 import { Plus, Search, Trash2, Edit2, Tag, Percent } from 'lucide-react';
-import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/lib/db';
+import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";

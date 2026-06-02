@@ -92,11 +92,37 @@ export default function POS() {
     setPromoCode('');
   };
 
-  const handleCheckout = (paymentMethod) => {
+  const handleCheckout = async (paymentMethod) => {
     if (cart.length === 0) return toast.error("Your cart is empty");
 
     const saleId = `SAL-${Math.floor(1000 + Math.random() * 9000)}`;
     const saleTotal = total;
+
+    // Use production payment integration if Stripe or Paystack is selected
+    if (paymentMethod === 'Stripe' || paymentMethod === 'Paystack') {
+      try {
+        const customerEmail = customers.find(c => c.id === selectedCustomerId)?.data?.email || 'customer@example.com';
+        await processPayment({
+          companyId,
+          provider: paymentMethod.toLowerCase(),
+          amount: parseFloat(saleTotal.toFixed(2)),
+          currency: paymentMethod === 'Paystack' ? 'NGN' : 'USD',
+          customerEmail,
+          invoiceId: saleId
+        });
+        // processPayment will redirect to Stripe/Paystack checkout URL if successful.
+        // We still save the order as 'Pending' in our DB before redirecting.
+        const payload = {
+          orderId: saleId, customerId: selectedCustomerId, date: new Date().toISOString().split('T')[0],
+          items: cart.map(i => ({ sku: i.sku, name: i.name, qty: i.qty, price: i.price })),
+          subtotal, discount, promoCode: appliedPromo?.code, tax, total: parseFloat(saleTotal.toFixed(2)), paymentMethod, timestamp: new Date().toISOString()
+        };
+        mutateRecord.mutate({ recordType: 'order', payload, status: 'Pending', searchText: `${saleId} ${paymentMethod} ${selectedCustomerId}` });
+        return; // Stop execution here because the user will be redirected
+      } catch (err) {
+        return; // error is handled by usePayment toast
+      }
+    }
 
     const payload = {
       orderId: saleId,

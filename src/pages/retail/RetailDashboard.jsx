@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from "react-i18next";
 import { DollarSign, Package, Users, TrendingUp, AlertCircle, Clock, ShoppingCart } from 'lucide-react';
-import { useIndustryRecords } from '@/lib/db';
+import { useIndustryRecords } from '@/hooks/useIndustryData';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';

@@ -10,12 +10,21 @@ import ConfirmationModal from '@/components/ConfirmationModal';
 export default function Shifts() {
   const { t } = useTranslation();
   const { data: dbRecords = [], isLoading } = useIndustryRecords('shift');
+  // Load staff instead of just manually typing names
+  const { data: staffRecords = [] } = useIndustryRecords('staff');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
 
+  const staffList = staffRecords.map(r => ({
+    id: r.id,
+    name: r.data?.full_name || r.data?.name || 'Unnamed Staff',
+    role: r.data?.role || 'Staff'
+  }));
+
   const shifts = dbRecords.map(r => ({
     id: r.id,
-    staffName: r.data?.staffName || 'Unnamed Staff',
+    staffId: r.data?.staffId || '',
+    staffName: r.data?.staffId ? (staffList.find(s => s.id === r.data.staffId)?.name || 'Unknown') : (r.data?.staffName || 'Unnamed Staff'),
     role: r.data?.role || 'Cashier',
     date: r.data?.date || new Date().toISOString().split('T')[0],
     startTime: r.data?.startTime || '09:00',
@@ -29,25 +38,32 @@ export default function Shifts() {
   const [editingId, setEditingId] = useState(null);
 
   const [formData, setFormData] = useState({
-    staffName: '', role: 'Cashier', date: '', startTime: '', endTime: '', status: 'Scheduled'
+    staffId: '', role: 'Cashier', date: '', startTime: '', endTime: '', status: 'Scheduled'
   });
 
   const openEdit = (sh) => {
     setEditingId(sh.id);
-    setFormData({ staffName: sh.staffName, role: sh.role, date: sh.date, startTime: sh.startTime, endTime: sh.endTime, status: sh.status });
+    setFormData({ staffId: sh.staffId, role: sh.role, date: sh.date, startTime: sh.startTime, endTime: sh.endTime, status: sh.status });
     setShowModal(true);
   };
 
   const handleSave = () => {
+    const selectedStaff = staffList.find(s => s.id === formData.staffId);
+    
     mutateRecord.mutate({
       ...(editingId ? { id: editingId } : {}),
       recordType: 'shift',
       payload: {
-        staffName: formData.staffName, role: formData.role, date: formData.date,
-        startTime: formData.startTime, endTime: formData.endTime, status: formData.status
+        staffId: formData.staffId, 
+        staffName: selectedStaff?.name || '',
+        role: formData.role, 
+        date: formData.date,
+        startTime: formData.startTime, 
+        endTime: formData.endTime, 
+        status: formData.status
       },
       status: 'active',
-      searchText: `${formData.staffName} ${formData.role} ${formData.date}`
+      searchText: `${selectedStaff?.name || ''} ${formData.role} ${formData.date}`
     }, {
       onSuccess: () => {
         toast.success(editingId ? 'Shift updated!' : 'Shift scheduled!');
@@ -69,7 +85,7 @@ export default function Shifts() {
           <h1 className="text-2xl font-bold text-card-foreground">Staff Shifts</h1>
           <p className="text-sm text-muted-foreground mt-0.5">Manage schedules and rosters for your retail staff.</p>
         </div>
-        <Button onClick={() => { setEditingId(null); setFormData({ staffName: '', role: 'Cashier', date: new Date().toISOString().split('T')[0], startTime: '09:00', endTime: '17:00', status: 'Scheduled' }); setShowModal(true); }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+        <Button onClick={() => { setEditingId(null); setFormData({ staffId: '', role: 'Cashier', date: new Date().toISOString().split('T')[0], startTime: '09:00', endTime: '17:00', status: 'Scheduled' }); setShowModal(true); }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
           <Plus className="w-4 h-4" /> Schedule Shift
         </Button>
       </div>
@@ -137,12 +153,20 @@ export default function Shifts() {
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4">
             <h2 className="text-lg font-bold text-card-foreground">{editingId ? 'Edit Shift' : 'Schedule Shift'}</h2>
             <div className="space-y-3">
-               <div><label className="text-xs font-bold text-muted-foreground uppercase">Staff Name</label><Input value={formData.staffName} onChange={e => setFormData({ ...formData, staffName: e.target.value })} className="mt-1" /></div>
+               <div>
+                 <label className="text-xs font-bold text-muted-foreground uppercase">Staff Member</label>
+                 <select value={formData.staffId} onChange={e => {
+                   const sId = e.target.value;
+                   const role = staffList.find(s => s.id === sId)?.role || formData.role;
+                   setFormData({...formData, staffId: sId, role: role});
+                 }} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1">
+                   <option value="">Select Staff...</option>
+                   {staffList.map(s => <option key={s.id} value={s.id}>{s.name} ({s.role})</option>)}
+                 </select>
+               </div>
                <div>
                  <label className="text-xs font-bold text-muted-foreground uppercase">Role</label>
-                 <select value={formData.role} onChange={e => setFormData({...formData, role: e.target.value})} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1">
-                   <option>Store Manager</option><option>Supervisor</option><option>Cashier</option><option>Inventory Manager</option>
-                 </select>
+                 <Input value={formData.role} onChange={e => setFormData({...formData, role: e.target.value})} className="mt-1" placeholder="e.g. Cashier" />
                </div>
                <div><label className="text-xs font-bold text-muted-foreground uppercase">Date</label><Input type="date" value={formData.date} onChange={e => setFormData({ ...formData, date: e.target.value })} className="mt-1" /></div>
                <div className="grid grid-cols-2 gap-4">
