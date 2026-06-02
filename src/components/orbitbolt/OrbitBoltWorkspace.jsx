@@ -251,11 +251,11 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
   };
 
   const workspaceContent = (
-    <div className="fixed inset-0 z-[9999] flex flex-col font-sans text-foreground bg-[hsl(220,20%,7%)] dark:bg-[hsl(220,20%,7%)]">
+    <div className="fixed inset-0 z-[9999] flex flex-col font-sans text-foreground bg-background">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,hsl(221,83%,53%,0.12),transparent)]" />
-      <div className="pointer-events-none absolute inset-0 opacity-[0.35] bg-[linear-gradient(to_right,hsl(220,15%,15%,0.4)_1px,transparent_1px),linear-gradient(to_bottom,hsl(220,15%,15%,0.4)_1px,transparent_1px)] bg-[size:48px_48px]" />
+      <div className="pointer-events-none absolute inset-0 opacity-[0.15] dark:opacity-[0.35] bg-[linear-gradient(to_right,hsl(var(--muted-foreground)/0.2)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--muted-foreground)/0.2)_1px,transparent_1px)] bg-[size:48px_48px]" />
 
-      <div className="relative h-12 border-b border-white/[0.06] bg-[hsl(220,18%,9%)]/95 backdrop-blur-xl flex items-center justify-between px-4 shrink-0 z-[1001]">
+      <div className="relative h-12 border-b border-border bg-card/95 backdrop-blur-xl flex items-center justify-between px-4 shrink-0 z-[1001]">
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="icon" onClick={() => {
             if (isSidebarOpen) {
@@ -263,7 +263,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
             } else {
               sidebarPanelRef.current?.expand();
             }
-          }} className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-white/[0.06] rounded-lg">
+          }} className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 6h16M4 12h16M4 18h7"/></svg>
           </Button>
           <div className="flex items-center gap-2.5">
@@ -282,8 +282,8 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
               <CheckCircle className="w-3.5 h-3.5 mr-1.5" /> Apply to Builder
             </Button>
           )}
-          <div className="w-px h-5 bg-white/[0.08] mx-1 hidden sm:block" />
-          <Button variant="ghost" size="sm" onClick={onClose} className="h-8 text-muted-foreground hover:text-foreground hover:bg-white/[0.06] rounded-lg gap-1.5 text-xs">
+          <div className="w-px h-5 bg-border mx-1 hidden sm:block" />
+          <Button variant="ghost" size="sm" onClick={onClose} className="h-8 text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg gap-1.5 text-xs">
             <X className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Exit</span>
           </Button>
         </div>
@@ -299,17 +299,17 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
           collapsedSize={0}
           onCollapse={() => setIsSidebarOpen(false)}
           onExpand={() => setIsSidebarOpen(true)}
-          className="flex flex-col bg-[hsl(220,18%,8%)] border-r border-white/[0.06] z-20"
+          className="flex flex-col bg-card border-r border-border z-20"
         >
-          <div className="p-3 border-b border-white/[0.06]">
+          <div className="p-3 border-b border-border">
             <Button onClick={startNewSession} className="w-full justify-start h-9 rounded-lg text-xs font-medium gap-2 shadow-sm">
               <MessageSquarePlus className="w-4 h-4 opacity-90" /> New workspace
             </Button>
           </div>
-          <div className="px-3 py-3 border-b border-white/[0.06]">
+          <div className="px-3 py-3 border-b border-border">
             <div className="relative">
               <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
-              <input type="text" placeholder="Search workspaces…" className="w-full h-8 bg-white/[0.04] border border-white/[0.08] rounded-lg pl-8 pr-3 text-xs focus:outline-none focus:ring-1 focus:ring-primary/40 focus:border-primary/30 text-foreground placeholder:text-muted-foreground transition-shadow" />
+              <input type="text" placeholder="Search workspaces…" className="w-full h-8 bg-muted border border-border rounded-lg pl-8 pr-3 text-xs focus:outline-none focus:ring-1 focus:ring-primary/40 focus:border-primary/30 text-foreground placeholder:text-muted-foreground transition-shadow" />
             </div>
           </div>
           <div className="flex-1 overflow-y-auto py-2 scrollbar-thin">
@@ -325,7 +325,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
                     "w-full text-left px-3 py-2.5 rounded-lg text-xs flex items-center gap-2.5 transition-all",
                     activeSession?.id === s.id
                       ? "bg-primary/15 text-primary font-medium ring-1 ring-primary/20 shadow-sm"
-                      : "text-muted-foreground hover:bg-white/[0.05] hover:text-foreground"
+                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                   )}
                 >
                   <MessageSquare className="w-3.5 h-3.5 shrink-0 opacity-80" />
@@ -335,7 +335,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
             </div>
           </div>
         </Panel>
-        <PanelResizeHandle className="w-px bg-white/[0.06] hover:bg-primary/40 transition-colors cursor-col-resize data-[resize-handle-active]:bg-primary/60" />
+        <PanelResizeHandle className="w-px bg-border hover:bg-primary/40 transition-colors cursor-col-resize data-[resize-handle-active]:bg-primary/60" />
 
         <Panel 
           ref={chatPanelRef}
@@ -344,7 +344,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
           maxSize={50} 
           collapsible={true}
           collapsedSize={0}
-          className="flex flex-col bg-[hsl(220,18%,7%)] relative border-r border-white/[0.06] z-10"
+          className="flex flex-col bg-background relative border-r border-border z-10"
         >
           <div className="flex-1 overflow-y-auto px-4 sm:px-5 py-6 space-y-5 scrollbar-thin">
             {activeSession?.messages.map((m, i) => (
@@ -364,7 +364,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
                   "max-w-[88%] text-[13.5px] leading-relaxed",
                   m.role === 'user'
                     ? 'rounded-2xl rounded-tr-md px-4 py-3 bg-primary text-primary-foreground shadow-lg shadow-primary/10'
-                    : 'rounded-2xl rounded-tl-md px-4 py-3 bg-white/[0.04] ring-1 ring-white/[0.08] text-foreground prose prose-sm dark:prose-invert max-w-none prose-p:my-1.5 prose-pre:bg-black/30 prose-pre:border prose-pre:border-white/10 prose-pre:rounded-lg prose-code:text-primary prose-code:before:content-none prose-code:after:content-none'
+                    : 'rounded-2xl rounded-tl-md px-4 py-3 bg-muted ring-1 ring-border text-foreground prose prose-sm dark:prose-invert max-w-none prose-p:my-1.5 prose-pre:bg-card prose-pre:border prose-pre:border-border prose-pre:rounded-lg prose-code:text-primary prose-code:before:content-none prose-code:after:content-none'
                 )}>
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
                 </div>
@@ -375,7 +375,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
                 <div className="shrink-0 w-8 h-8 rounded-lg bg-primary/15 text-primary flex items-center justify-center ring-1 ring-primary/20">
                   <Sparkles className="w-4 h-4" />
                 </div>
-                <div className="flex items-center gap-2.5 px-4 py-3 rounded-2xl rounded-tl-md bg-white/[0.04] ring-1 ring-white/[0.08] text-sm text-muted-foreground">
+                <div className="flex items-center gap-2.5 px-4 py-3 rounded-2xl rounded-tl-md bg-muted ring-1 ring-border text-sm text-muted-foreground">
                   <RefreshCw className="w-4 h-4 animate-spin text-primary" />
                   <span>Architecting your module…</span>
                 </div>
@@ -384,9 +384,9 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
             <div ref={messagesEndRef} className="h-2" />
           </div>
 
-          <div className="p-4 shrink-0 border-t border-white/[0.06] bg-[hsl(220,18%,8%)]/80 backdrop-blur-xl">
+          <div className="p-4 shrink-0 border-t border-border bg-card/80 backdrop-blur-xl">
             <form onSubmit={handleSend} className="relative max-w-2xl mx-auto">
-              <div className="relative rounded-2xl overflow-hidden flex flex-col bg-[hsl(220,16%,11%)] ring-1 ring-white/[0.1] focus-within:ring-2 focus-within:ring-primary/40 transition-all shadow-[0_12px_40px_rgba(0,0,0,0.35)]">
+              <div className="relative rounded-2xl overflow-hidden flex flex-col bg-background ring-1 ring-border focus-within:ring-2 focus-within:ring-primary/40 transition-all shadow-[0_12px_40px_rgba(0,0,0,0.15)]">
                 <textarea
                   value={input}
                   onChange={e => setInput(e.target.value)}
@@ -416,23 +416,23 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
           </div>
         </Panel>
 
-        <PanelResizeHandle className="w-px bg-white/[0.06] hover:bg-primary/40 transition-colors cursor-col-resize data-[resize-handle-active]:bg-primary/60" />
+        <PanelResizeHandle className="w-px bg-border hover:bg-primary/40 transition-colors cursor-col-resize data-[resize-handle-active]:bg-primary/60" />
 
-        <Panel defaultSize={47} className="flex flex-col bg-[hsl(220,16%,6%)] relative p-4 md:p-5">
-          <div className="flex-1 rounded-xl border border-white/[0.08] overflow-hidden bg-[hsl(220,15%,10%)] flex flex-col shadow-2xl shadow-black/40 ring-1 ring-white/[0.05] relative">
+        <Panel defaultSize={47} className="flex flex-col bg-muted/30 relative p-4 md:p-5">
+          <div className="flex-1 rounded-xl border border-border overflow-hidden bg-card flex flex-col shadow-2xl shadow-black/10 ring-1 ring-border relative">
             {previewSchema ? (
               <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="flex-1 flex flex-col h-full"
               >
-                <div className="h-11 bg-[hsl(220,14%,12%)] border-b border-white/[0.06] flex items-center px-4 shrink-0 gap-3">
+                <div className="h-11 bg-muted/50 border-b border-border flex items-center px-4 shrink-0 gap-3">
                   <div className="flex gap-1.5">
                     <div className="w-3 h-3 rounded-full bg-red-500/80" />
                     <div className="w-3 h-3 rounded-full bg-amber-500/80" />
                     <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
                   </div>
-                  <div className="flex-1 max-w-md mx-auto h-7 rounded-md bg-black/25 border border-white/[0.06] flex items-center justify-center px-3">
+                  <div className="flex-1 max-w-md mx-auto h-7 rounded-md bg-background/50 border border-border flex items-center justify-center px-3">
                     <span className="text-[11px] text-muted-foreground truncate font-medium">
                       {previewSchema.module?.name ? `preview · ${previewSchema.module.name}` : 'Live preview'}
                     </span>
@@ -526,7 +526,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
                   </p>
                   <div className="mt-8 flex flex-wrap justify-center gap-2">
                     {['Build a CRM pipeline', 'HR onboarding workflow', 'Inventory dashboard'].map((hint) => (
-                      <span key={hint} className="px-3 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.08] text-xs text-muted-foreground font-medium">
+                      <span key={hint} className="px-3 py-1.5 rounded-lg bg-muted border border-border text-xs text-muted-foreground font-medium">
                         {hint}
                       </span>
                     ))}
