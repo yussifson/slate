@@ -397,14 +397,14 @@ export default function GlobalAIAssistant({ onClose }) {
             break;
           }
           case 'create_module':
-          case 'generate_module': {
-            results.push(`Redirecting to module builder...`);
-            setTimeout(() => window.location.href = `/modules/create`, 1500);
-            break;
-          }
-          default:
-            results.push(`Error: unknown tool ${action.tool}`);
-            break;
+            if (action.action_type === "navigate_to") {
+              toast.success("Opening Builder...");
+              setTimeout(() => window.location.href = `/modules/BOLT`, 1500);
+              return;
+            }
+            default:
+              results.push(`Error: unknown tool ${action.tool}`);
+              break;
         }
       } catch (err) {
         results.push(`Error executing ${action.tool}: ${err.message}`);
@@ -553,8 +553,8 @@ AGENT POWERS (return EXACTLY this JSON format inline to act):
 RULES FOR MULTI-STEP REASONING:
 1. NEVER explain how the user can do something. YOU MUST do it for them.
 2. When asked to CREATE a record, create the record and STOP. DO NOT use navigate_to to show the record.
-3. If asked to create an ENTIRE NEW MODULE, custom feature, or a page that does NOT exist in the ROUTE MAP, you MUST use navigate_to to route the user to "/modules/create" AND use show_toast to tell them: "I can help you build this! Just click 'Generate with AI' on this page."
-4. ONLY use navigate_to for routes that EXACTLY appear in the ROUTE MAP above, plus "/modules/create". Do NOT invent any path not in the list.
+3. If asked to create an ENTIRE NEW MODULE, custom feature, or a page that does NOT exist in the ROUTE MAP, you MUST use navigate_to to route the user to "/modules/BOLT" AND use show_toast to tell them: "I can help you build this! Just click 'Generate with AI' on this page."
+4. ONLY use navigate_to for routes that EXACTLY appear in the ROUTE MAP above, plus "/modules/BOLT". Do NOT invent any path not in the list.
 5. DO NOT output markdown hyperlinks for navigation (e.g. [PageName](url)).
 6. DO NOT wrap <AGENT_ACTION> in markdown code blocks. Output it raw inline.
 7. Once all tasks are complete, summarize what you did in plain language and STOP outputting <AGENT_ACTION> blocks.

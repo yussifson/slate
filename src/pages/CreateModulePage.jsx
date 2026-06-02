@@ -52,13 +52,16 @@ const generateDummyData = (fields) => {
   return records;
 };
 
-export default function CreateModulePage() {
-  const { toast } = useToast();
-  const navigate = useNavigate();
+export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false }) {
   const { id } = useParams();
   const isEditing = !!id;
+  const navigate = useNavigate();
+  const location = useLocation();
   const companyId = useCompanyId();
   const { user } = useAuth();
+  const { toast } = useToast();
+
+  const [isBoltOpen, setIsBoltOpen] = useState(initialBoltOpen || location.pathname === '/modules/BOLT');
   const { impersonatedCompany } = useImpersonation();
   const activeIndustry = sessionStorage.getItem('optalflow_industry_override') || impersonatedCompany?.industry_type || user?.company_industry || 'law';
 
@@ -282,8 +285,7 @@ export default function CreateModulePage() {
                   : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700'
               }`}
             >
-              <Zap className="w-4 h-4" />
-              {isBoltOpen ? 'Close OrbitBolt' : isEditing ? 'Edit with OrbitBolt' : 'Build with OrbitBolt'}
+              {isBoltOpen ? 'Close OrbitBolt' : 'Build with OrbitBolt'}
             </Button>
           </div>
         </div>

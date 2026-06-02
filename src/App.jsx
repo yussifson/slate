@@ -295,7 +295,8 @@ function PlatformRoutes() {
       <Route path="/pickups" element={<GenericModulePage />} />
       <Route path="/orders" element={<GenericModulePage />} />
       
-      {/* Dynamic AI Generated Modules Route */}
+      {/* OrbitBolt & Builder */}
+      <Route path="/modules/BOLT" element={<CreateModulePage isBoltOpen={true} />} />
       <Route path="/modules/create" element={<CreateModulePage />} />
       <Route path="/modules/edit/:id" element={<CreateModulePage />} />
       <Route path="/marketplace" element={<Marketplace />} />

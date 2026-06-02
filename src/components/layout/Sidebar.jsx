@@ -139,8 +139,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   }));
 
   const baseNav = user?.role === "client" ? clientNav : filteredCompanyNav;
-  const appBuilderItem = { label: "Module Builder", icon: "Blocks", path: "/modules/create" };
-  const marketplaceItem = { label: "Marketplace", icon: "ShoppingCart", path: "/marketplace" };
+  const appBuilderItem = { label: "OrbitBolt AI Builder", icon: "Zap", path: "/modules/BOLT" };
+  const marketplaceItem = { label: "Marketplace", icon: "Store", path: "/marketplace" };
   let navItems = isAdmin
     ? [...baseNav, ...dynamicNavItems, appBuilderItem, marketplaceItem, { label: "Firm Setup", icon: "Settings", path: "/firm-setup" }]
     : [...baseNav, ...dynamicNavItems, marketplaceItem];
@@ -210,9 +210,12 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
             <div className="text-2xl mb-1">⚡</div>
             <p className="text-xs font-bold text-indigo-700 mb-1">Orbit Mode Active</p>
             <p className="text-[11px] text-indigo-500 leading-snug mb-2">Use the Module Builder to create your custom pages with AI.</p>
-            <Link to="/modules/create" className="inline-block text-[11px] font-bold px-3 py-1.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors">
-              + New Module
-            </Link>
+            {/* Call to action for OrbitBolt */}
+            <div className="mt-8 px-4 pb-6">
+              <Link to="/modules/BOLT" className="inline-block text-[11px] font-bold px-3 py-1.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors">
+                <Zap className="w-3.5 h-3.5 inline-block mr-1" /> Try OrbitBolt AI
+              </Link>
+            </div>
           </div>
         )}
         {navItems.map((item) => {
