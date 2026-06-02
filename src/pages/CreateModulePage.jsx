@@ -129,7 +129,7 @@ export default function CreateModulePage() {
   }, [id, isEditing]);
 
   // Check for pending OrbitBolt schema on mount
-  useEffect(() => {
+  React.useEffect(() => {
     const pendingSchema = sessionStorage.getItem('orbitbolt_pending_schema');
     if (pendingSchema) {
       try {
