@@ -123,17 +123,17 @@ export default function ReportsDashboard() {
   const { data: invoices = [] } = useQuery({
     queryKey: ["invoices", companyId],
     queryFn: () => base44.entities.Invoice.filter({ company_id: companyId }),
-    enabled: !!companyId,
+    enabled: !!companyId && !isRetail,
   });
   const { data: staff = [] } = useQuery({
     queryKey: ["staff", companyId],
     queryFn: () => base44.entities.StaffRecord.filter({ company_id: companyId }),
-    enabled: !!companyId,
+    enabled: !!companyId && !isRetail,
   });
   const { data: clients = [] } = useQuery({
     queryKey: ["clients", companyId],
     queryFn: () => base44.entities.Client.filter({ company_id: companyId }),
-    enabled: !!companyId,
+    enabled: !!companyId && !isRetail,
   });
   const { data: cases = [] } = useQuery({
     queryKey: ["cases", companyId],
@@ -141,29 +141,111 @@ export default function ReportsDashboard() {
     enabled: !!companyId && !isRetail && !isSchool,
   });
 
+  // Retail specific data using useIndustryRecords directly if we can, but since this is a global component,
+  // we'll fetch them using React Query to match the hook's structure (or simulate it).
+  // The cache key for useIndustryRecords is ['industry_records', companyId, industry, recordType]
+  const industry = user?.company_industry || 'retail';
+  const { data: retailOrders = [] } = useQuery({
+    queryKey: ['industry_records', companyId, industry, 'order'],
+    queryFn: async () => {
+      // Data is usually loaded via the useIndustryRecords hook which hits idb first, but for reports we can fetch from Supabase
+      const { data } = await base44.supabase.from('industry_records')
+        .select('*')
+        .eq('company_id', companyId)
+        .eq('industry', industry)
+        .eq('record_type', 'order')
+        .neq('status', 'deleted');
+      return data || [];
+    },
+    enabled: !!companyId && isRetail
+  });
+
+  const { data: retailCustomers = [] } = useQuery({
+    queryKey: ['industry_records', companyId, industry, 'customer'],
+    queryFn: async () => {
+      const { data } = await base44.supabase.from('industry_records')
+        .select('*')
+        .eq('company_id', companyId)
+        .eq('industry', industry)
+        .eq('record_type', 'customer')
+        .neq('status', 'deleted');
+      return data || [];
+    },
+    enabled: !!companyId && isRetail
+  });
+
+  const { data: retailProducts = [] } = useQuery({
+    queryKey: ['industry_records', companyId, industry, 'product'],
+    queryFn: async () => {
+      const { data } = await base44.supabase.from('industry_records')
+        .select('*')
+        .eq('company_id', companyId)
+        .eq('industry', industry)
+        .eq('record_type', 'product')
+        .neq('status', 'deleted');
+      return data || [];
+    },
+    enabled: !!companyId && isRetail
+  });
+
   const revenueData = useMemo(() => {
     return Array.from({ length: months }, (_, i) => {
       const monthStart = startOfMonth(subMonths(new Date(), months - 1 - i));
       const monthEnd = endOfMonth(monthStart);
-      const revenue = invoices
-        .filter(
-          (inv) =>
-            inv.status === "paid" &&
-            inv.paid_date &&
-            isWithinInterval(new Date(inv.paid_date), { start: monthStart, end: monthEnd })
-        )
-        .reduce((sum, inv) => sum + (inv.total_amount || 0), 0);
-      const collected = invoices.filter((inv) =>
-        isWithinInterval(new Date(inv.created_date || inv.paid_date), { start: monthStart, end: monthEnd })
-      ).length;
+      
+      let revenue = 0;
+      if (isRetail) {
+        revenue = retailOrders
+          .filter((ord) => {
+             const date = new Date(ord.data?.date || ord.created_at);
+             return isWithinInterval(date, { start: monthStart, end: monthEnd }) && (ord.data?.status === 'Completed' || ord.data?.status === 'Delivered' || !ord.data?.status);
+          })
+          .reduce((sum, ord) => sum + (parseFloat(ord.data?.total) || 0), 0);
+      } else {
+        revenue = invoices
+          .filter(
+            (inv) =>
+              inv.status === "paid" &&
+              inv.paid_date &&
+              isWithinInterval(new Date(inv.paid_date), { start: monthStart, end: monthEnd })
+          )
+          .reduce((sum, inv) => sum + (inv.total_amount || 0), 0);
+      }
+
       return {
         month: format(monthStart, "MMM yyyy"),
         revenue,
         target: Math.round(revenue * 1.15) || 0,
-        invoices: collected,
+        invoices: 0 // Placeholder logic for retail
       };
     });
-  }, [invoices, months]);
+  }, [invoices, retailOrders, months, isRetail]);
+
+  const metrics = useMemo(() => {
+    let totalRev = 0;
+    let totalItems = 0;
+    let totalStaffCount = 0;
+    let avgDeal = 0;
+
+    if (isRetail) {
+       totalRev = retailOrders.reduce((sum, o) => sum + (parseFloat(o.data?.total) || 0), 0);
+       totalItems = retailCustomers.length;
+       totalStaffCount = retailOrders.length;
+       avgDeal = retailOrders.length ? totalRev / retailOrders.length : 0;
+    } else {
+       totalRev = invoices.filter((i) => i.status === "paid").reduce((sum, i) => sum + parseFloat(i.total_amount || 0), 0);
+       totalItems = clients.length;
+       totalStaffCount = staff.length;
+       avgDeal = invoices.filter(i => i.status === "paid").length ? totalRev / invoices.filter(i => i.status === "paid").length : 0;
+    }
+
+    return {
+      totalRevenue: totalRev,
+      totalClients: totalItems,
+      totalStaff: totalStaffCount,
+      avgDealSize: avgDeal,
+    };
+  }, [invoices, clients, staff, retailOrders, retailCustomers, isRetail]);
 
   const totalRevenue = revenueData.reduce((s, d) => s + d.revenue, 0);
   const currentMonthRevenue = revenueData[revenueData.length - 1]?.revenue || 0;
@@ -219,8 +301,7 @@ export default function ReportsDashboard() {
   }, [staff]);
 
   const overdueCount = invoices.filter((i) => i.status === "overdue").length;
-  const paidCount = invoices.filter((i) => i.status === "paid").length;
-  const collectionRate = invoices.length ? Math.round((paidCount / invoices.length) * 100) : 0;
+  const collectionRate = invoices.length ? Math.round((invoices.filter((i) => i.status === "paid").length / invoices.length) * 100) : 0;
 
   return (
     <div className="space-y-8 pb-12 max-w-[1600px]">
@@ -272,9 +353,9 @@ export default function ReportsDashboard() {
         />
         <ReportMetricCard
           title={isRetail ? t("active_customers", "Active customers") : isSchool ? t("active_students", "Active students") : t("active_clients", "Active clients")}
-          value={clients.filter((c) => c.status === "active").length}
+          value={isRetail ? retailCustomers.length : clients.filter((c) => c.status === "active").length}
           icon={Users}
-          sub={`${clients.length} ${t("total_records", "total records")}`}
+          sub={`${isRetail ? retailCustomers.length : clients.length} ${t("total_records", "total records")}`}
         />
         <ReportMetricCard
           title={t("collection_rate", "Collection rate")}
