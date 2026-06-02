@@ -251,10 +251,12 @@ export const INDUSTRIES = {
       { value: 'finance', label: 'Finance Officer' },
     ],
     nav: [
-      { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
+      { label: 'Overview', path: '/retail-dashboard', icon: 'LayoutDashboard' },
       { label: 'Point of Sale', path: '/pos', icon: 'ShoppingCart' },
       { label: 'Inventory', path: '/inventory', icon: 'Package' },
+      { label: 'Purchase Orders', path: '/purchase-orders', icon: 'FileText' },
       { label: 'Products', path: '/products', icon: 'Tag' },
+      { label: 'Promotions', path: '/promotions', icon: 'Percent' },
       { label: 'Orders', path: '/orders', icon: 'ClipboardList' },
       { label: 'Customers', path: '/clients', icon: 'Users' },
       { label: 'Suppliers', path: '/suppliers', icon: 'Truck' },

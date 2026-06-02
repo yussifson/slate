@@ -121,6 +121,9 @@ import InsuranceAgentPerformance from './pages/insurance/AgentPerformance';
 import InsurancePremiums from './pages/insurance/Premiums';
 
 // Retail Pages
+import RetailDashboard from './pages/retail/RetailDashboard';
+import RetailPurchaseOrders from './pages/retail/PurchaseOrders';
+import RetailPromotions from './pages/retail/Promotions';
 import RetailInventory from './pages/retail/Inventory';
 import RetailPOS from './pages/retail/POS';
 import RetailSales from './pages/retail/Sales';
@@ -266,6 +269,9 @@ function PlatformRoutes() {
       <Route path="/premiums" element={<InsurancePremiums />} />
 
       {/* Retail Suite */}
+      <Route path="/retail-dashboard" element={<RetailDashboard />} />
+      <Route path="/purchase-orders" element={<RetailPurchaseOrders />} />
+      <Route path="/promotions" element={<RetailPromotions />} />
       <Route path="/pos" element={<RetailPOS />} />
       <Route path="/inventory" element={<RetailInventory />} />
       <Route path="/sales" element={<RetailSales />} />

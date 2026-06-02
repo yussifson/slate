@@ -480,11 +480,14 @@ EXACT VERIFIED ROUTE MAP ΓÇö ALWAYS USE THESE EXACT PATHS FOR navigate_to. NE
 /agent-performance ΓåÆ Agent Performance
 
 # Retail Suite
-/pos ΓåÆ Point of Sale
-/inventory ΓåÆ Inventory
-/orders ΓåÆ Orders/Sales
-/suppliers ΓåÆ Suppliers
-/retail-customers ΓåÆ Customers
+/retail-dashboard → Retail Overview
+/pos → Point of Sale
+/inventory → Inventory
+/purchase-orders → Purchase Orders
+/promotions → Promotions
+/orders → Orders/Sales
+/suppliers → Suppliers
+/retail-customers → Customers
 
 # Logistics Suite
 /shipments ΓåÆ Shipments
@@ -744,9 +747,14 @@ RULES FOR MULTI-STEP REASONING:
         <div className="w-52 shrink-0 border-r border-border bg-muted/20 flex flex-col">
           <div className="px-3 py-2.5 border-b border-border flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{t("chat_history", "Chat History")}</span>
-            <button onClick={startNewChat} className="p-1 hover:bg-muted rounded text-muted-foreground hover:text-blue-600 transition-colors" title="New chat">
-              <Plus className="w-3.5 h-3.5" />
-            </button>
+            <div className="flex items-center gap-1">
+              <button onClick={startNewChat} className="p-1 hover:bg-muted rounded text-muted-foreground hover:text-blue-600 transition-colors" title="New chat">
+                <Plus className="w-3.5 h-3.5" />
+              </button>
+              <button onClick={() => setShowHistory(false)} className="p-1 hover:bg-muted rounded text-muted-foreground transition-colors" title="Close history">
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
           <div className="flex-1 overflow-y-auto p-2 space-y-1">
             {sessions.map(s => {
@@ -785,7 +793,7 @@ RULES FOR MULTI-STEP REASONING:
         {/* Header */}
         <div className="flex items-center gap-2 px-3 py-2.5 border-b border-border bg-gradient-to-r from-blue-500/8 to-indigo-500/5 shrink-0">
           <button
-            onClick={() => setShowHistory(!showHistory)}
+            onClick={() => setShowHistory(prev => !prev)}
             className={`p-1.5 rounded-md transition-colors shrink-0 ${showHistory ? 'bg-blue-100 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
             title="Chat history"
           >

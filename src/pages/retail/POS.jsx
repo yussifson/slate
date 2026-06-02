@@ -15,6 +15,7 @@ export default function POS() {
   // Supabase Real-time Sync Hooks
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('product');
   const { data: customerRecords = [] } = useIndustryRecords('customer');
+  const { data: promotions = [] } = useIndustryRecords('promotion');
   const mutateRecord = useMutateIndustryRecord();
 
   // Map database records
@@ -34,6 +35,8 @@ export default function POS() {
   const [search, setSearch] = useState('');
   const [cart, setCart] = useState([]);
   const [selectedCustomerId, setSelectedCustomerId] = useState('');
+  const [promoCode, setPromoCode] = useState('');
+  const [appliedPromo, setAppliedPromo] = useState(null);
 
   const addToCart = (product) => {
     if (product.stock <= 0) {
@@ -73,6 +76,22 @@ export default function POS() {
     setCart(prev => prev.filter(item => item.sku !== sku));
   };
 
+  const applyPromoCode = () => {
+    if (!promoCode.trim()) return;
+    const promo = promotions.find(p => p.data?.code === promoCode.toUpperCase() && p.data?.isActive);
+    if (promo) {
+      setAppliedPromo(promo.data);
+      toast.success(t("promo_applied", "Promo code applied!"));
+    } else {
+      toast.error(t("promo_invalid", "Invalid or inactive promo code"));
+    }
+  };
+
+  const removePromo = () => {
+    setAppliedPromo(null);
+    setPromoCode('');
+  };
+
   const handleCheckout = (paymentMethod) => {
     if (cart.length === 0) return toast.error("Your cart is empty");
 
@@ -85,6 +104,8 @@ export default function POS() {
       date: new Date().toISOString().split('T')[0],
       items: cart.map(i => ({ sku: i.sku, name: i.name, qty: i.qty, price: i.price })),
       subtotal,
+      discount,
+      promoCode: appliedPromo?.code,
       tax,
       total: parseFloat(saleTotal.toFixed(2)),
       paymentMethod,
@@ -118,6 +139,8 @@ export default function POS() {
         });
         setCart([]);
         setSelectedCustomerId('');
+        setAppliedPromo(null);
+        setPromoCode('');
       },
       onError: (err) => {
         toast.error('Failed to complete checkout: ' + err.message);
@@ -126,8 +149,19 @@ export default function POS() {
   };
 
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-  const tax = subtotal * 0.08; // 8% tax
-  const total = subtotal + tax;
+  
+  let discount = 0;
+  if (appliedPromo) {
+    if (appliedPromo.discountType === 'percentage') {
+      discount = subtotal * (appliedPromo.discountValue / 100);
+    } else {
+      discount = Math.min(appliedPromo.discountValue, subtotal);
+    }
+  }
+
+  const afterDiscount = subtotal - discount;
+  const tax = afterDiscount * 0.08; // 8% tax
+  const total = afterDiscount + tax;
 
   const filtered = products.filter(p => 
     p.name?.toLowerCase().includes(search.toLowerCase()) || 
@@ -232,6 +266,28 @@ export default function POS() {
                <span className="text-muted-foreground font-medium">{t("subtotal", "Subtotal")}</span>
                <span className="font-bold text-card-foreground">${subtotal.toFixed(2)}</span>
             </div>
+            
+            {/* Promo Input / Display */}
+            {appliedPromo ? (
+              <div className="flex justify-between items-center text-sm bg-emerald-50 p-2 rounded-md border border-emerald-100">
+                <div className="flex items-center gap-2">
+                  <span className="text-emerald-700 font-bold text-xs uppercase bg-emerald-200 px-1.5 py-0.5 rounded">{appliedPromo.code}</span>
+                  <button onClick={removePromo} className="text-emerald-600 hover:text-emerald-800"><X className="w-3 h-3" /></button>
+                </div>
+                <span className="font-bold text-emerald-600">-${discount.toFixed(2)}</span>
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <Input 
+                  placeholder={t("promo_code", "Promo code")}
+                  value={promoCode}
+                  onChange={e => setPromoCode(e.target.value.toUpperCase())}
+                  className="h-8 text-xs uppercase"
+                />
+                <Button variant="secondary" size="sm" onClick={applyPromoCode} className="h-8 text-xs">{t("apply", "Apply")}</Button>
+              </div>
+            )}
+
             <div className="flex justify-between items-center text-sm">
                <span className="text-muted-foreground font-medium">{t("tax_8", "Tax (8%)")}</span>
                <span className="font-bold text-card-foreground">${tax.toFixed(2)}</span>
