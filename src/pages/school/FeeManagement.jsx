@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { usePayment } from '@/hooks/integrations/usePayment';
-import { useNotification } from '@/hooks/integrations/useNotification';
+import { useNotifications } from '@/hooks/integrations/useNotifications';
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
 import { useCompanyId } from "@/hooks/useCompanyId";
@@ -18,7 +18,7 @@ export default function FeeManagement() {
   const { t } = useTranslation();
   const companyId = useCompanyId();
   const { processPayment, isProcessing } = usePayment();
-  const { sendNotification } = useNotification();
+  const { notifyTeam } = useNotifications();
   const queryClient = useQueryClient();
   const { data: dbRecords = [], isLoading: isDbLoading } = useQuery({ 
     queryKey: ["clients", companyId], 
@@ -102,7 +102,9 @@ export default function FeeManagement() {
           onSuccess: () => {
             toast.success(`Recorded payment of $${paymentAmount} for ${selectedStudent.student}`);
             if (paymentAmount >= 500) {
-              sendNotification({
+              notifyTeam({
+                companyId,
+                provider: 'slack',
                 channel: 'general',
                 message: `💰 *Major Fee Collection:* $${paymentAmount} received from ${selectedStudent.student}.`
               });
