@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import PageRenderer from '@/components/pages/PageRenderer';
 import PageHeader from '@/components/shared/PageHeader';
+import OrbitBoltPagesWorkspace from '@/components/orbitbolt/OrbitBoltPagesWorkspace';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -53,6 +54,12 @@ export default function CustomPageViewer() {
   const [schema, setSchema] = useState(MOCK_PAGES_DB[pageId] || null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedBlockId, setSelectedBlockId] = useState(null);
+  const [isOrbitBoltOpen, setIsOrbitBoltOpen] = useState(false);
+
+  const handleApplySchema = (newSchema) => {
+    setSchema(newSchema);
+    setIsEditMode(true);
+  };
 
   if (!schema) {
     return (
@@ -93,6 +100,9 @@ export default function CustomPageViewer() {
         <div className="flex justify-between items-center">
           <PageHeader title={schema.pageTitle} subtitle={`Dynamic Route: /pages/${pageId}`} />
           <div className="flex gap-2">
+            <Button onClick={() => setIsOrbitBoltOpen(true)} className="gap-2 bg-indigo-600 hover:bg-indigo-700 text-white shadow-[0_0_15px_rgba(79,70,229,0.4)]">
+              <Sparkles className="w-4 h-4" /> OrbitBolt AI
+            </Button>
             {!isEditMode ? (
               <Button onClick={() => setIsEditMode(true)} variant="outline" className="gap-2">
                 <Edit3 className="w-4 h-4" /> Edit Layout
@@ -187,6 +197,13 @@ export default function CustomPageViewer() {
             </div>
           )}
         </div>
+      )}
+
+      {isOrbitBoltOpen && (
+        <OrbitBoltPagesWorkspace 
+          onClose={() => setIsOrbitBoltOpen(false)}
+          onApplySchema={handleApplySchema}
+        />
       )}
     </div>
   );

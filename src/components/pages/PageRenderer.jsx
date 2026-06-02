@@ -1,11 +1,17 @@
 import React from 'react';
 import MetricCardBlock from './blocks/MetricCardBlock';
 import DataTableBlock from './blocks/DataTableBlock';
+import FormBlock from './blocks/FormBlock';
+import KanbanBlock from './blocks/KanbanBlock';
+import ChartBlock from './blocks/ChartBlock';
 import { cn } from '@/lib/utils';
 
 const COMPONENT_MAP = {
   MetricCard: MetricCardBlock,
-  DataTable: DataTableBlock
+  DataTable: DataTableBlock,
+  FormBlock: FormBlock,
+  KanbanBlock: KanbanBlock,
+  ChartBlock: ChartBlock
 };
 
 export default function PageRenderer({ schema, onBlockClick, selectedBlockId }) {
