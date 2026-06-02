@@ -23,6 +23,7 @@ export default function Marketplace() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
   const [confirmUninstall, setConfirmUninstall] = useState(null);
+  const [installSuccessModal, setInstallSuccessModal] = useState(null);
 
   const categories = ["All", "CRM", "Finance", "HR", "Operations", "Healthcare", "Custom"];
 
@@ -123,6 +124,7 @@ export default function Marketplace() {
       }
 
       setInstalledMap(prev => ({ ...prev, [mod.id]: newModuleId }));
+      setInstallSuccessModal(mod);
       toast({
         title: "🎉 Module Installed!",
         description: `${mod.name} is now in your workspace sidebar.`,
@@ -345,6 +347,26 @@ export default function Marketplace() {
               {uninstallingId ? 'Uninstalling...' : 'Uninstall Module'}
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Installation Success Dialog */}
+      <Dialog open={!!installSuccessModal} onOpenChange={(open) => !open && setInstallSuccessModal(null)}>
+        <DialogContent className="sm:max-w-[425px] flex flex-col items-center justify-center text-center p-8">
+          <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mb-4 border-4 border-emerald-50">
+            <CheckCircle2 className="w-8 h-8 text-emerald-600" />
+          </div>
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-slate-900 dark:text-white text-center">Installation Successful!</DialogTitle>
+          </DialogHeader>
+          <div className="text-slate-500 mt-2 text-[15px] leading-relaxed">
+            <strong>{installSuccessModal?.name}</strong> has been successfully installed and added to your Optalflow sidebar. You can now start using it immediately.
+          </div>
+          <div className="mt-8 w-full">
+            <Button className="w-full h-11 text-base font-bold bg-blue-600 hover:bg-blue-700" onClick={() => setInstallSuccessModal(null)}>
+              Awesome, thanks!
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
