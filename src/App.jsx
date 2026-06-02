@@ -10,6 +10,7 @@ import { VideoProvider } from '@/lib/VideoContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import React, { useEffect } from 'react';
 import { PowerSyncContext } from '@powersync/react';
+import { HelmetProvider } from 'react-helmet-async';
 import { powerSync, initPowerSync } from './api/PowerSyncConnector';
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -337,6 +338,7 @@ function App() {
 
   return (
     <PowerSyncContext.Provider value={powerSync}>
+    <HelmetProvider>
     <AuthProvider>
       <ThemeProvider>
         <ImpersonationProvider>
@@ -416,6 +418,7 @@ function App() {
         </ImpersonationProvider>
       </ThemeProvider>
     </AuthProvider>
+    </HelmetProvider>
     </PowerSyncContext.Provider>
   );
 }

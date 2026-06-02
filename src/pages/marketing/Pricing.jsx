@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { Check, Info, Server, Shield, Database, Headphones } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -90,6 +91,10 @@ export default function Pricing() {
 
   return (
     <div className="overflow-x-hidden bg-slate-50 min-h-screen">
+      <Helmet>
+        <title>Pricing | Optalflow AI Unified Workspace</title>
+        <meta name="description" content="Transparent pricing for Optalflow. Scale your business with our unified workspace platform. Choose the plan that fits your team." />
+      </Helmet>
       {/* Pricing Header */}
       <section className="pt-10 pb-12 md:pt-14 md:pb-16 bg-slate-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

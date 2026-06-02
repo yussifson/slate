@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Target, Shield, Users, Globe, Clock, Headphones } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -32,6 +33,10 @@ export default function About() {
 
   return (
     <div className="overflow-x-hidden bg-white min-h-screen">
+      <Helmet>
+        <title>About Us | Optalflow AI Unified Workspace</title>
+        <meta name="description" content="Learn more about Optalflow. We are a team of engineers building the ultimate AI Unified Workspace for modern businesses." />
+      </Helmet>
       {/* Hero Section */}
       <section className="relative py-10 md:py-14 lg:py-16">
         <div className="absolute inset-0 bg-slate-50 pointer-events-none" />

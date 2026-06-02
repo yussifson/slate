@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Briefcase, Users, CreditCard, Mail, Shield, Clock, Check, ArrowRight, Globe, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 

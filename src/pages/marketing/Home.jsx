@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
@@ -114,7 +115,7 @@ const features = [
 const testimonials = [
   {
     quote:
-      'Optalflow completely transformed our practice. We moved from paper files to a digital pipeline and reduced document turnaround by 60%.',
+      'AI UNIFIED WORKSPACE completely transformed our practice. We moved from paper files to a digital pipeline and reduced document turnaround by 60%.',
     author: 'Adama Mensah',
     role: 'Managing Partner',
     firm: 'Mensah & Partners',
@@ -519,15 +520,6 @@ function SuitesSection() {
 /*  Component                                                         */
 /* ------------------------------------------------------------------ */
 export default function Home() {
-  const { t } = useTranslation();
-  return (
-    <div className="overflow-x-hidden">
-      {/* ============================================================ */}
-      {/*  HERO                                                        */}
-      {/* ============================================================ */}
-      <section className="relative py-10 md:py-14 lg:py-16">
-        {/* Soft light background */}
-        <div className="absolute inset-0 bg-slate-50 pointer-events-none" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Badge */}
@@ -605,7 +597,7 @@ export default function Home() {
                 <p className="text-lg text-slate-600 mb-8 leading-relaxed font-medium">
                   {t(
                     "orbit_isn_t_just_a_chatbot_it_",
-                    "Orbit isn't just a chatbot. It's an intelligent agent embedded directly into your workflow. \n                  Ask it to analyze data, schedule appointments, or draft emails — it executes actions automatically across the entire Optalflow suite."
+                    "Orbit isn't just a chatbot. It's an intelligent agent embedded directly into your workflow. \n                  Ask it to analyze data, schedule appointments, or draft emails — it executes actions automatically across the entire AI UNIFIED WORKSPACE suite."
                   )}
                 </p>
                 <ul className="space-y-4 mb-10 text-slate-700 font-medium">
@@ -648,7 +640,7 @@ export default function Home() {
               {t("workflow", "Workflow")}
             </span>
             <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-slate-900 mb-6">
-              {t("how_optalflow_works", "How Optalflow works")}
+              {t("how_optalflow_works", "How AI UNIFIED WORKSPACE works")}
             </h2>
             <p className="text-lg text-slate-600 leading-relaxed font-medium">
               {t(
