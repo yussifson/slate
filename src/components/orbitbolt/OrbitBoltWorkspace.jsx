@@ -12,9 +12,52 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import clsx from 'clsx';
 import { useNavigate } from 'react-router-dom';
+import DynamicTable from "@/components/ui/DynamicTable";
+import DynamicGrid from "@/components/ui/DynamicGrid";
+import SecureSandbox from "@/components/orbitbolt/SecureSandbox";
+
+// Lazy-loaded view components for new module types
+const DynamicDashboard = React.lazy(() => import("@/components/ui/DynamicDashboard"));
+const DynamicKanbanView = React.lazy(() => import("@/components/ui/DynamicKanbanView"));
+const DynamicCalendarView = React.lazy(() => import("@/components/ui/DynamicCalendarView"));
+const DynamicTimelineView = React.lazy(() => import("@/components/ui/DynamicTimelineView"));
+const DynamicDirectoryView = React.lazy(() => import("@/components/ui/DynamicDirectoryView"));
+const DynamicGalleryView = React.lazy(() => import("@/components/ui/DynamicGalleryView"));
+const DynamicSpreadsheetView = React.lazy(() => import("@/components/ui/DynamicSpreadsheetView"));
+const DynamicReportView = React.lazy(() => import("@/components/ui/DynamicReportView"));
+const DynamicPipelineView = React.lazy(() => import("@/components/ui/DynamicPipelineView"));
+const DynamicApprovalView = React.lazy(() => import("@/components/ui/DynamicApprovalView"));
+const DynamicFormWizard = React.lazy(() => import("@/components/ui/DynamicFormWizard"));
+const DynamicInventoryView = React.lazy(() => import("@/components/ui/DynamicInventoryView"));
+
+const generateDummyData = (fields) => {
+  if (!fields) return [];
+  const records = [];
+  for (let i = 0; i < 5; i++) {
+    const data = {};
+    fields.forEach(f => {
+      const name = f.name.trim().replace(/ /g, '_').toLowerCase();
+      if (!name) return;
+      if (f.field_type === 'text') data[name] = `Sample ${f.name} ${i + 1}`;
+      else if (f.field_type === 'number') data[name] = Math.floor(Math.random() * 1000);
+      else if (f.field_type === 'date') data[name] = new Date(Date.now() - Math.random() * 10000000000).toISOString().split('T')[0];
+      else if (f.field_type === 'boolean' || f.field_type === 'checkbox') data[name] = Math.random() > 0.5;
+      else if (f.field_type === 'select') {
+        const opts = f.options ? f.options.split(',').map(o => o.trim()).filter(Boolean) : [];
+        data[name] = opts.length > 0 ? opts[Math.floor(Math.random() * opts.length)] : 'Option 1';
+      } else {
+        data[name] = `Data ${i + 1}`;
+      }
+    });
+    records.push({ id: `dummy-${i}`, data, created_at: new Date().toISOString() });
+  }
+  return records;
+};
 
 const SYSTEM_PROMPT = `You are OrbitBolt, an AI System Architect for Optalflow. 
 You can converse naturally with the user, answer questions, and help them refine their ideas.
+
+CRITICAL: If the user is just saying "Hi", asking a question, or chatting normally WITHOUT asking you to build, create, or update a module/app, you MUST NOT output a <SCHEMA> tag. Just reply conversationally.
 
 When the user asks you to build, create, or update a module/app, you MUST output a valid JSON schema wrapped EXACTLY in <SCHEMA>...</SCHEMA> tags.
 Do NOT output the JSON outside of these tags. You can explain your changes outside the tags.
@@ -25,15 +68,12 @@ The JSON inside <SCHEMA> must follow this exact structure:
     "name": "Module Name",
     "description": "Brief description",
     "icon": "Layers",
-    "layout": "table" | "kanban" | "calendar" | "gallery" | "approval_workflow" | "form_builder" | "custom_sandbox",
-    "theme": "primary" | "emerald" | "amber" | "rose" | "indigo",
-    "module_type": "data_module" | "kanban" | "calendar" | "gallery" | "approval_workflow" | "form_builder" | "custom_sandbox"
+    "layout": "table" | "grid",
+    "theme": "primary" | "blue" | "emerald" | "amber" | "rose" | "purple",
+    "module_type": "data_module" | "dashboard" | "kanban" | "document_manager" | "calendar_view" | "form_builder" | "directory" | "timeline" | "gallery" | "spreadsheet" | "report" | "inventory" | "crm_pipeline" | "approval_workflow" | "custom_sandbox"
   },
   "fields": [
     { "name": "Field Name", "field_type": "text" | "number" | "date" | "select" | "checkbox" | "file", "is_required": true|false, "options": "comma, separated, options" }
-  ],
-  "components": [
-    { "id": "1", "type": "header", "text": "App Title" }
   ]
 }
 
@@ -375,61 +415,76 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
                   <div className="w-10"></div>
                 </div>
                 
-                {/* Preview Content Skeleton */}
-                <div className="flex-1 overflow-y-auto p-8 bg-card">
-                  <div className="max-w-4xl mx-auto">
-                    <div className="flex items-center gap-4 border-b border-border/60 pb-5 mb-6">
-                      <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shadow-sm">
-                        <Layers className="w-6 h-6 text-primary" />
-                      </div>
-                      <div>
-                        <h2 className="text-2xl font-semibold text-foreground tracking-tight">{previewSchema.module?.name || previewSchema.title}</h2>
-                        <p className="text-muted-foreground text-sm mt-1">{previewSchema.module?.description || "Dynamic module preview"}</p>
-                      </div>
-                    </div>
+                {/* Real Live Preview Content */}
+                <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-card">
+                  <div className="max-w-6xl mx-auto h-full">
                     
-                    <div className="grid gap-4">
-                      {previewSchema.components?.map(c => (
-                        <div key={c.id} className="p-5 border border-border rounded-xl bg-background shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
-                          {c.type === 'kanban' && (
-                            <div className="flex gap-4 mt-2">
-                              {c.columns.map(col => (
-                                <div key={col} className="flex-1 min-h-[120px] bg-muted/30 border border-border rounded-lg p-3">
-                                  <div className="text-xs font-semibold text-foreground mb-3">{col}</div>
-                                  <div className="h-12 rounded bg-card border border-border mb-2 shadow-sm" />
-                                  <div className="h-12 rounded bg-card border border-border opacity-50 shadow-sm" />
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                          
-                          {c.type === 'header' && (
-                            <h3 className="font-semibold text-foreground">{c.text}</h3>
-                          )}
-                          
-                          {c.type === 'custom_sandbox' && (
-                            <div className="h-32 border border-dashed border-primary/30 bg-primary/5 rounded-xl flex flex-col items-center justify-center text-primary/70 mt-2">
-                              <Terminal className="w-6 h-6 mb-2 opacity-70" />
-                              <span className="text-sm font-medium">Custom Interactive Component</span>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                      
-                      {previewSchema.fields && previewSchema.fields.length > 0 && (
-                        <div className="mt-4 p-5 border border-border rounded-xl bg-background shadow-sm">
-                           <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4 flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary" /> Generated Data Schema</h3>
-                           <div className="space-y-2">
-                             {previewSchema.fields.map(f => (
-                               <div key={f.name} className="flex items-center justify-between py-2.5 border-b border-border/50 last:border-0">
-                                 <span className="text-sm font-medium text-foreground">{f.name}</span>
-                                 <span className="text-[10px] px-2 py-1 rounded-md bg-muted text-muted-foreground font-mono font-medium border border-border/50 shadow-sm">{f.field_type}</span>
+                    <React.Suspense fallback={<div className="p-8 text-center text-muted-foreground animate-pulse">Loading preview...</div>}>
+                      {(() => {
+                        const fields = previewSchema.fields || [];
+                        const dummyData = generateDummyData(fields);
+                        const fieldDefs = fields.map((f, i) => ({ ...f, name: f.name.trim().replace(/ /g, '_').toLowerCase(), order_index: i }));
+                        const moduleType = previewSchema.module?.module_type || 'data_module';
+                        const theme = previewSchema.module?.theme || 'primary';
+                        const layout = previewSchema.module?.layout || 'table';
+                        
+                        return (
+                           <div className="animate-in fade-in zoom-in-95 duration-300">
+                             <div className="mb-6 flex items-center gap-3 border-b border-border/60 pb-5">
+                               <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shadow-sm">
+                                 <Layers className="w-6 h-6 text-primary" />
                                </div>
-                             ))}
+                               <div>
+                                 <h2 className="text-2xl font-semibold text-foreground tracking-tight">{previewSchema.module?.name || previewSchema.title || "Module"}</h2>
+                                 <p className="text-muted-foreground text-sm mt-1">{previewSchema.module?.description || "Dynamic module preview"}</p>
+                               </div>
+                             </div>
+                             
+                             <div className="min-h-[500px]">
+                                {(() => {
+                                  switch (moduleType) {
+                                    case 'dashboard':
+                                      return <DynamicDashboard data={dummyData} fieldDefinitions={fieldDefs} />;
+                                    case 'kanban':
+                                      return <DynamicKanbanView data={dummyData} fieldDefinitions={fieldDefs} />;
+                                    case 'calendar_view':
+                                      return <DynamicCalendarView data={dummyData} fieldDefinitions={fieldDefs} />;
+                                    case 'document_manager':
+                                      return <DynamicGrid data={dummyData} fieldDefinitions={fieldDefs} theme={theme} isDocumentManager={true} />;
+                                    case 'directory':
+                                      return <DynamicDirectoryView data={dummyData} fieldDefinitions={fieldDefs} />;
+                                    case 'timeline':
+                                      return <DynamicTimelineView data={dummyData} fieldDefinitions={fieldDefs} />;
+                                    case 'gallery':
+                                      return <DynamicGalleryView data={dummyData} fieldDefinitions={fieldDefs} />;
+                                    case 'spreadsheet':
+                                      return <DynamicSpreadsheetView data={dummyData} fieldDefinitions={fieldDefs} />;
+                                    case 'report':
+                                      return <DynamicReportView data={dummyData} fieldDefinitions={fieldDefs} />;
+                                    case 'inventory':
+                                      return <DynamicInventoryView data={dummyData} fieldDefinitions={fieldDefs} />;
+                                    case 'crm_pipeline':
+                                      return <DynamicPipelineView data={dummyData} fieldDefinitions={fieldDefs} />;
+                                    case 'approval_workflow':
+                                      return <DynamicApprovalView data={dummyData} fieldDefinitions={fieldDefs} />;
+                                    case 'form_builder':
+                                      return <DynamicFormWizard data={dummyData} fieldDefinitions={fieldDefs} />;
+                                    case 'custom_sandbox':
+                                      return <SecureSandbox code={previewSchema.config?.custom_code || ""} initialData={{ records: dummyData, fieldDefs }} />;
+                                    case 'data_module':
+                                    default:
+                                      return layout === 'table' ? (
+                                        <DynamicTable data={dummyData} fieldDefinitions={fieldDefs} />
+                                      ) : (
+                                        <DynamicGrid data={dummyData} fieldDefinitions={fieldDefs} theme={theme} />
+                                      );
+                                  }
+                                })()}
+                             </div>
                            </div>
-                        </div>
-                      )}
-                    </div>
+                        );
+                      })()}
+                    </React.Suspense>
                   </div>
                 </div>
               </motion.div>
