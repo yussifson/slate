@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { Truck, Search, Plus, Phone, Mail, FileText, Star, Trash2, MoreVertical, Eye, Edit, FileSignature } from 'lucide-react';
+import { Truck, Search, Plus, Phone, Mail, Star, Trash2, MoreVertical, Eye, Edit, FileSignature } from 'lucide-react';
+import { ViewModeToggle, RetailStatCard, SupplierGridCard } from '@/components/retail/RetailViewKit';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
@@ -29,6 +30,7 @@ export default function Suppliers() {
   }));
 
   const [search, setSearch] = useState('');
+  const [viewMode, setViewMode] = useState('list');
   const [showModal, setShowModal] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState(null);
   const [selectedRecord, setSelectedRecord] = useState(null);
@@ -136,6 +138,16 @@ export default function Suppliers() {
           <Plus className="w-4 h-4" /> {t("add_supplier", "Add Supplier")}
         </Button>
       </div>
+
+      <div className="flex items-center justify-end">
+        <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <RetailStatCard label={t("total_suppliers", "Total Suppliers")} value={suppliers.length} icon={Truck} />
+        <RetailStatCard label={t("active_suppliers", "Active Suppliers")} value={suppliers.filter(s => s.status === 'Active').length} icon={Star} />
+      </div>
+
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         <div className="p-4 border-b border-border bg-muted/50">
           <div className="relative max-w-md">
@@ -154,6 +166,18 @@ export default function Suppliers() {
                  "configure_your_first_retail_ve",
                  "Configure your first retail vendor using the \"Add Supplier\" button."
                )}</p>
+            </div>
+          ) : viewMode === 'grid' ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 p-6">
+              {filtered.map(sup => (
+                <SupplierGridCard
+                  key={sup.id}
+                  supplier={sup}
+                  onView={() => openDetails(sup)}
+                  onEdit={() => openEdit(sup)}
+                  onDelete={() => setDeleteTargetId(sup.id)}
+                />
+              ))}
             </div>
           ) : (
             <table className="w-full text-sm">

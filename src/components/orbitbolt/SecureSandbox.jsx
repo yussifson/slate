@@ -68,9 +68,9 @@ export default function SecureSandbox({ code, initialData = {} }) {
   }, []);
 
   return (
-    <div className="w-full h-full min-h-[400px] rounded-lg border bg-white overflow-hidden relative">
+    <div className="w-full h-full min-h-[400px] rounded-xl border border-border bg-muted/30 overflow-hidden relative ring-1 ring-border/50 shadow-inner">
       {error && (
-        <div className="absolute top-0 left-0 w-full p-2 bg-red-100 text-red-700 text-xs font-mono z-10 break-all">
+        <div className="absolute top-0 left-0 right-0 p-3 bg-destructive/10 text-destructive text-xs font-mono z-10 break-all border-b border-destructive/20">
           Sandbox Error: {error}
         </div>
       )}
@@ -79,7 +79,7 @@ export default function SecureSandbox({ code, initialData = {} }) {
         title="orbit-secure-sandbox"
         srcDoc={srcDoc}
         sandbox="allow-scripts" // Notice we DO NOT allow-same-origin. This ensures complete isolation.
-        className="w-full h-full border-none"
+        className="w-full h-full min-h-[400px] border-none bg-background"
       />
     </div>
   );

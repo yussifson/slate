@@ -3,67 +3,111 @@ import React, { useState, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
-import { AreaChart, Area, BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
-import { TrendingUp, Clock, Trophy, DollarSign, Users, Activity, ShoppingCart, Target } from "lucide-react";
+import {
+  AreaChart,
+  Area,
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+} from "recharts";
+import {
+  TrendingUp,
+  DollarSign,
+  Users,
+  ShoppingCart,
+  Target,
+  Package,
+  FileText,
+  BarChart2,
+  Percent,
+  Clock,
+} from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatCurrency } from "@/lib/constants";
-import PageHeader from "@/components/shared/PageHeader";
 import { startOfMonth, subMonths, format, isWithinInterval, endOfMonth } from "date-fns";
+import { RETAIL_BRAND } from "@/components/retail/RetailViewKit";
 
-const CHART_COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#8b5cf6", "#ef4444", "#06b6d4"];
-const GRADIENTS = [
-  "from-blue-600 to-cyan-500",
-  "from-emerald-500 to-teal-400",
-  "from-amber-500 to-orange-400",
-  "from-purple-600 to-pink-500"
-];
+// Use professional enterprise colors instead of potentially playful brand colors
+const CHART_COLORS = ["#1e3a8a", "#2563eb", "#3b82f6", "#60a5fa", "#0f172a", "#334155"];
+const THEME_BLUE = "text-blue-700 dark:text-blue-400";
+const BG_BLUE_LIGHT = "bg-blue-50 dark:bg-blue-900/20";
 
-function PremiumMetricCard({ title, value, icon: Icon, sub, trend, gradientIdx }) {
-  const gradient = GRADIENTS[gradientIdx % GRADIENTS.length];
+function ReportMetricCard({ title, value, sub, icon: Icon, trend }) {
   return (
-    <div className="relative overflow-hidden bg-card/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group">
-      <div className={`absolute -right-10 -top-10 w-40 h-40 bg-gradient-to-br ${gradient} rounded-full blur-3xl opacity-20 group-hover:opacity-30 transition-opacity`} />
-      <div className="flex items-center justify-between mb-4 relative z-10">
-        <p className="text-sm text-muted-foreground font-semibold uppercase tracking-wider">{title}</p>
-        <div className={`w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br ${gradient} text-white shadow-lg`}>
-          <Icon className="w-5 h-5" />
+    <div className="bg-card border border-border rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{title}</p>
+          <p className="text-3xl font-bold text-slate-900 dark:text-white mt-2 tracking-tight">{value}</p>
+          <div className="flex items-center gap-2 mt-2 flex-wrap">
+            {trend !== undefined && (
+              <span
+                className={`text-xs font-semibold px-2 py-0.5 rounded-md ${
+                  trend >= 0 ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400" : "bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                }`}
+              >
+                {trend > 0 ? "+" : ""}
+                {trend}% vs prior period
+              </span>
+            )}
+            {sub && <span className="text-xs text-slate-500">{sub}</span>}
+          </div>
         </div>
-      </div>
-      <div className="relative z-10">
-        <p className="text-4xl font-extrabold text-foreground mb-1 tracking-tight">{value}</p>
-        <div className="flex items-center gap-2">
-          {trend !== undefined && (
-            <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${trend >= 0 ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500'}`}>
-              {trend > 0 ? '+' : ''}{trend}%
-            </span>
-          )}
-          {sub && <span className="text-xs text-muted-foreground font-medium">{sub}</span>}
+        <div className={`w-12 h-12 rounded-xl ${BG_BLUE_LIGHT} flex items-center justify-center shrink-0`}>
+          <Icon className={`w-6 h-6 ${THEME_BLUE}`} />
         </div>
       </div>
     </div>
   );
 }
 
-function CustomTooltip({ active, payload, label, prefix = '', suffix = '' }) {
-  if (active && payload && payload.length) {
-    return (
-      <div className="bg-card/90 backdrop-blur-xl border border-border shadow-2xl rounded-xl p-4 min-w-[150px]">
-        <p className="font-bold text-foreground mb-2">{label}</p>
-        {payload.map((entry, index) => (
-          <div key={`item-${index}`} className="flex items-center justify-between gap-4 text-sm font-medium mb-1 last:mb-0">
-            <span className="flex items-center gap-2 text-muted-foreground">
-              <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: entry.color }} />
-              {entry.name}
-            </span>
-            <span className="text-foreground font-bold">
-              {prefix}{entry.value.toLocaleString()}{suffix}
-            </span>
+function ReportSection({ title, description, icon: Icon, children, className = "" }) {
+  return (
+    <section className={`bg-card border border-border rounded-xl shadow-sm overflow-hidden ${className}`}>
+      <div className="px-6 py-5 border-b border-border bg-slate-50/50 dark:bg-slate-900/50">
+        <div className="flex items-center gap-3">
+          {Icon && <Icon className={`w-5 h-5 ${THEME_BLUE} shrink-0`} />}
+          <div>
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">{title}</h2>
+            {description && <p className="text-sm text-slate-500 mt-0.5">{description}</p>}
           </div>
-        ))}
+        </div>
       </div>
-    );
-  }
-  return null;
+      <div className="p-6">{children}</div>
+    </section>
+  );
+}
+
+function BlueTooltip({ active, payload, label, prefix = "", suffix = "" }) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="bg-card border border-border shadow-lg rounded-lg p-3 text-sm min-w-[140px]">
+      <p className="font-semibold text-primary mb-2">{label}</p>
+      {payload.map((entry, i) => (
+        <div key={i} className="flex justify-between gap-4 text-muted-foreground">
+          <span className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full" style={{ background: entry.color }} />
+            {entry.name}
+          </span>
+          <span className="font-semibold text-foreground">
+            {prefix}
+            {Number(entry.value).toLocaleString()}
+            {suffix}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 export default function ReportsDashboard() {
@@ -71,186 +115,409 @@ export default function ReportsDashboard() {
   const { user } = useAuth();
   const companyId = user?.company_id;
   const isRetail = user?.company_industry === "retail";
-  const [period, setPeriod] = useState("6");
-
-  // Fetch relevant data based on industry
-  const { data: invoices = [] } = useQuery({ queryKey: ["invoices", companyId], queryFn: () => base44.entities.Invoice.filter({ company_id: companyId }), enabled: !!companyId });
-  const { data: staff = [] } = useQuery({ queryKey: ["staff", companyId], queryFn: () => base44.entities.StaffRecord.filter({ company_id: companyId }), enabled: !!companyId });
-  const { data: retailOrders = [] } = useQuery({ queryKey: ["retail-orders", companyId], queryFn: async () => {
-    // Mock retail orders for dashboard if real endpoint missing
-    return Array.from({length: 120}).map((_, i) => ({
-       total: Math.floor(Math.random() * 500) + 50,
-       status: 'Completed',
-       date: subMonths(new Date(), Math.floor(Math.random() * 6)).toISOString()
-    }));
-  }, enabled: !!companyId && isRetail });
-
+  const [period, setPeriod] = useState("12");
   const currency = user?.company_currency || "USD";
-  const months = parseInt(period);
+  const months = parseInt(period, 10);
+
+  const { data: invoices = [] } = useQuery({
+    queryKey: ["invoices", companyId],
+    queryFn: () => base44.entities.Invoice.filter({ company_id: companyId }),
+    enabled: !!companyId,
+  });
+  const { data: staff = [] } = useQuery({
+    queryKey: ["staff", companyId],
+    queryFn: () => base44.entities.StaffRecord.filter({ company_id: companyId }),
+    enabled: !!companyId,
+  });
+  const { data: clients = [] } = useQuery({
+    queryKey: ["clients", companyId],
+    queryFn: () => base44.entities.Client.filter({ company_id: companyId }),
+    enabled: !!companyId,
+  });
+  const { data: cases = [] } = useQuery({
+    queryKey: ["cases", companyId],
+    queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId }),
+    enabled: !!companyId && !isRetail,
+  });
 
   const revenueData = useMemo(() => {
     return Array.from({ length: months }, (_, i) => {
       const monthStart = startOfMonth(subMonths(new Date(), months - 1 - i));
       const monthEnd = endOfMonth(monthStart);
-      
-      let revenue = 0;
-      if (isRetail) {
-        revenue = retailOrders.filter(o => o.status === 'Completed' && isWithinInterval(new Date(o.date), { start: monthStart, end: monthEnd }))
-                              .reduce((sum, o) => sum + (o.total || 0), 0);
-      } else {
-        revenue = invoices.filter(inv => inv.status === "paid" && inv.paid_date && isWithinInterval(new Date(inv.paid_date), { start: monthStart, end: monthEnd }))
-                          .reduce((sum, inv) => sum + (inv.total_amount || 0), 0);
-      }
-      return { month: format(monthStart, "MMM yy"), revenue };
+      const revenue = invoices
+        .filter(
+          (inv) =>
+            inv.status === "paid" &&
+            inv.paid_date &&
+            isWithinInterval(new Date(inv.paid_date), { start: monthStart, end: monthEnd })
+        )
+        .reduce((sum, inv) => sum + (inv.total_amount || 0), 0);
+      const collected = invoices.filter((inv) =>
+        isWithinInterval(new Date(inv.created_date || inv.paid_date), { start: monthStart, end: monthEnd })
+      ).length;
+      return {
+        month: format(monthStart, "MMM yyyy"),
+        revenue,
+        target: Math.round(revenue * 1.15) || 0,
+        invoices: collected,
+      };
     });
-  }, [invoices, retailOrders, months, isRetail]);
+  }, [invoices, months]);
 
-  const totalRevenue = revenueData.reduce((sum, data) => sum + data.revenue, 0);
+  const totalRevenue = revenueData.reduce((s, d) => s + d.revenue, 0);
   const currentMonthRevenue = revenueData[revenueData.length - 1]?.revenue || 0;
   const previousMonthRevenue = revenueData[revenueData.length - 2]?.revenue || 0;
-  const revenueTrend = previousMonthRevenue ? Math.round(((currentMonthRevenue - previousMonthRevenue) / previousMonthRevenue) * 100) : 0;
+  const revenueTrend = previousMonthRevenue
+    ? Math.round(((currentMonthRevenue - previousMonthRevenue) / previousMonthRevenue) * 100)
+    : 0;
+
+  const statusBreakdown = useMemo(() => {
+    const map = {};
+    invoices.forEach((inv) => {
+      const s = inv.status || "unknown";
+      map[s] = (map[s] || 0) + 1;
+    });
+    return Object.entries(map).map(([name, value]) => ({
+      name: name.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
+      value,
+    }));
+  }, [invoices]);
+
+  const pipelineStages = useMemo(() => {
+    if (isRetail) return [];
+    const stages = {};
+    cases.forEach((c) => {
+      const s = c.stage || c.status || "unspecified";
+      stages[s] = (stages[s] || 0) + 1;
+    });
+    return Object.entries(stages).map(([name, count]) => ({
+      name: name.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
+      count,
+    }));
+  }, [cases, isRetail]);
+
+  const topClients = useMemo(() => {
+    return [...clients]
+      .sort((a, b) => (b.total_billed || 0) - (a.total_billed || 0))
+      .slice(0, 8)
+      .map((c) => ({
+        name: c.name || "Unknown",
+        billed: c.total_billed || 0,
+        cases: c.total_cases || 0,
+        status: c.status || "active",
+      }));
+  }, [clients]);
+
+  const staffSummary = useMemo(() => {
+    return staff.slice(0, 10).map((s) => ({
+      name: s.full_name || s.user_email,
+      role: (s.role || "staff").replace(/_/g, " "),
+      department: s.department || "—",
+      status: s.status || "active",
+    }));
+  }, [staff]);
+
+  const overdueCount = invoices.filter((i) => i.status === "overdue").length;
+  const paidCount = invoices.filter((i) => i.status === "paid").length;
+  const collectionRate = invoices.length ? Math.round((paidCount / invoices.length) * 100) : 0;
 
   return (
-    <div className="space-y-8 pb-10">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-foreground bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            {t("enterprise_analytics", "Enterprise Analytics")}
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1">{t("real_time_insights_and_perform", "Real-time insights and performance metrics")}</p>
+    <div className="space-y-8 pb-12 max-w-[1600px]">
+      <header className="border-b border-border pb-6">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+          <div>
+            <p className={`text-xs font-bold ${THEME_BLUE} uppercase tracking-widest mb-2`}>
+              {t("business_intelligence", "Business Intelligence")}
+            </p>
+            <h1 className={`text-4xl md:text-5xl font-extrabold ${THEME_BLUE} tracking-tight`}>
+              {t("enterprise_analytics", "Enterprise Analytics")}
+            </h1>
+            <p className="text-base text-slate-500 mt-3 max-w-2xl">
+              {t(
+                "comprehensive_performance_report",
+                "Comprehensive performance report with revenue, operations, and workforce metrics for executive review."
+              )}
+            </p>
+          </div>
+          <div className="flex items-center gap-3 bg-card border border-border rounded-lg px-3 py-2 shadow-sm">
+            <Clock className="w-4 h-4 text-primary shrink-0" />
+            <Select value={period} onValueChange={setPeriod}>
+              <SelectTrigger className="w-40 border-0 shadow-none focus:ring-0 font-medium text-foreground">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="3">{t("last_3_months", "Last 3 months")}</SelectItem>
+                <SelectItem value="6">{t("last_6_months", "Last 6 months")}</SelectItem>
+                <SelectItem value="12">{t("last_12_months", "Last 12 months")}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-        <div className="flex items-center gap-3 bg-card border border-border p-1.5 rounded-xl shadow-sm">
-          <Select value={period} onValueChange={setPeriod}>
-            <SelectTrigger className="w-36 h-9 text-xs font-semibold border-none focus:ring-0 bg-transparent">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent className="rounded-xl">
-              <SelectItem value="3">{t("last_3_months", "Last 3 months")}</SelectItem>
-              <SelectItem value="6">{t("last_6_months", "Last 6 months")}</SelectItem>
-              <SelectItem value="12">{t("last_12_months", "Last 12 months")}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
+      </header>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <PremiumMetricCard 
-          title={t("total_revenue", "Total Revenue")} 
-          value={formatCurrency(currentMonthRevenue, currency)} 
-          icon={DollarSign} 
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <ReportMetricCard
+          title={t("revenue_mtd", "Revenue (current month)")}
+          value={formatCurrency(currentMonthRevenue, currency)}
+          icon={DollarSign}
           trend={revenueTrend}
-          sub={t("this_month", "this month")}
-          gradientIdx={0} 
+          sub={t("from_paid_invoices", "From paid invoices")}
         />
-        <PremiumMetricCard 
-          title={isRetail ? t("total_orders", "Total Orders") : t("active_projects", "Active Projects")} 
-          value={isRetail ? retailOrders.length : 124} 
-          icon={ShoppingCart} 
-          trend={12}
-          sub={t("vs_last_period", "vs last period")}
-          gradientIdx={1} 
+        <ReportMetricCard
+          title={t("revenue_period", "Revenue (selected period)")}
+          value={formatCurrency(totalRevenue, currency)}
+          icon={TrendingUp}
+          sub={`${months} ${t("months", "months")}`}
         />
-        <PremiumMetricCard 
-          title={t("active_staff", "Active Staff")} 
-          value={staff.length || 42} 
-          icon={Users} 
-          trend={5}
-          sub={t("across_departments", "across departments")}
-          gradientIdx={2} 
+        <ReportMetricCard
+          title={isRetail ? t("active_customers", "Active customers") : t("active_clients", "Active clients")}
+          value={clients.filter((c) => c.status === "active").length}
+          icon={Users}
+          sub={`${clients.length} ${t("total_records", "total records")}`}
         />
-        <PremiumMetricCard 
-          title={t("performance_score", "Performance Score")} 
-          value="94%" 
-          icon={Target} 
-          trend={2}
-          sub={t("overall_efficiency", "overall efficiency")}
-          gradientIdx={3} 
+        <ReportMetricCard
+          title={t("collection_rate", "Collection rate")}
+          value={`${collectionRate}%`}
+          icon={Percent}
+          sub={`${overdueCount} ${t("overdue", "overdue")}`}
         />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-card/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6 shadow-xl relative overflow-hidden group">
-          <div className="absolute -left-32 -bottom-32 w-64 h-64 bg-blue-500 rounded-full blur-3xl opacity-10 group-hover:opacity-20 transition-opacity" />
-          <h3 className="text-lg font-bold mb-6 flex items-center gap-2 relative z-10">
-            <Activity className="w-5 h-5 text-blue-500" /> {t("revenue_growth", "Revenue Growth")}
-          </h3>
-          <div className="h-[300px] w-full relative z-10">
+        <ReportSection
+          className="lg:col-span-2"
+          title={t("revenue_trend", "Revenue trend")}
+          description={t("paid_invoice_revenue_by_month", "Paid invoice revenue by month")}
+          icon={BarChart2}
+        >
+          <div className="h-[450px] w-full mt-4">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={revenueData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+              <AreaChart data={revenueData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
                 <defs>
-                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                  <linearGradient id="reportRevenue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={CHART_COLORS[0]} stopOpacity={0.25} />
+                    <stop offset="95%" stopColor={CHART_COLORS[0]} stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" opacity={0.5} />
-                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} dy={10} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} tickFormatter={(v) => `$${v >= 1000 ? v/1000+'k' : v}`} dx={-10} />
-                <Tooltip content={<CustomTooltip prefix="$" />} cursor={{ stroke: 'hsl(var(--border))', strokeWidth: 1, strokeDasharray: '4 4' }} />
-                <Area type="monotone" dataKey="revenue" name="Revenue" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" activeDot={{ r: 6, strokeWidth: 0, fill: '#3b82f6' }} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-border" />
+                <XAxis dataKey="month" tick={{ fontSize: 11 }} className="text-muted-foreground" />
+                <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => (v >= 1000 ? `${v / 1000}k` : v)} />
+                <Tooltip content={<BlueTooltip prefix={currency === "GHS" ? "₵" : "$"} />} />
+                <Area
+                  type="monotone"
+                  dataKey="revenue"
+                  name="Revenue"
+                  stroke={CHART_COLORS[0]}
+                  strokeWidth={2.5}
+                  fill="url(#reportRevenue)"
+                />
+                <Line type="monotone" dataKey="target" name="Target" stroke={CHART_COLORS[2]} strokeDasharray="4 4" dot={false} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
-        </div>
+        </ReportSection>
 
-        <div className="bg-card/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6 shadow-xl relative overflow-hidden group">
-           <div className="absolute -right-20 -bottom-20 w-48 h-48 bg-purple-500 rounded-full blur-3xl opacity-10 group-hover:opacity-20 transition-opacity" />
-           <h3 className="text-lg font-bold mb-6 flex items-center gap-2 relative z-10">
-            <Trophy className="w-5 h-5 text-purple-500" /> {isRetail ? t("sales_by_category", "Sales by Category") : t("resource_allocation", "Resource Allocation")}
-          </h3>
-          <div className="h-[250px] w-full relative z-10">
+        <ReportSection
+          title={t("invoice_status", "Invoice status")}
+          description={t("distribution_by_status", "Distribution by payment status")}
+          icon={FileText}
+        >
+          <div className="h-[350px] mt-4">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie 
-                  data={[
-                    { name: 'Electronics', value: 400 },
-                    { name: 'Apparel', value: 300 },
-                    { name: 'Home Goods', value: 300 },
-                    { name: 'Beauty', value: 200 }
-                  ]} 
-                  cx="50%" cy="50%" 
-                  innerRadius={60} 
-                  outerRadius={85} 
-                  paddingAngle={5} 
+                <Pie
+                  data={statusBreakdown.length ? statusBreakdown : [{ name: "No data", value: 1 }]}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={55}
+                  outerRadius={85}
+                  paddingAngle={3}
                   dataKey="value"
-                  stroke="none"
                 >
-                  {[0, 1, 2, 3].map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                  {(statusBreakdown.length ? statusBreakdown : [{ name: "No data", value: 1 }]).map((_, i) => (
+                    <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip content={<CustomTooltip />} />
+                <Tooltip content={<BlueTooltip />} />
+                <Legend wrapperStyle={{ fontSize: 11 }} />
               </PieChart>
             </ResponsiveContainer>
           </div>
-          <div className="grid grid-cols-2 gap-3 mt-4 relative z-10">
-            {['Electronics', 'Apparel', 'Home Goods', 'Beauty'].map((cat, i) => (
-              <div key={cat} className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
-                <div className="w-2.5 h-2.5 rounded-full shadow-sm" style={{ backgroundColor: CHART_COLORS[i] }} />
-                {cat}
-              </div>
-            ))}
-          </div>
-        </div>
+        </ReportSection>
       </div>
-      
-      <div className="bg-card/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6 shadow-xl relative overflow-hidden group">
-        <h3 className="text-lg font-bold mb-6 flex items-center gap-2 relative z-10">
-          <TrendingUp className="w-5 h-5 text-emerald-500" /> {t("performance_metrics", "Performance Metrics")}
-        </h3>
-        <div className="h-[300px] w-full relative z-10">
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <ReportSection
+          title={t("actual_vs_target", "Actual vs target revenue")}
+          description={t("monthly_performance_against_goal", "Monthly performance against goal")}
+          icon={Target}
+        >
+          <div className="h-[400px] mt-4">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={revenueData.map(d => ({ ...d, target: d.revenue * 1.2 }))} margin={{ top: 10, right: 10, left: 0, bottom: 0 }} barSize={32}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" opacity={0.5} />
-                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} dy={10} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} tickFormatter={(v) => `$${v >= 1000 ? v/1000+'k' : v}`} dx={-10} />
-                <Tooltip content={<CustomTooltip prefix="$" />} cursor={{ fill: 'hsl(var(--muted))', opacity: 0.4 }} />
-                <Bar dataKey="revenue" name="Actual" fill="#10b981" radius={[6, 6, 0, 0]} />
-                <Bar dataKey="target" name="Target" fill="#e2e8f0" radius={[6, 6, 0, 0]} fillOpacity={0.5} className="dark:fill-slate-800" />
+              <BarChart data={revenueData} barGap={4} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-border" />
+                <XAxis dataKey="month" tick={{ fontSize: 10 }} interval={months > 6 ? 1 : 0} />
+                <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => (v >= 1000 ? `${v / 1000}k` : v)} />
+                <Tooltip content={<BlueTooltip prefix="$" />} />
+                <Legend />
+                <Bar dataKey="revenue" name="Actual" fill={CHART_COLORS[0]} radius={[4, 4, 0, 0]} />
+                <Bar dataKey="target" name="Target" fill={CHART_COLORS[3]} radius={[4, 4, 0, 0]} opacity={0.85} />
               </BarChart>
             </ResponsiveContainer>
-        </div>
+          </div>
+        </ReportSection>
+
+        <ReportSection
+          title={t("billing_activity", "Billing activity")}
+          description={t("invoices_created_per_month", "Invoices created per month")}
+          icon={ShoppingCart}
+        >
+          <div className="h-[400px] mt-4">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={revenueData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-border" />
+                <XAxis dataKey="month" tick={{ fontSize: 10 }} />
+                <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
+                <Tooltip content={<BlueTooltip />} />
+                <Line type="monotone" dataKey="invoices" name="Invoices" stroke={CHART_COLORS[0]} strokeWidth={2} dot={{ r: 3 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </ReportSection>
       </div>
+
+      {!isRetail && pipelineStages.length > 0 && (
+        <ReportSection
+          title={t("pipeline_by_stage", "Pipeline by stage")}
+          description={t("active_matters_by_workflow_stage", "Active matters by workflow stage")}
+          icon={Package}
+        >
+          <div className="h-[280px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={pipelineStages} layout="vertical" margin={{ left: 20 }}>
+                <CartesianGrid strokeDasharray="3 3" horizontal={false} className="stroke-border" />
+                <XAxis type="number" tick={{ fontSize: 11 }} />
+                <YAxis type="category" dataKey="name" width={100} tick={{ fontSize: 11 }} />
+                <Tooltip content={<BlueTooltip />} />
+                <Bar dataKey="count" name="Count" fill={CHART_COLORS[0]} radius={[0, 4, 4, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </ReportSection>
+      )}
+
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <ReportSection
+          title={t("top_clients_by_billing", "Top clients by billing")}
+          description={t("highest_value_relationships", "Highest value client relationships")}
+          icon={Users}
+        >
+          <div className="overflow-x-auto -mx-2">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border text-left">
+                  <th className={`py-4 px-3 text-xs font-bold ${THEME_BLUE} uppercase`}>Client</th>
+                  <th className={`py-4 px-3 text-xs font-bold ${THEME_BLUE} uppercase text-right`}>Billed</th>
+                  <th className={`py-4 px-3 text-xs font-bold ${THEME_BLUE} uppercase text-center`}>Cases</th>
+                  <th className={`py-4 px-3 text-xs font-bold ${THEME_BLUE} uppercase`}>Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {topClients.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className="py-8 text-center text-muted-foreground">
+                      {t("no_client_data", "No client billing data yet")}
+                    </td>
+                  </tr>
+                ) : (
+                  topClients.map((row) => (
+                    <tr key={row.name} className="hover:bg-muted/40">
+                      <td className="py-3 px-2 font-medium text-foreground">{row.name}</td>
+                      <td className="py-3 px-2 text-right font-semibold text-primary">
+                        {formatCurrency(row.billed, currency)}
+                      </td>
+                      <td className="py-3 px-2 text-center">{row.cases}</td>
+                      <td className="py-3 px-2 capitalize text-muted-foreground">{row.status}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </ReportSection>
+
+        <ReportSection
+          title={t("workforce_overview", "Workforce overview")}
+          description={t("staff_directory_snapshot", "Staff directory snapshot")}
+          icon={Users}
+        >
+          <div className="overflow-x-auto -mx-2">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border text-left">
+                  <th className={`py-4 px-3 text-xs font-bold ${THEME_BLUE} uppercase`}>Name</th>
+                  <th className={`py-4 px-3 text-xs font-bold ${THEME_BLUE} uppercase`}>Role</th>
+                  <th className={`py-4 px-3 text-xs font-bold ${THEME_BLUE} uppercase`}>Department</th>
+                  <th className={`py-4 px-3 text-xs font-bold ${THEME_BLUE} uppercase`}>Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {staffSummary.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className="py-8 text-center text-muted-foreground">
+                      {t("no_staff_records", "No staff records")}
+                    </td>
+                  </tr>
+                ) : (
+                  staffSummary.map((row) => (
+                    <tr key={row.name} className="hover:bg-muted/40">
+                      <td className="py-3 px-2 font-medium text-foreground">{row.name}</td>
+                      <td className="py-3 px-2 capitalize text-muted-foreground">{row.role}</td>
+                      <td className="py-3 px-2 text-muted-foreground">{row.department}</td>
+                      <td className="py-3 px-2">
+                        <span className="text-xs font-semibold text-primary capitalize">{row.status}</span>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </ReportSection>
+      </div>
+
+      <ReportSection
+        title={t("executive_summary", "Executive summary")}
+        description={t("key_figures_for_selected_period", "Key figures for the selected period")}
+        icon={FileText}
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
+          <div className="p-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
+            <p className={`text-xs font-bold ${THEME_BLUE} uppercase`}>{t("total_invoices", "Total invoices")}</p>
+            <p className="text-3xl font-bold text-slate-900 dark:text-white mt-2">{invoices.length}</p>
+          </div>
+          <div className="p-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
+            <p className={`text-xs font-bold ${THEME_BLUE} uppercase`}>{t("paid_invoices", "Paid invoices")}</p>
+            <p className="text-3xl font-bold text-slate-900 dark:text-white mt-2">{paidCount}</p>
+          </div>
+          <div className="p-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
+            <p className={`text-xs font-bold ${THEME_BLUE} uppercase`}>{t("team_members", "Team members")}</p>
+            <p className="text-3xl font-bold text-slate-900 dark:text-white mt-2">{staff.length}</p>
+          </div>
+          <div className="p-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
+            <p className={`text-xs font-bold ${THEME_BLUE} uppercase`}>{t("avg_monthly_revenue", "Avg monthly revenue")}</p>
+            <p className="text-3xl font-bold text-slate-900 dark:text-white mt-2">
+              {formatCurrency(months ? Math.round(totalRevenue / months) : 0, currency)}
+            </p>
+          </div>
+        </div>
+        <p className="text-xs text-muted-foreground mt-6 border-t border-border pt-4">
+          {t(
+            "report_footer_note",
+            "Figures are generated from live workspace data. Export detailed ledgers from Billing or Data Export for audit trails."
+          )}
+        </p>
+      </ReportSection>
     </div>
   );
 }

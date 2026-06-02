@@ -15,7 +15,8 @@ const logos = {
   'whatsapp.svg': 'https://cdn.simpleicons.org/whatsapp/25D366',
   'zoom.svg': 'https://cdn.simpleicons.org/zoom/0B5CFF',
   'quickbooks.svg': 'https://cdn.simpleicons.org/quickbooks/2CA01C',
-  'docusign.svg': 'https://cdn.simpleicons.org/docusign/000000'
+  'docusign.svg': 'https://cdn.simpleicons.org/docusign/000000',
+  'mailchimp.svg': 'https://cdn.simpleicons.org/mailchimp/241C15'
 };
 
 const download = (url, dest) => {

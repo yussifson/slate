@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from "react-i18next";
 import { Star, Search, Plus, Edit, Trash2, Award, Check } from 'lucide-react';
+import { ViewModeToggle, RetailStatCard, LoyaltyGridCard } from '@/components/retail/RetailViewKit';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
@@ -29,6 +30,7 @@ export default function Loyalty() {
   }));
 
   const [search, setSearch] = useState('');
+  const [viewMode, setViewMode] = useState('list');
   const [showModal, setShowModal] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState(null);
   const [editingId, setEditingId] = useState(null);
@@ -117,15 +119,13 @@ export default function Loyalty() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-950/20 flex items-center justify-center text-blue-600"><Star className="w-5 h-5" /></div>
-          <div><p className="text-2xl font-bold text-card-foreground">{members.length}</p><p className="text-xs text-muted-foreground">Total Members</p></div>
-        </div>
-        <div className="bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-950/20 flex items-center justify-center text-purple-600"><Award className="w-5 h-5" /></div>
-          <div><p className="text-2xl font-bold text-card-foreground">{members.filter(m => m.tier === 'Gold').length}</p><p className="text-xs text-muted-foreground">Gold Tier Members</p></div>
-        </div>
+      <div className="flex items-center justify-end">
+        <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <RetailStatCard label="Total Members" value={members.length} icon={Star} />
+        <RetailStatCard label="Gold Tier Members" value={members.filter(m => m.tier === 'Gold').length} icon={Award} />
       </div>
 
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
@@ -140,6 +140,17 @@ export default function Loyalty() {
             <div className="py-12 text-center text-muted-foreground">
                <Star className="w-12 h-12 mx-auto mb-3 opacity-30" />
                <p className="font-semibold">No loyalty members yet.</p>
+            </div>
+          ) : viewMode === 'grid' ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 p-6">
+              {filtered.map(m => (
+                <LoyaltyGridCard
+                  key={m.id}
+                  member={m}
+                  onEdit={() => openEdit(m)}
+                  onDelete={() => setDeleteTargetId(m.id)}
+                />
+              ))}
             </div>
           ) : (
             <table className="w-full text-sm">

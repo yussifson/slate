@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from "react-i18next";
-import { Plus, Search, Trash2, Edit2, Tag, Percent } from 'lucide-react';
+import { Plus, Search, Trash2, Tag, Percent } from 'lucide-react';
+import { ViewModeToggle, RetailStatCard, PromotionGridCard } from '@/components/retail/RetailViewKit';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,8 +9,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogD
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { format } from "date-fns";
-
 export default function Promotions() {
   const { t } = useTranslation();
   const { data: promotions = [], isLoading } = useIndustryRecords('promotion');
@@ -17,6 +16,7 @@ export default function Promotions() {
   const deleteRecord = useDeleteIndustryRecord();
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [viewMode, setViewMode] = useState("grid");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   
   const [editId, setEditId] = useState(null);
@@ -94,84 +94,93 @@ export default function Promotions() {
     );
   }
 
-  return (
-    <div className="flex-1 p-6 overflow-y-auto bg-slate-50/50">
-      <div className="max-w-5xl mx-auto space-y-6">
-        
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{t("promotions", "Promotions & Discounts")}</h1>
-            <p className="text-sm text-slate-500 mt-1">{t("promo_desc", "Manage discount codes for point-of-sale.")}</p>
-          </div>
-          <Button onClick={openNewDialog} className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm">
-            <Plus className="w-4 h-4 mr-2" /> {t("new_promo", "New Promo")}
-          </Button>
-        </div>
+  const activeCount = filteredPromos.filter((p) => p.data?.isActive).length;
 
-        {/* Search */}
-        <div className="flex items-center gap-2">
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground tracking-tight">{t("promotions", "Promotions & Discounts")}</h1>
+          <p className="text-sm text-muted-foreground mt-1">{t("promo_desc", "Manage discount codes for point-of-sale.")}</p>
+        </div>
+        <Button onClick={openNewDialog} className="gap-2">
+          <Plus className="w-4 h-4" /> {t("new_promo", "New Promo")}
+        </Button>
+      </div>
+
+      <div className="flex items-center justify-end">
+        <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <RetailStatCard label={t("total_promos", "Total Promotions")} value={filteredPromos.length} icon={Tag} />
+        <RetailStatCard label={t("active_promos", "Active Promotions")} value={activeCount} icon={Percent} />
+      </div>
+
+      <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+        <div className="p-4 border-b border-border bg-muted/50 flex flex-wrap gap-3 items-center justify-between">
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <Input 
-              placeholder={t("search_promo", "Search promo codes...")} 
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              placeholder={t("search_promo", "Search promo codes...")}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 bg-white border-slate-200 shadow-sm"
+              className="pl-9 bg-card"
             />
           </div>
         </div>
 
-        {/* List */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredPromos.map((promo) => (
-            <div key={promo.id} className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
-              <div className="absolute top-0 right-0 p-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button onClick={() => openEditDialog(promo)} className="p-1.5 text-slate-400 hover:text-blue-600 bg-white rounded-md shadow-sm border border-slate-200">
-                  <Edit2 className="w-3.5 h-3.5" />
-                </button>
-                <button onClick={() => handleDelete(promo.id)} className="p-1.5 text-slate-400 hover:text-red-600 bg-white rounded-md shadow-sm border border-slate-200">
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${promo.data?.isActive ? 'bg-blue-100 text-blue-600' : 'bg-slate-100 text-slate-400'}`}>
-                  {promo.data?.discountType === 'percentage' ? <Percent className="w-5 h-5" /> : <Tag className="w-5 h-5" />}
-                </div>
-                <div>
-                  <h3 className="font-bold text-lg text-slate-900 tracking-tight">{promo.data?.code}</h3>
-                  <div className="mt-1 flex items-center gap-2">
-                    <span className="text-xl font-bold text-emerald-600">
-                      {promo.data?.discountType === 'percentage' ? `${promo.data?.discountValue}%` : `$${promo.data?.discountValue}`}
-                    </span>
-                    <span className="text-sm font-medium text-slate-500 uppercase tracking-wider text-[10px]">OFF</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between">
-                <div className="flex items-center gap-1.5">
-                  <div className={`w-2 h-2 rounded-full ${promo.data?.isActive ? 'bg-emerald-500' : 'bg-slate-300'}`} />
-                  <span className="text-xs font-medium text-slate-600">
-                    {promo.data?.isActive ? t("active", "Active") : t("inactive", "Inactive")}
-                  </span>
-                </div>
-                <span className="text-xs text-slate-400">
-                  {promo.createdAt ? format(new Date(promo.createdAt), 'MMM d, yyyy') : ''}
-                </span>
-              </div>
-            </div>
-          ))}
-
-          {filteredPromos.length === 0 && (
-            <div className="col-span-full py-12 text-center border-2 border-dashed border-slate-200 rounded-xl bg-slate-50/50">
-              <Tag className="w-10 h-10 mx-auto mb-3 text-slate-300" />
-              <p className="text-slate-500">{t("no_promos", "No promotions found.")}</p>
-            </div>
-          )}
-        </div>
-
+        {filteredPromos.length === 0 ? (
+          <div className="py-16 text-center text-muted-foreground">
+            <Tag className="w-12 h-12 mx-auto mb-3 opacity-30" />
+            <p>{t("no_promos", "No promotions found.")}</p>
+          </div>
+        ) : viewMode === "grid" ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 p-6">
+            {filteredPromos.map((promo) => (
+              <PromotionGridCard
+                key={promo.id}
+                promo={{ ...promo.data, id: promo.id }}
+                onEdit={() => openEditDialog(promo)}
+                onDelete={() => handleDelete(promo.id)}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-muted/30 border-b border-border">
+                <tr>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-primary uppercase">{t("promo_code", "Code")}</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-primary uppercase">{t("type", "Type")}</th>
+                  <th className="px-6 py-4 text-right text-xs font-bold text-primary uppercase">{t("value", "Value")}</th>
+                  <th className="px-6 py-4 text-center text-xs font-bold text-primary uppercase">{t("status", "Status")}</th>
+                  <th className="px-6 py-4 text-right text-xs font-bold text-primary uppercase">{t("actions", "Actions")}</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {filteredPromos.map((promo) => (
+                  <tr key={promo.id} className="hover:bg-muted/40">
+                    <td className="px-6 py-4 font-bold text-foreground">{promo.data?.code}</td>
+                    <td className="px-6 py-4 capitalize text-muted-foreground">{promo.data?.discountType}</td>
+                    <td className="px-6 py-4 text-right font-bold text-primary">
+                      {promo.data?.discountType === "percentage" ? `${promo.data?.discountValue}%` : `$${promo.data?.discountValue}`}
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${promo.data?.isActive ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
+                        {promo.data?.isActive ? t("active", "Active") : t("inactive", "Inactive")}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right space-x-1">
+                      <Button variant="ghost" size="sm" onClick={() => openEditDialog(promo)}>{t("edit", "Edit")}</Button>
+                      <Button variant="ghost" size="sm" className="text-red-600" onClick={() => handleDelete(promo.id)}>{t("delete", "Delete")}</Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -221,7 +230,7 @@ export default function Promotions() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsDialogOpen(false)}>{t("cancel", "Cancel")}</Button>
-            <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700 text-white">{t("save", "Save")}</Button>
+            <Button onClick={handleSave}>{t("save", "Save")}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

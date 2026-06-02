@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { Users, Search, Plus, Mail, Star, Heart, Trash2, MoreVertical, Eye, Edit, FileText, LayoutGrid, List } from 'lucide-react';
+import { Users, Search, Plus, Star, Trash2, MoreVertical, Eye, Edit } from 'lucide-react';
+import { ViewModeToggle, RetailStatCard, CustomerGridCard } from '@/components/retail/RetailViewKit';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -14,9 +15,9 @@ import CSVImportModal from '@/components/shared/CSVImportModal';
 import { UploadCloud } from 'lucide-react';
 
 const segmentColors = {
-  VIP: 'bg-purple-100 dark:bg-purple-950/20 text-purple-700 dark:text-purple-400 border-purple-200 dark:border-purple-900',
-  Regular: 'bg-blue-100 dark:bg-blue-950/20 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-900',
-  New: 'bg-green-100 dark:bg-green-950/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-900'
+  VIP: 'bg-primary/15 text-primary border-primary/25',
+  Regular: 'bg-primary/10 text-primary border-primary/20',
+  New: 'bg-muted text-muted-foreground border-border',
 };
 
 export default function Customers() {
@@ -156,34 +157,13 @@ export default function Customers() {
         </div>
       </div>
 
-      <div className="flex items-center justify-end gap-2 mb-4">
-        <div className="bg-card border border-border p-1 rounded-lg flex items-center shadow-sm">
-          <button 
-            onClick={() => setViewMode('list')} 
-            className={`p-1.5 rounded-md transition-colors ${viewMode === 'list' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted'}`}
-            title="List View"
-          >
-            <List className="w-4 h-4" />
-          </button>
-          <button 
-            onClick={() => setViewMode('grid')} 
-            className={`p-1.5 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted'}`}
-            title="Grid View"
-          >
-            <LayoutGrid className="w-4 h-4" />
-          </button>
-        </div>
+      <div className="flex items-center justify-end">
+        <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-950/20 flex items-center justify-center text-blue-600"><Users className="w-5 h-5" /></div>
-          <div><p className="text-2xl font-bold text-card-foreground">{stats.totalCount}</p><p className="text-xs text-muted-foreground">{t("total_customers", "Total Customers")}</p></div>
-        </div>
-        <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-950/20 flex items-center justify-center text-purple-600"><Star className="w-5 h-5" /></div>
-          <div><p className="text-2xl font-bold text-card-foreground">{stats.vipCount}</p><p className="text-xs text-muted-foreground">{t("vip_members", "VIP Members")}</p></div>
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <RetailStatCard label={t("total_customers", "Total Customers")} value={stats.totalCount} icon={Users} />
+        <RetailStatCard label={t("vip_members", "VIP Members")} value={stats.vipCount} icon={Star} />
       </div>
 
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
@@ -203,38 +183,16 @@ export default function Customers() {
                <p className="text-xs mt-1">{t("add_your_first_retail_customer", "Add your first retail customer using the \"Add Customer\" button.")}</p>
             </div>
           ) : viewMode === 'grid' ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 p-6">
               {filtered.map(cust => (
-                <div key={cust.id} className="bg-background border border-border rounded-xl p-5 hover:shadow-lg transition-all group relative">
-                  <div className="flex justify-between items-start mb-3">
-                    <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-600">
-                      <Users className="w-5 h-5" />
-                    </div>
-                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openDetails(cust)}><Eye className="w-3.5 h-3.5" /></Button>
-                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(cust)}><Edit className="w-3.5 h-3.5" /></Button>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-red-600" onClick={() => setDeleteTargetId(cust.id)}><Trash2 className="w-3.5 h-3.5" /></Button>
-                    </div>
-                  </div>
-                  <h3 className="font-bold text-foreground line-clamp-1">{cust.name}</h3>
-                  <p className="text-xs text-muted-foreground mb-3">{cust.custId}</p>
-                  
-                  <div className="space-y-1 mb-4">
-                    <p className="text-xs text-muted-foreground flex items-center gap-2"><Mail className="w-3 h-3"/> {cust.email}</p>
-                  </div>
-                  
-                  <div className="flex justify-between items-end mt-4">
-                    <div>
-                      <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider mb-0.5">Spent</p>
-                      <p className="text-lg font-extrabold text-foreground">${cust.totalSpent.toFixed(2)}</p>
-                    </div>
-                    <div className="text-right">
-                      <span className={`text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider border ${segmentColors[cust.segment] || 'bg-muted'}`}>
-                        {cust.segment}
-                      </span>
-                    </div>
-                  </div>
-                </div>
+                <CustomerGridCard
+                  key={cust.id}
+                  customer={cust}
+                  segmentColors={segmentColors}
+                  onView={() => openDetails(cust)}
+                  onEdit={() => openEdit(cust)}
+                  onDelete={() => setDeleteTargetId(cust.id)}
+                />
               ))}
             </div>
           ) : (

@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { Tag, Search, Plus, Package, Edit, Trash2, MoreVertical, Eye, LayoutGrid, List } from 'lucide-react';
+import { Tag, Search, Plus, Package, Edit, Trash2 } from 'lucide-react';
+import { ViewModeToggle, RetailStatCard, ProductGridCard } from '@/components/retail/RetailViewKit';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
@@ -86,34 +87,13 @@ export default function Products() {
         </Button>
       </div>
 
-      <div className="flex items-center justify-end gap-2 mb-4">
-        <div className="bg-card border border-border p-1 rounded-lg flex items-center shadow-sm">
-          <button 
-            onClick={() => setViewMode('list')} 
-            className={`p-1.5 rounded-md transition-colors ${viewMode === 'list' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted'}`}
-            title="List View"
-          >
-            <List className="w-4 h-4" />
-          </button>
-          <button 
-            onClick={() => setViewMode('grid')} 
-            className={`p-1.5 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted'}`}
-            title="Grid View"
-          >
-            <LayoutGrid className="w-4 h-4" />
-          </button>
-        </div>
+      <div className="flex items-center justify-end">
+        <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-950/20 flex items-center justify-center text-blue-600"><Tag className="w-5 h-5" /></div>
-          <div><p className="text-2xl font-bold text-card-foreground">{products.length}</p><p className="text-xs text-muted-foreground">Total Products</p></div>
-        </div>
-        <div className="bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-green-100 dark:bg-green-950/20 flex items-center justify-center text-green-600"><Package className="w-5 h-5" /></div>
-          <div><p className="text-2xl font-bold text-card-foreground">{products.reduce((a, b) => a + b.stock, 0)}</p><p className="text-xs text-muted-foreground">Total Items in Stock</p></div>
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <RetailStatCard label="Total Products" value={products.length} icon={Tag} />
+        <RetailStatCard label="Total Items in Stock" value={products.reduce((a, b) => a + b.stock, 0)} icon={Package} />
       </div>
 
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
@@ -130,47 +110,15 @@ export default function Products() {
                <p className="font-semibold">No products found.</p>
             </div>
           ) : viewMode === 'grid' ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 p-6">
               {filtered.map(p => (
-                <div key={p.id} className="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-xl transition-all group relative flex flex-col">
-                  {/* Image Placeholder */}
-                  <div className="aspect-square bg-muted/30 relative flex items-center justify-center p-6 border-b border-border">
-                    <Package className="w-16 h-16 text-muted-foreground/30" strokeWidth={1} />
-                    
-                    {/* Floating Action Buttons */}
-                    <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity translate-x-2 group-hover:translate-x-0">
-                      <Button variant="secondary" size="icon" className="h-8 w-8 bg-background/90 backdrop-blur shadow-sm hover:bg-background text-foreground" onClick={() => openEdit(p)}>
-                        <Edit className="w-3.5 h-3.5" />
-                      </Button>
-                      <Button variant="secondary" size="icon" className="h-8 w-8 bg-background/90 backdrop-blur shadow-sm hover:bg-background text-red-600" onClick={() => setDeleteTargetId(p.id)}>
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </Button>
-                    </div>
-
-                    {/* Stock Badge Overlay */}
-                    <div className="absolute top-3 left-3">
-                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm border ${p.stock > 0 ? 'bg-green-50 text-green-700 border-green-200/50' : 'bg-red-50 text-red-700 border-red-200/50'}`}>
-                        {p.stock > 0 ? `${p.stock} In Stock` : 'Out of Stock'}
-                      </span>
-                    </div>
-                  </div>
-                  
-                  {/* Card Content */}
-                  <div className="p-5 flex flex-col flex-1">
-                    <div className="flex-1">
-                      <p className="text-xs font-semibold text-primary mb-1">{p.category || 'Uncategorized'}</p>
-                      <h3 className="font-bold text-lg text-card-foreground leading-tight mb-1">{p.name}</h3>
-                      <p className="text-xs text-muted-foreground font-mono">{p.sku}</p>
-                    </div>
-                    
-                    <div className="mt-4 pt-4 border-t border-border flex items-end justify-between">
-                      <p className="text-2xl font-extrabold text-card-foreground">${p.price.toFixed(2)}</p>
-                      <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-                        <Tag className="w-4 h-4 text-muted-foreground" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <ProductGridCard
+                  key={p.id}
+                  product={p}
+                  suppliers={suppliers}
+                  onEdit={() => openEdit(p)}
+                  onDelete={() => setDeleteTargetId(p.id)}
+                />
               ))}
             </div>
           ) : (

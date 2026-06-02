@@ -312,7 +312,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
               <ShieldCheck className="w-4 h-4" /> Share
             </Button>
             {isAdmin && (
-              <Button onClick={() => setIsBoltOpen(true)} variant="outline" size="sm" className="gap-1.5 shadow-sm border-purple-300 text-purple-700 hover:bg-purple-50 dark:border-purple-700 dark:text-purple-400 dark:hover:bg-purple-900/20">
+              <Button onClick={() => setIsBoltOpen(true)} variant="outline" size="sm" className="gap-1.5 shadow-sm border-primary/30 text-primary hover:bg-primary/10">
                 <Sparkles className="w-4 h-4" /> OrbitBolt
               </Button>
             )}

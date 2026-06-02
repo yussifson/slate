@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { Package, Search, Plus, AlertTriangle, Trash2, Edit2, X, DollarSign, ShoppingBag, TrendingDown, MoreVertical, Eye, Edit, FileText } from 'lucide-react';
+import { Package, Search, Plus, AlertTriangle, Trash2, Edit2, X, DollarSign, ShoppingBag, TrendingDown, MoreVertical, Eye, Edit } from 'lucide-react';
+import { ViewModeToggle, RetailStatCard, InventoryGridCard } from '@/components/retail/RetailViewKit';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -70,6 +71,7 @@ export default function Inventory() {
   });
 
   const [search, setSearch] = useState('');
+  const [viewMode, setViewMode] = useState('list');
   const [showModal, setShowModal] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState(null);
   const [formData, setFormData] = useState(emptyForm);
@@ -177,48 +179,20 @@ export default function Inventory() {
             "Track stock levels, SKUs, pricing and suppliers"
           )}</p>
         </div>
-        <Button onClick={openAdd} className="gap-2 bg-purple-600 hover:bg-purple-700 text-white">
+        <Button onClick={openAdd} className="gap-2">
           <Plus className="w-4 h-4" /> {t("add_item", "Add Item")}
         </Button>
       </div>
-      {/* Stats */}
+
+      <div className="flex items-center justify-end">
+        <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
+      </div>
+
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-950/30 flex items-center justify-center text-purple-600">
-            <Package className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-2xl font-black text-card-foreground">{stats.total}</p>
-            <p className="text-xs text-muted-foreground">{t("total_items", "Total Items")}</p>
-          </div>
-        </div>
-        <div className="stat-card-premium bg-card rounded-xl border border-border border-l-4 border-l-amber-500 p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950/30 flex items-center justify-center text-amber-600">
-            <TrendingDown className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-2xl font-black text-amber-600">{stats.lowStock}</p>
-            <p className="text-xs text-muted-foreground">{t("low_stock", "Low Stock")}</p>
-          </div>
-        </div>
-        <div className="stat-card-premium bg-card rounded-xl border border-border border-l-4 border-l-red-500 p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-950/30 flex items-center justify-center text-red-600">
-            <AlertTriangle className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-2xl font-black text-red-600">{stats.outOfStock}</p>
-            <p className="text-xs text-muted-foreground">{t("out_of_stock", "Out of Stock")}</p>
-          </div>
-        </div>
-        <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-950/30 flex items-center justify-center text-blue-600">
-            <DollarSign className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-2xl font-black text-card-foreground">${stats.totalValue.toFixed(2)}</p>
-            <p className="text-xs text-muted-foreground">{t("total_stock_value", "Total Stock Value")}</p>
-          </div>
-        </div>
+        <RetailStatCard label={t("total_items", "Total Items")} value={stats.total} icon={Package} />
+        <RetailStatCard label={t("low_stock", "Low Stock")} value={stats.lowStock} icon={TrendingDown} variant="warning" />
+        <RetailStatCard label={t("out_of_stock", "Out of Stock")} value={stats.outOfStock} icon={AlertTriangle} variant="danger" />
+        <RetailStatCard label={t("total_stock_value", "Total Stock Value")} value={`$${stats.totalValue.toFixed(2)}`} icon={DollarSign} />
       </div>
       {/* Table */}
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
@@ -245,6 +219,18 @@ export default function Inventory() {
                 "click_add_item_to_configure_yo",
                 "Click \"Add Item\" to configure your first stock entry."
               )}</p>
+            </div>
+          ) : viewMode === 'grid' ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 p-6">
+              {filtered.map(item => (
+                <InventoryGridCard
+                  key={item.id}
+                  item={item}
+                  onView={() => { setSelectedItem(item); setIsSheetOpen(true); }}
+                  onEdit={() => openEdit(item)}
+                  onDelete={() => setDeleteTargetId(item.id)}
+                />
+              ))}
             </div>
           ) : (
             <table className="w-full text-sm">
@@ -392,7 +378,7 @@ export default function Inventory() {
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-lg p-6 space-y-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-                <ShoppingBag className="w-5 h-5 text-purple-600" />
+                <ShoppingBag className="w-5 h-5 text-primary" />
                 {editingItem ? 'Edit Inventory Item' : 'Add Inventory Item'}
               </h2>
               <button onClick={() => setShowModal(false)} className="text-muted-foreground hover:text-foreground">
@@ -436,7 +422,7 @@ export default function Inventory() {
             <div className="flex gap-3 pt-2">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
               <Button
-                className="flex-1 bg-purple-600 hover:bg-purple-700 text-white"
+                className="flex-1"
                 onClick={handleSave}
                 disabled={mutateRecord.isPending}
               >

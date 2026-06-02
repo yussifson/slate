@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from "react-i18next";
 import { ClipboardList, Search, Plus, Edit, Trash2, TrendingUp, X } from 'lucide-react';
+import { ViewModeToggle, RetailStatCard, OrderGridCard } from '@/components/retail/RetailViewKit';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
@@ -44,6 +45,7 @@ export default function Orders() {
   }));
 
   const [search, setSearch] = useState('');
+  const [viewMode, setViewMode] = useState('list');
   const [showModal, setShowModal] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState(null);
   const [editingId, setEditingId] = useState(null);
@@ -219,15 +221,13 @@ export default function Orders() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-950/20 flex items-center justify-center text-blue-600"><ClipboardList className="w-5 h-5" /></div>
-          <div><p className="text-2xl font-bold text-card-foreground">{orders.length}</p><p className="text-xs text-muted-foreground">Total Orders</p></div>
-        </div>
-        <div className="bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-green-100 dark:bg-green-950/20 flex items-center justify-center text-green-600"><TrendingUp className="w-5 h-5" /></div>
-          <div><p className="text-2xl font-bold text-card-foreground">${orders.reduce((a, b) => a + b.total, 0).toFixed(2)}</p><p className="text-xs text-muted-foreground">Total Revenue</p></div>
-        </div>
+      <div className="flex items-center justify-end">
+        <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <RetailStatCard label="Total Orders" value={orders.length} icon={ClipboardList} />
+        <RetailStatCard label="Total Revenue" value={`$${orders.reduce((a, b) => a + b.total, 0).toFixed(2)}`} icon={TrendingUp} />
       </div>
 
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
@@ -242,6 +242,17 @@ export default function Orders() {
             <div className="py-12 text-center text-muted-foreground">
                <ClipboardList className="w-12 h-12 mx-auto mb-3 opacity-30" />
                <p className="font-semibold">No orders found.</p>
+            </div>
+          ) : viewMode === 'grid' ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 p-6">
+              {filtered.map(o => (
+                <OrderGridCard
+                  key={o.id}
+                  order={o}
+                  onEdit={() => openEdit(o)}
+                  onDelete={() => setDeleteTargetId(o.id)}
+                />
+              ))}
             </div>
           ) : (
             <table className="w-full text-sm">

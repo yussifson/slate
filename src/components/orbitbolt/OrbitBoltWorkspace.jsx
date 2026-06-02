@@ -251,9 +251,11 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
   };
 
   const workspaceContent = (
-    <div className="fixed inset-0 bg-background z-[9999] flex flex-col font-sans text-foreground">
-      {/* Sleek Minimal Header */}
-      <div className="h-14 border-b border-border bg-card flex items-center justify-between px-4 shrink-0 shadow-sm z-[1001]">
+    <div className="fixed inset-0 z-[9999] flex flex-col font-sans text-foreground bg-[hsl(220,20%,7%)] dark:bg-[hsl(220,20%,7%)]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,hsl(221,83%,53%,0.12),transparent)]" />
+      <div className="pointer-events-none absolute inset-0 opacity-[0.35] bg-[linear-gradient(to_right,hsl(220,15%,15%,0.4)_1px,transparent_1px),linear-gradient(to_bottom,hsl(220,15%,15%,0.4)_1px,transparent_1px)] bg-[size:48px_48px]" />
+
+      <div className="relative h-12 border-b border-white/[0.06] bg-[hsl(220,18%,9%)]/95 backdrop-blur-xl flex items-center justify-between px-4 shrink-0 z-[1001]">
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="icon" onClick={() => {
             if (isSidebarOpen) {
@@ -261,32 +263,33 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
             } else {
               sidebarPanelRef.current?.expand();
             }
-          }} className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-muted">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 6h16M4 12h16M4 18h7"/></svg>
+          }} className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-white/[0.06] rounded-lg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 6h16M4 12h16M4 18h7"/></svg>
           </Button>
-          <div className="flex items-center gap-2">
-            <div className="flex items-center justify-center w-6 h-6 rounded bg-primary/20 text-primary">
-              <Sparkles className="w-3.5 h-3.5" />
+          <div className="flex items-center gap-2.5">
+            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-primary/30 to-primary/10 text-primary ring-1 ring-primary/25 shadow-[0_0_20px_hsl(221,83%,53%,0.15)]">
+              <Sparkles className="w-4 h-4" />
             </div>
-            <h1 className="font-semibold text-sm tracking-tight text-foreground">OrbitBolt</h1>
+            <div>
+              <h1 className="font-semibold text-sm tracking-tight text-foreground leading-none">OrbitBolt</h1>
+              <p className="text-[10px] text-muted-foreground mt-0.5 font-medium">System Architect</p>
+            </div>
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {previewSchema && (
-            <Button size="sm" onClick={handleApprove} className="h-8 px-4 bg-primary text-primary-foreground hover:bg-primary/90 rounded-md font-medium text-xs transition-all shadow-sm">
-              Save Workspace
+            <Button size="sm" onClick={handleApprove} className="h-8 px-4 rounded-lg font-medium text-xs shadow-[0_0_24px_hsl(221,83%,53%,0.25)]">
+              <CheckCircle className="w-3.5 h-3.5 mr-1.5" /> Apply to Builder
             </Button>
           )}
-          <div className="w-px h-5 bg-border mx-1" />
-          <Button variant="ghost" size="sm" onClick={onClose} className="h-8 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md gap-1">
-            <X className="w-4 h-4" /> Back to Optalflow
+          <div className="w-px h-5 bg-white/[0.08] mx-1 hidden sm:block" />
+          <Button variant="ghost" size="sm" onClick={onClose} className="h-8 text-muted-foreground hover:text-foreground hover:bg-white/[0.06] rounded-lg gap-1.5 text-xs">
+            <X className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Exit</span>
           </Button>
         </div>
       </div>
 
-      <PanelGroup direction="horizontal" className="flex-1 overflow-hidden">
-        
-        {/* Left Sidebar: History (v0 style) */}
+      <PanelGroup direction="horizontal" className="relative flex-1 overflow-hidden">
         <Panel 
           ref={sidebarPanelRef}
           defaultSize={18} 
@@ -296,44 +299,44 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
           collapsedSize={0}
           onCollapse={() => setIsSidebarOpen(false)}
           onExpand={() => setIsSidebarOpen(true)}
-          className="flex flex-col bg-muted/30 border-r-2 border-blue-500 z-20"
+          className="flex flex-col bg-[hsl(220,18%,8%)] border-r border-white/[0.06] z-20"
         >
-          <div className="p-3">
-            <Button onClick={startNewSession} className="w-full justify-start h-9 bg-blue-600 hover:bg-blue-700 text-white border border-blue-600 shadow-sm text-xs transition-colors">
-              <span className="text-lg mr-2 font-light">+</span> New Chat
+          <div className="p-3 border-b border-white/[0.06]">
+            <Button onClick={startNewSession} className="w-full justify-start h-9 rounded-lg text-xs font-medium gap-2 shadow-sm">
+              <MessageSquarePlus className="w-4 h-4 opacity-90" /> New workspace
             </Button>
           </div>
-          <div className="px-3 pb-2 border-b border-border/50">
-                <div className="relative">
-                  <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                  <input type="text" placeholder="Search" className="w-full h-8 bg-background border border-border rounded-md pl-8 pr-3 text-xs focus:outline-none focus:border-primary text-foreground placeholder:text-muted-foreground" />
-                </div>
-              </div>
-              
-              <div className="flex-1 overflow-y-auto py-2">
-                <div className="px-3 mb-1">
-                  <h3 className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Recent Chats</h3>
-                </div>
-                <div className="space-y-0.5 px-2">
-                  {sessions.map(s => (
-                    <button 
-                      key={s.id}
-                      onClick={() => switchSession(s)}
-                      className={clsx(
-                        "w-full text-left px-3 py-2 rounded-md text-xs flex items-center gap-3 transition-colors",
-                        activeSession?.id === s.id ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                      )}
-                    >
-                      <MessageSquare className="w-3.5 h-3.5 shrink-0 opacity-70" />
-                      <span className="truncate">{s.title}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
+          <div className="px-3 py-3 border-b border-white/[0.06]">
+            <div className="relative">
+              <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <input type="text" placeholder="Search workspaces…" className="w-full h-8 bg-white/[0.04] border border-white/[0.08] rounded-lg pl-8 pr-3 text-xs focus:outline-none focus:ring-1 focus:ring-primary/40 focus:border-primary/30 text-foreground placeholder:text-muted-foreground transition-shadow" />
+            </div>
+          </div>
+          <div className="flex-1 overflow-y-auto py-2 scrollbar-thin">
+            <div className="px-3 mb-2">
+              <h3 className="text-[10px] font-semibold text-muted-foreground uppercase tracking-[0.12em]">Workspaces</h3>
+            </div>
+            <div className="space-y-0.5 px-2">
+              {sessions.map(s => (
+                <button 
+                  key={s.id}
+                  onClick={() => switchSession(s)}
+                  className={clsx(
+                    "w-full text-left px-3 py-2.5 rounded-lg text-xs flex items-center gap-2.5 transition-all",
+                    activeSession?.id === s.id
+                      ? "bg-primary/15 text-primary font-medium ring-1 ring-primary/20 shadow-sm"
+                      : "text-muted-foreground hover:bg-white/[0.05] hover:text-foreground"
+                  )}
+                >
+                  <MessageSquare className="w-3.5 h-3.5 shrink-0 opacity-80" />
+                  <span className="truncate">{s.title}</span>
+                </button>
+              ))}
+            </div>
+          </div>
         </Panel>
-        <PanelResizeHandle className="w-1.5 bg-blue-500/30 hover:bg-blue-500 transition-colors cursor-col-resize active:bg-blue-600 shadow-sm" />
+        <PanelResizeHandle className="w-px bg-white/[0.06] hover:bg-primary/40 transition-colors cursor-col-resize data-[resize-handle-active]:bg-primary/60" />
 
-        {/* Center Panel: Chat Interface */}
         <Panel 
           ref={chatPanelRef}
           defaultSize={35} 
@@ -341,53 +344,49 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
           maxSize={50} 
           collapsible={true}
           collapsedSize={0}
-          className="flex flex-col bg-background/50 backdrop-blur-sm relative border-r border-border shadow-xl z-10"
+          className="flex flex-col bg-[hsl(220,18%,7%)] relative border-r border-white/[0.06] z-10"
         >
-          <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 space-y-6 scrollbar-thin scrollbar-thumb-muted">
+          <div className="flex-1 overflow-y-auto px-4 sm:px-5 py-6 space-y-5 scrollbar-thin">
             {activeSession?.messages.map((m, i) => (
               <motion.div 
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2 }}
                 key={i} 
                 className={clsx("flex gap-3", m.role === 'user' ? 'flex-row-reverse' : 'flex-row')}
               >
-                {/* Avatar */}
                 {m.role === 'assistant' && (
-                  <div className="shrink-0 w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20 text-blue-500 flex items-center justify-center border border-blue-500/20 shadow-sm">
+                  <div className="shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br from-primary/25 to-primary/5 text-primary flex items-center justify-center ring-1 ring-primary/20 mt-0.5">
                     <Sparkles className="w-4 h-4" />
                   </div>
                 )}
-                
-                {/* Message bubble */}
                 <div className={clsx(
-                  "max-w-[85%] text-[14px] leading-relaxed", 
-                  m.role === 'user' 
-                    ? 'bg-primary text-primary-foreground rounded-2xl rounded-tr-sm px-4 py-3 shadow-md' 
-                    : 'text-foreground prose prose-sm dark:prose-invert prose-p:leading-relaxed prose-pre:bg-muted prose-pre:border prose-pre:border-border prose-pre:rounded-xl'
+                  "max-w-[88%] text-[13.5px] leading-relaxed",
+                  m.role === 'user'
+                    ? 'rounded-2xl rounded-tr-md px-4 py-3 bg-primary text-primary-foreground shadow-lg shadow-primary/10'
+                    : 'rounded-2xl rounded-tl-md px-4 py-3 bg-white/[0.04] ring-1 ring-white/[0.08] text-foreground prose prose-sm dark:prose-invert max-w-none prose-p:my-1.5 prose-pre:bg-black/30 prose-pre:border prose-pre:border-white/10 prose-pre:rounded-lg prose-code:text-primary prose-code:before:content-none prose-code:after:content-none'
                 )}>
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
                 </div>
               </motion.div>
             ))}
-            
             {isGenerating && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-3">
-                <div className="shrink-0 w-7 h-7 rounded-full bg-primary/20 text-primary flex items-center justify-center border border-primary/20">
-                  <Sparkles className="w-3.5 h-3.5" />
+                <div className="shrink-0 w-8 h-8 rounded-lg bg-primary/15 text-primary flex items-center justify-center ring-1 ring-primary/20">
+                  <Sparkles className="w-4 h-4" />
                 </div>
-                <div className="text-[14px] flex items-center gap-3 text-muted-foreground py-1">
-                  <RefreshCw className="w-4 h-4 animate-spin text-primary" /> 
-                  Generating architecture...
+                <div className="flex items-center gap-2.5 px-4 py-3 rounded-2xl rounded-tl-md bg-white/[0.04] ring-1 ring-white/[0.08] text-sm text-muted-foreground">
+                  <RefreshCw className="w-4 h-4 animate-spin text-primary" />
+                  <span>Architecting your module…</span>
                 </div>
               </motion.div>
             )}
-            <div ref={messagesEndRef} className="h-4" />
+            <div ref={messagesEndRef} className="h-2" />
           </div>
 
-          {/* V0 Style Input Area */}
-          <div className="p-4 bg-background/50 backdrop-blur-sm shrink-0 border-t border-border/30">
-            <form onSubmit={handleSend} className="relative max-w-3xl mx-auto group">
-              <div className="relative bg-card/80 backdrop-blur-md border border-border/60 rounded-2xl overflow-hidden flex flex-col focus-within:ring-2 focus-within:ring-primary/30 focus-within:border-primary/50 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)]">
+          <div className="p-4 shrink-0 border-t border-white/[0.06] bg-[hsl(220,18%,8%)]/80 backdrop-blur-xl">
+            <form onSubmit={handleSend} className="relative max-w-2xl mx-auto">
+              <div className="relative rounded-2xl overflow-hidden flex flex-col bg-[hsl(220,16%,11%)] ring-1 ring-white/[0.1] focus-within:ring-2 focus-within:ring-primary/40 transition-all shadow-[0_12px_40px_rgba(0,0,0,0.35)]">
                 <textarea
                   value={input}
                   onChange={e => setInput(e.target.value)}
@@ -397,23 +396,19 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
                       handleSend(e);
                     }
                   }}
-                  placeholder="Ask OrbitBolt to build..."
-                  className="w-full bg-transparent border-none resize-none px-5 py-4 text-[15px] text-foreground placeholder:text-muted-foreground focus:outline-none min-h-[120px] max-h-[250px] scrollbar-thin scrollbar-thumb-muted"
+                  placeholder="Describe the module, dashboard, or workflow to build…"
+                  className="w-full bg-transparent border-none resize-none px-4 pt-4 pb-2 text-[14px] text-foreground placeholder:text-muted-foreground focus:outline-none min-h-[100px] max-h-[220px] scrollbar-thin"
                   disabled={isGenerating}
                 />
-                <div className="flex items-center justify-between px-4 pb-3">
-                  <div className="flex items-center gap-2">
-                    <div className="px-2.5 py-1 rounded-full bg-primary/10 text-primary text-[11px] font-semibold flex items-center gap-1.5 border border-primary/20">
-                      <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block animate-pulse" /> OrbitBolt Mini
-                    </div>
-                  </div>
+                <div className="flex items-center justify-between px-3 pb-3 pt-1">
+                  <span className="text-[10px] text-muted-foreground font-medium px-1">Enter to send · Shift+Enter for newline</span>
                   <Button 
                     type="submit" 
                     size="icon"
                     disabled={!input.trim() || isGenerating}
-                    className="h-9 w-9 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full disabled:opacity-50 transition-transform active:scale-95 shadow-md shadow-primary/20"
+                    className="h-9 w-9 rounded-xl disabled:opacity-40 transition-transform active:scale-95"
                   >
-                    <Send className="w-4 h-4 ml-0.5" />
+                    <Send className="w-4 h-4" />
                   </Button>
                 </div>
               </div>
@@ -421,32 +416,30 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
           </div>
         </Panel>
 
-        <PanelResizeHandle className="w-1.5 bg-blue-500/30 hover:bg-blue-500 transition-colors cursor-col-resize active:bg-blue-600 shadow-sm" />
+        <PanelResizeHandle className="w-px bg-white/[0.06] hover:bg-primary/40 transition-colors cursor-col-resize data-[resize-handle-active]:bg-primary/60" />
 
-        {/* Right Panel: Live Preview ONLY (No Schema view) */}
-        <Panel defaultSize={47} className="flex flex-col bg-muted/20 relative p-4 md:p-6">
-          <div className="flex-1 rounded-xl border border-border overflow-hidden bg-card flex flex-col shadow-lg shadow-black/5 relative">
+        <Panel defaultSize={47} className="flex flex-col bg-[hsl(220,16%,6%)] relative p-4 md:p-5">
+          <div className="flex-1 rounded-xl border border-white/[0.08] overflow-hidden bg-[hsl(220,15%,10%)] flex flex-col shadow-2xl shadow-black/40 ring-1 ring-white/[0.05] relative">
             {previewSchema ? (
               <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="flex-1 flex flex-col h-full"
               >
-                {/* Minimal Browser Header */}
-                <div className="h-10 bg-muted/40 border-b border-border flex items-center px-4 shrink-0">
+                <div className="h-11 bg-[hsl(220,14%,12%)] border-b border-white/[0.06] flex items-center px-4 shrink-0 gap-3">
                   <div className="flex gap-1.5">
-                    <div className="w-2.5 h-2.5 rounded-full bg-border/80" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-border/80" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-border/80" />
+                    <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                    <div className="w-3 h-3 rounded-full bg-amber-500/80" />
+                    <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
                   </div>
-                  <div className="mx-auto flex items-center gap-2 text-[11px] text-muted-foreground font-medium uppercase tracking-widest">
-                    Preview
+                  <div className="flex-1 max-w-md mx-auto h-7 rounded-md bg-black/25 border border-white/[0.06] flex items-center justify-center px-3">
+                    <span className="text-[11px] text-muted-foreground truncate font-medium">
+                      {previewSchema.module?.name ? `preview · ${previewSchema.module.name}` : 'Live preview'}
+                    </span>
                   </div>
-                  <div className="w-10"></div>
+                  <LayoutTemplate className="w-4 h-4 text-muted-foreground opacity-50" />
                 </div>
-                
-                {/* Real Live Preview Content */}
-                <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-card">
+                <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-background">
                   <div className="max-w-6xl mx-auto h-full">
                     
                     <React.Suspense fallback={<div className="p-8 text-center text-muted-foreground animate-pulse">Loading preview...</div>}>
@@ -520,28 +513,23 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
               </motion.div>
             ) : (
               <div className="flex flex-col items-center justify-center h-full w-full relative overflow-hidden">
-                {/* Clean, professional background */}
-                <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl" />
-                <div className="absolute bottom-1/4 left-1/4 w-72 h-72 bg-indigo-500/5 rounded-full blur-3xl" />
-                
-                <div className="relative z-10 flex flex-col items-center justify-center text-center p-8 max-w-md w-full">
-                  <div className="w-16 h-16 rounded-2xl bg-card border border-border shadow-sm flex items-center justify-center mb-6">
-                    <svg className="w-8 h-8 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                    </svg>
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,hsl(221,83%,53%,0.08),transparent_65%)]" />
+                <div className="relative z-10 flex flex-col items-center justify-center text-center p-8 max-w-lg w-full">
+                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 flex items-center justify-center mb-6 shadow-[0_0_48px_hsl(221,83%,53%,0.2)]">
+                    <Layers className="w-9 h-9 text-primary" />
                   </div>
-                  
-                  <h2 className="text-2xl font-bold text-foreground mb-3 tracking-tight">
-                    Design Your Module
+                  <h2 className="text-xl font-semibold text-foreground mb-2 tracking-tight">
+                    Live preview appears here
                   </h2>
-                  
-                  <p className="text-sm text-muted-foreground leading-relaxed px-4">
-                    Describe your requirements in the chat panel. OrbitBolt will instantly architect the system, database schema, and UI layout.
+                  <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">
+                    Describe what you want in the chat. OrbitBolt architects schema, fields, and layout—then renders a working preview instantly.
                   </p>
-                  
-                  <div className="mt-8 flex gap-3">
-                    <div className="px-4 py-2 rounded-full bg-muted border border-border text-xs font-medium text-muted-foreground">"Build a CRM pipeline"</div>
-                    <div className="px-4 py-2 rounded-full bg-muted border border-border text-xs font-medium text-muted-foreground">"Create an HR dashboard"</div>
+                  <div className="mt-8 flex flex-wrap justify-center gap-2">
+                    {['Build a CRM pipeline', 'HR onboarding workflow', 'Inventory dashboard'].map((hint) => (
+                      <span key={hint} className="px-3 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.08] text-xs text-muted-foreground font-medium">
+                        {hint}
+                      </span>
+                    ))}
                   </div>
                 </div>
               </div>

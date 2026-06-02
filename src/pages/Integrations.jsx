@@ -22,6 +22,9 @@ import quickbooksLogo from '@/assets/integrations/quickbooks.svg';
 import docusignLogo from '@/assets/integrations/docusign.svg';
 import whatsappLogo from '@/assets/integrations/whatsapp.svg';
 import stripeLogo from '@/assets/integrations/stripe.svg';
+import paystackLogo from '@/assets/integrations/paystack.svg';
+import mailchimpLogo from '@/assets/integrations/mailchimp.svg';
+import shipstationLogo from '@/assets/integrations/shipstation.svg';
 
 const INTEGRATION_CATALOG = [
   {
@@ -127,7 +130,7 @@ const INTEGRATION_CATALOG = [
     provider: 'mailchimp',
     category: 'Marketing',
     description: 'Sync your customer segments and automatically trigger email campaigns for new purchases.',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/c/c9/Mailchimp_Freddie_icon.svg',
+    logo: mailchimpLogo,
     learnMore: 'https://mailchimp.com/',
     categories: ['retail']
   },
@@ -137,7 +140,7 @@ const INTEGRATION_CATALOG = [
     provider: 'shipstation',
     category: 'Logistics',
     description: 'Automatically generate shipping labels and live carrier rates when orders are placed.',
-    logo: 'https://www.vectorlogo.zone/logos/shipstation/shipstation-icon.svg',
+    logo: shipstationLogo,
     learnMore: 'https://www.shipstation.com/',
     categories: ['retail']
   }
