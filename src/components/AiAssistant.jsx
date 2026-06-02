@@ -400,7 +400,7 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
         responseText = await analyzeImage(fileSnap.bytes, promptText);
       } else {
         const ctx = PAGE_CONTEXT[location.pathname] || { title: 'Unknown', suite: 'Unknown' };
-        const systemPrompt = `You are Orbit ΓÇö an intelligent, proactive enterprise assistant embedded in Optalflow SaaS.
+        const systemPrompt = `You are OrbitFlow ΓÇö an intelligent, proactive enterprise assistant embedded in Optalflow SaaS.
 Your current context is the ${ctx.suite} suite, specifically the '${ctx.title}' page.
 
 CRITICAL INSTRUCTIONS:
@@ -796,11 +796,7 @@ RULES FOR MULTI-STEP REASONING:
               <OrbitIcon className="w-3.5 h-3.5" />
             </div>
             <div className="flex items-center gap-1.5 flex-1">
-              <p className="text-[11px] font-bold text-foreground leading-none">{t("orbit", "Orbit")}</p>
-              <div className="flex items-center gap-1 bg-gradient-to-r from-blue-600 to-indigo-600 px-1.5 py-0.5 rounded-full">
-                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse shrink-0"></span>
-                <span className="text-[9px] font-bold uppercase tracking-wider text-white truncate">{t("agent_active", "Agent Active")}</span>
-              </div>
+              <p className="text-[11px] font-bold text-foreground leading-none">{t("orbit", "OrbitFlow")}</p>
             </div>
           </div>
           <div className="flex items-center gap-0.5 shrink-0">
@@ -876,7 +872,7 @@ RULES FOR MULTI-STEP REASONING:
                     <span className="w-2 h-2 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: '150ms' }} />
                     <span className="w-2 h-2 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: '300ms' }} />
                   </div>
-                  <p className="text-[10px] text-muted-foreground mt-1.5 italic">{t("orbit_is_thinking", "Orbit is thinking...")}</p>
+                  <p className="text-[10px] text-muted-foreground mt-1.5 italic">{t("orbit_is_thinking", "OrbitFlow is thinking...")}</p>
                 </div>
               </div>
             )}
