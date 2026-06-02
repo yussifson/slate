@@ -14,9 +14,12 @@ import clsx from 'clsx';
 import { useNavigate } from 'react-router-dom';
 
 const SYSTEM_PROMPT = `You are OrbitBolt, an AI System Architect for Optalflow. 
-Your job is to generate application modules based on user requests. 
-You MUST output ONLY a valid JSON object. No markdown, no explanations outside the JSON.
-The JSON must follow this exact structure:
+You can converse naturally with the user, answer questions, and help them refine their ideas.
+
+When the user asks you to build, create, or update a module/app, you MUST output a valid JSON schema wrapped EXACTLY in <SCHEMA>...</SCHEMA> tags.
+Do NOT output the JSON outside of these tags. You can explain your changes outside the tags.
+
+The JSON inside <SCHEMA> must follow this exact structure:
 {
   "module": {
     "name": "Module Name",
@@ -30,14 +33,11 @@ The JSON must follow this exact structure:
     { "name": "Field Name", "field_type": "text" | "number" | "date" | "select" | "checkbox" | "file", "is_required": true|false, "options": "comma, separated, options" }
   ],
   "components": [
-    { "id": "1", "type": "header", "text": "App Title" },
-    { "id": "2", "type": "kanban", "columns": ["Todo", "Done"] } // Only if layout is kanban
-    // Include custom_sandbox component ONLY if module_type is custom_sandbox
-  ],
-  "ai_message": "A short conversational response to the user explaining what you did."
+    { "id": "1", "type": "header", "text": "App Title" }
+  ]
 }
 
-If the user asks to refine an existing module, modify the previous JSON schema according to their instructions. DO NOT output anything except the JSON.`;
+If the user asks to refine an existing module (like changing a name or adding a field), modify the previous JSON schema and output the NEW updated schema inside the <SCHEMA> tags.`;
 
 // The IDE-like Workspace for building modules - Vercel v0 Dark Aesthetic
 export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
@@ -140,24 +140,36 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
 
       const responseText = await generateText(aiMessages);
       
-      const start = responseText.indexOf('{');
-      const end = responseText.lastIndexOf('}');
-      if (start === -1 || end === -1) throw new Error("Invalid AI response format. Expected JSON.");
-      
-      const jsonStr = responseText.substring(start, end + 1);
-      const parsedSchema = JSON.parse(jsonStr);
+      let parsedSchema = null;
+      let aiResponseMsg = responseText;
 
-      const aiResponseMsg = parsedSchema.ai_message || "I've updated the architecture.";
+      // Extract JSON if it's wrapped in <SCHEMA>...</SCHEMA>
+      const schemaMatch = responseText.match(/<SCHEMA>([\s\S]*?)<\/SCHEMA>/);
+      
+      if (schemaMatch && schemaMatch[1]) {
+        try {
+          parsedSchema = JSON.parse(schemaMatch[1].trim());
+          // Remove the schema from the message we show the user
+          aiResponseMsg = responseText.replace(/<SCHEMA>[\s\S]*?<\/SCHEMA>/, '').trim();
+          if (!aiResponseMsg) aiResponseMsg = "I've updated the architecture.";
+        } catch (e) {
+          console.error("Failed to parse schema from AI:", e);
+        }
+      }
 
       const assistantMsg = { 
         role: 'assistant', 
         content: aiResponseMsg,
-        raw_json: parsedSchema
+        raw_json: parsedSchema || previewSchema // keep previous if no new schema
       };
       
-      s = { ...s, messages: [...updatedMsgs, assistantMsg], latest_schema: parsedSchema };
+      s = { ...s, messages: [...updatedMsgs, assistantMsg] };
+      if (parsedSchema) {
+        s.latest_schema = parsedSchema;
+        setPreviewSchema(parsedSchema);
+      }
+      
       setActiveSession(s);
-      setPreviewSchema(parsedSchema);
       setSessions(prev => prev.map(p => p.id === s.id ? s : p));
       saveSession(s);
       
@@ -189,9 +201,9 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-[100] flex flex-col font-sans text-foreground">
+    <div className="fixed inset-0 bg-background z-[1000] flex flex-col font-sans text-foreground">
       {/* Sleek Minimal Header */}
-      <div className="h-14 border-b border-border bg-card flex items-center justify-between px-4 shrink-0">
+      <div className="h-14 border-b border-border bg-card flex items-center justify-between px-4 shrink-0 shadow-sm z-[1001]">
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-muted">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 6h16M4 12h16M4 18h7"/></svg>
@@ -210,7 +222,9 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
             </Button>
           )}
           <div className="w-px h-5 bg-border mx-1" />
-          <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md"><X className="w-4 h-4" /></Button>
+          <Button variant="ghost" size="sm" onClick={onClose} className="h-8 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md gap-1">
+            <X className="w-4 h-4" /> Back to Optalflow
+          </Button>
         </div>
       </div>
 
