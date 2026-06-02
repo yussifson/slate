@@ -153,12 +153,18 @@ export default function PurchaseOrders() {
         if (productData) {
           const currentStock = Number(productData.data?.stock || 0);
           const newStock = currentStock + Number(item.quantity);
+          
+          const reorderLevel = Number(productData.data?.reorderLevel || 10);
+          let newStatus = 'In Stock';
+          if (newStock === 0) newStatus = 'Out of Stock';
+          else if (newStock <= reorderLevel) newStatus = 'Low Stock';
+
           await mutateRecord.mutateAsync({
             id: productData.id,
             recordType: 'product',
             payload: { ...productData.data, stock: newStock },
-            status: productData.status,
-            searchText: productData.searchText
+            status: newStatus,
+            searchText: productData.searchText || `${productData.data?.sku} ${productData.data?.name}`
           });
         }
       }
@@ -291,7 +297,30 @@ export default function PurchaseOrders() {
                 <SheetTitle className="text-2xl font-bold">{selectedPO?.data?.poNumber}</SheetTitle>
                 <SheetDescription>{t("supplier", "Supplier")}: {selectedPO?.data?.supplierName}</SheetDescription>
               </div>
-              {getStatusBadge(selectedPO?.data?.status)}
+              <div className="flex items-center gap-2">
+                {getStatusBadge(selectedPO?.data?.status)}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 ml-2">
+                      <MoreVertical className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => {
+                      setIsSheetOpen(false);
+                      handleEdit(selectedPO);
+                    }}>
+                      <Edit2 className="mr-2 h-4 w-4" /> {t("edit", "Edit")}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => {
+                      setIsSheetOpen(false);
+                      setDeleteTargetId(selectedPO.id);
+                    }} className="text-red-600">
+                      <Trash2 className="mr-2 h-4 w-4" /> {t("delete", "Delete")}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </div>
           </SheetHeader>
           
