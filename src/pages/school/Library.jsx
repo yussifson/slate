@@ -314,6 +314,7 @@ export default function Library() {
           </div>
         </div>
       )}
+      </div>
       
       {/* Add/Edit Modal */}
       {showModal && (
