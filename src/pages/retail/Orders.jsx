@@ -53,7 +53,7 @@ export default function Orders() {
   });
   
   const [isNewCustomer, setIsNewCustomer] = useState(false);
-  const [newCustomerData, setNewCustomerData] = useState({ name: '', phone: '' });
+  const [newCustomerData, setNewCustomerData] = useState({ name: '', email: '', phone: '' });
   
   const [selectedProduct, setSelectedProduct] = useState('');
   const [productQty, setProductQty] = useState(1);
@@ -96,22 +96,46 @@ export default function Orders() {
 
   const handleSave = async () => {
     let finalCustomerId = formData.customerId;
+    const orderTotal = parseFloat(formData.total) || 0;
     
     // Auto-create new customer if needed
     if (isNewCustomer && newCustomerData.name) {
       try {
-        const newCustId = `CUST-${Date.now()}`;
-        await mutateRecord.mutateAsync({
+        const newCustId = `CUST-${Date.now().toString().slice(-4)}`;
+        const newCustRecord = await mutateRecord.mutateAsync({
           recordType: 'customer',
-          payload: { ...newCustomerData, id: newCustId },
+          payload: { 
+            ...newCustomerData, 
+            custId: newCustId,
+            email: newCustomerData.email || '',
+            totalSpent: orderTotal,
+            orders: 1
+          },
           status: 'active',
           searchText: newCustomerData.name.toLowerCase()
         });
-        // We might not have the ID from DB immediately, but we can store the name or wait.
-        // For simplicity, we just save the name to order if we can't reliably get the ID back immediately.
+        finalCustomerId = newCustRecord.id;
       } catch(err) {
          toast.error("Failed to create new customer");
          return;
+      }
+    } else if (finalCustomerId) {
+      // Update existing customer's metrics
+      const existingCust = customerRecords.find(c => c.id === finalCustomerId);
+      if (existingCust && !editingId) {
+        // Only increment if this is a brand new order, not just editing an order
+        const currentData = existingCust.data || {};
+        await mutateRecord.mutateAsync({
+          id: existingCust.id,
+          recordType: 'customer',
+          payload: {
+            ...currentData,
+            totalSpent: (parseFloat(currentData.totalSpent) || 0) + orderTotal,
+            orders: (parseInt(currentData.orders) || 0) + 1
+          },
+          status: existingCust.status,
+          searchText: existingCust.search_text
+        });
       }
     }
 
@@ -145,7 +169,7 @@ export default function Orders() {
         customerId: finalCustomerId,
         customerName: isNewCustomer ? newCustomerData.name : undefined,
         date: formData.date,
-        total: parseFloat(formData.total) || 0,
+        total: orderTotal,
         status: formData.status,
         items: formData.items
       },
@@ -190,7 +214,7 @@ export default function Orders() {
           <h1 className="text-2xl font-bold text-card-foreground">Orders Management</h1>
           <p className="text-sm text-muted-foreground mt-0.5">Track and manage customer purchases.</p>
         </div>
-        <Button onClick={() => { setEditingId(null); setIsNewCustomer(false); setNewCustomerData({name: '', phone: ''}); setFormData({ customerId: '', date: new Date().toISOString().split('T')[0], total: '', status: 'Pending', items: [] }); setShowModal(true); }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+        <Button onClick={() => { setEditingId(null); setIsNewCustomer(false); setNewCustomerData({name: '', email: '', phone: ''}); setFormData({ customerId: '', date: new Date().toISOString().split('T')[0], total: '', status: 'Pending', items: [] }); setShowModal(true); }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
           <Plus className="w-4 h-4" /> Create Order
         </Button>
       </div>
@@ -277,6 +301,7 @@ export default function Orders() {
                {isNewCustomer && (
                  <div className="p-3 bg-muted rounded-md space-y-3">
                    <div><label className="text-xs font-bold text-muted-foreground uppercase">New Customer Name</label><Input value={newCustomerData.name} onChange={e => setNewCustomerData({...newCustomerData, name: e.target.value})} className="mt-1 bg-white" /></div>
+                   <div><label className="text-xs font-bold text-muted-foreground uppercase">Email</label><Input value={newCustomerData.email} onChange={e => setNewCustomerData({...newCustomerData, email: e.target.value})} className="mt-1 bg-white" /></div>
                    <div><label className="text-xs font-bold text-muted-foreground uppercase">Phone</label><Input value={newCustomerData.phone} onChange={e => setNewCustomerData({...newCustomerData, phone: e.target.value})} className="mt-1 bg-white" /></div>
                  </div>
                )}

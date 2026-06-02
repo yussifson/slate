@@ -120,6 +120,26 @@ const INTEGRATION_CATALOG = [
     logo: 'https://upload.wikimedia.org/wikipedia/commons/0/0b/Paystack_Logo.png',
     learnMore: 'https://paystack.com/',
     categories: ['all']
+  },
+  {
+    id: 'mailchimp',
+    name: 'Mailchimp',
+    provider: 'mailchimp',
+    category: 'Marketing',
+    description: 'Sync your customer segments and automatically trigger email campaigns for new purchases.',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/c/c9/Mailchimp_Freddie_icon.svg',
+    learnMore: 'https://mailchimp.com/',
+    categories: ['retail']
+  },
+  {
+    id: 'shipstation',
+    name: 'ShipStation',
+    provider: 'shipstation',
+    category: 'Logistics',
+    description: 'Automatically generate shipping labels and live carrier rates when orders are placed.',
+    logo: 'https://www.vectorlogo.zone/logos/shipstation/shipstation-icon.svg',
+    learnMore: 'https://www.shipstation.com/',
+    categories: ['retail']
   }
 ];
 
@@ -207,7 +227,7 @@ export default function Integrations() {
   const handleConnect = async (app) => {
     if (!companyId) return;
     
-    const CREDENTIALS_PROVIDERS = ['stripe', 'paystack', 'twilio', 'docusign'];
+    const CREDENTIALS_PROVIDERS = ['stripe', 'paystack', 'twilio', 'docusign', 'mailchimp', 'shipstation'];
     if (CREDENTIALS_PROVIDERS.includes(app.provider)) {
       setModalApp(app);
       try {
@@ -749,6 +769,52 @@ export default function Integrations() {
                     placeholder="-----BEGIN RSA PRIVATE KEY-----" 
                     value={modalForm.private_key || ""} 
                     onChange={e => setModalForm(p => ({ ...p, private_key: e.target.value }))}
+                  />
+                </div>
+              </>
+            )}
+
+            {modalApp?.provider === 'mailchimp' && (
+              <>
+                <p className="text-xs text-slate-500 italic mb-2">Instructions: In Mailchimp, go to Profile &gt; Extras &gt; API keys to create a new key.</p>
+                <div className="space-y-1.5">
+                  <Label>Mailchimp API Key</Label>
+                  <Input 
+                    type="password"
+                    placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-usX" 
+                    value={modalForm.api_key || ""} 
+                    onChange={e => setModalForm(p => ({ ...p, api_key: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Data Center Prefix (e.g. us1, us20)</Label>
+                  <Input 
+                    placeholder="us1" 
+                    value={modalForm.datacenter || ""} 
+                    onChange={e => setModalForm(p => ({ ...p, datacenter: e.target.value }))}
+                  />
+                </div>
+              </>
+            )}
+
+            {modalApp?.provider === 'shipstation' && (
+              <>
+                <p className="text-xs text-slate-500 italic mb-2">Instructions: In ShipStation, go to Settings &gt; Account &gt; API Settings to generate your Key and Secret.</p>
+                <div className="space-y-1.5">
+                  <Label>ShipStation API Key</Label>
+                  <Input 
+                    placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" 
+                    value={modalForm.api_key || ""} 
+                    onChange={e => setModalForm(p => ({ ...p, api_key: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>ShipStation API Secret</Label>
+                  <Input 
+                    type="password"
+                    placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" 
+                    value={modalForm.api_secret || ""} 
+                    onChange={e => setModalForm(p => ({ ...p, api_secret: e.target.value }))}
                   />
                 </div>
               </>
