@@ -4,6 +4,7 @@ import { BookOpen, Users, Search, Plus, UserCog, Calendar, Trash2, Layers, MoreV
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Link } from 'react-router-dom';
+import { ViewModeToggle, ClassGridCard } from '@/components/school/SchoolViewKit';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -20,6 +21,7 @@ export default function Classes() {
   const [deleteTargetId, setDeleteTargetId] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [viewDetails, setViewDetails] = useState(null);
+  const [viewMode, setViewMode] = useState('grid');
 
   // Real Database Hooks
   const queryClient = useQueryClient();
@@ -168,11 +170,12 @@ export default function Classes() {
         </div>
       </div>
       {/* Search */}
-      <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
-        <div className="relative flex-1">
+      <div className="bg-card rounded-xl border border-border p-4 shadow-sm flex items-center justify-between flex-wrap gap-4">
+        <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input placeholder="Search classes or teachers..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
         </div>
+        <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
       </div>
       {/* Class List */}
       {isDbLoading ? (
@@ -186,61 +189,73 @@ export default function Classes() {
             "Add a new grade class, subject curricula, classroom, and teacher schedules using the button above."
           )}</p>
         </div>
+      ) : viewMode === 'grid' ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filtered.map(c => (
+            <ClassGridCard
+              key={c.id}
+              classInfo={c}
+              onView={() => setViewDetails(c)}
+              onEdit={() => {
+                setEditingId(c.id);
+                setFormData({
+                  name: c.name,
+                  subject: c.subject,
+                  teacher: c.teacher,
+                  room: c.room,
+                  schedule: c.schedule
+                });
+                setShowModal(true);
+              }}
+              onDelete={() => setDeleteTargetId(c.id)}
+            />
+          ))}
+        </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map(c => {
-            return (
-              <div key={c.id} className="bg-card rounded-xl border border-border p-5 shadow-sm hover:shadow-md transition-shadow relative group">
-                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-8 w-8 p-0">
-                        <MoreVertical className="h-4 w-4 text-muted-foreground" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-40">
-                      <DropdownMenuItem onClick={() => setViewDetails(c)}>{t("view_details", "View Details")}</DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => {
-                        setEditingId(c.id);
-                        setFormData({
-                          name: c.name,
-                          subject: c.subject,
-                          teacher: c.teacher,
-                          room: c.room,
-                          schedule: c.schedule
-                        });
-                        setShowModal(true);
-                      }}>{t("edit", "Edit")}</DropdownMenuItem>
-                      <DropdownMenuItem className="text-red-600 font-medium" onClick={() => setDeleteTargetId(c.id)}>{t("delete", "Delete")}</DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-950/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
-                    <BookOpen className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-card-foreground">{c.name}</h3>
-                    <p className="text-sm text-muted-foreground">{c.subject}</p>
-                  </div>
-                </div>
-                <div className="space-y-2 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-2">
-                    <UserCog className="w-4 h-4 text-muted-foreground" />
-                    <Link to="/team" className="hover:underline">{c.teacher}</Link>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Users className="w-4 h-4 text-muted-foreground" />
-                    <Link to="/students" className="hover:underline">{c.students} {t("students", "Students")}</Link>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-muted-foreground" />
-                    <span>{c.schedule} ({c.room})</span>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+        <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-muted border-b border-border">
+                <tr>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Class Name</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Subject</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Teacher</th>
+                  <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">Students</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Schedule</th>
+                  <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {filtered.map(c => (
+                  <tr key={c.id} className="hover:bg-muted/50 transition-colors">
+                    <td className="px-6 py-4 font-bold text-card-foreground">{c.name}</td>
+                    <td className="px-6 py-4 text-muted-foreground">{c.subject}</td>
+                    <td className="px-6 py-4 font-medium text-foreground">{c.teacher}</td>
+                    <td className="px-6 py-4 text-center">{c.students}</td>
+                    <td className="px-6 py-4 text-muted-foreground">{c.schedule} ({c.room})</td>
+                    <td className="px-6 py-4 text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0">
+                            <MoreVertical className="h-4 w-4 text-muted-foreground" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-40">
+                          <DropdownMenuItem onClick={() => setViewDetails(c)}>{t("view_details", "View Details")}</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => {
+                            setEditingId(c.id);
+                            setFormData({ name: c.name, subject: c.subject, teacher: c.teacher, room: c.room, schedule: c.schedule });
+                            setShowModal(true);
+                          }}>{t("edit", "Edit")}</DropdownMenuItem>
+                          <DropdownMenuItem className="text-red-600 font-medium" onClick={() => setDeleteTargetId(c.id)}>{t("delete", "Delete")}</DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
       {/* Add Modal */}

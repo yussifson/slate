@@ -3,7 +3,9 @@ import { useState } from 'react';
 import { Award, Search, Plus, Trash2, TrendingUp, BarChart3, CheckCircle, XCircle, MoreVertical } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Link } from 'react-router-dom';
+import AddOptionInline from "@/components/shared/AddOptionInline";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
@@ -13,7 +15,6 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useCompanyId } from '@/hooks/useCompanyId';
 
-const CLASS_LIST = ['Grade 7B', 'Grade 8C', 'Grade 9A', 'Grade 9B', 'Grade 10A', 'Grade 10B', 'Grade 11A', 'Grade 12A'];
 const SUBJECTS = ['Mathematics', 'Science', 'English', 'History', 'Chemistry', 'Physics', 'Geography', 'ICT'];
 
 function calcGrade(score, maxScore) {
@@ -63,6 +64,17 @@ export default function Grades() {
     queryFn: () => base44.entities.Client.filter({ company_id: companyId, type: 'student' }),
     enabled: !!companyId
   });
+
+  const { data: classRecords = [] } = useQuery({
+    queryKey: ['cases', companyId],
+    queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId }),
+    enabled: !!companyId
+  });
+
+  const CLASS_LIST = classRecords.length > 0 ? [...new Set(classRecords.map(r => r.title))] : ['Grade 7B', 'Grade 8C', 'Grade 9A'];
+
+  const { data: examsData = [] } = useIndustryRecords('exam');
+  const uniqueExams = [...new Set(examsData.map(r => r.data?.subject).filter(Boolean))];
 
   const availableStudents = studentRecords.filter(r => {
     let extra = {};
@@ -367,12 +379,33 @@ export default function Grades() {
               </div>
               <div>
                 <label className="text-xs font-bold text-muted-foreground uppercase">{t("exam_name", "Exam Name")}</label>
-                <Input
-                  value={formData.examName}
-                  onChange={e => setFormData({ ...formData, examName: e.target.value })}
-                  className="mt-1"
-                  placeholder="e.g. Midterm 2026"
-                />
+                <Select value={formData.examName} onValueChange={(v) => setFormData({ ...formData, examName: v })}>
+                  <SelectTrigger className="mt-1"><SelectValue placeholder="Select Exam..." /></SelectTrigger>
+                  <SelectContent>
+                    {uniqueExams.map(e => (
+                      <SelectItem key={e} value={e}>{e}</SelectItem>
+                    ))}
+                    <AddOptionInline
+                      onAdd={(v) => {
+                        mutateRecord.mutate({
+                          recordType: 'exam',
+                          payload: {
+                            subject: v,
+                            class: formData.className,
+                            date: formData.date,
+                            time: '09:00 AM',
+                            duration: '2 Hours',
+                            venue: 'TBD'
+                          },
+                          status: 'Upcoming',
+                          searchText: `${v} ${formData.className} TBD`
+                        });
+                        setFormData({ ...formData, examName: v });
+                      }}
+                      placeholder="New exam..."
+                    />
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <label className="text-xs font-bold text-muted-foreground uppercase">{t("date", "Date")}</label>

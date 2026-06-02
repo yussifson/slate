@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { Receipt, Search, CreditCard, DollarSign, AlertCircle, FileText, CheckCircle, Trash2, MoreVertical } from 'lucide-react';
+import { Receipt, Search, CreditCard, DollarSign, AlertCircle, FileText, CheckCircle, Trash2, MoreVertical, Plus } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Link } from 'react-router-dom';
@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { usePayment } from '@/hooks/integrations/usePayment';
+import { useNotification } from '@/hooks/integrations/useNotification';
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
 import { useCompanyId } from "@/hooks/useCompanyId";
@@ -17,6 +18,7 @@ export default function FeeManagement() {
   const { t } = useTranslation();
   const companyId = useCompanyId();
   const { processPayment, isProcessing } = usePayment();
+  const { sendNotification } = useNotification();
   const queryClient = useQueryClient();
   const { data: dbRecords = [], isLoading: isDbLoading } = useQuery({ 
     queryKey: ["clients", companyId], 
@@ -25,7 +27,7 @@ export default function FeeManagement() {
   });
   
   const mutateRecord = useMutation({
-    mutationFn: (data) => base44.entities.Client.update(data.id, data),
+    mutationFn: (data) => data.id ? base44.entities.Client.update(data.id, data) : base44.entities.Client.create(data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["clients", companyId] })
   });
 
@@ -52,6 +54,8 @@ export default function FeeManagement() {
 
   const [search, setSearch] = useState('');
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showEnrollModal, setShowEnrollModal] = useState(false);
+  const [enrollName, setEnrollName] = useState('');
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [paymentAmount, setPaymentAmount] = useState(0);
   const [viewDetails, setViewDetails] = useState(null);
@@ -97,6 +101,12 @@ export default function FeeManagement() {
         }, {
           onSuccess: () => {
             toast.success(`Recorded payment of $${paymentAmount} for ${selectedStudent.student}`);
+            if (paymentAmount >= 500) {
+              sendNotification({
+                channel: 'general',
+                message: `💰 *Major Fee Collection:* $${paymentAmount} received from ${selectedStudent.student}.`
+              });
+            }
             setShowPaymentModal(false);
             setSelectedStudent(null);
           },
@@ -117,6 +127,9 @@ export default function FeeManagement() {
           <h1 className="text-2xl font-bold text-card-foreground">{t("fee_management", "Fee Management")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("track_student_tuition_and_paym", "Track student tuition and payments")}</p>
         </div>
+        <Button onClick={() => setShowEnrollModal(true)} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+          <Plus className="w-4 h-4" /> {t("quick_enroll", "Quick Enroll")}
+        </Button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-card rounded-xl border border-border p-5 shadow-sm">
@@ -255,6 +268,47 @@ export default function FeeManagement() {
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => setShowPaymentModal(false)}>{t("cancel", "Cancel")}</Button>
               <Button className="flex-1 bg-green-600 hover:bg-green-700 text-white" onClick={handleConfirmPayment}>{t("confirm_payment", "Confirm Payment")}</Button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showEnrollModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-border">
+            <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><Plus className="w-5 h-5 text-blue-600" /> {t("quick_enroll", "Quick Enroll Student")}</h2>
+            <p className="text-sm text-muted-foreground">{t("quickly_register_a_student_to_", "Quickly register a student to generate their tuition billing profile.")}</p>
+            <div className="space-y-3">
+              <div>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("student_full_name", "Student Full Name")}</label>
+                <Input
+                  className="mt-1"
+                  value={enrollName}
+                  onChange={e => setEnrollName(e.target.value)}
+                  placeholder="e.g. Kwame Mensah"
+                  autoFocus
+                />
+              </div>
+            </div>
+            <div className="flex gap-3 pt-4">
+              <Button variant="outline" className="flex-1" onClick={() => setShowEnrollModal(false)}>{t("cancel", "Cancel")}</Button>
+              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={() => {
+                if (!enrollName.trim()) return toast.error("Enter student name");
+                const studentId = `STU-${Math.floor(1000 + Math.random() * 9000)}`;
+                mutateRecord.mutate({
+                  company_id: companyId,
+                  type: 'student',
+                  name: enrollName.trim(),
+                  id_number: studentId,
+                  status: 'active',
+                  notes: JSON.stringify({ feeStatus: 'Owing', class: 'Grade 7B', avatar: enrollName.trim().substring(0,2).toUpperCase() })
+                }, {
+                  onSuccess: () => {
+                    toast.success(`Enrolled ${enrollName} successfully!`);
+                    setShowEnrollModal(false);
+                    setEnrollName('');
+                  }
+                });
+              }}>{t("enroll_bill", "Enroll & Bill")}</Button>
             </div>
           </div>
         </div>

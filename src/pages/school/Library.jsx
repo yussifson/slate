@@ -12,6 +12,7 @@ import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } 
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
 import AddOptionInline from "@/components/shared/AddOptionInline";
+import { ViewModeToggle, BookGridCard } from '@/components/school/SchoolViewKit';
 
 export default function Library() {
   const { t } = useTranslation();
@@ -42,6 +43,7 @@ export default function Library() {
   // New Issue Book State
   const [issueBookTarget, setIssueBookTarget] = useState(null);
   const [borrowerName, setBorrowerName] = useState('');
+  const [viewMode, setViewMode] = useState('grid');
 
   // Form State
   const [formData, setFormData] = useState({
@@ -201,13 +203,13 @@ export default function Library() {
           </div>
         </div>
       </div>
-      <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
-        <div className="p-4 border-b border-border bg-muted/50">
-          <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input placeholder="Search catalog title, author or ISBN..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
-          </div>
+      <div className="bg-card rounded-xl border border-border p-4 shadow-sm flex items-center justify-between flex-wrap gap-4">
+        <div className="relative flex-1 min-w-[200px]">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input placeholder="Search catalog title, author or ISBN..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
         </div>
+        <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
+      </div>
         <div className="overflow-x-auto">
           {isDbLoading ? (
             <div className="py-12 text-center text-muted-foreground">{t("loading_catalog", "Loading catalog...")}</div>
@@ -220,7 +222,34 @@ export default function Library() {
                 "Record textbooks, reference dictionaries, or science manuals using the button above."
               )}</p>
             </div>
-          ) : (
+      ) : viewMode === 'grid' ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4">
+          {filtered.map(b => (
+            <BookGridCard
+              key={b.id}
+              book={b}
+              onView={() => setViewDetails(b)}
+              onIssue={() => setIssueBookTarget(b)}
+              onEdit={() => {
+                setEditingId(b.id);
+                setFormData({
+                  title: b.title,
+                  author: b.author,
+                  isbn: b.isbn,
+                  category: b.category,
+                  total: b.total,
+                  cover_url: b.cover_url || '',
+                  ebook_url: b.ebook_url || ''
+                });
+                setShowModal(true);
+              }}
+              onDelete={() => setDeleteTargetId(b.id)}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden mt-4">
+          <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-card border-b border-border">
                 <tr>
@@ -233,60 +262,58 @@ export default function Library() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {filtered.map(b => {
-                  return (
-                    <tr key={b.id} className="hover:bg-muted/50 transition-colors">
-                      <td className="px-6 py-4">
-                         <p className="font-semibold text-card-foreground">{b.title}</p>
-                         <p className="text-xs text-muted-foreground font-mono">{t("isbn", "ISBN:")} {b.isbn}</p>
-                      </td>
-                      <td className="px-6 py-4 text-muted-foreground">{b.author}</td>
-                      <td className="px-6 py-4">
-                        <span className="bg-muted text-muted-foreground px-2.5 py-1 rounded-md text-xs font-medium">
-                          {b.category}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-center text-foreground font-medium">{b.total}</td>
-                      <td className="px-6 py-4 text-center">
-                        <span className={`font-bold px-2.5 py-1 rounded-full text-xs ${b.available > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                          {b.available}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                              <MoreVertical className="h-4 w-4 text-muted-foreground" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-40">
-                            <DropdownMenuItem onClick={() => setViewDetails(b)}>{t("view_details", "View Details")}</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => setIssueBookTarget(b)} disabled={b.available === 0}>{t("issue_book", "Issue Book")}</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => {
-                              setEditingId(b.id);
-                              setFormData({
-                                title: b.title,
-                                author: b.author,
-                                isbn: b.isbn,
-                                category: b.category,
-                                total: b.total,
-                                cover_url: b.cover_url || '',
-                                ebook_url: b.ebook_url || ''
-                              });
-                              setShowModal(true);
-                            }}>{t("edit", "Edit")}</DropdownMenuItem>
-                            <DropdownMenuItem className="text-red-600 font-medium" onClick={() => setDeleteTargetId(b.id)}>{t("delete", "Delete")}</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </td>
-                    </tr>
-                  );
-                })}
+                {filtered.map(b => (
+                  <tr key={b.id} className="hover:bg-muted/50 transition-colors">
+                    <td className="px-6 py-4">
+                        <p className="font-semibold text-card-foreground">{b.title}</p>
+                        <p className="text-xs text-muted-foreground font-mono">{t("isbn", "ISBN:")} {b.isbn}</p>
+                    </td>
+                    <td className="px-6 py-4 text-muted-foreground">{b.author}</td>
+                    <td className="px-6 py-4">
+                      <span className="bg-muted text-muted-foreground px-2.5 py-1 rounded-md text-xs font-medium">
+                        {b.category}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-center text-foreground font-medium">{b.total}</td>
+                    <td className="px-6 py-4 text-center">
+                      <span className={`font-bold px-2.5 py-1 rounded-full text-xs ${b.available > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                        {b.available}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0">
+                            <MoreVertical className="h-4 w-4 text-muted-foreground" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-40">
+                          <DropdownMenuItem onClick={() => setViewDetails(b)}>{t("view_details", "View Details")}</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => setIssueBookTarget(b)} disabled={b.available === 0}>{t("issue_book", "Issue Book")}</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => {
+                            setEditingId(b.id);
+                            setFormData({
+                              title: b.title,
+                              author: b.author,
+                              isbn: b.isbn,
+                              category: b.category,
+                              total: b.total,
+                              cover_url: b.cover_url || '',
+                              ebook_url: b.ebook_url || ''
+                            });
+                            setShowModal(true);
+                          }}>{t("edit", "Edit")}</DropdownMenuItem>
+                          <DropdownMenuItem className="text-red-600 font-medium" onClick={() => setDeleteTargetId(b.id)}>{t("delete", "Delete")}</DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
-          )}
+          </div>
         </div>
-      </div>
+      )}
       
       {/* Add/Edit Modal */}
       {showModal && (

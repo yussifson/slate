@@ -115,6 +115,7 @@ export default function ReportsDashboard() {
   const { user } = useAuth();
   const companyId = user?.company_id;
   const isRetail = user?.company_industry === "retail";
+  const isSchool = user?.company_industry === "school";
   const [period, setPeriod] = useState("12");
   const currency = user?.company_currency || "USD";
   const months = parseInt(period, 10);
@@ -137,7 +138,7 @@ export default function ReportsDashboard() {
   const { data: cases = [] } = useQuery({
     queryKey: ["cases", companyId],
     queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId }),
-    enabled: !!companyId && !isRetail,
+    enabled: !!companyId && !isRetail && !isSchool,
   });
 
   const revenueData = useMemo(() => {
@@ -184,7 +185,7 @@ export default function ReportsDashboard() {
   }, [invoices]);
 
   const pipelineStages = useMemo(() => {
-    if (isRetail) return [];
+    if (isRetail || isSchool) return [];
     const stages = {};
     cases.forEach((c) => {
       const s = c.stage || c.status || "unspecified";
@@ -270,7 +271,7 @@ export default function ReportsDashboard() {
           sub={`${months} ${t("months", "months")}`}
         />
         <ReportMetricCard
-          title={isRetail ? t("active_customers", "Active customers") : t("active_clients", "Active clients")}
+          title={isRetail ? t("active_customers", "Active customers") : isSchool ? t("active_students", "Active students") : t("active_clients", "Active clients")}
           value={clients.filter((c) => c.status === "active").length}
           icon={Users}
           sub={`${clients.length} ${t("total_records", "total records")}`}
@@ -386,7 +387,7 @@ export default function ReportsDashboard() {
         </ReportSection>
       </div>
 
-      {!isRetail && pipelineStages.length > 0 && (
+      {!isRetail && !isSchool && pipelineStages.length > 0 && (
         <ReportSection
           title={t("pipeline_by_stage", "Pipeline by stage")}
           description={t("active_matters_by_workflow_stage", "Active matters by workflow stage")}
@@ -408,17 +409,17 @@ export default function ReportsDashboard() {
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         <ReportSection
-          title={t("top_clients_by_billing", "Top clients by billing")}
-          description={t("highest_value_relationships", "Highest value client relationships")}
+          title={isSchool ? t("top_students_by_billing", "Top students by billing") : isRetail ? t("top_customers_by_billing", "Top customers by billing") : t("top_clients_by_billing", "Top clients by billing")}
+          description={isSchool ? t("highest_value_students", "Highest value student accounts") : t("highest_value_relationships", "Highest value relationships")}
           icon={Users}
         >
           <div className="overflow-x-auto -mx-2">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border text-left">
-                  <th className={`py-4 px-3 text-xs font-bold ${THEME_BLUE} uppercase`}>Client</th>
+                  <th className={`py-4 px-3 text-xs font-bold ${THEME_BLUE} uppercase`}>{isSchool ? 'Student' : isRetail ? 'Customer' : 'Client'}</th>
                   <th className={`py-4 px-3 text-xs font-bold ${THEME_BLUE} uppercase text-right`}>Billed</th>
-                  <th className={`py-4 px-3 text-xs font-bold ${THEME_BLUE} uppercase text-center`}>Cases</th>
+                  <th className={`py-4 px-3 text-xs font-bold ${THEME_BLUE} uppercase text-center`}>{isSchool ? 'Classes' : 'Cases'}</th>
                   <th className={`py-4 px-3 text-xs font-bold ${THEME_BLUE} uppercase`}>Status</th>
                 </tr>
               </thead>

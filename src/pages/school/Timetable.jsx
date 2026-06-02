@@ -11,12 +11,12 @@ import { useCalendar } from '@/hooks/integrations/useCalendar';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
+import { useQuery } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 const PERIODS = [1, 2, 3, 4, 5, 6, 7, 8];
-const CLASS_LIST = ['Grade 7B', 'Grade 8C', 'Grade 9A', 'Grade 9B', 'Grade 10A', 'Grade 10B', 'Grade 11A', 'Grade 12A'];
 const SUBJECTS = ['Mathematics', 'Science', 'English', 'History', 'Chemistry', 'Physics', 'Geography', 'ICT', 'P.E.', 'Art'];
-const TEACHERS = ['Mr. John Doe', 'Mrs. Jane Smith', 'Mr. Kwesi Asante', 'Mrs. Ama Owusu', 'Mr. Kofi Mensah', 'Ms. Abena Sarpong'];
 
 const SLOT_COLORS = [
   'bg-blue-100 text-blue-800 border-blue-200',
@@ -62,6 +62,21 @@ export default function Timetable() {
   const { data: dbRecords = [], isLoading } = useIndustryRecords('timetable_slot');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
+
+  const { data: teamRecords = [] } = useQuery({
+    queryKey: ['employees', companyId],
+    queryFn: () => base44.entities.Employee.filter({ company_id: companyId }),
+    enabled: !!companyId
+  });
+  
+  const { data: classRecords = [] } = useQuery({
+    queryKey: ['cases', companyId],
+    queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId }),
+    enabled: !!companyId
+  });
+
+  const CLASS_LIST = classRecords.length > 0 ? [...new Set(classRecords.map(r => r.title))] : ['Grade 7B', 'Grade 8C', 'Grade 9A'];
+  const TEACHERS = teamRecords.length > 0 ? [...new Set(teamRecords.map(r => r.full_name))] : ['Mr. John Doe', 'Mrs. Jane Smith'];
 
   const slots = dbRecords.map(r => ({
     id: r.id,

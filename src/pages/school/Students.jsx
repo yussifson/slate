@@ -4,6 +4,7 @@ import { Users, Search, Plus, GraduationCap, Phone, Mail, Filter, MoreVertical, 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Link } from 'react-router-dom';
+import { ViewModeToggle, StudentGridCard } from '@/components/school/SchoolViewKit';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/lib/AuthContext';
@@ -25,6 +26,7 @@ export default function Students() {
   const [search, setSearch] = useState('');
   const [filterClass, setFilterClass] = useState('All');
   const [showModal, setShowModal] = useState(false);
+  const [viewMode, setViewMode] = useState('grid');
 
   // Real Database Hooks
   const queryClient = useQueryClient();
@@ -183,19 +185,50 @@ export default function Students() {
             })}
           </div>
         </div>
+        <div className="mt-4 flex justify-end">
+          <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
+        </div>
       </div>
       {/* Student Table */}
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-muted border-b border-border">
-              <tr>
-                {['Student', 'ID', 'Class', 'Age', 'Parent / Guardian', 'Fee Status', 'Status', 'Actions'].map(h => {
-                  return (<th key={h} className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{h}</th>);
-                })}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
+        {filtered.length === 0 ? (
+          <div className="text-center py-12 text-muted-foreground">
+            <Users className="w-10 h-10 mx-auto mb-3 opacity-30" />
+            <p>{t("no_students_found", "No students found")}</p>
+          </div>
+        ) : viewMode === 'grid' ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6 bg-slate-50/50">
+            {filtered.map(s => (
+              <StudentGridCard
+                key={s.id}
+                student={s}
+                onView={() => setViewDetails(s)}
+                onEdit={() => {
+                  setEditingId(s.id);
+                  setFormData({ 
+                    ...s, 
+                    firstName: s.name?.split(' ')[0] || '', 
+                    lastName: s.name?.split(' ').slice(1).join(' ') || '',
+                    parentName: s.parent,
+                    parentPhone: s.phone
+                  });
+                  setShowModal(true);
+                }}
+                onDelete={() => handleDelete(s.id)}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-muted border-b border-border">
+                <tr>
+                  {['Student', 'ID', 'Class', 'Age', 'Parent / Guardian', 'Fee Status', 'Status', 'Actions'].map(h => {
+                    return (<th key={h} className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{h}</th>);
+                  })}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
               {filtered.map(s => {
                 return (
                   <tr key={s.id} className="hover:bg-muted/50 transition-colors">
@@ -248,15 +281,10 @@ export default function Students() {
                   </tr>
                 );
               })}
-            </tbody>
-          </table>
-          {filtered.length === 0 && (
-            <div className="text-center py-12 text-muted-foreground">
-              <Users className="w-10 h-10 mx-auto mb-3 opacity-30" />
-              <p>{t("no_students_found", "No students found")}</p>
-            </div>
-          )}
-        </div>
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
       {/* Add Student Modal */}
       {showModal && (

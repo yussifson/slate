@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from "react-i18next";
-import { Plus, Search, Eye, ShoppingCart, Check, X, FileText, Download, MoreVertical } from 'lucide-react';
+import { Plus, Search, Eye, ShoppingCart, Check, X, FileText, Download, MoreVertical, Edit2, Trash2 } from 'lucide-react';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import ConfirmationModal from '@/components/ConfirmationModal';
 
 export default function PurchaseOrders() {
   const { t } = useTranslation();
@@ -25,6 +26,8 @@ export default function PurchaseOrders() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isNewDialogOpen, setIsNewDialogOpen] = useState(false);
   const [selectedPO, setSelectedPO] = useState(null);
+  const [deleteTargetId, setDeleteTargetId] = useState(null);
+  const [editingPOId, setEditingPOId] = useState(null);
 
   // New PO State
   const [newPO, setNewPO] = useState({
@@ -73,6 +76,28 @@ export default function PurchaseOrders() {
     });
   };
 
+  const handleEdit = (po) => {
+    setEditingPOId(po.id);
+    setNewPO({
+      supplierId: po.data?.supplierId || '',
+      items: po.data?.items || [],
+      status: po.data?.status || 'draft',
+      notes: po.data?.notes || ''
+    });
+    setIsNewDialogOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (!deleteTargetId) return;
+    try {
+      await deleteRecord.mutateAsync({ id: deleteTargetId, recordType: 'purchase_order' });
+      toast.success(t("po_deleted", "Purchase Order deleted"));
+      setDeleteTargetId(null);
+    } catch (error) {
+      toast.error("Failed to delete purchase order");
+    }
+  };
+
   const handleCreatePO = async () => {
     if (!newPO.supplierId || newPO.items.length === 0) {
       toast.error(t("fill_required_fields", "Please select a supplier and add at least one item."));
@@ -81,26 +106,28 @@ export default function PurchaseOrders() {
 
     const supplier = suppliers.find(s => s.id === newPO.supplierId);
     const total = newPO.items.reduce((sum, item) => sum + (item.quantity * item.unitCost), 0);
-    const poNumber = "PO-" + Math.floor(Math.random() * 1000000);
+    const poNumber = editingPOId ? purchaseOrders.find(po => po.id === editingPOId)?.data?.poNumber : "PO-" + Math.floor(Math.random() * 1000000);
 
     const payload = {
       ...newPO,
       supplierName: supplier?.data?.name,
       total,
       poNumber,
-      orderDate: new Date().toISOString()
+      orderDate: editingPOId ? purchaseOrders.find(po => po.id === editingPOId)?.data?.orderDate : new Date().toISOString()
     };
 
     try {
       await mutateRecord.mutateAsync({
+        ...(editingPOId ? { id: editingPOId } : {}),
         recordType: 'purchase_order',
         payload,
         status: newPO.status,
         searchText: `${poNumber} ${supplier?.data?.name} ${newPO.status}`.toLowerCase()
       });
-      toast.success(t("po_created", "Purchase Order created successfully"));
+      toast.success(editingPOId ? t("po_updated", "Purchase Order updated") : t("po_created", "Purchase Order created successfully"));
       setIsNewDialogOpen(false);
       setNewPO({ supplierId: '', items: [], status: 'draft', notes: '' });
+      setEditingPOId(null);
     } catch (error) {
       toast.error(t("po_create_error", "Error creating PO"));
     }
@@ -124,12 +151,12 @@ export default function PurchaseOrders() {
       for (const item of updatedPO.items) {
         const productData = products.find(p => p.id === item.productId);
         if (productData) {
-          const currentStock = Number(productData.data?.quantity || 0);
+          const currentStock = Number(productData.data?.stock || 0);
           const newStock = currentStock + Number(item.quantity);
           await mutateRecord.mutateAsync({
             id: productData.id,
             recordType: 'product',
-            payload: { ...productData.data, quantity: newStock },
+            payload: { ...productData.data, stock: newStock },
             status: productData.status,
             searchText: productData.searchText
           });
@@ -218,9 +245,25 @@ export default function PurchaseOrders() {
                     <td className="px-6 py-4 font-medium">${Number(po.data?.total || 0).toFixed(2)}</td>
                     <td className="px-6 py-4">{getStatusBadge(po.data?.status)}</td>
                     <td className="px-6 py-4 text-right">
-                      <Button variant="ghost" size="icon" onClick={() => openSheet(po)} className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50">
-                        <Eye className="w-4 h-4" />
-                      </Button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0">
+                            <span className="sr-only">Open menu</span>
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => openSheet(po)}>
+                            <Eye className="mr-2 h-4 w-4" /> {t("view_details", "View Details")}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleEdit(po)}>
+                            <Edit2 className="mr-2 h-4 w-4" /> {t("edit", "Edit")}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => setDeleteTargetId(po.id)} className="text-red-600">
+                            <Trash2 className="mr-2 h-4 w-4" /> {t("delete", "Delete")}
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </td>
                   </tr>
                 ))}
@@ -310,10 +353,16 @@ export default function PurchaseOrders() {
       </Sheet>
 
       {/* New PO Dialog */}
-      <Dialog open={isNewDialogOpen} onOpenChange={setIsNewDialogOpen}>
+      <Dialog open={isNewDialogOpen} onOpenChange={(open) => {
+        setIsNewDialogOpen(open);
+        if (!open) {
+          setEditingPOId(null);
+          setNewPO({ supplierId: '', items: [], status: 'draft', notes: '' });
+        }
+      }}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{t("create_po", "Create Purchase Order")}</DialogTitle>
+            <DialogTitle>{editingPOId ? t("edit_po", "Edit Purchase Order") : t("create_po", "Create Purchase Order")}</DialogTitle>
             <DialogDescription>{t("create_po_desc", "Order new stock from suppliers.")}</DialogDescription>
           </DialogHeader>
           
@@ -420,10 +469,18 @@ export default function PurchaseOrders() {
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsNewDialogOpen(false)}>{t("cancel", "Cancel")}</Button>
-            <Button onClick={handleCreatePO} className="bg-blue-600 hover:bg-blue-700 text-white">{t("create", "Create PO")}</Button>
+            <Button onClick={handleCreatePO} className="bg-blue-600 hover:bg-blue-700 text-white">{editingPOId ? t("update", "Update PO") : t("create", "Create PO")}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <ConfirmationModal
+        isOpen={deleteTargetId !== null}
+        onClose={() => setDeleteTargetId(null)}
+        onConfirm={handleDelete}
+        title="Delete Purchase Order"
+        message="Are you sure you want to delete this purchase order? This action cannot be undone."
+      />
     </div>
   );
 }

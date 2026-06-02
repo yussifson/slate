@@ -4,6 +4,7 @@ import { Calendar, Clock, MapPin, Plus, FileText, Trash2, Search, MoreVertical }
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Link } from 'react-router-dom';
+import { ViewModeToggle, ExamGridCard } from '@/components/school/SchoolViewKit';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
@@ -34,6 +35,7 @@ export default function Exams() {
   const [deleteTargetId, setDeleteTargetId] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [viewDetails, setViewDetails] = useState(null);
+  const [viewMode, setViewMode] = useState('grid');
 
   // Form State
   const [formData, setFormData] = useState({
@@ -158,11 +160,12 @@ export default function Exams() {
           <Plus className="w-4 h-4" /> {t("schedule_exam", "Schedule Exam")}
         </Button>
       </div>
-      <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
-        <div className="relative max-w-md">
+      <div className="bg-card rounded-xl border border-border p-4 shadow-sm flex items-center justify-between flex-wrap gap-4">
+        <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input placeholder="Search scheduled exams by subject..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
         </div>
+        <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
       </div>
       {isDbLoading ? (
         <div className="py-12 text-center text-muted-foreground">{t("loading_calendar", "Loading calendar...")}</div>
@@ -175,64 +178,94 @@ export default function Exams() {
             "Create mid-terms, final practicals, invigilation venue cards using the top right button."
           )}</p>
         </div>
+      ) : viewMode === 'grid' ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filtered.map(exam => (
+            <ExamGridCard
+              key={exam.id}
+              exam={exam}
+              onView={() => setViewDetails(exam)}
+              onStatusChange={handleUpdateStatus}
+              onEdit={() => {
+                setEditingId(exam.id);
+                setFormData({
+                  subject: exam.subject,
+                  class: exam.class,
+                  date: exam.date,
+                  time: exam.time,
+                  duration: exam.duration,
+                  venue: exam.venue
+                });
+                setShowModal(true);
+              }}
+              onDelete={() => setDeleteTargetId(exam.id)}
+            />
+          ))}
+        </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map(exam => {
-            return (
-              <div key={exam.id} className="bg-card rounded-xl border border-border p-5 shadow-sm hover:shadow-md transition-shadow relative group">
-                <div className="flex justify-between items-start mb-4">
-                  <select
-                    value={exam.status}
-                    onChange={e => handleUpdateStatus(exam, e.target.value)}
-                    className={`text-xs font-bold px-2 py-0.5 rounded border border-transparent bg-muted cursor-pointer`}
-                  >
-                    <option>{t("upcoming", "Upcoming")}</option>
-                    <option>{t("ongoing", "Ongoing")}</option>
-                    <option>{t("completed", "Completed")}</option>
-                  </select>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-8 w-8 p-0">
-                        <MoreVertical className="h-4 w-4 text-muted-foreground" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-40">
-                      <DropdownMenuItem onClick={() => setViewDetails(exam)}>{t("view_details", "View Details")}</DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => {
-                        setEditingId(exam.id);
-                        setFormData({
-                          subject: exam.subject,
-                          class: exam.class,
-                          date: exam.date,
-                          time: exam.time,
-                          duration: exam.duration,
-                          venue: exam.venue
-                        });
-                        setShowModal(true);
-                      }}>{t("edit", "Edit")}</DropdownMenuItem>
-                      <DropdownMenuItem className="text-red-600 font-medium" onClick={() => setDeleteTargetId(exam.id)}>{t("delete", "Delete")}</DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-                <h3 className="text-lg font-bold text-card-foreground mb-1">{exam.subject}</h3>
-                <p className="text-sm font-medium mb-4"><Link to="/classes" className="text-blue-600 hover:underline">{exam.class}</Link></p>
-                <div className="space-y-3 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-3">
-                    <Calendar className="w-4 h-4 text-muted-foreground" />
-                    <span>{new Date(exam.date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Clock className="w-4 h-4 text-muted-foreground" />
-                    <span>{exam.time} ({exam.duration})</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <MapPin className="w-4 h-4 text-muted-foreground" />
-                    <span>{t("venue", "Venue:")} <strong>{exam.venue}</strong></span>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+        <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden mt-4">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-card border-b border-border">
+                <tr>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("subject", "Subject")}</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("class", "Class")}</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("date_time", "Date & Time")}</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("venue", "Venue")}</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("status", "Status")}</th>
+                  <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("actions", "Actions")}</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {filtered.map(exam => (
+                  <tr key={exam.id} className="hover:bg-muted/50 transition-colors">
+                    <td className="px-6 py-4 font-bold text-card-foreground">{exam.subject}</td>
+                    <td className="px-6 py-4 font-medium"><Link to="/classes" className="text-blue-600 hover:underline">{exam.class}</Link></td>
+                    <td className="px-6 py-4 text-muted-foreground">
+                      {new Date(exam.date).toLocaleDateString()} at {exam.time}
+                    </td>
+                    <td className="px-6 py-4 text-muted-foreground">{exam.venue}</td>
+                    <td className="px-6 py-4">
+                      <select
+                        value={exam.status}
+                        onChange={e => handleUpdateStatus(exam, e.target.value)}
+                        className={`text-xs font-bold px-2 py-0.5 rounded border border-transparent bg-muted cursor-pointer`}
+                      >
+                        <option>{t("upcoming", "Upcoming")}</option>
+                        <option>{t("ongoing", "Ongoing")}</option>
+                        <option>{t("completed", "Completed")}</option>
+                      </select>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0">
+                            <MoreVertical className="h-4 w-4 text-muted-foreground" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-40">
+                          <DropdownMenuItem onClick={() => setViewDetails(exam)}>{t("view_details", "View Details")}</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => {
+                            setEditingId(exam.id);
+                            setFormData({
+                              subject: exam.subject,
+                              class: exam.class,
+                              date: exam.date,
+                              time: exam.time,
+                              duration: exam.duration,
+                              venue: exam.venue
+                            });
+                            setShowModal(true);
+                          }}>{t("edit", "Edit")}</DropdownMenuItem>
+                          <DropdownMenuItem className="text-red-600 font-medium" onClick={() => setDeleteTargetId(exam.id)}>{t("delete", "Delete")}</DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
       {showModal && (
