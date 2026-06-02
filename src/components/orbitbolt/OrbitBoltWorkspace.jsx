@@ -60,7 +60,7 @@ You can converse naturally with the user, answer questions, and help them refine
 CRITICAL: If the user is just saying "Hi", asking a question, or chatting normally WITHOUT asking you to build, create, or update a module/app, you MUST NOT output a <SCHEMA> tag. Just reply conversationally.
 
 When the user asks you to build, create, or update a module/app, you MUST output a valid JSON schema wrapped EXACTLY in <SCHEMA>...</SCHEMA> tags.
-Do NOT output the JSON outside of these tags. You can explain your changes outside the tags.
+CRITICAL RULE: DO NOT mention the JSON schema, the <SCHEMA> tags, or your underlying architecture in your conversational response to the user. This is an invisible background system. Just say "I have generated the module" and put the tags at the very end.
 
 The JSON inside <SCHEMA> must follow this exact structure:
 {
@@ -183,14 +183,14 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
       let parsedSchema = null;
       let aiResponseMsg = responseText;
 
-      // Extract JSON if it's wrapped in <SCHEMA>...</SCHEMA>
-      const schemaMatch = responseText.match(/<SCHEMA>([\s\S]*?)<\/SCHEMA>/);
+      // Extract JSON if it's wrapped in <SCHEMA>...</SCHEMA> (or typo variants)
+      const schemaMatch = responseText.match(/<S?CHEMA>([\s\S]*?)<\/S?CHEMA>/i);
       
       if (schemaMatch && schemaMatch[1]) {
         try {
           parsedSchema = JSON.parse(schemaMatch[1].trim());
-          // Remove the schema from the message we show the user
-          aiResponseMsg = responseText.replace(/<SCHEMA>[\s\S]*?<\/SCHEMA>/, '').trim();
+          // Remove the schema completely from the user-facing message
+          aiResponseMsg = responseText.replace(/<S?CHEMA>[\s\S]*?<\/S?CHEMA>/ig, '').trim();
           if (!aiResponseMsg) aiResponseMsg = "I've updated the architecture.";
         } catch (e) {
           console.error("Failed to parse schema from AI:", e);
@@ -312,7 +312,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
         )}
 
         {/* Center Panel: Chat Interface */}
-        <Panel defaultSize={35} minSize={25} maxSize={50} className="flex flex-col bg-background relative border-r border-border z-10">
+        <Panel defaultSize={35} minSize={25} maxSize={50} className="flex flex-col bg-background/50 backdrop-blur-sm relative border-r border-border shadow-xl z-10">
           <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 space-y-6 scrollbar-thin scrollbar-thumb-muted">
             {activeSession?.messages.map((m, i) => (
               <motion.div 
@@ -323,8 +323,8 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
               >
                 {/* Avatar */}
                 {m.role === 'assistant' && (
-                  <div className="shrink-0 w-7 h-7 rounded-full bg-primary/20 text-primary flex items-center justify-center border border-primary/20">
-                    <Sparkles className="w-3.5 h-3.5" />
+                  <div className="shrink-0 w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20 text-blue-500 flex items-center justify-center border border-blue-500/20 shadow-sm">
+                    <Sparkles className="w-4 h-4" />
                   </div>
                 )}
                 
@@ -332,8 +332,8 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
                 <div className={clsx(
                   "max-w-[85%] text-[14px] leading-relaxed", 
                   m.role === 'user' 
-                    ? 'bg-muted text-foreground rounded-2xl rounded-tr-sm px-4 py-3 border border-border/50 shadow-sm' 
-                    : 'text-foreground prose prose-sm dark:prose-invert prose-p:leading-relaxed prose-pre:bg-muted prose-pre:border prose-pre:border-border'
+                    ? 'bg-primary text-primary-foreground rounded-2xl rounded-tr-sm px-4 py-3 shadow-md' 
+                    : 'text-foreground prose prose-sm dark:prose-invert prose-p:leading-relaxed prose-pre:bg-muted prose-pre:border prose-pre:border-border prose-pre:rounded-xl'
                 )}>
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
                 </div>
@@ -355,9 +355,9 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
           </div>
 
           {/* V0 Style Input Area */}
-          <div className="p-4 bg-background shrink-0 border-t border-border/30">
+          <div className="p-4 bg-background/50 backdrop-blur-sm shrink-0 border-t border-border/30">
             <form onSubmit={handleSend} className="relative max-w-3xl mx-auto group">
-              <div className="relative bg-card border border-border rounded-xl overflow-hidden flex flex-col focus-within:ring-1 focus-within:ring-primary/50 focus-within:border-primary/50 transition-all shadow-md">
+              <div className="relative bg-card/80 backdrop-blur-md border border-border/60 rounded-2xl overflow-hidden flex flex-col focus-within:ring-2 focus-within:ring-primary/30 focus-within:border-primary/50 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)]">
                 <textarea
                   value={input}
                   onChange={e => setInput(e.target.value)}
@@ -368,12 +368,12 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
                     }
                   }}
                   placeholder="Ask OrbitBolt to build..."
-                  className="w-full bg-transparent border-none resize-none px-4 py-4 text-[14px] text-foreground placeholder:text-muted-foreground focus:outline-none min-h-[100px] max-h-[250px] scrollbar-thin scrollbar-thumb-muted"
+                  className="w-full bg-transparent border-none resize-none px-5 py-4 text-[15px] text-foreground placeholder:text-muted-foreground focus:outline-none min-h-[120px] max-h-[250px] scrollbar-thin scrollbar-thumb-muted"
                   disabled={isGenerating}
                 />
-                <div className="flex items-center justify-between px-3 pb-3">
+                <div className="flex items-center justify-between px-4 pb-3">
                   <div className="flex items-center gap-2">
-                    <div className="px-2 py-1 rounded bg-muted text-muted-foreground text-[10px] font-mono flex items-center gap-1 border border-border/50 shadow-sm">
+                    <div className="px-2.5 py-1 rounded-full bg-primary/10 text-primary text-[11px] font-semibold flex items-center gap-1.5 border border-primary/20">
                       <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block animate-pulse" /> OrbitBolt Mini
                     </div>
                   </div>
@@ -381,9 +381,9 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
                     type="submit" 
                     size="icon"
                     disabled={!input.trim() || isGenerating}
-                    className="h-8 w-8 bg-foreground hover:bg-foreground/90 text-background rounded-lg disabled:opacity-50 transition-transform active:scale-95 shadow-sm"
+                    className="h-9 w-9 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full disabled:opacity-50 transition-transform active:scale-95 shadow-md shadow-primary/20"
                   >
-                    <Send className="w-3.5 h-3.5" />
+                    <Send className="w-4 h-4 ml-0.5" />
                   </Button>
                 </div>
               </div>
