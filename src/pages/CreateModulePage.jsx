@@ -79,7 +79,6 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false }
   const { name, description, icon, layout, theme, moduleType, fields } = state;
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [isBoltOpen, setIsBoltOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   React.useEffect(() => {
