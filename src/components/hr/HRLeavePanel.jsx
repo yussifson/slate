@@ -143,6 +143,7 @@ function LeaveList({ leaves, isAdmin, onApprove, onReject }) {
 }
 
 function LeaveRequestDialog({ open, onClose, onSubmit, isAdmin, staffRecords }) {
+  const { t } = useTranslation();
   const [form, setForm] = useState({ leave_type: "annual", start_date: "", end_date: "", reason: "", _for_staff_email: "", _for_staff_name: "" });
   const days = form.start_date && form.end_date ? Math.max(1, differenceInCalendarDays(parseISO(form.end_date), parseISO(form.start_date)) + 1) : 0;
   const handleSubmit = (e) => { e.preventDefault(); onSubmit({ ...form, days_requested: days }); };

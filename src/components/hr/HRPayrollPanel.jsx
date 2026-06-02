@@ -408,6 +408,7 @@ function SalarySlipDialog({ slip, currency, onClose }) {
 }
 
 function EditSlipDialog({ slip, currency, onClose, onSubmit }) {
+  const { t } = useTranslation();
   const [allowances, setAllowances] = useState(slip.allowances || []);
   const [deductions, setDeductions] = useState(slip.deductions || []);
   const [notes, setNotes] = useState(slip.notes || "");

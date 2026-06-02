@@ -138,6 +138,7 @@ function ComplaintFormDialog({ onClose, onSubmit, staff }) {
 }
 
 function ComplaintViewDialog({ complaint, onClose, isAdmin, onUpdate, reviewerEmail }) {
+  const { t } = useTranslation();
   const [notes, setNotes] = useState(complaint.resolution_notes || "");
   return (
     <Dialog open onOpenChange={onClose}>
