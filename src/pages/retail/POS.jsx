@@ -1,6 +1,9 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { ShoppingCart, Search, Plus, Minus, CreditCard, X, Receipt, ScanBarcode } from 'lucide-react';
+import { ShoppingCart, Search, Plus, Minus, CreditCard, X, Receipt, ScanBarcode, UserPlus, Wallet, Banknote, History, Save, ShieldAlert } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '@/lib/AuthContext';
+import { isRetailAdmin, isRetailCashier } from '@/lib/constants';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord } from '@/hooks/useIndustryData';
@@ -10,8 +13,12 @@ import { useCompanyId } from "@/hooks/useCompanyId";
 
 export default function POS() {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const companyId = useCompanyId();
   const { processPayment } = usePayment();
+  
+  const canAccess = isRetailAdmin(user) || isRetailCashier(user);
+
   // Supabase Real-time Sync Hooks
   const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('product');
   const { data: customerRecords = [] } = useIndustryRecords('customer');
@@ -193,6 +200,23 @@ export default function POS() {
     p.name?.toLowerCase().includes(search.toLowerCase()) || 
     p.sku?.includes(search)
   );
+
+  if (!canAccess) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 h-[calc(100vh-100px)]">
+        <div className="w-20 h-20 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-6">
+          <ShieldAlert className="w-10 h-10 text-red-600 dark:text-red-500" />
+        </div>
+        <h2 className="text-2xl font-bold text-foreground mb-3">Access Restricted</h2>
+        <p className="text-muted-foreground max-w-md mx-auto mb-8">
+          Your current role does not grant you permission to use the Point of Sale system.
+        </p>
+        <Button asChild variant="outline">
+          <Link to="/retail-dashboard">Return to Dashboard</Link>
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="h-[calc(100vh-120px)] flex flex-col md:flex-row gap-6">

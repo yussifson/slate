@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { Package, Search, Plus, AlertTriangle, Trash2, Edit2, X, DollarSign, ShoppingBag, TrendingDown, MoreVertical, Eye, Edit } from 'lucide-react';
+import { Package, Search, Plus, AlertTriangle, Trash2, Edit2, X, DollarSign, ShoppingBag, TrendingDown, MoreVertical, Eye, Edit, ShieldAlert } from 'lucide-react';
 import { ViewModeToggle, RetailStatCard, InventoryGridCard } from '@/components/retail/RetailViewKit';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
@@ -11,6 +11,8 @@ import { Input } from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
+import { useAuth } from '@/lib/AuthContext';
+import { isRetailAdmin, isRetailInventoryManager } from '@/lib/constants';
 
 const CATEGORIES = ['Electronics', 'Apparel', 'Footwear', 'Groceries', 'Fitness', 'Home & Living', 'Beauty', 'Other'];
 
@@ -40,6 +42,10 @@ const emptyForm = {
 
 export default function Inventory() {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  
+  const canAccess = isRetailAdmin(user) || isRetailInventoryManager(user);
+  
   const { data: dbRecords = [], isLoading } = useIndustryRecords('product');
   const { data: supplierRecords = [] } = useIndustryRecords('supplier');
   const mutateRecord = useMutateIndustryRecord();
@@ -167,6 +173,23 @@ export default function Inventory() {
       </div>
     );
   };
+
+  if (!canAccess) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500">
+        <div className="w-20 h-20 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-6">
+          <ShieldAlert className="w-10 h-10 text-red-600 dark:text-red-500" />
+        </div>
+        <h2 className="text-2xl font-bold text-foreground mb-3">Access Restricted</h2>
+        <p className="text-muted-foreground max-w-md mx-auto mb-8">
+          Your current role does not grant you permission to view or manage the Inventory. Please contact your Store Manager if you believe this is an error.
+        </p>
+        <Button asChild variant="outline">
+          <Link to="/retail-dashboard">Return to Dashboard</Link>
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

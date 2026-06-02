@@ -110,15 +110,35 @@ function BlueTooltip({ active, payload, label, prefix = "", suffix = "" }) {
   );
 }
 
+import { Link } from 'react-router-dom';
+import { ShieldAlert } from 'lucide-react';
+import { isRetailAdmin } from '@/lib/constants';
+
 export default function ReportsDashboard() {
   const { t } = useTranslation();
   const { user } = useAuth();
   const companyId = user?.company_id;
-  const isRetail = user?.company_industry === "retail";
+  const isRetail = user?.company_industry === "retail" || user?.company_industry === "retail_sale";
   const isSchool = user?.company_industry === "school";
   const [period, setPeriod] = useState("12");
   const currency = user?.company_currency || "USD";
   const months = parseInt(period, 10);
+
+  if (isRetail && !isRetailAdmin(user)) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 h-[calc(100vh-100px)]">
+        <div className="w-20 h-20 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-6">
+          <ShieldAlert className="w-10 h-10 text-red-600 dark:text-red-500" />
+        </div>
+        <h2 className="text-2xl font-bold text-foreground mb-3">Access Restricted</h2>
+        <p className="text-muted-foreground max-w-md mx-auto mb-8">
+          Your current role does not grant you permission to view the Reports Dashboard.
+        </p>
+        <div className="bg-card">
+        </div>
+      </div>
+    );
+  }
 
   const { data: invoices = [] } = useQuery({
     queryKey: ["invoices", companyId],

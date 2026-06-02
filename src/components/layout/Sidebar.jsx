@@ -115,7 +115,13 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
     paralegal: ["/my-dashboard", "/cases", "/clients", "/calendar", "/tasks", "/documents", "/research", "/email-inbox"],
     hr: ["/my-dashboard", "/hr", "/team", "/performance", "/documents", "/tasks", "/calendar"],
     finance: ["/my-dashboard", "/invoices", "/billing", "/tasks", "/documents", "/calendar"],
-    support: ["/my-dashboard", "/tasks", "/documents", "/calendar", "/whatsapp", "/email-inbox"]
+    support: ["/my-dashboard", "/tasks", "/documents", "/calendar", "/whatsapp", "/email-inbox"],
+    
+    // Retail Roles
+    store_manager: ["/retail-dashboard", "/pos", "/orders", "/purchase-orders", "/inventory", "/suppliers", "/sales", "/promotions", "/loyalty", "/shifts", "/retail-customers", "/reports", "/team", "/tasks", "/calendar", "/email-inbox"],
+    cashier: ["/retail-dashboard", "/pos", "/orders", "/retail-customers", "/loyalty", "/shifts", "/tasks"],
+    inventory_clerk: ["/retail-dashboard", "/inventory", "/purchase-orders", "/suppliers", "/shifts", "/tasks"],
+    sales_associate: ["/retail-dashboard", "/pos", "/orders", "/retail-customers", "/shifts", "/tasks"]
   };
 
   const allowedPaths = isAdmin ? null : (ROLE_PERMISSIONS[user?.role] || ROLE_PERMISSIONS.support);

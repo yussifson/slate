@@ -48,6 +48,11 @@ export const isCompanyAdmin = (user) => user?.role === "company_admin";
 export const isAdmin = (user) => ["super_admin", "company_admin"].includes(user?.role);
 export const isLawyer = (user) => ["lawyer", "paralegal"].includes(user?.role);
 
+// Retail Role Helpers
+export const isRetailAdmin = (user) => ["super_admin", "company_admin", "store_manager"].includes(user?.role);
+export const isRetailCashier = (user) => user?.role === "cashier";
+export const isRetailInventoryManager = (user) => ["super_admin", "company_admin", "store_manager", "inventory_clerk"].includes(user?.role);
+
 export const formatCurrency = (amount, currency = "GHS") => {
   const curr = CURRENCIES[currency] || CURRENCIES.GHS;
   return `${curr.symbol}${(amount || 0).toLocaleString("en", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;

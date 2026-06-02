@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useTranslation } from "react-i18next";
-import { Plus, Search, Eye, ShoppingCart, Check, X, FileText, Download, MoreVertical, Edit2, Trash2 } from 'lucide-react';
+import { Search, Plus, FileText, CheckCircle2, Clock, Ban, Eye, FileDown, Trash2, Mail, Edit, ShieldAlert, ShoppingCart, Check, X, MoreVertical, Edit2 } from 'lucide-react';
+import { useAuth } from '@/lib/AuthContext';
+import { isRetailAdmin, isRetailInventoryManager } from '@/lib/constants';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 
 import { Button } from "@/components/ui/button";
@@ -12,9 +14,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { format } from "date-fns";
 import ConfirmationModal from '@/components/ConfirmationModal';
+import { Link } from 'react-router-dom';
 
 export default function PurchaseOrders() {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  
+  const canAccess = isRetailAdmin(user) || isRetailInventoryManager(user);
+  
   const { data: purchaseOrders = [], isLoading: isPOLoading } = useIndustryRecords('purchase_order');
   const { data: suppliers = [], isLoading: isSuppliersLoading } = useIndustryRecords('supplier');
   const { data: products = [], isLoading: isProductsLoading } = useIndustryRecords('product');
@@ -194,6 +201,23 @@ export default function PurchaseOrders() {
     return (
       <div className="flex-1 p-6 flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (!canAccess) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500">
+        <div className="w-20 h-20 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-6">
+          <ShieldAlert className="w-10 h-10 text-red-600 dark:text-red-500" />
+        </div>
+        <h2 className="text-2xl font-bold text-foreground mb-3">Access Restricted</h2>
+        <p className="text-muted-foreground max-w-md mx-auto mb-8">
+          Your current role does not grant you permission to view or manage Purchase Orders.
+        </p>
+        <Button asChild variant="outline">
+          <Link to="/retail-dashboard">Return to Dashboard</Link>
+        </Button>
       </div>
     );
   }
