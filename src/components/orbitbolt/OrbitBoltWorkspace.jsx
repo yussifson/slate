@@ -331,7 +331,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
                 </div>
               </div>
         </Panel>
-        <PanelResizeHandle className="w-1 bg-transparent hover:bg-blue-500/50 transition-colors cursor-col-resize active:bg-blue-500/80" />
+        <PanelResizeHandle className="w-1.5 bg-blue-500/30 hover:bg-blue-500 transition-colors cursor-col-resize active:bg-blue-600 shadow-sm" />
 
         {/* Center Panel: Chat Interface */}
         <Panel 
@@ -421,7 +421,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
           </div>
         </Panel>
 
-        <PanelResizeHandle className="w-1 bg-transparent hover:bg-primary/50 transition-colors cursor-col-resize active:bg-primary/80" />
+        <PanelResizeHandle className="w-1.5 bg-blue-500/30 hover:bg-blue-500 transition-colors cursor-col-resize active:bg-blue-600 shadow-sm" />
 
         {/* Right Panel: Live Preview ONLY (No Schema view) */}
         <Panel defaultSize={47} className="flex flex-col bg-muted/20 relative p-4 md:p-6">
@@ -519,12 +519,32 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
                 </div>
               </motion.div>
             ) : (
-              <div className="flex flex-col items-center justify-center h-full text-muted-foreground max-w-sm mx-auto text-center">
-                <div className="w-16 h-16 rounded-2xl bg-muted border border-border flex items-center justify-center mb-6 shadow-sm">
-                  <Sparkles className="w-8 h-8 opacity-40 text-foreground" />
+              <div className="flex flex-col items-center justify-center h-full w-full relative overflow-hidden">
+                {/* Background decorative blobs */}
+                <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl" />
+                <div className="absolute bottom-1/4 left-1/4 w-72 h-72 bg-indigo-500/10 rounded-full blur-3xl" />
+                
+                <div className="relative z-10 flex flex-col items-center justify-center text-center p-8 bg-card/60 backdrop-blur-xl border border-border/50 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] max-w-md w-full">
+                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 p-0.5 mb-8 shadow-lg shadow-blue-500/20">
+                    <div className="w-full h-full bg-card rounded-[14px] flex items-center justify-center relative overflow-hidden">
+                      <div className="absolute inset-0 bg-blue-500/10" />
+                      <Sparkles className="w-10 h-10 text-blue-500 relative z-10 animate-pulse duration-3000" />
+                    </div>
+                  </div>
+                  
+                  <h2 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-foreground to-foreground/70 mb-4 tracking-tight">
+                    What will you build?
+                  </h2>
+                  
+                  <p className="text-base text-muted-foreground leading-relaxed px-4">
+                    Describe your dream module in the chat panel. OrbitBolt will instantly generate the architecture, UI, and database schema for you.
+                  </p>
+                  
+                  <div className="mt-8 flex gap-3">
+                    <div className="px-4 py-2 rounded-full bg-muted border border-border text-xs font-medium text-muted-foreground">"Build a CRM pipeline"</div>
+                    <div className="px-4 py-2 rounded-full bg-muted border border-border text-xs font-medium text-muted-foreground">"Create an HR dashboard"</div>
+                  </div>
                 </div>
-                <div className="text-2xl font-bold text-foreground mb-3 tracking-tight">What do you want to create?</div>
-                <p className="text-[15px] leading-relaxed">Describe the module or workflow in the chat panel to generate the UI instantly.</p>
               </div>
             )}
           </div>
