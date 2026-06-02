@@ -183,14 +183,14 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
       let parsedSchema = null;
       let aiResponseMsg = responseText;
 
-      // Extract JSON if it's wrapped in <SCHEMA>...</SCHEMA> (or typo variants)
-      const schemaMatch = responseText.match(/<S?CHEMA>([\s\S]*?)<\/S?CHEMA>/i);
+      // Extract JSON if it's wrapped in <SCHEMA>...</SCHEMA> (or typo variants like missing slashes)
+      const schemaMatch = responseText.match(/<S?CHEMA>([\s\S]*?)(?:<\/S?CHEMA>|<S?CHEMA>|$)/i);
       
       if (schemaMatch && schemaMatch[1]) {
         try {
           parsedSchema = JSON.parse(schemaMatch[1].trim());
           // Remove the schema completely from the user-facing message
-          aiResponseMsg = responseText.replace(/<S?CHEMA>[\s\S]*?<\/S?CHEMA>/ig, '').trim();
+          aiResponseMsg = responseText.replace(/<S?CHEMA>[\s\S]*?(?:<\/S?CHEMA>|<S?CHEMA>|$)/ig, '').trim();
           if (!aiResponseMsg) aiResponseMsg = "I've updated the architecture.";
         } catch (e) {
           console.error("Failed to parse schema from AI:", e);
