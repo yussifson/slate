@@ -20,10 +20,16 @@ export default function Orders() {
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
 
-  const customers = customerRecords.map(r => ({
-    id: r.id,
-    name: r.data?.name || 'Unnamed Customer'
-  }));
+  const customers = customerRecords.map(r => {
+    const data = r.data || {};
+    return {
+      id: r.id,
+      custId: data.custId || `CUST-${r.id?.slice(0, 4)}`,
+      name: data.name || data.customerName || 'Unnamed Customer',
+      email: data.email || '',
+      phone: data.phone || ''
+    };
+  });
 
   const products = productRecords.map(r => ({
     id: r.id,

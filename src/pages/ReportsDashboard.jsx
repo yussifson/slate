@@ -301,7 +301,8 @@ export default function ReportsDashboard() {
   }, [staff]);
 
   const overdueCount = invoices.filter((i) => i.status === "overdue").length;
-  const collectionRate = invoices.length ? Math.round((invoices.filter((i) => i.status === "paid").length / invoices.length) * 100) : 0;
+  const paidCount = invoices.filter((i) => i.status === "paid").length;
+  const collectionRate = invoices.length ? Math.round((paidCount / invoices.length) * 100) : 0;
 
   return (
     <div className="space-y-8 pb-12 max-w-[1600px]">
