@@ -125,6 +125,10 @@ import RetailInventory from './pages/retail/Inventory';
 import RetailPOS from './pages/retail/POS';
 import RetailSales from './pages/retail/Sales';
 import RetailSuppliers from './pages/retail/Suppliers';
+import Products from './pages/retail/Products';
+import Orders from './pages/retail/Orders';
+import Loyalty from './pages/retail/Loyalty';
+import Shifts from './pages/retail/Shifts';
 import RetailCustomers from './pages/retail/Customers';
 import RetailCustomerPortal from './pages/retail/CustomerPortal';
 
@@ -283,17 +287,17 @@ function PlatformRoutes() {
       <Route path="/hr-leave" element={<HRLeave />} />
 
       {/* Missing Industry Pages mapped to GenericModulePage */}
-      <Route path="/products" element={<GenericModulePage />} />
+      <Route path="/products" element={<Products />} />
       <Route path="/org-chart" element={<GenericModulePage />} />
       <Route path="/disciplinary" element={<GenericModulePage />} />
       <Route path="/dispatch" element={<GenericModulePage />} />
-      <Route path="/shifts" element={<GenericModulePage />} />
+      <Route path="/shifts" element={<Shifts />} />
       <Route path="/benefits" element={<GenericModulePage />} />
       <Route path="/routes" element={<GenericModulePage />} />
       <Route path="/training" element={<GenericModulePage />} />
-      <Route path="/loyalty" element={<GenericModulePage />} />
+      <Route path="/loyalty" element={<Loyalty />} />
       <Route path="/pickups" element={<GenericModulePage />} />
-      <Route path="/orders" element={<GenericModulePage />} />
+      <Route path="/orders" element={<Orders />} />
       
       {/* OrbitBolt & Builder */}
       <Route path="/modules/BOLT" element={<CreateModulePage isBoltOpen={true} />} />
