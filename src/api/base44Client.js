@@ -67,12 +67,20 @@ const revealResults = async (data) => {
 
     const processItem = async (item) => {
         const revealed = { ...item };
-        for (const field of SENSITIVE_FIELDS) {
-            if (revealed[field] && typeof revealed[field] === 'string' && revealed[field].includes(':')) {
-                try {
-                    revealed[field] = await decryptText(revealed[field], passphrase);
-                } catch (e) {
-                    // Not encrypted or wrong passphrase
+        for (const [key, value] of Object.entries(revealed)) {
+            if (typeof value === 'string') {
+                if (SENSITIVE_FIELDS.includes(key) && value.includes(':')) {
+                    try {
+                        revealed[key] = await decryptText(value, passphrase);
+                    } catch (e) {
+                        // Not encrypted or wrong passphrase
+                    }
+                } else if ((value.startsWith('{') && value.endsWith('}')) || (value.startsWith('[') && value.endsWith(']'))) {
+                    try {
+                        revealed[key] = JSON.parse(value);
+                    } catch (e) {
+                        // Not valid JSON
+                    }
                 }
             }
         }
@@ -301,6 +309,11 @@ export const base44 = {
                         if (validCols) {
                             cleanedPayload = Object.fromEntries(Object.entries(cleanedPayload).filter(([k]) => validCols.includes(k)));
                         }
+                        // Serialize objects/arrays for SQLite text columns
+                        cleanedPayload = Object.fromEntries(Object.entries(cleanedPayload).map(([k, v]) => {
+                            if (v !== null && typeof v === 'object') return [k, JSON.stringify(v)];
+                            return [k, v];
+                        }));
 
                         const securedPayload = await securePayload(cleanedPayload);
                         const tempId = crypto.randomUUID();
@@ -348,6 +361,11 @@ export const base44 = {
                         if (validCols) {
                             cleanedPayload = Object.fromEntries(Object.entries(cleanedPayload).filter(([k]) => validCols.includes(k)));
                         }
+                        // Serialize objects/arrays for SQLite text columns
+                        cleanedPayload = Object.fromEntries(Object.entries(cleanedPayload).map(([k, v]) => {
+                            if (v !== null && typeof v === 'object') return [k, JSON.stringify(v)];
+                            return [k, v];
+                        }));
 
                         const securedPayload = await securePayload(cleanedPayload);
                         securedPayload.updated_date = new Date().toISOString();
