@@ -62,6 +62,13 @@ CRITICAL: If the user is just saying "Hi", asking a question, or chatting normal
 When the user asks you to build, create, or update a module/app, you MUST output a valid JSON schema wrapped EXACTLY in <SCHEMA>...</SCHEMA> tags.
 CRITICAL RULE: DO NOT mention the JSON schema, the <SCHEMA> tags, or your underlying architecture in your conversational response to the user. This is an invisible background system. Just say "I have generated the module" and put the tags at the very end.
 
+CRITICAL RULE FOR MODULE TYPES: You MUST intelligently select the most appropriate \`module_type\` based on the user's request. Do NOT just default to \`data_module\`. 
+- If they ask for a CRM, choose \`crm_pipeline\`. 
+- If they ask for onboarding or approvals, choose \`approval_workflow\`. 
+- If they ask for a task board, choose \`kanban\`. 
+- If they ask for a dashboard, choose \`dashboard\`.
+- Choose the type that BEST fits their description from the allowed list!
+
 The JSON inside <SCHEMA> must follow this exact structure:
 {
   "module": {
@@ -93,6 +100,8 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   
   const messagesEndRef = useRef(null);
+  const sidebarPanelRef = useRef(null);
+  const chatPanelRef = useRef(null);
 
   useEffect(() => {
     const load = async () => {
@@ -245,7 +254,13 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
       {/* Sleek Minimal Header */}
       <div className="h-14 border-b border-border bg-card flex items-center justify-between px-4 shrink-0 shadow-sm z-[1001]">
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-muted">
+          <Button variant="ghost" size="icon" onClick={() => {
+            if (isSidebarOpen) {
+              sidebarPanelRef.current?.collapse();
+            } else {
+              sidebarPanelRef.current?.expand();
+            }
+          }} className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-muted">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 6h16M4 12h16M4 18h7"/></svg>
           </Button>
           <div className="flex items-center gap-2">
@@ -271,15 +286,23 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
       <PanelGroup direction="horizontal" className="flex-1 overflow-hidden">
         
         {/* Left Sidebar: History (v0 style) */}
-        {isSidebarOpen && (
-          <>
-            <Panel defaultSize={18} minSize={15} maxSize={25} className="flex flex-col bg-muted/30 border-r border-border z-20">
-              <div className="p-3">
-                <Button onClick={startNewSession} className="w-full justify-start h-9 bg-background hover:bg-muted text-foreground border border-border text-xs">
-                  <span className="text-lg mr-2 font-light">+</span> New Chat
-                </Button>
-              </div>
-              <div className="px-3 pb-2 border-b border-border/50">
+        <Panel 
+          ref={sidebarPanelRef}
+          defaultSize={18} 
+          minSize={15} 
+          maxSize={25} 
+          collapsible={true}
+          collapsedSize={0}
+          onCollapse={() => setIsSidebarOpen(false)}
+          onExpand={() => setIsSidebarOpen(true)}
+          className="flex flex-col bg-muted/30 border-r-2 border-blue-500 z-20"
+        >
+          <div className="p-3">
+            <Button onClick={startNewSession} className="w-full justify-start h-9 bg-blue-600 hover:bg-blue-700 text-white border border-blue-600 shadow-sm text-xs transition-colors">
+              <span className="text-lg mr-2 font-light">+</span> New Chat
+            </Button>
+          </div>
+          <div className="px-3 pb-2 border-b border-border/50">
                 <div className="relative">
                   <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
                   <input type="text" placeholder="Search" className="w-full h-8 bg-background border border-border rounded-md pl-8 pr-3 text-xs focus:outline-none focus:border-primary text-foreground placeholder:text-muted-foreground" />
@@ -306,13 +329,19 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
                   ))}
                 </div>
               </div>
-            </Panel>
-            <PanelResizeHandle className="w-1 bg-transparent hover:bg-primary/50 transition-colors cursor-col-resize active:bg-primary/80" />
-          </>
-        )}
+        </Panel>
+        <PanelResizeHandle className="w-1 bg-transparent hover:bg-blue-500/50 transition-colors cursor-col-resize active:bg-blue-500/80" />
 
         {/* Center Panel: Chat Interface */}
-        <Panel defaultSize={35} minSize={25} maxSize={50} className="flex flex-col bg-background/50 backdrop-blur-sm relative border-r border-border shadow-xl z-10">
+        <Panel 
+          ref={chatPanelRef}
+          defaultSize={35} 
+          minSize={25} 
+          maxSize={50} 
+          collapsible={true}
+          collapsedSize={0}
+          className="flex flex-col bg-background/50 backdrop-blur-sm relative border-r border-border shadow-xl z-10"
+        >
           <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 space-y-6 scrollbar-thin scrollbar-thumb-muted">
             {activeSession?.messages.map((m, i) => (
               <motion.div 
