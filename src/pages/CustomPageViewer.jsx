@@ -9,57 +9,95 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Edit3, Check, Settings2, Sparkles, Save } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
+import { useCompanyId } from '@/hooks/useCompanyId';
 
-// MOCK DATABASE for custom pages
-const MOCK_PAGES_DB = {
-  'fleet-dashboard': {
-    pageTitle: "Fleet & Delivery Overview",
-    route: "fleet-dashboard",
-    layout: [
-      {
-        id: "block_1",
-        component: "MetricCard",
-        dataConfig: { table: "User", filter: { role: "driver" }, aggregation: "count", label: "Active Drivers", icon: "Users" },
-        styleConfig: { colSpan: 4, theme: "light", padding: "p-6" }
-      },
-      {
-        id: "block_2",
-        component: "MetricCard",
-        dataConfig: { table: "Invoice", aggregation: "count", label: "Total Invoices", icon: "FileText" },
-        styleConfig: { colSpan: 4, theme: "dark", padding: "p-6" }
-      },
-      {
-        id: "block_3",
-        component: "DataTable",
-        dataConfig: { 
-          table: "Client", 
-          sort: "-created_date", 
-          limit: 5,
-          columns: [
-            { field: "name", label: "Client Name" },
-            { field: "email", label: "Email" },
-            { field: "phone", label: "Phone" }
-          ]
-        },
-        styleConfig: { colSpan: 12, theme: "light" }
-      }
-    ]
-  }
+// Default mock schema for fleet-dashboard if not in DB
+const DEFAULT_SCHEMA = {
+  pageTitle: "Fleet & Delivery Overview",
+  route: "fleet-dashboard",
+  layout: [
+    {
+      id: "block_1",
+      component: "MetricCard",
+      dataConfig: { table: "User", filter: { role: "driver" }, aggregation: "count", label: "Active Drivers", icon: "Users" },
+      styleConfig: { colSpan: 4, theme: "light", padding: "p-6" }
+    }
+  ]
 };
 
 export default function CustomPageViewer() {
   const { pageId } = useParams();
+  const companyId = useCompanyId();
+  const queryClient = useQueryClient();
   
-  // In a real app, this would be a useQuery fetching from the custom_pages table.
-  const [schema, setSchema] = useState(MOCK_PAGES_DB[pageId] || null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedBlockId, setSelectedBlockId] = useState(null);
   const [isOrbitBoltOpen, setIsOrbitBoltOpen] = useState(false);
+  
+  // Local state for editing before saving
+  const [localSchema, setLocalSchema] = useState(null);
+
+  const { data: dbSchema, isLoading } = useQuery({
+    queryKey: ['custom_page', pageId],
+    queryFn: async () => {
+      const records = await base44.entities.IndustryRecord.filter({
+        record_type: 'custom_page',
+        search_text: pageId
+      });
+      if (records.length > 0 && records[0].data) {
+        return records[0].data;
+      }
+      return pageId === 'fleet-dashboard' ? DEFAULT_SCHEMA : null;
+    },
+    enabled: !!pageId
+  });
+
+  // Sync dbSchema to localSchema when not editing
+  React.useEffect(() => {
+    if (dbSchema && !isEditMode) {
+      setLocalSchema(dbSchema);
+    }
+  }, [dbSchema, isEditMode]);
+
+  const saveMutation = useMutation({
+    mutationFn: async (schemaToSave) => {
+      const existing = await base44.entities.IndustryRecord.filter({ record_type: 'custom_page', search_text: pageId });
+      if (existing.length > 0) {
+        return base44.entities.IndustryRecord.update(existing[0].id, { data: schemaToSave });
+      } else {
+        return base44.entities.IndustryRecord.create({
+          company_id: companyId,
+          industry: 'core',
+          record_type: 'custom_page',
+          search_text: pageId,
+          data: schemaToSave
+        });
+      }
+    },
+    onSuccess: () => {
+      toast.success("Page saved successfully!");
+      setIsEditMode(false);
+      setSelectedBlockId(null);
+      queryClient.invalidateQueries({ queryKey: ['custom_page', pageId] });
+      queryClient.invalidateQueries({ queryKey: ['custom_pages_list'] });
+    },
+    onError: (err) => {
+      toast.error("Failed to save: " + err.message);
+    }
+  });
 
   const handleApplySchema = (newSchema) => {
-    setSchema(newSchema);
+    setLocalSchema(newSchema);
     setIsEditMode(true);
   };
+
+  const schema = isEditMode ? localSchema : dbSchema;
+
+  if (isLoading) {
+    return <div className="p-20 text-center text-muted-foreground">Loading Page...</div>;
+  }
 
   if (!schema) {
     return (
@@ -67,15 +105,24 @@ export default function CustomPageViewer() {
         <Sparkles className="w-16 h-16 text-muted-foreground opacity-30 mb-4" />
         <h2 className="text-xl font-bold text-card-foreground">Page Not Found</h2>
         <p className="text-muted-foreground mt-2 max-w-md">The custom page "{pageId}" does not exist. Use Orbit Bolt to generate it.</p>
+        <Button onClick={() => setIsOrbitBoltOpen(true)} className="mt-6 gap-2 bg-indigo-600 hover:bg-indigo-700 text-white">
+          <Sparkles className="w-4 h-4" /> Generate with OrbitBolt
+        </Button>
+        {isOrbitBoltOpen && (
+          <OrbitBoltPagesWorkspace 
+            onClose={() => setIsOrbitBoltOpen(false)}
+            onApplySchema={handleApplySchema}
+          />
+        )}
       </div>
     );
   }
 
-  const selectedBlock = schema.layout.find(b => b.id === selectedBlockId);
+  const selectedBlock = schema.layout?.find(b => b.id === selectedBlockId);
 
   const updateBlockStyle = (key, value) => {
     if (!selectedBlockId) return;
-    setSchema(prev => {
+    setLocalSchema(prev => {
       const newLayout = prev.layout.map(b => {
         if (b.id === selectedBlockId) {
           return { ...b, styleConfig: { ...b.styleConfig, [key]: value } };
@@ -87,10 +134,7 @@ export default function CustomPageViewer() {
   };
 
   const savePage = () => {
-    // In a real app, base44.entities.custom_pages.update(...)
-    toast.success("Page saved successfully!");
-    setIsEditMode(false);
-    setSelectedBlockId(null);
+    saveMutation.mutate(localSchema);
   };
 
   return (

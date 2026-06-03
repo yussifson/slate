@@ -42,11 +42,13 @@ const ICON_MAP = {
   FlaskConical, Activity, Sparkles, UtensilsCrossed, Star, ShoppingCart, Package, Truck,
   Tag, Layers, Bell, Award, Library, Building2, AlertCircle, Clock, Network, AlertTriangle,
   Gift, Banknote, CalendarOff, HandCoins, Users2, Blocks, Map, Warehouse, Car, MapPin,
-  FileSearch, LayoutGrid, BedDouble, BellRing, CheckSquare2: CheckSquare
+  FileSearch, LayoutGrid, BedDouble, BellRing, CheckSquare2: CheckSquare, Zap, Store
 };
 
 import { supabase } from "@/api/supabaseClient";
 import { useAuth } from "@/lib/AuthContext";
+import { useCompanyId } from "@/hooks/useCompanyId";
+import { useQuery } from '@tanstack/react-query';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -54,6 +56,7 @@ import { Input } from "@/components/ui/input";
 export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   const { t } = useTranslation();
   const { impersonatedCompany } = useImpersonation();
+  const companyId = useCompanyId();
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -135,6 +138,15 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
     return allowedPaths.includes(item.path);
   });
 
+  const { data: customPages = [] } = useQuery({
+    queryKey: ['custom_pages_list', companyId],
+    queryFn: () => base44.entities.IndustryRecord.filter({
+      company_id: companyId,
+      record_type: 'custom_page'
+    }),
+    enabled: !!companyId
+  });
+
   const dynamicNavItems = dynamicModules.map(m => ({
     id: m.id,
     label: m.name,
@@ -144,13 +156,21 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
     isDynamic: true
   }));
 
+  const customPageItems = customPages.map(p => ({
+    id: p.id,
+    label: p.data?.pageTitle || p.search_text,
+    icon: "LayoutDashboard",
+    path: `/pages/${p.search_text}`,
+    isDynamic: true
+  }));
+
   const baseNav = user?.role === "client" ? clientNav : filteredCompanyNav;
   const appBuilderItem = { label: "OrbitBolt AI Builder", icon: "Zap", path: "/modules/BOLT" };
   const pagesItem = { label: "AI Pages (Beta)", icon: "LayoutDashboard", path: "/pages/fleet-dashboard" };
   const marketplaceItem = { label: "Marketplace", icon: "Store", path: "/marketplace" };
   let navItems = isAdmin
-    ? [...baseNav, ...dynamicNavItems, pagesItem, appBuilderItem, marketplaceItem, { label: "Firm Setup", icon: "Settings", path: "/firm-setup" }]
-    : [...baseNav, ...dynamicNavItems, pagesItem, marketplaceItem];
+    ? [...baseNav, ...dynamicNavItems, ...customPageItems, pagesItem, appBuilderItem, marketplaceItem, { label: "Firm Setup", icon: "Settings", path: "/firm-setup" }]
+    : [...baseNav, ...dynamicNavItems, ...customPageItems, pagesItem, marketplaceItem];
 
   const handleDeleteModule = (id, name) => {
     setDeleteData({ id, name });
