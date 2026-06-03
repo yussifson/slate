@@ -79,7 +79,7 @@ export function StudentGridCard({ student, onEdit, onDelete, onView }) {
     <article className="group relative bg-card border border-border rounded-2xl p-6 hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col min-h-[260px] text-center">
       <CardActions onView={onView} onEdit={onEdit} onDelete={onDelete} />
       
-      <div className="w-20 h-20 mx-auto rounded-full bg-slate-100 border-4 border-background shadow-sm flex items-center justify-center text-3xl font-black text-slate-700 mb-4 shrink-0 relative overflow-hidden">
+      <div className="w-20 h-20 mx-auto rounded-full bg-primary/10 border-4 border-background shadow-sm flex items-center justify-center text-3xl font-black text-primary mb-4 shrink-0 relative overflow-hidden">
         {student.avatar || student.name?.[0]?.toUpperCase()}
       </div>
       
@@ -87,7 +87,7 @@ export function StudentGridCard({ student, onEdit, onDelete, onView }) {
         <h3 className="font-bold text-xl text-foreground line-clamp-1">{student.name}</h3>
         <p className="text-xs text-muted-foreground font-mono mt-1">{student.studentId}</p>
         <div className="mt-3 flex items-center justify-center gap-2">
-          <span className="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-700">{student.class}</span>
+          <span className="text-xs font-bold px-3 py-1 rounded-full bg-muted text-muted-foreground">{student.class}</span>
         </div>
       </div>
       
@@ -113,7 +113,7 @@ export function ClassGridCard({ classInfo, onEdit, onDelete, onView }) {
   return (
     <article className="group relative bg-card border border-border rounded-2xl p-6 hover:shadow-xl hover:border-slate-300 transition-all flex flex-col min-h-[220px]">
       <div className="flex justify-between items-start mb-4">
-        <div className="w-12 h-12 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
+        <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
           <BookOpen className="w-6 h-6" />
         </div>
         <CardActions onView={onView} onEdit={onEdit} onDelete={onDelete} />
@@ -121,7 +121,7 @@ export function ClassGridCard({ classInfo, onEdit, onDelete, onView }) {
       
       <div className="mb-4">
         <h3 className="font-bold text-xl text-foreground">{classInfo.name}</h3>
-        <p className="text-sm font-semibold text-slate-600 mt-0.5">{classInfo.subject}</p>
+        <p className="text-sm font-semibold text-muted-foreground mt-0.5">{classInfo.subject}</p>
       </div>
 
       <div className="space-y-2 mt-auto">
@@ -225,7 +225,7 @@ export function ExamGridCard({ exam, onEdit, onDelete, onView, onStatusChange })
       
       <div className="mb-4">
         <h3 className="font-bold text-xl text-foreground mb-1">{exam.subject}</h3>
-        <span className="text-xs font-bold px-2 py-1 bg-slate-100 text-slate-700 rounded">{exam.class}</span>
+        <span className="text-xs font-bold px-2 py-1 bg-muted text-muted-foreground rounded">{exam.class}</span>
       </div>
 
       <div className="space-y-3 mt-auto pt-4 border-t border-border text-sm text-muted-foreground">

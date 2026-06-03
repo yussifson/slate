@@ -29,6 +29,7 @@ export default function Students() {
   const [showModal, setShowModal] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [viewMode, setViewMode] = useState('grid');
+  const [activeTab, setActiveTab] = useState('personal');
 
   // Real Database Hooks
   const queryClient = useQueryClient();
@@ -224,7 +225,7 @@ export default function Students() {
             <p>{t("no_students_found", "No students found")}</p>
           </div>
         ) : viewMode === 'grid' ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6 bg-slate-50/50">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6 bg-muted/20">
             {filtered.map(s => (
               <StudentGridCard
                 key={s.id}
@@ -309,43 +310,95 @@ export default function Students() {
                 );
               })}
               </tbody>
-            </table>
+      </table>
           </div>
         )}
       </div>
-      {/* Add Student Modal */}
+      {/* Tabbed Wizard Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4">
-            <h2 className="text-lg font-bold text-card-foreground">{editingId ? 'Edit Student' : 'Enroll New Student'}</h2>
-            <div className="grid grid-cols-2 gap-3">
-              <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("first_name", "First Name")}</label><Input value={formData.firstName} onChange={e => setFormData({...formData, firstName: e.target.value})} className="mt-1" placeholder="Ama" /></div>
-              <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("last_name", "Last Name")}</label><Input value={formData.lastName} onChange={e => setFormData({...formData, lastName: e.target.value})} className="mt-1" placeholder="Owusu" /></div>
-              <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("date_of_birth", "Date of Birth")}</label><Input value={formData.dateOfBirth} onChange={e => setFormData({...formData, dateOfBirth: e.target.value})} className="mt-1" type="date" /></div>
-              <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("gender", "Gender")}</label>
-                <select value={formData.gender} onChange={e => setFormData({...formData, gender: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-                  <option>{t("female", "Female")}</option><option>{t("male", "Male")}</option>
-                </select>
+          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-border flex flex-col max-h-[90vh]">
+            <div className="p-6 border-b border-border">
+              <h2 className="text-xl font-bold text-card-foreground">{editingId ? 'Edit Student' : 'Enroll Student'}</h2>
+              <div className="flex gap-4 mt-4 border-b border-border">
+                {['personal', 'academic', 'parent'].map(tab => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={`pb-2 text-sm font-semibold capitalize border-b-2 transition-colors ${
+                      activeTab === tab ? 'border-blue-600 text-blue-600' : 'border-transparent text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    {tab}
+                  </button>
+                ))}
               </div>
-              <div className="col-span-2"><label className="text-xs font-bold text-muted-foreground uppercase">{t("class", "Class")}</label>
-                <select value={formData.class} onChange={e => setFormData({...formData, class: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-                  {classes.slice(1).map(c => {
-                    return <option key={c}>{c}</option>;
-                  })}
-                </select>
-              </div>
-              <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("parent_name", "Guardian Name")}</label><Input value={formData.parentName} onChange={e => setFormData({...formData, parentName: e.target.value})} className="mt-1" placeholder="Kwame Owusu" /></div>
-              <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("parent_phone", "Guardian Phone")}</label><Input value={formData.parentPhone} onChange={e => setFormData({...formData, parentPhone: e.target.value})} className="mt-1" placeholder="+233 24..." /></div>
-              <div className="col-span-2"><label className="text-xs font-bold text-muted-foreground uppercase">{t("parent_email", "Guardian Email")}</label><Input value={formData.parentEmail} onChange={e => setFormData({...formData, parentEmail: e.target.value})} className="mt-1" placeholder="parent@example.com" /></div>
-              <div className="col-span-2"><label className="text-xs font-bold text-muted-foreground uppercase">{t("address", "Home Address")}</label><Input value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="mt-1" placeholder="123 School Lane" /></div>
-              <div className="col-span-2"><label className="text-xs font-bold text-muted-foreground uppercase">{t("medical_notes", "Medical Notes / Allergies")}</label><Input value={formData.medicalNotes} onChange={e => setFormData({...formData, medicalNotes: e.target.value})} className="mt-1" placeholder="e.g. Asthma, Peanuts" /></div>
-              <div className="col-span-2"><label className="text-xs font-bold text-muted-foreground uppercase">{t("previous_school", "Previous School (Optional)")}</label><Input value={formData.previousSchool} onChange={e => setFormData({...formData, previousSchool: e.target.value})} className="mt-1" placeholder="XYZ Academy" /></div>
             </div>
-            <div className="flex gap-3 pt-4">
-              <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)} disabled={mutateStudent.isPending}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleEnroll} disabled={mutateStudent.isPending}>
-                {mutateStudent.isPending ? 'Saving...' : (editingId ? 'Save Changes' : 'Enroll Student')}
-              </Button>
+            
+            <div className="p-6 overflow-y-auto space-y-4">
+              {activeTab === 'personal' && (
+                <div className="space-y-4 animate-in fade-in zoom-in duration-200">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("first_name", "First Name")}</label><Input value={formData.firstName} onChange={e => setFormData({...formData, firstName: e.target.value})} className="mt-1" /></div>
+                    <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("last_name", "Last Name")}</label><Input value={formData.lastName} onChange={e => setFormData({...formData, lastName: e.target.value})} className="mt-1" /></div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("dob", "Date of Birth")}</label><Input type="date" value={formData.dateOfBirth} onChange={e => setFormData({...formData, dateOfBirth: e.target.value})} className="mt-1" /></div>
+                    <div>
+                      <label className="text-xs font-bold text-muted-foreground uppercase">{t("gender", "Gender")}</label>
+                      <select value={formData.gender} onChange={e => setFormData({...formData, gender: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+                        <option>Female</option><option>Male</option><option>Other</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("address", "Home Address")}</label><Input value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="mt-1" /></div>
+                </div>
+              )}
+
+              {activeTab === 'academic' && (
+                <div className="space-y-4 animate-in fade-in zoom-in duration-200">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-xs font-bold text-muted-foreground uppercase">{t("class", "Class/Level")}</label>
+                      <select value={formData.class} onChange={e => setFormData({...formData, class: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+                        {classes.filter(c => c !== 'All').map(c => <option key={c}>{c}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold text-muted-foreground uppercase">{t("status", "Status")}</label>
+                      <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+                        <option>Active</option><option>Suspended</option><option>Graduated</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("previous_school", "Previous School")}</label><Input value={formData.previousSchool} onChange={e => setFormData({...formData, previousSchool: e.target.value})} className="mt-1" /></div>
+                  <div>
+                    <label className="text-xs font-bold text-muted-foreground uppercase">{t("medical_notes", "Medical Notes")}</label>
+                    <textarea value={formData.medicalNotes} onChange={e => setFormData({...formData, medicalNotes: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm resize-none h-20" placeholder="Allergies, conditions..." />
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'parent' && (
+                <div className="space-y-4 animate-in fade-in zoom-in duration-200">
+                  <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("parent_name", "Parent/Guardian Name")}</label><Input value={formData.parentName} onChange={e => setFormData({...formData, parentName: e.target.value})} className="mt-1" /></div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("parent_phone", "Parent Phone")}</label><Input value={formData.parentPhone} onChange={e => setFormData({...formData, parentPhone: e.target.value})} className="mt-1" /></div>
+                    <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("parent_email", "Parent Email")}</label><Input value={formData.parentEmail} onChange={e => setFormData({...formData, parentEmail: e.target.value})} className="mt-1" type="email" /></div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="p-6 border-t border-border bg-muted/30 flex gap-3">
+              <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setActiveTab('personal'); }} disabled={mutateStudent.isPending}>{t("cancel", "Cancel")}</Button>
+              {activeTab !== 'parent' ? (
+                <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={() => setActiveTab(activeTab === 'personal' ? 'academic' : 'parent')}>{t("next", "Next")}</Button>
+              ) : (
+                <Button className="flex-1 bg-green-600 hover:bg-green-700 text-white" onClick={handleEnroll} disabled={mutateStudent.isPending}>
+                  {mutateStudent.isPending ? 'Saving...' : 'Save Student'}
+                </Button>
+              )}
             </div>
           </div>
         </div>

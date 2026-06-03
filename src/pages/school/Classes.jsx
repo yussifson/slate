@@ -43,7 +43,7 @@ export default function Classes() {
 
   // Form State
   const [formData, setFormData] = useState({
-    name: '', subject: '', teacher: 'Mr. John Doe', room: '', schedule: ''
+    name: '', subject: '', teacher: 'Mr. John Doe', room: '', schedule: '', courses: '', allowSelfRegistration: false
   });
 
   // Map DB records to UI format
@@ -58,6 +58,8 @@ export default function Classes() {
       room: extra.room || 'TBD',
       schedule: extra.schedule || 'TBD',
       students: extra.students || 0,
+      courses: extra.courses || '',
+      allowSelfRegistration: !!extra.allowSelfRegistration,
       stage: r.stage || 'active'
     };
   });
@@ -78,7 +80,9 @@ export default function Classes() {
       description: JSON.stringify({
         room: formData.room || 'TBD',
         schedule: formData.schedule || 'TBD',
-        students: 0
+        students: 0,
+        courses: formData.courses || '',
+        allowSelfRegistration: formData.allowSelfRegistration
       })
     };
 
@@ -87,7 +91,7 @@ export default function Classes() {
         toast.success(editingId ? "Class updated successfully!" : "Class saved successfully!");
         setShowModal(false);
         setEditingId(null);
-        setFormData({ name: '', subject: '', teacher: 'Mr. John Doe', room: '', schedule: '' });
+        setFormData({ name: '', subject: '', teacher: 'Mr. John Doe', room: '', schedule: '', courses: '', allowSelfRegistration: false });
       },
       onError: (err) => toast.error(err?.message || "Failed to save class"),
     };
@@ -203,7 +207,9 @@ export default function Classes() {
                   subject: c.subject,
                   teacher: c.teacher,
                   room: c.room,
-                  schedule: c.schedule
+                  schedule: c.schedule,
+                  courses: c.courses || '',
+                  allowSelfRegistration: !!c.allowSelfRegistration
                 });
                 setShowModal(true);
               }}
@@ -244,7 +250,7 @@ export default function Classes() {
                           <DropdownMenuItem onClick={() => setViewDetails(c)}>{t("view_details", "View Details")}</DropdownMenuItem>
                           <DropdownMenuItem onClick={() => {
                             setEditingId(c.id);
-                            setFormData({ name: c.name, subject: c.subject, teacher: c.teacher, room: c.room, schedule: c.schedule });
+                            setFormData({ name: c.name, subject: c.subject, teacher: c.teacher, room: c.room, schedule: c.schedule, courses: c.courses || '', allowSelfRegistration: !!c.allowSelfRegistration });
                             setShowModal(true);
                           }}>{t("edit", "Edit")}</DropdownMenuItem>
                           <DropdownMenuItem className="text-red-600 font-medium" onClick={() => setDeleteTargetId(c.id)}>{t("delete", "Delete")}</DropdownMenuItem>
@@ -288,6 +294,15 @@ export default function Classes() {
               <div>
                 <label className="text-xs font-bold text-muted-foreground uppercase">{t("schedule", "Schedule")}</label>
                 <Input value={formData.schedule} onChange={e => setFormData({...formData, schedule: e.target.value})} className="mt-1" placeholder="Mon-Wed 9AM-10AM" />
+              </div>
+              <div className="pt-2 border-t border-border">
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("courses_subjects", "Assigned Courses / Subjects")}</label>
+                <Input value={formData.courses} onChange={e => setFormData({...formData, courses: e.target.value})} className="mt-1" placeholder="e.g. Math, Physics, Chemistry" />
+                <p className="text-[10px] text-muted-foreground mt-1">Comma-separated list of courses available for this class.</p>
+              </div>
+              <div className="flex items-center gap-2 mt-2">
+                <input type="checkbox" id="allowSelfReg" checked={formData.allowSelfRegistration} onChange={e => setFormData({...formData, allowSelfRegistration: e.target.checked})} className="w-4 h-4 accent-blue-600 rounded" />
+                <label htmlFor="allowSelfReg" className="text-sm font-semibold text-foreground cursor-pointer">Allow Students to Self-Register Courses</label>
               </div>
             </div>
             <div className="flex gap-3 pt-4">
@@ -343,6 +358,22 @@ export default function Classes() {
                   <p className="font-medium text-foreground">{viewDetails.schedule}</p>
                 </div>
               </div>
+              
+              {viewDetails.courses && (
+                <div className="space-y-3">
+                  <h4 className="text-sm font-bold text-foreground">{t("assigned_courses", "Assigned Courses")}</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {viewDetails.courses.split(',').map(course => (
+                      <span key={course} className="px-3 py-1 bg-blue-50 text-blue-700 font-semibold text-xs rounded-full border border-blue-200">
+                        {course.trim()}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Self-Registration: <strong className={viewDetails.allowSelfRegistration ? 'text-green-600' : 'text-red-600'}>{viewDetails.allowSelfRegistration ? 'Allowed' : 'Disabled'}</strong>
+                  </p>
+                </div>
+              )}
             </div>
           )}
         </SheetContent>

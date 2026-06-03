@@ -19,6 +19,14 @@ export default function Parents() {
   const [showModal, setShowModal] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [activeTab, setActiveTab] = useState('personal');
+
+  // Fetch students to link
+  const { data: students = [] } = useQuery({
+    queryKey: ["clients", companyId, "student"],
+    queryFn: () => base44.entities.Client.filter({ company_id: companyId, type: 'student' }),
+    enabled: !!companyId
+  });
 
   const { data: records = [], isLoading } = useQuery({ 
     queryKey: ["clients", companyId], 
@@ -46,7 +54,7 @@ export default function Parents() {
   });
 
   const [formData, setFormData] = useState({
-    name: '', phone: '', email: '', address: '', parentId: ''
+    name: '', phone: '', email: '', address: '', parentId: '', linkedStudentId: ''
   });
 
   const parents = records.map(r => {
@@ -71,23 +79,32 @@ export default function Parents() {
     if (!companyId) return toast.error("Workspace not loaded. Refresh the page and try again.");
     if (!formData.name) return toast.error("Please enter parent name");
     
-    // Auto-generate a random parent ID based on settings
-    const prefix = schoolSettings?.parentPrefix || 'PAR';
-    const seq = Math.floor(1000 + Math.random() * 9000);
-    const generatedId = `${prefix}-${seq}`;
-    
-    const parentId = formData.parentId || generatedId;
+    // Auto-generate ID linked to Student if provided, else random
+    let finalParentId = formData.parentId;
+    if (!finalParentId) {
+      const prefix = schoolSettings?.parentPrefix || 'PAR';
+      if (formData.linkedStudentId) {
+        // e.g. STU-2023-1234 -> PAR-2023-1234
+        const parts = formData.linkedStudentId.split('-');
+        parts[0] = prefix;
+        finalParentId = parts.join('-');
+      } else {
+        const seq = Math.floor(1000 + Math.random() * 9000);
+        finalParentId = `${prefix}-${seq}`;
+      }
+    }
     
     const payload = {
       company_id: companyId,
       type: 'parent',
       name: formData.name,
-      id_number: parentId,
+      id_number: finalParentId,
       phone: formData.phone,
       status: 'active',
       notes: JSON.stringify({
         email: formData.email,
         address: formData.address,
+        linkedStudentId: formData.linkedStudentId,
         avatar: formData.name.substring(0,2).toUpperCase()
       })
     };
@@ -97,7 +114,7 @@ export default function Parents() {
         toast.success(editingId ? "Parent updated successfully!" : `Parent added! Default Password: password123`);
         setShowModal(false);
         setEditingId(null);
-        setFormData({ name: '', phone: '', email: '', address: '', parentId: '' });
+        setFormData({ name: '', phone: '', email: '', address: '', parentId: '', linkedStudentId: '' });
       },
       onError: (err) => toast.error(err?.message || "Failed to save parent"),
     };
@@ -200,21 +217,76 @@ export default function Parents() {
         )}
       </div>
 
+      {/* Tabbed Wizard Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-border">
-            <h2 className="text-lg font-bold text-card-foreground">{editingId ? 'Edit Parent' : 'Add Parent'}</h2>
-            <div className="space-y-3">
-              <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("full_name", "Full Name")}</label><Input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="mt-1" placeholder="Kwame Owusu" /></div>
-              <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("phone", "Phone")}</label><Input value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="mt-1" /></div>
-              <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("email", "Email")}</label><Input value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="mt-1" type="email" /></div>
-              <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("address", "Address")}</label><Input value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="mt-1" /></div>
+          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-border flex flex-col max-h-[90vh]">
+            <div className="p-6 border-b border-border">
+              <h2 className="text-xl font-bold text-card-foreground">{editingId ? 'Edit Parent' : 'Add Parent'}</h2>
+              <div className="flex gap-4 mt-4 border-b border-border">
+                {['personal', 'linking'].map(tab => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={`pb-2 text-sm font-semibold capitalize border-b-2 transition-colors ${
+                      activeTab === tab ? 'border-blue-600 text-blue-600' : 'border-transparent text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    {tab}
+                  </button>
+                ))}
+              </div>
             </div>
-            <div className="flex gap-3 pt-2">
-              <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)} disabled={mutateParent.isPending}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleEnroll} disabled={mutateParent.isPending}>
-                {mutateParent.isPending ? 'Saving...' : 'Save Parent'}
-              </Button>
+            
+            <div className="p-6 overflow-y-auto space-y-4">
+              {activeTab === 'personal' && (
+                <div className="space-y-4 animate-in fade-in zoom-in duration-200">
+                  <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("full_name", "Full Name")}</label><Input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="mt-1" placeholder="Kwame Owusu" /></div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("phone", "Phone")}</label><Input value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="mt-1" /></div>
+                    <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("email", "Email")}</label><Input value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="mt-1" type="email" /></div>
+                  </div>
+                  <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("address", "Address")}</label><Input value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="mt-1" /></div>
+                </div>
+              )}
+
+              {activeTab === 'linking' && (
+                <div className="space-y-4 animate-in fade-in zoom-in duration-200">
+                  <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100 text-sm text-blue-800">
+                    <p className="font-semibold mb-1">Link to Student (Recommended)</p>
+                    <p className="text-blue-600/80 text-xs">If you select a student, the Parent ID will be automatically generated to match the Student's ID sequence.</p>
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-muted-foreground uppercase">Select Student</label>
+                    <select
+                      value={formData.linkedStudentId}
+                      onChange={e => setFormData({...formData, linkedStudentId: e.target.value})}
+                      className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
+                    >
+                      <option value="">-- No Student Selected --</option>
+                      {students.map(s => (
+                        <option key={s.id} value={s.id_number}>{s.name} ({s.id_number})</option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  <div className="pt-4 border-t border-border">
+                    <label className="text-xs font-bold text-muted-foreground uppercase">Manual Parent ID (Optional)</label>
+                    <Input value={formData.parentId} onChange={e => setFormData({...formData, parentId: e.target.value})} className="mt-1" placeholder="Leave blank to auto-generate" disabled={!!formData.linkedStudentId} />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="p-6 border-t border-border bg-muted/30 flex gap-3">
+              <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setActiveTab('personal'); }} disabled={mutateParent.isPending}>{t("cancel", "Cancel")}</Button>
+              {activeTab !== 'linking' ? (
+                <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={() => setActiveTab('linking')}>{t("next", "Next")}</Button>
+              ) : (
+                <Button className="flex-1 bg-green-600 hover:bg-green-700 text-white" onClick={handleEnroll} disabled={mutateParent.isPending}>
+                  {mutateParent.isPending ? 'Saving...' : 'Save Parent'}
+                </Button>
+              )}
             </div>
           </div>
         </div>
