@@ -159,22 +159,22 @@ export default function StudentPortal() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-in fade-in">
           <div className="col-span-1 lg:col-span-2 space-y-6">
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2rem] border border-white/20 p-6 shadow-xl hover:-translate-y-1 transition-transform duration-300">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950/40 flex items-center justify-center text-emerald-600 shadow-inner border border-emerald-200/50"><CheckCircle className="w-6 h-6" /></div>
-                  <h3 className="font-bold text-slate-500 uppercase tracking-wider text-sm">{t("attendance", "Attendance")}</h3>
+              <div className="bg-card rounded-xl border border-border p-4 flex flex-col justify-center shadow-sm">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center text-white shadow-sm"><CheckCircle className="w-5 h-5" /></div>
+                  <h3 className="font-bold text-muted-foreground text-sm">{t("attendance", "Attendance")}</h3>
                 </div>
-                <p className="text-5xl font-black text-slate-900 dark:text-white mb-2">{attendancePct}%</p>
-                <p className="text-sm font-semibold text-slate-400">{t("present_for_the_term", "Present for the term")}</p>
+                <p className="text-3xl font-bold text-card-foreground mb-1">{attendancePct}%</p>
+                <p className="text-xs text-muted-foreground">{t("present_for_the_term", "Present for the term")}</p>
               </div>
               
-              <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2rem] border border-white/20 p-6 shadow-xl hover:-translate-y-1 transition-transform duration-300">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-2xl bg-blue-100 dark:bg-blue-950/40 flex items-center justify-center text-blue-600 shadow-inner border border-blue-200/50"><GraduationCap className="w-6 h-6" /></div>
-                  <h3 className="font-bold text-slate-500 uppercase tracking-wider text-sm">{t("performance", "Performance")}</h3>
+              <div className="bg-card rounded-xl border border-border p-4 flex flex-col justify-center shadow-sm">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center text-white shadow-sm"><GraduationCap className="w-5 h-5" /></div>
+                  <h3 className="font-bold text-muted-foreground text-sm">{t("performance", "Performance")}</h3>
                 </div>
-                <p className="text-5xl font-black text-blue-600 dark:text-blue-400 mb-2">{averageGrade}</p>
-                <p className="text-sm font-semibold text-slate-400">{t("term_report_card", "Term Report Card")}</p>
+                <p className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-1">{averageGrade}</p>
+                <p className="text-xs text-muted-foreground">{t("term_report_card", "Term Report Card")}</p>
               </div>
             </div>
 

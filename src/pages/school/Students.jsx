@@ -97,10 +97,10 @@ export default function Students() {
   );
 
   const stats = [
-    { label: 'Total Students', value: students.length, color: 'bg-blue-100 dark:bg-blue-950/40 text-blue-600', icon: Users },
-    { label: 'Active', value: students.filter(s => s.status === 'Active').length, color: 'bg-green-100 dark:bg-green-950/40 text-green-600', icon: CheckCircle },
-    { label: 'Fees Owing', value: students.filter(s => s.feeStatus !== 'Paid').length, color: 'bg-red-100 dark:bg-red-950/40 text-red-600', icon: XCircle },
-    { label: 'Classes', value: 8, color: 'bg-purple-100 dark:bg-purple-950/40 text-purple-600', icon: GraduationCap },
+    { label: 'Total Students', value: students.length, color: 'bg-blue-500', icon: Users },
+    { label: 'Active', value: students.filter(s => s.status === 'Active').length, color: 'bg-green-500', icon: CheckCircle },
+    { label: 'Fees Owing', value: students.filter(s => s.feeStatus !== 'Paid').length, color: 'bg-red-500', icon: XCircle },
+    { label: 'Classes', value: 8, color: 'bg-purple-500', icon: GraduationCap },
   ];
 
   const [isEnrolling, setIsEnrolling] = useState(false);
@@ -219,18 +219,18 @@ export default function Students() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-indigo-600 to-violet-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-white/10 mb-8">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-400/20 blur-[100px] rounded-full pointer-events-none"></div>
+      <div className="relative overflow-hidden bg-gradient-to-br from-emerald-600 to-teal-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-white/10 mb-8">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-400/20 blur-[100px] rounded-full pointer-events-none"></div>
         <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="text-center md:text-left">
             <h1 className="text-3xl md:text-4xl font-black tracking-tight mb-2">{t("students_directory", "Students Directory")}</h1>
-            <p className="text-indigo-100 font-medium text-lg">{t("manage_enrollment", "Manage enrollments, assign classes, and track fees.")}</p>
+            <p className="text-emerald-100 font-medium text-lg">{t("manage_enrollment", "Manage enrollments, assign classes, and track fees.")}</p>
           </div>
           <div className="flex gap-2 bg-white/10 p-2 rounded-[1.5rem] backdrop-blur-md border border-white/20 shadow-inner">
             <Button variant="ghost" onClick={() => setShowSettings(!showSettings)} className="gap-2 text-white hover:bg-white/20 rounded-xl font-bold">
               <Settings className="w-4 h-4" /> {t("id_settings", "ID Settings")}
             </Button>
-            <Button onClick={() => setShowModal(true)} className="gap-2 bg-white text-indigo-900 hover:bg-white/90 rounded-xl font-bold shadow-md">
+            <Button onClick={() => setShowModal(true)} className="gap-2 bg-white text-emerald-900 hover:bg-white/90 rounded-xl font-bold shadow-md">
               <Plus className="w-4 h-4" /> {t("enroll_student", "Enroll Student")}
             </Button>
           </div>
@@ -243,15 +243,15 @@ export default function Students() {
       {showSettings && <IDFormatSettings />}
 
       {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((s, i) => (
-          <div key={i} className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2rem] border border-white/20 p-6 flex items-center gap-4 shadow-xl hover:-translate-y-1 transition-transform duration-300">
-            <div className={`w-14 h-14 rounded-2xl ${s.color} flex items-center justify-center shadow-inner border border-current/20`}>
-              <s.icon className="w-6 h-6" />
+          <div key={i} className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 shadow-sm">
+            <div className={`w-10 h-10 rounded-xl ${s.color} text-white flex items-center justify-center`}>
+              <s.icon className="w-5 h-5 text-white" />
             </div>
             <div>
-              <p className="text-3xl font-black text-slate-900 dark:text-white">{s.value}</p>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">{s.label}</p>
+              <p className="text-2xl font-bold text-card-foreground">{s.value}</p>
+              <p className="text-xs text-muted-foreground">{s.label}</p>
             </div>
           </div>
         ))}

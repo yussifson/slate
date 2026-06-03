@@ -133,12 +133,12 @@ export default function Parents() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-indigo-600 to-violet-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-white/10 mb-8">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-400/20 blur-[100px] rounded-full pointer-events-none"></div>
+      <div className="relative overflow-hidden bg-gradient-to-br from-emerald-600 to-teal-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-white/10 mb-8">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-400/20 blur-[100px] rounded-full pointer-events-none"></div>
         <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="text-center md:text-left">
             <h1 className="text-3xl md:text-4xl font-black tracking-tight mb-2">{t("parents", "Parents")}</h1>
-            <p className="text-indigo-100 font-medium text-lg">{t("manage_parent_directory", "Manage parent directory (Parents are enrolled automatically with Students)")}</p>
+            <p className="text-emerald-100 font-medium text-lg">{t("manage_parent_directory", "Manage parent directory (Parents are enrolled automatically with Students)")}</p>
           </div>
           <div className="flex gap-2">
             <Button variant="ghost" onClick={() => setShowSettings(!showSettings)} className="gap-2 bg-white/10 hover:bg-white/20 text-white rounded-xl">
