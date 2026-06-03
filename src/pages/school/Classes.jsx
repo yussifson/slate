@@ -125,51 +125,59 @@ export default function Classes() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-card-foreground">{t("classes", "Classes")}</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">{t("manage_classes_subjects_and_te", "Manage classes, subjects, and teachers")}</p>
+      <div className="relative overflow-hidden bg-gradient-to-br from-indigo-600 to-violet-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-white/10 mb-8">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-400/20 blur-[100px] rounded-full pointer-events-none"></div>
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="text-center md:text-left">
+            <h1 className="text-3xl md:text-4xl font-black tracking-tight mb-2">{t("classes", "Classes")}</h1>
+            <p className="text-indigo-100 font-medium text-lg">{t("manage_classes_subjects_and_te", "Manage classes, subjects, and teachers")}</p>
+          </div>
+          <div className="flex items-center gap-2 bg-white/10 p-2 rounded-2xl backdrop-blur-md border border-white/20 shadow-inner">
+            <Button onClick={() => setShowForm(true)} size="sm" className="gap-1.5 text-sm font-bold bg-white text-indigo-900 hover:bg-white/90 rounded-xl">
+              <Plus className="w-4 h-4" /> {t("add_class", "Add Class")}
+            </Button>
+          </div>
         </div>
-        <Button onClick={() => setShowModal(true)} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
-          <Plus className="w-4 h-4" /> {t("add_class", "Add Class")}
-        </Button>
+        <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none transform translate-x-1/4 translate-y-1/4">
+          <BookOpen className="w-64 h-64" />
+        </div>
       </div>
       {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 shadow-sm">
-          <div className="w-10 h-10 rounded-xl bg-purple-500 flex items-center justify-center">
-            <BookOpen className="w-5 h-5 text-white" />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2rem] border border-white/20 p-6 flex items-center gap-4 shadow-xl hover:-translate-y-1 transition-transform duration-300">
+          <div className="w-14 h-14 rounded-2xl bg-purple-100 dark:bg-purple-950/40 flex items-center justify-center shadow-inner border border-purple-200/50">
+            <BookOpen className="w-6 h-6 text-purple-600" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-card-foreground">{classesData.length}</p>
-            <p className="text-xs text-muted-foreground">{t("total_classes", "Total Classes")}</p>
+            <p className="text-3xl font-black text-slate-900 dark:text-white">{classesData.length}</p>
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t("total_classes", "Total Classes")}</p>
           </div>
         </div>
-        <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 shadow-sm">
-          <div className="w-10 h-10 rounded-xl bg-green-500 flex items-center justify-center">
-            <UserCog className="w-5 h-5 text-white" />
+        <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2rem] border border-white/20 p-6 flex items-center gap-4 shadow-xl hover:-translate-y-1 transition-transform duration-300">
+          <div className="w-14 h-14 rounded-2xl bg-green-100 dark:bg-green-950/40 flex items-center justify-center shadow-inner border border-green-200/50">
+            <UserCog className="w-6 h-6 text-green-600" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-card-foreground">{[...new Set(classesData.map(c => c.teacher))].length}</p>
-            <p className="text-xs text-muted-foreground">{t("teachers", "Teachers")}</p>
+            <p className="text-3xl font-black text-slate-900 dark:text-white">{[...new Set(classesData.map(c => c.teacher))].length}</p>
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t("teachers", "Teachers")}</p>
           </div>
         </div>
-        <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 shadow-sm">
-          <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center">
-            <Users className="w-5 h-5 text-white" />
+        <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2rem] border border-white/20 p-6 flex items-center gap-4 shadow-xl hover:-translate-y-1 transition-transform duration-300">
+          <div className="w-14 h-14 rounded-2xl bg-blue-100 dark:bg-blue-950/40 flex items-center justify-center shadow-inner border border-blue-200/50">
+            <Users className="w-6 h-6 text-blue-600" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-card-foreground">{classesData.reduce((acc, curr) => acc + (curr.students || 0), 0)}</p>
-            <p className="text-xs text-muted-foreground">{t("students_enrolled", "Students Enrolled")}</p>
+            <p className="text-3xl font-black text-slate-900 dark:text-white">{classesData.reduce((acc, curr) => acc + (curr.students || 0), 0)}</p>
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t("students_enrolled", "Students Enrolled")}</p>
           </div>
         </div>
-        <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 shadow-sm">
-          <div className="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center">
-            <Layers className="w-5 h-5 text-white" />
+        <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2rem] border border-white/20 p-6 flex items-center gap-4 shadow-xl hover:-translate-y-1 transition-transform duration-300">
+          <div className="w-14 h-14 rounded-2xl bg-orange-100 dark:bg-orange-950/40 flex items-center justify-center shadow-inner border border-orange-200/50">
+            <Layers className="w-6 h-6 text-orange-600" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-card-foreground">{[...new Set(classesData.map(c => c.subject))].length}</p>
-            <p className="text-xs text-muted-foreground">{t("subjects", "Subjects")}</p>
+            <p className="text-3xl font-black text-slate-900 dark:text-white">{[...new Set(classesData.map(c => c.subject))].length}</p>
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t("subjects", "Subjects")}</p>
           </div>
         </div>
       </div>

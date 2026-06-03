@@ -136,26 +136,27 @@ export default function ParentPortal() {
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       {/* Header & Nav */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-6 md:p-8 text-white shadow-md relative overflow-hidden">
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold mb-2">Welcome back, Guardian</h1>
-            <p className="text-blue-100 max-w-xl text-sm">Managing records for your dependents.</p>
+      <div className="relative overflow-hidden bg-gradient-to-br from-indigo-600 to-blue-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-white/10 mb-8">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-400/20 blur-[100px] rounded-full pointer-events-none"></div>
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="text-center md:text-left">
+            <h1 className="text-3xl md:text-4xl font-black tracking-tight mb-2">Welcome back, {user?.user_metadata?.full_name || 'Guardian'}</h1>
+            <p className="text-indigo-100 font-medium text-lg">Managing records for your dependents.</p>
           </div>
-          <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 hide-scrollbar">
-            <button onClick={() => setActiveTab('dashboard')} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-colors whitespace-nowrap ${activeTab === 'dashboard' ? 'bg-white text-indigo-700' : 'bg-white/10 hover:bg-white/20'}`}>
+          <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 hide-scrollbar bg-white/10 p-2 rounded-[1.5rem] backdrop-blur-md border border-white/20 shadow-inner">
+            <button onClick={() => setActiveTab('dashboard')} className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'dashboard' ? 'bg-white text-indigo-800 shadow-md scale-105' : 'text-white hover:bg-white/20'}`}>
               <LayoutDashboard className="w-4 h-4" /> Dashboard
             </button>
-            <button onClick={() => setActiveTab('academics')} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-colors whitespace-nowrap ${activeTab === 'academics' ? 'bg-white text-indigo-700' : 'bg-white/10 hover:bg-white/20'}`}>
+            <button onClick={() => setActiveTab('academics')} className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'academics' ? 'bg-white text-indigo-800 shadow-md scale-105' : 'text-white hover:bg-white/20'}`}>
               <GraduationCap className="w-4 h-4" /> Academics
             </button>
-            <button onClick={() => setActiveTab('finance')} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-colors whitespace-nowrap ${activeTab === 'finance' ? 'bg-white text-indigo-700' : 'bg-white/10 hover:bg-white/20'}`}>
+            <button onClick={() => setActiveTab('finance')} className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'finance' ? 'bg-white text-indigo-800 shadow-md scale-105' : 'text-white hover:bg-white/20'}`}>
               <CreditCard className="w-4 h-4" /> Finance
             </button>
           </div>
         </div>
         <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none transform translate-x-1/4 translate-y-1/4">
-          <User className="w-64 h-64" />
+          <User className="w-96 h-96" />
         </div>
       </div>
 
@@ -207,22 +208,22 @@ export default function ParentPortal() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-in fade-in">
           <div className="col-span-1 lg:col-span-2 space-y-6">
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-card rounded-xl border border-border p-5 shadow-sm">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-950/20 flex items-center justify-center text-green-600"><CheckCircle className="w-4 h-4" /></div>
-                  <h3 className="font-bold text-foreground">Attendance</h3>
+              <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2rem] border border-white/20 p-6 shadow-xl hover:-translate-y-1 transition-transform duration-300">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-2xl bg-green-100 dark:bg-green-950/40 flex items-center justify-center text-green-600 shadow-inner border border-green-200/50"><CheckCircle className="w-6 h-6" /></div>
+                  <h3 className="font-bold text-slate-500 uppercase tracking-wider text-sm">Attendance</h3>
                 </div>
-                <p className="text-4xl font-extrabold text-card-foreground mb-1">{attendancePct}%</p>
-                <p className="text-xs text-muted-foreground">Present for the term</p>
+                <p className="text-5xl font-black text-slate-900 dark:text-white mb-2">{attendancePct}%</p>
+                <p className="text-sm font-semibold text-slate-400">Present for the term</p>
               </div>
               
-              <div className="bg-card rounded-xl border border-border p-5 shadow-sm">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-950/20 flex items-center justify-center text-blue-600"><BookOpen className="w-4 h-4" /></div>
-                  <h3 className="font-bold text-foreground">Performance</h3>
+              <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2rem] border border-white/20 p-6 shadow-xl hover:-translate-y-1 transition-transform duration-300">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-2xl bg-blue-100 dark:bg-blue-950/40 flex items-center justify-center text-blue-600 shadow-inner border border-blue-200/50"><BookOpen className="w-6 h-6" /></div>
+                  <h3 className="font-bold text-slate-500 uppercase tracking-wider text-sm">Performance</h3>
                 </div>
-                <p className="text-4xl font-extrabold text-blue-600 mb-1">{averageGrade}</p>
-                <p className="text-xs text-muted-foreground">Term Report Card</p>
+                <p className="text-5xl font-black text-blue-600 dark:text-blue-400 mb-2">{averageGrade}</p>
+                <p className="text-sm font-semibold text-slate-400">Term Report Card</p>
               </div>
             </div>
 

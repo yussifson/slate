@@ -66,7 +66,7 @@ export default function Students() {
   // Form State
   const [formData, setFormData] = useState({ 
     firstName: '', lastName: '', email: '', dateOfBirth: '', gender: 'Female', class: 'Grade 7B', 
-    parentName: '', parentPhone: '', parentEmail: '', address: '', medicalNotes: '', previousSchool: '', studentId: '', parentId: '', defaultPassword: '' 
+    parentName: '', parentPhone: '', parentEmail: '', address: '', medicalNotes: '', previousSchool: '', studentId: '', parentId: '', defaultPassword: '', parentPassword: '' 
   });
   const [editingId, setEditingId] = useState(null);
   const [viewDetails, setViewDetails] = useState(null);
@@ -97,10 +97,10 @@ export default function Students() {
   );
 
   const stats = [
-    { label: 'Total Students', value: students.length, color: 'bg-blue-500', icon: Users },
-    { label: 'Active', value: students.filter(s => s.status === 'Active').length, color: 'bg-green-500', icon: CheckCircle },
-    { label: 'Fees Owing', value: students.filter(s => s.feeStatus !== 'Paid').length, color: 'bg-red-500', icon: XCircle },
-    { label: 'Classes', value: 8, color: 'bg-purple-500', icon: GraduationCap },
+    { label: 'Total Students', value: students.length, color: 'bg-blue-100 dark:bg-blue-950/40 text-blue-600', icon: Users },
+    { label: 'Active', value: students.filter(s => s.status === 'Active').length, color: 'bg-green-100 dark:bg-green-950/40 text-green-600', icon: CheckCircle },
+    { label: 'Fees Owing', value: students.filter(s => s.feeStatus !== 'Paid').length, color: 'bg-red-100 dark:bg-red-950/40 text-red-600', icon: XCircle },
+    { label: 'Classes', value: 8, color: 'bg-purple-100 dark:bg-purple-950/40 text-purple-600', icon: GraduationCap },
   ];
 
   const [isEnrolling, setIsEnrolling] = useState(false);
@@ -120,8 +120,8 @@ export default function Students() {
       // Auto-generate Parent ID
       const parentPrefix = schoolSettings?.parentPrefix || 'PAR';
       
-      if (!formData.firstName || !formData.lastName || !formData.parentName || !formData.defaultPassword || !formData.email || !formData.parentEmail) {
-        toast.error(t("please_fill_required_fields", "Please fill all required fields, including Student Email, Parent Email, and Password."));
+      if (!formData.firstName || !formData.lastName || !formData.parentName || !formData.defaultPassword || !formData.parentPassword || !formData.email || !formData.parentEmail) {
+        toast.error(t("please_fill_required_fields", "Please fill all required fields, including Student Email, Parent Email, and their Passwords."));
         return;
       }
 
@@ -131,6 +131,7 @@ export default function Students() {
       const studentEmail = formData.email.trim().toLowerCase();
       const parentEmail = formData.parentEmail.trim().toLowerCase();
       const defaultPassword = formData.defaultPassword || 'password123';
+      const parentPassword = formData.parentPassword || 'password123';
       
       const age = formData.dateOfBirth ? new Date().getFullYear() - new Date(formData.dateOfBirth).getFullYear() : formData.age || 0;
 
@@ -142,7 +143,7 @@ export default function Students() {
         }
         
         const parentFullName = formData.parentName || `Parent of ${fullName}`;
-        const { error: parAuthErr } = await registerSchoolUser(parentEmail, defaultPassword, 'parent', companyId, parentFullName);
+        const { error: parAuthErr } = await registerSchoolUser(parentEmail, parentPassword, 'parent', companyId, parentFullName);
         if (parAuthErr && !parAuthErr.message?.includes('already registered')) {
           throw new Error(`Parent Auth Error: ${parAuthErr.message}`);
         }
@@ -194,13 +195,13 @@ export default function Students() {
           base44.entities.Client.create(studentPayload),
           base44.entities.Client.create(parentPayload)
         ]);
-        toast.success(`Student & Parent enrolled successfully! IDs: ${studentId} & ${parentId}. Default Password: ${defaultPassword}`);
+        toast.success(`Student & Parent enrolled successfully! IDs: ${studentId} & ${parentId}.`);
       }
 
       queryClient.invalidateQueries({ queryKey: ["clients", companyId] });
       setShowModal(false);
       setEditingId(null);
-      setFormData({ firstName: '', lastName: '', email: '', dateOfBirth: '', gender: 'Female', class: 'Grade 7B', parentName: '', parentPhone: '', parentEmail: '', address: '', medicalNotes: '', previousSchool: '', studentId: '', parentId: '', defaultPassword: '' });
+      setFormData({ firstName: '', lastName: '', email: '', dateOfBirth: '', gender: 'Female', class: 'Grade 7B', parentName: '', parentPhone: '', parentEmail: '', address: '', medicalNotes: '', previousSchool: '', studentId: '', parentId: '', defaultPassword: '', parentPassword: '' });
       setActiveTab('personal');
     } catch (err) {
       toast.error(err?.message || "Failed to save records");
@@ -218,42 +219,44 @@ export default function Students() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-card-foreground">{t("students", "Students")}</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">{t("manage_student_enrollment_and_", "Manage student enrollment and records")}</p>
+      <div className="relative overflow-hidden bg-gradient-to-br from-indigo-600 to-violet-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-white/10 mb-8">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-400/20 blur-[100px] rounded-full pointer-events-none"></div>
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="text-center md:text-left">
+            <h1 className="text-3xl md:text-4xl font-black tracking-tight mb-2">{t("students_directory", "Students Directory")}</h1>
+            <p className="text-indigo-100 font-medium text-lg">{t("manage_enrollment", "Manage enrollments, assign classes, and track fees.")}</p>
+          </div>
+          <div className="flex gap-2 bg-white/10 p-2 rounded-[1.5rem] backdrop-blur-md border border-white/20 shadow-inner">
+            <Button variant="ghost" onClick={() => setShowSettings(!showSettings)} className="gap-2 text-white hover:bg-white/20 rounded-xl font-bold">
+              <Settings className="w-4 h-4" /> {t("id_settings", "ID Settings")}
+            </Button>
+            <Button onClick={() => setShowModal(true)} className="gap-2 bg-white text-indigo-900 hover:bg-white/90 rounded-xl font-bold shadow-md">
+              <Plus className="w-4 h-4" /> {t("enroll_student", "Enroll Student")}
+            </Button>
+          </div>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setShowSettings(!showSettings)} className="gap-2">
-            <Settings className="w-4 h-4" /> {t("id_settings", "ID Settings")}
-          </Button>
-          <Button variant="outline" onClick={() => { notifyTeam({ companyId, provider: 'twilio', message: 'School announcement for all parents.', recipientPhone: '+1234567890' }).then(()=>toast.success("SMS Sent to Parents!")).catch(()=>{}) }} className="gap-2 border-blue-200 text-blue-700 hover:bg-blue-50">
-            <MessageSquare className="w-4 h-4 text-blue-500" /> Message Parents
-          </Button>
-          <Button onClick={() => setShowModal(true)} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
-            <Plus className="w-4 h-4" /> {t("enroll_student", "Enroll Student")}
-          </Button>
+        <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none transform translate-x-1/4 translate-y-1/4">
+          <GraduationCap className="w-64 h-64" />
         </div>
       </div>
       
       {showSettings && <IDFormatSettings />}
 
       {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((s, i) => {
-          return (
-            <div key={i} className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 shadow-sm">
-              <div className={`w-10 h-10 rounded-xl ${s.color} flex items-center justify-center`}>
-                <s.icon className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-card-foreground">{s.value}</p>
-                <p className="text-xs text-muted-foreground">{s.label}</p>
-              </div>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+        {stats.map((s, i) => (
+          <div key={i} className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2rem] border border-white/20 p-6 flex items-center gap-4 shadow-xl hover:-translate-y-1 transition-transform duration-300">
+            <div className={`w-14 h-14 rounded-2xl ${s.color} flex items-center justify-center shadow-inner border border-current/20`}>
+              <s.icon className="w-6 h-6" />
             </div>
-          );
-        })}
+            <div>
+              <p className="text-3xl font-black text-slate-900 dark:text-white">{s.value}</p>
+              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">{s.label}</p>
+            </div>
+          </div>
+        ))}
       </div>
+      
       {/* Filters */}
       <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
         <div className="flex flex-col sm:flex-row gap-3">
@@ -481,6 +484,11 @@ export default function Students() {
                   <div className="grid grid-cols-2 gap-4">
                     <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("parent_phone", "Parent Phone")}</label><Input value={formData.parentPhone} onChange={e => setFormData({...formData, parentPhone: e.target.value})} className="mt-1" /></div>
                     <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("parent_email", "Parent Email")}</label><Input value={formData.parentEmail} onChange={e => setFormData({...formData, parentEmail: e.target.value})} className="mt-1" type="email" /></div>
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-muted-foreground uppercase">{t("parent_password", "Parent Login Password")} *</label>
+                    <Input value={formData.parentPassword} onChange={e => setFormData({...formData, parentPassword: e.target.value})} className="mt-1" type="text" placeholder="Required for parent login" />
+                    {!editingId && <p className="text-[10px] text-muted-foreground mt-1">This will be the password the parent uses to log in.</p>}
                   </div>
                 </div>
               )}

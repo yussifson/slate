@@ -88,19 +88,21 @@ export default function SuperAdminDashboard() {
 
   return (
     <div className="space-y-6 max-w-2xl">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-bold">{t("firm_setup", (getTerm(activeIndustry, "venue") || "Firm") + " Setup")}</h1>
-          <p className="text-sm text-muted-foreground">{t(
-            "configure_your_law_firm_and_ma",
-            "Configure your law firm and manage team members."
-          )}</p>
+      <div className="relative overflow-hidden bg-gradient-to-br from-indigo-700 to-violet-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-white/10">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-400/20 blur-[100px] rounded-full pointer-events-none"></div>
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="text-center md:text-left">
+            <h1 className="text-3xl md:text-4xl font-black tracking-tight mb-2">Welcome back, {user?.user_metadata?.full_name || 'Admin'}</h1>
+            <p className="text-indigo-100 font-medium text-lg">System Configuration & {getTerm(activeIndustry, "venue") || "Firm"} Setup</p>
+          </div>
+          {!company && (
+            <div className="flex items-center bg-white/10 p-2 rounded-2xl backdrop-blur-md border border-white/20 shadow-inner">
+              <Button onClick={() => setShowForm(true)} size="sm" className="gap-1.5 text-sm font-bold bg-white text-indigo-900 hover:bg-white/90 rounded-xl">
+                <Plus className="w-4 h-4" /> {t("setup_firm", "Setup " + (getTerm(activeIndustry, "venue") || "Firm"))}
+              </Button>
+            </div>
+          )}
         </div>
-        {!company && (
-          <Button onClick={() => setShowForm(true)} size="sm" className="gap-1.5">
-            <Plus className="w-4 h-4" /> {t("setup_firm", "Setup " + (getTerm(activeIndustry, "venue") || "Firm"))}
-          </Button>
-        )}
       </div>
       {company ? (
         <div className="bg-card border border-border rounded-xl p-5 space-y-4">

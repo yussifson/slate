@@ -133,15 +133,21 @@ export default function Parents() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-card-foreground">{t("parents", "Parents")}</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">{t("manage_parent_directory", "Manage parent directory (Parents are enrolled automatically with Students)")}</p>
+      <div className="relative overflow-hidden bg-gradient-to-br from-indigo-600 to-violet-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-white/10 mb-8">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-400/20 blur-[100px] rounded-full pointer-events-none"></div>
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="text-center md:text-left">
+            <h1 className="text-3xl md:text-4xl font-black tracking-tight mb-2">{t("parents", "Parents")}</h1>
+            <p className="text-indigo-100 font-medium text-lg">{t("manage_parent_directory", "Manage parent directory (Parents are enrolled automatically with Students)")}</p>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="ghost" onClick={() => setShowSettings(!showSettings)} className="gap-2 bg-white/10 hover:bg-white/20 text-white rounded-xl">
+              <Settings className="w-4 h-4" /> {t("id_settings", "ID Settings")}
+            </Button>
+          </div>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setShowSettings(!showSettings)} className="gap-2">
-            <Settings className="w-4 h-4" /> {t("id_settings", "ID Settings")}
-          </Button>
+        <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none transform translate-x-1/4 translate-y-1/4">
+          <Users className="w-64 h-64" />
         </div>
       </div>
       
