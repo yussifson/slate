@@ -66,7 +66,7 @@ export default function StudentBusinesses() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-1 space-y-6">
           <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 p-8 shadow-xl">
-            <h3 className="text-xl font-extrabold mb-6 flex items-center gap-2"><Plus className="text-indigo-500" /> Start a Venture</h3>
+            <h3 className="text-xl font-extrabold mb-6 flex items-center gap-2"><Plus className="text-emerald-500" /> Start a Venture</h3>
             <div className="space-y-4">
               <div>
                 <label className="text-xs font-bold text-slate-500 uppercase">Venture Name</label>

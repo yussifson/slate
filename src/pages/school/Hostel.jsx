@@ -118,11 +118,11 @@ export default function Hostel() {
                 
                 <div className="w-full space-y-2 mt-2">
                   <div className="flex items-center justify-between text-xs text-muted-foreground bg-muted/50 p-2 rounded-lg">
-                    <span className="flex items-center gap-2"><Users className="w-3.5 h-3.5 text-indigo-500" /> Cap:</span>
+                    <span className="flex items-center gap-2"><Users className="w-3.5 h-3.5 text-emerald-500" /> Cap:</span>
                     <span className="font-semibold text-foreground">{h.capacity} beds</span>
                   </div>
                   <div className="flex items-center justify-between text-xs text-muted-foreground bg-muted/50 p-2 rounded-lg">
-                    <span className="flex items-center gap-2"><BedDouble className="w-3.5 h-3.5 text-indigo-500" /> Rooms:</span>
+                    <span className="flex items-center gap-2"><BedDouble className="w-3.5 h-3.5 text-emerald-500" /> Rooms:</span>
                     <span className="font-semibold text-foreground">{h.rooms || 'N/A'}</span>
                   </div>
                   <div className="pt-2 border-t border-border mt-2">

@@ -107,7 +107,7 @@ export default function Gamification() {
                 </div>
                 <div className="font-bold text-slate-900 dark:text-white">{name}</div>
               </div>
-              <div className="font-black text-indigo-600 dark:text-indigo-400">{2000 - (i * 150)} XP</div>
+              <div className="font-black text-emerald-600 dark:text-emerald-400">{2000 - (i * 150)} XP</div>
             </div>
           ))}
         </div>

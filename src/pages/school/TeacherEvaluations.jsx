@@ -51,7 +51,7 @@ export default function TeacherEvaluations() {
 
   return (
     <div className="space-y-8 pb-20 max-w-5xl mx-auto">
-      <div className="relative overflow-hidden bg-gradient-to-br from-amber-600 to-orange-800 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-white/10">
+      <div className="relative overflow-hidden bg-gradient-to-br from-emerald-600 to-teal-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-white/10">
         <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-500/20 blur-[100px] rounded-full pointer-events-none"></div>
         <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
           <div className="w-20 h-20 rounded-3xl bg-white/10 backdrop-blur-xl border-4 border-white/20 flex items-center justify-center relative shadow-xl">
