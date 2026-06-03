@@ -39,7 +39,7 @@ export default function CampusMarketplace() {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['school_marketplace_item', companyId]);
+      queryClient.invalidateQueries({ queryKey: ['school_marketplace_item', companyId] });
       setNewItemName('');
       setNewItemPrice('');
       toast.success("Item listed successfully!");

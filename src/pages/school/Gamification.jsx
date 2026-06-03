@@ -60,7 +60,7 @@ export default function Gamification() {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['school_student_xp', companyId]);
+      queryClient.invalidateQueries({ queryKey: ['school_student_xp', companyId] });
       toast.success("50 XP Claimed! Keep up the good work.");
     }
   });

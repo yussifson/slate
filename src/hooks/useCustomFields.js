@@ -66,9 +66,9 @@ export function useMutateCustomField() {
       }
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries(['custom_fields', companyId]);
+      queryClient.invalidateQueries({ queryKey: ['custom_fields', companyId] });
       if (variables.recordType) {
-        queryClient.invalidateQueries(['custom_fields', companyId, variables.recordType]);
+        queryClient.invalidateQueries({ queryKey: ['custom_fields', companyId, variables.recordType] });
       }
     }
   });
@@ -88,7 +88,7 @@ export function useDeleteCustomField() {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['custom_fields', companyId]);
+      queryClient.invalidateQueries({ queryKey: ['custom_fields', companyId] });
     }
   });
 }

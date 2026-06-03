@@ -50,7 +50,7 @@ export default function CanteenPOS() {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['school_canteen_order', companyId]);
+      queryClient.invalidateQueries({ queryKey: ['school_canteen_order', companyId] });
       setCart({});
       toast.success("Payment successful! Order placed.");
     }

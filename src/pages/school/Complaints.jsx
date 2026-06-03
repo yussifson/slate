@@ -39,7 +39,7 @@ export default function Complaints() {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['school_complaint_ticket', companyId]);
+      queryClient.invalidateQueries({ queryKey: ['school_complaint_ticket', companyId] });
       setSubject('');
       setDetails('');
       toast.success("Complaint submitted securely to administration.");

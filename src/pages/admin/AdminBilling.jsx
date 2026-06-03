@@ -42,7 +42,7 @@ export default function AdminBilling() {
     },
     onSuccess: () => {
       toast({ title: 'Invoice Updated', description: 'The billing status has been updated successfully.' });
-      queryClient.invalidateQueries(['admin_invoices']);
+      queryClient.invalidateQueries({ queryKey: ['admin_invoices'] });
     }
   });
 

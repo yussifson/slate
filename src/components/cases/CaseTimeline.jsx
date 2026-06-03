@@ -54,7 +54,7 @@ export default function CaseTimeline({ caseData, user }) {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["case-timeline", caseData.id]);
+      queryClient.invalidateQueries({ queryKey: ["case-timeline", caseData.id] });
       setShowAdd(false);
       setNewEntry({ title: "", description: "", activity_type: "note" });
       toast.success("Timeline entry added");

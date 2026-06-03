@@ -362,8 +362,8 @@ export default function GlobalAIAssistant({ onClose }) {
                   ? await base44.entities[entityName].update(action.id, p)
                   : await base44.entities[entityName].create(p);
 
-                queryClient.invalidateQueries([rt + 's']);
-                queryClient.invalidateQueries(['cases']);
+                queryClient.invalidateQueries({ queryKey: [rt + 's'] });
+                queryClient.invalidateQueries({ queryKey: ['cases'] });
                 results.push(`Success: ${action.tool} for ${rt}. Record ID is ${res.id}`);
               } else {
                 const res = await mutateRecord.mutateAsync({
@@ -386,8 +386,8 @@ export default function GlobalAIAssistant({ onClose }) {
                 const entityMap = { 'case': 'LegalCase', 'client': 'Client', 'lead': 'Lead', 'staff': 'StaffRecord', 'invoice': 'Invoice', 'task': 'Task' };
                 const entityName = entityMap[rt];
                 await base44.entities[entityName].delete(action.id);
-                queryClient.invalidateQueries([rt + 's']);
-                queryClient.invalidateQueries(['cases']);
+                queryClient.invalidateQueries({ queryKey: [rt + 's'] });
+                queryClient.invalidateQueries({ queryKey: ['cases'] });
                 results.push(`Success: deleted ${rt} with ID ${action.id}`);
               } else {
                 await deleteRecord.mutateAsync({ id: action.id, recordType: rt });

@@ -182,6 +182,21 @@ export const base44 = {
             return data;
         }
     },
+    getEntities: async (caseType, companyId) => {
+        return await base44.entities.LegalCase.filter({
+            case_type: caseType,
+            company_id: companyId
+        });
+    },
+    createEntity: async (payload) => {
+        return await base44.entities.LegalCase.create(payload);
+    },
+    updateEntity: async (id, payload) => {
+        return await base44.entities.LegalCase.update(id, payload);
+    },
+    deleteEntity: async (id) => {
+        return await base44.entities.LegalCase.delete(id);
+    },
     storage: {
         upload: async (bucket, path, file) => {
             if (!navigator.onLine) {

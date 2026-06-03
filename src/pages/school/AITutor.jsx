@@ -36,14 +36,14 @@ export default function AITutor() {
       status: 'active',
       data: { messages: newMessages }
     }),
-    onSuccess: () => queryClient.invalidateQueries(['school_ai_chat', companyId])
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['school_ai_chat', companyId] })
   });
 
   const updateSession = useMutation({
     mutationFn: ({ id, newMessages }) => base44.updateEntity(id, {
       data: { ...chatSession.data, messages: newMessages }
     }),
-    onSuccess: () => queryClient.invalidateQueries(['school_ai_chat', companyId])
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['school_ai_chat', companyId] })
   });
 
   const messages = chatSession?.data?.messages || [

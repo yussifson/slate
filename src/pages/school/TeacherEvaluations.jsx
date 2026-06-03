@@ -38,7 +38,7 @@ export default function TeacherEvaluations() {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['school_teacher_evaluation', companyId]);
+      queryClient.invalidateQueries({ queryKey: ['school_teacher_evaluation', companyId] });
       setSelectedTeacher(null);
       setRating(0);
       toast.success("Evaluation submitted anonymously!");
