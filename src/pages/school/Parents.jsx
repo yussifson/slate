@@ -201,7 +201,14 @@ export default function Parents() {
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={() => {
                           setEditingId(p.id);
-                          setFormData({ name: p.name, phone: p.phone, email: p.email, address: p.address, parentId: p.parentId });
+                          setFormData({ 
+                            name: p.name || '', 
+                            phone: p.phone || '', 
+                            email: p.email || '', 
+                            address: p.address || '', 
+                            parentId: p.parentId || '', 
+                            linkedStudentId: p.linkedStudentId || '' 
+                          });
                           setShowModal(true);
                         }}>{t("edit", "Edit")}</DropdownMenuItem>
                         <DropdownMenuItem className="text-red-600 font-medium" onClick={() => {

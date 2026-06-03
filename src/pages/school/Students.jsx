@@ -136,14 +136,15 @@ export default function Students() {
 
       if (!editingId) {
         // Only generate auth accounts on initial creation
-        const { error: stuAuthErr } = await registerSchoolUser(studentEmail, defaultPassword, 'student', companyId);
+        const { error: stuAuthErr } = await registerSchoolUser(studentEmail, defaultPassword, 'student', companyId, fullName);
         if (stuAuthErr && !stuAuthErr.message?.includes('already registered')) {
-          console.error("Student auth error:", stuAuthErr);
+          throw new Error(`Student Auth Error: ${stuAuthErr.message}`);
         }
         
-        const { error: parAuthErr } = await registerSchoolUser(parentEmail, defaultPassword, 'parent', companyId);
+        const parentFullName = formData.parentName || `Parent of ${fullName}`;
+        const { error: parAuthErr } = await registerSchoolUser(parentEmail, defaultPassword, 'parent', companyId, parentFullName);
         if (parAuthErr && !parAuthErr.message?.includes('already registered')) {
-          console.error("Parent auth error:", parAuthErr);
+          throw new Error(`Parent Auth Error: ${parAuthErr.message}`);
         }
       }
       
