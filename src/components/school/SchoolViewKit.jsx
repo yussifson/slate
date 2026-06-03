@@ -76,31 +76,32 @@ export function StudentGridCard({ student, onEdit, onDelete, onView }) {
   };
 
   return (
-    <article className="group relative bg-card border border-border rounded-2xl p-6 hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col min-h-[260px] text-center">
+    <article className="group relative bg-card/60 backdrop-blur-md border border-border/60 rounded-3xl p-6 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] hover:-translate-y-1.5 transition-all duration-300 flex flex-col min-h-[260px] text-center overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50/40 via-transparent to-transparent dark:from-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
       <CardActions onView={onView} onEdit={onEdit} onDelete={onDelete} />
       
-      <div className="w-20 h-20 mx-auto rounded-full bg-primary/10 border-4 border-background shadow-sm flex items-center justify-center text-3xl font-black text-primary mb-4 shrink-0 relative overflow-hidden">
+      <div className="w-24 h-24 mx-auto rounded-[1.5rem] bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/40 border border-white/50 shadow-inner flex items-center justify-center text-4xl font-black text-blue-700 dark:text-blue-400 mb-5 shrink-0 relative overflow-hidden transform group-hover:scale-105 transition-transform duration-300">
         {student.avatar || student.name?.[0]?.toUpperCase()}
       </div>
       
-      <div className="min-w-0 flex-1 mb-6">
-        <h3 className="font-bold text-xl text-foreground line-clamp-1">{student.name}</h3>
-        <p className="text-xs text-muted-foreground font-mono mt-1">{student.studentId}</p>
-        <div className="mt-3 flex items-center justify-center gap-2">
-          <span className="text-xs font-bold px-3 py-1 rounded-full bg-muted text-muted-foreground">{student.class}</span>
+      <div className="min-w-0 flex-1 mb-6 relative z-10">
+        <h3 className="font-extrabold text-xl text-foreground line-clamp-1 tracking-tight group-hover:text-blue-600 transition-colors">{student.name}</h3>
+        <p className="text-xs text-muted-foreground font-semibold tracking-widest mt-1 opacity-70">{student.studentId}</p>
+        <div className="mt-4 flex items-center justify-center gap-2">
+          <span className="text-xs font-bold px-4 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 shadow-sm border border-slate-200 dark:border-slate-700">{student.class}</span>
         </div>
       </div>
       
-      <div className="mt-auto grid grid-cols-2 gap-4 pt-4 border-t border-border">
+      <div className="mt-auto grid grid-cols-2 gap-4 pt-5 border-t border-border/50 relative z-10">
         <div className="text-center">
-          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Status</p>
-          <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded-md border uppercase", statusStyles[student.status] || "bg-muted text-muted-foreground")}>
+          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5 opacity-60">Status</p>
+          <span className={cn("text-[10px] font-bold px-2.5 py-1 rounded-md border uppercase tracking-wide", statusStyles[student.status] || "bg-muted text-muted-foreground")}>
             {student.status}
           </span>
         </div>
-        <div className="text-center border-l border-border">
-          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Fee Status</p>
-          <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded-md border uppercase", feeStyles[student.feeStatus] || "bg-muted text-muted-foreground")}>
+        <div className="text-center border-l border-border/50">
+          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5 opacity-60">Fee Status</p>
+          <span className={cn("text-[10px] font-bold px-2.5 py-1 rounded-md border uppercase tracking-wide", feeStyles[student.feeStatus] || "bg-muted text-muted-foreground")}>
             {student.feeStatus}
           </span>
         </div>
@@ -111,31 +112,35 @@ export function StudentGridCard({ student, onEdit, onDelete, onView }) {
 
 export function ClassGridCard({ classInfo, onEdit, onDelete, onView }) {
   return (
-    <article className="group relative bg-card border border-border rounded-2xl p-6 hover:shadow-xl hover:border-slate-300 transition-all flex flex-col min-h-[220px]">
-      <div className="flex justify-between items-start mb-4">
-        <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+    <article className="group relative bg-card/60 backdrop-blur-md border border-border/60 rounded-3xl p-6 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] hover:-translate-y-1 transition-all duration-300 flex flex-col min-h-[220px] overflow-hidden">
+      <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity pointer-events-none transform translate-x-1/4 -translate-y-1/4 scale-150">
+        <BookOpen className="w-32 h-32 text-blue-600" />
+      </div>
+      
+      <div className="flex justify-between items-start mb-5 relative z-10">
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 border border-white/50 dark:border-white/10 shadow-sm text-indigo-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
           <BookOpen className="w-6 h-6" />
         </div>
         <CardActions onView={onView} onEdit={onEdit} onDelete={onDelete} />
       </div>
       
-      <div className="mb-4">
-        <h3 className="font-bold text-xl text-foreground">{classInfo.name}</h3>
-        <p className="text-sm font-semibold text-muted-foreground mt-0.5">{classInfo.subject}</p>
+      <div className="mb-6 relative z-10">
+        <h3 className="font-extrabold text-2xl text-foreground tracking-tight group-hover:text-indigo-600 transition-colors">{classInfo.name}</h3>
+        <p className="text-sm font-semibold text-muted-foreground/80 mt-1 tracking-wide uppercase">{classInfo.subject}</p>
       </div>
 
-      <div className="space-y-2 mt-auto">
-        <div className="flex justify-between text-sm">
-          <span className="text-muted-foreground">Teacher:</span>
-          <span className="font-medium text-foreground">{classInfo.teacher}</span>
+      <div className="space-y-3 mt-auto relative z-10 bg-slate-50/50 dark:bg-slate-900/50 p-4 rounded-xl border border-border/40">
+        <div className="flex justify-between text-sm items-center">
+          <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Teacher</span>
+          <span className="font-bold text-foreground text-right">{classInfo.teacher}</span>
         </div>
-        <div className="flex justify-between text-sm">
-          <span className="text-muted-foreground">Enrolled:</span>
-          <span className="font-medium text-foreground">{classInfo.students} Students</span>
+        <div className="flex justify-between text-sm items-center">
+          <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Enrolled</span>
+          <span className="font-bold text-foreground bg-white dark:bg-slate-800 px-2.5 py-0.5 rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">{classInfo.students}</span>
         </div>
-        <div className="flex justify-between text-sm">
-          <span className="text-muted-foreground">Schedule:</span>
-          <span className="font-medium text-foreground truncate max-w-[120px]">{classInfo.schedule}</span>
+        <div className="flex justify-between text-sm items-center pt-2 border-t border-border/50">
+          <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Schedule</span>
+          <span className="font-medium text-foreground text-right truncate max-w-[120px] text-xs">{classInfo.schedule}</span>
         </div>
       </div>
     </article>

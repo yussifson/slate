@@ -131,15 +131,12 @@ export default function Parents() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground">{t("parents", "Parents & Guardians")}</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">{t("manage_parent_profiles", "Manage parent profiles and access credentials")}</p>
+          <h1 className="text-2xl font-bold text-card-foreground">{t("parents", "Parents")}</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{t("manage_parent_directory", "Manage parent directory (Parents are enrolled automatically with Students)")}</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={() => setShowSettings(!showSettings)} className="gap-2">
             <Settings className="w-4 h-4" /> {t("id_settings", "ID Settings")}
-          </Button>
-          <Button onClick={() => setShowModal(true)} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
-            <Plus className="w-4 h-4" /> {t("add_parent", "Add Parent")}
           </Button>
         </div>
       </div>
@@ -217,12 +214,12 @@ export default function Parents() {
         )}
       </div>
 
-      {/* Tabbed Wizard Modal */}
-      {showModal && (
+      {/* Tabbed Wizard Modal (Edit Only) */}
+      {showModal && editingId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-border flex flex-col max-h-[90vh]">
             <div className="p-6 border-b border-border">
-              <h2 className="text-xl font-bold text-card-foreground">{editingId ? 'Edit Parent' : 'Add Parent'}</h2>
+              <h2 className="text-xl font-bold text-card-foreground">Edit Parent</h2>
               <div className="flex gap-4 mt-4 border-b border-border">
                 {['personal', 'linking'].map(tab => (
                   <button
@@ -252,12 +249,8 @@ export default function Parents() {
 
               {activeTab === 'linking' && (
                 <div className="space-y-4 animate-in fade-in zoom-in duration-200">
-                  <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100 text-sm text-blue-800">
-                    <p className="font-semibold mb-1">Link to Student (Recommended)</p>
-                    <p className="text-blue-600/80 text-xs">If you select a student, the Parent ID will be automatically generated to match the Student's ID sequence.</p>
-                  </div>
                   <div>
-                    <label className="text-xs font-bold text-muted-foreground uppercase">Select Student</label>
+                    <label className="text-xs font-bold text-muted-foreground uppercase">Linked Student</label>
                     <select
                       value={formData.linkedStudentId}
                       onChange={e => setFormData({...formData, linkedStudentId: e.target.value})}
@@ -271,8 +264,8 @@ export default function Parents() {
                   </div>
                   
                   <div className="pt-4 border-t border-border">
-                    <label className="text-xs font-bold text-muted-foreground uppercase">Manual Parent ID (Optional)</label>
-                    <Input value={formData.parentId} onChange={e => setFormData({...formData, parentId: e.target.value})} className="mt-1" placeholder="Leave blank to auto-generate" disabled={!!formData.linkedStudentId} />
+                    <label className="text-xs font-bold text-muted-foreground uppercase">Parent ID</label>
+                    <Input value={formData.parentId} onChange={e => setFormData({...formData, parentId: e.target.value})} className="mt-1" placeholder="Leave blank to auto-generate" disabled />
                   </div>
                 </div>
               )}
@@ -284,7 +277,7 @@ export default function Parents() {
                 <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={() => setActiveTab('linking')}>{t("next", "Next")}</Button>
               ) : (
                 <Button className="flex-1 bg-green-600 hover:bg-green-700 text-white" onClick={handleEnroll} disabled={mutateParent.isPending}>
-                  {mutateParent.isPending ? 'Saving...' : 'Save Parent'}
+                  {mutateParent.isPending ? 'Saving...' : 'Save Changes'}
                 </Button>
               )}
             </div>

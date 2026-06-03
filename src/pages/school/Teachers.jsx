@@ -130,11 +130,12 @@ export default function Teachers() {
       ) : viewMode === 'grid' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filtered.map(t => (
-            <div key={t.id} className="bg-card rounded-xl border border-border p-5 shadow-sm hover:shadow-md transition-all group relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div key={t.id} className="bg-card/60 backdrop-blur-md rounded-3xl border border-border/60 p-6 shadow-sm hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] hover:-translate-y-1.5 transition-all duration-300 group relative overflow-hidden flex flex-col items-center text-center">
+              <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/40 via-transparent to-transparent dark:from-indigo-900/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+              <div className="absolute top-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
+                    <Button variant="ghost" className="h-8 w-8 p-0 bg-background/50 hover:bg-background/80 shadow-sm backdrop-blur-sm rounded-full">
                       <MoreVertical className="h-4 w-4 text-muted-foreground" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -150,20 +151,21 @@ export default function Teachers() {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
-              <div className="flex flex-col items-center text-center">
-                <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-xl mb-3 shadow-inner">
-                  {t.avatar}
+              
+              <div className="w-20 h-20 rounded-[1.25rem] bg-gradient-to-br from-indigo-100 to-blue-100 dark:from-indigo-900/40 dark:to-blue-900/40 border border-white/50 shadow-inner flex items-center justify-center text-indigo-700 dark:text-indigo-400 font-black text-2xl mb-4 group-hover:scale-105 transition-transform duration-300 relative z-10">
+                {t.avatar}
+              </div>
+              <h3 className="font-extrabold text-card-foreground text-xl tracking-tight group-hover:text-indigo-600 transition-colors relative z-10">{t.name}</h3>
+              <p className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest mb-4 opacity-90 relative z-10">{t.position}</p>
+              
+              <div className="w-full space-y-2 mt-auto relative z-10">
+                <div className="flex items-center gap-3 text-xs text-muted-foreground bg-slate-50/50 dark:bg-slate-900/50 border border-border/50 p-2.5 rounded-xl shadow-sm">
+                  <div className="w-6 h-6 rounded-md bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm shrink-0"><GraduationCap className="w-3.5 h-3.5 text-indigo-500" /></div>
+                  <span className="truncate font-medium">{t.qualifications}</span>
                 </div>
-                <h3 className="font-bold text-card-foreground text-lg">{t.name}</h3>
-                <p className="text-xs font-semibold text-blue-600 uppercase tracking-wide mb-3">{t.position}</p>
-                
-                <div className="w-full space-y-2 mt-2">
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 p-2 rounded-lg">
-                    <GraduationCap className="w-3.5 h-3.5 text-blue-500" /> <span className="truncate">{t.qualifications}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 p-2 rounded-lg">
-                    <Briefcase className="w-3.5 h-3.5 text-blue-500" /> <span className="truncate">{t.subjects}</span>
-                  </div>
+                <div className="flex items-center gap-3 text-xs text-muted-foreground bg-slate-50/50 dark:bg-slate-900/50 border border-border/50 p-2.5 rounded-xl shadow-sm">
+                  <div className="w-6 h-6 rounded-md bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm shrink-0"><Briefcase className="w-3.5 h-3.5 text-indigo-500" /></div>
+                  <span className="truncate font-medium">{t.subjects}</span>
                 </div>
               </div>
             </div>

@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { useAuth } from '@/lib/AuthContext';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
+import { registerSchoolUser } from "@/api/authUtils";
 import { toast } from 'react-hot-toast';
 import { useNotifications } from "@/hooks/integrations/useNotifications";
 import { useCompanyId } from "@/hooks/useCompanyId";
@@ -98,55 +99,104 @@ export default function Students() {
     { label: 'Classes', value: 8, color: 'bg-purple-500', icon: GraduationCap },
   ];
 
-  const handleEnroll = () => {
+  const [isEnrolling, setIsEnrolling] = useState(false);
+
+  const handleEnroll = async () => {
     if (!companyId) return toast.error("Workspace not loaded. Refresh the page and try again.");
     const fullName = formData.firstName ? `${formData.firstName} ${formData.lastName}`.trim() : formData.name;
     if (!fullName) return toast.error("Please enter student name");
     
-    // Auto-generate a random student ID based on settings
-    const prefix = schoolSettings?.studentPrefix || 'STU';
-    const yearStr = schoolSettings?.studentIncludeYear ? `${new Date().getFullYear()}-` : '';
-    const seq = Math.floor(1000 + Math.random() * 9000);
-    const generatedId = `${prefix}-${yearStr}${seq}`;
-    
-    const studentId = formData.studentId || generatedId;
-    const age = formData.dateOfBirth ? new Date().getFullYear() - new Date(formData.dateOfBirth).getFullYear() : formData.age || 0;
-    
-    const payload = {
-      company_id: companyId,
-      type: 'student',
-      name: fullName,
-      id_number: formData.studentId || studentId,
-      phone: formData.parentPhone,
-      status: formData.status || 'active',
-      notes: JSON.stringify({
-        class: formData.class,
-        age,
-        gender: formData.gender,
-        parent: formData.parentName,
-        parentEmail: formData.parentEmail,
-        address: formData.address,
-        medicalNotes: formData.medicalNotes,
-        previousSchool: formData.previousSchool,
-        feeStatus: formData.feeStatus || 'Owing',
-        avatar: fullName.substring(0,2).toUpperCase()
-      })
-    };
+    setIsEnrolling(true);
 
-    const onDone = {
-      onSuccess: () => {
-        toast.success(editingId ? "Student updated successfully!" : `Student enrolled successfully! Default Password: password123`);
-        setShowModal(false);
-        setEditingId(null);
-        setFormData({ firstName: '', lastName: '', dateOfBirth: '', gender: 'Female', class: 'Grade 7B', parentName: '', parentPhone: '', parentEmail: '', address: '', medicalNotes: '', previousSchool: '' });
-      },
-      onError: (err) => toast.error(err?.message || "Failed to save student"),
-    };
+    try {
+      // Auto-generate a random student ID based on settings
+      const prefix = schoolSettings?.studentPrefix || 'STU';
+      const yearStr = schoolSettings?.studentIncludeYear ? `${new Date().getFullYear()}-` : '';
+      const seq = Math.floor(1000 + Math.random() * 9000);
+      const generatedId = `${prefix}-${yearStr}${seq}`;
+      const studentId = formData.studentId || generatedId;
 
-    if (editingId) {
-      mutateStudent.mutate({ id: editingId, ...payload }, onDone);
-    } else {
-      mutateStudent.mutate(payload, onDone);
+      // Auto-generate Parent ID
+      const parentPrefix = schoolSettings?.parentPrefix || 'PAR';
+      const parentId = formData.parentId || `${parentPrefix}-${yearStr}${seq}`;
+      
+      const age = formData.dateOfBirth ? new Date().getFullYear() - new Date(formData.dateOfBirth).getFullYear() : formData.age || 0;
+      
+      const studentEmail = `${studentId.toLowerCase()}@school.optalflow.com`;
+      const parentEmail = formData.parentEmail || `${parentId.toLowerCase()}@school.optalflow.com`;
+      const defaultPassword = 'password123';
+
+      if (!editingId) {
+        // Only generate auth accounts on initial creation
+        const { error: stuAuthErr } = await registerSchoolUser(studentEmail, defaultPassword, 'student', companyId);
+        if (stuAuthErr && !stuAuthErr.message?.includes('already registered')) {
+          console.error("Student auth error:", stuAuthErr);
+        }
+        
+        const { error: parAuthErr } = await registerSchoolUser(parentEmail, defaultPassword, 'parent', companyId);
+        if (parAuthErr && !parAuthErr.message?.includes('already registered')) {
+          console.error("Parent auth error:", parAuthErr);
+        }
+      }
+      
+      const studentPayload = {
+        company_id: companyId,
+        type: 'student',
+        name: fullName,
+        id_number: studentId,
+        phone: formData.parentPhone,
+        status: formData.status || 'active',
+        notes: JSON.stringify({
+          class: formData.class,
+          age,
+          gender: formData.gender,
+          parent: formData.parentName,
+          parentEmail: parentEmail,
+          parentId: parentId,
+          address: formData.address,
+          medicalNotes: formData.medicalNotes,
+          previousSchool: formData.previousSchool,
+          feeStatus: formData.feeStatus || 'Owing',
+          avatar: fullName.substring(0,2).toUpperCase()
+        })
+      };
+
+      const parentPayload = {
+        company_id: companyId,
+        type: 'parent',
+        name: formData.parentName || `Parent of ${fullName}`,
+        id_number: parentId,
+        phone: formData.parentPhone,
+        status: 'active',
+        notes: JSON.stringify({
+          email: parentEmail,
+          address: formData.address,
+          linkedStudentId: studentId,
+          avatar: formData.parentName ? formData.parentName.substring(0,2).toUpperCase() : 'PA'
+        })
+      };
+
+      if (editingId) {
+        await base44.entities.Client.update(editingId, studentPayload);
+        toast.success("Student updated successfully!");
+      } else {
+        // Create both records
+        await Promise.all([
+          base44.entities.Client.create(studentPayload),
+          base44.entities.Client.create(parentPayload)
+        ]);
+        toast.success(`Student & Parent enrolled successfully! IDs: ${studentId} & ${parentId}. Default Password: ${defaultPassword}`);
+      }
+
+      queryClient.invalidateQueries({ queryKey: ["clients", companyId] });
+      setShowModal(false);
+      setEditingId(null);
+      setFormData({ firstName: '', lastName: '', dateOfBirth: '', gender: 'Female', class: 'Grade 7B', parentName: '', parentPhone: '', parentEmail: '', address: '', medicalNotes: '', previousSchool: '' });
+      setActiveTab('personal');
+    } catch (err) {
+      toast.error(err?.message || "Failed to save records");
+    } finally {
+      setIsEnrolling(false);
     }
   };
 
@@ -391,12 +441,12 @@ export default function Students() {
             </div>
 
             <div className="p-6 border-t border-border bg-muted/30 flex gap-3">
-              <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setActiveTab('personal'); }} disabled={mutateStudent.isPending}>{t("cancel", "Cancel")}</Button>
+              <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setActiveTab('personal'); }} disabled={isEnrolling}>{t("cancel", "Cancel")}</Button>
               {activeTab !== 'parent' ? (
                 <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={() => setActiveTab(activeTab === 'personal' ? 'academic' : 'parent')}>{t("next", "Next")}</Button>
               ) : (
-                <Button className="flex-1 bg-green-600 hover:bg-green-700 text-white" onClick={handleEnroll} disabled={mutateStudent.isPending}>
-                  {mutateStudent.isPending ? 'Saving...' : 'Save Student'}
+                <Button className="flex-1 bg-green-600 hover:bg-green-700 text-white" onClick={handleEnroll} disabled={isEnrolling}>
+                  {isEnrolling ? 'Saving...' : 'Save Student & Parent'}
                 </Button>
               )}
             </div>

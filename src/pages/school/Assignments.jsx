@@ -93,11 +93,15 @@ export default function Assignments() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map(a => (
-            <div key={a.id} className="bg-card rounded-xl border border-border p-5 shadow-sm hover:shadow-md transition-all group relative">
-              <div className="absolute top-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div key={a.id} className="bg-card/60 backdrop-blur-md rounded-3xl border border-border/60 p-6 shadow-sm hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] hover:-translate-y-1.5 transition-all duration-300 group relative overflow-hidden flex flex-col">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-50/40 via-transparent to-transparent dark:from-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+              <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity pointer-events-none transform translate-x-1/4 -translate-y-1/4 scale-150 z-0">
+                <FileText className="w-32 h-32 text-blue-600" />
+              </div>
+              <div className="absolute top-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
+                    <Button variant="ghost" className="h-8 w-8 p-0 bg-background/50 hover:bg-background/80 shadow-sm backdrop-blur-sm rounded-full">
                       <MoreVertical className="h-4 w-4 text-muted-foreground" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -111,21 +115,26 @@ export default function Assignments() {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center">
-                  <FileText className="w-5 h-5" />
+              
+              <div className="flex items-start gap-4 mb-5 relative z-10">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/40 border border-white/50 shadow-inner text-blue-700 dark:text-blue-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300">
+                  <FileText className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-card-foreground line-clamp-1">{a.title}</h3>
-                  <p className="text-xs font-semibold text-blue-600">{a.subject} • {a.class}</p>
+                  <h3 className="font-extrabold text-card-foreground text-lg line-clamp-1 tracking-tight group-hover:text-blue-600 transition-colors">{a.title}</h3>
+                  <p className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mt-1 opacity-90">{a.subject} • {a.class}</p>
                 </div>
               </div>
-              <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{a.description}</p>
-              <div className="flex items-center justify-between pt-4 border-t border-border mt-auto">
-                <span className="text-xs font-medium flex items-center gap-1 text-muted-foreground">
-                  <Calendar className="w-3.5 h-3.5" /> Due: {a.dueDate ? format(new Date(a.dueDate), 'MMM d, yyyy') : 'No Date'}
+              
+              <div className="bg-slate-50/50 dark:bg-slate-900/50 border border-border/50 p-4 rounded-xl shadow-sm mb-5 relative z-10 flex-1">
+                <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">{a.description}</p>
+              </div>
+              
+              <div className="flex items-center justify-between pt-4 border-t border-border/50 mt-auto relative z-10">
+                <span className="text-xs font-bold flex items-center gap-2 text-slate-500 uppercase tracking-wider">
+                  <Calendar className="w-4 h-4 text-blue-500" /> Due: {a.dueDate ? format(new Date(a.dueDate), 'MMM d, yyyy') : 'No Date'}
                 </span>
-                <span className="bg-blue-50 text-blue-700 text-xs font-bold px-2 py-1 rounded-md">{t("active", "Active")}</span>
+                <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-md shadow-sm">{t("active", "Active")}</span>
               </div>
             </div>
           ))}
