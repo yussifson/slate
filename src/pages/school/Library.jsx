@@ -170,13 +170,13 @@ export default function Library() {
             "Manage school library books and inventory"
           )}</p>
         </div>
-        <Button onClick={() => setShowModal(true)} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+        <Button onClick={() => setShowModal(true)} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
           <Plus className="w-4 h-4" /> {t("add_book", "Add Book")}
         </Button>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600">
+          <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-emerald-600">
             <Book className="w-5 h-5" />
           </div>
           <div>
@@ -215,7 +215,7 @@ export default function Library() {
             <div className="py-12 text-center text-muted-foreground">{t("loading_catalog", "Loading catalog...")}</div>
           ) : filtered.length === 0 ? (
             <div className="py-12 text-center text-muted-foreground bg-card">
-              <Book className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-blue-600" />
+              <Book className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-emerald-600" />
               <p className="font-semibold text-lg text-card-foreground">{t("library_catalog_is_empty", "Library catalog is empty")}</p>
               <p className="text-xs mt-1 font-medium">{t(
                 "record_textbooks_reference_dic",
@@ -321,7 +321,7 @@ export default function Library() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-sm w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-              <Plus className="w-5 h-5 text-blue-600" /> {editingId ? 'Edit Book' : 'Catalog Textbook'}
+              <Plus className="w-5 h-5 text-emerald-600" /> {editingId ? 'Edit Book' : 'Catalog Textbook'}
             </h2>
             <div className="space-y-3">
               <div>
@@ -409,7 +409,7 @@ export default function Library() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditingId(null); setFormData({ title: '', author: '', isbn: '', category: 'Science', total: 10, cover_url: '', ebook_url: '' }); }}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleCreateBook}>{editingId ? 'Save Changes' : 'Catalog Book'}</Button>
+              <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleCreateBook}>{editingId ? 'Save Changes' : 'Catalog Book'}</Button>
             </div>
           </div>
         </div>
@@ -464,7 +464,7 @@ export default function Library() {
           {viewDetails && (
             <div className="mt-6 space-y-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-20 shrink-0 rounded-md bg-blue-50 overflow-hidden flex items-center justify-center text-blue-600 font-bold text-xl border border-border">
+                <div className="w-16 h-20 shrink-0 rounded-md bg-emerald-50 overflow-hidden flex items-center justify-center text-emerald-600 font-bold text-xl border border-border">
                   {viewDetails.cover_url ? (
                     <img src={viewDetails.cover_url} alt="Cover" className="w-full h-full object-cover" />
                   ) : (
@@ -507,7 +507,7 @@ export default function Library() {
               </div>
               {viewDetails.ebook_url && (
                 <div className="pt-2 border-t border-border mt-4">
-                  <a href={viewDetails.ebook_url} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold py-3 rounded-xl transition-colors">
+                  <a href={viewDetails.ebook_url} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 bg-emerald-50 text-emerald-700 hover:bg-blue-100 font-bold py-3 rounded-xl transition-colors">
                     <Book className="w-5 h-5" />
                     {t("read_e_book_now", "Read E-Book Now")}
                   </a>

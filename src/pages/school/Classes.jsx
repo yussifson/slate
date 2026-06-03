@@ -131,7 +131,7 @@ export default function Classes() {
           <p className="text-sm text-muted-foreground mt-0.5">{t("manage_classes_subjects_and_te", "Manage classes, subjects, and teachers")}</p>
         </div>
         <div className="flex items-center gap-2">
-          <Button onClick={() => setShowModal(true)} size="sm" className="gap-1.5 text-sm font-bold bg-blue-600 text-white hover:bg-blue-700 rounded-xl">
+          <Button onClick={() => setShowModal(true)} size="sm" className="gap-1.5 text-sm font-bold bg-emerald-600 text-white hover:bg-emerald-700 rounded-xl">
             <Plus className="w-4 h-4" /> {t("add_class", "Add Class")}
           </Button>
         </div>
@@ -157,7 +157,7 @@ export default function Classes() {
           </div>
         </div>
         <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 shadow-sm">
-          <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center">
             <Users className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -188,7 +188,7 @@ export default function Classes() {
         <div className="py-12 text-center text-muted-foreground">{t("loading_classes", "Loading classes...")}</div>
       ) : filtered.length === 0 ? (
         <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-border">
-          <BookOpen className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-blue-600" />
+          <BookOpen className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-emerald-600" />
           <p className="font-semibold text-lg text-card-foreground">{t("no_classes_registered", "No classes registered")}</p>
           <p className="text-sm mt-1 max-w-md mx-auto">{t(
             "add_a_new_grade_class_subject_",
@@ -309,7 +309,7 @@ export default function Classes() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleCreateClass}>{editingId ? 'Save Changes' : 'Save Class'}</Button>
+              <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleCreateClass}>{editingId ? 'Save Changes' : 'Save Class'}</Button>
             </div>
           </div>
         </div>
@@ -333,7 +333,7 @@ export default function Classes() {
           {viewDetails && (
             <div className="mt-6 space-y-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-blue-50 dark:bg-blue-950/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                <div className="w-16 h-16 rounded-full bg-emerald-50 dark:bg-blue-950/50 flex items-center justify-center text-emerald-600 dark:text-blue-400">
                   <BookOpen className="w-8 h-8" />
                 </div>
                 <div>
@@ -366,7 +366,7 @@ export default function Classes() {
                   <h4 className="text-sm font-bold text-foreground">{t("assigned_courses", "Assigned Courses")}</h4>
                   <div className="flex flex-wrap gap-2">
                     {viewDetails.courses.split(',').map(course => (
-                      <span key={course} className="px-3 py-1 bg-blue-50 text-blue-700 font-semibold text-xs rounded-full border border-blue-200">
+                      <span key={course} className="px-3 py-1 bg-emerald-50 text-emerald-700 font-semibold text-xs rounded-full border border-emerald-200">
                         {course.trim()}
                       </span>
                     ))}

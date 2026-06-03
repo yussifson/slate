@@ -28,7 +28,7 @@ function calcGrade(score, maxScore) {
 
 const GRADE_COLORS = {
   A: 'bg-green-100 text-green-700',
-  B: 'bg-blue-100 text-blue-700',
+  B: 'bg-blue-100 text-emerald-700',
   C: 'bg-amber-100 text-amber-700',
   D: 'bg-orange-100 text-orange-700',
   F: 'bg-red-100 text-red-700',
@@ -181,7 +181,7 @@ export default function Grades() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center">
             <BarChart3 className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -280,7 +280,7 @@ export default function Grades() {
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <Link to="/classes" className="bg-blue-50 text-blue-700 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{g.className}</Link>
+                        <Link to="/classes" className="bg-emerald-50 text-emerald-700 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{g.className}</Link>
                       </td>
                       <td className="px-4 py-3 text-muted-foreground">{g.subject}</td>
                       <td className="px-4 py-3 text-foreground font-medium">{g.examName}</td>

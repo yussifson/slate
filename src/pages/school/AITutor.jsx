@@ -90,10 +90,10 @@ export default function AITutor() {
         <div className="flex-1 p-6 overflow-y-auto space-y-6 custom-scrollbar flex flex-col">
           {messages.map((msg, i) => (
             <div key={i} className={`flex gap-4 ${msg.role === 'user' ? 'self-end flex-row-reverse' : 'self-start'}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${msg.role === 'user' ? 'bg-blue-600 text-white' : 'bg-primary/20 text-primary'}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${msg.role === 'user' ? 'bg-emerald-600 text-white' : 'bg-primary/20 text-primary'}`}>
                 {msg.role === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
               </div>
-              <div className={`max-w-[70%] p-4 rounded-2xl ${msg.role === 'user' ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-muted rounded-tl-none'}`}>
+              <div className={`max-w-[70%] p-4 rounded-2xl ${msg.role === 'user' ? 'bg-emerald-600 text-white rounded-tr-none' : 'bg-muted rounded-tl-none'}`}>
                 <p className="text-sm leading-relaxed">{msg.content}</p>
               </div>
             </div>

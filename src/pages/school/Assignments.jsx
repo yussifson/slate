@@ -70,7 +70,7 @@ export default function Assignments() {
           <h1 className="text-2xl font-bold text-card-foreground">{t("assignments", "Assignments & Homework")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("manage_class_assignments", "Manage class assignments and homework tracks")}</p>
         </div>
-        <Button onClick={() => { setFormData({title: '', class: 'Grade 10', subject: '', dueDate: '', description: ''}); setShowModal(true); }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+        <Button onClick={() => { setFormData({title: '', class: 'Grade 10', subject: '', dueDate: '', description: ''}); setShowModal(true); }} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
           <Plus className="w-4 h-4" /> {t("create_assignment", "Create Assignment")}
         </Button>
       </div>
@@ -87,7 +87,7 @@ export default function Assignments() {
         <div className="py-12 text-center text-muted-foreground">{t("loading", "Loading...")}</div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-12 bg-card rounded-xl border border-border shadow-sm">
-          <BookOpen className="w-12 h-12 mx-auto mb-3 opacity-30 text-blue-600" />
+          <BookOpen className="w-12 h-12 mx-auto mb-3 opacity-30 text-emerald-600" />
           <p className="font-semibold text-lg text-card-foreground">{t("no_assignments", "No assignments found")}</p>
         </div>
       ) : (
@@ -96,7 +96,7 @@ export default function Assignments() {
             <div key={a.id} className="bg-card/60 backdrop-blur-md rounded-3xl border border-border/60 p-6 shadow-sm  hover:-translate-y-1.5 transition-all duration-300 group relative overflow-hidden flex flex-col">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-50/40 via-transparent to-transparent dark:from-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
               <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity pointer-events-none transform translate-x-1/4 -translate-y-1/4 scale-150 z-0">
-                <FileText className="w-32 h-32 text-blue-600" />
+                <FileText className="w-32 h-32 text-emerald-600" />
               </div>
               <div className="absolute top-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                 <DropdownMenu>
@@ -117,12 +117,12 @@ export default function Assignments() {
               </div>
               
               <div className="flex items-start gap-4 mb-5 relative z-10">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/40 border border-white/50 shadow-inner text-blue-700 dark:text-blue-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/40 border border-white/50 shadow-inner text-emerald-700 dark:text-blue-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300">
                   <FileText className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-card-foreground text-lg line-clamp-1 tracking-tight group-hover:text-blue-600 transition-colors">{a.title}</h3>
-                  <p className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mt-1 opacity-90">{a.subject} • {a.class}</p>
+                  <h3 className="font-extrabold text-card-foreground text-lg line-clamp-1 tracking-tight group-hover:text-emerald-600 transition-colors">{a.title}</h3>
+                  <p className="text-xs font-bold text-emerald-600 dark:text-blue-400 uppercase tracking-widest mt-1 opacity-90">{a.subject} • {a.class}</p>
                 </div>
               </div>
               
@@ -132,7 +132,7 @@ export default function Assignments() {
               
               <div className="flex items-center justify-between pt-4 border-t border-border/50 mt-auto relative z-10">
                 <span className="text-xs font-bold flex items-center gap-2 text-slate-500 uppercase tracking-wider">
-                  <Calendar className="w-4 h-4 text-blue-500" /> Due: {a.dueDate ? format(new Date(a.dueDate), 'MMM d, yyyy') : 'No Date'}
+                  <Calendar className="w-4 h-4 text-emerald-500" /> Due: {a.dueDate ? format(new Date(a.dueDate), 'MMM d, yyyy') : 'No Date'}
                 </span>
                 <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-md shadow-sm">{t("active", "Active")}</span>
               </div>
@@ -159,7 +159,7 @@ export default function Assignments() {
             </div>
             <div className="flex gap-3 pt-2">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleSave}>
+              <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleSave}>
                 {mutateRecord.isPending ? 'Saving...' : 'Save Assignment'}
               </Button>
             </div>

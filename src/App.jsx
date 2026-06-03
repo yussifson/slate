@@ -89,13 +89,13 @@ import SchoolFees from './pages/school/FeeManagement';
 import SchoolLibrary from './pages/school/Library';
 import SchoolParentPortal from './pages/school/ParentPortal';
 import SchoolStudentPortal from './pages/school/StudentPortal';
-import SchoolMentorship from './pages/school/Mentorship';
+
 import SchoolGamification from './pages/school/Gamification';
 import SchoolTeacherEvaluations from './pages/school/TeacherEvaluations';
 import SchoolCanteenPOS from './pages/school/CanteenPOS';
 import SchoolComplaints from './pages/school/Complaints';
 import SchoolSupportCenter from './pages/school/SupportCenter';
-import SchoolStudentBusinesses from './pages/school/StudentBusinesses';
+
 import SchoolCampusMarketplace from './pages/school/CampusMarketplace';
 // Hospital Pages
 import HospitalPatients from './pages/hospital/Patients';
@@ -252,13 +252,13 @@ function PlatformRoutes() {
       <Route path="/notices" element={<SchoolNotices />} />
       <Route path="/student-portal" element={<SchoolStudentPortal />} />
       <Route path="/parent-portal" element={<SchoolParentPortal />} />
-      <Route path="/mentorship" element={<SchoolMentorship />} />
+
       <Route path="/gamification" element={<SchoolGamification />} />
       <Route path="/teacher-evaluations" element={<SchoolTeacherEvaluations />} />
       <Route path="/canteen-pos" element={<SchoolCanteenPOS />} />
       <Route path="/complaints" element={<SchoolComplaints />} />
       <Route path="/support-center" element={<SchoolSupportCenter />} />
-      <Route path="/student-businesses" element={<SchoolStudentBusinesses />} />
+
       <Route path="/marketplace" element={<SchoolCampusMarketplace />} />
 
       {/* Hospital Suite */}

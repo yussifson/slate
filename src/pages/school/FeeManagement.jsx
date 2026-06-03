@@ -129,7 +129,7 @@ export default function FeeManagement() {
           <h1 className="text-2xl font-bold text-card-foreground">{t("fee_management", "Fee Management")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("track_student_tuition_and_paym", "Track student tuition and payments")}</p>
         </div>
-        <Button onClick={() => setShowEnrollModal(true)} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+        <Button onClick={() => setShowEnrollModal(true)} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
           <Plus className="w-4 h-4" /> {t("quick_enroll", "Quick Enroll")}
         </Button>
       </div>
@@ -154,7 +154,7 @@ export default function FeeManagement() {
         </div>
         <div className="bg-card rounded-xl border border-border p-5 shadow-sm">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-950/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
+            <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-950/50 flex items-center justify-center text-emerald-600 dark:text-blue-400">
               <CheckCircle className="w-4 h-4" />
             </div>
             <h3 className="font-semibold text-foreground text-sm">{t("fully_paid_students", "Fully Paid Students")}</h3>
@@ -174,7 +174,7 @@ export default function FeeManagement() {
             <div className="py-12 text-center text-muted-foreground">{t("loading_fee_ledger", "Loading fee ledger...")}</div>
           ) : filtered.length === 0 ? (
             <div className="py-12 text-center text-muted-foreground">
-              <AlertCircle className="w-12 h-12 mx-auto mb-3 opacity-30 text-blue-600" />
+              <AlertCircle className="w-12 h-12 mx-auto mb-3 opacity-30 text-emerald-600" />
               <p className="font-semibold text-lg text-card-foreground">{t("no_students_enrolled", "No students enrolled")}</p>
               <p className="text-xs mt-1">{t(
                 "tuition_bills_are_automaticall",
@@ -202,7 +202,7 @@ export default function FeeManagement() {
                         <Link to={`/students`} className="font-semibold text-primary hover:underline">{f.student}</Link>
                         <p className="text-xs text-muted-foreground font-mono mt-0.5">{f.studentId}</p>
                       </td>
-                      <td className="px-6 py-4 text-muted-foreground"><Link to="/classes" className="hover:underline text-blue-600">{f.class}</Link></td>
+                      <td className="px-6 py-4 text-muted-foreground"><Link to="/classes" className="hover:underline text-emerald-600">{f.class}</Link></td>
                       <td className="px-6 py-4 text-right font-medium text-foreground">${f.totalDue}</td>
                       <td className="px-6 py-4 text-right font-medium text-green-600">${f.paid}</td>
                       <td className="px-6 py-4 text-right font-bold text-red-600">${f.balance}</td>
@@ -242,7 +242,7 @@ export default function FeeManagement() {
       {showPaymentModal && selectedStudent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-sm w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
-            <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><CreditCard className="w-5 h-5 text-blue-600" /> {t("record_payment", "Record Payment")}</h2>
+            <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><CreditCard className="w-5 h-5 text-emerald-600" /> {t("record_payment", "Record Payment")}</h2>
             <div className="bg-muted dark:bg-muted/30 p-3 rounded-lg border border-border text-sm mb-4">
               <p className="text-muted-foreground">{t("student", "Student:")} <strong className="text-card-foreground">{selectedStudent.student}</strong></p>
               <p className="text-muted-foreground">{t("current_balance", "Current Balance:")} <strong className="text-red-600">${selectedStudent.balance}</strong></p>
@@ -277,7 +277,7 @@ export default function FeeManagement() {
       {showEnrollModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-sm w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
-            <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><Plus className="w-5 h-5 text-blue-600" /> {t("quick_enroll", "Quick Enroll Student")}</h2>
+            <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><Plus className="w-5 h-5 text-emerald-600" /> {t("quick_enroll", "Quick Enroll Student")}</h2>
             <p className="text-sm text-muted-foreground">{t("quickly_register_a_student_to_", "Quickly register a student to generate their tuition billing profile.")}</p>
             <div className="space-y-3">
               <div>
@@ -293,7 +293,7 @@ export default function FeeManagement() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => setShowEnrollModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={() => {
+              <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => {
                 if (!enrollName.trim()) return toast.error("Enter student name");
                 const studentId = `STU-${Math.floor(1000 + Math.random() * 9000)}`;
                 mutateRecord.mutate({
@@ -327,7 +327,7 @@ export default function FeeManagement() {
           {viewDetails && (
             <div className="mt-6 space-y-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 font-bold text-xl">
+                <div className="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 font-bold text-xl">
                   {viewDetails.student.substring(0, 2).toUpperCase()}
                 </div>
                 <div>

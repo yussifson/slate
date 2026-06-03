@@ -19,7 +19,7 @@ const PERIODS = [1, 2, 3, 4, 5, 6, 7, 8];
 const SUBJECTS = ['Mathematics', 'Science', 'English', 'History', 'Chemistry', 'Physics', 'Geography', 'ICT', 'P.E.', 'Art'];
 
 const SLOT_COLORS = [
-  'bg-blue-100 text-blue-800 border-blue-200',
+  'bg-blue-100 text-blue-800 border-emerald-200',
   'bg-green-100 text-green-800 border-green-200',
   'bg-purple-100 text-purple-800 border-purple-200',
   'bg-amber-100 text-amber-800 border-amber-200',
@@ -197,7 +197,7 @@ export default function Timetable() {
           </select>
           <Button
             onClick={() => { setFormData({ ...defaultForm, className: selectedClass }); setShowModal(true); }}
-            className="gap-2 bg-blue-600 hover:bg-blue-700 text-white"
+            className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white"
           >
             <Plus className="w-4 h-4" /> {t("add_slot", "Add Slot")}
           </Button>
@@ -206,7 +206,7 @@ export default function Timetable() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center">
             <LayoutGrid className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -322,7 +322,7 @@ export default function Timetable() {
                               setFormData({ ...defaultForm, className: selectedClass, day, period: String(period) });
                               setShowModal(true);
                             }}
-                            className="w-full h-full min-h-[56px] rounded-lg border-2 border-dashed border-border text-muted-foreground/40 hover:border-blue-400 hover:text-blue-500 transition-colors flex items-center justify-center"
+                            className="w-full h-full min-h-[56px] rounded-lg border-2 border-dashed border-border text-muted-foreground/40 hover:border-blue-400 hover:text-emerald-500 transition-colors flex items-center justify-center"
                           >
                             <Plus className="w-4 h-4" />
                           </button>
@@ -341,7 +341,7 @@ export default function Timetable() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-sm w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-              <Plus className="w-5 h-5 text-blue-600" /> {editingId ? 'Edit Timetable Slot' : 'Add Timetable Slot'}
+              <Plus className="w-5 h-5 text-emerald-600" /> {editingId ? 'Edit Timetable Slot' : 'Add Timetable Slot'}
             </h2>
             <div className="space-y-3">
               <div>
@@ -456,7 +456,7 @@ export default function Timetable() {
                 {t("cancel", "Cancel")}
               </Button>
               <Button
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white"
                 onClick={handleAddSlot}
                 disabled={mutateRecord.isPending}
               >

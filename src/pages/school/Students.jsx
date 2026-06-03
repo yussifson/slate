@@ -18,7 +18,7 @@ import { MessageSquare, Settings } from "lucide-react";
 import IDFormatSettings from '@/components/school/IDFormatSettings';
 
 const feeColors = { Paid: 'bg-green-100 text-green-700', Owing: 'bg-red-100 text-red-700', Partial: 'bg-amber-100 text-amber-700' };
-const statusColors = { Active: 'bg-blue-100 text-blue-700', Suspended: 'bg-red-100 text-red-700', Graduated: 'bg-purple-100 text-purple-700' };
+const statusColors = { Active: 'bg-blue-100 text-emerald-700', Suspended: 'bg-red-100 text-red-700', Graduated: 'bg-purple-100 text-purple-700' };
 
 export default function Students() {
   const { t } = useTranslation();
@@ -97,7 +97,7 @@ export default function Students() {
   );
 
   const stats = [
-    { label: 'Total Students', value: students.length, color: 'bg-blue-500', icon: Users },
+    { label: 'Total Students', value: students.length, color: 'bg-emerald-500', icon: Users },
     { label: 'Active', value: students.filter(s => s.status === 'Active').length, color: 'bg-green-500', icon: CheckCircle },
     { label: 'Fees Owing', value: students.filter(s => s.feeStatus !== 'Paid').length, color: 'bg-red-500', icon: XCircle },
     { label: 'Classes', value: 8, color: 'bg-purple-500', icon: GraduationCap },
@@ -228,7 +228,7 @@ export default function Students() {
           <Button variant="outline" onClick={() => setShowSettings(!showSettings)} className="gap-2">
             <Settings className="w-4 h-4" /> {t("id_settings", "ID Settings")}
           </Button>
-          <Button onClick={() => setShowModal(true)} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+          <Button onClick={() => setShowModal(true)} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
             <Plus className="w-4 h-4" /> {t("enroll_student", "Enroll Student")}
           </Button>
         </div>
@@ -262,7 +262,7 @@ export default function Students() {
             {classes.map(c => {
               return (
                 <button key={c} onClick={() => setFilterClass(c)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${filterClass === c ? 'bg-blue-600 text-white' : 'bg-muted text-muted-foreground hover:bg-slate-200'}`}>
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${filterClass === c ? 'bg-emerald-600 text-white' : 'bg-muted text-muted-foreground hover:bg-slate-200'}`}>
                   {c}
                 </button>
               );
@@ -324,7 +324,7 @@ export default function Students() {
                   <tr key={s.id} className="hover:bg-muted/50 transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-xs flex-shrink-0">
+                        <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-emerald-700 font-bold text-xs flex-shrink-0">
                           {s.avatar}
                         </div>
                         <div>
@@ -334,7 +334,7 @@ export default function Students() {
                       </div>
                     </td>
                     <td className="px-4 py-3 text-muted-foreground font-mono text-xs">{s.studentId}</td>
-                    <td className="px-4 py-3"><Link to={`/classes`} className="bg-blue-50 text-blue-700 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{s.class}</Link></td>
+                    <td className="px-4 py-3"><Link to={`/classes`} className="bg-emerald-50 text-emerald-700 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{s.class}</Link></td>
                     <td className="px-4 py-3 text-foreground">{s.age} {t("yrs", "yrs")}</td>
                     <td className="px-4 py-3">
                       <div>
@@ -343,7 +343,7 @@ export default function Students() {
                       </div>
                     </td>
                     <td className="px-4 py-3"><span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${feeColors[s.feeStatus] || 'bg-gray-100 text-gray-700'}`}>{s.feeStatus}</span></td>
-                    <td className="px-4 py-3"><span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${statusColors[s.status] || 'bg-blue-100 text-blue-700'}`}>{s.status}</span></td>
+                    <td className="px-4 py-3"><span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${statusColors[s.status] || 'bg-blue-100 text-emerald-700'}`}>{s.status}</span></td>
                     <td className="px-4 py-3">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -396,7 +396,7 @@ export default function Students() {
                     key={tab}
                     onClick={() => setActiveTab(tab)}
                     className={`pb-2 text-sm font-semibold capitalize border-b-2 transition-colors ${
-                      activeTab === tab ? 'border-blue-600 text-blue-600' : 'border-transparent text-muted-foreground hover:text-foreground'
+                      activeTab === tab ? 'border-blue-600 text-emerald-600' : 'border-transparent text-muted-foreground hover:text-foreground'
                     }`}
                   >
                     {tab}
@@ -408,12 +408,12 @@ export default function Students() {
             <div className="p-6 overflow-y-auto space-y-4">
               {activeTab === 'personal' && (
                 <div className="space-y-4 animate-in fade-in zoom-in duration-200">
-                  <div className="bg-blue-50/50 dark:bg-blue-900/10 p-3 rounded-xl border border-blue-100 dark:border-blue-900/30">
-                    <label className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">{t("student_id", "Student ID")}</label>
+                  <div className="bg-emerald-50/50 dark:bg-blue-900/10 p-3 rounded-xl border border-blue-100 dark:border-blue-900/30">
+                    <label className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">{t("student_id", "Student ID")}</label>
                     <Input 
                       value={formData.studentId || "Auto-generated on save"} 
                       readOnly 
-                      className="mt-1 bg-transparent border-0 shadow-none font-mono font-bold text-blue-700 px-0 h-6 focus-visible:ring-0" 
+                      className="mt-1 bg-transparent border-0 shadow-none font-mono font-bold text-emerald-700 px-0 h-6 focus-visible:ring-0" 
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
@@ -491,7 +491,7 @@ export default function Students() {
             <div className="p-6 border-t border-border bg-muted/30 flex gap-3">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setActiveTab('personal'); }} disabled={isEnrolling}>{t("cancel", "Cancel")}</Button>
               {activeTab !== 'parent' ? (
-                <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={() => setActiveTab(activeTab === 'personal' ? 'academic' : 'parent')}>{t("next", "Next")}</Button>
+                <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => setActiveTab(activeTab === 'personal' ? 'academic' : 'parent')}>{t("next", "Next")}</Button>
               ) : (
                 <Button className="flex-1 bg-green-600 hover:bg-green-700 text-white" onClick={handleEnroll} disabled={isEnrolling}>
                   {isEnrolling ? 'Saving...' : 'Save Student & Parent'}
@@ -511,13 +511,13 @@ export default function Students() {
           {viewDetails && (
             <div className="mt-6 space-y-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-xl">
+                <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-emerald-700 font-bold text-xl">
                   {viewDetails.avatar}
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-card-foreground">{viewDetails.name}</h3>
                   <p className="text-sm text-muted-foreground">{viewDetails.studentId}</p>
-                  <span className={`inline-block mt-1 text-xs font-semibold px-2.5 py-0.5 rounded-full ${statusColors[viewDetails.status] || 'bg-blue-100 text-blue-700'}`}>
+                  <span className={`inline-block mt-1 text-xs font-semibold px-2.5 py-0.5 rounded-full ${statusColors[viewDetails.status] || 'bg-blue-100 text-emerald-700'}`}>
                     {viewDetails.status}
                   </span>
                 </div>

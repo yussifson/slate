@@ -67,7 +67,7 @@ export default function Transport() {
           <h1 className="text-2xl font-bold text-card-foreground">{t("transport_fleet", "Transport & Fleet")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("manage_school_buses", "Manage school bus routes, drivers, and capacity")}</p>
         </div>
-        <Button onClick={() => { setFormData({route: '', vehicle: '', driver: '', capacity: '', schedule: ''}); setShowModal(true); }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+        <Button onClick={() => { setFormData({route: '', vehicle: '', driver: '', capacity: '', schedule: ''}); setShowModal(true); }} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
           <Plus className="w-4 h-4" /> {t("add_route", "Add Route")}
         </Button>
       </div>
@@ -83,7 +83,7 @@ export default function Transport() {
         <div className="py-12 text-center text-muted-foreground">{t("loading", "Loading...")}</div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-12 bg-card rounded-xl border border-border shadow-sm">
-          <Bus className="w-12 h-12 mx-auto mb-3 opacity-30 text-blue-600" />
+          <Bus className="w-12 h-12 mx-auto mb-3 opacity-30 text-emerald-600" />
           <p className="font-semibold text-lg text-card-foreground">{t("no_routes", "No transport routes found")}</p>
         </div>
       ) : (
@@ -114,14 +114,14 @@ export default function Transport() {
                   <Map className="w-6 h-6" />
                 </div>
                 <h3 className="font-bold text-card-foreground text-lg line-clamp-1" title={r.route}>{r.route}</h3>
-                <p className="text-xs font-semibold text-blue-600 uppercase tracking-wide mb-3">{r.vehicle}</p>
+                <p className="text-xs font-semibold text-emerald-600 uppercase tracking-wide mb-3">{r.vehicle}</p>
                 
                 <div className="w-full space-y-2 mt-2">
                   <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 p-2 rounded-lg">
-                    <Users className="w-3.5 h-3.5 text-blue-500" /> <span className="truncate">Driver: {r.driver || 'Unassigned'}</span>
+                    <Users className="w-3.5 h-3.5 text-emerald-500" /> <span className="truncate">Driver: {r.driver || 'Unassigned'}</span>
                   </div>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 p-2 rounded-lg">
-                    <Bus className="w-3.5 h-3.5 text-blue-500" /> <span className="truncate">Cap: {r.capacity || '0'} students</span>
+                    <Bus className="w-3.5 h-3.5 text-emerald-500" /> <span className="truncate">Cap: {r.capacity || '0'} students</span>
                   </div>
                 </div>
               </div>
@@ -145,7 +145,7 @@ export default function Transport() {
             </div>
             <div className="flex gap-3 pt-2">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleSave}>
+              <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleSave}>
                 {mutateRecord.isPending ? 'Saving...' : 'Save Route'}
               </Button>
             </div>

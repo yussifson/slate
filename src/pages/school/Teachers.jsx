@@ -106,7 +106,7 @@ export default function Teachers() {
           <h1 className="text-2xl font-bold text-card-foreground">{t("teachers_staff", "Teachers & Staff")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("manage_academic_staff", "Manage academic staff, subjects, and qualifications")}</p>
         </div>
-        <Button onClick={() => setShowModal(true)} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+        <Button onClick={() => setShowModal(true)} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
           <Plus className="w-4 h-4" /> {t("add_teacher", "Add Teacher")}
         </Button>
       </div>
@@ -124,7 +124,7 @@ export default function Teachers() {
         <div className="py-12 text-center text-muted-foreground">{t("loading", "Loading...")}</div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-12 bg-card rounded-xl border border-border">
-          <Briefcase className="w-12 h-12 mx-auto mb-3 opacity-30 text-blue-600" />
+          <Briefcase className="w-12 h-12 mx-auto mb-3 opacity-30 text-emerald-600" />
           <p className="font-semibold text-lg text-card-foreground">{t("no_teachers_found", "No teachers found")}</p>
         </div>
       ) : viewMode === 'grid' ? (
@@ -188,7 +188,7 @@ export default function Teachers() {
                 <tr key={p.id} className="hover:bg-muted/50 transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-xs">
+                      <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-emerald-700 font-bold text-xs">
                         {p.avatar}
                       </div>
                       <div>
@@ -245,7 +245,7 @@ export default function Teachers() {
             </div>
             <div className="flex gap-3 pt-2">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)} disabled={mutateTeacher.isPending}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleSave} disabled={mutateTeacher.isPending}>
+              <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleSave} disabled={mutateTeacher.isPending}>
                 {mutateTeacher.isPending ? 'Saving...' : 'Save Teacher'}
               </Button>
             </div>

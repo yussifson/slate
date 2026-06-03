@@ -68,7 +68,7 @@ export default function Discipline() {
           <h1 className="text-2xl font-bold text-card-foreground">{t("discipline", "Discipline & Behavior")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("manage_discipline", "Track student conduct, merits, and infractions")}</p>
         </div>
-        <Button onClick={() => { setFormData({studentName: '', type: 'Infraction', date: '', description: '', actionTaken: ''}); setShowModal(true); }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+        <Button onClick={() => { setFormData({studentName: '', type: 'Infraction', date: '', description: '', actionTaken: ''}); setShowModal(true); }} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
           <Plus className="w-4 h-4" /> {t("add_record", "Add Record")}
         </Button>
       </div>
@@ -84,7 +84,7 @@ export default function Discipline() {
         <div className="py-12 text-center text-muted-foreground">{t("loading", "Loading...")}</div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-12 bg-card rounded-xl border border-border shadow-sm">
-          <Scale className="w-12 h-12 mx-auto mb-3 opacity-30 text-blue-600" />
+          <Scale className="w-12 h-12 mx-auto mb-3 opacity-30 text-emerald-600" />
           <p className="font-semibold text-lg text-card-foreground">{t("no_records", "No disciplinary records found")}</p>
         </div>
       ) : (
@@ -165,7 +165,7 @@ export default function Discipline() {
             </div>
             <div className="flex gap-3 pt-2">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleSave}>
+              <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleSave}>
                 {mutateRecord.isPending ? 'Saving...' : 'Save Record'}
               </Button>
             </div>

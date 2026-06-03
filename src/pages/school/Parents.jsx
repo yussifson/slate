@@ -179,7 +179,7 @@ export default function Parents() {
                 <tr key={p.id} className="hover:bg-muted/50 transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-xs">
+                      <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-emerald-700 font-bold text-xs">
                         {p.avatar}
                       </div>
                       <p className="font-semibold text-card-foreground">{p.name}</p>
@@ -237,7 +237,7 @@ export default function Parents() {
                     key={tab}
                     onClick={() => setActiveTab(tab)}
                     className={`pb-2 text-sm font-semibold capitalize border-b-2 transition-colors ${
-                      activeTab === tab ? 'border-blue-600 text-blue-600' : 'border-transparent text-muted-foreground hover:text-foreground'
+                      activeTab === tab ? 'border-blue-600 text-emerald-600' : 'border-transparent text-muted-foreground hover:text-foreground'
                     }`}
                   >
                     {tab}
@@ -285,7 +285,7 @@ export default function Parents() {
             <div className="p-6 border-t border-border bg-muted/30 flex gap-3">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setActiveTab('personal'); }} disabled={mutateParent.isPending}>{t("cancel", "Cancel")}</Button>
               {activeTab !== 'linking' ? (
-                <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={() => setActiveTab('linking')}>{t("next", "Next")}</Button>
+                <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => setActiveTab('linking')}>{t("next", "Next")}</Button>
               ) : (
                 <Button className="flex-1 bg-green-600 hover:bg-green-700 text-white" onClick={handleEnroll} disabled={mutateParent.isPending}>
                   {mutateParent.isPending ? 'Saving...' : 'Save Changes'}

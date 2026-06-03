@@ -164,10 +164,10 @@ export default function StudentPortal() {
               
               <div className="bg-card rounded-xl border border-border p-4 flex flex-col justify-center shadow-sm">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center text-white shadow-sm"><GraduationCap className="w-5 h-5" /></div>
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center text-white shadow-sm"><GraduationCap className="w-5 h-5" /></div>
                   <h3 className="font-bold text-muted-foreground text-sm">{t("performance", "Performance")}</h3>
                 </div>
-                <p className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-1">{averageGrade}</p>
+                <p className="text-3xl font-bold text-emerald-600 dark:text-blue-400 mb-1">{averageGrade}</p>
                 <p className="text-xs text-muted-foreground">{t("term_report_card", "Term Report Card")}</p>
               </div>
             </div>
@@ -281,7 +281,7 @@ export default function StudentPortal() {
                       <td className="px-6 py-4 font-medium text-foreground">{g.data?.examName}</td>
                       <td className="px-6 py-4 text-muted-foreground">{g.data?.subject}</td>
                       <td className="px-6 py-4 text-right">
-                        <span className={`font-bold ${pct >= 70 ? 'text-emerald-600' : pct >= 50 ? 'text-blue-600' : 'text-red-600'}`}>
+                        <span className={`font-bold ${pct >= 70 ? 'text-emerald-600' : pct >= 50 ? 'text-emerald-600' : 'text-red-600'}`}>
                           {score} / {max} ({pct}%)
                         </span>
                       </td>

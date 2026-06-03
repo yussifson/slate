@@ -153,7 +153,7 @@ export default function Attendance() {
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center">
             <Users className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -193,7 +193,7 @@ export default function Attendance() {
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         <div className="p-4 border-b border-border bg-muted/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-card-foreground font-semibold">
-            <ClipboardList className="w-5 h-5 text-blue-600" />
+            <ClipboardList className="w-5 h-5 text-emerald-600" />
             <span>{selectedClass} — {new Date(date + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
           </div>
           <div className="flex items-center gap-2">
@@ -223,7 +223,7 @@ export default function Attendance() {
                   <tr key={student.id} className="hover:bg-muted/40 transition-colors">
                     <td className="px-6 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-xs shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-emerald-700 font-bold text-xs shrink-0">
                           {student.name.substring(0, 2).toUpperCase()}
                         </div>
                         <div>
@@ -256,7 +256,7 @@ export default function Attendance() {
               {classStudents.length === 0 && (
                 <tr>
                   <td colSpan={4} className="text-center py-12 text-muted-foreground">
-                    <Users className="w-10 h-10 mx-auto mb-3 opacity-30 text-blue-600" />
+                    <Users className="w-10 h-10 mx-auto mb-3 opacity-30 text-emerald-600" />
                     <p className="font-medium">{t("no_students_enrolled_in", "No students enrolled in")} {selectedClass}</p>
                     <p className="text-xs mt-1">{t(
                       "enroll_students_in_the_student",
@@ -274,7 +274,7 @@ export default function Attendance() {
             <Button
               onClick={handleSubmit}
               disabled={mutateRecord.isPending || Object.keys(statusMap).length === 0}
-              className="bg-blue-600 hover:bg-blue-700 text-white gap-2"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
             >
               <Plus className="w-4 h-4" />
               {mutateRecord.isPending ? 'Submitting...' : `Submit Attendance (${markedCount}/${classStudents.length})`}
@@ -286,7 +286,7 @@ export default function Attendance() {
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         <div className="p-4 border-b border-border bg-muted/50">
           <h3 className="font-bold text-card-foreground flex items-center gap-2">
-            <CalendarDays className="w-5 h-5 text-blue-600" />
+            <CalendarDays className="w-5 h-5 text-emerald-600" />
             {t("saved_records", "Saved Records —")} {selectedClass} {t("on", "on")} {date}
           </h3>
         </div>
@@ -295,7 +295,7 @@ export default function Attendance() {
           <div className="py-10 text-center text-muted-foreground">{t("loading_records", "Loading records...")}</div>
         ) : filteredSaved.length === 0 ? (
           <div className="py-10 text-center text-muted-foreground">
-            <ClipboardList className="w-10 h-10 mx-auto mb-2 opacity-30 text-blue-500" />
+            <ClipboardList className="w-10 h-10 mx-auto mb-2 opacity-30 text-emerald-500" />
             <p>{t(
               "no_attendance_saved_for_this_d",
               "No attendance saved for this date and class yet."
@@ -324,7 +324,7 @@ export default function Attendance() {
                   return (
                     <tr key={rec.id} className="hover:bg-muted/40 transition-colors">
                       <td className="px-6 py-3 text-foreground font-medium">{rec.date}</td>
-                      <td className="px-6 py-3"><Link to="/classes" className="bg-blue-50 text-blue-700 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{rec.className}</Link></td>
+                      <td className="px-6 py-3"><Link to="/classes" className="bg-emerald-50 text-emerald-700 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{rec.className}</Link></td>
                       <td className="px-6 py-3 text-muted-foreground">{rec.takenBy || '—'}</td>
                       <td className="px-6 py-3 text-center font-bold text-green-600">{p}</td>
                       <td className="px-6 py-3 text-center font-bold text-red-600">{a}</td>

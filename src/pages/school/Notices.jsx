@@ -66,7 +66,7 @@ export default function Notices() {
           <h1 className="text-2xl font-bold text-card-foreground">{t("noticeboard", "Noticeboard")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("manage_announcements", "Manage school announcements and communications")}</p>
         </div>
-        <Button onClick={() => { setFormData({title: '', audience: 'All', content: ''}); setShowModal(true); }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+        <Button onClick={() => { setFormData({title: '', audience: 'All', content: ''}); setShowModal(true); }} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
           <Plus className="w-4 h-4" /> {t("new_notice", "New Notice")}
         </Button>
       </div>
@@ -82,7 +82,7 @@ export default function Notices() {
         <div className="py-12 text-center text-muted-foreground">{t("loading", "Loading...")}</div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-12 bg-card rounded-xl border border-border shadow-sm">
-          <Megaphone className="w-12 h-12 mx-auto mb-3 opacity-30 text-blue-600" />
+          <Megaphone className="w-12 h-12 mx-auto mb-3 opacity-30 text-emerald-600" />
           <p className="font-semibold text-lg text-card-foreground">{t("no_notices", "No notices published")}</p>
         </div>
       ) : (
@@ -149,7 +149,7 @@ export default function Notices() {
             </div>
             <div className="flex gap-3 pt-2">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleSave}>
+              <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleSave}>
                 {mutateRecord.isPending ? 'Publishing...' : 'Publish'}
               </Button>
             </div>

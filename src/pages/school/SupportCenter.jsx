@@ -48,7 +48,7 @@ export default function SupportCenter() {
         {/* Background Visuals */}
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20 mix-blend-overlay"></div>
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-purple-500/30 rounded-full blur-[100px]"></div>
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-blue-500/30 rounded-full blur-[100px]"></div>
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-emerald-500/30 rounded-full blur-[100px]"></div>
 
         <div className="relative z-10 max-w-3xl mx-auto flex flex-col items-center">
           <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-white/20 shadow-inner">
@@ -74,13 +74,13 @@ export default function SupportCenter() {
       {/* Categories Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
         <div className="group bg-white rounded-3xl border border-slate-200 p-8 shadow-sm shadow-slate-200/50 hover:shadow-sm hover:shadow-blue-500/20 hover:-translate-y-1 transition-all duration-300 cursor-pointer relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-150 duration-500"></div>
+          <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-150 duration-500"></div>
           <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 text-white flex items-center justify-center mb-6 shadow-sm shadow-blue-500/30 group-hover:scale-110 transition-transform">
             <Book className="w-7 h-7" />
           </div>
           <h3 className="text-2xl font-bold text-slate-900 mb-3">Knowledge Base</h3>
           <p className="text-slate-500 leading-relaxed mb-6">Browse our comprehensive guides and tutorials on how to use the platform effectively.</p>
-          <div className="flex items-center text-blue-600 font-bold group-hover:underline">
+          <div className="flex items-center text-emerald-600 font-bold group-hover:underline">
             Browse Articles <span className="ml-2 group-hover:translate-x-1 transition-transform">&rarr;</span>
           </div>
         </div>

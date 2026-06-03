@@ -12,7 +12,7 @@ import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
 
 const statusColors = {
-  Upcoming: 'bg-blue-100 dark:bg-blue-950/50 text-blue-700 dark:text-blue-400',
+  Upcoming: 'bg-blue-100 dark:bg-blue-950/50 text-emerald-700 dark:text-blue-400',
   Ongoing: 'bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400 animate-pulse',
   Completed: 'bg-green-100 dark:bg-green-950/50 text-green-700 dark:text-green-400'
 };
@@ -156,7 +156,7 @@ export default function Exams() {
           <h1 className="text-2xl font-bold text-card-foreground">{t("exam_schedules", "Exam Schedules")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("plan_and_manage_upcoming_exami", "Plan and manage upcoming examinations")}</p>
         </div>
-        <Button onClick={() => setShowModal(true)} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+        <Button onClick={() => setShowModal(true)} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
           <Plus className="w-4 h-4" /> {t("schedule_exam", "Schedule Exam")}
         </Button>
       </div>
@@ -171,7 +171,7 @@ export default function Exams() {
         <div className="py-12 text-center text-muted-foreground">{t("loading_calendar", "Loading calendar...")}</div>
       ) : filtered.length === 0 ? (
         <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-border">
-          <FileText className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-blue-600" />
+          <FileText className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-emerald-600" />
           <p className="font-semibold text-lg text-card-foreground">{t("no_exams_scheduled", "No exams scheduled")}</p>
           <p className="text-sm mt-1 max-w-md mx-auto">{t(
             "create_mid_terms_final_practic",
@@ -220,7 +220,7 @@ export default function Exams() {
                 {filtered.map(exam => (
                   <tr key={exam.id} className="hover:bg-muted/50 transition-colors">
                     <td className="px-6 py-4 font-bold text-card-foreground">{exam.subject}</td>
-                    <td className="px-6 py-4 font-medium"><Link to="/classes" className="text-blue-600 hover:underline">{exam.class}</Link></td>
+                    <td className="px-6 py-4 font-medium"><Link to="/classes" className="text-emerald-600 hover:underline">{exam.class}</Link></td>
                     <td className="px-6 py-4 text-muted-foreground">
                       {new Date(exam.date).toLocaleDateString()} at {exam.time}
                     </td>
@@ -272,7 +272,7 @@ export default function Exams() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-sm w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-              <Plus className="w-5 h-5 text-blue-600" /> {editingId ? 'Edit Examination' : 'Schedule Examination'}
+              <Plus className="w-5 h-5 text-emerald-600" /> {editingId ? 'Edit Examination' : 'Schedule Examination'}
             </h2>
             <div className="space-y-3">
               <div>
@@ -342,7 +342,7 @@ export default function Exams() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleCreateExam}>{editingId ? 'Save Changes' : 'Save Exam'}</Button>
+              <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleCreateExam}>{editingId ? 'Save Changes' : 'Save Exam'}</Button>
             </div>
           </div>
         </div>
@@ -366,12 +366,12 @@ export default function Exams() {
           {viewDetails && (
             <div className="mt-6 space-y-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-blue-50 dark:bg-blue-950/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                <div className="w-16 h-16 rounded-full bg-emerald-50 dark:bg-blue-950/50 flex items-center justify-center text-emerald-600 dark:text-blue-400">
                   <FileText className="w-8 h-8" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-card-foreground">{viewDetails.subject}</h3>
-                  <Link to="/classes" className="text-sm font-medium text-blue-600 hover:underline">{viewDetails.class}</Link>
+                  <Link to="/classes" className="text-sm font-medium text-emerald-600 hover:underline">{viewDetails.class}</Link>
                 </div>
               </div>
 

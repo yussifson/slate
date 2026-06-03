@@ -67,7 +67,7 @@ export default function Hostel() {
           <h1 className="text-2xl font-bold text-card-foreground">{t("hostel_dormitory", "Hostel & Dormitory")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("manage_dormitories", "Manage boarding houses, capacity, and wardens")}</p>
         </div>
-        <Button onClick={() => { setFormData({name: '', type: 'Boys', warden: '', capacity: '', rooms: ''}); setShowModal(true); }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+        <Button onClick={() => { setFormData({name: '', type: 'Boys', warden: '', capacity: '', rooms: ''}); setShowModal(true); }} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
           <Plus className="w-4 h-4" /> {t("add_hostel", "Add Hostel")}
         </Button>
       </div>
@@ -160,7 +160,7 @@ export default function Hostel() {
             </div>
             <div className="flex gap-3 pt-2">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleSave}>
+              <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleSave}>
                 {mutateRecord.isPending ? 'Saving...' : 'Save Hostel'}
               </Button>
             </div>

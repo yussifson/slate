@@ -93,7 +93,7 @@ export default function ParentPortal() {
   if (mappedStudents.length === 0) {
     return (
       <div className="py-12 text-center max-w-md mx-auto bg-card rounded-xl border border-border p-6 shadow-sm">
-        <User className="w-12 h-12 mx-auto mb-3 opacity-30 text-blue-600 animate-pulse" />
+        <User className="w-12 h-12 mx-auto mb-3 opacity-30 text-emerald-600 animate-pulse" />
         <p className="font-semibold text-lg text-card-foreground">No child profiles found</p>
         <p className="text-sm text-muted-foreground mt-1 mb-4">Enroll a student in the student directory first to activate the Parent Portal view.</p>
       </div>
@@ -163,10 +163,10 @@ export default function ParentPortal() {
               key={child.id}
               onClick={() => setSelectedChildId(child.id)}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-colors border ${
-                activeStudent?.id === child.id ? 'bg-blue-50 border-blue-200 text-blue-700' : 'bg-card border-border text-muted-foreground hover:bg-muted'
+                activeStudent?.id === child.id ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-card border-border text-muted-foreground hover:bg-muted'
               }`}
             >
-              <div className="w-5 h-5 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-[10px] font-bold">
+              <div className="w-5 h-5 rounded-full bg-blue-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold">
                 {child.name.substring(0,2).toUpperCase()}
               </div>
               {child.name}
@@ -177,7 +177,7 @@ export default function ParentPortal() {
 
       {/* Child Profile Card */}
       <div className="bg-card rounded-2xl border border-border p-6 shadow-sm flex flex-col md:flex-row items-center md:items-start gap-6">
-        <div className="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 text-3xl font-bold shrink-0 shadow-inner uppercase">
+        <div className="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center text-emerald-700 text-3xl font-bold shrink-0 shadow-inner uppercase">
           {activeStudent.name?.substring(0, 2)}
         </div>
         <div className="text-center md:text-left flex-1">
@@ -213,10 +213,10 @@ export default function ParentPortal() {
               
               <div className="bg-card rounded-xl border border-border p-4 flex flex-col justify-center shadow-sm">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center text-white shadow-sm"><BookOpen className="w-5 h-5" /></div>
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center text-white shadow-sm"><BookOpen className="w-5 h-5" /></div>
                   <h3 className="font-bold text-muted-foreground text-sm">Performance</h3>
                 </div>
-                <p className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-1">{averageGrade}</p>
+                <p className="text-3xl font-bold text-emerald-600 dark:text-blue-400 mb-1">{averageGrade}</p>
                 <p className="text-xs text-muted-foreground">Term Report Card</p>
               </div>
             </div>
@@ -259,7 +259,7 @@ export default function ParentPortal() {
                     </div>
                     {doc.file_url && (
                       <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50">
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50">
                           <Download className="w-4 h-4" />
                         </Button>
                       </a>
@@ -298,7 +298,7 @@ export default function ParentPortal() {
                       <td className="px-6 py-4 font-medium text-foreground">{g.data?.examName}</td>
                       <td className="px-6 py-4 text-muted-foreground">{g.data?.subject}</td>
                       <td className="px-6 py-4 text-right">
-                        <span className={`font-bold ${pct >= 70 ? 'text-emerald-600' : pct >= 50 ? 'text-blue-600' : 'text-red-600'}`}>
+                        <span className={`font-bold ${pct >= 70 ? 'text-emerald-600' : pct >= 50 ? 'text-emerald-600' : 'text-red-600'}`}>
                           {score} / {max} ({pct}%)
                         </span>
                       </td>
