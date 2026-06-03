@@ -59,11 +59,13 @@ class SyncQueue {
     const { supabase } = await import('@/api/supabaseClient');
     const { action, payload, endpoint } = item;
     
-    if (action === 'POST') {
-      const { error } = await supabase.from(endpoint).upsert(payload);
-      if (error) throw error;
-    } else if (action === 'PUT') {
-      const { error } = await supabase.from(endpoint).update(payload.data).eq('id', payload.id);
+    if (action === 'POST' || action === 'PUT') {
+      let cleanData = action === 'POST' ? payload : payload.data;
+      if (cleanData) {
+        // Strip out SQLite artifacts (e.g. 'id:1')
+        cleanData = Object.fromEntries(Object.entries(cleanData).filter(([k]) => !k.includes(':')));
+      }
+      const { error } = await supabase.from(endpoint).upsert(cleanData);
       if (error) throw error;
     } else if (action === 'DELETE') {
       const { error } = await supabase.from(endpoint).delete().eq('id', payload.id);
