@@ -74,8 +74,8 @@ export default function CanteenPOS() {
   return (
     <div className="space-y-6 pb-20 max-w-6xl mx-auto flex flex-col lg:flex-row gap-8">
       <div className="flex-1 space-y-6">
-        <div className="flex items-center gap-4 bg-white/60 dark:bg-card/60 backdrop-blur-md p-6 rounded-3xl border border-white/20 shadow-xl">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center shadow-lg shadow-orange-500/30">
+        <div className="flex items-center gap-4 bg-white/60 dark:bg-card/60 backdrop-blur-md p-6 rounded-3xl border border-white/20 shadow-sm">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center shadow-sm shadow-orange-500/30">
             <Coffee className="w-8 h-8 text-white" />
           </div>
           <div>
@@ -86,7 +86,7 @@ export default function CanteenPOS() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
           {menu.map(item => (
-            <div key={item.id} onClick={() => addToCart(item.id)} className="bg-white/60 dark:bg-card/60 backdrop-blur-md rounded-3xl border border-white/20 p-6 shadow-xl cursor-pointer hover:-translate-y-1 hover:shadow-2xl transition-all group select-none">
+            <div key={item.id} onClick={() => addToCart(item.id)} className="bg-white/60 dark:bg-card/60 backdrop-blur-md rounded-3xl border border-white/20 p-6 shadow-sm cursor-pointer hover:-translate-y-1 hover:shadow-sm transition-all group select-none">
               <div className={`w-14 h-14 rounded-2xl ${item.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                 <item.icon className="w-7 h-7" />
               </div>
@@ -102,7 +102,7 @@ export default function CanteenPOS() {
         </div>
 
         {orderHistory.length > 0 && (
-          <div className="bg-white/60 dark:bg-card/60 backdrop-blur-md rounded-3xl border border-white/20 p-6 shadow-xl">
+          <div className="bg-white/60 dark:bg-card/60 backdrop-blur-md rounded-3xl border border-white/20 p-6 shadow-sm">
             <h3 className="text-xl font-extrabold mb-4 flex items-center gap-2"><Clock className="text-slate-400" /> Recent Orders</h3>
             <div className="space-y-3">
               {orderHistory.slice(0, 3).map(o => (
@@ -117,7 +117,7 @@ export default function CanteenPOS() {
       </div>
 
       <div className="w-full lg:w-96 shrink-0">
-        <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 p-8 shadow-2xl sticky top-6">
+        <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 p-8 shadow-sm sticky top-6">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
               <ShoppingCart className="w-5 h-5 text-slate-600 dark:text-slate-300" />
@@ -160,7 +160,7 @@ export default function CanteenPOS() {
             <Button 
               disabled={total === 0 || placeOrder.isPending}
               onClick={() => placeOrder.mutate(total)}
-              className="w-full h-14 rounded-2xl bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-200 dark:text-slate-900 text-white font-extrabold text-lg shadow-xl shadow-slate-900/20 dark:shadow-white/20 transition-all"
+              className="w-full h-14 rounded-2xl bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-200 dark:text-slate-900 text-white font-extrabold text-lg shadow-sm shadow-slate-900/20 dark:shadow-white/20 transition-all"
             >
               <CreditCard className="w-5 h-5 mr-2" /> Pay Now
             </Button>

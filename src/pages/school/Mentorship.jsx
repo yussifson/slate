@@ -48,11 +48,11 @@ export default function Mentorship() {
 
   return (
     <div className="space-y-8 pb-20 max-w-6xl mx-auto">
-      <div className="relative overflow-hidden bg-gradient-to-br from-blue-900 to-indigo-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-white/10">
+      <div className="relative overflow-hidden bg-gradient-to-br from-blue-900 to-indigo-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-sm border border-white/10">
         <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/20 blur-[100px] rounded-full pointer-events-none"></div>
         <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
           <div className="flex items-center gap-6">
-            <div className="w-20 h-20 rounded-3xl bg-white/10 backdrop-blur-xl border-4 border-white/20 flex items-center justify-center relative shadow-xl">
+            <div className="w-20 h-20 rounded-3xl bg-white/10 backdrop-blur-xl border-4 border-white/20 flex items-center justify-center relative shadow-sm">
               <Users className="w-10 h-10 text-white drop-shadow-md" />
             </div>
             <div>
@@ -65,14 +65,14 @@ export default function Mentorship() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {mentors.map((m, i) => (
-          <div key={i} className="bg-white/60 dark:bg-card/60 backdrop-blur-md rounded-[2.5rem] p-6 border border-white/20 shadow-xl hover:-translate-y-2 transition-transform duration-300 flex flex-col items-center text-center">
-            <img src={m.img} alt={m.name} className="w-24 h-24 rounded-full border-4 border-white dark:border-card shadow-lg mb-4" />
+          <div key={i} className="bg-white/60 dark:bg-card/60 backdrop-blur-md rounded-[2.5rem] p-6 border border-white/20 shadow-sm hover:-translate-y-2 transition-transform duration-300 flex flex-col items-center text-center">
+            <img src={m.img} alt={m.name} className="w-24 h-24 rounded-full border-4 border-white dark:border-card shadow-sm mb-4" />
             <h3 className="font-extrabold text-xl text-slate-900 dark:text-white">{m.name}</h3>
             <p className="text-sm font-bold text-blue-600 mb-3">{m.role}</p>
             <div className="flex items-center gap-1 text-amber-500 font-bold text-sm mb-6 bg-amber-50 dark:bg-amber-900/20 px-3 py-1 rounded-full">
               <Star className="w-4 h-4 fill-amber-500" /> {m.rating}
             </div>
-            <Button onClick={() => bookMentor.mutate(m.name)} disabled={bookMentor.isPending} className="w-full rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 font-bold shadow-lg shadow-slate-900/20">
+            <Button onClick={() => bookMentor.mutate(m.name)} disabled={bookMentor.isPending} className="w-full rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 font-bold shadow-sm shadow-slate-900/20">
               <Calendar className="w-4 h-4 mr-2" /> Book Session
             </Button>
           </div>
@@ -80,7 +80,7 @@ export default function Mentorship() {
       </div>
 
       {bookings.length > 0 && (
-        <div className="bg-white/60 dark:bg-card/60 backdrop-blur-md rounded-[2.5rem] border border-white/20 p-8 shadow-xl">
+        <div className="bg-white/60 dark:bg-card/60 backdrop-blur-md rounded-[2.5rem] border border-white/20 p-8 shadow-sm">
           <h3 className="text-2xl font-extrabold mb-6 flex items-center gap-3">
             <Video className="text-blue-500 w-6 h-6" /> Upcoming Sessions
           </h3>

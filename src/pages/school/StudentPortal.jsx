@@ -128,30 +128,24 @@ export default function StudentPortal() {
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       {/* Header & Nav */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-emerald-600 to-teal-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-white/10 mb-8">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-400/20 blur-[100px] rounded-full pointer-events-none"></div>
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="text-center md:text-left">
-            <h1 className="text-3xl md:text-4xl font-black tracking-tight mb-2">{t("welcome_back", "Welcome back")}, {user?.user_metadata?.full_name || activeStudent.name.split(' ')[0]}!</h1>
-            <p className="text-emerald-100 font-medium text-lg">{t("student_id", "Student ID:")} <span className="font-bold text-white">{activeStudent.studentId}</span> • {activeStudent.class}</p>
-          </div>
-          <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 hide-scrollbar bg-white/10 p-2 rounded-[1.5rem] backdrop-blur-md border border-white/20 shadow-inner">
-            <button onClick={() => setActiveTab('dashboard')} className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'dashboard' ? 'bg-white text-emerald-800 shadow-md scale-105' : 'text-white hover:bg-white/20'}`}>
-              <LayoutDashboard className="w-4 h-4" /> Dashboard
-            </button>
-            <button onClick={() => setActiveTab('courses')} className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'courses' ? 'bg-white text-emerald-800 shadow-md scale-105' : 'text-white hover:bg-white/20'}`}>
-              <BookOpen className="w-4 h-4" /> Courses
-            </button>
-            <button onClick={() => setActiveTab('grades')} className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'grades' ? 'bg-white text-emerald-800 shadow-md scale-105' : 'text-white hover:bg-white/20'}`}>
-              <GraduationCap className="w-4 h-4" /> Grades
-            </button>
-            <button onClick={() => setActiveTab('assignments')} className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'assignments' ? 'bg-white text-emerald-800 shadow-md scale-105' : 'text-white hover:bg-white/20'}`}>
-              <ClipboardList className="w-4 h-4" /> Assignments
-            </button>
-          </div>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-card-foreground">{t("welcome_back", "Welcome back")}, {user?.user_metadata?.full_name || activeStudent.name.split(' ')[0]}!</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{t("student_id", "Student ID:")} <span className="font-bold text-foreground">{activeStudent.studentId}</span> • {activeStudent.class}</p>
         </div>
-        <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none transform translate-x-1/4 translate-y-1/4">
-          <BookOpen className="w-96 h-96" />
+        <div className="flex gap-1 overflow-x-auto pb-2 md:pb-0 hide-scrollbar bg-muted p-1 rounded-xl border border-border">
+          <button onClick={() => setActiveTab('dashboard')} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'dashboard' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-background/50'}`}>
+            <LayoutDashboard className="w-4 h-4" /> Dashboard
+          </button>
+          <button onClick={() => setActiveTab('courses')} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'courses' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-background/50'}`}>
+            <BookOpen className="w-4 h-4" /> Courses
+          </button>
+          <button onClick={() => setActiveTab('grades')} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'grades' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-background/50'}`}>
+            <GraduationCap className="w-4 h-4" /> Grades
+          </button>
+          <button onClick={() => setActiveTab('assignments')} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'assignments' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-background/50'}`}>
+            <ClipboardList className="w-4 h-4" /> Assignments
+          </button>
         </div>
       </div>
 

@@ -128,22 +128,18 @@ export default function SchoolDashboard({ companyId, company, isAdmin }) {
       {/* 24h Hearing Reminders */}
       <HearingReminders hearings={hearings} userEmail={user?.email} isAdmin={isAdmin} />
       {/* Header */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-emerald-600 to-teal-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-white/10 mb-8">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-400/20 blur-[100px] rounded-full pointer-events-none"></div>
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="text-center md:text-left">
-            <h1 className="text-3xl md:text-4xl font-black tracking-tight mb-2">Welcome back, {user?.user_metadata?.full_name || user?.email?.split('@')[0]}!</h1>
-            <p className="text-emerald-100 font-medium text-lg">Here's what's happening at your school today.</p>
-          </div>
-          <div className="flex items-center gap-2 bg-white/10 p-2 rounded-2xl backdrop-blur-md border border-white/20 shadow-inner">
-            <Button variant="ghost" size="sm" className="gap-1.5 text-sm font-bold text-white hover:bg-white/20 rounded-xl">
-              <BarChart2 className="w-4 h-4" /> {t("analytics", "Analytics")}
-            </Button>
-            <Button variant="ghost" size="sm" className="gap-1.5 text-sm font-bold text-white hover:bg-white/20 rounded-xl" onClick={handleRefresh} disabled={isRefreshing}>
-              <RefreshCw className={`w-4 h-4 ${isRefreshing ? "animate-spin" : ""}`} /> 
-              {isRefreshing ? "Refreshing..." : "Refresh"}
-            </Button>
-          </div>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-card-foreground">Welcome back, {user?.user_metadata?.full_name || user?.email?.split('@')[0]}!</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">Here's what's happening at your school today.</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" className="gap-1.5 text-sm font-bold rounded-xl">
+            <BarChart2 className="w-4 h-4" /> {t("analytics", "Analytics")}
+          </Button>
+          <Button onClick={handleRefresh} disabled={isRefreshing} size="sm" className="gap-1.5 text-sm font-bold bg-blue-600 text-white hover:bg-blue-700 rounded-xl">
+            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} /> {t("refresh", "Refresh")}
+          </Button>
         </div>
       </div>
       {/* Metric Cards */}
@@ -160,7 +156,7 @@ export default function SchoolDashboard({ companyId, company, isAdmin }) {
       {/* Analytics Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Revenue Area Chart */}
-        <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 shadow-xl p-6 space-y-6">
+        <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 shadow-sm p-6 space-y-6">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-black text-slate-900 dark:text-white">{t("revenue_growth_curve", "Revenue Growth Curve (")}{currency})</h3>
             <span className="text-[10px] bg-emerald-50 text-emerald-700 py-1 px-3 rounded-full font-black border border-emerald-100 uppercase tracking-wider">{t("paid_invoices", "Paid Invoices")}</span>
@@ -185,7 +181,7 @@ export default function SchoolDashboard({ companyId, company, isAdmin }) {
         </div>
 
         {/* Case Distribution Bar Chart */}
-        <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 shadow-xl p-6 space-y-6">
+        <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 shadow-sm p-6 space-y-6">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-black text-slate-900 dark:text-white">{caseTerm} {t("distribution_by_stage", "Distribution by Stage")}</h3>
             <span className="text-[10px] bg-blue-50 text-blue-700 py-1 px-3 rounded-full font-black border border-blue-100 uppercase tracking-wider">{t("active_pipelines", "Active Pipelines")}</span>

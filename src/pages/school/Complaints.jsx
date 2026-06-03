@@ -49,10 +49,10 @@ export default function Complaints() {
 
   return (
     <div className="space-y-8 pb-20 max-w-5xl mx-auto">
-      <div className="relative overflow-hidden bg-gradient-to-br from-rose-900 to-red-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-white/10">
+      <div className="relative overflow-hidden bg-gradient-to-br from-rose-900 to-red-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-sm border border-white/10">
         <div className="absolute top-0 right-0 w-64 h-64 bg-red-500/20 blur-[100px] rounded-full pointer-events-none"></div>
         <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
-          <div className="w-20 h-20 rounded-3xl bg-white/10 backdrop-blur-xl border-4 border-white/20 flex items-center justify-center relative shadow-xl">
+          <div className="w-20 h-20 rounded-3xl bg-white/10 backdrop-blur-xl border-4 border-white/20 flex items-center justify-center relative shadow-sm">
             <MessageSquareWarning className="w-10 h-10 text-white drop-shadow-md" />
           </div>
           <div>
@@ -63,7 +63,7 @@ export default function Complaints() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 p-8 shadow-xl">
+        <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 p-8 shadow-sm">
           <h3 className="text-xl font-extrabold mb-6 flex items-center gap-2"><AlertCircle className="w-5 h-5 text-red-500" /> File a Report</h3>
           <div className="space-y-4">
             <div>
@@ -74,13 +74,13 @@ export default function Complaints() {
               <label className="text-xs font-bold text-slate-500 uppercase">Details</label>
               <textarea value={details} onChange={e => setDetails(e.target.value)} placeholder="Please provide specific details..." className="w-full mt-1 bg-white/50 dark:bg-background/50 border border-slate-200 dark:border-slate-800 rounded-xl p-3 h-32 resize-none focus:outline-none focus:ring-2 focus:ring-red-500"></textarea>
             </div>
-            <Button onClick={() => submitTicket.mutate()} disabled={submitTicket.isPending} className="w-full h-12 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold shadow-lg shadow-red-600/20 mt-2">
+            <Button onClick={() => submitTicket.mutate()} disabled={submitTicket.isPending} className="w-full h-12 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold shadow-sm shadow-red-600/20 mt-2">
               <Send className="w-4 h-4 mr-2" /> Submit Securely
             </Button>
           </div>
         </div>
 
-        <div className="bg-white/60 dark:bg-card/60 backdrop-blur-md rounded-[2.5rem] border border-white/20 p-8 shadow-xl">
+        <div className="bg-white/60 dark:bg-card/60 backdrop-blur-md rounded-[2.5rem] border border-white/20 p-8 shadow-sm">
           <h3 className="text-xl font-extrabold mb-6">My Tickets</h3>
           <div className="space-y-4 max-h-[400px] overflow-y-auto custom-scrollbar pr-2">
             {tickets.length === 0 && <p className="text-slate-500 text-center py-8 font-medium">No complaints filed.</p>}

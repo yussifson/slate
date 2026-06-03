@@ -57,24 +57,16 @@ export default function CampusMarketplace() {
 
   return (
     <div className="space-y-8 pb-20 max-w-7xl mx-auto">
-      <div className="relative overflow-hidden bg-gradient-to-br from-emerald-600 to-teal-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-white/10">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-[80px] rounded-full pointer-events-none"></div>
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
-          <div className="flex items-center gap-6">
-            <div className="w-20 h-20 rounded-3xl bg-white/20 backdrop-blur-xl border-4 border-white/30 flex items-center justify-center relative shadow-xl">
-              <ShoppingBag className="w-10 h-10 text-white drop-shadow-md" />
-            </div>
-            <div>
-              <h1 className="text-4xl font-black tracking-tight mb-2">Campus Marketplace</h1>
-              <p className="text-emerald-100 font-medium text-lg">Buy, sell, and trade safely with verified students</p>
-            </div>
-          </div>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-card-foreground">Campus Marketplace</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">Buy, sell, and trade safely with verified students</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         <div className="lg:col-span-1">
-          <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 p-8 shadow-xl sticky top-6">
+          <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 p-8 shadow-sm sticky top-6">
             <h3 className="text-xl font-extrabold mb-6 flex items-center gap-2"><Tag className="w-5 h-5 text-emerald-500" /> Sell an Item</h3>
             <div className="space-y-4">
               <div>
@@ -85,7 +77,7 @@ export default function CampusMarketplace() {
                 <label className="text-xs font-bold text-slate-500 uppercase">Price ($)</label>
                 <Input type="number" value={newItemPrice} onChange={e => setNewItemPrice(e.target.value)} placeholder="0.00" className="mt-1 bg-white/50 dark:bg-background/50 border-slate-200 dark:border-slate-800 rounded-xl" />
               </div>
-              <Button onClick={() => listItem.mutate()} disabled={listItem.isPending} className="w-full h-12 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-lg shadow-emerald-600/20 mt-4">
+              <Button onClick={() => listItem.mutate()} disabled={listItem.isPending} className="w-full h-12 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-sm shadow-emerald-600/20 mt-4">
                 <Plus className="w-4 h-4 mr-2" /> List Item
               </Button>
             </div>
@@ -95,10 +87,10 @@ export default function CampusMarketplace() {
         <div className="lg:col-span-3">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {displayItems.map(item => (
-              <div key={item.id} className="bg-white/60 dark:bg-card/60 backdrop-blur-md rounded-3xl border border-white/20 overflow-hidden shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all group flex flex-col">
+              <div key={item.id} className="bg-white/60 dark:bg-card/60 backdrop-blur-md rounded-3xl border border-white/20 overflow-hidden shadow-sm hover:shadow-sm hover:-translate-y-1 transition-all group flex flex-col">
                 <div className="h-40 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center relative">
                   <ShoppingBag className="w-12 h-12 text-slate-300 dark:text-slate-700" />
-                  <div className="absolute top-4 right-4 bg-emerald-500 text-white text-xs font-black px-3 py-1 rounded-full shadow-lg">
+                  <div className="absolute top-4 right-4 bg-emerald-500 text-white text-xs font-black px-3 py-1 rounded-full shadow-sm">
                     ${item.data?.price?.toFixed(2) || '0.00'}
                   </div>
                 </div>

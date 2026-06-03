@@ -44,7 +44,7 @@ export default function SupportCenter() {
   return (
     <div className="space-y-8 pb-12">
       {/* Hero Section */}
-      <div className="relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 px-6 py-20 text-center shadow-2xl">
+      <div className="relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 px-6 py-20 text-center shadow-sm">
         {/* Background Visuals */}
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20 mix-blend-overlay"></div>
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-purple-500/30 rounded-full blur-[100px]"></div>
@@ -62,9 +62,9 @@ export default function SupportCenter() {
             <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-slate-400" />
             <Input 
               placeholder="Search for guides, FAQs, or support articles..." 
-              className="w-full pl-16 py-8 rounded-full text-lg bg-white/10 backdrop-blur-xl border-2 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-white/50 focus-visible:border-white shadow-2xl" 
+              className="w-full pl-16 py-8 rounded-full text-lg bg-white/10 backdrop-blur-xl border-2 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-white/50 focus-visible:border-white shadow-sm" 
             />
-            <Button className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full h-12 px-8 bg-white text-indigo-900 hover:bg-slate-100 font-bold shadow-lg">
+            <Button className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full h-12 px-8 bg-white text-indigo-900 hover:bg-slate-100 font-bold shadow-sm">
               Search
             </Button>
           </div>
@@ -73,9 +73,9 @@ export default function SupportCenter() {
 
       {/* Categories Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
-        <div className="group bg-white rounded-3xl border border-slate-200 p-8 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-blue-500/20 hover:-translate-y-1 transition-all duration-300 cursor-pointer relative overflow-hidden">
+        <div className="group bg-white rounded-3xl border border-slate-200 p-8 shadow-sm shadow-slate-200/50 hover:shadow-sm hover:shadow-blue-500/20 hover:-translate-y-1 transition-all duration-300 cursor-pointer relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-150 duration-500"></div>
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 text-white flex items-center justify-center mb-6 shadow-lg shadow-blue-500/30 group-hover:scale-110 transition-transform">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 text-white flex items-center justify-center mb-6 shadow-sm shadow-blue-500/30 group-hover:scale-110 transition-transform">
             <Book className="w-7 h-7" />
           </div>
           <h3 className="text-2xl font-bold text-slate-900 mb-3">Knowledge Base</h3>
@@ -85,9 +85,9 @@ export default function SupportCenter() {
           </div>
         </div>
 
-        <div className="group bg-white rounded-3xl border border-slate-200 p-8 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-amber-500/20 hover:-translate-y-1 transition-all duration-300 cursor-pointer relative overflow-hidden">
+        <div className="group bg-white rounded-3xl border border-slate-200 p-8 shadow-sm shadow-slate-200/50 hover:shadow-sm hover:shadow-amber-500/20 hover:-translate-y-1 transition-all duration-300 cursor-pointer relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-150 duration-500"></div>
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center mb-6 shadow-lg shadow-amber-500/30 group-hover:scale-110 transition-transform">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center mb-6 shadow-sm shadow-amber-500/30 group-hover:scale-110 transition-transform">
             <FileQuestion className="w-7 h-7" />
           </div>
           <h3 className="text-2xl font-bold text-slate-900 mb-3">FAQs</h3>
@@ -97,9 +97,9 @@ export default function SupportCenter() {
           </div>
         </div>
 
-        <div className="group bg-white rounded-3xl border border-slate-200 p-8 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-emerald-500/20 hover:-translate-y-1 transition-all duration-300 cursor-pointer relative overflow-hidden">
+        <div className="group bg-white rounded-3xl border border-slate-200 p-8 shadow-sm shadow-slate-200/50 hover:shadow-sm hover:shadow-emerald-500/20 hover:-translate-y-1 transition-all duration-300 cursor-pointer relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-150 duration-500"></div>
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-400 to-green-500 text-white flex items-center justify-center mb-6 shadow-lg shadow-emerald-500/30 group-hover:scale-110 transition-transform">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-400 to-green-500 text-white flex items-center justify-center mb-6 shadow-sm shadow-emerald-500/30 group-hover:scale-110 transition-transform">
             <PhoneCall className="w-7 h-7" />
           </div>
           <h3 className="text-2xl font-bold text-slate-900 mb-3">Contact IT</h3>
@@ -111,7 +111,7 @@ export default function SupportCenter() {
       </div>
 
       {/* Idea Submission Section */}
-      <div className="mx-4 mt-8 bg-gradient-to-br from-slate-900 to-slate-800 rounded-[2.5rem] p-10 md:p-12 text-white relative overflow-hidden shadow-2xl border border-slate-700">
+      <div className="mx-4 mt-8 bg-gradient-to-br from-slate-900 to-slate-800 rounded-[2.5rem] p-10 md:p-12 text-white relative overflow-hidden shadow-sm border border-slate-700">
         <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/20 blur-[80px] rounded-full pointer-events-none"></div>
         <div className="relative z-10 flex flex-col md:flex-row items-center gap-12">
           <div className="flex-1 text-center md:text-left">
@@ -138,7 +138,7 @@ export default function SupportCenter() {
                 </Button>
               </div>
             ) : (
-              <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-6 rounded-3xl shadow-xl flex flex-col gap-4">
+              <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-6 rounded-3xl shadow-sm flex flex-col gap-4">
                 <textarea 
                   className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none h-32"
                   placeholder="I think it would be great if the system could..."
@@ -148,7 +148,7 @@ export default function SupportCenter() {
                 <Button 
                   onClick={handleIdeaSubmit}
                   disabled={isSubmitting || !idea.trim()}
-                  className="w-full rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-bold h-12 shadow-lg hover:shadow-indigo-500/25 transition-all"
+                  className="w-full rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-bold h-12 shadow-sm hover:shadow-indigo-500/25 transition-all"
                 >
                   {isSubmitting ? 'Sending...' : <span className="flex items-center gap-2"><Send className="w-4 h-4"/> Submit Idea to Dev Team</span>}
                 </Button>

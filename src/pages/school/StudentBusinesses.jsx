@@ -50,10 +50,10 @@ export default function StudentBusinesses() {
 
   return (
     <div className="space-y-8 pb-20 max-w-7xl mx-auto">
-      <div className="relative overflow-hidden bg-gradient-to-br from-indigo-900 to-slate-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-white/10">
+      <div className="relative overflow-hidden bg-gradient-to-br from-indigo-900 to-slate-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-sm border border-white/10">
         <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/20 blur-[100px] rounded-full pointer-events-none"></div>
         <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
-          <div className="w-20 h-20 rounded-3xl bg-white/10 backdrop-blur-xl border-4 border-white/20 flex items-center justify-center relative shadow-xl">
+          <div className="w-20 h-20 rounded-3xl bg-white/10 backdrop-blur-xl border-4 border-white/20 flex items-center justify-center relative shadow-sm">
             <Store className="w-10 h-10 text-white drop-shadow-md" />
           </div>
           <div>
@@ -65,21 +65,21 @@ export default function StudentBusinesses() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-1 space-y-6">
-          <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 p-8 shadow-xl">
+          <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 p-8 shadow-sm">
             <h3 className="text-xl font-extrabold mb-6 flex items-center gap-2"><Plus className="text-emerald-500" /> Start a Venture</h3>
             <div className="space-y-4">
               <div>
                 <label className="text-xs font-bold text-slate-500 uppercase">Venture Name</label>
                 <Input value={bizName} onChange={e => setBizName(e.target.value)} placeholder="e.g. Campus Tech Repairs" className="mt-1 bg-white/50 dark:bg-background/50 border-slate-200 dark:border-slate-800 rounded-xl" />
               </div>
-              <Button onClick={() => registerBiz.mutate()} disabled={registerBiz.isPending} className="w-full h-12 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold shadow-lg shadow-indigo-600/20">
+              <Button onClick={() => registerBiz.mutate()} disabled={registerBiz.isPending} className="w-full h-12 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold shadow-sm shadow-indigo-600/20">
                 Register Venture
               </Button>
             </div>
           </div>
 
           {myBiz.length > 0 && (
-            <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-[2.5rem] p-8 text-white shadow-xl">
+            <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-[2.5rem] p-8 text-white shadow-sm">
               <h3 className="text-lg font-bold mb-4 opacity-90">My Ventures</h3>
               <div className="space-y-4">
                 {myBiz.map(b => (
@@ -97,12 +97,12 @@ export default function StudentBusinesses() {
         </div>
 
         <div className="lg:col-span-2">
-          <div className="bg-white/60 dark:bg-card/60 backdrop-blur-md rounded-[2.5rem] border border-white/20 p-8 shadow-xl h-full">
+          <div className="bg-white/60 dark:bg-card/60 backdrop-blur-md rounded-[2.5rem] border border-white/20 p-8 shadow-sm h-full">
             <h3 className="text-2xl font-extrabold mb-6 text-slate-900 dark:text-white">Campus Startup Directory</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {otherBiz.length === 0 && <p className="text-slate-500">No other ventures registered yet.</p>}
               {otherBiz.map(b => (
-                <div key={b.id} className="bg-white dark:bg-background p-6 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-lg transition-shadow">
+                <div key={b.id} className="bg-white dark:bg-background p-6 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-sm transition-shadow">
                   <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-4">
                     <Store className="w-6 h-6 text-slate-500" />
                   </div>

@@ -51,7 +51,7 @@ export default function Gamification() {
 
   return (
     <div className="space-y-8 pb-20 max-w-6xl mx-auto">
-      <div className="relative overflow-hidden bg-gradient-to-br from-indigo-900 to-purple-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-white/10">
+      <div className="relative overflow-hidden bg-gradient-to-br from-indigo-900 to-purple-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-sm border border-white/10">
         <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-500/20 blur-[100px] rounded-full pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-pink-500/20 blur-[100px] rounded-full pointer-events-none"></div>
         
@@ -84,8 +84,8 @@ export default function Gamification() {
           { title: "Helping Hand", desc: "Tutor 5 students", icon: Gift, color: "from-pink-400 to-rose-500" },
           { title: "Math Wizard", desc: "Win the math olympiad", icon: Zap, color: "from-amber-400 to-orange-500" }
         ].map((badge, i) => (
-          <div key={i} className="bg-white/60 dark:bg-card/60 backdrop-blur-md rounded-3xl p-6 border border-white/20 shadow-xl text-center group cursor-pointer hover:-translate-y-2 transition-transform duration-300">
-            <div className={`w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br ${badge.color} flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+          <div key={i} className="bg-white/60 dark:bg-card/60 backdrop-blur-md rounded-3xl p-6 border border-white/20 shadow-sm text-center group cursor-pointer hover:-translate-y-2 transition-transform duration-300">
+            <div className={`w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br ${badge.color} flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform duration-300`}>
               <badge.icon className="w-10 h-10 text-white" />
             </div>
             <h3 className="font-extrabold text-lg text-slate-900 dark:text-white mb-1">{badge.title}</h3>
@@ -94,7 +94,7 @@ export default function Gamification() {
         ))}
       </div>
 
-      <div className="bg-white/60 dark:bg-card/60 backdrop-blur-md rounded-3xl border border-white/20 p-8 shadow-xl">
+      <div className="bg-white/60 dark:bg-card/60 backdrop-blur-md rounded-3xl border border-white/20 p-8 shadow-sm">
         <h3 className="text-2xl font-extrabold mb-6 text-slate-900 dark:text-white flex items-center gap-3">
           <Medal className="text-yellow-500 w-8 h-8" /> Leaderboard
         </h3>

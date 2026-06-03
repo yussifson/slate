@@ -219,24 +219,18 @@ export default function Students() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-emerald-600 to-teal-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-white/10 mb-8">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-400/20 blur-[100px] rounded-full pointer-events-none"></div>
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="text-center md:text-left">
-            <h1 className="text-3xl md:text-4xl font-black tracking-tight mb-2">{t("students_directory", "Students Directory")}</h1>
-            <p className="text-emerald-100 font-medium text-lg">{t("manage_enrollment", "Manage enrollments, assign classes, and track fees.")}</p>
-          </div>
-          <div className="flex gap-2 bg-white/10 p-2 rounded-[1.5rem] backdrop-blur-md border border-white/20 shadow-inner">
-            <Button variant="ghost" onClick={() => setShowSettings(!showSettings)} className="gap-2 text-white hover:bg-white/20 rounded-xl font-bold">
-              <Settings className="w-4 h-4" /> {t("id_settings", "ID Settings")}
-            </Button>
-            <Button onClick={() => setShowModal(true)} className="gap-2 bg-white text-emerald-900 hover:bg-white/90 rounded-xl font-bold shadow-md">
-              <Plus className="w-4 h-4" /> {t("enroll_student", "Enroll Student")}
-            </Button>
-          </div>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-card-foreground">{t("students_directory", "Students Directory")}</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{t("manage_enrollment", "Manage enrollments, assign classes, and track fees.")}</p>
         </div>
-        <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none transform translate-x-1/4 translate-y-1/4">
-          <GraduationCap className="w-64 h-64" />
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setShowSettings(!showSettings)} className="gap-2">
+            <Settings className="w-4 h-4" /> {t("id_settings", "ID Settings")}
+          </Button>
+          <Button onClick={() => setShowModal(true)} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+            <Plus className="w-4 h-4" /> {t("enroll_student", "Enroll Student")}
+          </Button>
         </div>
       </div>
       
@@ -393,7 +387,7 @@ export default function Students() {
       {/* Tabbed Wizard Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-border flex flex-col max-h-[90vh]">
+          <div className="bg-card rounded-2xl shadow-sm w-full max-w-lg overflow-hidden border border-border flex flex-col max-h-[90vh]">
             <div className="p-6 border-b border-border">
               <h2 className="text-xl font-bold text-card-foreground">{editingId ? 'Edit Student' : 'Enroll Student'}</h2>
               <div className="flex gap-4 mt-4 border-b border-border">

@@ -125,21 +125,15 @@ export default function Classes() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-emerald-600 to-teal-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-white/10 mb-8">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-400/20 blur-[100px] rounded-full pointer-events-none"></div>
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="text-center md:text-left">
-            <h1 className="text-3xl md:text-4xl font-black tracking-tight mb-2">{t("classes", "Classes")}</h1>
-            <p className="text-emerald-100 font-medium text-lg">{t("manage_classes_subjects_and_te", "Manage classes, subjects, and teachers")}</p>
-          </div>
-          <div className="flex items-center gap-2 bg-white/10 p-2 rounded-2xl backdrop-blur-md border border-white/20 shadow-inner">
-            <Button onClick={() => setShowForm(true)} size="sm" className="gap-1.5 text-sm font-bold bg-white text-emerald-900 hover:bg-white/90 rounded-xl">
-              <Plus className="w-4 h-4" /> {t("add_class", "Add Class")}
-            </Button>
-          </div>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-card-foreground">{t("classes", "Classes")}</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{t("manage_classes_subjects_and_te", "Manage classes, subjects, and teachers")}</p>
         </div>
-        <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none transform translate-x-1/4 translate-y-1/4">
-          <BookOpen className="w-64 h-64" />
+        <div className="flex items-center gap-2">
+          <Button onClick={() => setShowModal(true)} size="sm" className="gap-1.5 text-sm font-bold bg-blue-600 text-white hover:bg-blue-700 rounded-xl">
+            <Plus className="w-4 h-4" /> {t("add_class", "Add Class")}
+          </Button>
         </div>
       </div>
       {/* Stats */}
@@ -275,7 +269,7 @@ export default function Classes() {
       {/* Add Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
+          <div className="bg-card rounded-2xl shadow-sm w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
             <h2 className="text-lg font-bold text-card-foreground">{editingId ? 'Edit Class' : 'Add New Class'}</h2>
             <div className="space-y-3">
               <div>

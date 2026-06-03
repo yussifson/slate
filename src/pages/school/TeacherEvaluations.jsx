@@ -51,20 +51,14 @@ export default function TeacherEvaluations() {
 
   return (
     <div className="space-y-8 pb-20 max-w-5xl mx-auto">
-      <div className="relative overflow-hidden bg-gradient-to-br from-emerald-600 to-teal-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-white/10">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-500/20 blur-[100px] rounded-full pointer-events-none"></div>
-        <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
-          <div className="w-20 h-20 rounded-3xl bg-white/10 backdrop-blur-xl border-4 border-white/20 flex items-center justify-center relative shadow-xl">
-            <Presentation className="w-10 h-10 text-white drop-shadow-md" />
-          </div>
-          <div>
-            <h1 className="text-4xl font-black tracking-tight mb-2">Teacher Evaluations</h1>
-            <p className="text-amber-200 font-medium text-lg">Anonymous feedback to improve academic quality</p>
-          </div>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-card-foreground">Teacher Evaluations</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">Anonymous feedback to improve academic quality</p>
         </div>
       </div>
 
-      <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 p-8 shadow-xl">
+      <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
         <h3 className="text-xl font-extrabold mb-6 text-slate-900 dark:text-white flex items-center gap-2">
           <Award className="text-amber-500" /> Pending Evaluations
         </h3>
