@@ -60,7 +60,7 @@ class SyncQueue {
     const { action, payload, endpoint } = item;
     
     if (action === 'POST') {
-      const { error } = await supabase.from(endpoint).insert(payload);
+      const { error } = await supabase.from(endpoint).upsert(payload);
       if (error) throw error;
     } else if (action === 'PUT') {
       const { error } = await supabase.from(endpoint).update(payload.data).eq('id', payload.id);
