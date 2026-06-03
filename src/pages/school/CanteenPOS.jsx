@@ -15,19 +15,16 @@ export default function CanteenPOS() {
   const queryClient = useQueryClient();
   const [cart, setCart] = useState({});
 
-  const { data: menu = [
-    { id: '1', name: 'Margherita Pizza', price: 4.50, icon: Pizza },
-    { id: '2', name: 'Fresh Apple', price: 1.00, icon: Apple },
-    { id: '3', name: 'Iced Coffee', price: 3.50, icon: Coffee }
-  ] } = useQuery({
-    queryKey: ['school_canteen_menu', companyId],
+  const { data: menu = [] } = useQuery({
+    queryKey: ['school_canteen_item', companyId],
     queryFn: async () => {
-      // In a real scenario we'd fetch this. We use a mock default if empty.
-      return [
-        { id: '1', name: 'Margherita Pizza', price: 4.50, icon: Pizza },
-        { id: '2', name: 'Fresh Apple', price: 1.00, icon: Apple },
-        { id: '3', name: 'Iced Coffee', price: 3.50, icon: Coffee }
-      ];
+      const items = await base44.getEntities('school_canteen_item', companyId);
+      return items.map(item => ({
+        id: item.id,
+        name: item.title,
+        price: item.data?.price || 0,
+        icon: Pizza // Fallback icon since icons aren't stored in DB easily
+      }));
     },
     enabled: !!companyId
   });

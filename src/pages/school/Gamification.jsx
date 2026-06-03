@@ -19,9 +19,25 @@ export default function Gamification() {
     queryFn: async () => {
       const all = await base44.getEntities('school_student_xp', companyId);
       const myXp = all.find(x => x.client_id === session?.user?.id);
-      return myXp?.data || { total: 1250, level: 12 }; // default mock if none
+      return myXp?.data || { total: 0, level: 1 };
     },
     enabled: !!companyId && !!session?.user?.id
+  });
+
+  const { data: leaderboard = [] } = useQuery({
+    queryKey: ['school_student_xp_leaderboard', companyId],
+    queryFn: async () => {
+      const all = await base44.getEntities('school_student_xp', companyId);
+      return all
+        .sort((a, b) => (b.data?.total || 0) - (a.data?.total || 0))
+        .map(x => ({
+          name: x.title && x.title !== 'Student XP' ? x.title : 'Student',
+          total: x.data?.total || 0,
+          clientId: x.client_id
+        }))
+        .slice(0, 10);
+    },
+    enabled: !!companyId
   });
 
   const claimDailyXP = useMutation({
@@ -37,7 +53,7 @@ export default function Gamification() {
           company_id: companyId,
           case_type: 'school_student_xp',
           client_id: session?.user?.id,
-          title: 'Student XP',
+          title: user?.full_name || 'Student XP',
           status: 'active',
           data: { total: 50, level: 1 }
         });
@@ -91,17 +107,24 @@ export default function Gamification() {
           <Medal className="text-emerald-500 w-5 h-5" /> Leaderboard
         </h3>
         <div className="space-y-3">
-          {['Sarah Jenkins', 'Michael Chen', 'David Okonkwo', user?.full_name || 'You', 'Emma Watson'].map((name, i) => (
-            <div key={i} className={`flex items-center justify-between p-4 rounded-lg border ${i === 3 ? 'bg-emerald-50 dark:bg-emerald-900/10 border-emerald-200' : 'bg-background border-border'} shadow-sm`}>
-              <div className="flex items-center gap-4">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${i === 0 ? 'bg-emerald-100 text-emerald-700' : i === 1 ? 'bg-muted text-muted-foreground' : i === 2 ? 'bg-muted text-muted-foreground' : 'bg-transparent text-muted-foreground'}`}>
-                  #{i + 1}
+          {leaderboard.length === 0 ? (
+            <div className="text-center text-muted-foreground py-8">No leaderboard data yet.</div>
+          ) : (
+            leaderboard.map((student, i) => {
+              const isMe = student.clientId === session?.user?.id;
+              return (
+                <div key={i} className={`flex items-center justify-between p-4 rounded-lg border ${isMe ? 'bg-emerald-50 dark:bg-emerald-900/10 border-emerald-200' : 'bg-background border-border'} shadow-sm`}>
+                  <div className="flex items-center gap-4">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${i === 0 ? 'bg-emerald-100 text-emerald-700' : i === 1 ? 'bg-muted text-muted-foreground' : i === 2 ? 'bg-muted text-muted-foreground' : 'bg-transparent text-muted-foreground'}`}>
+                      #{i + 1}
+                    </div>
+                    <div className="font-bold text-foreground">{isMe ? 'You' : student.name}</div>
+                  </div>
+                  <div className="font-bold text-emerald-600 dark:text-emerald-500">{student.total} XP</div>
                 </div>
-                <div className="font-bold text-foreground">{name}</div>
-              </div>
-              <div className="font-bold text-emerald-600 dark:text-emerald-500">{2000 - (i * 150)} XP</div>
-            </div>
-          ))}
+              );
+            })
+          )}
         </div>
       </div>
     </div>
