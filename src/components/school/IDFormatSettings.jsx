@@ -18,9 +18,9 @@ export default function IDFormatSettings() {
   const { data: settingsRecord, isLoading } = useQuery({
     queryKey: ['school_settings', companyId],
     queryFn: async () => {
-      const records = await base44.entities.IndustryRecord.filter({
+      const records = await base44.entities.LegalCase.filter({
         company_id: companyId,
-        record_type: 'school_settings'
+        case_type: 'school_settings'
       });
       if (records.length > 0 && records[0].data) {
         setStudentPrefix(records[0].data.studentPrefix || 'STU');
@@ -41,13 +41,14 @@ export default function IDFormatSettings() {
         parentPrefix
       };
       if (settingsRecord) {
-        return base44.entities.IndustryRecord.update(settingsRecord.id, { data: payload });
+        return base44.entities.LegalCase.update(settingsRecord.id, { notes: JSON.stringify(payload) });
       } else {
-        return base44.entities.IndustryRecord.create({
+        return base44.entities.LegalCase.create({
           company_id: companyId,
-          industry: 'school',
-          record_type: 'school_settings',
-          data: payload
+          case_type: 'school_settings',
+          title: 'Settings',
+          status: 'Active',
+          notes: JSON.stringify(payload)
         });
       }
     },

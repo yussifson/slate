@@ -42,9 +42,11 @@ export default function CustomPageViewer() {
   const { data: dbSchema, isLoading } = useQuery({
     queryKey: ['custom_page', pageId],
     queryFn: async () => {
-      const records = await base44.entities.IndustryRecord.filter({
-        record_type: 'custom_page',
-        search_text: pageId
+      if (!companyId || !pageId) return null;
+      const records = await base44.entities.LegalCase.filter({
+        company_id: companyId,
+        case_type: 'custom_page',
+        title: pageId
       });
       if (records.length > 0 && records[0].data) {
         return records[0].data;
@@ -63,16 +65,16 @@ export default function CustomPageViewer() {
 
   const saveMutation = useMutation({
     mutationFn: async (schemaToSave) => {
-      const existing = await base44.entities.IndustryRecord.filter({ record_type: 'custom_page', search_text: pageId });
+      const existing = await base44.entities.LegalCase.filter({ case_type: 'custom_page', title: pageId });
       if (existing.length > 0) {
-        return base44.entities.IndustryRecord.update(existing[0].id, { data: schemaToSave });
+        return base44.entities.LegalCase.update(existing[0].id, { notes: JSON.stringify(schemaToSave) });
       } else {
-        return base44.entities.IndustryRecord.create({
+        return base44.entities.LegalCase.create({
           company_id: companyId,
-          industry: 'core',
-          record_type: 'custom_page',
-          search_text: pageId,
-          data: schemaToSave
+          case_type: 'custom_page',
+          title: pageId,
+          status: 'Active',
+          notes: JSON.stringify(schemaToSave)
         });
       }
     },

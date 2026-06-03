@@ -37,8 +37,12 @@ export default function Parents() {
   const { data: schoolSettings } = useQuery({
     queryKey: ['school_settings', companyId],
     queryFn: async () => {
-      const records = await base44.entities.IndustryRecord.filter({ company_id: companyId, record_type: 'school_settings' });
-      return records.length > 0 ? records[0].data : { parentPrefix: 'PAR' };
+      const records = await base44.entities.LegalCase.filter({ company_id: companyId, case_type: 'school_settings' });
+      let data = { parentPrefix: 'PAR', parentIncludeYear: true };
+      if (records.length > 0 && records[0].notes) {
+        try { data = typeof records[0].notes === 'string' ? JSON.parse(records[0].notes) : records[0].notes; } catch(e) {}
+      }
+      return data;
     },
     enabled: !!companyId
   });

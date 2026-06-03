@@ -139,10 +139,10 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   });
 
   const { data: customPages = [] } = useQuery({
-    queryKey: ['custom_pages_list', companyId],
-    queryFn: () => base44.entities.IndustryRecord.filter({
+    queryKey: ['custom_pages', companyId],
+    queryFn: () => base44.entities.LegalCase.filter({
       company_id: companyId,
-      record_type: 'custom_page'
+      case_type: 'custom_page'
     }),
     enabled: !!companyId
   });
