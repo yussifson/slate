@@ -60,6 +60,21 @@ export default function AppLayout() {
     fetchPrefs();
   }, [user, isPrefsLoaded]);
 
+  // Dynamic Industry Theming
+  useEffect(() => {
+    if (user?.company_industry) {
+      const industry = user.company_industry.toLowerCase();
+      let primaryColor = '221 83% 53%'; // Default Blue (Law/Core)
+      if (industry === 'school') {
+        primaryColor = '160 84% 39%'; // Emerald Green
+      } else if (industry === 'retail') {
+        primaryColor = '24 98% 50%'; // Sunset Orange
+      }
+      document.documentElement.style.setProperty('--primary', primaryColor);
+      document.documentElement.style.setProperty('--ring', primaryColor);
+    }
+  }, [user?.company_industry]);
+
   const toggleChat = () => {
     const newState = !isChatOpen;
     setIsChatOpen(newState);
@@ -143,9 +158,18 @@ export default function AppLayout() {
   }
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden relative">
-      <Sidebar user={user} isCollapsed={isSidebarCollapsed} setIsCollapsed={setIsSidebarCollapsed} />
-      <div className="flex-1 flex flex-col overflow-x-hidden overflow-y-auto h-screen">
+    <div className="flex h-screen bg-slate-50/50 dark:bg-background overflow-hidden relative selection:bg-primary/20">
+      {/* Global Ambient Orbit Background */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-colors duration-1000">
+        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/10 blur-[120px] mix-blend-multiply dark:mix-blend-screen transition-colors duration-1000" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-primary/10 blur-[120px] mix-blend-multiply dark:mix-blend-screen transition-colors duration-1000" />
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.02] dark:opacity-[0.05] transition-opacity" />
+      </div>
+
+      <div className="z-10 flex">
+        <Sidebar user={user} isCollapsed={isSidebarCollapsed} setIsCollapsed={setIsSidebarCollapsed} />
+      </div>
+      <div className="flex-1 flex flex-col overflow-x-hidden overflow-y-auto h-screen z-10 relative backdrop-blur-[2px]">
         {/* Offline Banner */}
         {isOffline && !hideOfflineBanner && (
           <div className="bg-red-600 text-white px-4 py-2 flex items-center justify-between gap-3 text-xs md:text-sm shrink-0 shadow-sm font-sans z-50">

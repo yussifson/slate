@@ -1,75 +1,120 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ShoppingBag, Search, Filter, Star, Heart, ShoppingCart } from 'lucide-react';
+import { ShoppingBag, Tag, Plus, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { base44 } from "@/api/base44Client";
+import { useCompanyId } from "@/hooks/useCompanyId";
+import { useAuth } from "@/lib/AuthContext";
+import { toast } from "react-hot-toast";
 
 export default function CampusMarketplace() {
   const { t } = useTranslation();
+  const companyId = useCompanyId();
+  const { session } = useAuth();
+  const queryClient = useQueryClient();
+  const [newItemName, setNewItemName] = useState('');
+  const [newItemPrice, setNewItemPrice] = useState('');
 
-  const products = [
-    { name: 'Used Calculus Textbook', price: 45.00, seller: 'Mike J.', rating: 4.8, img: '📚', tag: 'Books' },
-    { name: 'Custom School Hoodie', price: 35.00, seller: 'Campus Crafters', rating: 5.0, img: '👕', tag: 'Merch' },
-    { name: 'Scientific Calculator', price: 20.00, seller: 'Sarah L.', rating: 4.5, img: '🔢', tag: 'Electronics' },
-    { name: '1-on-1 Physics Tutoring', price: 15.00, seller: 'TechTutors', rating: 4.9, img: '👨‍🏫', tag: 'Service' },
-    { name: 'Art Supplies Kit', price: 25.00, seller: 'Emma W.', rating: 4.7, img: '🎨', tag: 'Supplies' },
-    { name: 'Dorm Room Desk Lamp', price: 12.00, seller: 'John D.', rating: 4.2, img: '💡', tag: 'Dorm' },
+  const { data: items = [] } = useQuery({
+    queryKey: ['school_marketplace_item', companyId],
+    queryFn: async () => {
+      const all = await base44.getEntities('school_marketplace_item', companyId);
+      return all;
+    },
+    enabled: !!companyId
+  });
+
+  const listItem = useMutation({
+    mutationFn: () => {
+      if (!newItemName.trim() || !newItemPrice.trim()) throw new Error("Name and Price required");
+      return base44.createEntity({
+        company_id: companyId,
+        case_type: 'school_marketplace_item',
+        client_id: session?.user?.id,
+        title: newItemName,
+        status: 'available',
+        data: { price: parseFloat(newItemPrice) }
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['school_marketplace_item', companyId]);
+      setNewItemName('');
+      setNewItemPrice('');
+      toast.success("Item listed successfully!");
+    },
+    onError: (err) => toast.error(err.message)
+  });
+
+  // Mock initial items if none exist
+  const displayItems = items.length > 0 ? items : [
+    { id: 'm1', title: 'Calculus Textbook 9th Ed', data: { price: 45.00 }, status: 'available' },
+    { id: 'm2', title: 'TI-84 Graphing Calculator', data: { price: 80.00 }, status: 'available' },
+    { id: 'm3', title: 'Dorm Mini Fridge', data: { price: 65.00 }, status: 'available' },
+    { id: 'm4', title: 'Biology Lab Coat (Size M)', data: { price: 15.00 }, status: 'available' }
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-end">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-pink-500/20 flex items-center justify-center">
-            <ShoppingBag className="w-6 h-6 text-pink-600" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-card-foreground">Campus Marketplace</h1>
-            <p className="text-sm text-muted-foreground">Buy and sell items within the school community</p>
-          </div>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" className="bg-card"><ShoppingCart className="w-4 h-4 mr-2"/> Cart (2)</Button>
-          <Button className="bg-pink-600 hover:bg-pink-700 text-white">Sell an Item</Button>
-        </div>
-      </div>
-
-      <div className="flex gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Search for books, electronics, services..." className="pl-9 bg-card py-6 rounded-xl shadow-sm border-border" />
-        </div>
-        <Button variant="outline" className="gap-2 bg-card py-6 rounded-xl px-6"><Filter className="w-4 h-4" /> Categories</Button>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {products.map((p, i) => (
-          <div key={i} className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm hover:shadow-md transition-all group flex flex-col">
-            <div className="h-48 bg-muted relative flex items-center justify-center text-6xl group-hover:bg-pink-50 transition-colors">
-              <button className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/80 backdrop-blur flex items-center justify-center hover:text-pink-600 transition-colors shadow-sm">
-                <Heart className="w-4 h-4" />
-              </button>
-              <span className="absolute top-3 left-3 bg-white/80 backdrop-blur px-2 py-1 rounded text-xs font-bold shadow-sm">{p.tag}</span>
-              {p.img}
+    <div className="space-y-8 pb-20 max-w-7xl mx-auto">
+      <div className="relative overflow-hidden bg-gradient-to-br from-emerald-600 to-teal-800 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-white/10">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-[80px] rounded-full pointer-events-none"></div>
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
+          <div className="flex items-center gap-6">
+            <div className="w-20 h-20 rounded-3xl bg-white/20 backdrop-blur-xl border-4 border-white/30 flex items-center justify-center relative shadow-xl">
+              <ShoppingBag className="w-10 h-10 text-white drop-shadow-md" />
             </div>
-            <div className="p-4 flex-1 flex flex-col">
-              <div className="flex justify-between items-start mb-1">
-                <h3 className="font-bold text-foreground line-clamp-1 flex-1 pr-2">{p.name}</h3>
-                <span className="font-black text-pink-600">${p.price.toFixed(2)}</span>
+            <div>
+              <h1 className="text-4xl font-black tracking-tight mb-2">Campus Marketplace</h1>
+              <p className="text-emerald-100 font-medium text-lg">Buy, sell, and trade safely with verified students</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="lg:col-span-1">
+          <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 p-8 shadow-xl sticky top-6">
+            <h3 className="text-xl font-extrabold mb-6 flex items-center gap-2"><Tag className="w-5 h-5 text-emerald-500" /> Sell an Item</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-bold text-slate-500 uppercase">Item Name</label>
+                <Input value={newItemName} onChange={e => setNewItemName(e.target.value)} placeholder="e.g. Physics Textbook" className="mt-1 bg-white/50 dark:bg-background/50 border-slate-200 dark:border-slate-800 rounded-xl" />
               </div>
-              <p className="text-xs text-muted-foreground mb-4">By {p.seller}</p>
-              
-              <div className="mt-auto flex items-center justify-between">
-                <div className="flex items-center gap-1 text-xs font-medium text-amber-500">
-                  <Star className="w-3 h-3 fill-current" /> {p.rating}
+              <div>
+                <label className="text-xs font-bold text-slate-500 uppercase">Price ($)</label>
+                <Input type="number" value={newItemPrice} onChange={e => setNewItemPrice(e.target.value)} placeholder="0.00" className="mt-1 bg-white/50 dark:bg-background/50 border-slate-200 dark:border-slate-800 rounded-xl" />
+              </div>
+              <Button onClick={() => listItem.mutate()} disabled={listItem.isPending} className="w-full h-12 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-lg shadow-emerald-600/20 mt-4">
+                <Plus className="w-4 h-4 mr-2" /> List Item
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <div className="lg:col-span-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {displayItems.map(item => (
+              <div key={item.id} className="bg-white/60 dark:bg-card/60 backdrop-blur-md rounded-3xl border border-white/20 overflow-hidden shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all group flex flex-col">
+                <div className="h-40 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center relative">
+                  <ShoppingBag className="w-12 h-12 text-slate-300 dark:text-slate-700" />
+                  <div className="absolute top-4 right-4 bg-emerald-500 text-white text-xs font-black px-3 py-1 rounded-full shadow-lg">
+                    ${item.data?.price?.toFixed(2) || '0.00'}
+                  </div>
                 </div>
-                <Button size="sm" className="bg-foreground text-background hover:bg-foreground/90 h-8 text-xs rounded-lg px-4">
-                  Add to Cart
-                </Button>
+                <div className="p-6 flex-1 flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-extrabold text-lg text-slate-900 dark:text-white mb-1 line-clamp-2">{item.title}</h3>
+                    <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-4">{item.status}</p>
+                  </div>
+                  <Button variant="outline" className="w-full rounded-xl border-slate-200 dark:border-slate-800 font-bold hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-200 dark:hover:bg-emerald-900/20 dark:hover:border-emerald-800">
+                    <MessageCircle className="w-4 h-4 mr-2" /> Contact Seller
+                  </Button>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
     </div>
   );

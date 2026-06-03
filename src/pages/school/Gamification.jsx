@@ -1,78 +1,116 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Trophy, Star, Shield, Zap, Medal } from 'lucide-react';
+import { Trophy, Star, Shield, Zap, Medal, Gift } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { base44 } from "@/api/base44Client";
+import { useCompanyId } from "@/hooks/useCompanyId";
+import { useAuth } from "@/lib/AuthContext";
+import { toast } from "react-hot-toast";
 
 export default function Gamification() {
   const { t } = useTranslation();
+  const companyId = useCompanyId();
+  const { session, user } = useAuth();
+  const queryClient = useQueryClient();
 
-  const badges = [
-    { title: 'Math Whiz', icon: Zap, color: 'text-yellow-500', bg: 'bg-yellow-100', desc: 'Score 95%+ in 3 math exams' },
-    { title: 'Perfect Attendance', icon: Shield, color: 'text-green-500', bg: 'bg-green-100', desc: 'No absences for a full semester' },
-    { title: 'Top Contributor', icon: Star, color: 'text-blue-500', bg: 'bg-blue-100', desc: 'Answer 50 questions in AI Tutor' }
-  ];
+  const { data: xpData = { total: 0, level: 1 } } = useQuery({
+    queryKey: ['school_student_xp', companyId],
+    queryFn: async () => {
+      const all = await base44.getEntities('school_student_xp', companyId);
+      const myXp = all.find(x => x.client_id === session?.user?.id);
+      return myXp?.data || { total: 1250, level: 12 }; // default mock if none
+    },
+    enabled: !!companyId && !!session?.user?.id
+  });
+
+  const claimDailyXP = useMutation({
+    mutationFn: async () => {
+      const all = await base44.getEntities('school_student_xp', companyId);
+      let myXp = all.find(x => x.client_id === session?.user?.id);
+      if (myXp) {
+        return base44.updateEntity(myXp.id, {
+          data: { ...myXp.data, total: (myXp.data.total || 0) + 50 }
+        });
+      } else {
+        return base44.createEntity({
+          company_id: companyId,
+          case_type: 'school_student_xp',
+          client_id: session?.user?.id,
+          title: 'Student XP',
+          status: 'active',
+          data: { total: 50, level: 1 }
+        });
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['school_student_xp', companyId]);
+      toast.success("50 XP Claimed! Keep up the good work.");
+    }
+  });
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-end">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-orange-500/20 flex items-center justify-center">
-            <Trophy className="w-6 h-6 text-orange-600" />
+    <div className="space-y-8 pb-20 max-w-6xl mx-auto">
+      <div className="relative overflow-hidden bg-gradient-to-br from-indigo-900 to-purple-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-white/10">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-500/20 blur-[100px] rounded-full pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-pink-500/20 blur-[100px] rounded-full pointer-events-none"></div>
+        
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
+          <div className="flex items-center gap-6 flex-col md:flex-row">
+            <div className="w-24 h-24 rounded-full bg-white/10 backdrop-blur-xl border-4 border-white/20 flex items-center justify-center relative shadow-[0_0_40px_rgba(250,204,21,0.3)]">
+              <Trophy className="w-12 h-12 text-yellow-400 drop-shadow-md" />
+              <div className="absolute -bottom-2 -right-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-black px-3 py-1 rounded-full border-2 border-indigo-900">
+                LVL {xpData.level}
+              </div>
+            </div>
+            <div>
+              <h1 className="text-4xl font-black tracking-tight mb-2">{user?.full_name || "Student"}</h1>
+              <p className="text-indigo-200 font-medium text-lg flex items-center justify-center md:justify-start gap-2">
+                <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" /> {xpData.total} Total XP
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl font-bold text-card-foreground">Achievements</h1>
-            <p className="text-sm text-muted-foreground">Track your academic milestones and badges</p>
-          </div>
+          
+          <Button onClick={() => claimDailyXP.mutate()} className="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-indigo-950 font-black rounded-2xl px-8 h-14 shadow-[0_0_30px_rgba(250,204,21,0.4)] hover:shadow-[0_0_40px_rgba(250,204,21,0.6)] hover:-translate-y-1 transition-all">
+            <Zap className="w-5 h-5 mr-2" /> Claim Daily 50 XP
+          </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-card rounded-2xl border border-border p-6 shadow-sm flex items-center gap-6">
-          <div className="relative">
-            <svg className="w-24 h-24 transform -rotate-90">
-              <circle cx="48" cy="48" r="40" stroke="currentColor" strokeWidth="8" fill="transparent" className="text-muted" />
-              <circle cx="48" cy="48" r="40" stroke="currentColor" strokeWidth="8" fill="transparent" strokeDasharray="251.2" strokeDashoffset="62.8" className="text-orange-500" />
-            </svg>
-            <div className="absolute inset-0 flex items-center justify-center flex-col">
-              <span className="text-xl font-bold">Lvl 12</span>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[
+          { title: "Academic Scholar", desc: "Straight A's this semester", icon: BookOpen, color: "from-blue-400 to-indigo-500" },
+          { title: "Perfect Attendance", desc: "No days missed in 3 months", icon: Shield, color: "from-emerald-400 to-green-500" },
+          { title: "Helping Hand", desc: "Tutor 5 students", icon: Gift, color: "from-pink-400 to-rose-500" },
+          { title: "Math Wizard", desc: "Win the math olympiad", icon: Zap, color: "from-amber-400 to-orange-500" }
+        ].map((badge, i) => (
+          <div key={i} className="bg-white/60 dark:bg-card/60 backdrop-blur-md rounded-3xl p-6 border border-white/20 shadow-xl text-center group cursor-pointer hover:-translate-y-2 transition-transform duration-300">
+            <div className={`w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br ${badge.color} flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+              <badge.icon className="w-10 h-10 text-white" />
             </div>
-          </div>
-          <div>
-            <h3 className="text-xl font-bold">Scholar Rank</h3>
-            <p className="text-sm text-muted-foreground mb-2">2,450 XP / 3,000 XP</p>
-            <p className="text-xs text-primary font-medium">550 XP to next rank!</p>
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl p-6 shadow-sm text-white flex flex-col justify-center">
-          <h3 className="text-lg font-bold mb-2 flex items-center gap-2"><Medal className="w-5 h-5" /> Global Leaderboard</h3>
-          <div className="flex items-end gap-4 mt-4">
-            <div className="text-center flex-1">
-              <div className="h-16 bg-white/20 rounded-t-lg mx-2 flex items-end justify-center pb-2 font-bold">#2</div>
-              <p className="text-xs mt-1">Alex</p>
-            </div>
-            <div className="text-center flex-1">
-              <div className="h-24 bg-yellow-400/90 rounded-t-lg mx-2 flex items-end justify-center pb-2 font-bold text-yellow-900">#1</div>
-              <p className="text-xs mt-1 font-bold">You</p>
-            </div>
-            <div className="text-center flex-1">
-              <div className="h-12 bg-white/20 rounded-t-lg mx-2 flex items-end justify-center pb-2 font-bold">#3</div>
-              <p className="text-xs mt-1">Sarah</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <h3 className="text-lg font-bold mt-8 mb-4">Earned Badges</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        {badges.map((b, i) => (
-          <div key={i} className="bg-card rounded-xl border border-border p-4 text-center hover:scale-105 transition-transform cursor-pointer">
-            <div className={`w-16 h-16 mx-auto rounded-full ${b.bg} ${b.color} flex items-center justify-center mb-3 shadow-inner`}>
-              <b.icon className="w-8 h-8" />
-            </div>
-            <h4 className="font-bold text-sm">{b.title}</h4>
-            <p className="text-[10px] text-muted-foreground mt-1">{b.desc}</p>
+            <h3 className="font-extrabold text-lg text-slate-900 dark:text-white mb-1">{badge.title}</h3>
+            <p className="text-sm font-medium text-slate-500">{badge.desc}</p>
           </div>
         ))}
+      </div>
+
+      <div className="bg-white/60 dark:bg-card/60 backdrop-blur-md rounded-3xl border border-white/20 p-8 shadow-xl">
+        <h3 className="text-2xl font-extrabold mb-6 text-slate-900 dark:text-white flex items-center gap-3">
+          <Medal className="text-yellow-500 w-8 h-8" /> Leaderboard
+        </h3>
+        <div className="space-y-3">
+          {['Sarah Jenkins', 'Michael Chen', 'David Okonkwo', user?.full_name || 'You', 'Emma Watson'].map((name, i) => (
+            <div key={i} className={`flex items-center justify-between p-4 rounded-2xl border ${i === 3 ? 'bg-indigo-50 dark:bg-indigo-900/20 border-indigo-200 dark:border-indigo-800' : 'bg-white/50 dark:bg-card/50 border-slate-100 dark:border-slate-800'}`}>
+              <div className="flex items-center gap-4">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black ${i === 0 ? 'bg-yellow-100 text-yellow-600' : i === 1 ? 'bg-slate-200 text-slate-600' : i === 2 ? 'bg-orange-100 text-orange-700' : 'bg-transparent text-slate-400'}`}>
+                  #{i + 1}
+                </div>
+                <div className="font-bold text-slate-900 dark:text-white">{name}</div>
+              </div>
+              <div className="font-black text-indigo-600 dark:text-indigo-400">{2000 - (i * 150)} XP</div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

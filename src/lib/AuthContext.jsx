@@ -276,7 +276,9 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(true);
       setAuthChecked(true);
     } catch (error) {
-      console.error('User auth check failed:', error);
+      if (error.message !== 'Not logged in') {
+        console.error('User auth check failed:', error);
+      }
       
       // OFFLINE FALLBACK: If we are offline OR any network error occurred,
       // try to use the cached user profile so the app doesn't kick to login

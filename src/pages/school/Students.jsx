@@ -295,8 +295,14 @@ export default function Students() {
                     ...s, 
                     firstName: s.name?.split(' ')[0] || '', 
                     lastName: s.name?.split(' ').slice(1).join(' ') || '',
-                    parentName: s.parent,
-                    parentPhone: s.phone
+                    email: s.email || '',
+                    parentName: s.parent || '',
+                    parentPhone: s.phone || '',
+                    parentEmail: s.parentEmail || '',
+                    address: s.address || '',
+                    medicalNotes: s.medicalNotes || '',
+                    previousSchool: s.previousSchool || '',
+                    dateOfBirth: s.dateOfBirth || '',
                   });
                   setShowModal(true);
                 }}
@@ -355,11 +361,19 @@ export default function Students() {
                               ...s, 
                               firstName: s.name?.split(' ')[0] || '', 
                               lastName: s.name?.split(' ').slice(1).join(' ') || '',
-                              parentName: s.parent,
-                              parentPhone: s.phone
+                              email: s.email || '',
+                              parentName: s.parent || '',
+                              parentPhone: s.phone || '',
+                              parentEmail: s.parentEmail || '',
+                              address: s.address || '',
+                              medicalNotes: s.medicalNotes || '',
+                              previousSchool: s.previousSchool || '',
+                              dateOfBirth: s.dateOfBirth || '',
                             });
                             setShowModal(true);
-                          }}>{t("edit", "Edit")}</DropdownMenuItem>
+                          }}>
+                            {t("edit", "Edit")}
+                          </DropdownMenuItem>
                           <DropdownMenuItem className="text-red-600 font-medium" onClick={() => handleDelete(s.id)}>{t("delete", "Delete")}</DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>

@@ -1,101 +1,117 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Store, TrendingUp, Users, DollarSign, PlusCircle } from 'lucide-react';
+import { Store, TrendingUp, DollarSign, Plus, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { base44 } from "@/api/base44Client";
+import { useCompanyId } from "@/hooks/useCompanyId";
+import { useAuth } from "@/lib/AuthContext";
+import { toast } from "react-hot-toast";
 
 export default function StudentBusinesses() {
   const { t } = useTranslation();
+  const companyId = useCompanyId();
+  const { session } = useAuth();
+  const queryClient = useQueryClient();
+  const [bizName, setBizName] = useState('');
+
+  const { data: businesses = [] } = useQuery({
+    queryKey: ['school_student_business', companyId],
+    queryFn: async () => {
+      const all = await base44.getEntities('school_student_business', companyId);
+      return all;
+    },
+    enabled: !!companyId
+  });
+
+  const registerBiz = useMutation({
+    mutationFn: () => {
+      if (!bizName.trim()) throw new Error("Business name required");
+      return base44.createEntity({
+        company_id: companyId,
+        case_type: 'school_student_business',
+        client_id: session?.user?.id,
+        title: bizName,
+        status: 'active',
+        data: { revenue: 0, growth: 0 }
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['school_student_business', companyId]);
+      setBizName('');
+      toast.success("Venture registered successfully!");
+    },
+    onError: (err) => toast.error(err.message)
+  });
+
+  const myBiz = businesses.filter(b => b.client_id === session?.user?.id);
+  const otherBiz = businesses.filter(b => b.client_id !== session?.user?.id);
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-end">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center">
-            <Store className="w-6 h-6 text-emerald-600" />
+    <div className="space-y-8 pb-20 max-w-7xl mx-auto">
+      <div className="relative overflow-hidden bg-gradient-to-br from-indigo-900 to-slate-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-white/10">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/20 blur-[100px] rounded-full pointer-events-none"></div>
+        <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
+          <div className="w-20 h-20 rounded-3xl bg-white/10 backdrop-blur-xl border-4 border-white/20 flex items-center justify-center relative shadow-xl">
+            <Store className="w-10 h-10 text-white drop-shadow-md" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-card-foreground">Student Businesses</h1>
-            <p className="text-sm text-muted-foreground">Manage your entrepreneurial ventures on campus</p>
+            <h1 className="text-4xl font-black tracking-tight mb-2">Student Ventures</h1>
+            <p className="text-indigo-200 font-medium text-lg">Incubator, funding, and campus entrepreneurship</p>
           </div>
-        </div>
-        <Button className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2">
-          <PlusCircle className="w-4 h-4" /> Register Business
-        </Button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-emerald-600 to-teal-700 rounded-2xl p-6 shadow-sm text-white md:col-span-2">
-          <h3 className="text-lg font-bold mb-1 opacity-90">Total Revenue Generated</h3>
-          <p className="text-4xl font-black mb-4">$1,245.00</p>
-          <div className="flex gap-4 text-sm">
-            <div className="bg-black/20 px-3 py-1.5 rounded-lg">This Month: <span className="font-bold">+$320.00</span></div>
-            <div className="bg-black/20 px-3 py-1.5 rounded-lg flex items-center gap-1"><TrendingUp className="w-4 h-4"/> 14% Growth</div>
-          </div>
-        </div>
-        
-        <div className="stat-card-premium bg-card p-6 rounded-2xl border border-border">
-          <div className="flex items-center justify-between mb-4">
-            <div className="p-3 bg-blue-100 rounded-lg text-blue-600"><Users className="w-5 h-5" /></div>
-          </div>
-          <p className="text-sm text-muted-foreground">Total Customers</p>
-          <h3 className="text-2xl font-bold">84</h3>
-        </div>
-
-        <div className="stat-card-premium bg-card p-6 rounded-2xl border border-border">
-          <div className="flex items-center justify-between mb-4">
-            <div className="p-3 bg-orange-100 rounded-lg text-orange-600"><Store className="w-5 h-5" /></div>
-          </div>
-          <p className="text-sm text-muted-foreground">Active Ventures</p>
-          <h3 className="text-2xl font-bold">2</h3>
         </div>
       </div>
 
-      <h3 className="text-lg font-bold mt-8 mb-4">My Ventures</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm flex flex-col group cursor-pointer hover:border-emerald-500 transition-colors">
-          <div className="h-32 bg-muted relative">
-            <div className="absolute inset-0 bg-emerald-500/10"></div>
-            <div className="absolute -bottom-6 left-6 w-16 h-16 bg-white rounded-xl border-4 border-card shadow-sm flex items-center justify-center font-bold text-2xl text-emerald-600">CC</div>
-          </div>
-          <div className="p-6 pt-10">
-            <div className="flex justify-between items-start mb-2">
-              <h3 className="text-xl font-bold">Campus Crafters</h3>
-              <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-bold">Active</span>
-            </div>
-            <p className="text-sm text-muted-foreground mb-4">Custom handmade notebooks and campus merchandise sold directly to students.</p>
-            <div className="grid grid-cols-2 gap-4 border-t border-border pt-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-1 space-y-6">
+          <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 p-8 shadow-xl">
+            <h3 className="text-xl font-extrabold mb-6 flex items-center gap-2"><Plus className="text-indigo-500" /> Start a Venture</h3>
+            <div className="space-y-4">
               <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wider">Revenue</p>
-                <p className="font-bold text-foreground">$850.00</p>
+                <label className="text-xs font-bold text-slate-500 uppercase">Venture Name</label>
+                <Input value={bizName} onChange={e => setBizName(e.target.value)} placeholder="e.g. Campus Tech Repairs" className="mt-1 bg-white/50 dark:bg-background/50 border-slate-200 dark:border-slate-800 rounded-xl" />
               </div>
-              <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wider">Orders</p>
-                <p className="font-bold text-foreground">142</p>
-              </div>
+              <Button onClick={() => registerBiz.mutate()} disabled={registerBiz.isPending} className="w-full h-12 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold shadow-lg shadow-indigo-600/20">
+                Register Venture
+              </Button>
             </div>
           </div>
+
+          {myBiz.length > 0 && (
+            <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-[2.5rem] p-8 text-white shadow-xl">
+              <h3 className="text-lg font-bold mb-4 opacity-90">My Ventures</h3>
+              <div className="space-y-4">
+                {myBiz.map(b => (
+                  <div key={b.id} className="bg-white/10 backdrop-blur border border-white/20 rounded-2xl p-4">
+                    <div className="font-extrabold text-xl mb-1">{b.title}</div>
+                    <div className="flex items-center gap-4 text-sm font-medium">
+                      <span className="flex items-center gap-1"><DollarSign className="w-4 h-4 text-emerald-400" /> {b.data?.revenue || 0}</span>
+                      <span className="flex items-center gap-1"><TrendingUp className="w-4 h-4 text-amber-400" /> +{b.data?.growth || 0}%</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
-        <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm flex flex-col group cursor-pointer hover:border-blue-500 transition-colors">
-          <div className="h-32 bg-muted relative">
-            <div className="absolute inset-0 bg-blue-500/10"></div>
-            <div className="absolute -bottom-6 left-6 w-16 h-16 bg-white rounded-xl border-4 border-card shadow-sm flex items-center justify-center font-bold text-2xl text-blue-600">TT</div>
-          </div>
-          <div className="p-6 pt-10">
-            <div className="flex justify-between items-start mb-2">
-              <h3 className="text-xl font-bold">TechTutors</h3>
-              <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-bold">Active</span>
-            </div>
-            <p className="text-sm text-muted-foreground mb-4">Peer-to-peer tutoring for computer science and mathematics courses.</p>
-            <div className="grid grid-cols-2 gap-4 border-t border-border pt-4">
-              <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wider">Revenue</p>
-                <p className="font-bold text-foreground">$395.00</p>
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wider">Sessions</p>
-                <p className="font-bold text-foreground">24</p>
-              </div>
+        <div className="lg:col-span-2">
+          <div className="bg-white/60 dark:bg-card/60 backdrop-blur-md rounded-[2.5rem] border border-white/20 p-8 shadow-xl h-full">
+            <h3 className="text-2xl font-extrabold mb-6 text-slate-900 dark:text-white">Campus Startup Directory</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {otherBiz.length === 0 && <p className="text-slate-500">No other ventures registered yet.</p>}
+              {otherBiz.map(b => (
+                <div key={b.id} className="bg-white dark:bg-background p-6 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-lg transition-shadow">
+                  <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-4">
+                    <Store className="w-6 h-6 text-slate-500" />
+                  </div>
+                  <h4 className="font-bold text-lg mb-2">{b.title}</h4>
+                  <div className="flex items-center gap-2 text-xs font-bold px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full w-fit">
+                    <CheckCircle2 className="w-3 h-3" /> Approved Venture
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

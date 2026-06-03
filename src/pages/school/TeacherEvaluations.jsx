@@ -1,77 +1,112 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ClipboardCheck, TrendingUp, Star, Users } from 'lucide-react';
+import { Star, CheckCircle, Award, Presentation } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { base44 } from "@/api/base44Client";
+import { useCompanyId } from "@/hooks/useCompanyId";
+import { useAuth } from "@/lib/AuthContext";
+import { toast } from "react-hot-toast";
 
 export default function TeacherEvaluations() {
   const { t } = useTranslation();
+  const companyId = useCompanyId();
+  const { session } = useAuth();
+  const queryClient = useQueryClient();
+  const [selectedTeacher, setSelectedTeacher] = useState(null);
+  const [rating, setRating] = useState(0);
+
+  const { data: evaluations = [] } = useQuery({
+    queryKey: ['school_teacher_evaluation', companyId],
+    queryFn: async () => {
+      const all = await base44.getEntities('school_teacher_evaluation', companyId);
+      return all.filter(e => e.client_id === session?.user?.id);
+    },
+    enabled: !!companyId && !!session?.user?.id
+  });
+
+  const submitEval = useMutation({
+    mutationFn: () => {
+      if (!selectedTeacher || rating === 0) throw new Error("Select a teacher and give a rating");
+      return base44.createEntity({
+        company_id: companyId,
+        case_type: 'school_teacher_evaluation',
+        client_id: session?.user?.id,
+        title: `Evaluation for ${selectedTeacher}`,
+        status: 'completed',
+        data: { teacher: selectedTeacher, rating }
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['school_teacher_evaluation', companyId]);
+      setSelectedTeacher(null);
+      setRating(0);
+      toast.success("Evaluation submitted anonymously!");
+    },
+    onError: (err) => toast.error(err.message)
+  });
+
+  const teachers = ['Prof. Smith (Calculus)', 'Dr. Adams (Physics)', 'Mr. Johnson (History)'];
+  const hasEvaluated = (name) => evaluations.some(e => e.data?.teacher === name);
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-end">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center">
-            <ClipboardCheck className="w-6 h-6 text-blue-600" />
+    <div className="space-y-8 pb-20 max-w-5xl mx-auto">
+      <div className="relative overflow-hidden bg-gradient-to-br from-amber-600 to-orange-800 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-white/10">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-500/20 blur-[100px] rounded-full pointer-events-none"></div>
+        <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
+          <div className="w-20 h-20 rounded-3xl bg-white/10 backdrop-blur-xl border-4 border-white/20 flex items-center justify-center relative shadow-xl">
+            <Presentation className="w-10 h-10 text-white drop-shadow-md" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-card-foreground">Teacher Evaluations</h1>
-            <p className="text-sm text-muted-foreground">Assess and review educator performance</p>
-          </div>
-        </div>
-        <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-          New Evaluation
-        </Button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="stat-card-premium bg-gradient-to-br from-card to-muted p-6 rounded-2xl border border-border">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600"><Star className="w-6 h-6" /></div>
-            <div><p className="text-sm text-muted-foreground">Average Rating</p><h3 className="text-2xl font-bold">4.6 / 5.0</h3></div>
-          </div>
-        </div>
-        <div className="stat-card-premium bg-gradient-to-br from-card to-muted p-6 rounded-2xl border border-border">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg text-green-600"><ClipboardCheck className="w-6 h-6" /></div>
-            <div><p className="text-sm text-muted-foreground">Completed Reviews</p><h3 className="text-2xl font-bold">142</h3></div>
-          </div>
-        </div>
-        <div className="stat-card-premium bg-gradient-to-br from-card to-muted p-6 rounded-2xl border border-border">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg text-purple-600"><Users className="w-6 h-6" /></div>
-            <div><p className="text-sm text-muted-foreground">Pending Reviews</p><h3 className="text-2xl font-bold">8</h3></div>
+            <h1 className="text-4xl font-black tracking-tight mb-2">Teacher Evaluations</h1>
+            <p className="text-amber-200 font-medium text-lg">Anonymous feedback to improve academic quality</p>
           </div>
         </div>
       </div>
 
-      <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
-        <table className="w-full text-sm text-left">
-          <thead className="bg-muted text-muted-foreground uppercase text-xs">
-            <tr>
-              <th className="px-6 py-4 font-semibold">Teacher Name</th>
-              <th className="px-6 py-4 font-semibold">Subject</th>
-              <th className="px-6 py-4 font-semibold">Latest Score</th>
-              <th className="px-6 py-4 font-semibold">Status</th>
-              <th className="px-6 py-4 font-semibold text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
-            <tr className="hover:bg-muted/50 transition-colors">
-              <td className="px-6 py-4 font-medium">Mr. Robert Smith</td>
-              <td className="px-6 py-4">Mathematics</td>
-              <td className="px-6 py-4"><span className="flex items-center gap-1 text-amber-500 font-bold"><Star className="w-4 h-4 fill-current"/> 4.8</span></td>
-              <td className="px-6 py-4"><span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">Completed</span></td>
-              <td className="px-6 py-4 text-right"><Button variant="ghost" size="sm">View Report</Button></td>
-            </tr>
-            <tr className="hover:bg-muted/50 transition-colors">
-              <td className="px-6 py-4 font-medium">Ms. Emily Davis</td>
-              <td className="px-6 py-4">Physics</td>
-              <td className="px-6 py-4 text-muted-foreground">Pending</td>
-              <td className="px-6 py-4"><span className="bg-amber-100 text-amber-700 px-2 py-1 rounded-full text-xs">Awaiting</span></td>
-              <td className="px-6 py-4 text-right"><Button variant="outline" size="sm">Evaluate</Button></td>
-            </tr>
-          </tbody>
-        </table>
+      <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 p-8 shadow-xl">
+        <h3 className="text-xl font-extrabold mb-6 text-slate-900 dark:text-white flex items-center gap-2">
+          <Award className="text-amber-500" /> Pending Evaluations
+        </h3>
+        <div className="space-y-4">
+          {teachers.map((teacher, i) => {
+            const done = hasEvaluated(teacher);
+            return (
+              <div key={i} className={`p-6 rounded-3xl border ${done ? 'bg-slate-50 dark:bg-slate-900/50 border-slate-100 dark:border-slate-800' : 'bg-white dark:bg-background border-slate-200 dark:border-slate-700 shadow-md'} flex flex-col md:flex-row items-center justify-between gap-4 transition-all`}>
+                <div className="font-bold text-lg text-slate-900 dark:text-white">{teacher}</div>
+                
+                {done ? (
+                  <div className="flex items-center gap-2 text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 px-4 py-2 rounded-full font-bold text-sm">
+                    <CheckCircle className="w-4 h-4" /> Completed
+                  </div>
+                ) : (
+                  <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+                    {selectedTeacher === teacher ? (
+                      <>
+                        <div className="flex gap-2">
+                          {[1,2,3,4,5].map(star => (
+                            <Star 
+                              key={star} 
+                              onClick={() => setRating(star)}
+                              className={`w-8 h-8 cursor-pointer transition-colors ${rating >= star ? 'fill-amber-400 text-amber-400' : 'text-slate-300 dark:text-slate-600'}`} 
+                            />
+                          ))}
+                        </div>
+                        <Button onClick={() => submitEval.mutate()} disabled={submitEval.isPending || rating === 0} className="w-full md:w-auto rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold">
+                          Submit
+                        </Button>
+                      </>
+                    ) : (
+                      <Button onClick={() => { setSelectedTeacher(teacher); setRating(0); }} variant="outline" className="w-full md:w-auto rounded-full border-amber-200 text-amber-700 hover:bg-amber-50">
+                        Start Evaluation
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

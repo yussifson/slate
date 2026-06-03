@@ -71,10 +71,8 @@ export default function Login() {
     setLoading(true);
     setError('');
 
-    let finalEmail = email.trim().toLowerCase();
-
     const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({
-      email: finalEmail,
+      email,
       password,
     });
 
