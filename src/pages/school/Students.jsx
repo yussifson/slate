@@ -66,7 +66,7 @@ export default function Students() {
   // Form State
   const [formData, setFormData] = useState({
     firstName: '', lastName: '', dateOfBirth: '', gender: 'Female', class: 'Grade 7B', 
-    parentName: '', parentPhone: '', parentEmail: '', address: '', medicalNotes: '', previousSchool: ''
+    parentName: '', parentPhone: '', parentEmail: '', address: '', medicalNotes: '', previousSchool: '', studentId: '', parentId: '', defaultPassword: ''
   });
   const [editingId, setEditingId] = useState(null);
   const [viewDetails, setViewDetails] = useState(null);
@@ -128,7 +128,7 @@ export default function Students() {
       
       const studentEmail = `${studentId.toLowerCase()}@school.optalflow.com`;
       const parentEmail = formData.parentEmail || `${parentId.toLowerCase()}@school.optalflow.com`;
-      const defaultPassword = 'password123';
+      const defaultPassword = formData.defaultPassword || 'password123';
 
       if (!editingId) {
         // Only generate auth accounts on initial creation
@@ -195,7 +195,7 @@ export default function Students() {
       queryClient.invalidateQueries({ queryKey: ["clients", companyId] });
       setShowModal(false);
       setEditingId(null);
-      setFormData({ firstName: '', lastName: '', dateOfBirth: '', gender: 'Female', class: 'Grade 7B', parentName: '', parentPhone: '', parentEmail: '', address: '', medicalNotes: '', previousSchool: '', studentId: '', parentId: '' });
+      setFormData({ firstName: '', lastName: '', dateOfBirth: '', gender: 'Female', class: 'Grade 7B', parentName: '', parentPhone: '', parentEmail: '', address: '', medicalNotes: '', previousSchool: '', studentId: '', parentId: '', defaultPassword: '' });
       setActiveTab('personal');
     } catch (err) {
       toast.error(err?.message || "Failed to save records");
@@ -413,7 +413,10 @@ export default function Students() {
                       </select>
                     </div>
                   </div>
-                  <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("address", "Home Address")}</label><Input value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="mt-1" /></div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("address", "Home Address")}</label><Input value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="mt-1" /></div>
+                    <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("default_password", "Login Password")}</label><Input value={formData.defaultPassword} placeholder="Default: password123" onChange={e => setFormData({...formData, defaultPassword: e.target.value})} className="mt-1" /></div>
+                  </div>
                 </div>
               )}
 

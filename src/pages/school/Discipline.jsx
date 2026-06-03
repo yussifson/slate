@@ -140,7 +140,7 @@ export default function Discipline() {
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-border">
+          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
             <h2 className="text-lg font-bold text-card-foreground">{editingId ? 'Edit Record' : 'Add Disciplinary Record'}</h2>
             <div className="space-y-3">
               <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("student_name", "Student Name")}</label><Input value={formData.studentName} onChange={e => setFormData({...formData, studentName: e.target.value})} className="mt-1" /></div>

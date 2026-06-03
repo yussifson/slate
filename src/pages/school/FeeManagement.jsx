@@ -241,7 +241,7 @@ export default function FeeManagement() {
       </div>
       {showPaymentModal && selectedStudent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-border">
+          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><CreditCard className="w-5 h-5 text-blue-600" /> {t("record_payment", "Record Payment")}</h2>
             <div className="bg-muted dark:bg-muted/30 p-3 rounded-lg border border-border text-sm mb-4">
               <p className="text-muted-foreground">{t("student", "Student:")} <strong className="text-card-foreground">{selectedStudent.student}</strong></p>
@@ -276,7 +276,7 @@ export default function FeeManagement() {
       )}
       {showEnrollModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-border">
+          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><Plus className="w-5 h-5 text-blue-600" /> {t("quick_enroll", "Quick Enroll Student")}</h2>
             <p className="text-sm text-muted-foreground">{t("quickly_register_a_student_to_", "Quickly register a student to generate their tuition billing profile.")}</p>
             <div className="space-y-3">
