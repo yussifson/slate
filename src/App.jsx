@@ -89,7 +89,18 @@ import SchoolFees from './pages/school/FeeManagement';
 import SchoolLibrary from './pages/school/Library';
 import SchoolParentPortal from './pages/school/ParentPortal';
 import SchoolStudentPortal from './pages/school/StudentPortal';
-
+import SchoolAITutor from './pages/school/AITutor';
+import SchoolCareerGuide from './pages/school/CareerGuide';
+import SchoolMentorship from './pages/school/Mentorship';
+import SchoolGamification from './pages/school/Gamification';
+import SchoolTeacherEvaluations from './pages/school/TeacherEvaluations';
+import SchoolSecurityQR from './pages/school/SecurityQR';
+import SchoolWebsiteBuilder from './pages/school/WebsiteBuilder';
+import SchoolCanteenPOS from './pages/school/CanteenPOS';
+import SchoolComplaints from './pages/school/Complaints';
+import SchoolSupportCenter from './pages/school/SupportCenter';
+import SchoolStudentBusinesses from './pages/school/StudentBusinesses';
+import SchoolCampusMarketplace from './pages/school/CampusMarketplace';
 // Hospital Pages
 import HospitalPatients from './pages/hospital/Patients';
 import HospitalAppointments from './pages/hospital/Appointments';
@@ -245,6 +256,18 @@ function PlatformRoutes() {
       <Route path="/notices" element={<SchoolNotices />} />
       <Route path="/student-portal" element={<SchoolStudentPortal />} />
       <Route path="/parent-portal" element={<SchoolParentPortal />} />
+      <Route path="/ai-tutor" element={<SchoolAITutor />} />
+      <Route path="/career-guide" element={<SchoolCareerGuide />} />
+      <Route path="/mentorship" element={<SchoolMentorship />} />
+      <Route path="/gamification" element={<SchoolGamification />} />
+      <Route path="/teacher-evaluations" element={<SchoolTeacherEvaluations />} />
+      <Route path="/security-qr" element={<SchoolSecurityQR />} />
+      <Route path="/website-builder" element={<SchoolWebsiteBuilder />} />
+      <Route path="/canteen-pos" element={<SchoolCanteenPOS />} />
+      <Route path="/complaints" element={<SchoolComplaints />} />
+      <Route path="/support-center" element={<SchoolSupportCenter />} />
+      <Route path="/student-businesses" element={<SchoolStudentBusinesses />} />
+      <Route path="/marketplace" element={<SchoolCampusMarketplace />} />
 
       {/* Hospital Suite */}
       <Route path="/patients" element={<HospitalPatients />} />
