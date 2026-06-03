@@ -29,7 +29,7 @@ export default function Parents() {
   });
 
   const { data: records = [], isLoading } = useQuery({ 
-    queryKey: ["clients", companyId], 
+    queryKey: ["clients", companyId, "parent"], 
     queryFn: () => base44.entities.Client.filter({ company_id: companyId, type: 'parent' }), 
     enabled: !!companyId 
   });

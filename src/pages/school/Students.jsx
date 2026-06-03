@@ -35,7 +35,7 @@ export default function Students() {
   // Real Database Hooks
   const queryClient = useQueryClient();
   const { data: records = [], isLoading } = useQuery({ 
-    queryKey: ["clients", companyId], 
+    queryKey: ["clients", companyId, "student"], 
     queryFn: () => base44.entities.Client.filter({ company_id: companyId, type: 'student' }), 
     enabled: !!companyId 
   });
@@ -195,7 +195,7 @@ export default function Students() {
       queryClient.invalidateQueries({ queryKey: ["clients", companyId] });
       setShowModal(false);
       setEditingId(null);
-      setFormData({ firstName: '', lastName: '', dateOfBirth: '', gender: 'Female', class: 'Grade 7B', parentName: '', parentPhone: '', parentEmail: '', address: '', medicalNotes: '', previousSchool: '' });
+      setFormData({ firstName: '', lastName: '', dateOfBirth: '', gender: 'Female', class: 'Grade 7B', parentName: '', parentPhone: '', parentEmail: '', address: '', medicalNotes: '', previousSchool: '', studentId: '', parentId: '' });
       setActiveTab('personal');
     } catch (err) {
       toast.error(err?.message || "Failed to save records");
@@ -392,6 +392,14 @@ export default function Students() {
             <div className="p-6 overflow-y-auto space-y-4">
               {activeTab === 'personal' && (
                 <div className="space-y-4 animate-in fade-in zoom-in duration-200">
+                  <div className="bg-blue-50/50 dark:bg-blue-900/10 p-3 rounded-xl border border-blue-100 dark:border-blue-900/30">
+                    <label className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">{t("student_id", "Student ID")}</label>
+                    <Input 
+                      value={formData.studentId || "Auto-generated on save"} 
+                      readOnly 
+                      className="mt-1 bg-transparent border-0 shadow-none font-mono font-bold text-blue-700 px-0 h-6 focus-visible:ring-0" 
+                    />
+                  </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("first_name", "First Name")}</label><Input value={formData.firstName} onChange={e => setFormData({...formData, firstName: e.target.value})} className="mt-1" /></div>
                     <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("last_name", "Last Name")}</label><Input value={formData.lastName} onChange={e => setFormData({...formData, lastName: e.target.value})} className="mt-1" /></div>
@@ -435,6 +443,14 @@ export default function Students() {
 
               {activeTab === 'parent' && (
                 <div className="space-y-4 animate-in fade-in zoom-in duration-200">
+                  <div className="bg-purple-50/50 dark:bg-purple-900/10 p-3 rounded-xl border border-purple-100 dark:border-purple-900/30">
+                    <label className="text-[10px] font-bold text-purple-600 uppercase tracking-widest">{t("parent_id", "Parent ID")}</label>
+                    <Input 
+                      value={formData.parentId || "Auto-generated on save"} 
+                      readOnly 
+                      className="mt-1 bg-transparent border-0 shadow-none font-mono font-bold text-purple-700 px-0 h-6 focus-visible:ring-0" 
+                    />
+                  </div>
                   <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("parent_name", "Parent/Guardian Name")}</label><Input value={formData.parentName} onChange={e => setFormData({...formData, parentName: e.target.value})} className="mt-1" /></div>
                   <div className="grid grid-cols-2 gap-4">
                     <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("parent_phone", "Parent Phone")}</label><Input value={formData.parentPhone} onChange={e => setFormData({...formData, parentPhone: e.target.value})} className="mt-1" /></div>
