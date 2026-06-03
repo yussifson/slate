@@ -24,7 +24,7 @@ import {
   Award, Library, Building2, AlertCircle, Clock,
   Network, AlertTriangle, Gift, Banknote, CalendarOff,
   HandCoins, Users2, Blocks, Map, Warehouse, Car, MapPin,
-  FileSearch, LayoutGrid, BedDouble, BellRing, MoreHorizontal, Pencil, Trash2, Eye
+  FileSearch, LayoutGrid, BedDouble, BellRing, MoreHorizontal, Pencil, Trash2, Eye, Zap, Store
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useImpersonation } from "@/lib/ImpersonationContext";

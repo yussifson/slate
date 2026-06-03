@@ -10,6 +10,7 @@ import { UploadDocumentDialog } from "@/components/cases/CaseDocumentRepo";
 import { Button } from "@/components/ui/button";
 import { toast } from 'react-hot-toast';
 import { format } from "date-fns";
+import { useAuth } from '@/lib/AuthContext';
 
 export default function ParentPortal() {
   const { t } = useTranslation();
@@ -36,11 +37,18 @@ export default function ParentPortal() {
       studentId: r.id_number,
       company_id: r.company_id,
       class: extra.class || 'Unknown',
-      feeStatus: extra.feeStatus || 'Owing'
+      feeStatus: extra.feeStatus || 'Owing',
+      parentEmail: extra.parentEmail || ''
     };
   });
 
-  const activeStudent = mappedStudents[0];
+  const { user } = useAuth();
+  const proxyParentEmail = user?.email; // PAR-2024-001@school.optalflow.com
+
+  // Find all children linked to this parent's email. Fallback to all if super_admin/previewing
+  const myChildren = mappedStudents.filter(s => s.parentEmail === proxyParentEmail || proxyParentEmail?.includes('admin'));
+  
+  const activeStudent = myChildren[0] || mappedStudents[0];
 
   const { data: documents = [] } = useQuery({
     queryKey: ["student-docs", activeStudent?.id],

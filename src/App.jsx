@@ -73,8 +73,15 @@ import CustomPageViewer from './pages/CustomPageViewer';
 
 // School Pages
 import SchoolStudents from './pages/school/Students';
+import SchoolParents from './pages/school/Parents';
+import SchoolTeachers from './pages/school/Teachers';
 import SchoolClasses from './pages/school/Classes';
 import SchoolTimetable from './pages/school/Timetable';
+import SchoolAssignments from './pages/school/Assignments';
+import SchoolDiscipline from './pages/school/Discipline';
+import SchoolNotices from './pages/school/Notices';
+import SchoolTransport from './pages/school/Transport';
+import SchoolHostel from './pages/school/Hostel';
 import SchoolAttendance from './pages/school/Attendance';
 import SchoolGrades from './pages/school/Grades';
 import SchoolExams from './pages/school/Exams';
@@ -220,17 +227,24 @@ function PlatformRoutes() {
       <Route path="/board" element={<Board />} />
       <Route path="/pages/:pageId" element={<CustomPageViewer />} />
 
-      {/* School Suite */}
+      {/* School Routes */}
       <Route path="/students" element={<SchoolStudents />} />
+      <Route path="/parents" element={<SchoolParents />} />
+      <Route path="/teachers" element={<SchoolTeachers />} />
       <Route path="/classes" element={<SchoolClasses />} />
       <Route path="/timetable" element={<SchoolTimetable />} />
+      <Route path="/assignments" element={<SchoolAssignments />} />
       <Route path="/attendance" element={<SchoolAttendance />} />
       <Route path="/grades" element={<SchoolGrades />} />
       <Route path="/exams" element={<SchoolExams />} />
+      <Route path="/discipline" element={<SchoolDiscipline />} />
       <Route path="/fees" element={<SchoolFees />} />
       <Route path="/library" element={<SchoolLibrary />} />
-      <Route path="/parent-portal" element={<SchoolParentPortal />} />
+      <Route path="/transport" element={<SchoolTransport />} />
+      <Route path="/hostel" element={<SchoolHostel />} />
+      <Route path="/notices" element={<SchoolNotices />} />
       <Route path="/student-portal" element={<SchoolStudentPortal />} />
+      <Route path="/parent-portal" element={<SchoolParentPortal />} />
 
       {/* Hospital Suite */}
       <Route path="/patients" element={<HospitalPatients />} />

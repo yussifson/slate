@@ -13,7 +13,8 @@ import { base44 } from "@/api/base44Client";
 import { toast } from 'react-hot-toast';
 import { useNotifications } from "@/hooks/integrations/useNotifications";
 import { useCompanyId } from "@/hooks/useCompanyId";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, Settings } from "lucide-react";
+import IDFormatSettings from '@/components/school/IDFormatSettings';
 
 const feeColors = { Paid: 'bg-green-100 text-green-700', Owing: 'bg-red-100 text-red-700', Partial: 'bg-amber-100 text-amber-700' };
 const statusColors = { Active: 'bg-blue-100 text-blue-700', Suspended: 'bg-red-100 text-red-700', Graduated: 'bg-purple-100 text-purple-700' };
@@ -26,6 +27,7 @@ export default function Students() {
   const [search, setSearch] = useState('');
   const [filterClass, setFilterClass] = useState('All');
   const [showModal, setShowModal] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const [viewMode, setViewMode] = useState('grid');
 
   // Real Database Hooks
@@ -46,9 +48,19 @@ export default function Students() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["clients", companyId] })
   });
 
+  const { data: schoolSettings } = useQuery({
+    queryKey: ['school_settings', companyId],
+    queryFn: async () => {
+      const records = await base44.entities.IndustryRecord.filter({ company_id: companyId, record_type: 'school_settings' });
+      return records.length > 0 ? records[0].data : { studentPrefix: 'STU', studentIncludeYear: true };
+    },
+    enabled: !!companyId
+  });
+
   // Form State
   const [formData, setFormData] = useState({
-    firstName: '', lastName: '', dateOfBirth: '', gender: 'Female', class: 'Grade 7B', parentName: '', parentPhone: ''
+    firstName: '', lastName: '', dateOfBirth: '', gender: 'Female', class: 'Grade 7B', 
+    parentName: '', parentPhone: '', parentEmail: '', address: '', medicalNotes: '', previousSchool: ''
   });
   const [editingId, setEditingId] = useState(null);
   const [viewDetails, setViewDetails] = useState(null);
@@ -90,8 +102,13 @@ export default function Students() {
     const fullName = formData.firstName ? `${formData.firstName} ${formData.lastName}`.trim() : formData.name;
     if (!fullName) return toast.error("Please enter student name");
     
-    // Auto-generate a random student ID
-    const studentId = `STU-${Math.floor(1000 + Math.random() * 9000)}`;
+    // Auto-generate a random student ID based on settings
+    const prefix = schoolSettings?.studentPrefix || 'STU';
+    const yearStr = schoolSettings?.studentIncludeYear ? `${new Date().getFullYear()}-` : '';
+    const seq = Math.floor(1000 + Math.random() * 9000);
+    const generatedId = `${prefix}-${yearStr}${seq}`;
+    
+    const studentId = formData.studentId || generatedId;
     const age = formData.dateOfBirth ? new Date().getFullYear() - new Date(formData.dateOfBirth).getFullYear() : formData.age || 0;
     
     const payload = {
@@ -106,6 +123,10 @@ export default function Students() {
         age,
         gender: formData.gender,
         parent: formData.parentName,
+        parentEmail: formData.parentEmail,
+        address: formData.address,
+        medicalNotes: formData.medicalNotes,
+        previousSchool: formData.previousSchool,
         feeStatus: formData.feeStatus || 'Owing',
         avatar: fullName.substring(0,2).toUpperCase()
       })
@@ -113,10 +134,10 @@ export default function Students() {
 
     const onDone = {
       onSuccess: () => {
-        toast.success(editingId ? "Student updated successfully!" : "Student enrolled successfully!");
+        toast.success(editingId ? "Student updated successfully!" : `Student enrolled successfully! Default Password: password123`);
         setShowModal(false);
         setEditingId(null);
-        setFormData({ firstName: '', lastName: '', dateOfBirth: '', gender: 'Female', class: 'Grade 7B', parentName: '', parentPhone: '' });
+        setFormData({ firstName: '', lastName: '', dateOfBirth: '', gender: 'Female', class: 'Grade 7B', parentName: '', parentPhone: '', parentEmail: '', address: '', medicalNotes: '', previousSchool: '' });
       },
       onError: (err) => toast.error(err?.message || "Failed to save student"),
     };
@@ -143,6 +164,9 @@ export default function Students() {
           <p className="text-sm text-muted-foreground mt-0.5">{t("manage_student_enrollment_and_", "Manage student enrollment and records")}</p>
         </div>
         <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setShowSettings(!showSettings)} className="gap-2">
+            <Settings className="w-4 h-4" /> {t("id_settings", "ID Settings")}
+          </Button>
           <Button variant="outline" onClick={() => { notifyTeam({ companyId, provider: 'twilio', message: 'School announcement for all parents.', recipientPhone: '+1234567890' }).then(()=>toast.success("SMS Sent to Parents!")).catch(()=>{}) }} className="gap-2 border-blue-200 text-blue-700 hover:bg-blue-50">
             <MessageSquare className="w-4 h-4 text-blue-500" /> Message Parents
           </Button>
@@ -151,6 +175,9 @@ export default function Students() {
           </Button>
         </div>
       </div>
+      
+      {showSettings && <IDFormatSettings />}
+
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((s, i) => {
@@ -307,10 +334,14 @@ export default function Students() {
                   })}
                 </select>
               </div>
-              <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("parent_name", "Parent Name")}</label><Input value={formData.parentName} onChange={e => setFormData({...formData, parentName: e.target.value})} className="mt-1" placeholder="Kwame Owusu" /></div>
-              <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("parent_phone", "Parent Phone")}</label><Input value={formData.parentPhone} onChange={e => setFormData({...formData, parentPhone: e.target.value})} className="mt-1" placeholder="+233 24..." /></div>
+              <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("parent_name", "Guardian Name")}</label><Input value={formData.parentName} onChange={e => setFormData({...formData, parentName: e.target.value})} className="mt-1" placeholder="Kwame Owusu" /></div>
+              <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("parent_phone", "Guardian Phone")}</label><Input value={formData.parentPhone} onChange={e => setFormData({...formData, parentPhone: e.target.value})} className="mt-1" placeholder="+233 24..." /></div>
+              <div className="col-span-2"><label className="text-xs font-bold text-muted-foreground uppercase">{t("parent_email", "Guardian Email")}</label><Input value={formData.parentEmail} onChange={e => setFormData({...formData, parentEmail: e.target.value})} className="mt-1" placeholder="parent@example.com" /></div>
+              <div className="col-span-2"><label className="text-xs font-bold text-muted-foreground uppercase">{t("address", "Home Address")}</label><Input value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="mt-1" placeholder="123 School Lane" /></div>
+              <div className="col-span-2"><label className="text-xs font-bold text-muted-foreground uppercase">{t("medical_notes", "Medical Notes / Allergies")}</label><Input value={formData.medicalNotes} onChange={e => setFormData({...formData, medicalNotes: e.target.value})} className="mt-1" placeholder="e.g. Asthma, Peanuts" /></div>
+              <div className="col-span-2"><label className="text-xs font-bold text-muted-foreground uppercase">{t("previous_school", "Previous School (Optional)")}</label><Input value={formData.previousSchool} onChange={e => setFormData({...formData, previousSchool: e.target.value})} className="mt-1" placeholder="XYZ Academy" /></div>
             </div>
-            <div className="flex gap-3 pt-2">
+            <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)} disabled={mutateStudent.isPending}>{t("cancel", "Cancel")}</Button>
               <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleEnroll} disabled={mutateStudent.isPending}>
                 {mutateStudent.isPending ? 'Saving...' : (editingId ? 'Save Changes' : 'Enroll Student')}

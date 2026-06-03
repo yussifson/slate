@@ -8,10 +8,15 @@ import { useQuery } from "@tanstack/react-query";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
+import { useAuth } from '@/lib/AuthContext';
 
 export default function StudentPortal() {
   const { t } = useTranslation();
   const companyId = useCompanyId();
+  const { user } = useAuth();
+  
+  // Extract student ID from the proxy email (e.g. STU-2024-001@school.optalflow.com)
+  const proxyStudentId = user?.email?.split('@')[0];
   
   // Real Database Hooks
   const { data: studentRecords = [], isLoading: isStudentsLoading } = useQuery({
@@ -35,7 +40,7 @@ export default function StudentPortal() {
     };
   });
 
-  const activeStudent = mappedStudents[0];
+  const activeStudent = mappedStudents.find(s => s.studentId === proxyStudentId) || mappedStudents[0]; // fallback to [0] for preview if admin
 
   const { data: documents = [] } = useQuery({
     queryKey: ["student-docs", activeStudent?.id],

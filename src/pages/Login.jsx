@@ -8,6 +8,7 @@ import { AlertCircle } from 'lucide-react';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import { Logo } from '@/components/ui/Logo';
 import { getSubdomainAndBase, getMainAppUrl } from '@/lib/domainUtils';
+import { toast } from 'react-hot-toast';
 
 export default function Login() {
   const { t } = useTranslation();
@@ -70,8 +71,14 @@ export default function Login() {
     setLoading(true);
     setError('');
 
+    // ID-Based Login Workaround: If no '@' is present, treat it as a School/Parent ID
+    let finalEmail = email;
+    if (!email.includes('@')) {
+      finalEmail = `${email}@school.optalflow.com`;
+    }
+
     const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({
-      email,
+      email: finalEmail,
       password,
     });
 
@@ -79,6 +86,11 @@ export default function Login() {
       setError(signInError.message);
       setLoading(false);
       return;
+    }
+
+    // Force default password check for students
+    if (password === 'password123') {
+      toast?.success('Please change your default password in settings.', { icon: '⚠️' });
     }
 
     if (currentSubdomain) {
@@ -98,6 +110,16 @@ export default function Login() {
           return;
         }
       }
+      
+      // Route based on role
+      if (profile?.role === 'student') {
+        window.location.href = '/student-portal';
+        return;
+      } else if (profile?.role === 'parent') {
+        window.location.href = '/parent-portal';
+        return;
+      }
+
       window.location.href = '/';
     } else {
       // Base domain login
@@ -119,6 +141,10 @@ export default function Login() {
           if (authData?.session?.access_token && authData?.session?.refresh_token) {
             url += `?access_token=${authData.session.access_token}&refresh_token=${authData.session.refresh_token}`;
           }
+          
+          if (profile?.role === 'student') url += 'student-portal';
+          else if (profile?.role === 'parent') url += 'parent-portal';
+          
           window.location.href = url;
           return;
         }
