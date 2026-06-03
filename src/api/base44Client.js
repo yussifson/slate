@@ -102,7 +102,8 @@ export const syncOfflineOutbox = async () => {
 async function mirrorToSupabase(tableName, record, operation = 'upsert') {
     if (!record) return;
 
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { session } } = await supabase.auth.getSession();
+    const user = session?.user;
     const row = typeof record === 'string' ? null : { ...record };
     if (row && !row.created_by && user?.id) row.created_by = user.id;
 
@@ -183,16 +184,33 @@ export const base44 = {
         }
     },
     getEntities: async (caseType, companyId) => {
-        return await base44.entities.LegalCase.filter({
+        const records = await base44.entities.LegalCase.filter({
             case_type: caseType,
             company_id: companyId
         });
+        return records.map(r => {
+            let data = {};
+            try { data = typeof r.notes === 'string' ? JSON.parse(r.notes) : (r.notes || {}); } catch(e) {}
+            return { ...r, data };
+        });
     },
     createEntity: async (payload) => {
-        return await base44.entities.LegalCase.create(payload);
+        const { data, ...rest } = payload;
+        const casePayload = { ...rest };
+        if (data !== undefined) casePayload.notes = data ? JSON.stringify(data) : null;
+        const result = await base44.entities.LegalCase.create(casePayload);
+        let parsedData = {};
+        try { parsedData = typeof result.notes === 'string' ? JSON.parse(result.notes) : (result.notes || {}); } catch(e) {}
+        return { ...result, data: parsedData };
     },
     updateEntity: async (id, payload) => {
-        return await base44.entities.LegalCase.update(id, payload);
+        const { data, ...rest } = payload;
+        const casePayload = { ...rest };
+        if (data !== undefined) casePayload.notes = data ? JSON.stringify(data) : null;
+        const result = await base44.entities.LegalCase.update(id, casePayload);
+        let parsedData = {};
+        try { parsedData = typeof result.notes === 'string' ? JSON.parse(result.notes) : (result.notes || {}); } catch(e) {}
+        return { ...result, data: parsedData };
     },
     deleteEntity: async (id) => {
         return await base44.entities.LegalCase.delete(id);
