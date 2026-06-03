@@ -24,6 +24,19 @@ window.addEventListener('vite:preloadError', (event) => {
   window.location.reload(true);
 });
 
+window.addEventListener('unhandledrejection', async (event) => {
+  if (event.reason && event.reason.message && event.reason.message.includes('importScripts') && event.reason.message.includes('workbox')) {
+    console.warn('Workbox importScripts failed. Forcing service worker unregistration and reload.');
+    if ('serviceWorker' in navigator) {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      for (const registration of registrations) {
+        await registration.unregister();
+      }
+      window.location.reload(true);
+    }
+  }
+});
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <ErrorBoundary>
     <I18nextProvider i18n={i18n}>

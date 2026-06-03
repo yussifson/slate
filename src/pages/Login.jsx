@@ -71,11 +71,7 @@ export default function Login() {
     setLoading(true);
     setError('');
 
-    // ID-Based Login Workaround: If no '@' is present, treat it as a School/Parent ID
     let finalEmail = email.trim().toLowerCase();
-    if (!finalEmail.includes('@')) {
-      finalEmail = `${finalEmail}@school.optalflow.com`;
-    }
 
     const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({
       email: finalEmail,
@@ -217,11 +213,11 @@ export default function Login() {
             
             <div className="space-y-4">
               <div>
-                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">{t("email_or_id", "Email Address or User ID")}</label>
+                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">{t("email_address", "Email Address")}</label>
                 <Input
-                  type="text"
+                  type="email"
                   required
-                  placeholder="name@company.com or STU-0001"
+                  placeholder="name@company.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full h-14 text-base bg-white text-slate-900 border-slate-200 placeholder:text-slate-400 focus-visible:ring-primary/30 focus-visible:border-primary"

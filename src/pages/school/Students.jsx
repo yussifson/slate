@@ -64,9 +64,9 @@ export default function Students() {
   });
 
   // Form State
-  const [formData, setFormData] = useState({
-    firstName: '', lastName: '', dateOfBirth: '', gender: 'Female', class: 'Grade 7B', 
-    parentName: '', parentPhone: '', parentEmail: '', address: '', medicalNotes: '', previousSchool: '', studentId: '', parentId: '', defaultPassword: ''
+  const [formData, setFormData] = useState({ 
+    firstName: '', lastName: '', email: '', dateOfBirth: '', gender: 'Female', class: 'Grade 7B', 
+    parentName: '', parentPhone: '', parentEmail: '', address: '', medicalNotes: '', previousSchool: '', studentId: '', parentId: '', defaultPassword: '' 
   });
   const [editingId, setEditingId] = useState(null);
   const [viewDetails, setViewDetails] = useState(null);
@@ -113,22 +113,26 @@ export default function Students() {
     setIsEnrolling(true);
 
     try {
-      // Auto-generate a random student ID based on settings
       const prefix = schoolSettings?.studentPrefix || 'STU';
       const yearStr = schoolSettings?.studentIncludeYear ? `${new Date().getFullYear()}-` : '';
       const seq = Math.floor(1000 + Math.random() * 9000);
-      const generatedId = `${prefix}-${yearStr}${seq}`;
-      const studentId = formData.studentId || generatedId;
-
+      
       // Auto-generate Parent ID
       const parentPrefix = schoolSettings?.parentPrefix || 'PAR';
+      
+      if (!formData.firstName || !formData.lastName || !formData.parentName || !formData.defaultPassword || !formData.email || !formData.parentEmail) {
+        toast.error(t("please_fill_required_fields", "Please fill all required fields, including Student Email, Parent Email, and Password."));
+        return;
+      }
+
+      const studentId = formData.studentId || `${prefix}-${yearStr}${seq}`;
       const parentId = formData.parentId || `${parentPrefix}-${yearStr}${seq}`;
       
-      const age = formData.dateOfBirth ? new Date().getFullYear() - new Date(formData.dateOfBirth).getFullYear() : formData.age || 0;
-      
-      const studentEmail = `${studentId.toLowerCase()}@school.optalflow.com`;
-      const parentEmail = formData.parentEmail || `${parentId.toLowerCase()}@school.optalflow.com`;
+      const studentEmail = formData.email.trim().toLowerCase();
+      const parentEmail = formData.parentEmail.trim().toLowerCase();
       const defaultPassword = formData.defaultPassword || 'password123';
+      
+      const age = formData.dateOfBirth ? new Date().getFullYear() - new Date(formData.dateOfBirth).getFullYear() : formData.age || 0;
 
       if (!editingId) {
         // Only generate auth accounts on initial creation
@@ -195,7 +199,7 @@ export default function Students() {
       queryClient.invalidateQueries({ queryKey: ["clients", companyId] });
       setShowModal(false);
       setEditingId(null);
-      setFormData({ firstName: '', lastName: '', dateOfBirth: '', gender: 'Female', class: 'Grade 7B', parentName: '', parentPhone: '', parentEmail: '', address: '', medicalNotes: '', previousSchool: '', studentId: '', parentId: '', defaultPassword: '' });
+      setFormData({ firstName: '', lastName: '', email: '', dateOfBirth: '', gender: 'Female', class: 'Grade 7B', parentName: '', parentPhone: '', parentEmail: '', address: '', medicalNotes: '', previousSchool: '', studentId: '', parentId: '', defaultPassword: '' });
       setActiveTab('personal');
     } catch (err) {
       toast.error(err?.message || "Failed to save records");
@@ -403,6 +407,10 @@ export default function Students() {
                   <div className="grid grid-cols-2 gap-4">
                     <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("first_name", "First Name")}</label><Input value={formData.firstName} onChange={e => setFormData({...formData, firstName: e.target.value})} className="mt-1" /></div>
                     <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("last_name", "Last Name")}</label><Input value={formData.lastName} onChange={e => setFormData({...formData, lastName: e.target.value})} className="mt-1" /></div>
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-muted-foreground uppercase">{t("student_email", "Student Login Email")}</label>
+                    <Input value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="mt-1" type="email" placeholder="student@example.com" />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("dob", "Date of Birth")}</label><Input type="date" value={formData.dateOfBirth} onChange={e => setFormData({...formData, dateOfBirth: e.target.value})} className="mt-1" /></div>
