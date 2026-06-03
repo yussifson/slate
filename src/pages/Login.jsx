@@ -72,9 +72,9 @@ export default function Login() {
     setError('');
 
     // ID-Based Login Workaround: If no '@' is present, treat it as a School/Parent ID
-    let finalEmail = email;
-    if (!email.includes('@')) {
-      finalEmail = `${email}@school.optalflow.com`;
+    let finalEmail = email.trim().toLowerCase();
+    if (!finalEmail.includes('@')) {
+      finalEmail = `${finalEmail}@school.optalflow.com`;
     }
 
     const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({
