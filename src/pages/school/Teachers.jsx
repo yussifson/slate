@@ -21,19 +21,19 @@ export default function Teachers() {
   const [viewMode, setViewMode] = useState('grid');
 
   const { data: records = [], isLoading } = useQuery({ 
-    queryKey: ["employees", companyId], 
-    queryFn: () => base44.entities.Employee.filter({ company_id: companyId }), 
+    queryKey: ["staff_records", companyId], 
+    queryFn: () => base44.entities.StaffRecord.filter({ company_id: companyId }), 
     enabled: !!companyId 
   });
 
   const mutateTeacher = useMutation({
-    mutationFn: (data) => data.id ? base44.entities.Employee.update(data.id, data) : base44.entities.Employee.create(data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["employees", companyId] })
+    mutationFn: (data) => data.id ? base44.entities.StaffRecord.update(data.id, data) : base44.entities.StaffRecord.create(data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["staff_records", companyId] })
   });
 
   const deleteTeacher = useMutation({
-    mutationFn: (id) => base44.entities.Employee.delete(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["employees", companyId] })
+    mutationFn: (id) => base44.entities.StaffRecord.delete(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["staff_records", companyId] })
   });
 
   const [formData, setFormData] = useState({
