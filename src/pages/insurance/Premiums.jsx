@@ -176,7 +176,7 @@ export default function Premiums() {
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
-          <div className="flex items-center gap-2 mb-2 text-emerald-600"><CheckCircle className="w-4 h-4"/> {t("collected", "Collected")}</div>
+          <div className="flex items-center gap-2 mb-2 text-insurance-600"><CheckCircle className="w-4 h-4"/> {t("collected", "Collected")}</div>
           <p className="text-2xl font-bold text-card-foreground">${totalCollected.toLocaleString()}</p>
         </div>
         <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
@@ -234,7 +234,7 @@ export default function Premiums() {
                       </td>
                       <td className="px-6 py-4 text-muted-foreground font-medium">
                         {premium.dueDate}
-                        {premium.paidDate && <p className="text-[10px] text-emerald-600 mt-0.5">{t("paid", "Paid:")} {premium.paidDate}</p>}
+                        {premium.paidDate && <p className="text-[10px] text-insurance-600 mt-0.5">{t("paid", "Paid:")} {premium.paidDate}</p>}
                       </td>
                       <td className="px-6 py-4 text-right">
                         <p className="font-bold text-card-foreground">${Number(premium.amount).toLocaleString()}</p>

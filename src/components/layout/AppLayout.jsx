@@ -62,7 +62,7 @@ export default function AppLayout() {
 
   // Dynamic Industry Theming
   useEffect(() => {
-    const activeIndustry = impersonatedCompany?.industry || user?.company_industry;
+    const activeIndustry = impersonatedCompany?.industry_type || user?.company_industry;
     if (activeIndustry) {
       const industry = activeIndustry.toLowerCase();
       let primaryColor = '221 83% 53%'; // Default Blue (Law/Core)
@@ -80,7 +80,7 @@ export default function AppLayout() {
       document.documentElement.style.setProperty('--primary', primaryColor);
       document.documentElement.style.setProperty('--ring', primaryColor);
     }
-  }, [user?.company_industry, impersonatedCompany?.industry]);
+  }, [user?.company_industry, impersonatedCompany?.industry_type]);
 
   const toggleChat = () => {
     const newState = !isChatOpen;
