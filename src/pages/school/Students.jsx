@@ -67,7 +67,8 @@ export default function Students() {
   // Form State
   const [formData, setFormData] = useState({ 
     firstName: '', lastName: '', email: '', dateOfBirth: '', gender: 'Female', class: 'Grade 7B', 
-    parentName: '', parentPhone: '', parentEmail: '', address: '', medicalNotes: '', previousSchool: '', studentId: '', parentId: '', defaultPassword: '', parentPassword: '' 
+    parentName: '', parentPhone: '', parentEmail: '', address: '', medicalNotes: '', previousSchool: '', studentId: '', parentId: '', defaultPassword: '', parentPassword: '',
+    emergencyContactName: '', emergencyContactPhone: '', transferStatus: 'No', alumniStatus: 'Active'
   });
   const [editingId, setEditingId] = useState(null);
   const [viewDetails, setViewDetails] = useState(null);
@@ -167,6 +168,10 @@ export default function Students() {
           address: formData.address,
           medicalNotes: formData.medicalNotes,
           previousSchool: formData.previousSchool,
+          emergencyContactName: formData.emergencyContactName,
+          emergencyContactPhone: formData.emergencyContactPhone,
+          transferStatus: formData.transferStatus,
+          alumniStatus: formData.alumniStatus,
           feeStatus: formData.feeStatus || 'Owing',
           avatar: fullName.substring(0,2).toUpperCase()
         })
@@ -202,7 +207,7 @@ export default function Students() {
       queryClient.invalidateQueries({ queryKey: ["clients", companyId] });
       setShowModal(false);
       setEditingId(null);
-      setFormData({ firstName: '', lastName: '', email: '', dateOfBirth: '', gender: 'Female', class: 'Grade 7B', parentName: '', parentPhone: '', parentEmail: '', address: '', medicalNotes: '', previousSchool: '', studentId: '', parentId: '', defaultPassword: '', parentPassword: '' });
+      setFormData({ firstName: '', lastName: '', email: '', dateOfBirth: '', gender: 'Female', class: 'Grade 7B', parentName: '', parentPhone: '', parentEmail: '', address: '', medicalNotes: '', previousSchool: '', studentId: '', parentId: '', defaultPassword: '', parentPassword: '', emergencyContactName: '', emergencyContactPhone: '', transferStatus: 'No', alumniStatus: 'Active' });
       setActiveTab('personal');
     } catch (err) {
       toast.error(err?.message || "Failed to save records");
@@ -270,7 +275,7 @@ export default function Students() {
               <StudentGridCard
                 key={s.id}
                 student={s}
-                onView={() => setViewDetails(s)}
+                onView={() => window.location.href = `/students/${s.id}`}
                 onEdit={() => {
                   setEditingId(s.id);
                   setFormData({ 
@@ -285,6 +290,10 @@ export default function Students() {
                     medicalNotes: s.medicalNotes || '',
                     previousSchool: s.previousSchool || '',
                     dateOfBirth: s.dateOfBirth || '',
+                    emergencyContactName: s.emergencyContactName || '',
+                    emergencyContactPhone: s.emergencyContactPhone || '',
+                    transferStatus: s.transferStatus || 'No',
+                    alumniStatus: s.alumniStatus || 'Active',
                   });
                   setShowModal(true);
                 }}
@@ -336,7 +345,7 @@ export default function Students() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-40">
-                          <DropdownMenuItem onClick={() => setViewDetails(s)}>{t("view_details", "View Details")}</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => window.location.href = `/students/${s.id}`}>{t("view_details", "View Details")}</DropdownMenuItem>
                           <DropdownMenuItem onClick={() => {
                             setEditingId(s.id);
                             setFormData({ 
@@ -351,6 +360,10 @@ export default function Students() {
                               medicalNotes: s.medicalNotes || '',
                               previousSchool: s.previousSchool || '',
                               dateOfBirth: s.dateOfBirth || '',
+                              emergencyContactName: s.emergencyContactName || '',
+                              emergencyContactPhone: s.emergencyContactPhone || '',
+                              transferStatus: s.transferStatus || 'No',
+                              alumniStatus: s.alumniStatus || 'Active',
                             });
                             setShowModal(true);
                           }}>
@@ -440,6 +453,20 @@ export default function Students() {
                       </select>
                     </div>
                   </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-xs font-bold text-muted-foreground uppercase">{t("transfer_status", "Transfer Status")}</label>
+                      <select value={formData.transferStatus} onChange={e => setFormData({...formData, transferStatus: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+                        <option>No</option><option>Transferred In</option><option>Transferred Out</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold text-muted-foreground uppercase">{t("alumni_status", "Alumni Status")}</label>
+                      <select value={formData.alumniStatus} onChange={e => setFormData({...formData, alumniStatus: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+                        <option>Active</option><option>Alumni</option>
+                      </select>
+                    </div>
+                  </div>
                   <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("previous_school", "Previous School")}</label><Input value={formData.previousSchool} onChange={e => setFormData({...formData, previousSchool: e.target.value})} className="mt-1" /></div>
                   <div>
                     <label className="text-xs font-bold text-muted-foreground uppercase">{t("medical_notes", "Medical Notes")}</label>
@@ -462,6 +489,10 @@ export default function Students() {
                   <div className="grid grid-cols-2 gap-4">
                     <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("parent_phone", "Parent Phone")}</label><Input value={formData.parentPhone} onChange={e => setFormData({...formData, parentPhone: e.target.value})} className="mt-1" /></div>
                     <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("parent_email", "Parent Email")}</label><Input value={formData.parentEmail} onChange={e => setFormData({...formData, parentEmail: e.target.value})} className="mt-1" type="email" /></div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("emergency_contact_name", "Emergency Contact Name")}</label><Input value={formData.emergencyContactName} onChange={e => setFormData({...formData, emergencyContactName: e.target.value})} className="mt-1" /></div>
+                    <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("emergency_contact_phone", "Emergency Contact Phone")}</label><Input value={formData.emergencyContactPhone} onChange={e => setFormData({...formData, emergencyContactPhone: e.target.value})} className="mt-1" /></div>
                   </div>
                   <div>
                     <label className="text-xs font-bold text-muted-foreground uppercase">{t("parent_password", "Parent Login Password")} *</label>

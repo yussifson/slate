@@ -71,6 +71,7 @@ export default function Parents() {
       phone: r.phone,
       email: extra.email || '',
       address: extra.address || '',
+      linkedStudentId: extra.linkedStudentId || '',
       avatar: r.name?.substring(0,2).toUpperCase()
     };
   });
@@ -169,6 +170,7 @@ export default function Parents() {
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Parent / Guardian</th>
                   <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">ID / Login ID</th>
+                  <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Linked Student</th>
                   <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Contact Info</th>
                   <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Address</th>
                   <th className="px-4 py-3 text-right text-xs font-bold text-muted-foreground uppercase">Actions</th>
@@ -186,6 +188,9 @@ export default function Parents() {
                     </div>
                   </td>
                   <td className="px-4 py-3 text-muted-foreground font-mono text-xs">{p.parentId}</td>
+                  <td className="px-4 py-3 text-emerald-700 text-xs font-semibold">
+                    {students.find(s => s.id_number === p.linkedStudentId)?.name || 'Unlinked'}
+                  </td>
                   <td className="px-4 py-3">
                     <p className="text-foreground text-xs flex items-center gap-1"><Phone className="w-3 h-3"/> {p.phone}</p>
                     <p className="text-muted-foreground text-xs flex items-center gap-1"><Mail className="w-3 h-3"/> {p.email}</p>

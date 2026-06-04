@@ -73,6 +73,7 @@ import CustomPageViewer from './pages/CustomPageViewer';
 
 // School Pages
 import SchoolStudents from './pages/school/Students';
+import StudentProfile from './pages/school/StudentProfile';
 import SchoolParents from './pages/school/Parents';
 import SchoolTeachers from './pages/school/Teachers';
 import SchoolClasses from './pages/school/Classes';
@@ -237,6 +238,7 @@ function PlatformRoutes() {
 
       {/* School Routes */}
       <Route path="/students" element={<SchoolStudents />} />
+      <Route path="/students/:id" element={<StudentProfile />} />
       <Route path="/parents" element={<SchoolParents />} />
       <Route path="/teachers" element={<SchoolTeachers />} />
       <Route path="/classes" element={<SchoolClasses />} />

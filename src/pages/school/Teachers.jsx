@@ -42,8 +42,10 @@ export default function Teachers() {
     qualifications: '', subjects: '', defaultPassword: ''
   });
 
-  // Since we use the generic Employee table, we filter for academics/teachers
-  const teachers = records.filter(r => r.department === 'Academics' || r.position?.toLowerCase().includes('teacher')).map(r => {
+  const [departmentFilter, setDepartmentFilter] = useState('All');
+  const departments = ['All', 'Academics', 'Administration', 'Support', 'Finance'];
+
+  const allStaff = records.map(r => {
     let extra = {};
     try { extra = JSON.parse(r.notes || '{}'); } catch(e) {}
     return {
@@ -51,17 +53,20 @@ export default function Teachers() {
       name: r.full_name,
       email: r.email,
       phone: r.phone,
+      department: r.department || 'Academics',
       position: r.position || 'Teacher',
-      qualifications: extra.qualifications || 'B.Ed',
-      subjects: extra.subjects || 'General',
+      qualifications: extra.qualifications || '',
+      subjects: extra.subjects || '',
       avatar: r.full_name?.substring(0,2).toUpperCase(),
       status: r.status || 'Active'
     };
   });
 
-  const filtered = teachers.filter(teacher =>
-    teacher.name?.toLowerCase().includes(search.toLowerCase()) || 
-    teacher.subjects?.toLowerCase().includes(search.toLowerCase())
+  const filtered = allStaff.filter(staff =>
+    (departmentFilter === 'All' || staff.department === departmentFilter) &&
+    (staff.name?.toLowerCase().includes(search.toLowerCase()) || 
+     staff.position?.toLowerCase().includes(search.toLowerCase()) ||
+     staff.subjects?.toLowerCase().includes(search.toLowerCase()))
   );
 
   const handleSave = async () => {
@@ -88,7 +93,7 @@ export default function Teachers() {
       full_name: formData.full_name,
       email: formData.email,
       phone: formData.phone,
-      department: 'Academics',
+      department: formData.department || 'Academics',
       position: formData.position,
       status: 'Active',
       notes: JSON.stringify({
@@ -117,26 +122,37 @@ export default function Teachers() {
   return (
     <div className="space-y-6">
       <ModuleBanner
-        title={t("teachers_staff", "Teachers & Staff")}
-        subtitle={t("manage_academic_staff", "Manage academic staff, subjects, and qualifications")}
+        title={t("staff_management", "Staff Management")}
+        subtitle={t("manage_all_staff", "Manage academic, administrative, and support staff records")}
         metrics={[
-          { title: "Total Teachers", value: teachers.length, icon: Users },
-          { title: "Departments", value: new Set(teachers.map(t => t.department)).size || 1, icon: Briefcase },
-          { title: "Active", value: teachers.filter(t => t.status === 'Active').length, icon: Users },
-          { title: "On Leave", value: teachers.filter(t => t.status === 'On Leave').length, icon: Calendar }
+          { title: "Total Staff", value: allStaff.length, icon: Users },
+          { title: "Departments", value: new Set(allStaff.map(t => t.department)).size || 1, icon: Briefcase },
+          { title: "Active", value: allStaff.filter(t => t.status === 'Active').length, icon: Users },
+          { title: "On Leave", value: allStaff.filter(t => t.status === 'On Leave').length, icon: Calendar }
         ]}
       />
       
-      {/* Search */}
-      <div className="bg-card rounded-xl border border-border p-4 shadow-sm flex items-center justify-between gap-4">
-        <div className="relative flex-1 max-w-md">
+      {/* Search & Filter */}
+      <div className="bg-card rounded-xl border border-border p-4 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="relative flex-1 w-full max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Search by name or subject..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
+          <Input placeholder="Search by name, role, or subject..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 w-full md:w-auto">
+          <div className="flex bg-muted p-1 rounded-lg overflow-x-auto">
+            {departments.map(d => (
+              <button
+                key={d}
+                onClick={() => setDepartmentFilter(d)}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-md whitespace-nowrap transition-colors ${departmentFilter === d ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+              >
+                {d}
+              </button>
+            ))}
+          </div>
           <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
-          <Button onClick={() => setShowModal(true)} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
-            <Plus className="w-4 h-4" /> {t("add_teacher", "Add Teacher")}
+          <Button onClick={() => setShowModal(true)} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white shrink-0">
+            <Plus className="w-4 h-4" /> {t("add_staff", "Add Staff")}
           </Button>
         </div>
       </div>
@@ -253,7 +269,7 @@ export default function Teachers() {
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-sm w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
-            <h2 className="text-lg font-bold text-card-foreground">{editingId ? 'Edit Teacher' : 'Add Teacher'}</h2>
+            <h2 className="text-lg font-bold text-card-foreground">{editingId ? 'Edit Staff' : 'Add Staff'}</h2>
             <div className="space-y-3">
               <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("full_name", "Full Name")}</label><Input value={formData.full_name} onChange={e => setFormData({...formData, full_name: e.target.value})} className="mt-1" /></div>
               <div className="grid grid-cols-2 gap-4">
@@ -263,17 +279,30 @@ export default function Teachers() {
               {!editingId && (
                 <div>
                   <label className="text-xs font-bold text-muted-foreground uppercase">{t("default_password", "Login Password")} *</label>
-                  <Input value={formData.defaultPassword} placeholder="Required for teacher login" onChange={e => setFormData({...formData, defaultPassword: e.target.value})} className="mt-1" />
+                  <Input value={formData.defaultPassword} placeholder="Required for staff login" onChange={e => setFormData({...formData, defaultPassword: e.target.value})} className="mt-1" />
                 </div>
               )}
-              <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("position", "Position")}</label><Input value={formData.position} onChange={e => setFormData({...formData, position: e.target.value})} className="mt-1" placeholder="Senior Teacher" /></div>
-              <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("qualifications", "Qualifications")}</label><Input value={formData.qualifications} onChange={e => setFormData({...formData, qualifications: e.target.value})} className="mt-1" placeholder="B.Ed Mathematics" /></div>
-              <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("subjects_taught", "Subjects Taught")}</label><Input value={formData.subjects} onChange={e => setFormData({...formData, subjects: e.target.value})} className="mt-1" placeholder="Math, Physics" /></div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("department", "Department")}</label>
+                  <select value={formData.department} onChange={e => setFormData({...formData, department: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+                    {departments.filter(d => d !== 'All').map(d => <option key={d}>{d}</option>)}
+                  </select>
+                </div>
+                <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("position", "Role / Title")}</label><Input value={formData.position} onChange={e => setFormData({...formData, position: e.target.value})} className="mt-1" placeholder="e.g. Math Teacher, Admin" /></div>
+              </div>
+              
+              {formData.department === 'Academics' && (
+                <>
+                  <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("qualifications", "Qualifications")}</label><Input value={formData.qualifications} onChange={e => setFormData({...formData, qualifications: e.target.value})} className="mt-1" placeholder="B.Ed Mathematics" /></div>
+                  <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("subjects_taught", "Subjects Taught")}</label><Input value={formData.subjects} onChange={e => setFormData({...formData, subjects: e.target.value})} className="mt-1" placeholder="Math, Physics" /></div>
+                </>
+              )}
             </div>
             <div className="flex gap-3 pt-2">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)} disabled={mutateTeacher.isPending}>{t("cancel", "Cancel")}</Button>
               <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleSave} disabled={mutateTeacher.isPending}>
-                {mutateTeacher.isPending ? 'Saving...' : 'Save Teacher'}
+                {mutateTeacher.isPending ? 'Saving...' : 'Save Staff Record'}
               </Button>
             </div>
           </div>
