@@ -23,15 +23,20 @@ export default function IDFormatSettings() {
         case_type: 'school_settings'
       });
       if (records.length > 0 && records[0].data) {
-        setStudentPrefix(records[0].data.studentPrefix || 'STU');
-        setStudentIncludeYear(records[0].data.studentIncludeYear !== false);
-        setParentPrefix(records[0].data.parentPrefix || 'PAR');
         return records[0];
       }
       return null;
     },
     enabled: !!companyId
   });
+
+  React.useEffect(() => {
+    if (settingsRecord?.data) {
+      setStudentPrefix(settingsRecord.data.studentPrefix || 'STU');
+      setStudentIncludeYear(settingsRecord.data.studentIncludeYear !== false);
+      setParentPrefix(settingsRecord.data.parentPrefix || 'PAR');
+    }
+  }, [settingsRecord]);
 
   const saveSettings = useMutation({
     mutationFn: async () => {
@@ -52,9 +57,13 @@ export default function IDFormatSettings() {
         });
       }
     },
-    onSuccess: () => {
+    onSuccess: (newRecord) => {
       toast.success("ID Settings saved successfully");
-      queryClient.invalidateQueries({ queryKey: ['school_settings', companyId] });
+      if (newRecord) {
+         queryClient.setQueryData(['school_settings', companyId], newRecord);
+      } else {
+         queryClient.invalidateQueries({ queryKey: ['school_settings', companyId] });
+      }
     },
     onError: (err) => toast.error(err.message)
   });

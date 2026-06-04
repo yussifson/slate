@@ -9,6 +9,7 @@ import { base44 } from "@/api/base44Client";
 import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { ViewModeToggle, ClassGridCard, ModuleBanner } from '@/components/school/SchoolViewKit';
+import { registerSchoolUser } from '@/api/authUtils';
 
 export default function Teachers() {
   const { t } = useTranslation();
@@ -38,7 +39,7 @@ export default function Teachers() {
 
   const [formData, setFormData] = useState({
     full_name: '', email: '', phone: '', department: 'Academics', position: 'Teacher', 
-    qualifications: '', subjects: ''
+    qualifications: '', subjects: '', defaultPassword: ''
   });
 
   // Since we use the generic Employee table, we filter for academics/teachers
@@ -63,10 +64,25 @@ export default function Teachers() {
     teacher.subjects?.toLowerCase().includes(search.toLowerCase())
   );
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!companyId) return toast.error("Workspace not loaded. Refresh the page and try again.");
     if (!formData.full_name || !formData.email) return toast.error("Name and Email are required");
     
+    if (!editingId && !formData.defaultPassword) {
+      return toast.error("Login Password is required for new teachers.");
+    }
+    
+    if (!editingId) {
+      const email = formData.email.trim().toLowerCase();
+      const { error: authErr } = await registerSchoolUser(email, formData.defaultPassword, 'teacher', companyId, formData.full_name);
+      if (authErr) {
+        if (authErr.message?.includes('already registered')) {
+          return toast.error(`Email (${email}) is already registered! Please use a unique email.`);
+        }
+        return toast.error(`Teacher Auth Error: ${authErr.message}`);
+      }
+    }
+
     const payload = {
       company_id: companyId,
       full_name: formData.full_name,
@@ -86,7 +102,7 @@ export default function Teachers() {
         toast.success(editingId ? "Teacher updated successfully!" : `Teacher added!`);
         setShowModal(false);
         setEditingId(null);
-        setFormData({ full_name: '', email: '', phone: '', department: 'Academics', position: 'Teacher', qualifications: '', subjects: '' });
+        setFormData({ full_name: '', email: '', phone: '', department: 'Academics', position: 'Teacher', qualifications: '', subjects: '', defaultPassword: '' });
       },
       onError: (err) => toast.error(err?.message || "Failed to save teacher"),
     };
@@ -240,10 +256,16 @@ export default function Teachers() {
             <h2 className="text-lg font-bold text-card-foreground">{editingId ? 'Edit Teacher' : 'Add Teacher'}</h2>
             <div className="space-y-3">
               <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("full_name", "Full Name")}</label><Input value={formData.full_name} onChange={e => setFormData({...formData, full_name: e.target.value})} className="mt-1" /></div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-4">
+                <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("email", "Email")} *</label><Input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="mt-1" /></div>
                 <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("phone", "Phone")}</label><Input value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="mt-1" /></div>
-                <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("email", "Email")}</label><Input value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="mt-1" type="email" /></div>
               </div>
+              {!editingId && (
+                <div>
+                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("default_password", "Login Password")} *</label>
+                  <Input value={formData.defaultPassword} placeholder="Required for teacher login" onChange={e => setFormData({...formData, defaultPassword: e.target.value})} className="mt-1" />
+                </div>
+              )}
               <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("position", "Position")}</label><Input value={formData.position} onChange={e => setFormData({...formData, position: e.target.value})} className="mt-1" placeholder="Senior Teacher" /></div>
               <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("qualifications", "Qualifications")}</label><Input value={formData.qualifications} onChange={e => setFormData({...formData, qualifications: e.target.value})} className="mt-1" placeholder="B.Ed Mathematics" /></div>
               <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("subjects_taught", "Subjects Taught")}</label><Input value={formData.subjects} onChange={e => setFormData({...formData, subjects: e.target.value})} className="mt-1" placeholder="Math, Physics" /></div>

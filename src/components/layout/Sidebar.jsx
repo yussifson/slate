@@ -124,7 +124,14 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
     store_manager: ["/retail-dashboard", "/pos", "/orders", "/purchase-orders", "/inventory", "/suppliers", "/sales", "/promotions", "/loyalty", "/shifts", "/retail-customers", "/reports", "/team", "/tasks", "/calendar", "/email-inbox"],
     cashier: ["/retail-dashboard", "/pos", "/orders", "/retail-customers", "/loyalty", "/shifts", "/tasks"],
     inventory_clerk: ["/retail-dashboard", "/inventory", "/purchase-orders", "/suppliers", "/shifts", "/tasks"],
-    sales_associate: ["/retail-dashboard", "/pos", "/orders", "/retail-customers", "/shifts", "/tasks"]
+    sales_associate: ["/retail-dashboard", "/pos", "/orders", "/retail-customers", "/shifts", "/tasks"],
+    
+    // School Roles
+    teacher: ["/", "/classes", "/timetable", "/assignments", "/attendance", "/grades", "/exams", "/discipline", "/library", "/notices", "/marketplace", "/documents", "/tasks", "/reports", "/chat", "/board", "/email-inbox"],
+    student: ["/student-portal", "/chat", "/board"],
+    parent: ["/parent-portal", "/chat", "/board"],
+    accountant: ["/", "/fees", "/reports", "/documents", "/tasks", "/email-inbox"],
+    librarian: ["/", "/library", "/documents", "/tasks", "/email-inbox"]
   };
 
   const allowedPaths = isAdmin ? null : (ROLE_PERMISSIONS[user?.role] || ROLE_PERMISSIONS.support);
@@ -134,7 +141,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
       if (!activeModules.includes(item.path)) return false;
     }
     if (isAdmin) return true;
-    if (activeIndustry !== 'law') return true;
+    if (!allowedPaths) return true;
     return allowedPaths.includes(item.path);
   });
 
