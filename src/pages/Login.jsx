@@ -109,8 +109,6 @@ export default function Login() {
       return;
     }
 
-    let targetSubdomain = currentSubdomain || workspace.trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
-
     if (targetSubdomain) {
       // Check if user belongs to this subdomain
       const { data: profile } = await supabase.from('profiles').select('company_id, role').eq('id', authData.user.id).single();
