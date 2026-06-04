@@ -62,8 +62,9 @@ export default function AppLayout() {
 
   // Dynamic Industry Theming
   useEffect(() => {
-    if (user?.company_industry) {
-      const industry = user.company_industry.toLowerCase();
+    const activeIndustry = impersonatedCompany?.industry || user?.company_industry;
+    if (activeIndustry) {
+      const industry = activeIndustry.toLowerCase();
       let primaryColor = '221 83% 53%'; // Default Blue (Law/Core)
       if (industry === 'school') {
         primaryColor = '266 100% 50%'; // Electric Purple (#6F00FF)
@@ -79,7 +80,7 @@ export default function AppLayout() {
       document.documentElement.style.setProperty('--primary', primaryColor);
       document.documentElement.style.setProperty('--ring', primaryColor);
     }
-  }, [user?.company_industry]);
+  }, [user?.company_industry, impersonatedCompany?.industry]);
 
   const toggleChat = () => {
     const newState = !isChatOpen;
