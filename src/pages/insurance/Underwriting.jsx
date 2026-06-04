@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { Search, Plus, Trash2, FileSignature, CheckCircle2, XCircle, AlertTriangle, MoreVertical, Eye, Edit } from 'lucide-react';
+import { Search, Plus, Trash2, FileSignature, CheckCircle2, XCircle, AlertTriangle, MoreVertical, Eye, Edit, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
