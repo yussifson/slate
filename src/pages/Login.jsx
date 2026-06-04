@@ -76,29 +76,9 @@ export default function Login() {
     let targetSubdomain = currentSubdomain || workspace.trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
 
     if (targetSubdomain) {
-      // Fetch company_id for this subdomain to generate the salted email
-      const { data: brandData, error: brandErr } = await supabase.rpc('get_company_by_subdomain', { p_subdomain: targetSubdomain });
-      let compId = null;
-      if (!brandErr && brandData) {
-         const d = Array.isArray(brandData) ? brandData[0] : brandData;
-         compId = d?.id;
-      } 
-      
-      // If RPC succeeded but didn't expose 'id', fallback to direct table query
-      if (!compId) {
-         const { data: tableData } = await supabase.from('companies').select('id').eq('subdomain', targetSubdomain).single();
-         if (tableData) compId = tableData.id;
-      }
-      
-      if (compId) {
-         // Salt the email matching the generation logic in authUtils.js
-         const [localPart, domain] = loginEmail.split('@');
-         loginEmail = `${localPart}+firm${compId.replace(/-/g, '')}@${domain}`;
-      } else {
-         setError(`Workspace '${targetSubdomain}' not found.`);
-         setLoading(false);
-         return;
-      }
+       // Salt the email matching the generation logic in authUtils.js
+       const [localPart, domain] = loginEmail.split('@');
+       loginEmail = `${localPart}+firm_${targetSubdomain}@${domain}`;
     }
 
     const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({
