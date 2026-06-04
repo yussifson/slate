@@ -62,21 +62,20 @@ export default function AppLayout() {
 
   // Dynamic Industry Theming
   useEffect(() => {
-    const activeIndustry = sessionStorage.getItem('optalflow_industry_override') || impersonatedCompany?.industry_type || user?.company_industry || 'law';
-    if (activeIndustry) {
-      const industry = activeIndustry.toLowerCase();
+    if (user?.company_industry) {
+      const industry = user.company_industry.toLowerCase();
       let primaryColor = '221 83% 53%'; // Default Blue (Law/Core)
       if (industry === 'school') {
         primaryColor = '160 84% 39%'; // Emerald Green
       } else if (industry === 'retail') {
         primaryColor = '24 98% 50%'; // Sunset Orange
       } else if (industry === 'hotel') {
-        primaryColor = '251 52% 40%'; // Deep Purple #443199
+        primaryColor = '251 52% 40%'; // Deep Violet/Purple (#443199)
       }
       document.documentElement.style.setProperty('--primary', primaryColor);
       document.documentElement.style.setProperty('--ring', primaryColor);
     }
-  }, [user?.company_industry, impersonatedCompany?.industry_type]);
+  }, [user?.company_industry]);
 
   const toggleChat = () => {
     const newState = !isChatOpen;
