@@ -313,62 +313,71 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
             </div>
           </div>
         )}
-        {navItems.map((item) => {
-          const isActive = location.pathname === item.path || (item.path !== "/" && location.pathname.startsWith(item.path));
+        {navItems.map((item, idx) => {
+          const isActive = location.pathname === item.path || (item.path !== "/" && item.path !== "/s/" && location.pathname.startsWith(item.path)) || (item.path === "/s/" && location.pathname === "/s/");
           const IconComp = typeof item.icon === 'string' ? ICON_MAP[item.icon] || LayoutDashboard : item.icon;
+          const showSection = item.section && !collapsed;
           return (
-            <div key={item.path} className="relative group">
-              <Link
-                to={item.path}
-                title={collapsed ? t(item.label.toLowerCase().replace(/\s+/g, '_'), item.label) : undefined}
-                className={cn(
-                  "flex items-center rounded-lg text-sm font-medium transition-all duration-150 relative",
-                  collapsed ? "justify-center p-2" : "gap-3 px-3 py-2 pr-8",
-                  isActive
-                    ? "bg-primary text-white shadow-sm"
-                    : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"
-                )}
-              >
-                <IconComp className={cn("flex-shrink-0 transition-all", collapsed ? "w-5 h-5" : "w-4 h-4")} />
-                {!collapsed && (
-                  <div className="flex items-center gap-2 overflow-hidden flex-1 animate-in fade-in duration-200">
-                    <span className="whitespace-nowrap truncate">{t(item.label.toLowerCase().replace(/\s+/g, '_'), item.label)}</span>
-                    {item.status === 'draft' && (
-                      <span className="text-[9px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-500 px-1.5 py-0.5 rounded-sm">Draft</span>
+            <div key={item.path}>
+              {showSection && (
+                <div className="pt-4 pb-1.5 px-1 first:pt-0">
+                  <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-muted-foreground/60">{t(item.section.toLowerCase().replace(/\s+/g, '_'), item.section)}</p>
+                </div>
+              )}
+              <div className="relative group">
+                <Link
+                  to={item.path}
+                  title={collapsed ? t(item.label.toLowerCase().replace(/\s+/g, '_'), item.label) : undefined}
+                  className={cn(
+                    "flex items-center rounded-lg text-sm font-medium transition-all duration-150 relative",
+                    collapsed ? "justify-center p-2" : "gap-3 px-3 py-2 pr-8",
+                    isActive
+                      ? "bg-primary text-white shadow-sm"
+                      : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"
+                  )}
+                >
+                  {isActive && !collapsed && <div className="absolute left-0 top-1.5 bottom-1.5 w-1 bg-white rounded-r-full" />}
+                  <IconComp className={cn("flex-shrink-0 transition-all", collapsed ? "w-5 h-5" : "w-4 h-4")} />
+                  {!collapsed && (
+                    <div className="flex items-center gap-2 overflow-hidden flex-1 animate-in fade-in duration-200">
+                      <span className="whitespace-nowrap truncate">{t(item.label.toLowerCase().replace(/\s+/g, '_'), item.label)}</span>
+                      {item.status === 'draft' && (
+                        <span className="text-[9px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-500 px-1.5 py-0.5 rounded-sm">Draft</span>
+                      )}
+                    </div>
+                  )}
+                </Link>
+                
+                {!collapsed && item.isDynamic && (
+                  <div className={cn("absolute right-2 top-1/2 -translate-y-1/2 transition-opacity", openMenuId === item.id ? "opacity-100 z-50" : "opacity-0 group-hover:opacity-100 z-10")}>
+                    <button 
+                      onClick={(e) => { e.preventDefault(); setOpenMenuId(openMenuId === item.id ? null : item.id); }}
+                      className="p-1 rounded hover:bg-sidebar-accent text-sidebar-foreground/50 hover:text-sidebar-foreground"
+                    >
+                      <MoreHorizontal className="w-4 h-4" />
+                    </button>
+                    
+                    {openMenuId === item.id && (
+                      <div className="absolute right-0 mt-1 w-36 bg-sidebar border border-sidebar-border shadow-xl rounded-md overflow-hidden">
+                        <div className="py-1">
+                          <button onClick={(e) => { e.preventDefault(); handleTogglePublish(item.id, item.status); setOpenMenuId(null); }} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors">
+                            <Eye className="w-3 h-3" /> {item.status === 'published' ? 'Unpublish' : 'Publish'}
+                          </button>
+                          <button onClick={(e) => { e.preventDefault(); handleRenameModule(item.id, item.label); setOpenMenuId(null); }} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors">
+                            <Pencil className="w-3 h-3" /> Rename
+                          </button>
+                          <button onClick={(e) => { e.preventDefault(); navigate(`/modules/edit/${item.id}`); setOpenMenuId(null); }} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors">
+                            <Settings className="w-3 h-3" /> Customize
+                          </button>
+                          <button onClick={(e) => { e.preventDefault(); handleDeleteModule(item.id, item.label); setOpenMenuId(null); }} className="w-full text-left px-3 py-2 text-xs text-red-500 hover:bg-red-500/10 flex items-center gap-2 transition-colors">
+                            <Trash2 className="w-3 h-3" /> Delete
+                          </button>
+                        </div>
+                      </div>
                     )}
                   </div>
                 )}
-              </Link>
-              
-              {!collapsed && item.isDynamic && (
-                <div className={cn("absolute right-2 top-1/2 -translate-y-1/2 transition-opacity", openMenuId === item.id ? "opacity-100 z-50" : "opacity-0 group-hover:opacity-100 z-10")}>
-                  <button 
-                    onClick={(e) => { e.preventDefault(); setOpenMenuId(openMenuId === item.id ? null : item.id); }}
-                    className="p-1 rounded hover:bg-sidebar-accent text-sidebar-foreground/50 hover:text-sidebar-foreground"
-                  >
-                    <MoreHorizontal className="w-4 h-4" />
-                  </button>
-                  
-                  {openMenuId === item.id && (
-                    <div className="absolute right-0 mt-1 w-36 bg-sidebar border border-sidebar-border shadow-xl rounded-md overflow-hidden">
-                      <div className="py-1">
-                        <button onClick={(e) => { e.preventDefault(); handleTogglePublish(item.id, item.status); setOpenMenuId(null); }} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors">
-                          <Eye className="w-3 h-3" /> {item.status === 'published' ? 'Unpublish' : 'Publish'}
-                        </button>
-                        <button onClick={(e) => { e.preventDefault(); handleRenameModule(item.id, item.label); setOpenMenuId(null); }} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors">
-                          <Pencil className="w-3 h-3" /> Rename
-                        </button>
-                        <button onClick={(e) => { e.preventDefault(); navigate(`/modules/edit/${item.id}`); setOpenMenuId(null); }} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors">
-                          <Settings className="w-3 h-3" /> Customize
-                        </button>
-                        <button onClick={(e) => { e.preventDefault(); handleDeleteModule(item.id, item.label); setOpenMenuId(null); }} className="w-full text-left px-3 py-2 text-xs text-red-500 hover:bg-red-500/10 flex items-center gap-2 transition-colors">
-                          <Trash2 className="w-3 h-3" /> Delete
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
+              </div>
             </div>
           );
         })}
