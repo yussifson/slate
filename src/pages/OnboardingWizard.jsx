@@ -29,11 +29,15 @@ export default function OnboardingWizard() {
     }
   }, [step]);
 
-  // Step 1: Firm profile
+  const md = user?.user_metadata || {};
+  const [workspaceName, setWorkspaceName] = useState(md.company_name || '');
+  const [subdomain, setSubdomain] = useState(md.subdomain || '');
+  const isMissingMetadata = !md.company_name || !md.subdomain;
+
   const [country, setCountry] = useState('United States of America');
   const [currency, setCurrency] = useState('USD');
   const [industry, setIndustry] = useState(user?.company_industry || 'law');
-  const [educationLevel, setEducationLevel] = useState('basic');
+  const [educationLevel, setEducationLevel] = useState('');
 
   useEffect(() => {
     const selected = COUNTRIES_CURRENCIES.find(c => c.country === country);
@@ -89,9 +93,8 @@ export default function OnboardingWizard() {
          }
 
           if (!companyIdToUse) {
-             const md = user?.user_metadata || {};
-             const cName = md.company_name || 'My Workspace';
-             const cSubdomain = md.subdomain || `workspace-${Date.now()}`;
+             const cName = workspaceName || md.company_name || 'My Workspace';
+             const cSubdomain = subdomain || md.subdomain || `workspace-${Date.now()}`;
              
              const finalIndustry = (industry === 'school' && educationLevel !== 'basic') ? educationLevel : industry;
              const finalEduLevel = (industry === 'school' && educationLevel === 'basic') ? 'basic' : null;
@@ -283,12 +286,34 @@ export default function OnboardingWizard() {
         </div>
 
         {/* Scrollable Content Area */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto px-5 sm:px-8 py-6 sm:py-8 scroll-smooth hide-scrollbar">
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-            
-            {/* Step 1: Company Profile */}
+{/* Step 1: Company Profile */}
             {step === 1 && (
-              <div className="space-y-8">
+              <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
+                
+                {isMissingMetadata && (
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-sm font-semibold text-slate-700">Workspace Name</label>
+                      <Input 
+                        value={workspaceName}
+                        onChange={(e) => setWorkspaceName(e.target.value)}
+                        placeholder="E.g. Optalflow Inc."
+                        className="mt-1 h-12 bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-semibold text-slate-700">Subdomain</label>
+                      <Input 
+                        value={subdomain}
+                        onChange={(e) => setSubdomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+                        placeholder="yourcompany"
+                        className="mt-1 h-12 bg-white"
+                      />
+                      <p className="text-xs text-slate-500 mt-1">This will be your dedicated login portal url.</p>
+                    </div>
+                  </div>
+                )}
+
                 <div className="space-y-2">
                   <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
                     {t("setup_your", "Setup your")} {INDUSTRIES[industry]?.name || 'Workspace'}
@@ -663,7 +688,17 @@ export default function OnboardingWizard() {
             
             {step < 4 ? (
               <Button 
-                onClick={() => setStep(step + 1)}
+                onClick={() => {
+                  if (step === 1 && industry === 'school' && !educationLevel) {
+                    toast({ title: "Required", description: "Please select an education level.", variant: "destructive" });
+                    return;
+                  }
+                  if (step === 1 && isMissingMetadata && (!workspaceName || !subdomain)) {
+                    toast({ title: "Required", description: "Please enter your workspace name and subdomain.", variant: "destructive" });
+                    return;
+                  }
+                  setStep(step + 1);
+                }}
                 disabled={
                   (step === 2 && setupMode === 'custom' && selectedModules.length === 0)
                 }
