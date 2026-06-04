@@ -5,11 +5,11 @@ import { cn } from "@/lib/utils";
 
 /** Brand blue/navy palette for the School Suite */
 export const SCHOOL_BRAND = {
-  primary: "#1E3A8A",        // Deep Navy
-  primaryDark: "#172554",
-  primaryLight: "#F0F4FF",
-  accent: "#3B82F6",         // Bright Blue
-  chart: ["#1E3A8A", "#2563EB", "#3B82F6", "#60A5FA", "#93C5FD", "#BFDBFE"],
+  primary: "hsl(var(--primary))",        // Dynamic primary
+  primaryDark: "hsl(var(--primary) / 0.9)",
+  primaryLight: "hsl(var(--primary) / 0.1)",
+  accent: "hsl(var(--primary))",         // Bright Blue
+  chart: ["hsl(var(--primary))", "hsl(var(--primary) / 0.8)", "hsl(var(--primary) / 0.6)", "hsl(var(--primary) / 0.4)", "hsl(var(--primary) / 0.2)", "hsl(var(--primary) / 0.1)"],
 };
 
 export function ViewModeToggle({ viewMode, onChange, className }) {
@@ -20,7 +20,7 @@ export function ViewModeToggle({ viewMode, onChange, className }) {
         onClick={() => onChange("list")}
         className={cn(
           "p-2 rounded-lg transition-all duration-200",
-          viewMode === "list" ? "bg-[#1E3A8A] text-white shadow-md" : "text-muted-foreground hover:bg-slate-100 dark:hover:bg-slate-700"
+          viewMode === "list" ? "bg-primary text-white shadow-md" : "text-muted-foreground hover:bg-slate-100 dark:hover:bg-slate-700"
         )}
         title="List view"
       >
@@ -31,7 +31,7 @@ export function ViewModeToggle({ viewMode, onChange, className }) {
         onClick={() => onChange("grid")}
         className={cn(
           "p-2 rounded-lg transition-all duration-200",
-          viewMode === "grid" ? "bg-[#1E3A8A] text-white shadow-md" : "text-muted-foreground hover:bg-slate-100 dark:hover:bg-slate-700"
+          viewMode === "grid" ? "bg-primary text-white shadow-md" : "text-muted-foreground hover:bg-slate-100 dark:hover:bg-slate-700"
         )}
         title="Grid view"
       >
@@ -45,12 +45,12 @@ function CardActions({ onEdit, onDelete, onView }) {
   return (
     <div className="absolute top-3 right-3 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity z-10">
       {onView && (
-        <Button variant="secondary" size="icon" className="h-8 w-8 bg-white/95 dark:bg-slate-800/95 shadow-md hover:text-[#1E3A8A] rounded-xl border border-slate-100 dark:border-slate-700" onClick={onView}>
+        <Button variant="secondary" size="icon" className="h-8 w-8 bg-white/95 dark:bg-slate-800/95 shadow-md hover:text-primary rounded-xl border border-slate-100 dark:border-slate-700" onClick={onView}>
           <Eye className="w-3.5 h-3.5" />
         </Button>
       )}
       {onEdit && (
-        <Button variant="secondary" size="icon" className="h-8 w-8 bg-white/95 dark:bg-slate-800/95 shadow-md hover:text-[#1E3A8A] rounded-xl border border-slate-100 dark:border-slate-700" onClick={onEdit}>
+        <Button variant="secondary" size="icon" className="h-8 w-8 bg-white/95 dark:bg-slate-800/95 shadow-md hover:text-primary rounded-xl border border-slate-100 dark:border-slate-700" onClick={onEdit}>
           <Edit className="w-3.5 h-3.5" />
         </Button>
       )}
@@ -65,31 +65,31 @@ function CardActions({ onEdit, onDelete, onView }) {
 
 export function StudentGridCard({ student, onEdit, onDelete, onView }) {
   const feeStyles = {
-    Paid: "bg-blue-50 text-[#1E3A8A] border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800",
+    Paid: "bg-primary/10 text-primary border-primary/20 dark:bg-primary/20 dark:text-primary dark:border-primary/30",
     Owing: "bg-red-50 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800",
     Partial: "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800"
   };
 
   const statusStyles = {
-    Active: "bg-blue-50 text-[#1E3A8A] border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800",
+    Active: "bg-primary/10 text-primary border-primary/20 dark:bg-primary/20 dark:text-primary dark:border-primary/30",
     Suspended: "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700",
     Graduated: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800"
   };
 
   return (
     <article className="school-card group relative p-6 hover:-translate-y-1.5 transition-all duration-300 flex flex-col min-h-[260px] text-center overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50/40 via-transparent to-transparent dark:from-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-2xl" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent dark:from-primary/20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-2xl" />
       <CardActions onView={onView} onEdit={onEdit} onDelete={onDelete} />
       
-      <div className="w-24 h-24 mx-auto rounded-[1.5rem] bg-gradient-to-br from-[#F0F4FF] to-[#DBEAFE] dark:from-blue-900/40 dark:to-indigo-900/40 border border-blue-100 dark:border-blue-800 shadow-inner flex items-center justify-center text-4xl font-black text-[#1E3A8A] dark:text-blue-300 mb-5 shrink-0 relative overflow-hidden transform group-hover:scale-105 transition-transform duration-300">
+      <div className="w-24 h-24 mx-auto rounded-[1.5rem] bg-gradient-to-br from-primary/5 to-primary/15 dark:from-primary/20 dark:to-primary/30 border border-primary/10 dark:border-primary/20 shadow-inner flex items-center justify-center text-4xl font-black text-primary dark:text-primary mb-5 shrink-0 relative overflow-hidden transform group-hover:scale-105 transition-transform duration-300">
         {student.avatar || student.name?.[0]?.toUpperCase()}
       </div>
       
       <div className="min-w-0 flex-1 mb-6 relative z-10">
-        <h3 className="school-heading font-extrabold text-xl line-clamp-1 tracking-tight group-hover:text-[#3B82F6] transition-colors">{student.name}</h3>
+        <h3 className="school-heading font-extrabold text-xl line-clamp-1 tracking-tight group-hover:text-primary transition-colors">{student.name}</h3>
         <p className="text-xs text-muted-foreground font-semibold tracking-widest mt-1 opacity-70 font-dmsans">{student.studentId}</p>
         <div className="mt-4 flex items-center justify-center gap-2">
-          <span className="text-xs font-bold px-4 py-1.5 rounded-full bg-[#F0F4FF] dark:bg-slate-800 text-[#1E3A8A] dark:text-blue-300 shadow-sm border border-blue-100 dark:border-blue-800">{student.class}</span>
+          <span className="text-xs font-bold px-4 py-1.5 rounded-full bg-primary/10 dark:bg-slate-800 text-primary dark:text-primary shadow-sm border border-primary/10 dark:border-primary/20">{student.class}</span>
         </div>
       </div>
       
@@ -115,31 +115,31 @@ export function ClassGridCard({ classInfo, onEdit, onDelete, onView }) {
   return (
     <article className="school-card group relative p-6 hover:-translate-y-1 transition-all duration-300 flex flex-col min-h-[220px] overflow-hidden">
       <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity pointer-events-none transform translate-x-1/4 -translate-y-1/4 scale-150">
-        <BookOpen className="w-32 h-32 text-[#1E3A8A]" />
+        <BookOpen className="w-32 h-32 text-primary" />
       </div>
       
       <div className="flex justify-between items-start mb-5 relative z-10">
-        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#F0F4FF] to-[#DBEAFE] dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-100 dark:border-blue-800 shadow-sm text-[#1E3A8A] dark:text-blue-300 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/15 dark:from-primary/20 dark:to-primary/30 border border-primary/10 dark:border-primary/20 shadow-sm text-primary dark:text-primary flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
           <BookOpen className="w-6 h-6" />
         </div>
         <CardActions onView={onView} onEdit={onEdit} onDelete={onDelete} />
       </div>
       
       <div className="mb-6 relative z-10">
-        <h3 className="school-heading font-extrabold text-2xl tracking-tight group-hover:text-[#3B82F6] transition-colors">{classInfo.name}</h3>
+        <h3 className="school-heading font-extrabold text-2xl tracking-tight group-hover:text-primary transition-colors">{classInfo.name}</h3>
         <p className="text-sm font-semibold text-muted-foreground/80 mt-1 tracking-wide uppercase">{classInfo.subject}</p>
       </div>
 
-      <div className="space-y-3 mt-auto relative z-10 bg-[#F0F4FF]/50 dark:bg-slate-800/50 p-4 rounded-xl border border-blue-50 dark:border-slate-700">
+      <div className="space-y-3 mt-auto relative z-10 bg-primary/5 dark:bg-slate-800/50 p-4 rounded-xl border border-primary/5 dark:border-slate-700">
         <div className="flex justify-between text-sm items-center">
           <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Teacher</span>
           <span className="font-bold text-foreground text-right">{classInfo.teacher}</span>
         </div>
         <div className="flex justify-between text-sm items-center">
           <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Enrolled</span>
-          <span className="font-bold text-foreground bg-white dark:bg-slate-800 px-2.5 py-0.5 rounded-md border border-blue-100 dark:border-slate-700 shadow-sm">{classInfo.students}</span>
+          <span className="font-bold text-foreground bg-white dark:bg-slate-800 px-2.5 py-0.5 rounded-md border border-primary/10 dark:border-slate-700 shadow-sm">{classInfo.students}</span>
         </div>
-        <div className="flex justify-between text-sm items-center pt-2 border-t border-blue-50 dark:border-slate-700">
+        <div className="flex justify-between text-sm items-center pt-2 border-t border-primary/5 dark:border-slate-700">
           <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Schedule</span>
           <span className="font-medium text-foreground text-right truncate max-w-[120px] text-xs">{classInfo.schedule}</span>
         </div>
@@ -153,11 +153,11 @@ export function BookGridCard({ book, onEdit, onDelete, onView, onIssue }) {
   
   return (
     <article className="school-card group relative overflow-hidden flex flex-col min-h-[300px]">
-      <div className="h-40 bg-gradient-to-br from-[#F0F4FF] to-[#E8EEFF] dark:from-slate-800 dark:to-slate-900 border-b border-blue-50 dark:border-slate-700 flex items-center justify-center relative p-4">
+      <div className="h-40 bg-gradient-to-br from-primary/5 to-primary/15 dark:from-slate-800 dark:to-slate-900 border-b border-primary/5 dark:border-slate-700 flex items-center justify-center relative p-4">
         {book.cover_url ? (
           <img src={book.cover_url} alt="Cover" className="h-full object-contain drop-shadow-md rounded-sm" />
         ) : (
-          <div className="w-24 h-32 bg-white dark:bg-slate-800 border border-blue-100 dark:border-slate-700 shadow-sm rounded-lg flex items-center justify-center text-blue-300 dark:text-slate-500">
+          <div className="w-24 h-32 bg-white dark:bg-slate-800 border border-primary/10 dark:border-slate-700 shadow-sm rounded-lg flex items-center justify-center text-primary dark:text-slate-500">
             <BookOpen className="w-8 h-8" />
           </div>
         )}
@@ -165,7 +165,7 @@ export function BookGridCard({ book, onEdit, onDelete, onView, onIssue }) {
         <span
           className={cn(
             "absolute top-3 left-3 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border shadow-sm backdrop-blur-md",
-            isAvailable ? "bg-[#1E3A8A]/90 text-white border-[#1E3A8A]" : "bg-red-500/90 text-white border-red-600"
+            isAvailable ? "bg-primary text-white border-primary" : "bg-red-500/90 text-white border-red-600"
           )}
         >
           {isAvailable ? `${book.available} Available` : "Checked Out"}
@@ -190,14 +190,14 @@ export function BookGridCard({ book, onEdit, onDelete, onView, onIssue }) {
         </div>
       </div>
       <div className="p-5 flex flex-col flex-1">
-        <p className="text-xs font-semibold text-[#3B82F6] mb-1 line-clamp-1 uppercase tracking-wider">{book.category}</p>
+        <p className="text-xs font-semibold text-primary mb-1 line-clamp-1 uppercase tracking-wider">{book.category}</p>
         <h3 className="school-heading font-bold text-lg leading-snug line-clamp-2">{book.title}</h3>
         <p className="text-sm text-muted-foreground mt-1 line-clamp-1 font-dmsans">{book.author}</p>
         
         <div className="mt-auto pt-4 flex items-center justify-between">
           <p className="text-xs text-muted-foreground font-mono">ISBN: {book.isbn}</p>
           {onIssue && (
-            <Button size="sm" variant={isAvailable ? "default" : "secondary"} className={cn("h-7 text-xs px-3 rounded-lg", isAvailable && "bg-[#1E3A8A] hover:bg-[#172554] shadow-sm")} disabled={!isAvailable} onClick={onIssue}>
+            <Button size="sm" variant={isAvailable ? "default" : "secondary"} className={cn("h-7 text-xs px-3 rounded-lg", isAvailable && "bg-primary hover:bg-primary/90 shadow-sm")} disabled={!isAvailable} onClick={onIssue}>
               Issue
             </Button>
           )}
@@ -209,7 +209,7 @@ export function BookGridCard({ book, onEdit, onDelete, onView, onIssue }) {
 
 export function ExamGridCard({ exam, onEdit, onDelete, onView, onStatusChange }) {
   const statusStyles = {
-    Upcoming: 'bg-blue-50 text-[#1E3A8A] border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800',
+    Upcoming: 'bg-primary/10 text-primary border-primary/20 dark:bg-primary/20 dark:text-primary dark:border-primary/30',
     Ongoing: 'bg-amber-50 text-amber-700 border-amber-200 animate-pulse dark:bg-amber-900/30 dark:text-amber-300',
     Completed: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300'
   };
@@ -231,20 +231,20 @@ export function ExamGridCard({ exam, onEdit, onDelete, onView, onStatusChange })
       
       <div className="mb-4">
         <h3 className="school-heading font-bold text-xl mb-1">{exam.subject}</h3>
-        <span className="text-xs font-bold px-2 py-1 bg-[#F0F4FF] dark:bg-slate-800 text-[#1E3A8A] dark:text-blue-300 rounded-lg">{exam.class}</span>
+        <span className="text-xs font-bold px-2 py-1 bg-primary/10 dark:bg-slate-800 text-primary dark:text-primary rounded-lg">{exam.class}</span>
       </div>
 
       <div className="space-y-3 mt-auto pt-4 border-t border-slate-100 dark:border-slate-800 text-sm text-muted-foreground">
         <div className="flex items-center gap-3">
-          <Calendar className="w-4 h-4 text-[#3B82F6]" />
+          <Calendar className="w-4 h-4 text-primary" />
           <span className="font-medium text-foreground">{new Date(exam.date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</span>
         </div>
         <div className="flex items-center gap-3">
-          <Clock className="w-4 h-4 text-[#3B82F6]" />
+          <Clock className="w-4 h-4 text-primary" />
           <span className="font-medium text-foreground">{exam.time} ({exam.duration})</span>
         </div>
         <div className="flex items-center gap-3">
-          <MapPin className="w-4 h-4 text-[#3B82F6]" />
+          <MapPin className="w-4 h-4 text-primary" />
           <span className="font-medium text-foreground truncate">{exam.venue}</span>
         </div>
       </div>
@@ -254,22 +254,22 @@ export function ExamGridCard({ exam, onEdit, onDelete, onView, onStatusChange })
 
 export function ModuleBanner({ title, subtitle, dateText, onRefresh, isRefreshing, metrics }) {
   return (
-    <div className="bg-gradient-to-r from-[#1E3A8A] via-[#1E40AF] to-[#1E3A8A] rounded-3xl p-6 relative overflow-hidden mb-6 shadow-lg shadow-[#1E3A8A]/20">
-      <div className="absolute top-0 right-0 w-96 h-96 bg-[#3B82F6] rounded-full blur-3xl opacity-30 -translate-y-1/2 translate-x-1/3 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#172554] rounded-full blur-3xl opacity-50 translate-y-1/3 -translate-x-1/4 pointer-events-none" />
+    <div className="bg-gradient-to-r from-primary via-primary/90 to-primary rounded-3xl p-6 relative overflow-hidden mb-6 shadow-lg shadow-primary/20">
+      <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl opacity-30 -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-64 h-64 bg-black/10 rounded-full blur-3xl opacity-50 translate-y-1/3 -translate-x-1/4 pointer-events-none" />
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.04] pointer-events-none" />
       
       <div className="relative z-10 flex flex-col md:flex-row md:items-start justify-between gap-6 mb-6">
         <div>
           {dateText && (
-            <p className="text-blue-200 text-[10px] font-bold tracking-widest uppercase mb-1 font-dmsans">
+            <p className="text-white/80 text-[10px] font-bold tracking-widest uppercase mb-1 font-dmsans">
               {dateText}
             </p>
           )}
           <h1 className="text-2xl md:text-3xl font-black text-white mb-1 tracking-tight" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
             {title}
           </h1>
-          <p className="text-blue-100 text-sm font-medium opacity-90 font-dmsans">
+          <p className="text-white/90 text-sm font-medium opacity-90 font-dmsans">
             {subtitle}
           </p>
         </div>
@@ -289,8 +289,8 @@ export function ModuleBanner({ title, subtitle, dateText, onRefresh, isRefreshin
               <div className="absolute inset-0 bg-white/0 group-hover:bg-white/5 transition-colors pointer-events-none" />
               <p className="text-2xl font-black text-white mb-1 relative z-10">{m.value}</p>
               <div className="flex items-center gap-1.5 relative z-10">
-                {m.icon && <m.icon className="w-3.5 h-3.5 text-blue-200" />}
-                <p className="text-xs font-bold text-blue-50 uppercase tracking-wider">{m.title}</p>
+                {m.icon && <m.icon className="w-3.5 h-3.5 text-white/80" />}
+                <p className="text-xs font-bold text-white uppercase tracking-wider">{m.title}</p>
               </div>
             </div>
           ))}
