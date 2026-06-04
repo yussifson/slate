@@ -138,6 +138,8 @@ export default function Login() {
       setLoading(false);
       return;
     }
+    
+    if (targetSubdomain) {
       // Check if user belongs to this subdomain
       const { data: profile } = await supabase.from('profiles').select('company_id, role').eq('id', authData.user.id).single();
       if (profile?.company_id) {
