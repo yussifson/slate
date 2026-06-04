@@ -114,24 +114,64 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   const isOrbitMode = activeModules?.length === 1 && activeModules[0] === '__orbit__';
   
   const ROLE_PERMISSIONS = {
-    lawyer: ["/my-dashboard", "/cases", "/leads", "/clients", "/calendar", "/tasks", "/documents", "/conflict-check", "/research", "/email-inbox", "/team"],
-    paralegal: ["/my-dashboard", "/cases", "/clients", "/calendar", "/tasks", "/documents", "/research", "/email-inbox"],
-    hr: ["/my-dashboard", "/hr", "/team", "/performance", "/documents", "/tasks", "/calendar"],
-    finance: ["/my-dashboard", "/invoices", "/billing", "/tasks", "/documents", "/calendar"],
-    support: ["/my-dashboard", "/tasks", "/documents", "/calendar", "/whatsapp", "/email-inbox"],
-    
-    // Retail Roles
-    store_manager: ["/retail-dashboard", "/pos", "/orders", "/purchase-orders", "/inventory", "/suppliers", "/sales", "/promotions", "/loyalty", "/shifts", "/retail-customers", "/reports", "/team", "/tasks", "/calendar", "/email-inbox"],
-    cashier: ["/retail-dashboard", "/pos", "/orders", "/retail-customers", "/loyalty", "/shifts", "/tasks"],
-    inventory_clerk: ["/retail-dashboard", "/inventory", "/purchase-orders", "/suppliers", "/shifts", "/tasks"],
-    sales_associate: ["/retail-dashboard", "/pos", "/orders", "/retail-customers", "/shifts", "/tasks"],
+    // Law Firm Roles
+    lawyer: ["/my-dashboard", "/cases", "/leads", "/clients", "/calendar", "/tasks", "/documents", "/conflict-check", "/research", "/email-inbox", "/chat", "/board", "/team"],
+    paralegal: ["/my-dashboard", "/cases", "/clients", "/calendar", "/tasks", "/documents", "/research", "/email-inbox", "/chat", "/board"],
+    legal_secretary: ["/my-dashboard", "/clients", "/calendar", "/tasks", "/documents", "/whatsapp", "/email-inbox", "/chat"],
+    finance: ["/my-dashboard", "/invoices", "/billing", "/tasks", "/documents", "/calendar", "/reports", "/email-inbox", "/chat"],
+    hr: ["/my-dashboard", "/hr", "/team", "/performance", "/documents", "/tasks", "/calendar", "/chat"],
+    client: ["/", "/client-cases", "/billing", "/documents", "/settings", "/chat", "/board"],
     
     // School Roles
     teacher: ["/", "/classes", "/timetable", "/assignments", "/attendance", "/grades", "/exams", "/discipline", "/library", "/notices", "/marketplace", "/documents", "/tasks", "/reports", "/chat", "/board", "/email-inbox"],
     student: ["/student-portal", "/chat", "/board"],
     parent: ["/parent-portal", "/chat", "/board"],
-    accountant: ["/", "/fees", "/reports", "/documents", "/tasks", "/email-inbox"],
-    librarian: ["/", "/library", "/documents", "/tasks", "/email-inbox"]
+    accountant: ["/", "/fees", "/reports", "/documents", "/tasks", "/email-inbox", "/chat"],
+    librarian: ["/", "/library", "/documents", "/tasks", "/email-inbox", "/chat"],
+
+    // Hospital Roles
+    doctor: ["/", "/patients", "/appointments", "/wards", "/prescriptions", "/lab-results", "/documents", "/tasks", "/chat", "/board", "/email-inbox"],
+    nurse: ["/", "/patients", "/wards", "/prescriptions", "/lab-results", "/tasks", "/chat", "/email-inbox"],
+    receptionist: ["/", "/patients", "/appointments", "/claims", "/chat", "/email-inbox", "/front-desk", "/reservations", "/room-management", "/guest-requests", "/billing"],
+    pharmacist: ["/", "/prescriptions", "/pharmacy", "/chat", "/email-inbox"],
+    lab_technician: ["/", "/lab-results", "/tasks", "/chat"],
+
+    // Hotel Roles (receptionist combined above to share path if needed, but they use different modules)
+    housekeeper: ["/", "/rooms", "/housekeeping", "/guest-requests", "/tasks", "/chat"],
+    chef: ["/", "/restaurant", "/inventory", "/tasks", "/chat"],
+    waiter: ["/", "/restaurant", "/guest-requests", "/chat"],
+    maintenance: ["/", "/rooms", "/guest-requests", "/tasks", "/chat"],
+
+    // Church Roles
+    elder: ["/", "/members", "/ministries", "/events", "/tithes", "/volunteers", "/prayers", "/attendance", "/documents", "/chat", "/board"],
+    ministry_leader: ["/", "/ministries", "/events", "/volunteers", "/small-groups", "/prayers", "/attendance", "/documents", "/chat"],
+    treasurer: ["/", "/tithes", "/reports", "/documents", "/chat"],
+    volunteer: ["/", "/events", "/volunteers", "/tasks", "/chat"],
+    member: ["/", "/events", "/small-groups", "/prayers", "/sermons", "/tithes"],
+
+    // Insurance Agency Roles
+    underwriter: ["/", "/policies", "/claims", "/underwriting", "/documents", "/chat", "/email-inbox"],
+    agent: ["/", "/policies", "/leads", "/clients", "/agent-performance", "/documents", "/chat", "/board", "/email-inbox"],
+    claims_adjuster: ["/", "/policies", "/claims", "/documents", "/tasks", "/chat", "/email-inbox"],
+
+    // Retail / POS Roles
+    supervisor: ["/retail-dashboard", "/pos", "/orders", "/inventory", "/products", "/promotions", "/clients", "/shifts", "/reports", "/tasks", "/chat", "/email-inbox"],
+    cashier: ["/retail-dashboard", "/pos", "/orders", "/clients", "/loyalty", "/shifts", "/tasks"],
+    inventory_manager: ["/retail-dashboard", "/inventory", "/purchase-orders", "/products", "/suppliers", "/shifts", "/tasks"],
+    
+    // Logistics Roles
+    dispatcher: ["/", "/shipments", "/dispatch", "/drivers", "/routes", "/fleet", "/pickups", "/chat", "/email-inbox"],
+    driver: ["/", "/dispatch", "/routes", "/pickups", "/tasks", "/chat"],
+    warehouse_staff: ["/", "/shipments", "/warehouse", "/inventory", "/tasks", "/chat"],
+
+    // HR / ERP Roles
+    hr_manager: ["/", "/employees", "/recruitment", "/payroll", "/leave", "/performance", "/training", "/org-chart", "/disciplinary", "/benefits", "/documents", "/reports", "/tasks", "/chat", "/email-inbox"],
+    recruiter: ["/", "/recruitment", "/documents", "/tasks", "/chat"],
+    department_head: ["/", "/employees", "/leave", "/performance", "/training", "/org-chart", "/tasks", "/chat"],
+    payroll_officer: ["/", "/employees", "/payroll", "/benefits", "/reports", "/documents", "/chat"],
+    employee: ["/", "/leave", "/training", "/org-chart", "/benefits", "/tasks", "/chat"],
+
+    support: ["/my-dashboard", "/", "/tasks", "/documents", "/calendar", "/whatsapp", "/email-inbox", "/chat"]
   };
 
   const allowedPaths = isAdmin ? null : (ROLE_PERMISSIONS[user?.role] || ROLE_PERMISSIONS.support);
