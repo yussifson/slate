@@ -89,7 +89,22 @@ export default function OnboardingWizard() {
          }
 
           if (!companyIdToUse) {
-             throw new Error("Could not identify workspace to complete onboarding. Please re-login.");
+             const md = user?.user_metadata || {};
+             const cName = md.company_name || 'My Workspace';
+             const cSubdomain = md.subdomain || `workspace-${Date.now()}`;
+             
+             const { data: newComp, error: newCompErr } = await supabase.from('companies').insert({
+                 name: cName,
+                 subdomain: cSubdomain,
+                 email: user.email,
+                 industry_type: 'pending',
+                 subscription_plan: 'starter',
+                 subscription_status: 'trial',
+                 status: 'active'
+             }).select().single();
+             
+             if (newCompErr) throw newCompErr;
+             companyIdToUse = newComp.id;
           }
 
          const { error: profErr } = await supabase.from('profiles').update({

@@ -32,12 +32,17 @@ export default function SignUp() {
       }
 
       // 1. Sign up the user
+      const cleanSubdomain = subdomain.toLowerCase().replace(/[^a-z0-9-]/g, '');
+      if (!cleanSubdomain) throw new Error("Please enter a valid subdomain");
+
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
-            full_name: username
+            full_name: username,
+            company_name: companyName,
+            subdomain: cleanSubdomain
           }
         }
       });
@@ -46,10 +51,15 @@ export default function SignUp() {
 
       const user = authData.user;
       if (!user) throw new Error("Could not create user account.");
-      if (!authData.session) throw new Error("This email is already registered. Please sign in instead.");
+      
+      if (user.identities && user.identities.length === 0) {
+        throw new Error("This email is already registered. Please sign in instead.");
+      }
 
-      const cleanSubdomain = subdomain.toLowerCase().replace(/[^a-z0-9-]/g, '');
-      if (!cleanSubdomain) throw new Error("Please enter a valid subdomain");
+      if (!authData.session) {
+        setSuccess("Registration successful! Please check your email to confirm your account before logging in.");
+        return;
+      }
 
       // 2. Create the company
       const { data: companyData, error: compError } = await supabase.from('companies').insert({
