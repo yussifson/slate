@@ -60,7 +60,7 @@ export default function PolicyholderPortal() {
   }
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto" style={{ background: "linear-gradient(135deg, rgba(148,0,255,0.04) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh" }}>
+    <div className="space-y-6 max-w-5xl mx-auto">
       {/* Header */}
       <div className="bg-gradient-to-r from-insurance-700 to-insurance-800 rounded-2xl p-6 md:p-8 text-white shadow-md relative overflow-hidden">
         <div className="relative z-10">

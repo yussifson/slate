@@ -147,7 +147,7 @@ export default function Policies() {
   const totalPremium = policies.reduce((sum, p) => sum + (Number(p.premium) || 0), 0);
 
   return (
-    <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(148,0,255,0.04) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh" }}>
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-card-foreground">{t("policies", "Policies")}</h1>

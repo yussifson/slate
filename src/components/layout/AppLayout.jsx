@@ -167,11 +167,56 @@ export default function AppLayout() {
   return (
     <div className="flex h-screen bg-slate-50/50 dark:bg-background overflow-hidden relative selection:bg-primary/20">
       {/* Global Ambient Orbit Background */}
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-colors duration-1000">
-        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/10 blur-[120px] mix-blend-multiply dark:mix-blend-screen transition-colors duration-1000" />
-        <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-primary/10 blur-[120px] mix-blend-multiply dark:mix-blend-screen transition-colors duration-1000" />
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.02] dark:opacity-[0.05] transition-opacity" />
-      </div>
+      {(() => {
+        const industry = (impersonatedCompany?.industry_type || user?.company_industry || '').toLowerCase();
+        
+        if (industry === 'insurance') {
+          return (
+            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-all duration-1000 bg-slate-50/30 dark:bg-slate-950/30">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#9400FF]/5 via-transparent to-[#9400FF]/10 mix-blend-normal" />
+              <div className="absolute top-[-20%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[#9400FF]/15 blur-[120px] mix-blend-multiply dark:mix-blend-screen" />
+              <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#9400FF]/15 blur-[100px] mix-blend-multiply dark:mix-blend-screen" />
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.04] dark:opacity-[0.08]" />
+            </div>
+          );
+        } else if (industry === 'hospital') {
+          return (
+            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-all duration-1000 bg-emerald-50/20 dark:bg-emerald-950/20">
+              <div className="absolute inset-0 bg-gradient-to-b from-[#0d9488]/5 via-transparent to-[#0d9488]/10" />
+              <div className="absolute top-0 right-0 w-[100%] h-[50%] bg-gradient-to-b from-[#0d9488]/10 to-transparent opacity-60 blur-3xl" />
+              <div className="absolute bottom-0 left-0 w-[100%] h-[50%] bg-gradient-to-t from-[#0d9488]/10 to-transparent opacity-60 blur-3xl" />
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/clean-medical.png')] opacity-[0.03] dark:opacity-[0.05]" />
+            </div>
+          );
+        } else if (industry === 'hotel') {
+          return (
+            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-all duration-1000 bg-slate-100/40 dark:bg-slate-900/60">
+              <div className="absolute inset-0 bg-gradient-to-tr from-[#443199]/10 via-[#dabcff]/5 to-[#443199]/10 mix-blend-multiply dark:mix-blend-color-dodge" />
+              <div className="absolute top-1/4 left-1/4 w-[40%] h-[40%] rounded-full bg-amber-200/10 blur-[100px] mix-blend-overlay" />
+              <div className="absolute bottom-1/4 right-1/4 w-[40%] h-[40%] rounded-full bg-[#443199]/20 blur-[100px]" />
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-[0.06] dark:opacity-[0.1]" />
+            </div>
+          );
+        } else if (industry === 'school') {
+          return (
+            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-all duration-1000 bg-slate-50/50 dark:bg-slate-950/50">
+              <div className="absolute inset-0 bg-gradient-to-r from-[#6F00FF]/5 via-transparent to-[#6F00FF]/5" />
+              <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[60%] rounded-full bg-[#6F00FF]/10 blur-[120px]" />
+              <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[60%] rounded-full bg-[#6F00FF]/10 blur-[120px]" />
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03] dark:opacity-[0.06]" />
+            </div>
+          );
+        }
+
+        // Default Ambient Orbit Background
+        return (
+          <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-colors duration-1000">
+            <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/10 blur-[120px] mix-blend-multiply dark:mix-blend-screen transition-colors duration-1000" />
+            <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-primary/10 blur-[120px] mix-blend-multiply dark:mix-blend-screen transition-colors duration-1000" />
+            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.02] dark:opacity-[0.05] transition-opacity" />
+          </div>
+        );
+      })()}
 
       <div className="z-10 flex">
         <Sidebar user={user} isCollapsed={isSidebarCollapsed} setIsCollapsed={setIsSidebarCollapsed} />
