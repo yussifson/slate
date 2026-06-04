@@ -77,6 +77,8 @@ export default function OnboardingWizard() {
 
          if (existingComp) {
             companyIdToUse = existingComp.id;
+         }
+
           if (!companyIdToUse) {
              throw new Error("Could not identify workspace to complete onboarding. Please re-login.");
           }
@@ -87,10 +89,11 @@ export default function OnboardingWizard() {
          }).eq('id', user.id);
          
          if (profErr) throw profErr;
-      } else {
-        // 1. Update company details
-        const { error: compError } = await supabase
-          .from('companies')
+      }
+
+      // 1. Update company details
+      const { error: compError } = await supabase
+        .from('companies')
           .update({
             industry_type: industry,
             education_level: industry === 'school' ? educationLevel : null,
@@ -101,7 +104,6 @@ export default function OnboardingWizard() {
           .eq('id', companyIdToUse);
 
         if (compError) throw compError;
-      }
 
       // 2. Insert invited staff records
       if (invitedStaff.length > 0) {
