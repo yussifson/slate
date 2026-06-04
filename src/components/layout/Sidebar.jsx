@@ -26,6 +26,7 @@ import {
   HandCoins, Users2, Blocks, Map, Warehouse, Car, MapPin,
   FileSearch, LayoutGrid, BedDouble, BellRing, MoreHorizontal, Pencil, Trash2, Eye, Zap, Store
 , ShieldAlert, HeartPulse, FilePlus, FileCheck, Gavel, CalendarDays, CalendarCheck, UserCheck, PenTool, Target, Calculator, Home, Moon, CalendarSearch, Wallet, PieChart, ArrowUpRight, ArrowDownLeft, Laptop, Smartphone, MessageSquare, LineChart
+
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useImpersonation } from "@/lib/ImpersonationContext";
