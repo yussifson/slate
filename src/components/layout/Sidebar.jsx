@@ -187,7 +187,15 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
 
   const allowedPaths = isAdmin ? null : (ROLE_PERMISSIONS[user?.role] || ROLE_PERMISSIONS.support);
 
-  const filteredCompanyNav = isOrbitMode ? [] : industryNav.filter(item => {
+  const coreOrbitNav = [
+    { label: "Orbit Home", path: "/", icon: "Sparkles" },
+    { label: "Inbox", path: "/email-inbox", icon: "Mail" },
+    { label: "Chat", path: "/chat", icon: "MessageCircle" },
+    { label: "Board", path: "/board", icon: "LayoutGrid" },
+    { label: "Settings", path: "/settings", icon: "Settings" }
+  ];
+
+  const filteredCompanyNav = isOrbitMode ? coreOrbitNav : industryNav.filter(item => {
     if (activeModules && !['/', '/settings', '/integrations', '/admin', '/email-inbox', '/chat', '/board'].includes(item.path)) {
       if (!activeModules.includes(item.path)) return false;
     }

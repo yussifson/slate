@@ -81,7 +81,8 @@ export default function OnboardingWizard() {
             .from('companies')
             .select('id, subdomain')
             .eq('email', user?.email)
-            .single();
+            .limit(1)
+            .maybeSingle();
 
          if (existingComp) {
             companyIdToUse = existingComp.id;
@@ -138,7 +139,8 @@ export default function OnboardingWizard() {
             status: 'active'
           })
           .select()
-          .single();
+          .limit(1)
+          .maybeSingle();
 
         if (!clientError && clientData) {
           await supabase.from('legal_cases').insert({
@@ -147,7 +149,7 @@ export default function OnboardingWizard() {
             title: caseTitle,
             stage: 'intake',
             status: 'active',
-            description: `First ${getTerm(industry, 'case').toLowerCase()} initialized during onboarding.`
+            practice_area: finalIndustry
           });
         }
       }
