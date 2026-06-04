@@ -101,7 +101,6 @@ export default function SignUp() {
         <div className="max-w-md w-full mx-auto">
           <div className="flex items-center justify-between mb-8">
             <Logo />
-            <ThemeToggle />
           </div>
           
           <div className="mb-8">
@@ -212,26 +211,26 @@ export default function SignUp() {
         </div>
       </div>
       {/* Right Side: Marketing Visual */}
-      <div className="hidden lg:flex flex-1 relative items-center justify-center bg-[#0a0a0a] overflow-hidden">
-        {/* Deep, Premium Dark Background Effects */}
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] mix-blend-overlay"></div>
-        <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-gradient-to-br from-indigo-500/10 to-purple-500/10 blur-[120px] rounded-full pointer-events-none"></div>
-        <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-gradient-to-tr from-blue-500/10 to-indigo-500/10 blur-[120px] rounded-full pointer-events-none"></div>
+      <div className="hidden lg:flex flex-1 relative items-center justify-center bg-slate-50 overflow-hidden">
+        {/* Abstract Pattern Background */}
+        <div className="absolute inset-0 bg-slate-900/5 mix-blend-overlay"></div>
+        <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-gradient-to-br from-blue-400/20 to-indigo-500/20 blur-[100px] rounded-full pointer-events-none"></div>
+        <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-gradient-to-tr from-cyan-300/20 to-blue-400/20 blur-[100px] rounded-full pointer-events-none"></div>
 
-        <div className="relative z-10 w-full max-w-2xl p-12 lg:p-16 flex flex-col justify-between">
+        <div className="relative z-10 w-full max-w-2xl bg-white rounded-[2rem] border border-slate-200/60 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] p-12 lg:p-16 flex flex-col justify-between">
           <div>
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-semibold text-white/80 mb-8 uppercase tracking-[0.2em] backdrop-blur-md">
-              <span className="flex h-1.5 w-1.5 rounded-full bg-indigo-400" />
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-xs font-semibold text-blue-700 mb-8 uppercase tracking-[0.2em]">
+              <span className="flex h-1.5 w-1.5 rounded-full bg-blue-500" />
               {t("universal_os", "Universal Operating System")}
             </div>
             
-            <h3 className="text-4xl 2xl:text-6xl font-black text-white mb-6 leading-[1.1] tracking-tight" style={{ fontFamily: 'Inter, sans-serif' }}>
+            <h3 className="text-4xl 2xl:text-6xl font-black text-slate-900 mb-6 leading-[1.1] tracking-tight" style={{ fontFamily: 'Inter, sans-serif' }}>
               {t(
                 "a_workspace_that_grows_with_yo",
                 "The foundation for modern institutions."
               )}
             </h3>
-            <p className="text-lg text-white/60 font-light max-w-lg leading-relaxed">
+            <p className="text-lg text-slate-600 font-light max-w-lg leading-relaxed">
               {t(
                 "optalflow_unifies_your_team_s_",
                 "Optalflow unifies your entire organization's workflow, operations, and billing into one beautifully orchestrated platform."
@@ -239,24 +238,24 @@ export default function SignUp() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-8 mt-16 border-t border-white/10 pt-10">
+          <div className="grid grid-cols-2 gap-8 mt-16 border-t border-slate-100 pt-10">
             <div>
-              <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-indigo-400 mb-5 shadow-sm backdrop-blur-sm">
+              <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 mb-5 shadow-sm">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
               </div>
-              <h4 className="text-lg font-bold text-white mb-2 tracking-wide">{t("set_up_in_seconds", "Instant Provisioning")}</h4>
-              <p className="text-sm text-white/50 font-light leading-relaxed">{t(
+              <h4 className="text-lg font-bold text-slate-900 mb-2 tracking-wide">{t("set_up_in_seconds", "Instant Provisioning")}</h4>
+              <p className="text-sm text-slate-500 font-light leading-relaxed">{t(
                 "no_engineering_required_just_i",
                 "Subdomain, databases, and core infrastructure deployed seamlessly."
               )}</p>
             </div>
             
             <div>
-              <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-indigo-400 mb-5 shadow-sm backdrop-blur-sm">
+              <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 mb-5 shadow-sm">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
               </div>
-              <h4 className="text-lg font-bold text-white mb-2 tracking-wide">{t("bank_grade_security", "Enterprise Security")}</h4>
-              <p className="text-sm text-white/50 font-light leading-relaxed">{t(
+              <h4 className="text-lg font-bold text-slate-900 mb-2 tracking-wide">{t("bank_grade_security", "Enterprise Security")}</h4>
+              <p className="text-sm text-slate-500 font-light leading-relaxed">{t(
                 "soc2_compliant_infrastructure_",
                 "Isolated sub-tenants with Row-Level Security ensuring absolute data privacy."
               )}</p>

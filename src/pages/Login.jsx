@@ -243,7 +243,6 @@ export default function Login() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background p-4 relative">
         <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
-          <ThemeToggle />
         </div>
         <div className="w-full max-w-md space-y-6 rounded-xl bg-card p-8 shadow-xl text-center border border-border">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10">
@@ -275,7 +274,6 @@ export default function Login() {
         <div className="max-w-md w-full mx-auto">
           <div className="flex items-center justify-between mb-8">
             <Logo />
-            <ThemeToggle />
           </div>
           
           <div className="mb-8">
