@@ -174,6 +174,12 @@ import ResetPassword from './pages/ResetPassword';
 
 import { getSubdomainAndBase } from '@/lib/domainUtils';
 
+// University Pages
+import UniDashboard from './pages/university/UniDashboard';
+import UniStudents from './pages/university/UniStudents';
+import UniFaculties from './pages/university/UniFaculties';
+import UniCourses from './pages/university/UniCourses';
+
 // High School Pages
 import SHSClasses from './pages/highschool/SHSClasses';
 import SHSStudents from './pages/highschool/SHSStudents';
@@ -270,6 +276,12 @@ function PlatformRoutes() {
 
       <Route path="/gamification" element={<SchoolGamification />} />
       <Route path="/teacher-evaluations" element={<SchoolTeacherEvaluations />} />
+
+      {/* University Suite Routes */}
+      <Route path="/u/" element={<UniDashboard />} />
+      <Route path="/u/students" element={<UniStudents />} />
+      <Route path="/u/faculties" element={<UniFaculties />} />
+      <Route path="/u/courses" element={<UniCourses />} />
 
       {/* High School (SHS) Routes */}
       <Route path="/s/" element={<SHSDashboard />} />
