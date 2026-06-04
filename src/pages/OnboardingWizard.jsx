@@ -29,11 +29,10 @@ export default function OnboardingWizard() {
   }, [step]);
 
   // Step 1: Firm profile
-  const [firmName, setFirmName] = useState(user?.company_name || '');
   const [country, setCountry] = useState('Nigeria');
   const [currency, setCurrency] = useState('NGN');
-  const [subdomain, setSubdomain] = useState('');
   const [industry, setIndustry] = useState(user?.company_industry || 'law');
+  const [educationLevel, setEducationLevel] = useState('primary');
 
   // Step 2: Setup Mode
   const [setupMode, setSetupMode] = useState('template'); // 'template', 'orbit', 'custom'
@@ -78,34 +77,12 @@ export default function OnboardingWizard() {
 
          if (existingComp) {
             companyIdToUse = existingComp.id;
-         } else {
-            if (!subdomain || !firmName) throw new Error("Please provide a workspace name and subdomain.");
-            const cleanSubdomain = subdomain.toLowerCase().replace(/[^a-z0-9-]/g, '');
-            
-            const { data: compData, error: compErr } = await supabase.from('companies').insert({
-               name: firmName,
-               subdomain: cleanSubdomain,
-               email: user?.email,
-               industry_type: industry,
-               country: country,
-               currency: currency,
-               subscription_plan: 'starter',
-               subscription_status: 'trial',
-               status: 'active'
-            }).select().single();
-
-            if (compErr) {
-               if (compErr.code === '23505' && compErr.message.includes('companies_subdomain_key')) {
-                  throw new Error(`The workspace URL "${cleanSubdomain}" is already taken. Please choose another one.`);
-               }
-               throw compErr;
-            }
-            companyIdToUse = compData.id;
-         }
+          if (!companyIdToUse) {
+             throw new Error("Could not identify workspace to complete onboarding. Please re-login.");
+          }
 
          const { error: profErr } = await supabase.from('profiles').update({
             company_id: companyIdToUse,
-            company_name: firmName,
             role: 'company_admin'
          }).eq('id', user.id);
          
@@ -115,7 +92,8 @@ export default function OnboardingWizard() {
         const { error: compError } = await supabase
           .from('companies')
           .update({
-            name: firmName,
+            industry_type: industry,
+            education_level: industry === 'school' ? educationLevel : null,
             country: country,
             currency: currency,
             status: 'active'
@@ -290,51 +268,43 @@ export default function OnboardingWizard() {
 
                 <div className="space-y-5">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{INDUSTRIES[industry]?.name || 'Workspace'} {t("name", "Name")}</label>
-                    <Input 
-                      type="text"
-                      value={firmName}
-                      onChange={(e) => setFirmName(e.target.value)}
-                      placeholder="E.g. Mensah & Partners"
-                      className="h-12 bg-white border-slate-200 focus:bg-white focus-visible:bg-white focus:border-blue-500 focus:ring-blue-500 text-slate-900 rounded-xl"
-                    />
+                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("industry", "Suite Selection")}</label>
+                    <Select value={industry} onValueChange={setIndustry}>
+                      <SelectTrigger className="h-12 bg-white border-slate-200 rounded-xl text-slate-900 focus:ring-blue-500">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white text-slate-900 border-slate-200">
+                        <SelectItem value="law">{t("law_firm", "Law Firm Suite")}</SelectItem>
+                        <SelectItem value="retail">{t("retail_pos", "Retail / POS Suite")}</SelectItem>
+                        <SelectItem value="school">{t("school_education", "Basic Education Suite (Preschool to JHS)")}</SelectItem>
+                        <SelectItem value="highschool">High School Suite</SelectItem>
+                        <SelectItem value="university">University / College Suite</SelectItem>
+                        <SelectItem value="online">Online Learning Platform Suite</SelectItem>
+                        <SelectItem value="vocational">Vocational / Technical Suite</SelectItem>
+                        <SelectItem value="hospital">{t("hospital_healthcare", "Healthcare Suite")}</SelectItem>
+                        <SelectItem value="hotel">{t("hotel_hospitality", "Hospitality Suite")}</SelectItem>
+                        <SelectItem value="logistics">{t("logistics_delivery", "Logistics Suite")}</SelectItem>
+                        <SelectItem value="insurance">{t("insurance", "Insurance Suite")}</SelectItem>
+                        <SelectItem value="church">{t("church_religion", "Church Suite")}</SelectItem>
+                        <SelectItem value="hr">{t("hr_erp", "HR & ERP Suite")}</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
 
-                  {!user?.company_id && (
-                    <>
-                      <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("workspace_url_subdomain", "Workspace URL (Subdomain)")}</label>
-                        <div className="flex items-center relative">
-                          <Input 
-                            type="text"
-                            value={subdomain}
-                            onChange={(e) => setSubdomain(e.target.value)}
-                            placeholder="mycompany"
-                            className="h-12 bg-white border-slate-200 focus:bg-white focus-visible:bg-white focus:border-blue-500 focus:ring-blue-500 text-slate-900 rounded-xl pl-4 pr-32"
-                          />
-                          <span className="absolute right-4 text-slate-400 font-medium text-sm pointer-events-none">.optalflow.com</span>
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("industry", "Industry")}</label>
-                        <Select value={industry} onValueChange={setIndustry}>
-                          <SelectTrigger className="h-12 bg-white border-slate-200 rounded-xl text-slate-900 focus:ring-blue-500">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent className="bg-white text-slate-900 border-slate-200">
-                            <SelectItem value="law">{t("law_firm", "Law Firm")}</SelectItem>
-                            <SelectItem value="hospital">{t("hospital_healthcare", "Hospital & Healthcare")}</SelectItem>
-                            <SelectItem value="school">{t("school_education", "School & Education")}</SelectItem>
-                            <SelectItem value="hotel">{t("hotel_hospitality", "Hotel & Hospitality")}</SelectItem>
-                            <SelectItem value="church">{t("church_religion", "Church & Religion")}</SelectItem>
-                            <SelectItem value="insurance">{t("insurance", "Insurance")}</SelectItem>
-                            <SelectItem value="retail">{t("retail_pos", "Retail / POS")}</SelectItem>
-                            <SelectItem value="logistics">{t("logistics_delivery", "Logistics & Delivery")}</SelectItem>
-                            <SelectItem value="hr">{t("hr_erp", "HR & ERP")}</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </>
+                  {industry === 'school' && (
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("education_level", "Basic Education Level")}</label>
+                      <Select value={educationLevel} onValueChange={setEducationLevel}>
+                        <SelectTrigger className="w-full h-12 bg-blue-50/50 border-blue-200 rounded-xl text-slate-900 focus:ring-blue-500">
+                          <SelectValue placeholder="Select basic level" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-white text-slate-900 border-slate-200">
+                          <SelectItem value="preschool">Preschool / Kindergarten</SelectItem>
+                          <SelectItem value="primary">Primary / Elementary School</SelectItem>
+                          <SelectItem value="jhs">Junior High School</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   )}
 
                   <div className="grid grid-cols-2 gap-5">
@@ -667,7 +637,6 @@ export default function OnboardingWizard() {
               <Button 
                 onClick={() => setStep(step + 1)}
                 disabled={
-                  (step === 1 && !firmName) || 
                   (step === 2 && setupMode === 'custom' && selectedModules.length === 0)
                 }
                 className="h-12 px-8 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md shadow-blue-600/20 group transition-all"

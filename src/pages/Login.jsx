@@ -312,18 +312,6 @@ export default function Login() {
                   className="w-full h-14 text-base bg-white text-slate-900 border-slate-200 placeholder:text-slate-400 focus-visible:ring-primary/30 focus-visible:border-primary"
                 />
               </div>
-              { !currentSubdomain && (
-                <div className="space-y-2 relative">
-                  <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">{t("workspace", "Workspace URL (Optional)")}</label>
-                  <Input
-                    placeholder="e.g. myfirm"
-                    value={workspace}
-                    onChange={(e) => setWorkspace(e.target.value)}
-                    className="h-12 bg-background/50 pl-4 border-muted hover:border-primary/50 focus:border-primary transition-colors text-foreground"
-                  />
-                  <span className="absolute right-3 top-[34px] text-muted-foreground text-sm">.{baseDomain}</span>
-                </div>
-              )}
             </div>
 
             <Button type="submit" className="w-full h-12 text-base font-medium transition-all active:scale-[0.98]" disabled={loading}>

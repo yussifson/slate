@@ -97,6 +97,109 @@ export const INDUSTRIES = {
     ],
   },
 
+  highschool: {
+    name: 'High School',
+    icon: '🏫',
+    terms: {
+      client: 'Student', clients: 'Students',
+      case: 'Class', cases: 'Classes',
+      staff: 'Teacher', staffPlural: 'Teachers',
+      venue: 'Campus', intake: 'Enrollment',
+      hearing: 'Session', hearings: 'Sessions',
+    },
+    roles: [
+      { value: 'company_admin', label: 'Principal' },
+      { value: 'teacher', label: 'Teacher' },
+      { value: 'accountant', label: 'Accountant' },
+      { value: 'hr', label: 'HR Officer' },
+      { value: 'student', label: 'Student' },
+    ],
+    nav: [
+      { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
+      { label: 'Students', path: '/students', icon: 'Users' },
+      { label: 'Classes', path: '/classes', icon: 'BookOpen' },
+      { label: 'Timetable', path: '/timetable', icon: 'Calendar' },
+      { label: 'Grades', path: '/grades', icon: 'Award' },
+      { label: 'Fee Management', path: '/fees', icon: 'Banknote' },
+      { label: 'Settings', path: '/settings', icon: 'Settings' },
+    ],
+  },
+
+  university: {
+    name: 'University',
+    icon: '🎓',
+    terms: {
+      client: 'Student', clients: 'Students',
+      case: 'Course', cases: 'Courses',
+      staff: 'Professor', staffPlural: 'Professors',
+      venue: 'Campus', intake: 'Admissions',
+      hearing: 'Lecture', hearings: 'Lectures',
+    },
+    roles: [
+      { value: 'company_admin', label: 'Dean / VC' },
+      { value: 'professor', label: 'Professor' },
+      { value: 'finance', label: 'Finance' },
+      { value: 'student', label: 'Student' },
+    ],
+    nav: [
+      { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
+      { label: 'Students', path: '/students', icon: 'Users' },
+      { label: 'Courses', path: '/courses', icon: 'BookOpen' },
+      { label: 'Faculty', path: '/faculty', icon: 'Briefcase' },
+      { label: 'Admissions', path: '/admissions', icon: 'FileText' },
+      { label: 'Finance', path: '/finance', icon: 'Banknote' },
+      { label: 'Settings', path: '/settings', icon: 'Settings' },
+    ],
+  },
+
+  online: {
+    name: 'Online Learning',
+    icon: '💻',
+    terms: {
+      client: 'Learner', clients: 'Learners',
+      case: 'Course', cases: 'Courses',
+      staff: 'Instructor', staffPlural: 'Instructors',
+      venue: 'Platform', intake: 'Registration',
+      hearing: 'Live Session', hearings: 'Live Sessions',
+    },
+    roles: [
+      { value: 'company_admin', label: 'Platform Admin' },
+      { value: 'instructor', label: 'Instructor' },
+      { value: 'learner', label: 'Learner' },
+    ],
+    nav: [
+      { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
+      { label: 'Learners', path: '/learners', icon: 'Users' },
+      { label: 'Courses', path: '/courses', icon: 'BookOpen' },
+      { label: 'Sales', path: '/sales', icon: 'Banknote' },
+      { label: 'Settings', path: '/settings', icon: 'Settings' },
+    ],
+  },
+
+  vocational: {
+    name: 'Vocational / Technical',
+    icon: '🔧',
+    terms: {
+      client: 'Apprentice', clients: 'Apprentices',
+      case: 'Program', cases: 'Programs',
+      staff: 'Instructor', staffPlural: 'Instructors',
+      venue: 'Workshop', intake: 'Enrollment',
+      hearing: 'Practical', hearings: 'Practicals',
+    },
+    roles: [
+      { value: 'company_admin', label: 'Director' },
+      { value: 'instructor', label: 'Instructor' },
+      { value: 'apprentice', label: 'Apprentice' },
+    ],
+    nav: [
+      { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
+      { label: 'Apprentices', path: '/apprentices', icon: 'Users' },
+      { label: 'Programs', path: '/programs', icon: 'BookOpen' },
+      { label: 'Workshops', path: '/workshops', icon: 'Building2' },
+      { label: 'Settings', path: '/settings', icon: 'Settings' },
+    ],
+  },
+
   hospital: {
     name: 'Hospital',
     icon: '🏥',
