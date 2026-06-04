@@ -91,6 +91,8 @@ export default function Students() {
     };
   });
 
+  const classes = ['All', 'Grade 7B', 'Grade 8C', 'Grade 9A', 'Grade 9B', 'Grade 10A', 'Grade 10B', 'Grade 11A', 'Grade 12A'];
+
   const filtered = students.filter(s =>
     (statusFilter === 'All' || s.status === statusFilter) &&
     (s.name?.toLowerCase().includes(search.toLowerCase()) || s.studentId?.includes(search))
