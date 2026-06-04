@@ -103,11 +103,22 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
     }
   }, [user?.company_id, activeIndustry, isAdmin]);
 
+  const { data: companyData } = useQuery({
+    queryKey: ['company', user?.company_id],
+    queryFn: async () => {
+      if (!user?.company_id) return null;
+      const { data } = await supabase.from('companies').select('education_level').eq('id', user.company_id).single();
+      return data;
+    },
+    enabled: !!user?.company_id
+  });
+
   const activeCompanyLogo = impersonatedCompany?.logo_url || impersonatedCompany?.logo_light_url || user?.company_logo_url;
-  const activeCompanyName = impersonatedCompany?.name || user?.company_name || "LexAfrica";
+  const activeCompanyName = impersonatedCompany?.name || user?.company_name || "Optalflow";
+  const activeEducationLevel = impersonatedCompany?.education_level || companyData?.education_level || 'primary';
 
   const industryData = INDUSTRIES[activeIndustry] || INDUSTRIES.law;
-  const industryNav = getIndustryNav(activeIndustry);
+  const industryNav = getIndustryNav(activeIndustry, activeEducationLevel);
   
   const savedModulesStr = localStorage.getItem(`active_modules_${user?.company_id}`);
   const activeModules = savedModulesStr ? JSON.parse(savedModulesStr) : null;

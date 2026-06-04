@@ -92,6 +92,7 @@ export const INDUSTRIES = {
       { label: 'HR & Leave', path: '/hr', icon: 'HeartHandshake' },
       { label: 'Reports', path: '/reports', icon: 'BarChart2' },
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
+      { label: 'Institution Settings', path: '/institution-settings', icon: 'Building' },
       { label: 'Settings', path: '/settings', icon: 'Settings' },
     ],
   },
@@ -385,23 +386,35 @@ export const INDUSTRIES = {
   },
 };
 
-export const getIndustryTerms = (industryKey) => {
+import { EDUCATION_LEVELS } from './educationLevels';
+
+export const getIndustryTerms = (industryKey, educationLevel) => {
   const ind = INDUSTRIES[industryKey] || INDUSTRIES.law;
+  
+  if (industryKey === 'school' && educationLevel && EDUCATION_LEVELS[educationLevel]) {
+    return { ...ind.terms, ...EDUCATION_LEVELS[educationLevel].terms };
+  }
+  
   return ind.terms;
 };
 
 import i18n from '@/i18n/config.js';
 
-export const getTerm = (industryKey, termKey) => {
-  const terms = getIndustryTerms(industryKey);
+export const getTerm = (industryKey, termKey, educationLevel) => {
+  const terms = getIndustryTerms(industryKey, educationLevel);
   const englishTerm = terms[termKey] || termKey;
   const translationKey = `industry_${industryKey}_${termKey}`;
   return i18n.t(translationKey, { defaultValue: englishTerm });
 };
 
-export const getIndustryNav = (industryKey) => {
+export const getIndustryNav = (industryKey, educationLevel) => {
   const ind = INDUSTRIES[industryKey] || INDUSTRIES.law;
-  const nav = [...ind.nav];
+  let nav = [...ind.nav];
+  
+  if (industryKey === 'school' && educationLevel && EDUCATION_LEVELS[educationLevel]) {
+     const allowedModules = EDUCATION_LEVELS[educationLevel].modules;
+     nav = nav.filter(n => allowedModules.includes(n.path) || n.path === '/' || n.path === '/settings' || n.path === '/integrations' || n.path === '/hr' || n.path === '/documents' || n.path === '/tasks');
+  }
   
   // Ensure Email Inbox exists globally across all industries
   if (!nav.find(n => n.path === '/email-inbox')) {

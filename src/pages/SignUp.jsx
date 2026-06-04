@@ -13,6 +13,7 @@ export default function SignUp() {
   const [companyName, setCompanyName] = useState('');
   const [subdomain, setSubdomain] = useState('');
   const [industryType, setIndustryType] = useState('law');
+  const [educationLevel, setEducationLevel] = useState('primary');
   const [country, setCountry] = useState('Ghana');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -47,6 +48,7 @@ export default function SignUp() {
         subdomain: cleanSubdomain,
         email: email,
         industry_type: industryType,
+        education_level: industryType === 'school' ? educationLevel : null,
         country: country,
         subscription_plan: 'starter',
         subscription_status: 'trial',
@@ -132,6 +134,46 @@ export default function SignUp() {
                   />
                 </div>
               </div>
+
+              <div>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">{t("industry_type", "Industry")}</label>
+                <Select value={industryType} onValueChange={setIndustryType}>
+                  <SelectTrigger className="w-full h-10 text-sm">
+                    <SelectValue placeholder="Select industry" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="law">Law Firm</SelectItem>
+                    <SelectItem value="school">Education / School</SelectItem>
+                    <SelectItem value="hospital">Healthcare / Hospital</SelectItem>
+                    <SelectItem value="retail">Retail / POS</SelectItem>
+                    <SelectItem value="hotel">Hospitality / Hotel</SelectItem>
+                    <SelectItem value="logistics">Logistics</SelectItem>
+                    <SelectItem value="insurance">Insurance</SelectItem>
+                    <SelectItem value="church">Church / Ministry</SelectItem>
+                    <SelectItem value="hr">HR & ERP</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {industryType === 'school' && (
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">{t("education_level", "Education Level")}</label>
+                  <Select value={educationLevel} onValueChange={setEducationLevel}>
+                    <SelectTrigger className="w-full h-10 text-sm border-blue-200 bg-blue-50/50">
+                      <SelectValue placeholder="Select level" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="preschool">Preschool / Kindergarten</SelectItem>
+                      <SelectItem value="primary">Primary / Elementary</SelectItem>
+                      <SelectItem value="jhs">Junior High School</SelectItem>
+                      <SelectItem value="shs">Senior High School</SelectItem>
+                      <SelectItem value="vocational">Vocational / Technical</SelectItem>
+                      <SelectItem value="university">University / College</SelectItem>
+                      <SelectItem value="online">Online Learning Platform</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
 
               <div>
                 <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">{t("workspace_region", "Workspace Region")}</label>

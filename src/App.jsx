@@ -97,6 +97,7 @@ import SchoolComplaints from './pages/school/Complaints';
 import SchoolSupportCenter from './pages/school/SupportCenter';
 
 import SchoolCampusMarketplace from './pages/school/CampusMarketplace';
+import SchoolInstitutionSettings from './pages/school/InstitutionSettings';
 // Hospital Pages
 import HospitalPatients from './pages/hospital/Patients';
 import HospitalAppointments from './pages/hospital/Appointments';
@@ -260,6 +261,7 @@ function PlatformRoutes() {
       <Route path="/support-center" element={<SchoolSupportCenter />} />
 
       <Route path="/marketplace" element={<SchoolCampusMarketplace />} />
+      <Route path="/institution-settings" element={<SchoolInstitutionSettings />} />
 
       {/* Hospital Suite */}
       <Route path="/patients" element={<HospitalPatients />} />
