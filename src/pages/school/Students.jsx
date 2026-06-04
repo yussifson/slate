@@ -125,21 +125,27 @@ export default function Students() {
       
       const studentEmail = formData.email.trim().toLowerCase();
       const parentEmail = formData.parentEmail.trim().toLowerCase();
-      const defaultPassword = formData.defaultPassword || 'password123';
-      const parentPassword = formData.parentPassword || 'password123';
+      const defaultPassword = formData.defaultPassword;
+      const parentPassword = formData.parentPassword;
       
       const age = formData.dateOfBirth ? new Date().getFullYear() - new Date(formData.dateOfBirth).getFullYear() : formData.age || 0;
 
       if (!editingId) {
         // Only generate auth accounts on initial creation
         const { error: stuAuthErr } = await registerSchoolUser(studentEmail, defaultPassword, 'student', companyId, fullName);
-        if (stuAuthErr && !stuAuthErr.message?.includes('already registered')) {
+        if (stuAuthErr) {
+          if (stuAuthErr.message?.includes('already registered')) {
+             throw new Error(`Student Email (${studentEmail}) is already registered! Please use a unique email or their password will not be updated.`);
+          }
           throw new Error(`Student Auth Error: ${stuAuthErr.message}`);
         }
         
         const parentFullName = formData.parentName || `Parent of ${fullName}`;
         const { error: parAuthErr } = await registerSchoolUser(parentEmail, parentPassword, 'parent', companyId, parentFullName);
-        if (parAuthErr && !parAuthErr.message?.includes('already registered')) {
+        if (parAuthErr) {
+          if (parAuthErr.message?.includes('already registered')) {
+             throw new Error(`Parent Email (${parentEmail}) is already registered! Please use a unique email or their password will not be updated.`);
+          }
           throw new Error(`Parent Auth Error: ${parAuthErr.message}`);
         }
       }
@@ -413,7 +419,7 @@ export default function Students() {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("address", "Home Address")}</label><Input value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="mt-1" /></div>
-                    <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("default_password", "Login Password")}</label><Input value={formData.defaultPassword} placeholder="Default: password123" onChange={e => setFormData({...formData, defaultPassword: e.target.value})} className="mt-1" /></div>
+                    <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("default_password", "Login Password")} *</label><Input value={formData.defaultPassword} placeholder="Required for student login" onChange={e => setFormData({...formData, defaultPassword: e.target.value})} className="mt-1" /></div>
                   </div>
                 </div>
               )}

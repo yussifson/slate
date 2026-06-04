@@ -282,22 +282,36 @@ export const base44 = {
                         }
 
                         const data = await powerSync.getAll(query, params);
-                        if (data?.length > 0 || !navigator.onLine) {
-                            return revealResults(data);
+                        if (!navigator.onLine) {
+                            return revealResults(data || []);
+                        }
+                        
+                        // If online, fetch from remote and merge to prevent optimistic UI disappearance
+                        try {
+                            const remote = await fetchFromSupabase(tableName, filter, sort);
+                            const localData = data || [];
+                            const localIds = new Set(localData.map(d => d.id));
+                            const merged = [...localData];
+                            for (const r of remote) {
+                                if (!localIds.has(r.id)) merged.push(r);
+                            }
+                            return revealResults(merged);
+                        } catch (remoteErr) {
+                            console.error(`[Supabase] Filter failed on ${tableName}:`, remoteErr);
+                            return revealResults(data || []);
                         }
                     } catch (err) {
                         console.warn(`[PowerSync] Filter failed on ${tableName}, trying Supabase:`, err.message);
-                    }
-
-                    if (navigator.onLine) {
-                        try {
-                            const remote = await fetchFromSupabase(tableName, filter, sort);
-                            return revealResults(remote);
-                        } catch (remoteErr) {
-                            console.error(`[Supabase] Filter failed on ${tableName}:`, remoteErr);
+                        if (navigator.onLine) {
+                            try {
+                                const remote = await fetchFromSupabase(tableName, filter, sort);
+                                return revealResults(remote);
+                            } catch (remoteErr) {
+                                console.error(`[Supabase] Fallback Filter failed on ${tableName}:`, remoteErr);
+                            }
                         }
+                        return [];
                     }
-                    return [];
                 },
                 list: async (sort = []) => {
                     try {

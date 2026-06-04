@@ -82,10 +82,7 @@ export default function Login() {
       return;
     }
 
-    // Force default password check for students
-    if (password === 'password123') {
-      toast?.success('Please change your default password in settings.', { icon: '⚠️' });
-    }
+
 
     if (currentSubdomain) {
       // Check if user belongs to this subdomain
