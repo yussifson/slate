@@ -66,8 +66,8 @@ export default function AppLayout() {
     if (activeIndustry) {
       const industry = activeIndustry.toLowerCase();
       let primaryColor = '221 83% 53%'; // Default Blue (Law/Core)
-      if (industry === 'school' || industry === 'highschool') {
-        primaryColor = '213 89% 50%'; // Google Blue (#1A73E8)
+      if (industry === 'school') {
+        primaryColor = '224 64% 33%'; // Deep Navy (#1E3A8A)
         document.body.classList.add('theme-school');
       } else {
         document.body.classList.remove('theme-school');
@@ -205,12 +205,20 @@ export default function AppLayout() {
           );
         } else if (industry === 'school' || industry === 'highschool') {
           return (
-            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-all duration-1000 bg-[#f8fafc] dark:bg-slate-950">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#1A73E8]/8 via-[#e8f0fe]/30 to-[#1A73E8]/5 dark:from-[#1A73E8]/10 dark:via-transparent dark:to-[#1A73E8]/8" />
-              <div className="absolute top-[-15%] left-[-10%] w-[55%] h-[55%] rounded-full bg-[#1A73E8]/12 blur-[140px] mix-blend-multiply dark:mix-blend-screen" />
-              <div className="absolute bottom-[-15%] right-[-10%] w-[55%] h-[55%] rounded-full bg-[#4285F4]/8 blur-[140px] mix-blend-multiply dark:mix-blend-screen" />
-              <div className="absolute top-[30%] right-[20%] w-[30%] h-[30%] rounded-full bg-[#1A73E8]/5 blur-[100px]" />
-              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.02] dark:opacity-[0.04]" />
+            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-all duration-1000 bg-[#FAFAFA] dark:bg-[#0A0F1C]">
+              {/* Premium Silicon Valley Gradient Mesh */}
+              <div className="absolute inset-0 bg-gradient-to-br from-[#F0F4FF] via-transparent to-[#DBEAFE]/40 dark:from-[#1E3A8A]/10 dark:via-[#0F172A] dark:to-[#172554]/20" />
+              
+              {/* Soft Radial Glows - Deep Navy & Bright Blue */}
+              <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-[#3B82F6]/10 blur-[150px] mix-blend-multiply dark:mix-blend-screen" />
+              <div className="absolute bottom-[-15%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[#1E3A8A]/8 blur-[160px] mix-blend-multiply dark:mix-blend-screen" />
+              <div className="absolute top-[20%] right-[10%] w-[40%] h-[40%] rounded-full bg-[#1E3A8A]/5 blur-[120px] mix-blend-multiply dark:mix-blend-screen" />
+              
+              {/* Elegant Grid Pattern */}
+              <div className="absolute inset-0 bg-[linear-gradient(rgba(30,58,138,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(30,58,138,0.03)_1px,transparent_1px)] bg-[size:40px_40px] dark:bg-[linear-gradient(rgba(59,130,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.03)_1px,transparent_1px)]" />
+              
+              {/* Subtle Noise Texture for depth */}
+              <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.25] mix-blend-overlay" />
             </div>
           );
         }
