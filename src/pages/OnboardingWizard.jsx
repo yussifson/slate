@@ -286,7 +286,10 @@ export default function OnboardingWizard() {
         </div>
 
         {/* Scrollable Content Area */}
-{/* Step 1: Company Profile */}
+        <div ref={scrollRef} className="flex-1 overflow-y-auto px-5 sm:px-8 py-6 sm:py-8 scroll-smooth hide-scrollbar">
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            
+            {/* Step 1: Company Profile */}
             {step === 1 && (
               <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
                 
