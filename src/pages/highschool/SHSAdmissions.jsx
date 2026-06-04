@@ -1,195 +1,389 @@
-import { useTranslation } from "react-i18next";
-import { useState } from 'react';
-import { ModuleBanner } from '@/components/school/SchoolViewKit';
+import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/lib/AuthContext';
+import { base44 } from '@/api/base44Client';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
-import { useCompanyId } from "@/hooks/useCompanyId";
-import { toast } from 'react-hot-toast';
-import { UserPlus, Plus, Search, MoreVertical, CheckCircle2 } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-
-const statusColors = { 
-  'Applied': 'bg-blue-100 text-blue-700', 
-  'Testing': 'bg-amber-100 text-amber-700', 
-  'Admitted': 'bg-purple-100 text-purple-700', 
-  'Rejected': 'bg-red-100 text-red-700' 
-};
+import { Search, Plus, Filter, Users, UserPlus, CheckCircle, XCircle } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function SHSAdmissions() {
   const { t } = useTranslation();
-  const companyId = useCompanyId();
-  const queryClient = useQueryClient();
-  const [showModal, setShowModal] = useState(false);
-  const [editingId, setEditingId] = useState(null);
-  const [search, setSearch] = useState('');
+  const { user } = useAuth();
+  const [applicants, setApplicants] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
   
-  const [formData, setFormData] = useState({
-    name: '', previousSchool: '', programmeChoice: 'General Science', status: 'Applied', phone: ''
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [newApplicant, setNewApplicant] = useState({
+    firstName: '',
+    lastName: '',
+    dob: '',
+    gender: 'Male',
+    jhsAttended: '',
+    beceAggregate: '',
+    programChoice1: '',
+    programChoice2: '',
+    status: 'Pending'
   });
 
-  const { data: records = [], isLoading } = useQuery({ 
-    queryKey: ["shs_applicants", companyId], 
-    queryFn: () => base44.entities.Client.filter({ company_id: companyId, type: 'shs_applicant' }), 
-    enabled: !!companyId 
-  });
-
-  const mutateApplicant = useMutation({
-    mutationFn: (data) => data.id ? base44.entities.Client.update(data.id, data) : base44.entities.Client.create(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["shs_applicants", companyId] });
-      toast.success("Applicant saved successfully");
-      setShowModal(false);
+  const fetchApplicants = async () => {
+    setLoading(true);
+    try {
+      const records = await base44.getEntities('shs_applicant', user?.company_id);
+      setApplicants(records);
+    } catch (error) {
+      console.error('Failed to fetch applicants:', error);
+    } finally {
+      setLoading(false);
     }
-  });
-
-  const applicants = records.map(r => {
-    let extra = {};
-    try { extra = JSON.parse(r.notes || '{}'); } catch(e) {}
-    return {
-      id: r.id,
-      name: r.name,
-      phone: r.phone || '',
-      status: r.status || 'Applied',
-      previousSchool: extra.previousSchool || 'Unknown',
-      programmeChoice: extra.programmeChoice || 'Unknown',
-      dateApplied: new Date(r.created_at).toLocaleDateString()
-    };
-  });
-
-  const filtered = applicants.filter(a => a.name.toLowerCase().includes(search.toLowerCase()));
-
-  const handleSave = () => {
-    if (!formData.name) return toast.error("Applicant name is required");
-    mutateApplicant.mutate({
-      id: editingId,
-      company_id: companyId,
-      type: 'shs_applicant',
-      name: formData.name,
-      phone: formData.phone,
-      status: formData.status,
-      notes: JSON.stringify({
-        previousSchool: formData.previousSchool,
-        programmeChoice: formData.programmeChoice
-      })
-    });
   };
 
-  return (
-    <div className="space-y-6">
-      <ModuleBanner 
-        title={t("admissions", "Admissions Pipeline")} 
-        subtitle="Manage prospective students, entrance exams, and enrollment decisions." 
-        metrics={[
-          { title: "Total Applicants", value: applicants.length, icon: UserPlus },
-          { title: "Admitted", value: applicants.filter(a => a.status === 'Admitted').length, icon: CheckCircle2 }
-        ]}
-      />
+  useEffect(() => {
+    if (user?.company_id) {
+      fetchApplicants();
+    }
+  }, [user]);
+
+  const handleAddApplicant = async () => {
+    try {
+      const payload = {
+        company_id: user?.company_id,
+        case_type: 'shs_applicant',
+        title: `${newApplicant.firstName} ${newApplicant.lastName}`,
+        case_number: `APP-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000)}`,
+        status: newApplicant.status,
+        data: newApplicant
+      };
       
-      <div className="bg-card rounded-xl border border-border p-4 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="relative flex-1 w-full max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Search applicants..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
+      await base44.createEntity(payload);
+      setIsAddModalOpen(false);
+      setNewApplicant({
+        firstName: '', lastName: '', dob: '', gender: 'Male', jhsAttended: '', beceAggregate: '', programChoice1: '', programChoice2: '', status: 'Pending'
+      });
+      fetchApplicants();
+    } catch (error) {
+      console.error('Failed to add applicant:', error);
+    }
+  };
+
+  const filteredApplicants = applicants.filter(a => 
+    a.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    a.case_number?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  return (
+    <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
+      
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-purple-800 bg-clip-text text-transparent">
+            Admissions Hub
+          </h1>
+          <p className="text-muted-foreground mt-1 text-sm font-medium">
+            Manage incoming student applications, review BECE aggregates, and process admissions.
+          </p>
         </div>
-        <Button onClick={() => {
-          setEditingId(null);
-          setFormData({ name: '', previousSchool: '', programmeChoice: 'General Science', status: 'Applied', phone: '' });
-          setShowModal(true);
-        }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
-          <Plus className="w-4 h-4" /> New Applicant
+        
+        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white shadow-md shadow-purple-500/20">
+          <Plus className="w-4 h-4" /> New Application
         </Button>
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-slate-50 border-b border-slate-200">
-            <tr>
-              {['Applicant Name', 'Phone', 'Prev. School', 'Prog. Choice', 'Applied Date', 'Status', 'Actions'].map(h => (
-                <th key={h} className="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wide">{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {filtered.map(a => (
-              <tr key={a.id} className="hover:bg-slate-50">
-                <td className="px-4 py-3 font-semibold text-slate-900">{a.name}</td>
-                <td className="px-4 py-3 text-slate-600">{a.phone}</td>
-                <td className="px-4 py-3 text-slate-600">{a.previousSchool}</td>
-                <td className="px-4 py-3 font-medium">{a.programmeChoice}</td>
-                <td className="px-4 py-3 text-slate-500">{a.dateApplied}</td>
-                <td className="px-4 py-3">
-                  <span className={`text-xs font-bold px-2 py-1 rounded-full ${statusColors[a.status] || 'bg-slate-100 text-slate-700'}`}>
-                    {a.status}
-                  </span>
-                </td>
-                <td className="px-4 py-3">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-8 w-8 p-0">
-                        <MoreVertical className="h-4 w-4 text-slate-400" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => {
-                        setEditingId(a.id);
-                        setFormData({ ...a });
-                        setShowModal(true);
-                      }}>Edit</DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => mutateApplicant.mutate({ id: a.id, status: 'Admitted' })}>Mark Admitted</DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </td>
-              </tr>
-            ))}
-            {filtered.length === 0 && (
-              <tr><td colSpan="7" className="text-center py-8 text-slate-500">No applicants found</td></tr>
-            )}
-          </tbody>
-        </table>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-purple-100">
+          <CardContent className="p-5 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center text-[#6F00FF] shrink-0">
+              <Users className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-muted-foreground">Total Applicants</p>
+              <h3 className="text-2xl font-black text-slate-800">{applicants.length}</h3>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-amber-100">
+          <CardContent className="p-5 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 shrink-0">
+              <UserPlus className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-muted-foreground">Pending Review</p>
+              <h3 className="text-2xl font-black text-slate-800">
+                {applicants.filter(a => a.status === 'Pending').length}
+              </h3>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-emerald-100">
+          <CardContent className="p-5 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
+              <CheckCircle className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-muted-foreground">Admitted</p>
+              <h3 className="text-2xl font-black text-slate-800">
+                {applicants.filter(a => a.status === 'Admitted').length}
+              </h3>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-rose-100">
+          <CardContent className="p-5 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-rose-100 flex items-center justify-center text-rose-600 shrink-0">
+              <XCircle className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-muted-foreground">Rejected</p>
+              <h3 className="text-2xl font-black text-slate-800">
+                {applicants.filter(a => a.status === 'Rejected').length}
+              </h3>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden border border-slate-200">
-            <div className="p-6 border-b border-slate-100">
-              <h2 className="text-xl font-bold text-slate-900">{editingId ? 'Edit Applicant' : 'New Applicant'}</h2>
+      <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 bg-slate-50/50 pb-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <CardTitle className="text-lg font-bold text-slate-800">Applications List</CardTitle>
             </div>
-            <div className="p-6 space-y-4">
-              <div>
-                <label className="text-xs font-bold text-slate-500 uppercase">Name</label>
-                <Input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="e.g. Ama Mensah" className="mt-1" />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs font-bold text-slate-500 uppercase">Phone</label>
-                  <Input value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="mt-1" />
-                </div>
-                <div>
-                  <label className="text-xs font-bold text-slate-500 uppercase">Status</label>
-                  <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-                    {Object.keys(statusColors).map(s => <option key={s}>{s}</option>)}
-                  </select>
-                </div>
-              </div>
-              <div>
-                <label className="text-xs font-bold text-slate-500 uppercase">Previous School</label>
-                <Input value={formData.previousSchool} onChange={e => setFormData({...formData, previousSchool: e.target.value})} placeholder="e.g. Ridge JHS" className="mt-1" />
-              </div>
-              <div>
-                <label className="text-xs font-bold text-slate-500 uppercase">Programme Choice</label>
-                <select value={formData.programmeChoice} onChange={e => setFormData({...formData, programmeChoice: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-                  <option>General Science</option><option>General Arts</option><option>Business</option><option>Home Economics</option><option>Visual Arts</option>
-                </select>
-              </div>
-            </div>
-            <div className="p-6 border-t border-slate-100 bg-slate-50 flex gap-3">
-              <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>Cancel</Button>
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleSave}>Save</Button>
+            
+            <div className="relative w-full sm:w-64">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Input 
+                placeholder="Search name or ID..." 
+                className="pl-9 h-9 bg-white border-slate-200 rounded-xl focus-visible:ring-[#6F00FF]"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
           </div>
-        </div>
-      )}
+        </CardHeader>
+        <CardContent className="p-0">
+          {loading ? (
+            <div className="p-12 text-center text-slate-400">Loading applicants...</div>
+          ) : filteredApplicants.length === 0 ? (
+            <div className="p-16 text-center">
+              <div className="w-16 h-16 rounded-2xl bg-purple-50 mx-auto flex items-center justify-center mb-4">
+                <Users className="w-8 h-8 text-purple-400" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-700">No applications found</h3>
+              <p className="text-sm text-slate-500">Register a new applicant to get started.</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="bg-slate-50/80 text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
+                  <tr>
+                    <th className="px-6 py-4 rounded-tl-xl">Applicant Name</th>
+                    <th className="px-6 py-4">App ID</th>
+                    <th className="px-6 py-4">BECE Agg.</th>
+                    <th className="px-6 py-4">First Choice</th>
+                    <th className="px-6 py-4">JHS Attended</th>
+                    <th className="px-6 py-4">Status</th>
+                    <th className="px-6 py-4 text-right rounded-tr-xl">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {filteredApplicants.map((applicant) => (
+                    <tr key={applicant.id} className="hover:bg-slate-50/50 transition-colors">
+                      <td className="px-6 py-4 font-bold text-slate-800">
+                        {applicant.title}
+                      </td>
+                      <td className="px-6 py-4 text-slate-600 font-medium">
+                        {applicant.case_number}
+                      </td>
+                      <td className="px-6 py-4">
+                        <Badge variant="outline" className="bg-white border-slate-200 text-slate-700 font-bold">
+                          {applicant.data?.beceAggregate}
+                        </Badge>
+                      </td>
+                      <td className="px-6 py-4 text-slate-700">
+                        {applicant.data?.programChoice1}
+                      </td>
+                      <td className="px-6 py-4 text-slate-600 truncate max-w-[150px]">
+                        {applicant.data?.jhsAttended}
+                      </td>
+                      <td className="px-6 py-4">
+                        <Badge variant="outline" className={
+                          applicant.status === 'Pending' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                          applicant.status === 'Admitted' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                          'bg-rose-50 text-rose-700 border-rose-200'
+                        }>
+                          {applicant.status}
+                        </Badge>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <Button variant="ghost" size="sm" className="text-[#6F00FF] hover:text-purple-800 hover:bg-purple-50 rounded-lg">
+                          Review
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
+        <DialogContent className="sm:max-w-[600px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
+          <div className="p-6 bg-gradient-to-br from-[#6F00FF] to-purple-800 text-white">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-black">Register New Applicant</DialogTitle>
+              <DialogDescription className="text-purple-100">
+                Enter details for a new SHS admission application.
+              </DialogDescription>
+            </DialogHeader>
+          </div>
+          
+          <ScrollArea className="max-h-[65vh] p-6 bg-slate-50">
+            <div className="space-y-6">
+              
+              <div className="space-y-4">
+                <h4 className="font-bold text-slate-800 flex items-center gap-2 border-b border-slate-200 pb-2">
+                  <span className="w-6 h-6 rounded-full bg-purple-100 text-[#6F00FF] flex items-center justify-center text-xs">1</span>
+                  Personal Details
+                </h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">First Name</label>
+                    <Input 
+                      className="bg-white border-slate-200 rounded-xl"
+                      value={newApplicant.firstName}
+                      onChange={e => setNewApplicant({...newApplicant, firstName: e.target.value})}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Last Name</label>
+                    <Input 
+                      className="bg-white border-slate-200 rounded-xl"
+                      value={newApplicant.lastName}
+                      onChange={e => setNewApplicant({...newApplicant, lastName: e.target.value})}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Date of Birth</label>
+                    <Input 
+                      type="date"
+                      className="bg-white border-slate-200 rounded-xl"
+                      value={newApplicant.dob}
+                      onChange={e => setNewApplicant({...newApplicant, dob: e.target.value})}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Gender</label>
+                    <select 
+                      className="w-full h-10 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                      value={newApplicant.gender}
+                      onChange={e => setNewApplicant({...newApplicant, gender: e.target.value})}
+                    >
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h4 className="font-bold text-slate-800 flex items-center gap-2 border-b border-slate-200 pb-2">
+                  <span className="w-6 h-6 rounded-full bg-purple-100 text-[#6F00FF] flex items-center justify-center text-xs">2</span>
+                  Academic & Programme
+                </h4>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">JHS Attended</label>
+                  <Input 
+                    placeholder="e.g. Ridge Church School"
+                    className="bg-white border-slate-200 rounded-xl"
+                    value={newApplicant.jhsAttended}
+                    onChange={e => setNewApplicant({...newApplicant, jhsAttended: e.target.value})}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">BECE Aggregate</label>
+                    <Input 
+                      type="number"
+                      placeholder="e.g. 06"
+                      className="bg-white border-slate-200 rounded-xl"
+                      value={newApplicant.beceAggregate}
+                      onChange={e => setNewApplicant({...newApplicant, beceAggregate: e.target.value})}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Status</label>
+                    <select 
+                      className="w-full h-10 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                      value={newApplicant.status}
+                      onChange={e => setNewApplicant({...newApplicant, status: e.target.value})}
+                    >
+                      <option value="Pending">Pending Review</option>
+                      <option value="Admitted">Admitted</option>
+                      <option value="Rejected">Rejected</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">1st Choice</label>
+                    <select 
+                      className="w-full h-10 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                      value={newApplicant.programChoice1}
+                      onChange={e => setNewApplicant({...newApplicant, programChoice1: e.target.value})}
+                    >
+                      <option value="">Select...</option>
+                      <option value="General Science">General Science</option>
+                      <option value="General Arts">General Arts</option>
+                      <option value="Business">Business</option>
+                      <option value="Visual Arts">Visual Arts</option>
+                      <option value="Home Economics">Home Economics</option>
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">2nd Choice</label>
+                    <select 
+                      className="w-full h-10 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                      value={newApplicant.programChoice2}
+                      onChange={e => setNewApplicant({...newApplicant, programChoice2: e.target.value})}
+                    >
+                      <option value="">Select...</option>
+                      <option value="General Science">General Science</option>
+                      <option value="General Arts">General Arts</option>
+                      <option value="Business">Business</option>
+                      <option value="Visual Arts">Visual Arts</option>
+                      <option value="Home Economics">Home Economics</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </ScrollArea>
+          
+          <div className="p-4 bg-white border-t border-slate-100 flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600">
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleAddApplicant} 
+              disabled={!newApplicant.firstName || !newApplicant.lastName || !newApplicant.beceAggregate}
+              className="rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white font-bold"
+            >
+              Submit Application
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
