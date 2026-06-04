@@ -20,16 +20,14 @@ import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tool
 
 function MetricCard({ title, value, icon: Icon, iconBg, iconColor, subtitle, subtitleColor }) {
   return (
-    <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-3xl border border-white/20 p-6 flex items-center justify-between shadow-sm relative overflow-hidden group">
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/40 via-transparent to-transparent dark:from-emerald-900/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-      <div className="relative z-10">
-        <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{title}</p>
-        <p className="text-3xl font-black text-slate-900 dark:text-white">{value}</p>
-        {subtitle && <p className={`text-xs mt-1 font-bold ${subtitleColor || "text-slate-400"}`}>{subtitle}</p>}
+    <div className="bg-white/10 border border-white/20 rounded-3xl p-5 flex flex-col items-center justify-center text-center relative overflow-hidden group">
+      <div className="absolute inset-0 bg-white/0 group-hover:bg-white/5 transition-colors pointer-events-none" />
+      <p className="text-3xl font-black text-white mb-2 relative z-10">{value}</p>
+      <div className="flex items-center gap-2 relative z-10">
+        <Icon className="w-4 h-4 text-emerald-100" />
+        <p className="text-sm font-bold text-emerald-50 uppercase tracking-wider">{title}</p>
       </div>
-      <div className={`w-14 h-14 rounded-[1.25rem] ${iconBg} flex items-center justify-center relative z-10 shadow-inner group-hover:scale-105 transition-transform duration-300`}>
-        <Icon className={`w-6 h-6 ${iconColor}`} />
-      </div>
+      {subtitle && <p className={`text-[10px] mt-2 font-bold uppercase tracking-widest ${subtitleColor || "text-emerald-200"}`}>{subtitle}</p>}
     </div>
   );
 }
@@ -128,31 +126,41 @@ export default function SchoolDashboard({ companyId, company, isAdmin }) {
     <div className="space-y-5">
       {/* 24h Hearing Reminders */}
       <HearingReminders hearings={hearings} userEmail={user?.email} isAdmin={isAdmin} />
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-card-foreground">Welcome back, {user?.user_metadata?.full_name || user?.email?.split('@')[0]}!</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Here's what's happening at your school today.</p>
+      {/* Hero Banner Area */}
+      <div className="bg-emerald-600 rounded-[2.5rem] p-8 md:p-10 relative overflow-hidden">
+        {/* Abstract Background Shapes */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-700 rounded-full blur-3xl opacity-50 translate-y-1/3 -translate-x-1/4 pointer-events-none" />
+        
+        <div className="relative z-10 flex flex-col md:flex-row md:items-start justify-between gap-6 mb-10">
+          <div>
+            <p className="text-emerald-100 text-sm font-bold tracking-widest uppercase mb-2">
+              {format(new Date(), "eeee, d MMMM")}
+            </p>
+            <h1 className="text-3xl md:text-4xl font-black text-white mb-2 tracking-tight">
+              Welcome back, {user?.user_metadata?.full_name || user?.email?.split('@')[0]} <span className="inline-block animate-wave">👋</span>
+            </h1>
+            <p className="text-emerald-50 text-base font-medium opacity-90">
+              Here's your school at a glance
+            </p>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <Button variant="outline" size="sm" className="gap-1.5 text-sm font-bold rounded-xl border-emerald-400 text-emerald-50 hover:bg-emerald-500 hover:text-white bg-emerald-600/50 backdrop-blur-md border-0">
+              <BarChart2 className="w-4 h-4" /> {t("analytics", "Analytics")}
+            </Button>
+            <Button onClick={handleRefresh} disabled={isRefreshing} size="sm" className="gap-1.5 text-sm font-bold bg-white text-emerald-700 hover:bg-emerald-50 rounded-xl border-0">
+              <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} /> {t("refresh", "Refresh")}
+            </Button>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" className="gap-1.5 text-sm font-bold rounded-xl">
-            <BarChart2 className="w-4 h-4" /> {t("analytics", "Analytics")}
-          </Button>
-          <Button onClick={handleRefresh} disabled={isRefreshing} size="sm" className="gap-1.5 text-sm font-bold bg-emerald-600 text-white hover:bg-emerald-700 rounded-xl shadow-sm">
-            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} /> {t("refresh", "Refresh")}
-          </Button>
+
+        {/* Metric Cards Grid within Banner */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
+          <MetricCard title={`Active ${casesTermPlural}`} value={activeCases.length} icon={Briefcase} subtitle={`${cases.length} total`} subtitleColor="text-emerald-200" />
+          <MetricCard title={`Active ${clientsTermPlural}`} value={students.filter((s) => s.status === "active" || s.status === "Active").length} icon={Users} subtitle={`${students.length} enrolled`} subtitleColor="text-emerald-200" />
+          <MetricCard title="Total Revenue" value={formatCurrency(totalRevenue, currency)} icon={DollarSign} subtitle="This year" subtitleColor="text-emerald-200" />
+          <MetricCard title="Pending Tasks" value={pendingTasks.length} icon={Clock} subtitle={overdueInvoices > 0 ? `${overdueInvoices} invoices overdue` : `${upcomingHearings.length} ${hearingsTermPlural.toLowerCase()} due`} subtitleColor={overdueInvoices > 0 ? "text-red-200" : "text-emerald-200"} />
         </div>
-      </div>
-      {/* Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard title={`Active ${casesTermPlural}`} value={activeCases.length} icon={Briefcase} iconBg="bg-emerald-100" iconColor="text-emerald-600" subtitle={`${cases.length} total`} />
-        <MetricCard title={`Active ${clientsTermPlural}`} value={students.filter((s) => s.status === "active" || s.status === "Active").length} icon={Users} iconBg="bg-teal-100" iconColor="text-teal-600"
-          subtitle={`${students.length} enrolled`}
-          subtitleColor="text-emerald-600" />
-        <MetricCard title="Total Revenue" value={formatCurrency(totalRevenue, currency)} icon={DollarSign} iconBg="bg-green-100" iconColor="text-green-600" subtitle="This year" />
-        <MetricCard title="Pending Tasks" value={pendingTasks.length} icon={Clock} iconBg="bg-amber-100" iconColor="text-amber-600"
-          subtitle={overdueInvoices > 0 ? `${overdueInvoices} invoices overdue` : `${upcomingHearings.length} ${hearingsTermPlural.toLowerCase()} due`}
-          subtitleColor={overdueInvoices > 0 ? "text-red-500" : "text-slate-400"} />
       </div>
       {/* Analytics Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
