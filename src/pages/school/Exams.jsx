@@ -12,7 +12,7 @@ import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
 
 const statusColors = {
-  Upcoming: 'bg-blue-100 dark:bg-blue-950/50 text-emerald-700 dark:text-blue-400',
+  Upcoming: 'bg-blue-100 dark:bg-blue-950/50 text-[#1E3A8A] dark:text-blue-400 dark:text-blue-400',
   Ongoing: 'bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400 animate-pulse',
   Completed: 'bg-green-100 dark:bg-green-950/50 text-green-700 dark:text-green-400'
 };
@@ -150,17 +150,17 @@ export default function Exams() {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 school-page-enter font-dmsans">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{t("exam_schedules", "Exam Schedules")}</h1>
+          <h1 className="text-2xl school-heading font-extrabold tracking-tight">{t("exam_schedules", "Exam Schedules")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("plan_and_manage_upcoming_exami", "Plan and manage upcoming examinations")}</p>
         </div>
-        <Button onClick={() => setShowModal(true)} className="gap-2 bg-[#1A73E8] hover:bg-[#1557B0] text-white shadow-md shadow-[#1A73E8]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">
+        <Button onClick={() => setShowModal(true)} className="gap-2 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">
           <Plus className="w-4 h-4" /> {t("schedule_exam", "Schedule Exam")}
         </Button>
       </div>
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex items-center justify-between flex-wrap gap-4">
+      <div className="school-card p-5 flex items-center justify-between flex-wrap gap-4">
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input placeholder="Search scheduled exams by subject..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
@@ -171,7 +171,7 @@ export default function Exams() {
         <div className="py-12 text-center text-muted-foreground">{t("loading_calendar", "Loading calendar...")}</div>
       ) : filtered.length === 0 ? (
         <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-border">
-          <FileText className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-emerald-600" />
+          <FileText className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-[#1E3A8A] dark:text-blue-400" />
           <p className="font-semibold text-lg text-card-foreground">{t("no_exams_scheduled", "No exams scheduled")}</p>
           <p className="text-sm mt-1 max-w-md mx-auto">{t(
             "create_mid_terms_final_practic",
@@ -203,10 +203,10 @@ export default function Exams() {
           ))}
         </div>
       ) : (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] overflow-hidden overflow-hidden mt-4">
+        <div className="school-card overflow-hidden mt-4">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-slate-50/50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800">
+              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-blue-100 dark:border-slate-700">
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("subject", "Subject")}</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("class", "Class")}</th>
@@ -220,7 +220,7 @@ export default function Exams() {
                 {filtered.map(exam => (
                   <tr key={exam.id} className="hover:bg-muted/50 transition-colors">
                     <td className="px-6 py-4 font-bold text-card-foreground">{exam.subject}</td>
-                    <td className="px-6 py-4 font-medium"><Link to="/classes" className="text-emerald-600 hover:underline">{exam.class}</Link></td>
+                    <td className="px-6 py-4 font-medium"><Link to="/classes" className="text-[#1E3A8A] dark:text-blue-400 hover:underline">{exam.class}</Link></td>
                     <td className="px-6 py-4 text-muted-foreground">
                       {new Date(exam.date).toLocaleDateString()} at {exam.time}
                     </td>
@@ -269,10 +269,10 @@ export default function Exams() {
         </div>
       )}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-card rounded-2xl shadow-sm w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
+          <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-              <Plus className="w-5 h-5 text-emerald-600" /> {editingId ? 'Edit Examination' : 'Schedule Examination'}
+              <Plus className="w-5 h-5 text-[#1E3A8A] dark:text-blue-400" /> {editingId ? 'Edit Examination' : 'Schedule Examination'}
             </h2>
             <div className="space-y-3">
               <div>
@@ -342,7 +342,7 @@ export default function Exams() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-[#1A73E8] hover:bg-[#1557B0] text-white shadow-md shadow-[#1A73E8]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleCreateExam}>{editingId ? 'Save Changes' : 'Save Exam'}</Button>
+              <Button className="flex-1 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleCreateExam}>{editingId ? 'Save Changes' : 'Save Exam'}</Button>
             </div>
           </div>
         </div>
@@ -366,12 +366,12 @@ export default function Exams() {
           {viewDetails && (
             <div className="mt-6 space-y-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-emerald-50 dark:bg-blue-950/50 flex items-center justify-center text-emerald-600 dark:text-blue-400">
+                <div className="w-16 h-16 rounded-full bg-[#F0F4FF] dark:bg-blue-900/20 dark:bg-blue-950/50 flex items-center justify-center text-[#1E3A8A] dark:text-blue-400 dark:text-blue-400">
                   <FileText className="w-8 h-8" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-card-foreground">{viewDetails.subject}</h3>
-                  <Link to="/classes" className="text-sm font-medium text-emerald-600 hover:underline">{viewDetails.class}</Link>
+                  <h3 className="text-xl school-heading font-bold tracking-tight">{viewDetails.subject}</h3>
+                  <Link to="/classes" className="text-sm font-medium text-[#1E3A8A] dark:text-blue-400 hover:underline">{viewDetails.class}</Link>
                 </div>
               </div>
 

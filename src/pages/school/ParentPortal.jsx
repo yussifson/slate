@@ -93,7 +93,7 @@ export default function ParentPortal() {
   if (mappedStudents.length === 0) {
     return (
       <div className="py-12 text-center max-w-md mx-auto bg-card rounded-xl border border-border p-6 shadow-sm">
-        <User className="w-12 h-12 mx-auto mb-3 opacity-20 text-[#1A73E8] animate-pulse" />
+        <User className="w-12 h-12 mx-auto mb-3 opacity-20 text-[#1E3A8A] animate-pulse" />
         <p className="font-semibold text-lg text-card-foreground">No child profiles found</p>
         <p className="text-sm text-muted-foreground mt-1 mb-4">Enroll a student in the student directory first to activate the Parent Portal view.</p>
       </div>
@@ -138,7 +138,7 @@ export default function ParentPortal() {
       {/* Header & Nav */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-6">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Welcome back, {user?.user_metadata?.full_name || 'Guardian'}</h1>
+          <h1 className="text-2xl school-heading font-extrabold tracking-tight">Welcome back, {user?.user_metadata?.full_name || 'Guardian'}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">Managing records for your dependents.</p>
         </div>
         <div className="flex gap-1 overflow-x-auto pb-2 md:pb-0 hide-scrollbar bg-muted p-1 rounded-xl border border-border">
@@ -166,10 +166,10 @@ export default function ParentPortal() {
               key={child.id}
               onClick={() => setSelectedChildId(child.id)}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-colors border ${
-                activeStudent?.id === child.id ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-card border-border text-muted-foreground hover:bg-muted'
+                activeStudent?.id === child.id ? 'bg-[#F0F4FF] dark:bg-blue-900/20 border-emerald-200 text-[#1E3A8A] dark:text-blue-400' : 'bg-card border-border text-muted-foreground hover:bg-muted'
               }`}
             >
-              <div className="w-5 h-5 rounded-full bg-blue-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold">
+              <div className="w-5 h-5 rounded-full bg-blue-100 text-[#1E3A8A] dark:text-blue-400 flex items-center justify-center text-[10px] font-bold">
                 {child.name.substring(0,2).toUpperCase()}
               </div>
               {child.name}
@@ -180,11 +180,11 @@ export default function ParentPortal() {
 
       {/* Child Profile Card */}
       <div className="bg-card rounded-2xl border border-border p-6 shadow-sm flex flex-col md:flex-row items-center md:items-start gap-6">
-        <div className="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center text-emerald-700 text-3xl font-bold shrink-0 shadow-inner uppercase">
+        <div className="w-24 h-24 rounded-full bg-[#F0F4FF] dark:bg-blue-900/30 flex items-center justify-center text-[#1E3A8A] dark:text-blue-300 text-3xl font-bold shrink-0 shadow-inner uppercase">
           {activeStudent.name?.substring(0, 2)}
         </div>
         <div className="text-center md:text-left flex-1">
-          <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-1">{activeStudent.name}</h2>
+          <h2 className="text-2xl school-heading font-extrabold tracking-tight mb-1">{activeStudent.name}</h2>
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-sm text-muted-foreground font-medium">
             <span className="bg-muted px-3 py-1 rounded-full text-foreground">{activeStudent.class}</span>
             <span>Student ID: {activeStudent.studentId}</span>
@@ -195,7 +195,7 @@ export default function ParentPortal() {
           <span className="text-xs font-bold text-muted-foreground uppercase tracking-wide">Term Balance</span>
           <div className="text-3xl font-bold text-card-foreground">${balance.toLocaleString()}</div>
           <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-sm border ${
-            feeStatus === 'Paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+            feeStatus === 'Paid' ? 'bg-[#F0F4FF] dark:bg-blue-900/20 text-[#1E3A8A] dark:text-blue-300 border-emerald-200' :
             feeStatus === 'Partial' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-red-50 text-red-700 border-red-200'
           }`}>{feeStatus}</span>
         </div>
@@ -219,12 +219,12 @@ export default function ParentPortal() {
                   <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center text-white shadow-sm"><BookOpen className="w-5 h-5" /></div>
                   <h3 className="font-bold text-muted-foreground text-sm">Performance</h3>
                 </div>
-                <p className="text-3xl font-bold text-emerald-600 dark:text-blue-400 mb-1">{averageGrade}</p>
+                <p className="text-3xl font-bold text-[#1E3A8A] dark:text-blue-400 dark:text-blue-400 mb-1">{averageGrade}</p>
                 <p className="text-xs text-muted-foreground">Term Report Card</p>
               </div>
             </div>
 
-            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] overflow-hidden overflow-hidden">
+            <div className="school-card overflow-hidden">
               <div className="p-4 border-b border-border bg-muted/50">
                 <h3 className="font-bold text-card-foreground flex items-center gap-2"><Calendar className="w-5 h-5 text-muted-foreground" /> Upcoming Scheduled Exams</h3>
               </div>
@@ -244,7 +244,7 @@ export default function ParentPortal() {
           </div>
 
           <div className="col-span-1 space-y-6">
-            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] overflow-hidden overflow-hidden">
+            <div className="school-card overflow-hidden">
               <div className="p-4 border-b border-border bg-muted/50 flex justify-between items-center">
                 <h3 className="font-bold text-card-foreground flex items-center gap-2"><FileText className="w-5 h-5 text-muted-foreground" /> Documents</h3>
                 <Button size="sm" variant="outline" className="h-8 gap-1" onClick={() => setShowUpload(true)}>
@@ -262,7 +262,7 @@ export default function ParentPortal() {
                     </div>
                     {doc.file_url && (
                       <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50">
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-[#1E3A8A] dark:text-blue-400 hover:text-[#1E3A8A] dark:text-blue-400 hover:bg-[#F0F4FF] dark:bg-blue-900/20">
                           <Download className="w-4 h-4" />
                         </Button>
                       </a>
@@ -276,7 +276,7 @@ export default function ParentPortal() {
       )}
 
       {activeTab === 'academics' && (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] overflow-hidden overflow-hidden animate-in fade-in">
+        <div className="school-card overflow-hidden animate-in fade-in">
           <div className="p-4 border-b border-border bg-muted/50">
             <h3 className="font-bold text-card-foreground">Academic Transcript</h3>
           </div>
@@ -301,7 +301,7 @@ export default function ParentPortal() {
                       <td className="px-6 py-4 font-medium text-foreground">{g.data?.examName}</td>
                       <td className="px-6 py-4 text-muted-foreground">{g.data?.subject}</td>
                       <td className="px-6 py-4 text-right">
-                        <span className={`font-bold ${pct >= 70 ? 'text-emerald-600' : pct >= 50 ? 'text-emerald-600' : 'text-red-600'}`}>
+                        <span className={`font-bold ${pct >= 70 ? 'text-[#1E3A8A] dark:text-blue-400' : pct >= 50 ? 'text-[#1E3A8A] dark:text-blue-400' : 'text-red-600'}`}>
                           {score} / {max} ({pct}%)
                         </span>
                       </td>
@@ -315,8 +315,8 @@ export default function ParentPortal() {
       )}
 
       {activeTab === 'finance' && (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] overflow-hidden overflow-hidden animate-in fade-in p-8 text-center text-muted-foreground">
-          <CreditCard className="w-12 h-12 mx-auto mb-3 opacity-20 text-[#1A73E8]" />
+        <div className="school-card overflow-hidden animate-in fade-in p-8 text-center text-muted-foreground">
+          <CreditCard className="w-12 h-12 mx-auto mb-3 opacity-20 text-[#1E3A8A]" />
           <h3 className="font-bold text-lg text-foreground mb-1">Fee Statements & Invoices</h3>
           <p className="text-sm">No recent transactions or invoices found for this student.</p>
           {balance > 0 && (
@@ -329,11 +329,11 @@ export default function ParentPortal() {
       )}
 
       {activeTab === 'communications' && (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] overflow-hidden overflow-hidden animate-in fade-in p-8 text-center text-muted-foreground">
+        <div className="school-card overflow-hidden animate-in fade-in p-8 text-center text-muted-foreground">
           <Bell className="w-12 h-12 mx-auto mb-3 opacity-30 text-amber-500" />
           <h3 className="font-bold text-lg text-foreground mb-1">Messages & Announcements</h3>
           <p className="text-sm">You have no new messages from the school administration.</p>
-          <Button className="mt-6 bg-[#1A73E8] hover:bg-[#1557B0] text-white shadow-md shadow-[#1A73E8]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">Contact School Office</Button>
+          <Button className="mt-6 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">Contact School Office</Button>
         </div>
       )}
 

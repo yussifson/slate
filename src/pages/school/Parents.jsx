@@ -132,11 +132,11 @@ export default function Parents() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 school-page-enter font-dmsans">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{t("parents", "Parents")}</h1>
+          <h1 className="text-2xl school-heading font-extrabold tracking-tight">{t("parents", "Parents")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("manage_parent_directory", "Manage parent directory (Parents are enrolled automatically with Students)")}</p>
         </div>
         <div className="flex gap-2">
@@ -149,7 +149,7 @@ export default function Parents() {
       {showSettings && <IDFormatSettings />}
 
       {/* Search */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
+      <div className="school-card p-5">
         <div className="relative w-full max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input placeholder="Search by name or ID..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
@@ -157,7 +157,7 @@ export default function Parents() {
       </div>
 
       {/* Parent Table */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] overflow-hidden overflow-hidden">
+      <div className="school-card overflow-hidden">
         {filtered.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">
             <Users className="w-10 h-10 mx-auto mb-3 opacity-30" />
@@ -166,7 +166,7 @@ export default function Parents() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-muted border-b border-border">
+              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-blue-100 dark:border-slate-700">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Parent / Guardian</th>
                   <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">ID / Login ID</th>
@@ -181,14 +181,14 @@ export default function Parents() {
                 <tr key={p.id} className="hover:bg-muted/50 transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-emerald-700 font-bold text-xs">
+                      <div className="w-9 h-9 rounded-full bg-[#F0F4FF] dark:bg-blue-900/30 flex items-center justify-center text-[#1E3A8A] dark:text-blue-300 font-bold text-xs">
                         {p.avatar}
                       </div>
                       <p className="font-semibold text-card-foreground">{p.name}</p>
                     </div>
                   </td>
                   <td className="px-4 py-3 text-muted-foreground font-mono text-xs">{p.parentId}</td>
-                  <td className="px-4 py-3 text-emerald-700 text-xs font-semibold">
+                  <td className="px-4 py-3 text-[#1E3A8A] dark:text-blue-400 text-xs font-semibold">
                     {students.find(s => s.id_number === p.linkedStudentId)?.name || 'Unlinked'}
                   </td>
                   <td className="px-4 py-3">
@@ -232,17 +232,17 @@ export default function Parents() {
 
       {/* Tabbed Wizard Modal (Edit Only) */}
       {showModal && editingId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-card rounded-2xl shadow-sm w-full max-w-lg overflow-hidden border border-border flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
+          <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-lg overflow-hidden border border-border flex flex-col max-h-[90vh]">
             <div className="p-6 border-b border-border">
-              <h2 className="text-xl font-bold text-card-foreground">Edit Parent</h2>
+              <h2 className="text-xl school-heading font-bold tracking-tight">Edit Parent</h2>
               <div className="flex gap-4 mt-4 border-b border-border">
                 {['personal', 'linking'].map(tab => (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
                     className={`pb-2 text-sm font-semibold capitalize border-b-2 transition-colors ${
-                      activeTab === tab ? 'border-blue-600 text-emerald-600' : 'border-transparent text-muted-foreground hover:text-foreground'
+                      activeTab === tab ? 'border-[#1E3A8A] text-[#1E3A8A] dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-muted-foreground hover:text-foreground'
                     }`}
                   >
                     {tab}
@@ -290,9 +290,9 @@ export default function Parents() {
             <div className="p-6 border-t border-border bg-muted/30 flex gap-3">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setActiveTab('personal'); }} disabled={mutateParent.isPending}>{t("cancel", "Cancel")}</Button>
               {activeTab !== 'linking' ? (
-                <Button className="flex-1 bg-[#1A73E8] hover:bg-[#1557B0] text-white shadow-md shadow-[#1A73E8]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={() => setActiveTab('linking')}>{t("next", "Next")}</Button>
+                <Button className="flex-1 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={() => setActiveTab('linking')}>{t("next", "Next")}</Button>
               ) : (
-                <Button className="flex-1 bg-green-600 hover:bg-green-700 text-white" onClick={handleEnroll} disabled={mutateParent.isPending}>
+                <Button className="flex-1 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleEnroll} disabled={mutateParent.isPending}>
                   {mutateParent.isPending ? 'Saving...' : 'Save Changes'}
                 </Button>
               )}

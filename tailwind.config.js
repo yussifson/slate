@@ -5,7 +5,9 @@ module.exports = {
   theme: {
   	extend: {
   		fontFamily: {
-  			inter: ['var(--font-inter)']
+  			inter: ['var(--font-inter)'],
+  			playfair: ['"Playfair Display"', 'Georgia', 'serif'],
+  			dmsans: ['"DM Sans"', 'system-ui', 'sans-serif']
   		},
   		borderRadius: {
   			lg: 'var(--radius)',

@@ -120,7 +120,7 @@ export default function Teachers() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 school-page-enter font-dmsans">
       <ModuleBanner
         title={t("staff_management", "Staff Management")}
         subtitle={t("manage_all_staff", "Manage academic, administrative, and support staff records")}
@@ -133,7 +133,7 @@ export default function Teachers() {
       />
       
       {/* Search & Filter */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="school-card p-5 flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="relative flex-1 w-full max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input placeholder="Search by name, role, or subject..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
@@ -151,7 +151,7 @@ export default function Teachers() {
             ))}
           </div>
           <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
-          <Button onClick={() => setShowModal(true)} className="gap-2 bg-[#1A73E8] hover:bg-[#1557B0] text-white shadow-md shadow-[#1A73E8]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold shrink-0">
+          <Button onClick={() => setShowModal(true)} className="gap-2 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold shrink-0">
             <Plus className="w-4 h-4" /> {t("add_staff", "Add Staff")}
           </Button>
         </div>
@@ -161,7 +161,7 @@ export default function Teachers() {
         <div className="py-12 text-center text-muted-foreground">{t("loading", "Loading...")}</div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-12 bg-card rounded-xl border border-border">
-          <Briefcase className="w-12 h-12 mx-auto mb-3 opacity-20 text-[#1A73E8]" />
+          <Briefcase className="w-12 h-12 mx-auto mb-3 opacity-20 text-[#1E3A8A]" />
           <p className="font-semibold text-lg text-card-foreground">{t("no_teachers_found", "No teachers found")}</p>
         </div>
       ) : viewMode === 'grid' ? (
@@ -189,11 +189,11 @@ export default function Teachers() {
                 </DropdownMenu>
               </div>
               
-              <div className="w-20 h-20 rounded-[1.25rem] bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/40 dark:to-teal-900/40 border border-white/50 shadow-inner flex items-center justify-center text-emerald-700 dark:text-emerald-400 font-black text-2xl mb-4 group-hover:scale-105 transition-transform duration-300 relative z-10">
+              <div className="w-20 h-20 rounded-[1.25rem] bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/40 dark:to-teal-900/40 border border-white/50 shadow-inner flex items-center justify-center text-[#1E3A8A] dark:text-blue-400 dark:text-emerald-400 font-black text-2xl mb-4 group-hover:scale-105 transition-transform duration-300 relative z-10">
                 {teacher.avatar}
               </div>
-              <h3 className="font-extrabold text-card-foreground text-xl tracking-tight group-hover:text-emerald-600 transition-colors relative z-10">{teacher.name}</h3>
-              <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-4 opacity-90 relative z-10">{teacher.position}</p>
+              <h3 className="font-extrabold text-card-foreground text-xl tracking-tight group-hover:text-[#1E3A8A] dark:text-blue-400 transition-colors relative z-10">{teacher.name}</h3>
+              <p className="text-xs font-bold text-[#1E3A8A] dark:text-blue-400 dark:text-emerald-400 uppercase tracking-widest mb-4 opacity-90 relative z-10">{teacher.position}</p>
               
               <div className="w-full space-y-2 mt-auto relative z-10">
                 <div className="flex items-center gap-3 text-xs text-muted-foreground bg-slate-50/50 dark:bg-slate-900/50 border border-border/50 p-2.5 rounded-xl shadow-sm">
@@ -209,10 +209,10 @@ export default function Teachers() {
           ))}
         </div>
       ) : (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] overflow-hidden overflow-hidden">
+        <div className="school-card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-muted border-b border-border">
+              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-blue-100 dark:border-slate-700">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Name</th>
                   <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Subjects</th>
@@ -225,7 +225,7 @@ export default function Teachers() {
                 <tr key={p.id} className="hover:bg-muted/50 transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-emerald-700 font-bold text-xs">
+                      <div className="w-9 h-9 rounded-full bg-[#F0F4FF] dark:bg-blue-900/30 flex items-center justify-center text-[#1E3A8A] dark:text-blue-300 font-bold text-xs">
                         {p.avatar}
                       </div>
                       <div>
@@ -267,8 +267,8 @@ export default function Teachers() {
       )}
 
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-card rounded-2xl shadow-sm w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
+          <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
             <h2 className="text-lg font-bold text-card-foreground">{editingId ? 'Edit Staff' : 'Add Staff'}</h2>
             <div className="space-y-3">
               <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("full_name", "Full Name")}</label><Input value={formData.full_name} onChange={e => setFormData({...formData, full_name: e.target.value})} className="mt-1" /></div>
@@ -301,7 +301,7 @@ export default function Teachers() {
             </div>
             <div className="flex gap-3 pt-2">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)} disabled={mutateTeacher.isPending}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-[#1A73E8] hover:bg-[#1557B0] text-white shadow-md shadow-[#1A73E8]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleSave} disabled={mutateTeacher.isPending}>
+              <Button className="flex-1 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleSave} disabled={mutateTeacher.isPending}>
                 {mutateTeacher.isPending ? 'Saving...' : 'Save Staff Record'}
               </Button>
             </div>

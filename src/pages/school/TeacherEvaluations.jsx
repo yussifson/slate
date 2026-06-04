@@ -53,7 +53,7 @@ export default function TeacherEvaluations() {
     <div className="space-y-8 pb-20 max-w-5xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Teacher Evaluations</h1>
+          <h1 className="text-2xl school-heading font-extrabold tracking-tight">Teacher Evaluations</h1>
           <p className="text-sm text-muted-foreground mt-0.5">Anonymous feedback to improve academic quality</p>
         </div>
       </div>
@@ -70,7 +70,7 @@ export default function TeacherEvaluations() {
                 <div className="font-bold text-lg text-slate-900 dark:text-white">{teacher}</div>
                 
                 {done ? (
-                  <div className="flex items-center gap-2 text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 px-4 py-2 rounded-full font-bold text-sm">
+                  <div className="flex items-center gap-2 text-[#1E3A8A] dark:text-blue-400 bg-[#F0F4FF] dark:bg-blue-900/20 dark:bg-emerald-900/20 px-4 py-2 rounded-full font-bold text-sm">
                     <CheckCircle className="w-4 h-4" /> Completed
                   </div>
                 ) : (

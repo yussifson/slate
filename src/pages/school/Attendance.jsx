@@ -125,11 +125,11 @@ export default function Attendance() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 school-page-enter font-dmsans">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{t("attendance", "Attendance")}</h1>
+          <h1 className="text-2xl school-heading font-extrabold tracking-tight">{t("attendance", "Attendance")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("daily_class_attendance_registe", "Daily class attendance register")}</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
@@ -152,12 +152,12 @@ export default function Attendance() {
       </div>
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="stat-card-premium bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex items-center gap-3">
+        <div className="stat-card-premium school-card p-5 flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center">
             <Users className="w-5 h-5 text-white" />
           </div>
           <div>
-            <p className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{classStudents.length}</p>
+            <p className="text-2xl school-heading font-extrabold tracking-tight">{classStudents.length}</p>
             <p className="text-xs text-muted-foreground">{t("total_students", "Total Students")}</p>
           </div>
         </div>
@@ -190,10 +190,10 @@ export default function Attendance() {
         </div>
       </div>
       {/* Attendance Sheet */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] overflow-hidden overflow-hidden">
+      <div className="school-card overflow-hidden">
         <div className="p-4 border-b border-border bg-muted/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-card-foreground font-semibold">
-            <ClipboardList className="w-5 h-5 text-emerald-600" />
+            <ClipboardList className="w-5 h-5 text-[#1E3A8A] dark:text-blue-400" />
             <span>{selectedClass} — {new Date(date + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
           </div>
           <div className="flex items-center gap-2">
@@ -209,7 +209,7 @@ export default function Attendance() {
 
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-muted border-b border-border">
+            <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-blue-100 dark:border-slate-700">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{t("student", "Student")}</th>
                 <th className="px-4 py-3 text-center text-xs font-bold text-green-600 uppercase tracking-wide">{t("present", "Present")}</th>
@@ -223,7 +223,7 @@ export default function Attendance() {
                   <tr key={student.id} className="hover:bg-muted/40 transition-colors">
                     <td className="px-6 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-emerald-700 font-bold text-xs shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-[#F0F4FF] dark:bg-blue-900/30 flex items-center justify-center text-[#1E3A8A] dark:text-blue-300 font-bold text-xs shrink-0">
                           {student.name.substring(0, 2).toUpperCase()}
                         </div>
                         <div>
@@ -256,7 +256,7 @@ export default function Attendance() {
               {classStudents.length === 0 && (
                 <tr>
                   <td colSpan={4} className="text-center py-12 text-muted-foreground">
-                    <Users className="w-10 h-10 mx-auto mb-3 opacity-20 text-[#1A73E8]" />
+                    <Users className="w-10 h-10 mx-auto mb-3 opacity-20 text-[#1E3A8A]" />
                     <p className="font-medium">{t("no_students_enrolled_in", "No students enrolled in")} {selectedClass}</p>
                     <p className="text-xs mt-1">{t(
                       "enroll_students_in_the_student",
@@ -274,7 +274,7 @@ export default function Attendance() {
             <Button
               onClick={handleSubmit}
               disabled={mutateRecord.isPending || Object.keys(statusMap).length === 0}
-              className="bg-[#1A73E8] hover:bg-[#1557B0] text-white shadow-md shadow-[#1A73E8]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold gap-2"
+              className="bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold gap-2"
             >
               <Plus className="w-4 h-4" />
               {mutateRecord.isPending ? 'Submitting...' : `Submit Attendance (${markedCount}/${classStudents.length})`}
@@ -283,10 +283,10 @@ export default function Attendance() {
         )}
       </div>
       {/* Saved Attendance Records */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] overflow-hidden overflow-hidden">
+      <div className="school-card overflow-hidden">
         <div className="p-4 border-b border-border bg-muted/50">
           <h3 className="font-bold text-card-foreground flex items-center gap-2">
-            <CalendarDays className="w-5 h-5 text-emerald-600" />
+            <CalendarDays className="w-5 h-5 text-[#1E3A8A] dark:text-blue-400" />
             {t("saved_records", "Saved Records —")} {selectedClass} {t("on", "on")} {date}
           </h3>
         </div>
@@ -304,7 +304,7 @@ export default function Attendance() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-muted border-b border-border">
+              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-blue-100 dark:border-slate-700">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{t("date", "Date")}</th>
                   <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{t("class", "Class")}</th>
@@ -324,7 +324,7 @@ export default function Attendance() {
                   return (
                     <tr key={rec.id} className="hover:bg-muted/40 transition-colors">
                       <td className="px-6 py-3 text-foreground font-medium">{rec.date}</td>
-                      <td className="px-6 py-3"><Link to="/classes" className="bg-emerald-50 text-emerald-700 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{rec.className}</Link></td>
+                      <td className="px-6 py-3"><Link to="/classes" className="bg-[#F0F4FF] dark:bg-blue-900/20 text-[#1E3A8A] dark:text-blue-300 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{rec.className}</Link></td>
                       <td className="px-6 py-3 text-muted-foreground">{rec.takenBy || '—'}</td>
                       <td className="px-6 py-3 text-center font-bold text-green-600">{p}</td>
                       <td className="px-6 py-3 text-center font-bold text-red-600">{a}</td>

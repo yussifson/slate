@@ -123,13 +123,13 @@ export default function FeeManagement() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 school-page-enter font-dmsans">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{t("fee_management", "Fee Management")}</h1>
+          <h1 className="text-2xl school-heading font-extrabold tracking-tight">{t("fee_management", "Fee Management")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("track_student_tuition_and_paym", "Track student tuition and payments")}</p>
         </div>
-        <Button onClick={() => setShowEnrollModal(true)} className="gap-2 bg-[#1A73E8] hover:bg-[#1557B0] text-white shadow-md shadow-[#1A73E8]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">
+        <Button onClick={() => setShowEnrollModal(true)} className="gap-2 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">
           <Plus className="w-4 h-4" /> {t("quick_enroll", "Quick Enroll")}
         </Button>
       </div>
@@ -154,7 +154,7 @@ export default function FeeManagement() {
         </div>
         <div className="bg-card rounded-xl border border-border p-5 shadow-sm">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-950/50 flex items-center justify-center text-emerald-600 dark:text-blue-400">
+            <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-950/50 flex items-center justify-center text-[#1E3A8A] dark:text-blue-400 dark:text-blue-400">
               <CheckCircle className="w-4 h-4" />
             </div>
             <h3 className="font-semibold text-foreground text-sm">{t("fully_paid_students", "Fully Paid Students")}</h3>
@@ -162,11 +162,11 @@ export default function FeeManagement() {
           <p className="text-3xl font-bold text-card-foreground">{fullyPaidCount} <span className="text-sm font-medium text-muted-foreground">/ {studentsFees.length}</span></p>
         </div>
       </div>
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] overflow-hidden overflow-hidden">
+      <div className="school-card overflow-hidden">
         <div className="p-4 border-b border-border bg-muted/50">
           <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input placeholder="Search student tuition listings..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-[#1A73E8]" />
+            <Input placeholder="Search student tuition listings..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white/80 dark:bg-slate-800/50 border-blue-100 dark:border-slate-700 rounded-xl focus-visible:ring-[#3B82F6]" />
           </div>
         </div>
         <div className="overflow-x-auto">
@@ -174,7 +174,7 @@ export default function FeeManagement() {
             <div className="py-12 text-center text-muted-foreground">{t("loading_fee_ledger", "Loading fee ledger...")}</div>
           ) : filtered.length === 0 ? (
             <div className="py-12 text-center text-muted-foreground">
-              <AlertCircle className="w-12 h-12 mx-auto mb-3 opacity-20 text-[#1A73E8]" />
+              <AlertCircle className="w-12 h-12 mx-auto mb-3 opacity-20 text-[#1E3A8A]" />
               <p className="font-semibold text-lg text-card-foreground">{t("no_students_enrolled", "No students enrolled")}</p>
               <p className="text-xs mt-1">{t(
                 "tuition_bills_are_automaticall",
@@ -183,7 +183,7 @@ export default function FeeManagement() {
             </div>
           ) : (
             <table className="w-full text-sm">
-              <thead className="bg-slate-50/50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800">
+              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-blue-100 dark:border-slate-700">
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{t("student", "Student")}</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{t("class", "Class")}</th>
@@ -202,7 +202,7 @@ export default function FeeManagement() {
                         <Link to={`/students`} className="font-semibold text-primary hover:underline">{f.student}</Link>
                         <p className="text-xs text-muted-foreground font-mono mt-0.5">{f.studentId}</p>
                       </td>
-                      <td className="px-6 py-4 text-muted-foreground"><Link to="/classes" className="hover:underline text-emerald-600">{f.class}</Link></td>
+                      <td className="px-6 py-4 text-muted-foreground"><Link to="/classes" className="hover:underline text-[#1E3A8A] dark:text-blue-400">{f.class}</Link></td>
                       <td className="px-6 py-4 text-right font-medium text-foreground">${f.totalDue}</td>
                       <td className="px-6 py-4 text-right font-medium text-green-600">${f.paid}</td>
                       <td className="px-6 py-4 text-right font-bold text-red-600">${f.balance}</td>
@@ -240,9 +240,9 @@ export default function FeeManagement() {
         </div>
       </div>
       {showPaymentModal && selectedStudent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-card rounded-2xl shadow-sm w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
-            <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><CreditCard className="w-5 h-5 text-emerald-600" /> {t("record_payment", "Record Payment")}</h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
+          <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><CreditCard className="w-5 h-5 text-[#1E3A8A] dark:text-blue-400" /> {t("record_payment", "Record Payment")}</h2>
             <div className="bg-muted dark:bg-muted/30 p-3 rounded-lg border border-border text-sm mb-4">
               <p className="text-muted-foreground">{t("student", "Student:")} <strong className="text-card-foreground">{selectedStudent.student}</strong></p>
               <p className="text-muted-foreground">{t("current_balance", "Current Balance:")} <strong className="text-red-600">${selectedStudent.balance}</strong></p>
@@ -269,15 +269,15 @@ export default function FeeManagement() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => setShowPaymentModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-green-600 hover:bg-green-700 text-white" onClick={handleConfirmPayment}>{t("confirm_payment", "Confirm Payment")}</Button>
+              <Button className="flex-1 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleConfirmPayment}>{t("confirm_payment", "Confirm Payment")}</Button>
             </div>
           </div>
         </div>
       )}
       {showEnrollModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-card rounded-2xl shadow-sm w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
-            <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><Plus className="w-5 h-5 text-emerald-600" /> {t("quick_enroll", "Quick Enroll Student")}</h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
+          <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><Plus className="w-5 h-5 text-[#1E3A8A] dark:text-blue-400" /> {t("quick_enroll", "Quick Enroll Student")}</h2>
             <p className="text-sm text-muted-foreground">{t("quickly_register_a_student_to_", "Quickly register a student to generate their tuition billing profile.")}</p>
             <div className="space-y-3">
               <div>
@@ -293,7 +293,7 @@ export default function FeeManagement() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => setShowEnrollModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-[#1A73E8] hover:bg-[#1557B0] text-white shadow-md shadow-[#1A73E8]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={() => {
+              <Button className="flex-1 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={() => {
                 if (!enrollName.trim()) return toast.error("Enter student name");
                 const studentId = `STU-${Math.floor(1000 + Math.random() * 9000)}`;
                 mutateRecord.mutate({
@@ -327,11 +327,11 @@ export default function FeeManagement() {
           {viewDetails && (
             <div className="mt-6 space-y-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 font-bold text-xl">
+                <div className="w-16 h-16 rounded-full bg-[#F0F4FF] dark:bg-blue-900/20 flex items-center justify-center text-[#1E3A8A] dark:text-blue-400 font-bold text-xl">
                   {viewDetails.student.substring(0, 2).toUpperCase()}
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-card-foreground">
+                  <h3 className="text-xl school-heading font-bold tracking-tight">
                     <Link to="/students" className="hover:underline">{viewDetails.student}</Link>
                   </h3>
                   <p className="text-sm text-muted-foreground">{viewDetails.studentId}</p>

@@ -59,7 +59,7 @@ export default function CampusMarketplace() {
     <div className="space-y-8 pb-20 max-w-7xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Campus Marketplace</h1>
+          <h1 className="text-2xl school-heading font-extrabold tracking-tight">Campus Marketplace</h1>
           <p className="text-sm text-muted-foreground mt-0.5">Buy, sell, and trade safely with verified students</p>
         </div>
       </div>
@@ -77,7 +77,7 @@ export default function CampusMarketplace() {
                 <label className="text-xs font-bold text-slate-500 uppercase">Price ($)</label>
                 <Input type="number" value={newItemPrice} onChange={e => setNewItemPrice(e.target.value)} placeholder="0.00" className="mt-1 bg-white/50 dark:bg-background/50 border-slate-200 dark:border-slate-800 rounded-xl" />
               </div>
-              <Button onClick={() => listItem.mutate()} disabled={listItem.isPending} className="w-full h-12 rounded-xl bg-[#1A73E8] hover:bg-[#1557B0] text-white shadow-md shadow-[#1A73E8]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold font-bold shadow-sm shadow-emerald-600/20 mt-4">
+              <Button onClick={() => listItem.mutate()} disabled={listItem.isPending} className="w-full h-12 rounded-xl bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold font-bold shadow-sm shadow-emerald-600/20 mt-4">
                 <Plus className="w-4 h-4 mr-2" /> List Item
               </Button>
             </div>
@@ -97,9 +97,9 @@ export default function CampusMarketplace() {
                 <div className="p-6 flex-1 flex flex-col justify-between">
                   <div>
                     <h3 className="font-extrabold text-lg text-slate-900 dark:text-white mb-1 line-clamp-2">{item.title}</h3>
-                    <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-4">{item.status}</p>
+                    <p className="text-xs font-bold text-[#1E3A8A] dark:text-blue-400 uppercase tracking-wider mb-4">{item.status}</p>
                   </div>
-                  <Button variant="outline" className="w-full rounded-xl border-slate-200 dark:border-slate-800 font-bold hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-200 dark:hover:bg-emerald-900/20 dark:hover:border-emerald-800">
+                  <Button variant="outline" className="w-full rounded-xl border-slate-200 dark:border-slate-800 font-bold hover:bg-[#F0F4FF] dark:bg-blue-900/20 hover:text-[#1E3A8A] dark:text-blue-400 hover:border-emerald-200 dark:hover:bg-emerald-900/20 dark:hover:border-emerald-800">
                     <MessageCircle className="w-4 h-4 mr-2" /> Contact Seller
                   </Button>
                 </div>

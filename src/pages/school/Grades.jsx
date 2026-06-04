@@ -28,7 +28,7 @@ function calcGrade(score, maxScore) {
 
 const GRADE_COLORS = {
   A: 'bg-green-100 text-green-700',
-  B: 'bg-blue-100 text-emerald-700',
+  B: 'bg-blue-50 text-[#1E3A8A] dark:bg-blue-900/30 dark:text-blue-300',
   C: 'bg-amber-100 text-amber-700',
   D: 'bg-orange-100 text-orange-700',
   F: 'bg-red-100 text-red-700',
@@ -167,29 +167,29 @@ export default function Grades() {
   const liveGrade = calcGrade(parseFloat(formData.score) || 0, parseFloat(formData.maxScore) || 100);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 school-page-enter font-dmsans">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{t("grades_results", "Grades & Results")}</h1>
+          <h1 className="text-2xl school-heading font-extrabold tracking-tight">{t("grades_results", "Grades & Results")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("record_and_manage_student_exam", "Record and manage student exam scores")}</p>
         </div>
-        <Button onClick={() => setShowModal(true)} className="gap-2 bg-green-600 hover:bg-green-700 text-white">
+        <Button onClick={() => setShowModal(true)} className="gap-2 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">
           <Plus className="w-4 h-4" /> {t("add_grade_entry", "Add Grade Entry")}
         </Button>
       </div>
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="stat-card-premium bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex items-center gap-3">
+        <div className="stat-card-premium school-card p-5 flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center">
             <BarChart3 className="w-5 h-5 text-white" />
           </div>
           <div>
-            <p className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{avgScore}%</p>
+            <p className="text-2xl school-heading font-extrabold tracking-tight">{avgScore}%</p>
             <p className="text-xs text-muted-foreground">{t("average_score", "Average Score")}</p>
           </div>
         </div>
-        <div className="stat-card-premium bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex items-center gap-3">
+        <div className="stat-card-premium school-card p-5 flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-green-500 flex items-center justify-center">
             <TrendingUp className="w-5 h-5 text-white" />
           </div>
@@ -198,7 +198,7 @@ export default function Grades() {
             <p className="text-xs text-muted-foreground">{t("highest_score", "Highest Score")}</p>
           </div>
         </div>
-        <div className="stat-card-premium bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex items-center gap-3">
+        <div className="stat-card-premium school-card p-5 flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-red-400 flex items-center justify-center">
             <Award className="w-5 h-5 text-white" />
           </div>
@@ -207,7 +207,7 @@ export default function Grades() {
             <p className="text-xs text-muted-foreground">{t("lowest_score", "Lowest Score")}</p>
           </div>
         </div>
-        <div className="stat-card-premium bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex items-center gap-3">
+        <div className="stat-card-premium school-card p-5 flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-teal-500 flex items-center justify-center">
             <CheckCircle className="w-5 h-5 text-white" />
           </div>
@@ -218,7 +218,7 @@ export default function Grades() {
         </div>
       </div>
       {/* Filters */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex flex-col sm:flex-row gap-3">
+      <div className="school-card p-5 flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
@@ -245,7 +245,7 @@ export default function Grades() {
         </div>
       </div>
       {/* Table */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] overflow-hidden overflow-hidden">
+      <div className="school-card overflow-hidden">
         <div className="overflow-x-auto">
           {isLoading ? (
             <div className="py-12 text-center text-muted-foreground">{t("loading_grade_records", "Loading grade records...")}</div>
@@ -260,7 +260,7 @@ export default function Grades() {
             </div>
           ) : (
             <table className="w-full text-sm">
-              <thead className="bg-muted border-b border-border">
+              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-blue-100 dark:border-slate-700">
                 <tr>
                   {['Student', 'Class', 'Subject', 'Exam', 'Date', 'Score', 'Grade', ''].map(h => {
                     return (<th key={h} className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{h}</th>);
@@ -280,7 +280,7 @@ export default function Grades() {
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <Link to="/classes" className="bg-emerald-50 text-emerald-700 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{g.className}</Link>
+                        <Link to="/classes" className="bg-[#F0F4FF] dark:bg-blue-900/20 text-[#1E3A8A] dark:text-blue-300 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{g.className}</Link>
                       </td>
                       <td className="px-4 py-3 text-muted-foreground">{g.subject}</td>
                       <td className="px-4 py-3 text-foreground font-medium">{g.examName}</td>
@@ -329,8 +329,8 @@ export default function Grades() {
       </div>
       {/* Add Grade Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-card rounded-2xl shadow-sm w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
+          <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
               <Plus className="w-5 h-5 text-green-600" /> {editingId ? 'Edit Grade Entry' : 'Add Grade Entry'}
             </h2>
@@ -454,7 +454,7 @@ export default function Grades() {
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditingId(null); setFormData(defaultForm); }} disabled={mutateRecord.isPending}>
                 {t("cancel", "Cancel")}
               </Button>
-              <Button className="flex-1 bg-green-600 hover:bg-green-700 text-white" onClick={handleAdd} disabled={mutateRecord.isPending}>
+              <Button className="flex-1 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleAdd} disabled={mutateRecord.isPending}>
                 {mutateRecord.isPending ? 'Saving...' : (editingId ? 'Save Changes' : 'Save Grade')}
               </Button>
             </div>
@@ -484,7 +484,7 @@ export default function Grades() {
                   {viewDetails.studentName?.substring(0, 2).toUpperCase()}
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-card-foreground">
+                  <h3 className="text-xl school-heading font-bold tracking-tight">
                     <Link to="/students" className="hover:underline text-primary">{viewDetails.studentName}</Link>
                   </h3>
                   <p className="text-sm text-muted-foreground">{viewDetails.examName}</p>

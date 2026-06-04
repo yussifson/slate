@@ -63,20 +63,20 @@ export default function Assignments() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 school-page-enter font-dmsans">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{t("assignments", "Assignments & Homework")}</h1>
+          <h1 className="text-2xl school-heading font-extrabold tracking-tight">{t("assignments", "Assignments & Homework")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("manage_class_assignments", "Manage class assignments and homework tracks")}</p>
         </div>
-        <Button onClick={() => { setFormData({title: '', class: 'Grade 10', subject: '', dueDate: '', description: ''}); setShowModal(true); }} className="gap-2 bg-[#1A73E8] hover:bg-[#1557B0] text-white shadow-md shadow-[#1A73E8]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">
+        <Button onClick={() => { setFormData({title: '', class: 'Grade 10', subject: '', dueDate: '', description: ''}); setShowModal(true); }} className="gap-2 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">
           <Plus className="w-4 h-4" /> {t("create_assignment", "Create Assignment")}
         </Button>
       </div>
       
       {/* Search */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
+      <div className="school-card p-5">
         <div className="relative w-full max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input placeholder="Search assignments..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
@@ -86,8 +86,8 @@ export default function Assignments() {
       {isLoading ? (
         <div className="py-12 text-center text-muted-foreground">{t("loading", "Loading...")}</div>
       ) : filtered.length === 0 ? (
-        <div className="text-center py-12 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] overflow-hidden">
-          <BookOpen className="w-12 h-12 mx-auto mb-3 opacity-20 text-[#1A73E8]" />
+        <div className="text-center py-12 school-card">
+          <BookOpen className="w-12 h-12 mx-auto mb-3 opacity-20 text-[#1E3A8A]" />
           <p className="font-semibold text-lg text-card-foreground">{t("no_assignments", "No assignments found")}</p>
         </div>
       ) : (
@@ -96,7 +96,7 @@ export default function Assignments() {
             <div key={a.id} className="bg-card/60 backdrop-blur-md rounded-3xl border border-border/60 p-6 shadow-sm  hover:-translate-y-1.5 transition-all duration-300 group relative overflow-hidden flex flex-col">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-50/40 via-transparent to-transparent dark:from-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
               <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity pointer-events-none transform translate-x-1/4 -translate-y-1/4 scale-150 z-0">
-                <FileText className="w-32 h-32 text-emerald-600" />
+                <FileText className="w-32 h-32 text-[#1E3A8A] dark:text-blue-400" />
               </div>
               <div className="absolute top-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                 <DropdownMenu>
@@ -117,12 +117,12 @@ export default function Assignments() {
               </div>
               
               <div className="flex items-start gap-4 mb-5 relative z-10">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/40 border border-white/50 shadow-inner text-emerald-700 dark:text-blue-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/40 border border-white/50 shadow-inner text-[#1E3A8A] dark:text-blue-400 dark:text-blue-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300">
                   <FileText className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-card-foreground text-lg line-clamp-1 tracking-tight group-hover:text-emerald-600 transition-colors">{a.title}</h3>
-                  <p className="text-xs font-bold text-emerald-600 dark:text-blue-400 uppercase tracking-widest mt-1 opacity-90">{a.subject} • {a.class}</p>
+                  <h3 className="font-extrabold text-card-foreground text-lg line-clamp-1 tracking-tight group-hover:text-[#1E3A8A] dark:text-blue-400 transition-colors">{a.title}</h3>
+                  <p className="text-xs font-bold text-[#1E3A8A] dark:text-blue-400 dark:text-blue-400 uppercase tracking-widest mt-1 opacity-90">{a.subject} • {a.class}</p>
                 </div>
               </div>
               
@@ -134,7 +134,7 @@ export default function Assignments() {
                 <span className="text-xs font-bold flex items-center gap-2 text-slate-500 uppercase tracking-wider">
                   <Calendar className="w-4 h-4 text-emerald-500" /> Due: {a.dueDate ? format(new Date(a.dueDate), 'MMM d, yyyy') : 'No Date'}
                 </span>
-                <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-md shadow-sm">{t("active", "Active")}</span>
+                <span className="bg-[#F0F4FF] dark:bg-blue-900/20 text-[#1E3A8A] dark:text-blue-300 border border-emerald-200 text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-md shadow-sm">{t("active", "Active")}</span>
               </div>
             </div>
           ))}
@@ -142,8 +142,8 @@ export default function Assignments() {
       )}
 
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-card rounded-2xl shadow-sm w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
+          <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
             <h2 className="text-lg font-bold text-card-foreground">{editingId ? 'Edit Assignment' : 'Create Assignment'}</h2>
             <div className="space-y-3">
               <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("title", "Title")}</label><Input value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="mt-1" /></div>
@@ -159,7 +159,7 @@ export default function Assignments() {
             </div>
             <div className="flex gap-3 pt-2">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-[#1A73E8] hover:bg-[#1557B0] text-white shadow-md shadow-[#1A73E8]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleSave}>
+              <Button className="flex-1 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleSave}>
                 {mutateRecord.isPending ? 'Saving...' : 'Save Assignment'}
               </Button>
             </div>

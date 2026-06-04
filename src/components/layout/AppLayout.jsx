@@ -68,17 +68,23 @@ export default function AppLayout() {
       let primaryColor = '221 83% 53%'; // Default Blue (Law/Core)
       if (industry === 'school') {
         primaryColor = '213 89% 50%'; // Google Blue (#1A73E8)
-      } else if (industry === 'retail') {
-        primaryColor = '24 98% 50%'; // Sunset Orange
-      } else if (industry === 'hotel') {
-        primaryColor = '251 52% 40%'; // Deep Violet/Purple (#443199)
-      } else if (industry === 'hospital') {
-        primaryColor = '175 84% 32%'; // Peaceful Teal/Medical Green (#0d9488)
-      } else if (industry === 'insurance') {
-        primaryColor = '275 100% 50%'; // Vibrant Purple (#9400FF)
+        document.body.classList.add('theme-school');
+      } else {
+        document.body.classList.remove('theme-school');
+        if (industry === 'retail') {
+          primaryColor = '24 98% 50%'; // Sunset Orange
+        } else if (industry === 'hotel') {
+          primaryColor = '251 52% 40%'; // Deep Violet/Purple (#443199)
+        } else if (industry === 'hospital') {
+          primaryColor = '175 84% 32%'; // Peaceful Teal/Medical Green (#0d9488)
+        } else if (industry === 'insurance') {
+          primaryColor = '275 100% 50%'; // Vibrant Purple (#9400FF)
+        }
       }
       document.documentElement.style.setProperty('--primary', primaryColor);
       document.documentElement.style.setProperty('--ring', primaryColor);
+    } else {
+      document.body.classList.remove('theme-school');
     }
   }, [user?.company_industry, impersonatedCompany?.industry_type]);
 

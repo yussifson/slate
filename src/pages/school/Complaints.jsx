@@ -51,7 +51,7 @@ export default function Complaints() {
     <div className="space-y-8 pb-20 max-w-5xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Anonymous Complaints</h1>
+          <h1 className="text-2xl school-heading font-extrabold tracking-tight">Anonymous Complaints</h1>
           <p className="text-sm text-muted-foreground mt-0.5">Securely report issues, bullying, or facility problems</p>
         </div>
       </div>
@@ -68,7 +68,7 @@ export default function Complaints() {
               <label className="text-xs font-bold text-muted-foreground uppercase">Details</label>
               <textarea value={details} onChange={e => setDetails(e.target.value)} placeholder="Please provide specific details..." className="w-full mt-1 bg-background border border-border rounded-lg p-3 h-32 resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
             </div>
-            <Button onClick={() => submitTicket.mutate()} disabled={submitTicket.isPending} className="w-full h-12 rounded-xl bg-[#1A73E8] hover:bg-[#1557B0] text-white shadow-md shadow-[#1A73E8]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold font-bold mt-2 shadow-sm">
+            <Button onClick={() => submitTicket.mutate()} disabled={submitTicket.isPending} className="w-full h-12 rounded-xl bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold font-bold mt-2 shadow-sm">
               <Send className="w-4 h-4 mr-2" /> Submit Securely
             </Button>
           </div>
@@ -82,7 +82,7 @@ export default function Complaints() {
               <div key={ticket.id} className="bg-background p-4 rounded-xl border border-border shadow-sm flex flex-col gap-3">
                 <div className="flex justify-between items-start">
                   <h4 className="font-bold text-foreground line-clamp-1">{ticket.title}</h4>
-                  <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${ticket.status === 'pending' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                  <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${ticket.status === 'pending' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-[#1E3A8A] dark:text-blue-400'}`}>
                     {ticket.status}
                   </span>
                 </div>
