@@ -140,7 +140,7 @@ export default function GenericDashboard({ companyId, company, isAdmin, industry
       </div>
       {/* Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard title={`Active ${casesTermPlural}`} value={activeCases.length} icon={Briefcase} iconBg="bg-blue-100" iconColor="text-blue-500" subtitle={`${cases.length} total`} />
+        <MetricCard title={`Active ${casesTermPlural}`} value={activeCases.length} icon={Briefcase} iconBg="bg-primary/10" iconColor="text-primary" subtitle={`${cases.length} total`} />
         <MetricCard title={`Active ${clientsTermPlural}`} value={activeClients.length} icon={Users} iconBg="bg-purple-100" iconColor="text-purple-500"
           subtitle={clients.length > 0 ? `+${Math.round((activeClients.length / Math.max(clients.length, 1)) * 100)}% this month` : undefined}
           subtitleColor="text-green-600" />
@@ -162,15 +162,15 @@ export default function GenericDashboard({ companyId, company, isAdmin, industry
               <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#2247fc" stopOpacity={0.2}/>
-                    <stop offset="95%" stopColor="#2247fc" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.2}/>
+                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                 <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} tickLine={false} />
                 <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} />
                 <Tooltip />
-                <Area type="monotone" dataKey="Revenue" stroke="#2247fc" strokeWidth={2} fillOpacity={1} fill="url(#colorRev)" />
+                <Area type="monotone" dataKey="Revenue" stroke="hsl(var(--primary))" strokeWidth={2} fillOpacity={1} fill="url(#colorRev)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -180,7 +180,7 @@ export default function GenericDashboard({ companyId, company, isAdmin, industry
         <div className="bg-card rounded-xl border border-border p-4 space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="text-sm font-semibold text-slate-800">{caseTerm} {t("distribution_by_stage", "Distribution by Stage")}</h3>
-            <span className="text-[10px] bg-blue-50 text-blue-700 py-0.5 px-2 rounded-full font-bold border border-blue-100 uppercase">{t("active_pipelines", "Active Pipelines")}</span>
+            <span className="text-[10px] bg-primary/10 text-primary py-0.5 px-2 rounded-full font-bold border border-primary/20 uppercase">{t("active_pipelines", "Active Pipelines")}</span>
           </div>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -189,7 +189,7 @@ export default function GenericDashboard({ companyId, company, isAdmin, industry
                 <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} tickLine={false} />
                 <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} />
                 <Tooltip />
-                <Bar dataKey="count" fill="#2247fc" radius={[4, 4, 0, 0]} barSize={25} />
+                <Bar dataKey="count" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} barSize={25} />
               </BarChart>
             </ResponsiveContainer>
           </div>
