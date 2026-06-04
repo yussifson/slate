@@ -1,72 +1,198 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ModuleBanner } from '@/components/school/SchoolViewKit';
-import { Card, CardContent } from '@/components/ui/card';
+import { useAuth } from '@/lib/AuthContext';
+import { base44 } from '@/api/base44Client';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Gavel, Plus, Search, Filter } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Search, Mail, Printer, Download, FileCheck, FileX, CheckCircle, XCircle } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function SHSAdmissionDecisions() {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const [decisions, setDecisions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  const [filterType, setFilterType] = useState('All'); // All, Admitted, Rejected
 
-  const dummyData = [
-    { id: 1, name: "Sample Record A", status: "Active", date: "2024-03-15" },
-    { id: 2, name: "Sample Record B", status: "Pending", date: "2024-03-14" },
-    { id: 3, name: "Sample Record C", status: "Completed", date: "2024-03-12" },
-  ];
+  const fetchDecisions = async () => {
+    setLoading(true);
+    try {
+      const records = await base44.getEntities('shs_applicant', user?.company_id);
+      // Filter out pending, only keep those with decisions
+      const decided = records.filter(a => a.status === 'Admitted' || a.status === 'Rejected');
+      setDecisions(decided);
+    } catch (error) {
+      console.error('Failed to fetch decisions:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user?.company_id) {
+      fetchDecisions();
+    }
+  }, [user]);
+
+  const filteredDecisions = decisions.filter(d => 
+    (filterType === 'All' || d.status === filterType) &&
+    (d.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+     d.case_number?.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
+  const generateLetter = (decision) => {
+    // In a real app, this would trigger a PDF generation or email send
+    alert(`Generating ${decision.status.toLowerCase()} letter for ${decision.title}...`);
+  };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
-      <ModuleBanner 
-        title="Admission Decisions"
-        subtitle="Publish acceptances, waitlists, and rejections."
-        metrics={[
-          { title: "Total Records", value: "1,248", icon: Gavel },
-          { title: "Active", value: "982", icon: Gavel },
-          { title: "Pending Review", value: "45", icon: Gavel }
-        ]}
-      />
-
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-        <div className="flex gap-2">
-          <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <input 
-              type="text" 
-              placeholder="Search..." 
-              className="pl-9 h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 w-full sm:w-64"
-            />
-          </div>
-          <Button variant="outline" size="icon">
-            <Filter className="w-4 h-4" />
-          </Button>
+    <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
+      
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-purple-800 bg-clip-text text-transparent">
+            Admission Decisions
+          </h1>
+          <p className="text-muted-foreground mt-1 text-sm font-medium">
+            View finalized applicant decisions and generate admission or rejection letters.
+          </p>
         </div>
-        <Button className="bg-[#6F00FF] hover:bg-[#5200c2] text-white">
-          <Plus className="w-4 h-4 mr-2" /> Add New
-        </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {dummyData.map((item) => (
-          <Card key={item.id} className="group hover:shadow-lg transition-all duration-300 border-border/50 bg-card/50 backdrop-blur-sm">
-            <CardContent className="p-6">
-              <div className="flex justify-between items-start mb-4">
-                <div className="w-12 h-12 rounded-xl bg-purple-50 text-[#6F00FF] flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Gavel className="w-6 h-6" />
-                </div>
-                <span className={`text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
-                  item.status === 'Active' ? 'bg-purple-100 text-purple-700' :
-                  item.status === 'Completed' ? 'bg-blue-100 text-blue-700' :
-                  'bg-amber-100 text-amber-700'
-                }`}>
-                  {item.status}
-                </span>
-              </div>
-              <h3 className="font-bold text-lg mb-1 text-foreground">{item.name}</h3>
-              <p className="text-sm text-muted-foreground font-medium">Last updated: {item.date}</p>
-            </CardContent>
-          </Card>
-        ))}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-purple-100 cursor-pointer transition-all hover:bg-purple-50" onClick={() => setFilterType('All')}>
+          <CardContent className="p-5 flex items-center gap-4">
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${filterType === 'All' ? 'bg-[#6F00FF] text-white' : 'bg-purple-100 text-[#6F00FF]'}`}>
+              <Mail className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-muted-foreground">Total Decisions</p>
+              <h3 className="text-2xl font-black text-slate-800">{decisions.length}</h3>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-emerald-100 cursor-pointer transition-all hover:bg-emerald-50" onClick={() => setFilterType('Admitted')}>
+          <CardContent className="p-5 flex items-center gap-4">
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${filterType === 'Admitted' ? 'bg-emerald-500 text-white' : 'bg-emerald-100 text-emerald-600'}`}>
+              <FileCheck className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-muted-foreground">Admitted</p>
+              <h3 className="text-2xl font-black text-slate-800">
+                {decisions.filter(d => d.status === 'Admitted').length}
+              </h3>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-rose-100 cursor-pointer transition-all hover:bg-rose-50" onClick={() => setFilterType('Rejected')}>
+          <CardContent className="p-5 flex items-center gap-4">
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${filterType === 'Rejected' ? 'bg-rose-500 text-white' : 'bg-rose-100 text-rose-600'}`}>
+              <FileX className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-muted-foreground">Rejected</p>
+              <h3 className="text-2xl font-black text-slate-800">
+                {decisions.filter(d => d.status === 'Rejected').length}
+              </h3>
+            </div>
+          </CardContent>
+        </Card>
       </div>
+
+      <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 bg-slate-50/50 pb-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <CardTitle className="text-lg font-bold text-slate-800">Decision Results</CardTitle>
+              <CardDescription>Filtering by: {filterType}</CardDescription>
+            </div>
+            
+            <div className="flex gap-2 w-full sm:w-auto">
+              <div className="relative flex-1 sm:w-64">
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Input 
+                  placeholder="Search applicant name..." 
+                  className="pl-9 h-9 bg-white border-slate-200 rounded-xl focus-visible:ring-[#6F00FF]"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+              <Button variant="outline" size="sm" className="h-9 rounded-xl border-slate-200">
+                <Download className="w-4 h-4 mr-2" /> Export
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="p-0">
+          {loading ? (
+            <div className="p-12 text-center text-slate-400">Loading decisions...</div>
+          ) : filteredDecisions.length === 0 ? (
+            <div className="p-16 text-center">
+              <div className="w-16 h-16 rounded-2xl bg-purple-50 mx-auto flex items-center justify-center mb-4">
+                <Mail className="w-8 h-8 text-purple-400" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-700">No decisions found</h3>
+              <p className="text-sm text-slate-500">There are no finalized decisions in this category.</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="bg-slate-50/80 text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
+                  <tr>
+                    <th className="px-6 py-4 rounded-tl-xl">Applicant Name</th>
+                    <th className="px-6 py-4">App ID</th>
+                    <th className="px-6 py-4">Status</th>
+                    <th className="px-6 py-4">BECE Agg.</th>
+                    <th className="px-6 py-4 text-right rounded-tr-xl">Documents</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {filteredDecisions.map((decision) => (
+                    <tr key={decision.id} className="hover:bg-slate-50/50 transition-colors">
+                      <td className="px-6 py-4 font-bold text-slate-800">
+                        {decision.title}
+                      </td>
+                      <td className="px-6 py-4 text-slate-600 font-medium">
+                        {decision.case_number}
+                      </td>
+                      <td className="px-6 py-4">
+                        {decision.status === 'Admitted' ? (
+                          <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 border-none px-3 py-1 gap-1">
+                            <CheckCircle className="w-3 h-3" /> Admitted
+                          </Badge>
+                        ) : (
+                          <Badge className="bg-rose-100 text-rose-700 hover:bg-rose-200 border-none px-3 py-1 gap-1">
+                            <XCircle className="w-3 h-3" /> Rejected
+                          </Badge>
+                        )}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="font-bold text-slate-700">{decision.data?.beceAggregate}</span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={() => generateLetter(decision)}
+                          className="text-[#6F00FF] hover:text-[#5200c2] hover:bg-purple-50 rounded-lg gap-2 font-semibold"
+                        >
+                          <Printer className="w-4 h-4" /> Letter
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
