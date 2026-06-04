@@ -119,7 +119,7 @@ export default function SHSRoomAllocation() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-purple-800 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
             Room Allocation
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -128,15 +128,15 @@ export default function SHSRoomAllocation() {
         </div>
       </div>
 
-      <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
-        <CardHeader className="border-b border-slate-100 bg-slate-50/50 p-6">
+      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
           <div className="flex flex-col md:flex-row gap-6 items-end">
             <div className="space-y-2 flex-1">
-              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                <Home className="w-4 h-4 text-[#6F00FF]" /> Select Boarding House
+              <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
+                <Home className="w-4 h-4 text-blue-600 dark:text-blue-400" /> Select Boarding House
               </label>
               <select 
-                className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF] font-semibold text-slate-700"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 font-semibold text-slate-700 dark:text-slate-200"
                 value={selectedHouseId}
                 onChange={(e) => setSelectedHouseId(e.target.value)}
               >
@@ -147,12 +147,12 @@ export default function SHSRoomAllocation() {
             </div>
             
             <div className="space-y-2 flex-1">
-              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                <Search className="w-4 h-4 text-[#6F00FF]" /> Search Students
+              <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
+                <Search className="w-4 h-4 text-blue-600 dark:text-blue-400" /> Search Students
               </label>
               <Input 
                 placeholder="Name or Index No..."
-                className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -166,26 +166,26 @@ export default function SHSRoomAllocation() {
         
         <CardContent className="p-0">
           {loading ? (
-            <div className="p-16 text-center text-slate-400">Loading residents...</div>
+            <div className="p-16 text-center text-slate-400 dark:text-slate-500">Loading residents...</div>
           ) : !selectedHouseId ? (
             <div className="p-20 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-slate-50 mx-auto flex items-center justify-center mb-4">
-                <BedDouble className="w-8 h-8 text-slate-400" />
+              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                <BedDouble className="w-8 h-8 text-slate-400 dark:text-slate-500" />
               </div>
-              <h3 className="text-lg font-bold text-slate-700">Select a house</h3>
-              <p className="text-sm text-slate-500 max-w-sm mx-auto mt-2">
+              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">Select a house</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500 max-w-sm mx-auto mt-2">
                 Choose a boarding house to assign rooms to its residents.
               </p>
             </div>
           ) : filteredStudents.length === 0 ? (
-            <div className="p-16 text-center text-slate-500">
+            <div className="p-16 text-center text-slate-500 dark:text-slate-400 dark:text-slate-500">
               No unassigned boarders or residents found for this house.
             </div>
           ) : (
             <div>
               <div className="overflow-x-auto max-h-[600px]">
                 <table className="w-full text-sm text-left">
-                  <thead className="bg-slate-50/80 text-slate-500 font-bold uppercase text-[10px] tracking-wider sticky top-0 z-10 shadow-sm border-b border-slate-100">
+                  <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-500 font-bold uppercase text-[10px] tracking-wider sticky top-0 z-10 shadow-sm border-b border-slate-100 dark:border-slate-800">
                     <tr>
                       <th className="px-6 py-4 rounded-tl-xl w-12 text-center">#</th>
                       <th className="px-6 py-4">Student Details</th>
@@ -196,31 +196,31 @@ export default function SHSRoomAllocation() {
                   </thead>
                   <tbody className="divide-y divide-slate-100">
                     {filteredStudents.map((student, index) => (
-                      <tr key={student.id} className="hover:bg-slate-50/50 transition-colors">
-                        <td className="px-6 py-4 text-center text-slate-400 font-bold">
+                      <tr key={student.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
+                        <td className="px-6 py-4 text-center text-slate-400 dark:text-slate-500 font-bold">
                           {index + 1}
                         </td>
                         <td className="px-6 py-4 flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-100 to-slate-100 flex items-center justify-center font-bold text-[#6F00FF] shrink-0">
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-100 to-slate-100 flex items-center justify-center font-bold text-blue-600 dark:text-blue-400 shrink-0">
                             {student.title.charAt(0)}
                           </div>
                           <div>
-                            <p className="font-bold text-slate-800">{student.title}</p>
-                            <p className="text-xs text-slate-500">{student.data?.indexNumber || student.case_number}</p>
+                            <p className="font-bold text-slate-800 dark:text-slate-100">{student.title}</p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">{student.data?.indexNumber || student.case_number}</p>
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-center font-semibold text-slate-600">
+                        <td className="px-6 py-4 text-center font-semibold text-slate-600 dark:text-slate-300">
                           {student.data?.classRoom || 'N/A'}
                         </td>
                         <td className="px-6 py-4 text-center">
-                          <Badge variant="outline" className={student.data?.houseId === selectedHouseId ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-slate-50 text-slate-500"}>
+                          <Badge variant="outline" className={student.data?.houseId === selectedHouseId ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 dark:text-slate-500"}>
                             {student.data?.houseName || 'Unassigned'}
                           </Badge>
                         </td>
                         <td className="px-6 py-4 text-center">
                           <Input 
                             placeholder="e.g. Room 12B"
-                            className="h-10 text-center font-bold bg-white border-slate-200 focus-visible:ring-[#6F00FF]"
+                            className="h-10 text-center font-bold bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500"
                             value={allocations[student.id] || ''}
                             onChange={(e) => handleRoomChange(student.id, e.target.value)}
                           />
@@ -231,7 +231,7 @@ export default function SHSRoomAllocation() {
                 </table>
               </div>
 
-              <div className="p-6 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+              <div className="p-6 bg-slate-50 dark:bg-slate-800 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
                 <div>
                   {saveSuccess && (
                     <Badge className="bg-emerald-100 text-emerald-700 border-none px-3 py-1 text-sm font-semibold flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2">
@@ -243,7 +243,7 @@ export default function SHSRoomAllocation() {
                 <Button 
                   onClick={handleSaveAllocations}
                   disabled={isSaving}
-                  className="h-12 px-8 rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white shadow-lg shadow-purple-500/20 font-bold"
+                  className="h-12 px-8 rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white shadow-lg shadow-blue-500/20 font-bold"
                 >
                   {isSaving ? 'Saving...' : (
                     <><Save className="w-5 h-5 mr-2" /> Save Room Allocations</>

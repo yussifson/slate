@@ -80,7 +80,7 @@ export default function SHSAdmissions() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-purple-800 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
             Admissions Hub
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -88,60 +88,60 @@ export default function SHSAdmissions() {
           </p>
         </div>
         
-        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white shadow-md shadow-purple-500/20">
+        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white shadow-md shadow-blue-500/20">
           <Plus className="w-4 h-4" /> New Application
         </Button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-purple-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-purple-100">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center text-[#6F00FF] shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-slate-800 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
               <Users className="w-6 h-6" />
             </div>
             <div>
               <p className="text-sm font-semibold text-muted-foreground">Total Applicants</p>
-              <h3 className="text-2xl font-black text-slate-800">{applicants.length}</h3>
+              <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">{applicants.length}</h3>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-amber-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-amber-100">
           <CardContent className="p-5 flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 shrink-0">
               <UserPlus className="w-6 h-6" />
             </div>
             <div>
               <p className="text-sm font-semibold text-muted-foreground">Pending Review</p>
-              <h3 className="text-2xl font-black text-slate-800">
+              <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">
                 {applicants.filter(a => a.status === 'Pending').length}
               </h3>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-emerald-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-emerald-100">
           <CardContent className="p-5 flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
               <CheckCircle className="w-6 h-6" />
             </div>
             <div>
               <p className="text-sm font-semibold text-muted-foreground">Admitted</p>
-              <h3 className="text-2xl font-black text-slate-800">
+              <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">
                 {applicants.filter(a => a.status === 'Admitted').length}
               </h3>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-rose-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-rose-100">
           <CardContent className="p-5 flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-rose-100 flex items-center justify-center text-rose-600 shrink-0">
               <XCircle className="w-6 h-6" />
             </div>
             <div>
               <p className="text-sm font-semibold text-muted-foreground">Rejected</p>
-              <h3 className="text-2xl font-black text-slate-800">
+              <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">
                 {applicants.filter(a => a.status === 'Rejected').length}
               </h3>
             </div>
@@ -149,18 +149,18 @@ export default function SHSAdmissions() {
         </Card>
       </div>
 
-      <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
-        <CardHeader className="border-b border-slate-100 bg-slate-50/50 pb-4">
+      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <CardTitle className="text-lg font-bold text-slate-800">Applications List</CardTitle>
+              <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Applications List</CardTitle>
             </div>
             
             <div className="relative w-full sm:w-64">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
               <Input 
                 placeholder="Search name or ID..." 
-                className="pl-9 h-9 bg-white border-slate-200 rounded-xl focus-visible:ring-[#6F00FF]"
+                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -169,19 +169,19 @@ export default function SHSAdmissions() {
         </CardHeader>
         <CardContent className="p-0">
           {loading ? (
-            <div className="p-12 text-center text-slate-400">Loading applicants...</div>
+            <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading applicants...</div>
           ) : filteredApplicants.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-purple-50 mx-auto flex items-center justify-center mb-4">
-                <Users className="w-8 h-8 text-purple-400" />
+              <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                <Users className="w-8 h-8 text-blue-500 dark:text-blue-500" />
               </div>
-              <h3 className="text-lg font-bold text-slate-700">No applications found</h3>
-              <p className="text-sm text-slate-500">Register a new applicant to get started.</p>
+              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No applications found</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Register a new applicant to get started.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left">
-                <thead className="bg-slate-50/80 text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
+                <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
                   <tr>
                     <th className="px-6 py-4 rounded-tl-xl">Applicant Name</th>
                     <th className="px-6 py-4">App ID</th>
@@ -194,22 +194,22 @@ export default function SHSAdmissions() {
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {filteredApplicants.map((applicant) => (
-                    <tr key={applicant.id} className="hover:bg-slate-50/50 transition-colors">
-                      <td className="px-6 py-4 font-bold text-slate-800">
+                    <tr key={applicant.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
+                      <td className="px-6 py-4 font-bold text-slate-800 dark:text-slate-100">
                         {applicant.title}
                       </td>
-                      <td className="px-6 py-4 text-slate-600 font-medium">
+                      <td className="px-6 py-4 text-slate-600 dark:text-slate-300 font-medium">
                         {applicant.case_number}
                       </td>
                       <td className="px-6 py-4">
-                        <Badge variant="outline" className="bg-white border-slate-200 text-slate-700 font-bold">
+                        <Badge variant="outline" className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-bold">
                           {applicant.data?.beceAggregate}
                         </Badge>
                       </td>
-                      <td className="px-6 py-4 text-slate-700">
+                      <td className="px-6 py-4 text-slate-700 dark:text-slate-200">
                         {applicant.data?.programChoice1}
                       </td>
-                      <td className="px-6 py-4 text-slate-600 truncate max-w-[150px]">
+                      <td className="px-6 py-4 text-slate-600 dark:text-slate-300 truncate max-w-[150px]">
                         {applicant.data?.jhsAttended}
                       </td>
                       <td className="px-6 py-4">
@@ -222,7 +222,7 @@ export default function SHSAdmissions() {
                         </Badge>
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <Button variant="ghost" size="sm" className="text-[#6F00FF] hover:text-purple-800 hover:bg-purple-50 rounded-lg">
+                        <Button variant="ghost" size="sm" className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:text-blue-100 hover:bg-blue-50 dark:bg-slate-800 rounded-lg">
                           Review
                         </Button>
                       </td>
@@ -237,53 +237,53 @@ export default function SHSAdmissions() {
 
       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
         <DialogContent className="sm:max-w-[600px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
-          <div className="p-6 bg-gradient-to-br from-[#6F00FF] to-purple-800 text-white">
+          <div className="p-6 bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-black">Register New Applicant</DialogTitle>
-              <DialogDescription className="text-purple-100">
+              <DialogDescription className="text-blue-100 dark:text-blue-900">
                 Enter details for a new SHS admission application.
               </DialogDescription>
             </DialogHeader>
           </div>
           
-          <ScrollArea className="max-h-[65vh] p-6 bg-slate-50">
+          <ScrollArea className="max-h-[65vh] p-6 bg-slate-50 dark:bg-slate-800">
             <div className="space-y-6">
               
               <div className="space-y-4">
-                <h4 className="font-bold text-slate-800 flex items-center gap-2 border-b border-slate-200 pb-2">
-                  <span className="w-6 h-6 rounded-full bg-purple-100 text-[#6F00FF] flex items-center justify-center text-xs">1</span>
+                <h4 className="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2 border-b border-slate-200 dark:border-slate-700 pb-2">
+                  <span className="w-6 h-6 rounded-full bg-blue-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs">1</span>
                   Personal Details
                 </h4>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">First Name</label>
+                    <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">First Name</label>
                     <Input 
-                      className="bg-white border-slate-200 rounded-xl"
+                      className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                       value={newApplicant.firstName}
                       onChange={e => setNewApplicant({...newApplicant, firstName: e.target.value})}
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Last Name</label>
+                    <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Last Name</label>
                     <Input 
-                      className="bg-white border-slate-200 rounded-xl"
+                      className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                       value={newApplicant.lastName}
                       onChange={e => setNewApplicant({...newApplicant, lastName: e.target.value})}
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Date of Birth</label>
+                    <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Date of Birth</label>
                     <Input 
                       type="date"
-                      className="bg-white border-slate-200 rounded-xl"
+                      className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                       value={newApplicant.dob}
                       onChange={e => setNewApplicant({...newApplicant, dob: e.target.value})}
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Gender</label>
+                    <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Gender</label>
                     <select 
-                      className="w-full h-10 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                      className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
                       value={newApplicant.gender}
                       onChange={e => setNewApplicant({...newApplicant, gender: e.target.value})}
                     >
@@ -295,34 +295,34 @@ export default function SHSAdmissions() {
               </div>
 
               <div className="space-y-4">
-                <h4 className="font-bold text-slate-800 flex items-center gap-2 border-b border-slate-200 pb-2">
-                  <span className="w-6 h-6 rounded-full bg-purple-100 text-[#6F00FF] flex items-center justify-center text-xs">2</span>
+                <h4 className="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2 border-b border-slate-200 dark:border-slate-700 pb-2">
+                  <span className="w-6 h-6 rounded-full bg-blue-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs">2</span>
                   Academic & Programme
                 </h4>
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">JHS Attended</label>
+                  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">JHS Attended</label>
                   <Input 
                     placeholder="e.g. Ridge Church School"
-                    className="bg-white border-slate-200 rounded-xl"
+                    className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                     value={newApplicant.jhsAttended}
                     onChange={e => setNewApplicant({...newApplicant, jhsAttended: e.target.value})}
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">BECE Aggregate</label>
+                    <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">BECE Aggregate</label>
                     <Input 
                       type="number"
                       placeholder="e.g. 06"
-                      className="bg-white border-slate-200 rounded-xl"
+                      className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                       value={newApplicant.beceAggregate}
                       onChange={e => setNewApplicant({...newApplicant, beceAggregate: e.target.value})}
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Status</label>
+                    <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Status</label>
                     <select 
-                      className="w-full h-10 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                      className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
                       value={newApplicant.status}
                       onChange={e => setNewApplicant({...newApplicant, status: e.target.value})}
                     >
@@ -335,9 +335,9 @@ export default function SHSAdmissions() {
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">1st Choice</label>
+                    <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">1st Choice</label>
                     <select 
-                      className="w-full h-10 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                      className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
                       value={newApplicant.programChoice1}
                       onChange={e => setNewApplicant({...newApplicant, programChoice1: e.target.value})}
                     >
@@ -350,9 +350,9 @@ export default function SHSAdmissions() {
                     </select>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">2nd Choice</label>
+                    <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">2nd Choice</label>
                     <select 
-                      className="w-full h-10 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                      className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
                       value={newApplicant.programChoice2}
                       onChange={e => setNewApplicant({...newApplicant, programChoice2: e.target.value})}
                     >
@@ -370,14 +370,14 @@ export default function SHSAdmissions() {
             </div>
           </ScrollArea>
           
-          <div className="p-4 bg-white border-t border-slate-100 flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600">
+          <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
               Cancel
             </Button>
             <Button 
               onClick={handleAddApplicant} 
               disabled={!newApplicant.firstName || !newApplicant.lastName || !newApplicant.beceAggregate}
-              className="rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white font-bold"
+              className="rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold"
             >
               Submit Application
             </Button>

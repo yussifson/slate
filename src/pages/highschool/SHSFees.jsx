@@ -80,7 +80,7 @@ export default function SHSFees() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-purple-800 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
             Fee Structures
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -88,37 +88,37 @@ export default function SHSFees() {
           </p>
         </div>
         
-        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white shadow-md shadow-purple-500/20">
+        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white shadow-md shadow-blue-500/20">
           <Plus className="w-4 h-4" /> Create Fee Item
         </Button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-purple-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-purple-100">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center text-[#6F00FF] shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-slate-800 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
               <Layers className="w-6 h-6" />
             </div>
             <div>
               <p className="text-sm font-semibold text-muted-foreground">Active Fee Items</p>
-              <h3 className="text-2xl font-black text-slate-800">{feeStructures.filter(f => f.status === 'Active').length}</h3>
+              <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">{feeStructures.filter(f => f.status === 'Active').length}</h3>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
-        <CardHeader className="border-b border-slate-100 bg-slate-50/50 pb-4">
+      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <CardTitle className="text-lg font-bold text-slate-800">Fee Items Library</CardTitle>
+              <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Fee Items Library</CardTitle>
             </div>
             
             <div className="relative w-full sm:w-64">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
               <Input 
                 placeholder="Search fees..." 
-                className="pl-9 h-9 bg-white border-slate-200 rounded-xl focus-visible:ring-[#6F00FF]"
+                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -127,19 +127,19 @@ export default function SHSFees() {
         </CardHeader>
         <CardContent className="p-0">
           {loading ? (
-            <div className="p-12 text-center text-slate-400">Loading fees...</div>
+            <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading fees...</div>
           ) : filteredFees.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-purple-50 mx-auto flex items-center justify-center mb-4">
-                <CreditCard className="w-8 h-8 text-purple-400" />
+              <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                <CreditCard className="w-8 h-8 text-blue-500 dark:text-blue-500" />
               </div>
-              <h3 className="text-lg font-bold text-slate-700">No fee items found</h3>
-              <p className="text-sm text-slate-500">Create fee structures to apply to student bills.</p>
+              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No fee items found</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Create fee structures to apply to student bills.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left">
-                <thead className="bg-slate-50/80 text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
+                <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
                   <tr>
                     <th className="px-6 py-4 rounded-tl-xl">Fee Title</th>
                     <th className="px-6 py-4">Category</th>
@@ -150,30 +150,30 @@ export default function SHSFees() {
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {filteredFees.map((fee) => (
-                    <tr key={fee.id} className="hover:bg-slate-50/50 transition-colors">
+                    <tr key={fee.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
                       <td className="px-6 py-4">
-                        <p className="font-bold text-slate-800">{fee.title}</p>
-                        <p className="text-xs text-slate-500">{fee.data?.academicYear} • {fee.data?.term}</p>
+                        <p className="font-bold text-slate-800 dark:text-slate-100">{fee.title}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">{fee.data?.academicYear} • {fee.data?.term}</p>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
-                          <Tag className="w-3.5 h-3.5 text-slate-400" />
-                          <span className="font-medium text-slate-700">{fee.data?.category}</span>
+                          <Tag className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
+                          <span className="font-medium text-slate-700 dark:text-slate-200">{fee.data?.category}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <Badge variant="secondary" className="bg-slate-100 text-slate-600 border-none">
+                        <Badge variant="secondary" className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-none">
                           {fee.data?.targetGroup}
                         </Badge>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="font-black text-slate-800 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-100 text-emerald-700">
+                        <span className="font-black text-slate-800 dark:text-slate-100 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-100 text-emerald-700">
                           ${parseFloat(fee.data?.amount).toFixed(2)}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-right">
                         <Badge variant="outline" className={
-                          fee.status === 'Active' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-50 text-slate-600 border-slate-200'
+                          fee.status === 'Active' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'
                         }>
                           {fee.status}
                         </Badge>
@@ -189,21 +189,21 @@ export default function SHSFees() {
 
       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
         <DialogContent className="sm:max-w-[450px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
-          <div className="p-6 bg-gradient-to-br from-[#6F00FF] to-purple-800 text-white">
+          <div className="p-6 bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-black">Create Fee Item</DialogTitle>
-              <DialogDescription className="text-purple-100">
+              <DialogDescription className="text-blue-100 dark:text-blue-900">
                 Define a new billing charge for students.
               </DialogDescription>
             </DialogHeader>
           </div>
           
-          <div className="p-6 bg-slate-50 space-y-4">
+          <div className="p-6 bg-slate-50 dark:bg-slate-800 space-y-4">
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Fee Title</label>
+              <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Fee Title</label>
               <Input 
                 placeholder="e.g. Term 1 Tuition Fee"
-                className="bg-white border-slate-200 rounded-xl"
+                className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                 value={newFee.title}
                 onChange={e => setNewFee({...newFee, title: e.target.value})}
               />
@@ -211,9 +211,9 @@ export default function SHSFees() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Category</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Category</label>
                 <select 
-                  className="w-full h-10 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                  className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
                   value={newFee.category}
                   onChange={e => setNewFee({...newFee, category: e.target.value})}
                 >
@@ -225,13 +225,13 @@ export default function SHSFees() {
                 </select>
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Amount ($)</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Amount ($)</label>
                 <Input 
                   type="number"
                   min="0"
                   step="0.01"
                   placeholder="0.00"
-                  className="bg-white border-slate-200 rounded-xl font-bold"
+                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl font-bold"
                   value={newFee.amount}
                   onChange={e => setNewFee({...newFee, amount: e.target.value})}
                 />
@@ -239,9 +239,9 @@ export default function SHSFees() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Target Group</label>
+              <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Target Group</label>
               <select 
-                className="w-full h-10 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
                 value={newFee.targetGroup}
                 onChange={e => setNewFee({...newFee, targetGroup: e.target.value})}
               >
@@ -255,17 +255,17 @@ export default function SHSFees() {
             
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Academic Year</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Academic Year</label>
                 <Input 
-                  className="bg-white border-slate-200 rounded-xl"
+                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                   value={newFee.academicYear}
                   onChange={e => setNewFee({...newFee, academicYear: e.target.value})}
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Term</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Term</label>
                 <select 
-                  className="w-full h-10 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                  className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
                   value={newFee.term}
                   onChange={e => setNewFee({...newFee, term: e.target.value})}
                 >
@@ -278,14 +278,14 @@ export default function SHSFees() {
             </div>
           </div>
           
-          <div className="p-4 bg-white border-t border-slate-100 flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600">
+          <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
               Cancel
             </Button>
             <Button 
               onClick={handleCreateFee} 
               disabled={!newFee.title || !newFee.amount}
-              className="rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white font-bold"
+              className="rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold"
             >
               Save Fee Item
             </Button>

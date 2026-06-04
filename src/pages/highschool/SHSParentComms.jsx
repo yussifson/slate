@@ -112,7 +112,7 @@ export default function SHSParentComms() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-purple-800 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
             Parent Communications
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -129,7 +129,7 @@ export default function SHSParentComms() {
           <Button 
             onClick={() => setIsComposeOpen(true)} 
             disabled={selectedStudents.length === 0}
-            className="h-10 gap-2 rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white shadow-md shadow-purple-500/20 px-6 font-bold"
+            className="h-10 gap-2 rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white shadow-md shadow-blue-500/20 px-6 font-bold"
           >
             <Send className="w-4 h-4" /> Compose Message ({selectedStudents.length})
           </Button>
@@ -139,15 +139,15 @@ export default function SHSParentComms() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         
         {/* Contact List */}
-        <Card className="lg:col-span-4 rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
-          <CardHeader className="border-b border-slate-100 bg-slate-50/50 pb-4 p-6">
+        <Card className="lg:col-span-4 rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+          <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4 p-6">
             <div className="flex flex-col md:flex-row gap-4 items-end">
               <div className="space-y-2 flex-1 max-w-xs">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                  <Users className="w-4 h-4 text-[#6F00FF]" /> Filter by Class
+                <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
+                  <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" /> Filter by Class
                 </label>
                 <select 
-                  className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF] font-semibold text-slate-700"
+                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 font-semibold text-slate-700 dark:text-slate-200"
                   value={selectedClassId}
                   onChange={(e) => setSelectedClassId(e.target.value)}
                 >
@@ -159,12 +159,12 @@ export default function SHSParentComms() {
               </div>
               
               <div className="space-y-2 flex-1 max-w-sm">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                  <Search className="w-4 h-4 text-[#6F00FF]" /> Search Parent or Student
+                <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
+                  <Search className="w-4 h-4 text-blue-600 dark:text-blue-400" /> Search Parent or Student
                 </label>
                 <Input 
                   placeholder="Type name..." 
-                  className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -174,7 +174,7 @@ export default function SHSParentComms() {
                 <Button 
                   variant="outline" 
                   onClick={() => handleSelectAll(filteredStudents)}
-                  className="h-11 rounded-xl border-slate-200 text-slate-600 font-semibold hover:bg-slate-50"
+                  className="h-11 rounded-xl border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-semibold hover:bg-slate-50 dark:bg-slate-800"
                 >
                   {selectedStudents.length === filteredStudents.length && filteredStudents.length > 0 
                     ? 'Deselect All' 
@@ -185,23 +185,23 @@ export default function SHSParentComms() {
           </CardHeader>
           <CardContent className="p-0">
             {loading ? (
-              <div className="p-16 text-center text-slate-400">Loading directory...</div>
+              <div className="p-16 text-center text-slate-400 dark:text-slate-500">Loading directory...</div>
             ) : filteredStudents.length === 0 ? (
               <div className="p-20 text-center">
-                <div className="w-16 h-16 rounded-2xl bg-purple-50 mx-auto flex items-center justify-center mb-4">
-                  <MessageSquare className="w-8 h-8 text-purple-400" />
+                <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                  <MessageSquare className="w-8 h-8 text-blue-500 dark:text-blue-500" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-700">No contacts found</h3>
+                <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No contacts found</h3>
               </div>
             ) : (
               <div className="overflow-x-auto max-h-[600px]">
                 <table className="w-full text-sm text-left">
-                  <thead className="bg-slate-50/80 text-slate-500 font-bold uppercase text-[10px] tracking-wider sticky top-0 z-10 shadow-sm border-b border-slate-100">
+                  <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-500 font-bold uppercase text-[10px] tracking-wider sticky top-0 z-10 shadow-sm border-b border-slate-100 dark:border-slate-800">
                     <tr>
                       <th className="px-6 py-4 w-12 text-center">
                         <input 
                           type="checkbox" 
-                          className="w-4 h-4 rounded border-slate-300 text-[#6F00FF] focus:ring-[#6F00FF]"
+                          className="w-4 h-4 rounded border-slate-300 text-blue-600 dark:text-blue-400 focus:ring-blue-600 dark:focus:ring-blue-500"
                           checked={selectedStudents.length === filteredStudents.length && filteredStudents.length > 0}
                           onChange={() => handleSelectAll(filteredStudents)}
                         />
@@ -217,36 +217,36 @@ export default function SHSParentComms() {
                       return (
                         <tr 
                           key={student.id} 
-                          className={`transition-colors cursor-pointer ${isSelected ? 'bg-purple-50/50' : 'hover:bg-slate-50/50'}`}
+                          className={`transition-colors cursor-pointer ${isSelected ? 'bg-blue-50/50 dark:bg-slate-800/50' : 'hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50'}`}
                           onClick={() => toggleStudent(student.id)}
                         >
                           <td className="px-6 py-4 text-center">
                             <input 
                               type="checkbox" 
-                              className="w-4 h-4 rounded border-slate-300 text-[#6F00FF] focus:ring-[#6F00FF]"
+                              className="w-4 h-4 rounded border-slate-300 text-blue-600 dark:text-blue-400 focus:ring-blue-600 dark:focus:ring-blue-500"
                               checked={isSelected}
                               onChange={() => {}} // handled by row click
                             />
                           </td>
                           <td className="px-6 py-4">
-                            <p className="font-bold text-slate-800">{student.data?.parentName || 'Unknown Guardian'}</p>
-                            <p className="text-xs text-slate-500">{student.data?.parentRelation || 'Parent'}</p>
+                            <p className="font-bold text-slate-800 dark:text-slate-100">{student.data?.parentName || 'Unknown Guardian'}</p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">{student.data?.parentRelation || 'Parent'}</p>
                           </td>
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-2">
-                              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-500 text-xs shrink-0">
+                              <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 text-xs shrink-0">
                                 {student.title.charAt(0)}
                               </div>
                               <div>
-                                <p className="font-semibold text-slate-700">{student.title}</p>
-                                <p className="text-[10px] text-slate-400">{student.data?.classRoom || 'No Class'}</p>
+                                <p className="font-semibold text-slate-700 dark:text-slate-200">{student.title}</p>
+                                <p className="text-[10px] text-slate-400 dark:text-slate-500">{student.data?.classRoom || 'No Class'}</p>
                               </div>
                             </div>
                           </td>
                           <td className="px-6 py-4">
                             <div className="space-y-1">
                               {student.data?.parentPhone ? (
-                                <div className="flex items-center gap-2 text-xs font-medium text-slate-600">
+                                <div className="flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-300">
                                   <Smartphone className="w-3.5 h-3.5 text-emerald-500" />
                                   {student.data.parentPhone}
                                 </div>
@@ -254,7 +254,7 @@ export default function SHSParentComms() {
                                 <div className="text-xs text-rose-400 italic">No Phone</div>
                               )}
                               {student.data?.parentEmail && (
-                                <div className="flex items-center gap-2 text-xs text-slate-500">
+                                <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">
                                   <Mail className="w-3.5 h-3.5 text-blue-500" />
                                   {student.data.parentEmail}
                                 </div>
@@ -274,11 +274,11 @@ export default function SHSParentComms() {
       </div>
 
       <Dialog open={isComposeOpen} onOpenChange={setIsComposeOpen}>
-        <DialogContent className="sm:max-w-[600px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl bg-white">
-          <div className="p-6 bg-gradient-to-br from-[#6F00FF] to-purple-800 text-white">
+        <DialogContent className="sm:max-w-[600px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl bg-white dark:bg-slate-900">
+          <div className="p-6 bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-black">Compose Message</DialogTitle>
-              <DialogDescription className="text-purple-100">
+              <DialogDescription className="text-blue-100 dark:text-blue-900">
                 Sending to {selectedStudents.length} selected recipients.
               </DialogDescription>
             </DialogHeader>
@@ -287,12 +287,12 @@ export default function SHSParentComms() {
           <div className="p-6 space-y-6">
             
             <div className="space-y-3">
-              <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Message Type</label>
+              <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Message Type</label>
               <div className="grid grid-cols-3 gap-3">
                 <button
                   onClick={() => setMessage({...message, type: 'SMS'})}
                   className={`p-3 rounded-xl border flex flex-col items-center justify-center gap-2 transition-all ${
-                    message.type === 'SMS' ? 'bg-purple-50 border-purple-300 text-[#6F00FF]' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'
+                    message.type === 'SMS' ? 'bg-blue-50 dark:bg-slate-800 border-purple-300 text-blue-600 dark:text-blue-400' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:bg-slate-800'
                   }`}
                 >
                   <Smartphone className="w-5 h-5" />
@@ -301,7 +301,7 @@ export default function SHSParentComms() {
                 <button
                   onClick={() => setMessage({...message, type: 'Email'})}
                   className={`p-3 rounded-xl border flex flex-col items-center justify-center gap-2 transition-all ${
-                    message.type === 'Email' ? 'bg-purple-50 border-purple-300 text-[#6F00FF]' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'
+                    message.type === 'Email' ? 'bg-blue-50 dark:bg-slate-800 border-purple-300 text-blue-600 dark:text-blue-400' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:bg-slate-800'
                   }`}
                 >
                   <Mail className="w-5 h-5" />
@@ -310,7 +310,7 @@ export default function SHSParentComms() {
                 <button
                   onClick={() => setMessage({...message, type: 'App Push'})}
                   className={`p-3 rounded-xl border flex flex-col items-center justify-center gap-2 transition-all ${
-                    message.type === 'App Push' ? 'bg-purple-50 border-purple-300 text-[#6F00FF]' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'
+                    message.type === 'App Push' ? 'bg-blue-50 dark:bg-slate-800 border-purple-300 text-blue-600 dark:text-blue-400' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:bg-slate-800'
                   }`}
                 >
                   <MessageSquare className="w-5 h-5" />
@@ -321,10 +321,10 @@ export default function SHSParentComms() {
 
             {message.type !== 'SMS' && (
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Subject Line</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Subject Line</label>
                 <Input 
                   placeholder="e.g. End of Term Arrangements"
-                  className="bg-white border-slate-200 rounded-xl h-11"
+                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl h-11"
                   value={message.subject}
                   onChange={e => setMessage({...message, subject: e.target.value})}
                 />
@@ -332,16 +332,16 @@ export default function SHSParentComms() {
             )}
 
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-600 uppercase tracking-wider flex justify-between">
+              <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider flex justify-between">
                 <span>Message Content</span>
                 {message.type === 'SMS' && (
-                  <span className={`text-[10px] ${message.body.length > 160 ? 'text-rose-500' : 'text-slate-400'}`}>
+                  <span className={`text-[10px] ${message.body.length > 160 ? 'text-rose-500' : 'text-slate-400 dark:text-slate-500'}`}>
                     {message.body.length} / 160 chars
                   </span>
                 )}
               </label>
               <textarea 
-                className="w-full h-32 rounded-xl border border-slate-200 bg-white p-4 focus:outline-none focus:ring-2 focus:ring-[#6F00FF] resize-none text-sm"
+                className="w-full h-32 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 resize-none text-sm"
                 placeholder="Type your message here. Use variables like {ParentName} or {StudentName}..."
                 value={message.body}
                 onChange={e => setMessage({...message, body: e.target.value})}
@@ -350,14 +350,14 @@ export default function SHSParentComms() {
             
           </div>
           
-          <div className="p-4 bg-slate-50 border-t border-slate-100 flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setIsComposeOpen(false)} className="rounded-xl font-semibold text-slate-600 bg-white">
+          <div className="p-4 bg-slate-50 dark:bg-slate-800 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setIsComposeOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900">
               Cancel
             </Button>
             <Button 
               onClick={handleSendMessage} 
               disabled={!message.body || isSending}
-              className="rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white font-bold px-8 shadow-lg shadow-purple-500/20"
+              className="rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold px-8 shadow-lg shadow-blue-500/20"
             >
               {isSending ? 'Sending...' : (
                 <><Send className="w-4 h-4 mr-2" /> Send to {selectedStudents.length}</>

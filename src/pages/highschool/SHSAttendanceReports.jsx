@@ -83,44 +83,44 @@ export default function SHSAttendanceReports() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-purple-800 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
             Attendance Reports
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
             Analyze historical attendance data for students and staff.
           </p>
         </div>
-        <Button className="h-9 gap-2 rounded-xl bg-white border border-slate-200 text-slate-700 shadow-sm hover:bg-slate-50">
+        <Button className="h-9 gap-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 shadow-sm hover:bg-slate-50 dark:bg-slate-800">
           <FileSpreadsheet className="w-4 h-4" /> Export Report
         </Button>
       </div>
 
-      <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
-        <CardHeader className="border-b border-slate-100 bg-slate-50/50 p-6">
+      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
           <div className="flex flex-col sm:flex-row gap-6 items-end">
             <div className="space-y-2 flex-1">
-              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                <CalendarIcon className="w-4 h-4 text-[#6F00FF]" /> Start Date
+              <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
+                <CalendarIcon className="w-4 h-4 text-blue-600 dark:text-blue-400" /> Start Date
               </label>
               <Input 
                 type="date"
-                className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF] font-semibold text-slate-700"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 font-semibold text-slate-700 dark:text-slate-200"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
               />
             </div>
             <div className="space-y-2 flex-1">
-              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                <CalendarIcon className="w-4 h-4 text-[#6F00FF]" /> End Date
+              <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
+                <CalendarIcon className="w-4 h-4 text-blue-600 dark:text-blue-400" /> End Date
               </label>
               <Input 
                 type="date"
-                className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF] font-semibold text-slate-700"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 font-semibold text-slate-700 dark:text-slate-200"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
               />
             </div>
-            <Button className="h-11 px-6 rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white shadow-md font-bold">
+            <Button className="h-11 px-6 rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white shadow-md font-bold">
               <TrendingUp className="w-4 h-4 mr-2" /> Generate
             </Button>
           </div>
@@ -128,25 +128,25 @@ export default function SHSAttendanceReports() {
         
         <CardContent className="p-8">
           {loading ? (
-            <div className="py-20 text-center text-slate-400">Aggregating attendance data...</div>
+            <div className="py-20 text-center text-slate-400 dark:text-slate-500">Aggregating attendance data...</div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               
               {/* Student Stats */}
               <div className="space-y-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center text-[#6F00FF]">
+                  <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-slate-800 flex items-center justify-center text-blue-600 dark:text-blue-400">
                     <Users className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-slate-800">Student Attendance</h3>
-                    <p className="text-sm text-slate-500">Aggregated roll call records</p>
+                    <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">Student Attendance</h3>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Aggregated roll call records</p>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="p-5 rounded-2xl bg-slate-50 border border-slate-100 flex flex-col justify-center items-center text-center">
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Average Rate</p>
+                  <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-800 flex flex-col justify-center items-center text-center">
+                    <p className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Average Rate</p>
                     <p className={`text-3xl font-black ${sPresentRate >= 90 ? 'text-emerald-500' : sPresentRate >= 75 ? 'text-amber-500' : 'text-rose-500'}`}>
                       {sPresentRate}%
                     </p>
@@ -173,14 +173,14 @@ export default function SHSAttendanceReports() {
                     <Briefcase className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-slate-800">Staff Attendance</h3>
-                    <p className="text-sm text-slate-500">Aggregated staff register</p>
+                    <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">Staff Attendance</h3>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Aggregated staff register</p>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="p-5 rounded-2xl bg-slate-50 border border-slate-100 flex flex-col justify-center items-center text-center">
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Average Rate</p>
+                  <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-800 flex flex-col justify-center items-center text-center">
+                    <p className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Average Rate</p>
                     <p className={`text-3xl font-black ${tPresentRate >= 95 ? 'text-emerald-500' : tPresentRate >= 85 ? 'text-amber-500' : 'text-rose-500'}`}>
                       {tPresentRate}%
                     </p>
@@ -193,9 +193,9 @@ export default function SHSAttendanceReports() {
                     <p className="text-xs font-bold text-orange-600/70 uppercase tracking-wider mb-1">Total Late</p>
                     <p className="text-3xl font-black text-orange-600">{teacherStats.late}</p>
                   </div>
-                  <div className="p-5 rounded-2xl bg-slate-100 border border-slate-200 flex flex-col justify-center items-center text-center">
-                    <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">On Leave / Absent</p>
-                    <p className="text-3xl font-black text-slate-700">{teacherStats.onLeave + teacherStats.absent}</p>
+                  <div className="p-5 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex flex-col justify-center items-center text-center">
+                    <p className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">On Leave / Absent</p>
+                    <p className="text-3xl font-black text-slate-700 dark:text-slate-200">{teacherStats.onLeave + teacherStats.absent}</p>
                   </div>
                 </div>
               </div>

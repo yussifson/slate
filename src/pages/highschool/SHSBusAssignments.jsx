@@ -126,7 +126,7 @@ export default function SHSBusAssignments() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-purple-800 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
             Transport Roster
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -134,37 +134,37 @@ export default function SHSBusAssignments() {
           </p>
         </div>
         
-        <Button onClick={() => setIsModalOpen(true)} className="h-9 gap-2 rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white shadow-md shadow-purple-500/20">
+        <Button onClick={() => setIsModalOpen(true)} className="h-9 gap-2 rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white shadow-md shadow-blue-500/20">
           <Plus className="w-4 h-4" /> New Assignment
         </Button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-slate-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-slate-100">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center text-[#6F00FF] shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-slate-800 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
               <Users className="w-6 h-6" />
             </div>
             <div>
               <p className="text-sm font-semibold text-muted-foreground">Active Subscriptions</p>
-              <h3 className="text-2xl font-black text-slate-800">{assignments.filter(a => a.status === 'Active').length}</h3>
+              <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">{assignments.filter(a => a.status === 'Active').length}</h3>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
-        <CardHeader className="border-b border-slate-100 bg-slate-50/50 pb-4">
+      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <CardTitle className="text-lg font-bold text-slate-800">Student Roster</CardTitle>
+              <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Student Roster</CardTitle>
             </div>
             
             <div className="relative w-full sm:w-64">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
               <Input 
                 placeholder="Search student or route..." 
-                className="pl-9 h-9 bg-white border-slate-200 rounded-xl focus-visible:ring-[#6F00FF]"
+                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -173,19 +173,19 @@ export default function SHSBusAssignments() {
         </CardHeader>
         <CardContent className="p-0">
           {loading ? (
-            <div className="p-12 text-center text-slate-400">Loading assignments...</div>
+            <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading assignments...</div>
           ) : filteredAssignments.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-purple-50 mx-auto flex items-center justify-center mb-4">
-                <Map className="w-8 h-8 text-purple-400" />
+              <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                <Map className="w-8 h-8 text-blue-500 dark:text-blue-500" />
               </div>
-              <h3 className="text-lg font-bold text-slate-700">No students assigned to buses</h3>
-              <p className="text-sm text-slate-500">Create assignments to generate transport fee invoices.</p>
+              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No students assigned to buses</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Create assignments to generate transport fee invoices.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left">
-                <thead className="bg-slate-50/80 text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
+                <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
                   <tr>
                     <th className="px-6 py-4 rounded-tl-xl">Student</th>
                     <th className="px-6 py-4">Route Name</th>
@@ -197,20 +197,20 @@ export default function SHSBusAssignments() {
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {filteredAssignments.map((asn) => (
-                    <tr key={asn.id} className="hover:bg-slate-50/50 transition-colors">
+                    <tr key={asn.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
                       <td className="px-6 py-4">
-                        <p className="font-bold text-slate-800">{asn.data?.studentName}</p>
-                        <p className="text-xs text-slate-500">{asn.data?.studentIndex}</p>
+                        <p className="font-bold text-slate-800 dark:text-slate-100">{asn.data?.studentName}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">{asn.data?.studentIndex}</p>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex items-center gap-1.5 font-semibold text-slate-700">
-                          <BusFront className="w-4 h-4 text-[#6F00FF]" /> {asn.data?.routeName}
+                        <div className="flex items-center gap-1.5 font-semibold text-slate-700 dark:text-slate-200">
+                          <BusFront className="w-4 h-4 text-blue-600 dark:text-blue-400" /> {asn.data?.routeName}
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-slate-600">
+                      <td className="px-6 py-4 text-slate-600 dark:text-slate-300">
                         {asn.data?.pickupPoint || 'N/A'}
                       </td>
-                      <td className="px-6 py-4 text-slate-500">
+                      <td className="px-6 py-4 text-slate-500 dark:text-slate-400 dark:text-slate-500">
                         {asn.data?.term} - {asn.data?.academicYear}
                       </td>
                       <td className="px-6 py-4">
@@ -241,20 +241,20 @@ export default function SHSBusAssignments() {
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="sm:max-w-[450px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
-          <div className="p-6 bg-gradient-to-br from-[#6F00FF] to-purple-800 text-white">
+          <div className="p-6 bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-black">Assign Student</DialogTitle>
-              <DialogDescription className="text-purple-100">
+              <DialogDescription className="text-blue-100 dark:text-blue-900">
                 Subscribe a Day Student to a bus route.
               </DialogDescription>
             </DialogHeader>
           </div>
           
-          <div className="p-6 bg-slate-50 space-y-4">
+          <div className="p-6 bg-slate-50 dark:bg-slate-800 space-y-4">
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Select Student (Day Students Only)</label>
+              <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Select Student (Day Students Only)</label>
               <select 
-                className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF] font-semibold text-slate-700"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 font-semibold text-slate-700 dark:text-slate-200"
                 value={newAssignment.studentId}
                 onChange={e => setNewAssignment({...newAssignment, studentId: e.target.value})}
               >
@@ -268,9 +268,9 @@ export default function SHSBusAssignments() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Select Route</label>
+              <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Select Route</label>
               <select 
-                className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
                 value={newAssignment.routeId}
                 onChange={e => {
                   setNewAssignment({...newAssignment, routeId: e.target.value, pickupPoint: ''});
@@ -286,9 +286,9 @@ export default function SHSBusAssignments() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Specific Pickup Point</label>
+              <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Specific Pickup Point</label>
               <select 
-                className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
                 value={newAssignment.pickupPoint}
                 onChange={e => setNewAssignment({...newAssignment, pickupPoint: e.target.value})}
                 disabled={!newAssignment.routeId || pickupPointsOptions.length === 0}
@@ -302,9 +302,9 @@ export default function SHSBusAssignments() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Term</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Term</label>
                 <select 
-                  className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
                   value={newAssignment.term}
                   onChange={e => setNewAssignment({...newAssignment, term: e.target.value})}
                 >
@@ -314,28 +314,28 @@ export default function SHSBusAssignments() {
                 </select>
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Academic Year</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Academic Year</label>
                 <Input 
-                  className="bg-white border-slate-200 rounded-xl h-11"
+                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl h-11"
                   value={newAssignment.academicYear}
                   onChange={e => setNewAssignment({...newAssignment, academicYear: e.target.value})}
                 />
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-purple-50 border border-purple-100 text-purple-800 text-xs">
+            <div className="p-4 rounded-xl bg-blue-50 dark:bg-slate-800 border border-blue-100 dark:border-slate-700 text-blue-900 dark:text-blue-100 text-xs">
               <p>A transport fee invoice will be automatically generated and linked to this student upon saving.</p>
             </div>
           </div>
           
-          <div className="p-4 bg-white border-t border-slate-100 flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setIsModalOpen(false)} className="rounded-xl font-semibold text-slate-600">
+          <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setIsModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
               Cancel
             </Button>
             <Button 
               onClick={handleSaveAssignment} 
               disabled={!newAssignment.studentId || !newAssignment.routeId}
-              className="rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white font-bold"
+              className="rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold"
             >
               Confirm Subscription
             </Button>

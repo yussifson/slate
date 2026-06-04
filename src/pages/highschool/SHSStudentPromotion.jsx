@@ -88,7 +88,7 @@ export default function SHSStudentPromotion() {
     <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-purple-800 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
             Student Promotions
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -98,16 +98,16 @@ export default function SHSStudentPromotion() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="col-span-1 rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-purple-100/50">
-          <CardHeader className="bg-purple-50/50 rounded-t-3xl border-b border-purple-100">
-            <CardTitle className="text-lg font-bold text-slate-800">Promotion Rules</CardTitle>
+        <Card className="col-span-1 rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-purple-100/50">
+          <CardHeader className="bg-blue-50/50 dark:bg-slate-800/50 rounded-t-3xl border-b border-blue-100 dark:border-slate-700">
+            <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Promotion Rules</CardTitle>
             <CardDescription>Select the source and target forms</CardDescription>
           </CardHeader>
           <CardContent className="p-6 space-y-6">
             <div className="space-y-2">
-              <label className="text-xs font-bold text-[#6F00FF] uppercase tracking-wider">Current Level (From)</label>
+              <label className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">Current Level (From)</label>
               <select 
-                className="w-full h-11 rounded-xl border border-purple-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF] transition-all"
+                className="w-full h-11 rounded-xl border border-blue-200 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 transition-all"
                 value={sourceGrade}
                 onChange={(e) => {
                   setSourceGrade(e.target.value);
@@ -127,7 +127,7 @@ export default function SHSStudentPromotion() {
             <div className="space-y-2">
               <label className="text-xs font-bold text-emerald-600 uppercase tracking-wider">Next Level (To)</label>
               <select 
-                className="w-full h-11 rounded-xl border border-emerald-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
+                className="w-full h-11 rounded-xl border border-emerald-200 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
                 value={targetGrade}
                 onChange={(e) => setTargetGrade(e.target.value)}
               >
@@ -138,8 +138,8 @@ export default function SHSStudentPromotion() {
             </div>
             
             <div className="pt-4 border-t border-purple-50">
-              <div className="p-4 rounded-xl bg-purple-50 flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-[#6F00FF] shrink-0 mt-0.5" />
+              <div className="p-4 rounded-xl bg-blue-50 dark:bg-slate-800 flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
                 <p className="text-xs text-purple-900 font-medium">
                   Promoting students will update their academic level immediately. Ensure end-of-term results are processed before promotion.
                 </p>
@@ -148,17 +148,17 @@ export default function SHSStudentPromotion() {
           </CardContent>
         </Card>
 
-        <Card className="col-span-1 md:col-span-2 rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-purple-100/50 flex flex-col h-[calc(100vh-250px)] min-h-[500px]">
-          <CardHeader className="bg-white rounded-t-3xl border-b border-purple-50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 py-4">
+        <Card className="col-span-1 md:col-span-2 rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-purple-100/50 flex flex-col h-[calc(100vh-250px)] min-h-[500px]">
+          <CardHeader className="bg-white dark:bg-slate-900 rounded-t-3xl border-b border-purple-50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 py-4">
             <div>
-              <CardTitle className="text-lg font-bold text-slate-800">Eligible Students</CardTitle>
+              <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Eligible Students</CardTitle>
               <CardDescription>{eligibleStudents.length} students currently in {sourceGrade}</CardDescription>
             </div>
             <div className="relative w-full sm:w-64">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
               <Input 
                 placeholder="Search eligible students..." 
-                className="pl-9 bg-slate-50 border-none rounded-xl h-9"
+                className="pl-9 bg-slate-50 dark:bg-slate-800 border-none rounded-xl h-9"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -166,10 +166,10 @@ export default function SHSStudentPromotion() {
           </CardHeader>
           
           <div className="flex-1 overflow-hidden flex flex-col">
-            <div className="px-6 py-3 bg-slate-50/50 flex items-center gap-4 border-b border-slate-100 text-xs font-bold text-slate-500 uppercase tracking-wider">
+            <div className="px-6 py-3 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 flex items-center gap-4 border-b border-slate-100 dark:border-slate-800 text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider">
               <input 
                 type="checkbox" 
-                className="w-4 h-4 rounded text-[#6F00FF] focus:ring-[#6F00FF] border-slate-300"
+                className="w-4 h-4 rounded text-blue-600 dark:text-blue-400 focus:ring-blue-600 dark:focus:ring-blue-500 border-slate-300"
                 checked={eligibleStudents.length > 0 && selectedStudentIds.size === eligibleStudents.length}
                 onChange={toggleAll}
               />
@@ -179,34 +179,34 @@ export default function SHSStudentPromotion() {
             
             <ScrollArea className="flex-1">
               {loading ? (
-                <div className="p-8 text-center text-slate-400">Loading students...</div>
+                <div className="p-8 text-center text-slate-400 dark:text-slate-500">Loading students...</div>
               ) : eligibleStudents.length === 0 ? (
                 <div className="p-12 text-center flex flex-col items-center">
-                  <div className="w-16 h-16 rounded-2xl bg-purple-50 flex items-center justify-center mb-4 text-purple-300">
+                  <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-slate-800 flex items-center justify-center mb-4 text-purple-300">
                     <GraduationCap className="w-8 h-8" />
                   </div>
-                  <h3 className="font-bold text-slate-700">No students found in {sourceGrade}</h3>
-                  <p className="text-sm text-slate-500 mt-1">There are no students eligible for promotion in this grade.</p>
+                  <h3 className="font-bold text-slate-700 dark:text-slate-200">No students found in {sourceGrade}</h3>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500 mt-1">There are no students eligible for promotion in this grade.</p>
                 </div>
               ) : (
                 <div className="divide-y divide-slate-50">
                   {eligibleStudents.map(student => (
-                    <div key={student.id} className={`px-6 py-3 flex items-center gap-4 transition-colors ${selectedStudentIds.has(student.id) ? 'bg-purple-50/50' : 'hover:bg-slate-50'}`}>
+                    <div key={student.id} className={`px-6 py-3 flex items-center gap-4 transition-colors ${selectedStudentIds.has(student.id) ? 'bg-blue-50/50 dark:bg-slate-800/50' : 'hover:bg-slate-50 dark:bg-slate-800'}`}>
                       <input 
                         type="checkbox" 
-                        className="w-4 h-4 rounded text-[#6F00FF] focus:ring-[#6F00FF] border-slate-300"
+                        className="w-4 h-4 rounded text-blue-600 dark:text-blue-400 focus:ring-blue-600 dark:focus:ring-blue-500 border-slate-300"
                         checked={selectedStudentIds.has(student.id)}
                         onChange={() => toggleStudent(student.id)}
                       />
                       <div className="flex-1">
-                        <p className="font-bold text-slate-800">{student.title}</p>
-                        <p className="text-xs text-slate-500">{student.case_number} • {student.data?.program}</p>
+                        <p className="font-bold text-slate-800 dark:text-slate-100">{student.title}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">{student.case_number} • {student.data?.program}</p>
                       </div>
                       <div className="w-32 text-right">
                         {selectedStudentIds.has(student.id) ? (
-                          <Badge className="bg-[#6F00FF] text-white">Will Promote</Badge>
+                          <Badge className="bg-blue-600 dark:bg-blue-500 text-white">Will Promote</Badge>
                         ) : (
-                          <span className="text-xs text-slate-400">Pending</span>
+                          <span className="text-xs text-slate-400 dark:text-slate-500">Pending</span>
                         )}
                       </div>
                     </div>
@@ -216,16 +216,16 @@ export default function SHSStudentPromotion() {
             </ScrollArea>
           </div>
           
-          <div className="p-4 bg-white border-t border-purple-100 rounded-b-3xl flex items-center justify-between">
-            <p className="text-sm font-semibold text-slate-600">
-              <span className="text-[#6F00FF] font-black">{selectedStudentIds.size}</span> students selected
+          <div className="p-4 bg-white dark:bg-slate-900 border-t border-blue-100 dark:border-slate-700 rounded-b-3xl flex items-center justify-between">
+            <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">
+              <span className="text-blue-600 dark:text-blue-400 font-black">{selectedStudentIds.size}</span> students selected
             </p>
             
             <Button 
               onClick={handlePromote}
               disabled={selectedStudentIds.size === 0 || isPromoting || promotionSuccess}
               className={`rounded-xl px-6 h-11 shadow-md font-bold transition-all ${
-                promotionSuccess ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-[#6F00FF] hover:bg-[#5200c2]'
+                promotionSuccess ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600'
               } text-white`}
             >
               {isPromoting ? (

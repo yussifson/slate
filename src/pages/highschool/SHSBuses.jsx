@@ -87,7 +87,7 @@ export default function SHSBuses() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-purple-800 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
             School Fleet
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -95,37 +95,37 @@ export default function SHSBuses() {
           </p>
         </div>
         
-        <Button onClick={() => setIsModalOpen(true)} className="h-9 gap-2 rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white shadow-md shadow-purple-500/20">
+        <Button onClick={() => setIsModalOpen(true)} className="h-9 gap-2 rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white shadow-md shadow-blue-500/20">
           <Plus className="w-4 h-4" /> Register Bus
         </Button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-slate-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-slate-100">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center text-[#6F00FF] shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-slate-800 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
               <Bus className="w-6 h-6" />
             </div>
             <div>
               <p className="text-sm font-semibold text-muted-foreground">Total Fleet</p>
-              <h3 className="text-2xl font-black text-slate-800">{buses.length}</h3>
+              <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">{buses.length}</h3>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
-        <CardHeader className="border-b border-slate-100 bg-slate-50/50 pb-4">
+      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <CardTitle className="text-lg font-bold text-slate-800">Vehicle Roster</CardTitle>
+              <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Vehicle Roster</CardTitle>
             </div>
             
             <div className="relative w-full sm:w-64">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
               <Input 
                 placeholder="Search registration or driver..." 
-                className="pl-9 h-9 bg-white border-slate-200 rounded-xl focus-visible:ring-[#6F00FF]"
+                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -134,19 +134,19 @@ export default function SHSBuses() {
         </CardHeader>
         <CardContent className="p-0">
           {loading ? (
-            <div className="p-12 text-center text-slate-400">Loading fleet...</div>
+            <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading fleet...</div>
           ) : filteredBuses.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-purple-50 mx-auto flex items-center justify-center mb-4">
-                <Bus className="w-8 h-8 text-purple-400" />
+              <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                <Bus className="w-8 h-8 text-blue-500 dark:text-blue-500" />
               </div>
-              <h3 className="text-lg font-bold text-slate-700">No vehicles registered</h3>
-              <p className="text-sm text-slate-500">Add a bus to start managing your fleet.</p>
+              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No vehicles registered</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Add a bus to start managing your fleet.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left">
-                <thead className="bg-slate-50/80 text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
+                <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
                   <tr>
                     <th className="px-6 py-4 rounded-tl-xl">Registration</th>
                     <th className="px-6 py-4">Capacity</th>
@@ -157,18 +157,18 @@ export default function SHSBuses() {
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {filteredBuses.map((bus) => (
-                    <tr key={bus.id} className="hover:bg-slate-50/50 transition-colors">
+                    <tr key={bus.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
                       <td className="px-6 py-4">
-                        <span className="font-bold text-slate-800 bg-slate-100 px-3 py-1 rounded-md border border-slate-200 text-sm tracking-widest">{bus.data?.registrationNumber}</span>
+                        <span className="font-bold text-slate-800 dark:text-slate-100 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-md border border-slate-200 dark:border-slate-700 text-sm tracking-widest">{bus.data?.registrationNumber}</span>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex items-center gap-1.5 font-medium text-slate-700">
-                          <Users className="w-4 h-4 text-slate-400" /> {bus.data?.capacity} Seats
+                        <div className="flex items-center gap-1.5 font-medium text-slate-700 dark:text-slate-200">
+                          <Users className="w-4 h-4 text-slate-400 dark:text-slate-500" /> {bus.data?.capacity} Seats
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <p className="font-bold text-slate-800">{bus.data?.driverName}</p>
-                        <p className="text-xs text-slate-500">{bus.data?.driverPhone}</p>
+                        <p className="font-bold text-slate-800 dark:text-slate-100">{bus.data?.driverName}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">{bus.data?.driverPhone}</p>
                       </td>
                       <td className="px-6 py-4">
                         <Badge variant="outline" className={
@@ -199,32 +199,32 @@ export default function SHSBuses() {
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="sm:max-w-[450px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
-          <div className="p-6 bg-gradient-to-br from-[#6F00FF] to-purple-800 text-white">
+          <div className="p-6 bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-black">Register Vehicle</DialogTitle>
-              <DialogDescription className="text-purple-100">
+              <DialogDescription className="text-blue-100 dark:text-blue-900">
                 Add a new bus to the school transport fleet.
               </DialogDescription>
             </DialogHeader>
           </div>
           
-          <div className="p-6 bg-slate-50 space-y-4">
+          <div className="p-6 bg-slate-50 dark:bg-slate-800 space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Registration Number</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Registration Number</label>
                 <Input 
                   placeholder="e.g. GR-234-21"
-                  className="bg-white border-slate-200 rounded-xl uppercase"
+                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl uppercase"
                   value={newBus.registrationNumber}
                   onChange={e => setNewBus({...newBus, registrationNumber: e.target.value.toUpperCase()})}
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Capacity (Seats)</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Capacity (Seats)</label>
                 <Input 
                   type="number"
                   placeholder="e.g. 60"
-                  className="bg-white border-slate-200 rounded-xl"
+                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                   value={newBus.capacity}
                   onChange={e => setNewBus({...newBus, capacity: e.target.value})}
                 />
@@ -232,34 +232,34 @@ export default function SHSBuses() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Driver Name</label>
+              <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Driver Name</label>
               <Input 
                 placeholder="e.g. John Mensah"
-                className="bg-white border-slate-200 rounded-xl"
+                className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                 value={newBus.driverName}
                 onChange={e => setNewBus({...newBus, driverName: e.target.value})}
               />
             </div>
             
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Driver Phone</label>
+              <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Driver Phone</label>
               <Input 
                 placeholder="e.g. 0541234567"
-                className="bg-white border-slate-200 rounded-xl"
+                className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                 value={newBus.driverPhone}
                 onChange={e => setNewBus({...newBus, driverPhone: e.target.value})}
               />
             </div>
           </div>
           
-          <div className="p-4 bg-white border-t border-slate-100 flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setIsModalOpen(false)} className="rounded-xl font-semibold text-slate-600">
+          <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setIsModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
               Cancel
             </Button>
             <Button 
               onClick={handleSaveBus} 
               disabled={!newBus.registrationNumber || !newBus.capacity}
-              className="rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white font-bold"
+              className="rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold"
             >
               Save Vehicle
             </Button>

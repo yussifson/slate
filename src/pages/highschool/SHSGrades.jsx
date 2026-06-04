@@ -201,7 +201,7 @@ export default function SHSGrades() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-purple-800 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
             Grade Entry
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -210,15 +210,15 @@ export default function SHSGrades() {
         </div>
       </div>
 
-      <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
-        <CardHeader className="border-b border-slate-100 bg-slate-50/50 p-6">
+      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
           <div className="flex flex-col md:flex-row gap-6">
             <div className="space-y-2 flex-1">
-              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                <FileText className="w-4 h-4 text-[#6F00FF]" /> Select Exam Cycle
+              <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
+                <FileText className="w-4 h-4 text-blue-600 dark:text-blue-400" /> Select Exam Cycle
               </label>
               <select 
-                className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF] font-semibold text-slate-700"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 font-semibold text-slate-700 dark:text-slate-200"
                 value={selectedExamId}
                 onChange={(e) => setSelectedExamId(e.target.value)}
               >
@@ -230,11 +230,11 @@ export default function SHSGrades() {
             </div>
 
             <div className="space-y-2 flex-1">
-              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
+              <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
                 <GraduationCap className="w-4 h-4 text-emerald-600" /> Class
               </label>
               <select 
-                className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-semibold text-slate-700"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-semibold text-slate-700 dark:text-slate-200"
                 value={selectedClassId}
                 onChange={(e) => setSelectedClassId(e.target.value)}
                 disabled={!selectedExamId}
@@ -247,11 +247,11 @@ export default function SHSGrades() {
             </div>
 
             <div className="space-y-2 flex-1">
-              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
+              <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
                 <BookOpen className="w-4 h-4 text-amber-600" /> Subject
               </label>
               <select 
-                className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-amber-500 font-semibold text-slate-700"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-amber-500 font-semibold text-slate-700 dark:text-slate-200"
                 value={selectedSubjectId}
                 onChange={(e) => setSelectedSubjectId(e.target.value)}
                 disabled={!selectedClassId}
@@ -267,26 +267,26 @@ export default function SHSGrades() {
         
         <CardContent className="p-0">
           {loading ? (
-            <div className="p-16 text-center text-slate-400">Loading grade sheet...</div>
+            <div className="p-16 text-center text-slate-400 dark:text-slate-500">Loading grade sheet...</div>
           ) : !selectedSubjectId ? (
             <div className="p-20 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-slate-50 mx-auto flex items-center justify-center mb-4">
-                <FileText className="w-8 h-8 text-slate-400" />
+              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                <FileText className="w-8 h-8 text-slate-400 dark:text-slate-500" />
               </div>
-              <h3 className="text-lg font-bold text-slate-700">Select parameters to begin</h3>
-              <p className="text-sm text-slate-500 max-w-sm mx-auto mt-2">
+              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">Select parameters to begin</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500 max-w-sm mx-auto mt-2">
                 Choose an Exam, Class, and Subject to open the grading sheet for that specific cohort.
               </p>
             </div>
           ) : students.length === 0 ? (
-            <div className="p-16 text-center text-slate-500">
+            <div className="p-16 text-center text-slate-500 dark:text-slate-400 dark:text-slate-500">
               No active students found in this class.
             </div>
           ) : (
             <div>
               <div className="overflow-x-auto max-h-[500px]">
                 <table className="w-full text-sm text-left">
-                  <thead className="bg-slate-50/80 text-slate-500 font-bold uppercase text-[10px] tracking-wider sticky top-0 z-10 shadow-sm">
+                  <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-500 font-bold uppercase text-[10px] tracking-wider sticky top-0 z-10 shadow-sm">
                     <tr>
                       <th className="px-6 py-4 rounded-tl-xl w-12 text-center">#</th>
                       <th className="px-6 py-4">Student Name</th>
@@ -302,20 +302,20 @@ export default function SHSGrades() {
                       const grade = calculateGrade(total);
                       
                       return (
-                        <tr key={student.id} className="hover:bg-slate-50/50 transition-colors">
-                          <td className="px-6 py-3 text-center text-slate-400 font-bold">
+                        <tr key={student.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
+                          <td className="px-6 py-3 text-center text-slate-400 dark:text-slate-500 font-bold">
                             {index + 1}
                           </td>
                           <td className="px-6 py-3">
-                            <p className="font-bold text-slate-800">{student.title}</p>
-                            <p className="text-xs text-slate-500">{student.data?.indexNumber || student.case_number}</p>
+                            <p className="font-bold text-slate-800 dark:text-slate-100">{student.title}</p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">{student.data?.indexNumber || student.case_number}</p>
                           </td>
                           <td className="px-6 py-3 text-center">
                             <Input 
                               type="number"
                               min="0"
                               max="30"
-                              className="h-10 text-center font-semibold bg-slate-50 border-slate-200 focus-visible:ring-[#6F00FF] focus-visible:bg-white transition-colors"
+                              className="h-10 text-center font-semibold bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500 focus-visible:bg-white dark:bg-slate-900 transition-colors"
                               value={grades[student.id]?.classScore}
                               onChange={(e) => handleGradeChange(student.id, 'classScore', e.target.value)}
                             />
@@ -325,13 +325,13 @@ export default function SHSGrades() {
                               type="number"
                               min="0"
                               max="70"
-                              className="h-10 text-center font-semibold bg-slate-50 border-slate-200 focus-visible:ring-[#6F00FF] focus-visible:bg-white transition-colors"
+                              className="h-10 text-center font-semibold bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500 focus-visible:bg-white dark:bg-slate-900 transition-colors"
                               value={grades[student.id]?.examScore}
                               onChange={(e) => handleGradeChange(student.id, 'examScore', e.target.value)}
                             />
                           </td>
                           <td className="px-6 py-3 text-center">
-                            <div className="h-10 flex items-center justify-center font-black text-slate-700 bg-slate-100/50 rounded-xl">
+                            <div className="h-10 flex items-center justify-center font-black text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800/50 rounded-xl">
                               {total > 0 ? total : '-'}
                             </div>
                           </td>
@@ -349,7 +349,7 @@ export default function SHSGrades() {
                                 {grade}
                               </Badge>
                             ) : (
-                              <div className="text-slate-400 font-bold">-</div>
+                              <div className="text-slate-400 dark:text-slate-500 font-bold">-</div>
                             )}
                           </td>
                         </tr>
@@ -359,7 +359,7 @@ export default function SHSGrades() {
                 </table>
               </div>
               
-              <div className="p-6 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+              <div className="p-6 bg-slate-50 dark:bg-slate-800 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
                 <div>
                   {saveSuccess && (
                     <Badge className="bg-emerald-100 text-emerald-700 border-none px-3 py-1 text-sm font-semibold flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2">
@@ -369,13 +369,13 @@ export default function SHSGrades() {
                 </div>
                 
                 <div className="flex gap-3">
-                  <Button variant="outline" className="h-12 px-6 rounded-xl border-slate-200 text-slate-600 font-semibold hover:bg-white hidden sm:flex">
+                  <Button variant="outline" className="h-12 px-6 rounded-xl border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-semibold hover:bg-white dark:bg-slate-900 hidden sm:flex">
                     <FileSpreadsheet className="w-5 h-5 mr-2" /> Import CSV
                   </Button>
                   <Button 
                     onClick={handleSaveGrades}
                     disabled={isSaving}
-                    className="h-12 px-8 rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white shadow-lg shadow-purple-500/20 font-bold"
+                    className="h-12 px-8 rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white shadow-lg shadow-blue-500/20 font-bold"
                   >
                     {isSaving ? 'Saving...' : (
                       <><Save className="w-5 h-5 mr-2" /> Save Grades</>

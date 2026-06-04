@@ -105,7 +105,7 @@ export default function SHSReturns() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-purple-800 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
             Book Returns
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -117,17 +117,17 @@ export default function SHSReturns() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         {/* Active Checkouts to Return */}
-        <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-amber-100 overflow-hidden">
-          <CardHeader className="border-b border-slate-100 bg-amber-50/50 pb-4">
+        <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-amber-100 overflow-hidden">
+          <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-amber-50/50 pb-4">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <CardTitle className="text-lg font-bold text-slate-800 flex items-center gap-2">
+              <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
                 <BookDown className="w-5 h-5 text-amber-500" /> Awaiting Return
               </CardTitle>
               <div className="relative w-full sm:w-48">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
                 <Input 
                   placeholder="Search to return..." 
-                  className="pl-9 h-8 bg-white border-slate-200 rounded-lg text-xs"
+                  className="pl-9 h-8 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg text-xs"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -136,24 +136,24 @@ export default function SHSReturns() {
           </CardHeader>
           <CardContent className="p-0">
             {loading ? (
-              <div className="p-12 text-center text-slate-400">Loading records...</div>
+              <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading records...</div>
             ) : filteredActive.length === 0 ? (
               <div className="p-12 text-center">
-                <h3 className="text-sm font-bold text-slate-700">No active checkouts found</h3>
+                <h3 className="text-sm font-bold text-slate-700 dark:text-slate-200">No active checkouts found</h3>
               </div>
             ) : (
               <div className="divide-y divide-slate-100 max-h-[500px] overflow-y-auto">
                 {filteredActive.map((record) => (
-                  <div key={record.id} className="p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:bg-slate-50/50 transition-colors">
+                  <div key={record.id} className="p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
                     <div>
-                      <p className="font-bold text-slate-800 text-sm mb-1">{record.data?.bookTitle}</p>
-                      <p className="text-xs text-slate-500">Borrowed by: <span className="font-semibold text-slate-700">{record.data?.studentName}</span></p>
-                      <p className="text-xs text-slate-500">Due: {record.data?.dueDate}</p>
+                      <p className="font-bold text-slate-800 dark:text-slate-100 text-sm mb-1">{record.data?.bookTitle}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">Borrowed by: <span className="font-semibold text-slate-700 dark:text-slate-200">{record.data?.studentName}</span></p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">Due: {record.data?.dueDate}</p>
                     </div>
                     <Button 
                       size="sm"
                       onClick={() => openReturnModal(record.id)}
-                      className="rounded-lg bg-white border border-amber-200 text-amber-700 hover:bg-amber-50 shadow-sm"
+                      className="rounded-lg bg-white dark:bg-slate-900 border border-amber-200 text-amber-700 hover:bg-amber-50 shadow-sm"
                     >
                       Process Return
                     </Button>
@@ -165,27 +165,27 @@ export default function SHSReturns() {
         </Card>
 
         {/* Recently Returned History */}
-        <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-emerald-100 overflow-hidden">
-          <CardHeader className="border-b border-slate-100 bg-emerald-50/50 pb-4">
-            <CardTitle className="text-lg font-bold text-slate-800 flex items-center gap-2">
+        <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-emerald-100 overflow-hidden">
+          <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-emerald-50/50 pb-4">
+            <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
               <History className="w-5 h-5 text-emerald-600" /> Recently Returned
             </CardTitle>
           </CardHeader>
           <CardContent className="p-0">
             {loading ? (
-              <div className="p-12 text-center text-slate-400">Loading history...</div>
+              <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading history...</div>
             ) : returnedBorrowings.length === 0 ? (
               <div className="p-12 text-center">
-                <h3 className="text-sm font-bold text-slate-700">No return history</h3>
+                <h3 className="text-sm font-bold text-slate-700 dark:text-slate-200">No return history</h3>
               </div>
             ) : (
               <div className="divide-y divide-slate-100 max-h-[500px] overflow-y-auto">
                 {returnedBorrowings.slice(0, 10).map((record) => (
                   <div key={record.id} className="p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div>
-                      <p className="font-bold text-slate-800 text-sm mb-1">{record.data?.bookTitle}</p>
-                      <p className="text-xs text-slate-500">Returned by: <span className="font-semibold text-slate-700">{record.data?.studentName}</span></p>
-                      <p className="text-xs text-slate-500">On: {record.data?.returnDate}</p>
+                      <p className="font-bold text-slate-800 dark:text-slate-100 text-sm mb-1">{record.data?.bookTitle}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">Returned by: <span className="font-semibold text-slate-700 dark:text-slate-200">{record.data?.studentName}</span></p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">On: {record.data?.returnDate}</p>
                     </div>
                     <Badge variant="outline" className={`
                       ${record.data?.returnCondition === 'Good' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : ''}
@@ -214,11 +214,11 @@ export default function SHSReturns() {
             </DialogHeader>
           </div>
           
-          <div className="p-6 bg-slate-50 space-y-4">
+          <div className="p-6 bg-slate-50 dark:bg-slate-800 space-y-4">
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Book Condition on Return</label>
+              <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Book Condition on Return</label>
               <select 
-                className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-amber-500 font-semibold"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-amber-500 font-semibold"
                 value={returnCondition}
                 onChange={e => setReturnCondition(e.target.value)}
               >
@@ -236,8 +236,8 @@ export default function SHSReturns() {
             )}
           </div>
           
-          <div className="p-4 bg-white border-t border-slate-100 flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setIsReturnModalOpen(false)} className="rounded-xl font-semibold text-slate-600">
+          <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setIsReturnModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
               Cancel
             </Button>
             <Button 

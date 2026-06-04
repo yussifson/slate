@@ -83,7 +83,7 @@ export default function SHSResultsProcessing() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-purple-800 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
             Results Processing
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -92,15 +92,15 @@ export default function SHSResultsProcessing() {
         </div>
       </div>
 
-      <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
-        <CardHeader className="border-b border-slate-100 bg-slate-50/50 p-6">
+      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
           <div className="flex flex-col md:flex-row gap-6 items-end">
             <div className="space-y-2 flex-1">
-              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                <FileText className="w-4 h-4 text-[#6F00FF]" /> Target Exam Cycle
+              <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
+                <FileText className="w-4 h-4 text-blue-600 dark:text-blue-400" /> Target Exam Cycle
               </label>
               <select 
-                className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF] font-semibold text-slate-700"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 font-semibold text-slate-700 dark:text-slate-200"
                 value={selectedExamId}
                 onChange={(e) => setSelectedExamId(e.target.value)}
               >
@@ -119,27 +119,27 @@ export default function SHSResultsProcessing() {
         
         <CardContent className="p-8">
           {loading ? (
-            <div className="py-12 text-center text-slate-400">Loading exams...</div>
+            <div className="py-12 text-center text-slate-400 dark:text-slate-500">Loading exams...</div>
           ) : !selectedExamId ? (
             <div className="py-20 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-purple-50 mx-auto flex items-center justify-center mb-4">
-                <Calculator className="w-8 h-8 text-purple-400" />
+              <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                <Calculator className="w-8 h-8 text-blue-500 dark:text-blue-500" />
               </div>
-              <h3 className="text-lg font-bold text-slate-700">Select an exam to process</h3>
-              <p className="text-sm text-slate-500 max-w-sm mx-auto mt-2">
+              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">Select an exam to process</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500 max-w-sm mx-auto mt-2">
                 Once an exam is completed by all teachers, you can run the broadsheet processing to calculate averages and ranks.
               </p>
             </div>
           ) : (
             <div className="max-w-2xl mx-auto space-y-8">
               
-              <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100 space-y-4">
+              <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-800 space-y-4">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h3 className="text-xl font-bold text-slate-800">{selectedExam?.title}</h3>
-                    <p className="text-sm text-slate-500">{selectedExam?.data?.academicYear} • {selectedExam?.data?.term}</p>
+                    <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">{selectedExam?.title}</h3>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">{selectedExam?.data?.academicYear} • {selectedExam?.data?.term}</p>
                   </div>
-                  <Badge variant="outline" className="bg-white">{selectedExam?.status}</Badge>
+                  <Badge variant="outline" className="bg-white dark:bg-slate-900">{selectedExam?.status}</Badge>
                 </div>
                 
                 <div className="bg-amber-50 text-amber-700 text-sm p-4 rounded-xl flex gap-3 items-start border border-amber-200/50">
@@ -151,13 +151,13 @@ export default function SHSResultsProcessing() {
               </div>
 
               {isProcessing || progress > 0 ? (
-                <div className="space-y-3 p-8 rounded-2xl border border-slate-100 bg-white shadow-sm">
+                <div className="space-y-3 p-8 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
                   <div className="flex justify-between text-sm font-bold">
-                    <span className="text-[#6F00FF]">Processing Data...</span>
-                    <span className="text-slate-500">{progress}%</span>
+                    <span className="text-blue-600 dark:text-blue-400">Processing Data...</span>
+                    <span className="text-slate-500 dark:text-slate-400 dark:text-slate-500">{progress}%</span>
                   </div>
-                  <Progress value={progress} className="h-3 bg-purple-100 [&>div]:bg-[#6F00FF]" />
-                  <p className="text-xs text-slate-400 text-center mt-4">
+                  <Progress value={progress} className="h-3 bg-blue-100 dark:bg-slate-800 [&>div]:bg-blue-600 dark:bg-blue-500" />
+                  <p className="text-xs text-slate-400 dark:text-slate-500 text-center mt-4">
                     {progress < 30 ? 'Aggregating raw scores...' : 
                      progress < 60 ? 'Calculating class averages...' : 
                      progress < 90 ? 'Assigning student ranks...' : 
@@ -179,7 +179,7 @@ export default function SHSResultsProcessing() {
                 <div className="flex justify-center pt-4">
                   <Button 
                     onClick={handleProcessResults}
-                    className="h-14 px-10 rounded-2xl bg-[#6F00FF] hover:bg-[#5200c2] text-white shadow-xl shadow-purple-500/30 text-lg font-black group transition-all"
+                    className="h-14 px-10 rounded-2xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white shadow-xl shadow-purple-500/30 text-lg font-black group transition-all"
                   >
                     Run Processing Engine
                     <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />

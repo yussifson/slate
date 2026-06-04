@@ -90,7 +90,7 @@ export default function SHSMockExams() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-purple-800 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
             Mock Examinations
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -98,23 +98,23 @@ export default function SHSMockExams() {
           </p>
         </div>
         
-        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white shadow-md shadow-purple-500/20">
+        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white shadow-md shadow-blue-500/20">
           <Plus className="w-4 h-4" /> Schedule Mock
         </Button>
       </div>
 
-      <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
-        <CardHeader className="border-b border-slate-100 bg-slate-50/50 pb-4">
+      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <CardTitle className="text-lg font-bold text-slate-800">Scheduled Mocks</CardTitle>
+              <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Scheduled Mocks</CardTitle>
             </div>
             
             <div className="relative w-full sm:w-64">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
               <Input 
                 placeholder="Search mocks..." 
-                className="pl-9 h-9 bg-white border-slate-200 rounded-xl focus-visible:ring-[#6F00FF]"
+                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -123,19 +123,19 @@ export default function SHSMockExams() {
         </CardHeader>
         <CardContent className="p-0">
           {loading ? (
-            <div className="p-12 text-center text-slate-400">Loading exams...</div>
+            <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading exams...</div>
           ) : filteredExams.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-purple-50 mx-auto flex items-center justify-center mb-4">
-                <Award className="w-8 h-8 text-purple-400" />
+              <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                <Award className="w-8 h-8 text-blue-500 dark:text-blue-500" />
               </div>
-              <h3 className="text-lg font-bold text-slate-700">No mock exams found</h3>
-              <p className="text-sm text-slate-500">Schedule a mock exam for candidate preparation.</p>
+              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No mock exams found</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Schedule a mock exam for candidate preparation.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left">
-                <thead className="bg-slate-50/80 text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
+                <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
                   <tr>
                     <th className="px-6 py-4 rounded-tl-xl">Exam Name</th>
                     <th className="px-6 py-4">Target Form</th>
@@ -146,10 +146,10 @@ export default function SHSMockExams() {
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {filteredExams.map((exam) => (
-                    <tr key={exam.id} className="hover:bg-slate-50/50 transition-colors">
+                    <tr key={exam.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
                       <td className="px-6 py-4">
-                        <p className="font-bold text-slate-800">{exam.title}</p>
-                        <p className="text-xs text-slate-500">{exam.case_number}</p>
+                        <p className="font-bold text-slate-800 dark:text-slate-100">{exam.title}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">{exam.case_number}</p>
                       </td>
                       <td className="px-6 py-4">
                         <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200">
@@ -157,14 +157,14 @@ export default function SHSMockExams() {
                         </Badge>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex items-center gap-1.5 text-slate-600 text-xs font-medium">
-                          <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                        <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-xs font-medium">
+                          <Calendar className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
                           <span>{exam.data?.startDate} to {exam.data?.endDate}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <Badge variant="outline" className={
-                          exam.status === 'Upcoming' ? 'bg-slate-50 text-slate-600 border-slate-200' :
+                          exam.status === 'Upcoming' ? 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700' :
                           exam.status === 'Ongoing' ? 'bg-amber-50 text-amber-600 border-amber-200' :
                           exam.status === 'Completed' ? 'bg-blue-50 text-blue-600 border-blue-200' :
                           'bg-emerald-50 text-emerald-700 border-emerald-200'
@@ -202,21 +202,21 @@ export default function SHSMockExams() {
 
       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
         <DialogContent className="sm:max-w-[450px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
-          <div className="p-6 bg-gradient-to-br from-[#6F00FF] to-purple-800 text-white">
+          <div className="p-6 bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-black">Schedule Mock Exam</DialogTitle>
-              <DialogDescription className="text-purple-100">
+              <DialogDescription className="text-blue-100 dark:text-blue-900">
                 Setup a preparatory mock cycle for candidates.
               </DialogDescription>
             </DialogHeader>
           </div>
           
-          <div className="p-6 bg-slate-50 space-y-4">
+          <div className="p-6 bg-slate-50 dark:bg-slate-800 space-y-4">
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Mock Exam Name</label>
+              <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Mock Exam Name</label>
               <Input 
                 placeholder="e.g. WASSCE Mock 1"
-                className="bg-white border-slate-200 rounded-xl"
+                className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                 value={newExam.examName}
                 onChange={e => setNewExam({...newExam, examName: e.target.value})}
               />
@@ -224,17 +224,17 @@ export default function SHSMockExams() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Academic Year</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Academic Year</label>
                 <Input 
-                  className="bg-white border-slate-200 rounded-xl"
+                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                   value={newExam.academicYear}
                   onChange={e => setNewExam({...newExam, academicYear: e.target.value})}
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Target Form</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Target Form</label>
                 <select 
-                  className="w-full h-10 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                  className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
                   value={newExam.targetForm}
                   onChange={e => setNewExam({...newExam, targetForm: e.target.value})}
                 >
@@ -246,19 +246,19 @@ export default function SHSMockExams() {
             
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Start Date</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Start Date</label>
                 <Input 
                   type="date"
-                  className="bg-white border-slate-200 rounded-xl"
+                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                   value={newExam.startDate}
                   onChange={e => setNewExam({...newExam, startDate: e.target.value})}
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">End Date</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">End Date</label>
                 <Input 
                   type="date"
-                  className="bg-white border-slate-200 rounded-xl"
+                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                   value={newExam.endDate}
                   onChange={e => setNewExam({...newExam, endDate: e.target.value})}
                 />
@@ -266,14 +266,14 @@ export default function SHSMockExams() {
             </div>
           </div>
           
-          <div className="p-4 bg-white border-t border-slate-100 flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600">
+          <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
               Cancel
             </Button>
             <Button 
               onClick={handleCreateExam} 
               disabled={!newExam.examName || !newExam.startDate || !newExam.endDate}
-              className="rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white font-bold"
+              className="rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold"
             >
               Save Schedule
             </Button>

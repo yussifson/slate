@@ -101,7 +101,7 @@ export default function SHSCourses() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-purple-800 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
             Course Enrollments
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -109,46 +109,46 @@ export default function SHSCourses() {
           </p>
         </div>
         
-        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white shadow-md shadow-purple-500/20">
+        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white shadow-md shadow-blue-500/20">
           <Plus className="w-4 h-4" /> Create Course Assignment
         </Button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-purple-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-purple-100">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center text-[#6F00FF] shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-slate-800 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
               <Layers className="w-6 h-6" />
             </div>
             <div>
               <p className="text-sm font-semibold text-muted-foreground">Active Courses</p>
-              <h3 className="text-2xl font-black text-slate-800">{courses.length}</h3>
+              <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">{courses.length}</h3>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-emerald-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-emerald-100">
           <CardContent className="p-5 flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
               <GraduationCap className="w-6 h-6" />
             </div>
             <div>
               <p className="text-sm font-semibold text-muted-foreground">Assigned Teachers</p>
-              <h3 className="text-2xl font-black text-slate-800">
+              <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">
                 {new Set(courses.filter(c => c.data?.teacherId).map(c => c.data.teacherId)).size}
               </h3>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-amber-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-amber-100">
           <CardContent className="p-5 flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 shrink-0">
               <BookOpen className="w-6 h-6" />
             </div>
             <div>
               <p className="text-sm font-semibold text-muted-foreground">Subjects Utilized</p>
-              <h3 className="text-2xl font-black text-slate-800">
+              <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">
                 {new Set(courses.map(c => c.data?.subjectId)).size} / {subjects.length}
               </h3>
             </div>
@@ -156,18 +156,18 @@ export default function SHSCourses() {
         </Card>
       </div>
 
-      <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
-        <CardHeader className="border-b border-slate-100 bg-slate-50/50 pb-4">
+      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <CardTitle className="text-lg font-bold text-slate-800">Course Offerings</CardTitle>
+              <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Course Offerings</CardTitle>
             </div>
             
             <div className="relative w-full sm:w-64">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
               <Input 
                 placeholder="Search course, class, or teacher..." 
-                className="pl-9 h-9 bg-white border-slate-200 rounded-xl focus-visible:ring-[#6F00FF]"
+                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -176,19 +176,19 @@ export default function SHSCourses() {
         </CardHeader>
         <CardContent className="p-0">
           {loading ? (
-            <div className="p-12 text-center text-slate-400">Loading courses...</div>
+            <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading courses...</div>
           ) : filteredCourses.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-purple-50 mx-auto flex items-center justify-center mb-4">
-                <Layers className="w-8 h-8 text-purple-400" />
+              <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                <Layers className="w-8 h-8 text-blue-500 dark:text-blue-500" />
               </div>
-              <h3 className="text-lg font-bold text-slate-700">No courses defined</h3>
-              <p className="text-sm text-slate-500">Map a subject to a class to create a course offering.</p>
+              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No courses defined</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Map a subject to a class to create a course offering.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left">
-                <thead className="bg-slate-50/80 text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
+                <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
                   <tr>
                     <th className="px-6 py-4 rounded-tl-xl">Course Name</th>
                     <th className="px-6 py-4">Class</th>
@@ -200,15 +200,15 @@ export default function SHSCourses() {
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {filteredCourses.map((course) => (
-                    <tr key={course.id} className="hover:bg-slate-50/50 transition-colors group">
-                      <td className="px-6 py-4 font-bold text-slate-800">
+                    <tr key={course.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors group">
+                      <td className="px-6 py-4 font-bold text-slate-800 dark:text-slate-100">
                         {course.title}
-                        <div className="text-[10px] font-normal text-slate-400 uppercase tracking-wider mt-0.5">{course.case_number}</div>
+                        <div className="text-[10px] font-normal text-slate-400 dark:text-slate-500 uppercase tracking-wider mt-0.5">{course.case_number}</div>
                       </td>
-                      <td className="px-6 py-4 font-semibold text-[#6F00FF]">
+                      <td className="px-6 py-4 font-semibold text-blue-600 dark:text-blue-400">
                         {course.data?.className}
                       </td>
-                      <td className="px-6 py-4 text-slate-600">
+                      <td className="px-6 py-4 text-slate-600 dark:text-slate-300">
                         {course.data?.subjectName}
                       </td>
                       <td className="px-6 py-4">
@@ -221,16 +221,16 @@ export default function SHSCourses() {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
-                          <div className="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold text-slate-500">
+                          <div className="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500">
                             {(course.data?.teacherName || 'U').charAt(0)}
                           </div>
-                          <span className={course.data?.teacherName === 'Unassigned' ? 'text-slate-400 italic' : 'text-slate-700 font-medium'}>
+                          <span className={course.data?.teacherName === 'Unassigned' ? 'text-slate-400 dark:text-slate-500 italic' : 'text-slate-700 dark:text-slate-200 font-medium'}>
                             {course.data?.teacherName}
                           </span>
                         </div>
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity text-[#6F00FF] hover:bg-purple-50">
+                        <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:bg-slate-800">
                           Edit
                         </Button>
                       </td>
@@ -245,24 +245,24 @@ export default function SHSCourses() {
 
       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
         <DialogContent className="sm:max-w-[450px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
-          <div className="p-6 bg-gradient-to-br from-[#6F00FF] to-purple-800 text-white">
+          <div className="p-6 bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-black">Assign Course</DialogTitle>
-              <DialogDescription className="text-purple-100">
+              <DialogDescription className="text-blue-100 dark:text-blue-900">
                 Map a subject to a specific class and assign a teacher.
               </DialogDescription>
             </DialogHeader>
           </div>
           
-          <ScrollArea className="max-h-[60vh] p-6 bg-slate-50">
+          <ScrollArea className="max-h-[60vh] p-6 bg-slate-50 dark:bg-slate-800">
             <div className="space-y-4">
               
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center gap-2">
-                  <BookOpen className="w-4 h-4 text-[#6F00FF]" /> Subject
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider flex items-center gap-2">
+                  <BookOpen className="w-4 h-4 text-blue-600 dark:text-blue-400" /> Subject
                 </label>
                 <select 
-                  className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
                   value={newCourse.subjectId}
                   onChange={e => setNewCourse({...newCourse, subjectId: e.target.value})}
                 >
@@ -274,11 +274,11 @@ export default function SHSCourses() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center gap-2">
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider flex items-center gap-2">
                   <Users className="w-4 h-4 text-emerald-600" /> Target Class
                 </label>
                 <select 
-                  className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   value={newCourse.classId}
                   onChange={e => setNewCourse({...newCourse, classId: e.target.value})}
                 >
@@ -290,11 +290,11 @@ export default function SHSCourses() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center gap-2">
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider flex items-center gap-2">
                   <GraduationCap className="w-4 h-4 text-amber-600" /> Course Teacher
                 </label>
                 <select 
-                  className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-amber-500"
                   value={newCourse.teacherId}
                   onChange={e => setNewCourse({...newCourse, teacherId: e.target.value})}
                 >
@@ -306,9 +306,9 @@ export default function SHSCourses() {
               </div>
               
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Academic Year</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Academic Year</label>
                 <Input 
-                  className="bg-slate-100 border-slate-200 rounded-xl h-11"
+                  className="bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-xl h-11"
                   value={newCourse.academicYear}
                   readOnly
                 />
@@ -317,14 +317,14 @@ export default function SHSCourses() {
             </div>
           </ScrollArea>
           
-          <div className="p-4 bg-white border-t border-slate-100 flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600">
+          <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
               Cancel
             </Button>
             <Button 
               onClick={handleAddCourse} 
               disabled={!newCourse.subjectId || !newCourse.classId}
-              className="rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white font-bold"
+              className="rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold"
             >
               Create Course
             </Button>

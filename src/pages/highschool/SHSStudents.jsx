@@ -77,7 +77,7 @@ export default function SHSStudents() {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-teal-800 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 to-teal-800 bg-clip-text text-transparent">
             Student Directory
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -86,10 +86,10 @@ export default function SHSStudents() {
         </div>
         
         <div className="flex items-center gap-3">
-          <Button variant="outline" size="sm" onClick={fetchStudents} className="h-9 gap-2 rounded-xl border-purple-200 hover:bg-purple-50 hover:text-purple-700">
+          <Button variant="outline" size="sm" onClick={fetchStudents} className="h-9 gap-2 rounded-xl border-blue-200 dark:border-slate-600 hover:bg-blue-50 dark:bg-slate-800 hover:text-blue-800 dark:text-blue-200">
             <RefreshCw className="w-4 h-4" /> Sync
           </Button>
-          <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white shadow-md shadow-purple-500/20">
+          <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white shadow-md shadow-blue-500/20">
             <Plus className="w-4 h-4" /> Enroll Student
           </Button>
         </div>
@@ -97,51 +97,51 @@ export default function SHSStudents() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-purple-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-purple-100">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center text-[#6F00FF] shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-slate-800 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
               <Users className="w-6 h-6" />
             </div>
             <div>
               <p className="text-sm font-semibold text-muted-foreground">Total Students</p>
-              <h3 className="text-2xl font-black text-slate-800">{students.length}</h3>
+              <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">{students.length}</h3>
             </div>
           </CardContent>
         </Card>
-        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-purple-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-purple-100">
           <CardContent className="p-5 flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600 shrink-0">
               <UserCheck className="w-6 h-6" />
             </div>
             <div>
               <p className="text-sm font-semibold text-muted-foreground">Active</p>
-              <h3 className="text-2xl font-black text-slate-800">
+              <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">
                 {students.filter(s => s.status === 'Active').length}
               </h3>
             </div>
           </CardContent>
         </Card>
-        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-purple-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-purple-100">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center text-[#6F00FF] shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-slate-800 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
               <GraduationCap className="w-6 h-6" />
             </div>
             <div>
               <p className="text-sm font-semibold text-muted-foreground">Graduating Class</p>
-              <h3 className="text-2xl font-black text-slate-800">
+              <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">
                 {students.filter(s => s.data?.grade === 'Form 3').length}
               </h3>
             </div>
           </CardContent>
         </Card>
-        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-purple-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-purple-100">
           <CardContent className="p-5 flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 shrink-0">
               <AlertCircle className="w-6 h-6" />
             </div>
             <div>
               <p className="text-sm font-semibold text-muted-foreground">On Leave</p>
-              <h3 className="text-2xl font-black text-slate-800">
+              <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">
                 {students.filter(s => s.status === 'On Leave').length}
               </h3>
             </div>
@@ -150,47 +150,47 @@ export default function SHSStudents() {
       </div>
 
       {/* Main Table Area */}
-      <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
-        <CardHeader className="border-b border-slate-100 bg-slate-50/50 pb-4">
+      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <CardTitle className="text-lg font-bold text-slate-800">Enrolled Roster</CardTitle>
+              <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Enrolled Roster</CardTitle>
               <CardDescription>Comprehensive list of all registered students</CardDescription>
             </div>
             
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <div className="relative flex-1 sm:w-64">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
                 <Input 
                   placeholder="Search name or ID..." 
-                  className="pl-9 h-9 bg-white border-slate-200 rounded-xl focus-visible:ring-purple-500"
+                  className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-purple-500"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              <Button variant="outline" size="icon" className="h-9 w-9 rounded-xl border-slate-200 bg-white">
-                <Filter className="w-4 h-4 text-slate-600" />
+              <Button variant="outline" size="icon" className="h-9 w-9 rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+                <Filter className="w-4 h-4 text-slate-600 dark:text-slate-300" />
               </Button>
             </div>
           </div>
         </CardHeader>
         <CardContent className="p-0">
           {loading ? (
-            <div className="p-12 text-center text-slate-400 font-medium">Loading roster...</div>
+            <div className="p-12 text-center text-slate-400 dark:text-slate-500 font-medium">Loading roster...</div>
           ) : filteredStudents.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-purple-50 mx-auto flex items-center justify-center mb-4">
-                <Users className="w-8 h-8 text-purple-400" />
+              <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                <Users className="w-8 h-8 text-blue-500 dark:text-blue-500" />
               </div>
-              <h3 className="text-lg font-bold text-slate-700 mb-1">No students found</h3>
-              <p className="text-sm text-slate-500 max-w-sm mx-auto">
+              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200 mb-1">No students found</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500 max-w-sm mx-auto">
                 {searchQuery ? "No students match your search criteria." : "There are currently no students enrolled in the system. Click 'Enroll Student' to add one."}
               </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left">
-                <thead className="bg-slate-50/80 text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
+                <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
                   <tr>
                     <th className="px-6 py-4 rounded-tl-xl">Student Name</th>
                     <th className="px-6 py-4">Student ID</th>
@@ -203,30 +203,30 @@ export default function SHSStudents() {
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {filteredStudents.map((student) => (
-                    <tr key={student.id} className="hover:bg-slate-50/50 transition-colors group">
+                    <tr key={student.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors group">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-xs">
+                          <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-slate-800 text-blue-800 dark:text-blue-200 flex items-center justify-center font-bold text-xs">
                             {student.title?.charAt(0) || 'S'}
                           </div>
-                          <div className="font-semibold text-slate-800">{student.title}</div>
+                          <div className="font-semibold text-slate-800 dark:text-slate-100">{student.title}</div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 font-medium text-slate-600">{student.case_number}</td>
-                      <td className="px-6 py-4 text-slate-600">{student.data?.grade}</td>
-                      <td className="px-6 py-4 text-slate-600">{student.data?.program}</td>
-                      <td className="px-6 py-4 text-slate-600">{student.data?.gender}</td>
+                      <td className="px-6 py-4 font-medium text-slate-600 dark:text-slate-300">{student.case_number}</td>
+                      <td className="px-6 py-4 text-slate-600 dark:text-slate-300">{student.data?.grade}</td>
+                      <td className="px-6 py-4 text-slate-600 dark:text-slate-300">{student.data?.program}</td>
+                      <td className="px-6 py-4 text-slate-600 dark:text-slate-300">{student.data?.gender}</td>
                       <td className="px-6 py-4">
                         <Badge variant="outline" className={
-                          student.status === 'Active' ? 'bg-purple-50 text-purple-700 border-purple-200' :
+                          student.status === 'Active' ? 'bg-blue-50 dark:bg-slate-800 text-blue-800 dark:text-blue-200 border-blue-200 dark:border-slate-600' :
                           student.status === 'On Leave' ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                          'bg-slate-50 text-slate-700 border-slate-200'
+                          'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700'
                         }>
                           {student.status}
                         </Badge>
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <Button variant="ghost" size="sm" className="text-[#6F00FF] hover:text-purple-800 hover:bg-purple-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button variant="ghost" size="sm" className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:text-blue-100 hover:bg-blue-50 dark:bg-slate-800 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
                           View Profile
                         </Button>
                       </td>
@@ -242,48 +242,48 @@ export default function SHSStudents() {
       {/* Add Student Modal */}
       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
         <DialogContent className="sm:max-w-[500px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
-          <div className="p-6 bg-gradient-to-br from-[#6F00FF] to-teal-800 text-white">
+          <div className="p-6 bg-gradient-to-br from-blue-700 to-teal-800 text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-black">Enroll New Student</DialogTitle>
-              <DialogDescription className="text-purple-100">
+              <DialogDescription className="text-blue-100 dark:text-blue-900">
                 Enter the details of the student to add them to the directory.
               </DialogDescription>
             </DialogHeader>
           </div>
           
-          <ScrollArea className="max-h-[60vh] p-6 bg-slate-50">
+          <ScrollArea className="max-h-[60vh] p-6 bg-slate-50 dark:bg-slate-800">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">First Name</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">First Name</label>
                 <Input 
                   value={newStudent.firstName} 
                   onChange={e => setNewStudent({...newStudent, firstName: e.target.value})} 
                   placeholder="e.g. John"
-                  className="bg-white border-slate-200 focus-visible:ring-purple-500 rounded-xl"
+                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 focus-visible:ring-purple-500 rounded-xl"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Last Name</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Last Name</label>
                 <Input 
                   value={newStudent.lastName} 
                   onChange={e => setNewStudent({...newStudent, lastName: e.target.value})} 
                   placeholder="e.g. Doe"
-                  className="bg-white border-slate-200 focus-visible:ring-purple-500 rounded-xl"
+                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 focus-visible:ring-purple-500 rounded-xl"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Student ID</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Student ID</label>
                 <Input 
                   value={newStudent.studentId} 
                   onChange={e => setNewStudent({...newStudent, studentId: e.target.value})} 
                   placeholder="e.g. SHS-2026-001"
-                  className="bg-white border-slate-200 focus-visible:ring-purple-500 rounded-xl"
+                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 focus-visible:ring-purple-500 rounded-xl"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Gender</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Gender</label>
                 <select 
-                  className="flex h-10 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+                  className="flex h-10 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
                   value={newStudent.gender}
                   onChange={e => setNewStudent({...newStudent, gender: e.target.value})}
                 >
@@ -292,9 +292,9 @@ export default function SHSStudents() {
                 </select>
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Form / Grade</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Form / Grade</label>
                 <select 
-                  className="flex h-10 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+                  className="flex h-10 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
                   value={newStudent.grade}
                   onChange={e => setNewStudent({...newStudent, grade: e.target.value})}
                 >
@@ -305,9 +305,9 @@ export default function SHSStudents() {
                 </select>
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Programme</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Programme</label>
                 <select 
-                  className="flex h-10 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+                  className="flex h-10 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
                   value={newStudent.program}
                   onChange={e => setNewStudent({...newStudent, program: e.target.value})}
                 >
@@ -322,14 +322,14 @@ export default function SHSStudents() {
             </div>
           </ScrollArea>
           
-          <div className="p-4 bg-white border-t border-slate-100 flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 hover:bg-slate-50">
+          <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-800">
               Cancel
             </Button>
             <Button 
               onClick={handleAddStudent} 
               disabled={!newStudent.firstName || !newStudent.lastName || !newStudent.studentId}
-              className="rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white font-bold shadow-md"
+              className="rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold shadow-md"
             >
               Enroll Student
             </Button>

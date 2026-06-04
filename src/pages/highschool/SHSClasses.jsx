@@ -87,7 +87,7 @@ export default function SHSClasses() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-purple-800 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
             Academic Classes
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -95,32 +95,32 @@ export default function SHSClasses() {
           </p>
         </div>
         
-        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white shadow-md shadow-purple-500/20">
+        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white shadow-md shadow-blue-500/20">
           <Plus className="w-4 h-4" /> Create Class
         </Button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-purple-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-purple-100">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center text-[#6F00FF] shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-slate-800 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
               <BookOpen className="w-6 h-6" />
             </div>
             <div>
               <p className="text-sm font-semibold text-muted-foreground">Total Classes</p>
-              <h3 className="text-2xl font-black text-slate-800">{classes.length}</h3>
+              <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">{classes.length}</h3>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-emerald-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-emerald-100">
           <CardContent className="p-5 flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
               <UserCheck className="w-6 h-6" />
             </div>
             <div>
               <p className="text-sm font-semibold text-muted-foreground">Assigned Teachers</p>
-              <h3 className="text-2xl font-black text-slate-800">
+              <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">
                 {classes.filter(c => c.data?.classTeacherId).length}
               </h3>
             </div>
@@ -128,18 +128,18 @@ export default function SHSClasses() {
         </Card>
       </div>
 
-      <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
-        <CardHeader className="border-b border-slate-100 bg-slate-50/50 pb-4">
+      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <CardTitle className="text-lg font-bold text-slate-800">Classes Directory</CardTitle>
+              <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Classes Directory</CardTitle>
             </div>
             
             <div className="relative w-full sm:w-64">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
               <Input 
                 placeholder="Search class name or program..." 
-                className="pl-9 h-9 bg-white border-slate-200 rounded-xl focus-visible:ring-[#6F00FF]"
+                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -148,53 +148,53 @@ export default function SHSClasses() {
         </CardHeader>
         <CardContent className="p-0">
           {loading ? (
-            <div className="p-12 text-center text-slate-400">Loading classes...</div>
+            <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading classes...</div>
           ) : filteredClasses.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-purple-50 mx-auto flex items-center justify-center mb-4">
-                <BookOpen className="w-8 h-8 text-purple-400" />
+              <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                <BookOpen className="w-8 h-8 text-blue-500 dark:text-blue-500" />
               </div>
-              <h3 className="text-lg font-bold text-slate-700">No classes found</h3>
-              <p className="text-sm text-slate-500">Create a new class to set up your academic structure.</p>
+              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No classes found</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Create a new class to set up your academic structure.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
               {filteredClasses.map(cls => (
-                <div key={cls.id} className="group p-5 rounded-2xl border border-slate-100 bg-white hover:border-[#6F00FF]/30 hover:shadow-lg hover:shadow-purple-500/5 transition-all duration-300">
+                <div key={cls.id} className="group p-5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-blue-600 dark:border-blue-500/30 hover:shadow-lg hover:shadow-purple-500/5 transition-all duration-300">
                   <div className="flex items-start justify-between mb-4">
                     <div>
-                      <h4 className="font-black text-xl text-slate-800 group-hover:text-[#6F00FF] transition-colors">{cls.title}</h4>
-                      <Badge variant="outline" className="mt-1 bg-purple-50 text-[#6F00FF] border-purple-200">
+                      <h4 className="font-black text-xl text-slate-800 dark:text-slate-100 group-hover:text-blue-600 dark:text-blue-400 transition-colors">{cls.title}</h4>
+                      <Badge variant="outline" className="mt-1 bg-blue-50 dark:bg-slate-800 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-slate-600">
                         {cls.data?.grade} • {cls.data?.program}
                       </Badge>
                     </div>
                   </div>
                   
                   <div className="space-y-3 mt-4 text-sm">
-                    <div className="flex items-center gap-3 text-slate-600 bg-slate-50 p-2 rounded-xl border border-slate-100">
+                    <div className="flex items-center gap-3 text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 p-2 rounded-xl border border-slate-100 dark:border-slate-800">
                       <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
                         <UserCheck className="w-4 h-4" />
                       </div>
                       <div className="flex-1 overflow-hidden">
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Class Teacher</p>
-                        <p className="font-bold text-slate-700 truncate">{cls.data?.classTeacherName || 'Unassigned'}</p>
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Class Teacher</p>
+                        <p className="font-bold text-slate-700 dark:text-slate-200 truncate">{cls.data?.classTeacherName || 'Unassigned'}</p>
                       </div>
                     </div>
                     
                     <div className="grid grid-cols-2 gap-2">
-                      <div className="bg-slate-50 p-2 rounded-xl border border-slate-100 text-center">
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Room</p>
-                        <p className="font-bold text-slate-700">{cls.data?.room || 'TBA'}</p>
+                      <div className="bg-slate-50 dark:bg-slate-800 p-2 rounded-xl border border-slate-100 dark:border-slate-800 text-center">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Room</p>
+                        <p className="font-bold text-slate-700 dark:text-slate-200">{cls.data?.room || 'TBA'}</p>
                       </div>
-                      <div className="bg-slate-50 p-2 rounded-xl border border-slate-100 text-center">
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Capacity</p>
-                        <p className="font-bold text-slate-700">{cls.data?.capacity || 40}</p>
+                      <div className="bg-slate-50 dark:bg-slate-800 p-2 rounded-xl border border-slate-100 dark:border-slate-800 text-center">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Capacity</p>
+                        <p className="font-bold text-slate-700 dark:text-slate-200">{cls.data?.capacity || 40}</p>
                       </div>
                     </div>
                   </div>
                   
                   <div className="mt-5 pt-4 border-t border-slate-50 flex justify-end gap-2">
-                    <Button variant="ghost" size="sm" className="w-full rounded-xl text-[#6F00FF] hover:bg-purple-50 font-semibold">
+                    <Button variant="ghost" size="sm" className="w-full rounded-xl text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:bg-slate-800 font-semibold">
                       View Students <Users className="w-4 h-4 ml-2" />
                     </Button>
                   </div>
@@ -207,22 +207,22 @@ export default function SHSClasses() {
 
       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
         <DialogContent className="sm:max-w-[500px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
-          <div className="p-6 bg-gradient-to-br from-[#6F00FF] to-purple-800 text-white">
+          <div className="p-6 bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-black">Create Class</DialogTitle>
-              <DialogDescription className="text-purple-100">
+              <DialogDescription className="text-blue-100 dark:text-blue-900">
                 Set up a new academic class and assign a class teacher.
               </DialogDescription>
             </DialogHeader>
           </div>
           
-          <ScrollArea className="max-h-[60vh] p-6 bg-slate-50">
+          <ScrollArea className="max-h-[60vh] p-6 bg-slate-50 dark:bg-slate-800">
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Class Name</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Class Name</label>
                 <Input 
                   placeholder="e.g. 1 Sci A"
-                  className="bg-white border-slate-200 rounded-xl"
+                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                   value={newClass.className}
                   onChange={e => setNewClass({...newClass, className: e.target.value})}
                 />
@@ -230,9 +230,9 @@ export default function SHSClasses() {
               
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Form / Grade</label>
+                  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Form / Grade</label>
                   <select 
-                    className="w-full h-10 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                    className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
                     value={newClass.grade}
                     onChange={e => setNewClass({...newClass, grade: e.target.value})}
                   >
@@ -242,9 +242,9 @@ export default function SHSClasses() {
                   </select>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Programme</label>
+                  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Programme</label>
                   <select 
-                    className="w-full h-10 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                    className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
                     value={newClass.program}
                     onChange={e => setNewClass({...newClass, program: e.target.value})}
                   >
@@ -258,9 +258,9 @@ export default function SHSClasses() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Class Teacher</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Class Teacher</label>
                 <select 
-                  className="w-full h-10 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                  className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
                   value={newClass.classTeacherId}
                   onChange={e => setNewClass({...newClass, classTeacherId: e.target.value})}
                 >
@@ -273,20 +273,20 @@ export default function SHSClasses() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Room</label>
+                  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Room</label>
                   <Input 
                     placeholder="e.g. Block A, Rm 1"
-                    className="bg-white border-slate-200 rounded-xl"
+                    className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                     value={newClass.room}
                     onChange={e => setNewClass({...newClass, room: e.target.value})}
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Capacity</label>
+                  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Capacity</label>
                   <Input 
                     type="number"
                     min="1"
-                    className="bg-white border-slate-200 rounded-xl"
+                    className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                     value={newClass.capacity}
                     onChange={e => setNewClass({...newClass, parseInt: e.target.value})}
                   />
@@ -296,14 +296,14 @@ export default function SHSClasses() {
             </div>
           </ScrollArea>
           
-          <div className="p-4 bg-white border-t border-slate-100 flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600">
+          <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
               Cancel
             </Button>
             <Button 
               onClick={handleAddClass} 
               disabled={!newClass.className}
-              className="rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white font-bold"
+              className="rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold"
             >
               Create Class
             </Button>

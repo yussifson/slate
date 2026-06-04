@@ -68,7 +68,7 @@ export default function SHSInvoices() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-purple-800 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
             Student Invoices
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -76,46 +76,46 @@ export default function SHSInvoices() {
           </p>
         </div>
         
-        <Button onClick={() => setIsGenerateModalOpen(true)} className="h-9 gap-2 rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white shadow-md shadow-purple-500/20">
+        <Button onClick={() => setIsGenerateModalOpen(true)} className="h-9 gap-2 rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white shadow-md shadow-blue-500/20">
           <Receipt className="w-4 h-4" /> Generate Term Bills
         </Button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-slate-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-slate-100">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 dark:text-slate-500 shrink-0">
               <FileText className="w-6 h-6" />
             </div>
             <div>
               <p className="text-sm font-semibold text-muted-foreground">Total Invoices</p>
-              <h3 className="text-2xl font-black text-slate-800">{invoices.length}</h3>
+              <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">{invoices.length}</h3>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-rose-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-rose-100">
           <CardContent className="p-5 flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-rose-100 flex items-center justify-center text-rose-600 shrink-0">
               <Receipt className="w-6 h-6" />
             </div>
             <div>
               <p className="text-sm font-semibold text-muted-foreground">Unpaid</p>
-              <h3 className="text-2xl font-black text-slate-800">
+              <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">
                 {invoices.filter(i => i.status === 'Unpaid').length}
               </h3>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-emerald-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-emerald-100">
           <CardContent className="p-5 flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
               <CheckCircle2 className="w-6 h-6" />
             </div>
             <div>
               <p className="text-sm font-semibold text-muted-foreground">Paid</p>
-              <h3 className="text-2xl font-black text-slate-800">
+              <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">
                 {invoices.filter(i => i.status === 'Paid').length}
               </h3>
             </div>
@@ -123,18 +123,18 @@ export default function SHSInvoices() {
         </Card>
       </div>
 
-      <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
-        <CardHeader className="border-b border-slate-100 bg-slate-50/50 pb-4">
+      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <CardTitle className="text-lg font-bold text-slate-800">Invoice Ledger</CardTitle>
+              <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Invoice Ledger</CardTitle>
             </div>
             
             <div className="relative w-full sm:w-64">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
               <Input 
                 placeholder="Search invoices..." 
-                className="pl-9 h-9 bg-white border-slate-200 rounded-xl focus-visible:ring-[#6F00FF]"
+                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -143,19 +143,19 @@ export default function SHSInvoices() {
         </CardHeader>
         <CardContent className="p-0">
           {loading ? (
-            <div className="p-12 text-center text-slate-400">Loading ledger...</div>
+            <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading ledger...</div>
           ) : filteredInvoices.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-slate-50 mx-auto flex items-center justify-center mb-4">
-                <Receipt className="w-8 h-8 text-slate-400" />
+              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                <Receipt className="w-8 h-8 text-slate-400 dark:text-slate-500" />
               </div>
-              <h3 className="text-lg font-bold text-slate-700">No invoices generated</h3>
-              <p className="text-sm text-slate-500">Generate bills for the term to populate the ledger.</p>
+              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No invoices generated</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Generate bills for the term to populate the ledger.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left">
-                <thead className="bg-slate-50/80 text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
+                <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
                   <tr>
                     <th className="px-6 py-4 rounded-tl-xl">Invoice No.</th>
                     <th className="px-6 py-4">Student</th>
@@ -167,19 +167,19 @@ export default function SHSInvoices() {
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {filteredInvoices.map((inv) => (
-                    <tr key={inv.id} className="hover:bg-slate-50/50 transition-colors">
+                    <tr key={inv.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
                       <td className="px-6 py-4">
-                        <p className="font-bold text-slate-800">{inv.case_number}</p>
-                        <p className="text-xs text-slate-500">{inv.title}</p>
+                        <p className="font-bold text-slate-800 dark:text-slate-100">{inv.case_number}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">{inv.title}</p>
                       </td>
                       <td className="px-6 py-4">
-                        <p className="font-semibold text-slate-700">{inv.data?.studentName || 'Unknown Student'}</p>
+                        <p className="font-semibold text-slate-700 dark:text-slate-200">{inv.data?.studentName || 'Unknown Student'}</p>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-slate-600">{inv.data?.term} - {inv.data?.academicYear}</span>
+                        <span className="text-slate-600 dark:text-slate-300">{inv.data?.term} - {inv.data?.academicYear}</span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="font-black text-slate-800">
+                        <span className="font-black text-slate-800 dark:text-slate-100">
                           ${parseFloat(inv.data?.amount || 0).toFixed(2)}
                         </span>
                       </td>
@@ -194,10 +194,10 @@ export default function SHSInvoices() {
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex justify-end gap-2">
-                          <Button size="sm" variant="ghost" className="text-slate-500 hover:text-[#6F00FF] hover:bg-purple-50">
+                          <Button size="sm" variant="ghost" className="text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:bg-slate-800">
                             <Download className="w-4 h-4" />
                           </Button>
-                          <Button size="sm" variant="ghost" className="text-slate-500 hover:text-[#6F00FF] hover:bg-purple-50">
+                          <Button size="sm" variant="ghost" className="text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:bg-slate-800">
                             <Send className="w-4 h-4" />
                           </Button>
                         </div>
@@ -213,31 +213,31 @@ export default function SHSInvoices() {
 
       <Dialog open={isGenerateModalOpen} onOpenChange={setIsGenerateModalOpen}>
         <DialogContent className="sm:max-w-[450px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
-          <div className="p-6 bg-gradient-to-br from-[#6F00FF] to-purple-800 text-white">
+          <div className="p-6 bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-black">Generate Bills</DialogTitle>
-              <DialogDescription className="text-purple-100">
+              <DialogDescription className="text-blue-100 dark:text-blue-900">
                 Run the billing engine to generate term invoices.
               </DialogDescription>
             </DialogHeader>
           </div>
           
-          <div className="p-6 bg-slate-50 space-y-4">
-            <p className="text-sm text-slate-600 mb-4">
+          <div className="p-6 bg-slate-50 dark:bg-slate-800 space-y-4">
+            <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">
               This process will analyze active fee structures and generate individual invoices for all active students based on their boarding status, class, and programme.
             </p>
             
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Academic Year</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Academic Year</label>
                 <Input 
                   defaultValue={new Date().getFullYear().toString()}
-                  className="bg-white border-slate-200 rounded-xl"
+                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Term</label>
-                <select className="w-full h-10 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]">
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Term</label>
+                <select className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500">
                   <option value="Term 1">Term 1</option>
                   <option value="Term 2">Term 2</option>
                   <option value="Term 3">Term 3</option>
@@ -246,14 +246,14 @@ export default function SHSInvoices() {
             </div>
           </div>
           
-          <div className="p-4 bg-white border-t border-slate-100 flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setIsGenerateModalOpen(false)} className="rounded-xl font-semibold text-slate-600">
+          <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setIsGenerateModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
               Cancel
             </Button>
             <Button 
               onClick={handleGenerateInvoices} 
               disabled={isGenerating}
-              className="rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white font-bold"
+              className="rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold"
             >
               {isGenerating ? 'Processing...' : 'Run Billing Engine'}
             </Button>

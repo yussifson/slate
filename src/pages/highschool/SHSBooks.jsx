@@ -80,7 +80,7 @@ export default function SHSBooks() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-purple-800 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
             Library Catalog
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -88,37 +88,37 @@ export default function SHSBooks() {
           </p>
         </div>
         
-        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white shadow-md shadow-purple-500/20">
+        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white shadow-md shadow-blue-500/20">
           <Plus className="w-4 h-4" /> Add Book
         </Button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-purple-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-purple-100">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center text-[#6F00FF] shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-slate-800 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
               <BookOpen className="w-6 h-6" />
             </div>
             <div>
               <p className="text-sm font-semibold text-muted-foreground">Unique Titles</p>
-              <h3 className="text-2xl font-black text-slate-800">{books.length}</h3>
+              <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">{books.length}</h3>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
-        <CardHeader className="border-b border-slate-100 bg-slate-50/50 pb-4">
+      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <CardTitle className="text-lg font-bold text-slate-800">Inventory Management</CardTitle>
+              <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Inventory Management</CardTitle>
             </div>
             
             <div className="relative w-full sm:w-64">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
               <Input 
                 placeholder="Search title, author, or ISBN..." 
-                className="pl-9 h-9 bg-white border-slate-200 rounded-xl focus-visible:ring-[#6F00FF]"
+                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -127,19 +127,19 @@ export default function SHSBooks() {
         </CardHeader>
         <CardContent className="p-0">
           {loading ? (
-            <div className="p-12 text-center text-slate-400">Loading catalog...</div>
+            <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading catalog...</div>
           ) : filteredBooks.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-purple-50 mx-auto flex items-center justify-center mb-4">
-                <Layers className="w-8 h-8 text-purple-400" />
+              <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                <Layers className="w-8 h-8 text-blue-500 dark:text-blue-500" />
               </div>
-              <h3 className="text-lg font-bold text-slate-700">No books found</h3>
-              <p className="text-sm text-slate-500">Add physical books to your library inventory.</p>
+              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No books found</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Add physical books to your library inventory.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left">
-                <thead className="bg-slate-50/80 text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
+                <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
                   <tr>
                     <th className="px-6 py-4 rounded-tl-xl">Book Details</th>
                     <th className="px-6 py-4">Category</th>
@@ -154,28 +154,28 @@ export default function SHSBooks() {
                     const available = book.data?.availableQuantity ?? total;
                     const availabilityColor = available > 0 ? 'text-emerald-600' : 'text-rose-600';
                     return (
-                      <tr key={book.id} className="hover:bg-slate-50/50 transition-colors">
+                      <tr key={book.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
                         <td className="px-6 py-4">
-                          <p className="font-bold text-slate-800">{book.title}</p>
-                          <div className="flex items-center gap-2 mt-1 text-xs text-slate-500">
-                            <span className="font-medium text-slate-600">By {book.data?.author || 'Unknown'}</span>
+                          <p className="font-bold text-slate-800 dark:text-slate-100">{book.title}</p>
+                          <div className="flex items-center gap-2 mt-1 text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">
+                            <span className="font-medium text-slate-600 dark:text-slate-300">By {book.data?.author || 'Unknown'}</span>
                             <span className="text-slate-300">•</span>
                             <span className="flex items-center gap-1 font-mono"><Hash className="w-3 h-3"/> {book.data?.isbn || 'N/A'}</span>
                           </div>
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-1.5">
-                            <Tag className="w-3.5 h-3.5 text-slate-400" />
-                            <span className="font-semibold text-slate-700">{book.data?.category}</span>
+                            <Tag className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
+                            <span className="font-semibold text-slate-700 dark:text-slate-200">{book.data?.category}</span>
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <Badge variant="outline" className="bg-slate-50 text-slate-600 border-slate-200">
+                          <Badge variant="outline" className="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700">
                             {book.data?.rackLocation || 'Unassigned'}
                           </Badge>
                         </td>
                         <td className="px-6 py-4 text-center">
-                          <p className={`font-black text-lg ${availabilityColor}`}>{available} <span className="text-sm font-medium text-slate-400">/ {total}</span></p>
+                          <p className={`font-black text-lg ${availabilityColor}`}>{available} <span className="text-sm font-medium text-slate-400 dark:text-slate-500">/ {total}</span></p>
                         </td>
                         <td className="px-6 py-4 text-right">
                           <Badge variant="outline" className={
@@ -196,21 +196,21 @@ export default function SHSBooks() {
 
       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
         <DialogContent className="sm:max-w-[500px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
-          <div className="p-6 bg-gradient-to-br from-[#6F00FF] to-purple-800 text-white">
+          <div className="p-6 bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-black">Add to Catalog</DialogTitle>
-              <DialogDescription className="text-purple-100">
+              <DialogDescription className="text-blue-100 dark:text-blue-900">
                 Register a new book title into the school library.
               </DialogDescription>
             </DialogHeader>
           </div>
           
-          <div className="p-6 bg-slate-50 space-y-4">
+          <div className="p-6 bg-slate-50 dark:bg-slate-800 space-y-4">
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Book Title</label>
+              <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Book Title</label>
               <Input 
                 placeholder="e.g. Essential Mathematics for SHS"
-                className="bg-white border-slate-200 rounded-xl"
+                className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                 value={newBook.title}
                 onChange={e => setNewBook({...newBook, title: e.target.value})}
               />
@@ -218,19 +218,19 @@ export default function SHSBooks() {
             
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Author(s)</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Author(s)</label>
                 <Input 
                   placeholder="e.g. J.K. Rowling"
-                  className="bg-white border-slate-200 rounded-xl"
+                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                   value={newBook.author}
                   onChange={e => setNewBook({...newBook, author: e.target.value})}
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">ISBN</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">ISBN</label>
                 <Input 
                   placeholder="e.g. 978-3-16-148410-0"
-                  className="bg-white border-slate-200 rounded-xl"
+                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                   value={newBook.isbn}
                   onChange={e => setNewBook({...newBook, isbn: e.target.value})}
                 />
@@ -239,9 +239,9 @@ export default function SHSBooks() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Category</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Category</label>
                 <select 
-                  className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
                   value={newBook.category}
                   onChange={e => setNewBook({...newBook, category: e.target.value})}
                 >
@@ -253,11 +253,11 @@ export default function SHSBooks() {
                 </select>
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Initial Quantity</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Initial Quantity</label>
                 <Input 
                   type="number"
                   min="1"
-                  className="bg-white border-slate-200 rounded-xl h-11 font-bold text-lg"
+                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl h-11 font-bold text-lg"
                   value={newBook.quantity}
                   onChange={e => setNewBook({...newBook, quantity: e.target.value})}
                 />
@@ -265,24 +265,24 @@ export default function SHSBooks() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Rack / Shelf Location</label>
+              <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Rack / Shelf Location</label>
               <Input 
                 placeholder="e.g. Section B, Shelf 4"
-                className="bg-white border-slate-200 rounded-xl"
+                className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                 value={newBook.rackLocation}
                 onChange={e => setNewBook({...newBook, rackLocation: e.target.value})}
               />
             </div>
           </div>
           
-          <div className="p-4 bg-white border-t border-slate-100 flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600">
+          <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
               Cancel
             </Button>
             <Button 
               onClick={handleAddBook} 
               disabled={!newBook.title || !newBook.quantity}
-              className="rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white font-bold"
+              className="rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold"
             >
               Add to Catalog
             </Button>

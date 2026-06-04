@@ -51,8 +51,10 @@ export default function SHSWhatsapp() {
   const handleLaunchCampaign = async () => {
     setIsSending(true);
     try {
-      const recipientCount = newCampaign.targetGroup === 'All Parents' ? 450 : 120; // Mock counts
-                           
+      let recipientCount = 0;
+      if (newCampaign.targetGroup.includes('All')) recipientCount = 450;
+      else if (newCampaign.targetGroup.includes('Form')) recipientCount = 150;
+      else recipientCount = 30; // Defaulters
       const payload = {
         company_id: user?.company_id,
         case_type: 'shs_whatsapp_campaign',
@@ -66,7 +68,7 @@ export default function SHSWhatsapp() {
           recipientCount,
           sentDate: new Date().toISOString(),
           senderName: user?.full_name || 'Admin',
-          successfulDeliveries: recipientCount - Math.floor(Math.random() * 5) // Mock delivery rate
+          successfulDeliveries: Math.floor(recipientCount * 0.98) // Simulate 98% delivery success instead of random
         }
       };
       
@@ -94,7 +96,7 @@ export default function SHSWhatsapp() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-purple-800 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
             WhatsApp Integration
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -103,7 +105,7 @@ export default function SHSWhatsapp() {
         </div>
         
         <div className="flex gap-3">
-          <Button variant="outline" className="h-9 gap-2 rounded-xl text-slate-700">
+          <Button variant="outline" className="h-9 gap-2 rounded-xl text-slate-700 dark:text-slate-200">
             <Settings2 className="w-4 h-4" /> API Settings
           </Button>
           <Button onClick={() => setIsSendModalOpen(true)} className="h-9 gap-2 rounded-xl bg-[#25D366] hover:bg-[#128C7E] text-white shadow-md shadow-green-500/20 border-none">
@@ -113,7 +115,7 @@ export default function SHSWhatsapp() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-slate-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-slate-100">
           <CardContent className="p-5 flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center text-[#25D366] shrink-0">
@@ -123,7 +125,7 @@ export default function SHSWhatsapp() {
                 <p className="text-sm font-semibold text-muted-foreground">API Connection</p>
                 <div className="flex items-center gap-2 mt-0.5">
                   <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                  <h3 className="text-xl font-black text-slate-800">{apiStatus}</h3>
+                  <h3 className="text-xl font-black text-slate-800 dark:text-slate-100">{apiStatus}</h3>
                 </div>
               </div>
             </div>
@@ -131,20 +133,20 @@ export default function SHSWhatsapp() {
         </Card>
       </div>
 
-      <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
-        <CardHeader className="border-b border-slate-100 bg-slate-50/50 pb-4">
+      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <CardTitle className="text-lg font-bold text-slate-800 flex items-center gap-2">
+              <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
                 <MessageCircle className="w-5 h-5 text-[#25D366]" /> Campaign History
               </CardTitle>
             </div>
             
             <div className="relative w-full sm:w-64">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
               <Input 
                 placeholder="Search campaigns..." 
-                className="pl-9 h-9 bg-white border-slate-200 rounded-xl focus-visible:ring-[#6F00FF]"
+                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -153,37 +155,37 @@ export default function SHSWhatsapp() {
         </CardHeader>
         <CardContent className="p-0">
           {loading ? (
-            <div className="p-12 text-center text-slate-400">Loading WhatsApp campaigns...</div>
+            <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading WhatsApp campaigns...</div>
           ) : filteredCampaigns.length === 0 ? (
             <div className="p-16 text-center">
               <div className="w-16 h-16 rounded-2xl bg-green-50 mx-auto flex items-center justify-center mb-4">
                 <MessageCircle className="w-8 h-8 text-[#25D366]" />
               </div>
-              <h3 className="text-lg font-bold text-slate-700">No campaigns launched</h3>
-              <p className="text-sm text-slate-500">Launch a WhatsApp broadcast to see it here.</p>
+              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No campaigns launched</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Launch a WhatsApp broadcast to see it here.</p>
             </div>
           ) : (
             <div className="divide-y divide-slate-100">
               {filteredCampaigns.map((camp) => (
-                <div key={camp.id} className="p-6 hover:bg-slate-50/50 transition-colors">
+                <div key={camp.id} className="p-6 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
                   <div className="flex justify-between items-start mb-3">
                     <div>
-                      <h4 className="font-bold text-lg text-slate-800">{camp.title}</h4>
+                      <h4 className="font-bold text-lg text-slate-800 dark:text-slate-100">{camp.title}</h4>
                       <div className="flex items-center gap-2 mt-1">
-                        <Badge variant="secondary" className="bg-slate-100 text-slate-600 border-none">
+                        <Badge variant="secondary" className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-none">
                           {camp.data?.targetGroup}
                         </Badge>
-                        <span className="text-xs font-medium text-slate-500 flex items-center gap-1 border-l pl-2 border-slate-200">
+                        <span className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-slate-500 flex items-center gap-1 border-l pl-2 border-slate-200 dark:border-slate-700">
                           <Users className="w-3 h-3" /> {camp.data?.successfulDeliveries} / {camp.data?.recipientCount} Delivered
                         </span>
                       </div>
                     </div>
-                    <span className="text-xs text-slate-400 font-medium">
+                    <span className="text-xs text-slate-400 dark:text-slate-500 font-medium">
                       {new Date(camp.data?.sentDate).toLocaleString()}
                     </span>
                   </div>
                   
-                  <div className="bg-[#E7FFDB]/50 p-4 rounded-xl border border-[#25D366]/20 text-sm text-slate-700 whitespace-pre-wrap relative mt-3">
+                  <div className="bg-[#E7FFDB]/50 p-4 rounded-xl border border-[#25D366]/20 text-sm text-slate-700 dark:text-slate-200 whitespace-pre-wrap relative mt-3">
                     {/* Simulated WA message bubble tail */}
                     <div className="absolute -top-2 left-4 w-4 h-4 bg-[#E7FFDB]/50 border-t border-l border-[#25D366]/20 rotate-45"></div>
                     <p className="relative z-10">{camp.data?.messageText || `[Template used: ${camp.data?.templateId}]`}</p>
@@ -208,21 +210,21 @@ export default function SHSWhatsapp() {
           
           <div className="p-6 bg-[#EFEAE2] space-y-4"> {/* WA background color */}
             
-            <div className="bg-white p-4 rounded-2xl shadow-sm space-y-4 border border-slate-100">
+            <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm space-y-4 border border-slate-100 dark:border-slate-800">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Campaign Name</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Campaign Name</label>
                 <Input 
                   placeholder="e.g. End of Term Grades Notification"
-                  className="bg-white border-slate-200 rounded-xl"
+                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                   value={newCampaign.campaignName}
                   onChange={e => setNewCampaign({...newCampaign, campaignName: e.target.value})}
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Target Audience</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Target Audience</label>
                 <select 
-                  className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#128C7E] font-semibold text-slate-700"
+                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-[#128C7E] font-semibold text-slate-700 dark:text-slate-200"
                   value={newCampaign.targetGroup}
                   onChange={e => setNewCampaign({...newCampaign, targetGroup: e.target.value})}
                 >
@@ -234,9 +236,9 @@ export default function SHSWhatsapp() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Approved WA Template</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Approved WA Template</label>
                 <select 
-                  className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#128C7E]"
+                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-[#128C7E]"
                   value={newCampaign.templateId}
                   onChange={e => setNewCampaign({...newCampaign, templateId: e.target.value})}
                 >
@@ -244,14 +246,14 @@ export default function SHSWhatsapp() {
                   <option value="fee_reminder">fee_reminder (With Payment Link)</option>
                   <option value="report_card_alert">report_card_alert (With PDF Link)</option>
                 </select>
-                <p className="text-[10px] text-slate-400">WhatsApp requires 24h pre-approved templates for proactive messaging.</p>
+                <p className="text-[10px] text-slate-400 dark:text-slate-500">WhatsApp requires 24h pre-approved templates for proactive messaging.</p>
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Message Content (Variables)</label>
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Message Content (Variables)</label>
                 <textarea 
                   placeholder="Hello {{1}}, this is to inform you that..."
-                  className="w-full h-32 rounded-xl border border-slate-200 bg-white p-3 focus:outline-none focus:ring-2 focus:ring-[#128C7E] resize-none text-sm"
+                  className="w-full h-32 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-[#128C7E] resize-none text-sm"
                   value={newCampaign.customMessage}
                   onChange={e => setNewCampaign({...newCampaign, customMessage: e.target.value})}
                 />
@@ -260,8 +262,8 @@ export default function SHSWhatsapp() {
             
           </div>
           
-          <div className="p-4 bg-white border-t border-slate-100 flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setIsSendModalOpen(false)} className="rounded-xl font-semibold text-slate-600">
+          <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setIsSendModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
               Cancel
             </Button>
             <Button 
