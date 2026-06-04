@@ -167,22 +167,22 @@ export default function SchoolDashboard({ companyId, company, isAdmin }) {
         <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 shadow-sm p-6 space-y-6">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-black text-slate-900 dark:text-white">{t("revenue_growth_curve", "Revenue Growth Curve (")}{currency})</h3>
-            <span className="text-[10px] bg-purple-50 text-purple-700 py-1 px-3 rounded-full font-black border border-purple-100 uppercase tracking-wider">{t("paid_invoices", "Paid Invoices")}</span>
+            <span className="text-[10px] bg-[#6F00FF]/10 text-[#6F00FF] py-1 px-3 rounded-full font-black border border-[#6F00FF]/20 uppercase tracking-wider">{t("paid_invoices", "Paid Invoices")}</span>
           </div>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.2}/>
+                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                 <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} tickLine={false} />
                 <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} />
                 <Tooltip />
-                <Area type="monotone" dataKey="Revenue" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorRev)" />
+                <Area type="monotone" dataKey="Revenue" stroke="hsl(var(--primary))" strokeWidth={2} fillOpacity={1} fill="url(#colorRev)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -192,7 +192,7 @@ export default function SchoolDashboard({ companyId, company, isAdmin }) {
         <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 shadow-sm p-6 space-y-6">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-black text-slate-900 dark:text-white">{caseTerm} {t("distribution_by_stage", "Distribution by Stage")}</h3>
-            <span className="text-[10px] bg-purple-50 text-purple-700 py-1 px-3 rounded-full font-black border border-purple-100 uppercase tracking-wider">{t("active_pipelines", "Active Pipelines")}</span>
+            <span className="text-[10px] bg-[#6F00FF]/10 text-[#6F00FF] py-1 px-3 rounded-full font-black border border-[#6F00FF]/20 uppercase tracking-wider">{t("active_pipelines", "Active Pipelines")}</span>
           </div>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -201,7 +201,7 @@ export default function SchoolDashboard({ companyId, company, isAdmin }) {
                 <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} tickLine={false} />
                 <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} />
                 <Tooltip />
-                <Bar dataKey="count" fill="#10b981" radius={[4, 4, 0, 0]} barSize={25} />
+                <Bar dataKey="count" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} barSize={25} />
               </BarChart>
             </ResponsiveContainer>
           </div>
