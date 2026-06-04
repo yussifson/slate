@@ -66,7 +66,7 @@ export default function SignUp() {
         name: companyName,
         subdomain: cleanSubdomain,
         email: email,
-        industry_type: 'pending',
+        industry_type: 'law', // Temporarily set to 'law' to pass DB constraints. Onboarding will update it.
         education_level: null,
         country: null,
         subscription_plan: 'starter',

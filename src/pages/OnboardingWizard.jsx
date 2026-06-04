@@ -93,11 +93,17 @@ export default function OnboardingWizard() {
              const cName = md.company_name || 'My Workspace';
              const cSubdomain = md.subdomain || `workspace-${Date.now()}`;
              
+             const finalIndustry = (industry === 'school' && educationLevel !== 'basic') ? educationLevel : industry;
+             const finalEduLevel = (industry === 'school' && educationLevel === 'basic') ? 'basic' : null;
+
              const { data: newComp, error: newCompErr } = await supabase.from('companies').insert({
                  name: cName,
                  subdomain: cSubdomain,
                  email: user.email,
-                 industry_type: 'pending',
+                 industry_type: finalIndustry || 'law',
+                 education_level: finalEduLevel,
+                 country: country,
+                 currency: currency,
                  subscription_plan: 'starter',
                  subscription_status: 'trial',
                  status: 'active'
