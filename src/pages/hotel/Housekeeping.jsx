@@ -57,7 +57,7 @@ export default function Housekeeping() {
 
   if (isLoading) {
     return (
-      <div className="py-12 text-center text-muted-foreground" style={{ backgroundColor: "rgba(68, 49, 153, 0.03)", minHeight: "100vh" }}>
+      <div className="py-12 text-center text-muted-foreground" style={{ background: "linear-gradient(135deg, rgba(68,49,153,0.08) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh" }}>
         {t("loading_housekeeping_records", "Loading housekeeping records...")}
       </div>
     );

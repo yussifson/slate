@@ -120,7 +120,7 @@ export default function Restaurant() {
   });
 
   return (
-    <div className="space-y-6" style={{ backgroundColor: "rgba(68, 49, 153, 0.03)", minHeight: "100vh" }}>
+    <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(68,49,153,0.08) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh" }}>
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-card-foreground">{t("restaurant_room_service", "Restaurant & Room Service")}</h1>
@@ -190,9 +190,9 @@ export default function Restaurant() {
 
          {/* Right: Current Order */}
          <div className="w-full lg:w-96 bg-card rounded-xl shadow-md border border-border flex flex-col h-[600px] overflow-hidden">
-            <div className="p-4 bg-slate-900 text-white flex items-center justify-between">
+            <div className="p-4 bg-[#443199] text-white shadow-md flex items-center justify-between">
                <h3 className="font-bold flex items-center gap-2"><ShoppingCart className="w-5 h-5"/> {t("current_order", "Current Order")}</h3>
-               <Input value={roomNumber} onChange={e => setRoomNumber(e.target.value)} className="w-24 h-8 bg-slate-800 border-none text-white text-xs font-bold text-center" />
+               <Input value={roomNumber} onChange={e => setRoomNumber(e.target.value)} className="w-24 h-8 bg-[#362878] border-none text-white text-xs font-bold text-center" />
             </div>
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
                {order.length === 0 ? (

@@ -53,7 +53,7 @@ export default function GuestPortal() {
 
   if (!activeRes) {
     return (
-      <div className="py-12 text-center max-w-md mx-auto bg-card rounded-xl border border-border p-6 shadow-sm" style={{ backgroundColor: "rgba(68, 49, 153, 0.03)", minHeight: "100vh" }}>
+      <div className="py-12 text-center max-w-md mx-auto bg-card rounded-xl border border-border p-6 shadow-sm" style={{ background: "linear-gradient(135deg, rgba(68,49,153,0.08) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh" }}>
         <Key className="w-12 h-12 mx-auto mb-3 opacity-30 text-violet-600 animate-pulse" />
         <p className="font-semibold text-lg text-card-foreground">{t("no_active_reservations", "No Active Reservations")}</p>
         <p className="text-sm text-muted-foreground mt-1">{t(
