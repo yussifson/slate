@@ -6,7 +6,7 @@ export const EDUCATION_LEVELS = {
       teacher: 'Educator', teachers: 'Educators',
       class: 'Room', classes: 'Rooms'
     },
-    modules: ['/students', '/parents', '/teachers', '/classes', '/attendance', '/fees', '/notices', '/child-development', '/student-portal', '/parent-portal', '/documents', '/chat', '/board', '/email-inbox']
+    modules: ['/students', '/parents', '/teachers', '/classes', '/attendance', '/fees', '/notices', '/child-development', '/student-portal', '/parent-portal', '/documents', '/chat', '/board', '/email-inbox', '/s/students/profiles', '/s/students/promotion', '/s/students/transfers', '/s/students/discipline', '/s/students/medical', '/s/admissions/review', '/s/admissions/decisions', '/s/admissions/enrollment', '/s/academics/streams', '/s/academics/subjects', '/s/academics/electives', '/s/academics/calendar', '/s/attendance/daily', '/s/attendance/class', '/s/attendance/teacher', '/s/attendance/reports', '/s/exams/internal', '/s/exams/mock', '/s/exams/assessment', '/s/exams/results', '/s/exams/report-cards', '/s/boarding/dormitories', '/s/boarding/allocation', '/s/boarding/masters', '/s/boarding/attendance', '/s/parent/progress', '/s/parent/attendance', '/s/parent/fees', '/s/parent/communication', '/s/finance/invoices', '/s/finance/payments', '/s/finance/scholarships', '/s/finance/reports', '/s/library/books', '/s/library/borrowing', '/s/library/returns', '/s/library/digital', '/s/transport/buses', '/s/transport/routes', '/s/transport/assignments', '/s/comms/notices', '/s/comms/sms', '/s/comms/whatsapp', '/s/comms/email', '/s/analytics/academic', '/s/analytics/attendance', '/s/analytics/financial']
   },
   primary: {
     label: 'Primary / Elementary School',

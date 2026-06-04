@@ -32,6 +32,8 @@ export default function SHSDashboard() {
 
   const stats = [
     { title: "Total Students", value: students.length, icon: Users, color: "text-blue-600", bg: "bg-blue-100" },
+    { title: "Staff Overview", value: "142", icon: UserPlus, color: "text-purple-600", bg: "bg-purple-100" },
+    { title: "Attendance Rate", value: "94%", icon: ClipboardCheck, color: "text-emerald-600", bg: "bg-emerald-100" },
     { title: "Pending Applications", value: pendingApps, icon: ClipboardCheck, color: "text-amber-600", bg: "bg-amber-100" },
     { title: "Outstanding Fees", value: `$${uncollectedFees.toLocaleString()}`, icon: Banknote, color: "text-red-600", bg: "bg-red-100" },
     { title: "Grades Recorded", value: grades.length, icon: GraduationCap, color: "text-emerald-600", bg: "bg-emerald-100" },
