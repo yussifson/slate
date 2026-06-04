@@ -1,175 +1,261 @@
-import { useTranslation } from "react-i18next";
-import { useState } from 'react';
-import { ModuleBanner } from '@/components/school/SchoolViewKit';
+import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/lib/AuthContext';
+import { base44 } from '@/api/base44Client';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
-import { useCompanyId } from "@/hooks/useCompanyId";
-import { toast } from 'react-hot-toast';
-import { Building2, Plus, Trash2, Pencil, Users } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { MoreVertical } from 'lucide-react';
+import { Search, Plus, Home, Users, UserCheck } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
 
 export default function SHSHouses() {
   const { t } = useTranslation();
-  const companyId = useCompanyId();
-  const queryClient = useQueryClient();
-  const [showModal, setShowModal] = useState(false);
-  const [editingId, setEditingId] = useState(null);
+  const { user } = useAuth();
   
-  const [formData, setFormData] = useState({
-    name: '', capacity: '', housemaster: '', color: '#3b82f6'
+  const [houses, setHouses] = useState([]);
+  const [teachers, setTeachers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [newHouse, setNewHouse] = useState({
+    name: '',
+    color: '#6F00FF',
+    houseMasterId: '',
+    capacity: 100,
+    gender: 'Mixed' // Boys, Girls, Mixed
   });
 
-  const { data: records = [], isLoading } = useQuery({ 
-    queryKey: ["shs_houses", companyId], 
-    queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId, case_type: 'shs_house' }), 
-    enabled: !!companyId 
-  });
-
-  const mutateHouse = useMutation({
-    mutationFn: (data) => data.id ? base44.entities.LegalCase.update(data.id, data) : base44.entities.LegalCase.create(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["shs_houses", companyId] });
-      toast.success("House saved successfully");
-      setShowModal(false);
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const [houseData, teacherData] = await Promise.all([
+        base44.getEntities('shs_house', user?.company_id),
+        base44.getEntities('shs_teacher', user?.company_id)
+      ]);
+      setHouses(houseData);
+      setTeachers(teacherData);
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    } finally {
+      setLoading(false);
     }
-  });
-
-  const deleteHouse = useMutation({
-    mutationFn: (id) => base44.entities.LegalCase.delete(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["shs_houses", companyId] });
-      toast.success("House deleted");
-    }
-  });
-
-  const houses = records.map(r => {
-    let extra = {};
-    try { extra = JSON.parse(r.notes || '{}'); } catch(e) {}
-    return {
-      id: r.id,
-      name: r.case_title,
-      capacity: extra.capacity || '0',
-      housemaster: extra.housemaster || 'Unassigned',
-      color: extra.color || '#3b82f6'
-    };
-  });
-
-  const handleSave = () => {
-    if (!formData.name) return toast.error("House name is required");
-    mutateHouse.mutate({
-      id: editingId,
-      company_id: companyId,
-      case_type: 'shs_house',
-      case_title: formData.name,
-      status: 'active',
-      notes: JSON.stringify({
-        capacity: formData.capacity,
-        housemaster: formData.housemaster,
-        color: formData.color
-      })
-    });
   };
 
-  return (
-    <div className="space-y-6">
-      <ModuleBanner 
-        title={t("house_management", "House Management")} 
-        subtitle="Manage boarding houses, capacity, and Housemasters." 
-        metrics={[
-          { title: "Total Houses", value: houses.length, icon: Building2 }
-        ]}
-      />
+  useEffect(() => {
+    if (user?.company_id) {
+      fetchData();
+    }
+  }, [user]);
+
+  const handleAddHouse = async () => {
+    try {
+      const selectedMaster = teachers.find(t => t.id === newHouse.houseMasterId);
       
-      <div className="flex justify-end">
-        <Button onClick={() => {
-          setEditingId(null);
-          setFormData({ name: '', capacity: '', housemaster: '', color: '#3b82f6' });
-          setShowModal(true);
-        }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+      const payload = {
+        company_id: user?.company_id,
+        case_type: 'shs_house',
+        title: newHouse.name,
+        case_number: `HS-${Math.floor(Math.random() * 1000)}`,
+        status: 'Active',
+        data: {
+          ...newHouse,
+          houseMasterName: selectedMaster?.title || 'Unassigned'
+        }
+      };
+      
+      await base44.createEntity(payload);
+      setIsAddModalOpen(false);
+      setNewHouse({ name: '', color: '#6F00FF', houseMasterId: '', capacity: 100, gender: 'Mixed' });
+      fetchData();
+    } catch (error) {
+      console.error('Failed to add house:', error);
+    }
+  };
+
+  const filteredHouses = houses.filter(h => 
+    h.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    h.data?.houseMasterName?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  return (
+    <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
+      
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-purple-800 bg-clip-text text-transparent">
+            Boarding Houses
+          </h1>
+          <p className="text-muted-foreground mt-1 text-sm font-medium">
+            Manage student residences and assign House Masters.
+          </p>
+        </div>
+        
+        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white shadow-md shadow-purple-500/20">
           <Plus className="w-4 h-4" /> Add House
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {houses.map(h => (
-          <div key={h.id} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-all">
-            <div className="h-2 w-full" style={{ backgroundColor: h.color }}></div>
-            <div className="p-5">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h3 className="text-lg font-bold text-slate-900">{h.name}</h3>
-                  <div className="flex items-center gap-1 text-xs text-slate-500 mt-1">
-                    <Users className="w-3 h-3" /> Capacity: {h.capacity}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {loading ? (
+          <div className="col-span-full p-12 text-center text-slate-400">Loading houses...</div>
+        ) : filteredHouses.length === 0 ? (
+          <div className="col-span-full p-16 text-center">
+            <div className="w-16 h-16 rounded-2xl bg-purple-50 mx-auto flex items-center justify-center mb-4">
+              <Home className="w-8 h-8 text-purple-400" />
+            </div>
+            <h3 className="text-lg font-bold text-slate-700">No houses defined</h3>
+            <p className="text-sm text-slate-500">Create boarding houses to allocate students.</p>
+          </div>
+        ) : (
+          filteredHouses.map(house => (
+            <Card key={house.id} className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-md hover:ring-[#6F00FF]/30 transition-all group overflow-hidden relative">
+              <div 
+                className="absolute top-0 left-0 w-2 h-full" 
+                style={{ backgroundColor: house.data?.color || '#6F00FF' }}
+              ></div>
+              <CardContent className="p-6 pl-8">
+                <div className="flex justify-between items-start mb-4">
+                  <div 
+                    className="w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-sm"
+                    style={{ backgroundColor: house.data?.color || '#6F00FF' }}
+                  >
+                    <Home className="w-6 h-6" />
+                  </div>
+                  <Badge variant="outline" className={
+                    house.data?.gender === 'Boys' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                    house.data?.gender === 'Girls' ? 'bg-pink-50 text-pink-700 border-pink-200' :
+                    'bg-emerald-50 text-emerald-700 border-emerald-200'
+                  }>
+                    {house.data?.gender || 'Mixed'}
+                  </Badge>
+                </div>
+                
+                <h3 className="text-xl font-black text-slate-800 mb-1">{house.title}</h3>
+                <p className="text-sm font-semibold text-slate-500 mb-6">{house.case_number}</p>
+                
+                <div className="space-y-3 mt-4 text-sm">
+                  <div className="flex items-center gap-3 text-slate-600 bg-slate-50 p-2 rounded-xl border border-slate-100">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                      <UserCheck className="w-4 h-4" />
+                    </div>
+                    <div className="flex-1 overflow-hidden">
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">House Master/Mistress</p>
+                      <p className="font-bold text-slate-700 truncate">{house.data?.houseMasterName || 'Unassigned'}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-slate-50 p-2 rounded-xl border border-slate-100 text-center">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Capacity</p>
+                    <p className="font-bold text-slate-700">{house.data?.capacity || 100} Beds</p>
                   </div>
                 </div>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
-                      <MoreVertical className="h-4 w-4 text-muted-foreground" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => {
-                      setEditingId(h.id);
-                      setFormData({ ...h });
-                      setShowModal(true);
-                    }}>
-                      <Pencil className="w-4 h-4 mr-2" /> Edit
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="text-red-600" onClick={() => {
-                      if (window.confirm("Delete this house?")) deleteHouse.mutate(h.id);
-                    }}>
-                      <Trash2 className="w-4 h-4 mr-2" /> Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-              <div className="bg-slate-50 p-3 rounded-lg flex items-center justify-between text-sm">
-                <span className="font-semibold text-slate-700">Housemaster</span>
-                <span className="text-slate-600 truncate max-w-[120px]" title={h.housemaster}>{h.housemaster}</span>
-              </div>
-            </div>
-          </div>
-        ))}
+                
+                <div className="mt-5 pt-4 border-t border-slate-50 flex justify-end gap-2">
+                  <Button variant="ghost" size="sm" className="w-full rounded-xl text-[#6F00FF] hover:bg-purple-50 font-semibold">
+                    Manage Residents <Users className="w-4 h-4 ml-2" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        )}
       </div>
 
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden border border-slate-200">
-            <div className="p-6 border-b border-slate-100">
-              <h2 className="text-xl font-bold text-slate-900">{editingId ? 'Edit House' : 'Add House'}</h2>
+      <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
+        <DialogContent className="sm:max-w-[450px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
+          <div className="p-6 bg-gradient-to-br from-[#6F00FF] to-purple-800 text-white">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-black">Add Boarding House</DialogTitle>
+              <DialogDescription className="text-purple-100">
+                Register a new residential hall for students.
+              </DialogDescription>
+            </DialogHeader>
+          </div>
+          
+          <div className="p-6 bg-slate-50 space-y-4">
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">House Name</label>
+              <Input 
+                placeholder="e.g. Aggrey House"
+                className="bg-white border-slate-200 rounded-xl"
+                value={newHouse.name}
+                onChange={e => setNewHouse({...newHouse, name: e.target.value})}
+              />
             </div>
-            <div className="p-6 space-y-4">
-              <div>
-                <label className="text-xs font-bold text-slate-500 uppercase">House Name</label>
-                <Input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="e.g. Aggrey House" className="mt-1" />
-              </div>
-              <div>
-                <label className="text-xs font-bold text-slate-500 uppercase">Capacity</label>
-                <Input type="number" value={formData.capacity} onChange={e => setFormData({...formData, capacity: e.target.value})} placeholder="e.g. 150" className="mt-1" />
-              </div>
-              <div>
-                <label className="text-xs font-bold text-slate-500 uppercase">Housemaster</label>
-                <Input value={formData.housemaster} onChange={e => setFormData({...formData, housemaster: e.target.value})} placeholder="e.g. Mr. Koomson" className="mt-1" />
-              </div>
-              <div>
-                <label className="text-xs font-bold text-slate-500 uppercase">House Color</label>
-                <div className="flex gap-3 mt-1">
-                  <input type="color" value={formData.color} onChange={e => setFormData({...formData, color: e.target.value})} className="h-10 w-12 cursor-pointer border-0 p-0 rounded bg-transparent" />
-                  <Input value={formData.color} onChange={e => setFormData({...formData, color: e.target.value})} className="flex-1 font-mono" />
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Theme Color</label>
+                <div className="flex gap-2">
+                  <Input 
+                    type="color"
+                    className="w-12 h-11 p-1 bg-white border-slate-200 rounded-xl cursor-pointer"
+                    value={newHouse.color}
+                    onChange={e => setNewHouse({...newHouse, color: e.target.value})}
+                  />
+                  <Input 
+                    className="flex-1 bg-white border-slate-200 rounded-xl"
+                    value={newHouse.color}
+                    onChange={e => setNewHouse({...newHouse, color: e.target.value})}
+                  />
                 </div>
               </div>
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Gender</label>
+                <select 
+                  className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                  value={newHouse.gender}
+                  onChange={e => setNewHouse({...newHouse, gender: e.target.value})}
+                >
+                  <option value="Boys">Boys Only</option>
+                  <option value="Girls">Girls Only</option>
+                  <option value="Mixed">Mixed</option>
+                </select>
+              </div>
             </div>
-            <div className="p-6 border-t border-slate-100 bg-slate-50 flex gap-3">
-              <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>Cancel</Button>
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleSave}>Save</Button>
+
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">House Master/Mistress</label>
+              <select 
+                className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                value={newHouse.houseMasterId}
+                onChange={e => setNewHouse({...newHouse, houseMasterId: e.target.value})}
+              >
+                <option value="">Unassigned</option>
+                {teachers.map(t => (
+                  <option key={t.id} value={t.id}>{t.title}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Bed Capacity</label>
+              <Input 
+                type="number"
+                min="1"
+                className="bg-white border-slate-200 rounded-xl"
+                value={newHouse.capacity}
+                onChange={e => setNewHouse({...newHouse, capacity: parseInt(e.target.value) || 100})}
+              />
             </div>
           </div>
-        </div>
-      )}
+          
+          <div className="p-4 bg-white border-t border-slate-100 flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600">
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleAddHouse} 
+              disabled={!newHouse.name}
+              className="rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white font-bold"
+            >
+              Save House
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

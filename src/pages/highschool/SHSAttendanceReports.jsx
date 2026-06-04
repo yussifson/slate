@@ -1,72 +1,209 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ModuleBanner } from '@/components/school/SchoolViewKit';
-import { Card, CardContent } from '@/components/ui/card';
+import { useAuth } from '@/lib/AuthContext';
+import { base44 } from '@/api/base44Client';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { BarChart2, Plus, Search, Filter } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Calendar as CalendarIcon, FileSpreadsheet, PieChart, TrendingUp, Users, Briefcase } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 export default function SHSAttendanceReports() {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  
+  const [loading, setLoading] = useState(true);
+  const [studentStats, setStudentStats] = useState({ present: 0, absent: 0, late: 0, excused: 0 });
+  const [teacherStats, setTeacherStats] = useState({ present: 0, absent: 0, late: 0, onLeave: 0 });
+  
+  const [startDate, setStartDate] = useState(() => {
+    const d = new Date();
+    d.setDate(d.getDate() - 30);
+    return d.toISOString().split('T')[0];
+  });
+  const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
 
-  const dummyData = [
-    { id: 1, name: "Sample Record A", status: "Active", date: "2024-03-15" },
-    { id: 2, name: "Sample Record B", status: "Pending", date: "2024-03-14" },
-    { id: 3, name: "Sample Record C", status: "Completed", date: "2024-03-12" },
-  ];
+  useEffect(() => {
+    const fetchReports = async () => {
+      setLoading(true);
+      try {
+        const [studentRecords, teacherRecords] = await Promise.all([
+          base44.getEntities('shs_daily_attendance', user?.company_id),
+          base44.getEntities('shs_teacher_attendance', user?.company_id)
+        ]);
+
+        // Filter by date range
+        const sFiltered = studentRecords.filter(r => r.data?.date >= startDate && r.data?.date <= endDate);
+        const tFiltered = teacherRecords.filter(r => r.data?.date >= startDate && r.data?.date <= endDate);
+
+        // Aggregate student stats
+        const sAgg = { present: 0, absent: 0, late: 0, excused: 0 };
+        sFiltered.forEach(r => {
+          if (r.data?.summary) {
+            sAgg.present += r.data.summary.present || 0;
+            sAgg.absent += r.data.summary.absent || 0;
+            sAgg.late += r.data.summary.late || 0;
+            sAgg.excused += r.data.summary.excused || 0;
+          }
+        });
+        setStudentStats(sAgg);
+
+        // Aggregate teacher stats
+        const tAgg = { present: 0, absent: 0, late: 0, onLeave: 0 };
+        tFiltered.forEach(r => {
+          if (r.data?.summary) {
+            tAgg.present += r.data.summary.present || 0;
+            tAgg.absent += r.data.summary.absent || 0;
+            tAgg.late += r.data.summary.late || 0;
+            tAgg.onLeave += r.data.summary.onLeave || 0;
+          }
+        });
+        setTeacherStats(tAgg);
+
+      } catch (error) {
+        console.error('Failed to fetch attendance reports:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user?.company_id && startDate && endDate) {
+      fetchReports();
+    }
+  }, [startDate, endDate, user]);
+
+  const sTotal = studentStats.present + studentStats.absent + studentStats.late + studentStats.excused;
+  const sPresentRate = sTotal > 0 ? Math.round(((studentStats.present + studentStats.late) / sTotal) * 100) : 0;
+
+  const tTotal = teacherStats.present + teacherStats.absent + teacherStats.late + teacherStats.onLeave;
+  const tPresentRate = tTotal > 0 ? Math.round(((teacherStats.present + teacherStats.late) / tTotal) * 100) : 0;
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
-      <ModuleBanner 
-        title="Attendance Reports"
-        subtitle="Generate truancy and attendance summary reports."
-        metrics={[
-          { title: "Total Records", value: "1,248", icon: BarChart2 },
-          { title: "Active", value: "982", icon: BarChart2 },
-          { title: "Pending Review", value: "45", icon: BarChart2 }
-        ]}
-      />
-
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-        <div className="flex gap-2">
-          <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <input 
-              type="text" 
-              placeholder="Search..." 
-              className="pl-9 h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 w-full sm:w-64"
-            />
-          </div>
-          <Button variant="outline" size="icon">
-            <Filter className="w-4 h-4" />
-          </Button>
+    <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
+      
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-purple-800 bg-clip-text text-transparent">
+            Attendance Reports
+          </h1>
+          <p className="text-muted-foreground mt-1 text-sm font-medium">
+            Analyze historical attendance data for students and staff.
+          </p>
         </div>
-        <Button className="bg-[#6F00FF] hover:bg-[#5200c2] text-white">
-          <Plus className="w-4 h-4 mr-2" /> Add New
+        <Button className="h-9 gap-2 rounded-xl bg-white border border-slate-200 text-slate-700 shadow-sm hover:bg-slate-50">
+          <FileSpreadsheet className="w-4 h-4" /> Export Report
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {dummyData.map((item) => (
-          <Card key={item.id} className="group hover:shadow-lg transition-all duration-300 border-border/50 bg-card/50 backdrop-blur-sm">
-            <CardContent className="p-6">
-              <div className="flex justify-between items-start mb-4">
-                <div className="w-12 h-12 rounded-xl bg-purple-50 text-[#6F00FF] flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <BarChart2 className="w-6 h-6" />
+      <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 bg-slate-50/50 p-6">
+          <div className="flex flex-col sm:flex-row gap-6 items-end">
+            <div className="space-y-2 flex-1">
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
+                <CalendarIcon className="w-4 h-4 text-[#6F00FF]" /> Start Date
+              </label>
+              <Input 
+                type="date"
+                className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF] font-semibold text-slate-700"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2 flex-1">
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
+                <CalendarIcon className="w-4 h-4 text-[#6F00FF]" /> End Date
+              </label>
+              <Input 
+                type="date"
+                className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF] font-semibold text-slate-700"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </div>
+            <Button className="h-11 px-6 rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white shadow-md font-bold">
+              <TrendingUp className="w-4 h-4 mr-2" /> Generate
+            </Button>
+          </div>
+        </CardHeader>
+        
+        <CardContent className="p-8">
+          {loading ? (
+            <div className="py-20 text-center text-slate-400">Aggregating attendance data...</div>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              
+              {/* Student Stats */}
+              <div className="space-y-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center text-[#6F00FF]">
+                    <Users className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-slate-800">Student Attendance</h3>
+                    <p className="text-sm text-slate-500">Aggregated roll call records</p>
+                  </div>
                 </div>
-                <span className={`text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
-                  item.status === 'Active' ? 'bg-purple-100 text-purple-700' :
-                  item.status === 'Completed' ? 'bg-blue-100 text-blue-700' :
-                  'bg-amber-100 text-amber-700'
-                }`}>
-                  {item.status}
-                </span>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-5 rounded-2xl bg-slate-50 border border-slate-100 flex flex-col justify-center items-center text-center">
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Average Rate</p>
+                    <p className={`text-3xl font-black ${sPresentRate >= 90 ? 'text-emerald-500' : sPresentRate >= 75 ? 'text-amber-500' : 'text-rose-500'}`}>
+                      {sPresentRate}%
+                    </p>
+                  </div>
+                  <div className="p-5 rounded-2xl bg-emerald-50 border border-emerald-100 flex flex-col justify-center items-center text-center">
+                    <p className="text-xs font-bold text-emerald-600/70 uppercase tracking-wider mb-1">Total Present</p>
+                    <p className="text-3xl font-black text-emerald-600">{studentStats.present}</p>
+                  </div>
+                  <div className="p-5 rounded-2xl bg-amber-50 border border-amber-100 flex flex-col justify-center items-center text-center">
+                    <p className="text-xs font-bold text-amber-600/70 uppercase tracking-wider mb-1">Total Late</p>
+                    <p className="text-3xl font-black text-amber-600">{studentStats.late}</p>
+                  </div>
+                  <div className="p-5 rounded-2xl bg-rose-50 border border-rose-100 flex flex-col justify-center items-center text-center">
+                    <p className="text-xs font-bold text-rose-600/70 uppercase tracking-wider mb-1">Total Absent</p>
+                    <p className="text-3xl font-black text-rose-600">{studentStats.absent}</p>
+                  </div>
+                </div>
               </div>
-              <h3 className="font-bold text-lg mb-1 text-foreground">{item.name}</h3>
-              <p className="text-sm text-muted-foreground font-medium">Last updated: {item.date}</p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+
+              {/* Teacher Stats */}
+              <div className="space-y-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600">
+                    <Briefcase className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-slate-800">Staff Attendance</h3>
+                    <p className="text-sm text-slate-500">Aggregated staff register</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-5 rounded-2xl bg-slate-50 border border-slate-100 flex flex-col justify-center items-center text-center">
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Average Rate</p>
+                    <p className={`text-3xl font-black ${tPresentRate >= 95 ? 'text-emerald-500' : tPresentRate >= 85 ? 'text-amber-500' : 'text-rose-500'}`}>
+                      {tPresentRate}%
+                    </p>
+                  </div>
+                  <div className="p-5 rounded-2xl bg-blue-50 border border-blue-100 flex flex-col justify-center items-center text-center">
+                    <p className="text-xs font-bold text-blue-600/70 uppercase tracking-wider mb-1">Total Present</p>
+                    <p className="text-3xl font-black text-blue-600">{teacherStats.present}</p>
+                  </div>
+                  <div className="p-5 rounded-2xl bg-orange-50 border border-orange-100 flex flex-col justify-center items-center text-center">
+                    <p className="text-xs font-bold text-orange-600/70 uppercase tracking-wider mb-1">Total Late</p>
+                    <p className="text-3xl font-black text-orange-600">{teacherStats.late}</p>
+                  </div>
+                  <div className="p-5 rounded-2xl bg-slate-100 border border-slate-200 flex flex-col justify-center items-center text-center">
+                    <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">On Leave / Absent</p>
+                    <p className="text-3xl font-black text-slate-700">{teacherStats.onLeave + teacherStats.absent}</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

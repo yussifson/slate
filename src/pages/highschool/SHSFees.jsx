@@ -1,176 +1,297 @@
-import { useTranslation } from "react-i18next";
-import { useState } from 'react';
-import { ModuleBanner } from '@/components/school/SchoolViewKit';
+import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/lib/AuthContext';
+import { base44 } from '@/api/base44Client';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
-import { useCompanyId } from "@/hooks/useCompanyId";
-import { toast } from 'react-hot-toast';
-import { Banknote, Plus, Search, CheckCircle2 } from "lucide-react";
+import { Search, Plus, CreditCard, Layers, Tag } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
 
 export default function SHSFees() {
   const { t } = useTranslation();
-  const companyId = useCompanyId();
-  const queryClient = useQueryClient();
-  const [showModal, setShowModal] = useState(false);
-  const [search, setSearch] = useState('');
+  const { user } = useAuth();
   
-  const [formData, setFormData] = useState({
-    studentName: '', amount: '', description: 'Term 1 Fees', status: 'Pending', type: 'Tuition'
+  const [feeStructures, setFeeStructures] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [newFee, setNewFee] = useState({
+    title: '',
+    category: 'Tuition', // Tuition, Boarding, PTA, Examination, Other
+    amount: '',
+    targetGroup: 'All Students', // All, Boarders Only, Form 1 Only, etc.
+    academicYear: new Date().getFullYear().toString(),
+    term: 'Term 1'
   });
 
-  const { data: records = [], isLoading } = useQuery({ 
-    queryKey: ["shs_fees", companyId], 
-    queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId, case_type: 'shs_fee' }), 
-    enabled: !!companyId 
-  });
-
-  const mutateFee = useMutation({
-    mutationFn: (data) => data.id ? base44.entities.LegalCase.update(data.id, data) : base44.entities.LegalCase.create(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["shs_fees", companyId] });
-      toast.success("Fee record saved");
-      setShowModal(false);
+  const fetchFees = async () => {
+    setLoading(true);
+    try {
+      const records = await base44.getEntities('shs_fee_structure', user?.company_id);
+      setFeeStructures(records);
+    } catch (error) {
+      console.error('Failed to fetch fee structures:', error);
+    } finally {
+      setLoading(false);
     }
-  });
-
-  const fees = records.map(r => {
-    let extra = {};
-    try { extra = JSON.parse(r.notes || '{}'); } catch(e) {}
-    return {
-      id: r.id,
-      studentName: r.title,
-      description: r.description || '',
-      status: r.status || 'Pending',
-      amount: extra.amount || 0,
-      type: extra.type || 'Tuition',
-      date: new Date(r.created_at).toLocaleDateString()
-    };
-  });
-
-  const filtered = fees.filter(f => f.studentName.toLowerCase().includes(search.toLowerCase()) || f.description.toLowerCase().includes(search.toLowerCase()));
-
-  const handleSave = () => {
-    if (!formData.studentName || !formData.amount) return toast.error("Student Name and Amount are required");
-    mutateFee.mutate({
-      company_id: companyId,
-      case_type: 'shs_fee',
-      title: formData.studentName,
-      description: formData.description,
-      status: formData.status,
-      notes: JSON.stringify({
-        amount: formData.amount,
-        type: formData.type
-      })
-    });
   };
 
-  const totalCollected = fees.filter(f => f.status === 'Paid').reduce((sum, f) => sum + parseFloat(f.amount || 0), 0);
+  useEffect(() => {
+    if (user?.company_id) {
+      fetchFees();
+    }
+  }, [user]);
+
+  const handleCreateFee = async () => {
+    try {
+      const payload = {
+        company_id: user?.company_id,
+        case_type: 'shs_fee_structure',
+        title: newFee.title,
+        case_number: `FEE-${Math.floor(Math.random() * 10000)}`,
+        status: 'Active',
+        data: {
+          ...newFee,
+          amount: parseFloat(newFee.amount) || 0
+        }
+      };
+      
+      await base44.createEntity(payload);
+      setIsAddModalOpen(false);
+      setNewFee({
+        title: '', category: 'Tuition', amount: '', targetGroup: 'All Students', academicYear: new Date().getFullYear().toString(), term: 'Term 1'
+      });
+      fetchFees();
+    } catch (error) {
+      console.error('Failed to create fee structure:', error);
+    }
+  };
+
+  const filteredFees = feeStructures.filter(f => 
+    f.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    f.data?.category?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
-    <div className="space-y-6">
-      <ModuleBanner 
-        title={t("fees_billing", "Fees & Billing")} 
-        subtitle="Manage student billing, PTA dues, and boarding fees." 
-        metrics={[
-          { title: "Total Collected", value: `$${totalCollected.toLocaleString()}`, icon: Banknote },
-          { title: "Pending Invoices", value: fees.filter(f => f.status === 'Pending').length, icon: Banknote }
-        ]}
-      />
+    <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
       
-      <div className="bg-card rounded-xl border border-border p-4 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="relative flex-1 w-full max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Search by student or description..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-purple-800 bg-clip-text text-transparent">
+            Fee Structures
+          </h1>
+          <p className="text-muted-foreground mt-1 text-sm font-medium">
+            Define billing structures for tuition, boarding, and miscellaneous items.
+          </p>
         </div>
-        <Button onClick={() => {
-          setFormData({ studentName: '', amount: '', description: 'Term 1 Fees', status: 'Pending', type: 'Tuition' });
-          setShowModal(true);
-        }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
-          <Plus className="w-4 h-4" /> Issue Invoice
+        
+        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white shadow-md shadow-purple-500/20">
+          <Plus className="w-4 h-4" /> Create Fee Item
         </Button>
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-slate-50 border-b border-slate-200">
-            <tr>
-              {['Student Name', 'Description', 'Type', 'Amount', 'Status', 'Date', 'Action'].map(h => (
-                <th key={h} className="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wide">{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {filtered.map(f => (
-              <tr key={f.id} className="hover:bg-slate-50">
-                <td className="px-4 py-3 font-semibold text-slate-900">{f.studentName}</td>
-                <td className="px-4 py-3 text-slate-600">{f.description}</td>
-                <td className="px-4 py-3 text-slate-500">{f.type}</td>
-                <td className="px-4 py-3 font-bold text-slate-900">${parseFloat(f.amount).toLocaleString()}</td>
-                <td className="px-4 py-3">
-                  <span className={`text-[10px] font-bold px-2 py-1 rounded-full uppercase ${f.status === 'Paid' ? 'bg-purple-100 text-purple-700' : 'bg-amber-100 text-amber-700'}`}>
-                    {f.status}
-                  </span>
-                </td>
-                <td className="px-4 py-3 text-slate-500 text-xs">{f.date}</td>
-                <td className="px-4 py-3">
-                  {f.status === 'Pending' && (
-                    <Button variant="ghost" size="sm" onClick={() => mutateFee.mutate({ id: f.id, status: 'Paid' })} className="text-[#6F00FF] hover:text-purple-700 hover:bg-purple-50 text-xs">
-                      <CheckCircle2 className="w-3.5 h-3.5 mr-1" /> Mark Paid
-                    </Button>
-                  )}
-                </td>
-              </tr>
-            ))}
-            {filtered.length === 0 && (
-              <tr><td colSpan="7" className="text-center py-8 text-slate-500">No fee records found</td></tr>
-            )}
-          </tbody>
-        </table>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-purple-100">
+          <CardContent className="p-5 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center text-[#6F00FF] shrink-0">
+              <Layers className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-muted-foreground">Active Fee Items</p>
+              <h3 className="text-2xl font-black text-slate-800">{feeStructures.filter(f => f.status === 'Active').length}</h3>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden border border-slate-200">
-            <div className="p-6 border-b border-slate-100">
-              <h2 className="text-xl font-bold text-slate-900">Issue Fee Invoice</h2>
+      <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 bg-slate-50/50 pb-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <CardTitle className="text-lg font-bold text-slate-800">Fee Items Library</CardTitle>
             </div>
-            <div className="p-6 space-y-4">
-              <div>
-                <label className="text-xs font-bold text-slate-500 uppercase">Student Name / ID</label>
-                <Input value={formData.studentName} onChange={e => setFormData({...formData, studentName: e.target.value})} placeholder="e.g. Kwame Osei" className="mt-1" />
+            
+            <div className="relative w-full sm:w-64">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Input 
+                placeholder="Search fees..." 
+                className="pl-9 h-9 bg-white border-slate-200 rounded-xl focus-visible:ring-[#6F00FF]"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="p-0">
+          {loading ? (
+            <div className="p-12 text-center text-slate-400">Loading fees...</div>
+          ) : filteredFees.length === 0 ? (
+            <div className="p-16 text-center">
+              <div className="w-16 h-16 rounded-2xl bg-purple-50 mx-auto flex items-center justify-center mb-4">
+                <CreditCard className="w-8 h-8 text-purple-400" />
               </div>
-              <div>
-                <label className="text-xs font-bold text-slate-500 uppercase">Description</label>
-                <Input value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} placeholder="Term 1 Tuition" className="mt-1" />
+              <h3 className="text-lg font-bold text-slate-700">No fee items found</h3>
+              <p className="text-sm text-slate-500">Create fee structures to apply to student bills.</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="bg-slate-50/80 text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
+                  <tr>
+                    <th className="px-6 py-4 rounded-tl-xl">Fee Title</th>
+                    <th className="px-6 py-4">Category</th>
+                    <th className="px-6 py-4">Target Group</th>
+                    <th className="px-6 py-4">Amount</th>
+                    <th className="px-6 py-4 text-right rounded-tr-xl">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {filteredFees.map((fee) => (
+                    <tr key={fee.id} className="hover:bg-slate-50/50 transition-colors">
+                      <td className="px-6 py-4">
+                        <p className="font-bold text-slate-800">{fee.title}</p>
+                        <p className="text-xs text-slate-500">{fee.data?.academicYear} • {fee.data?.term}</p>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <Tag className="w-3.5 h-3.5 text-slate-400" />
+                          <span className="font-medium text-slate-700">{fee.data?.category}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <Badge variant="secondary" className="bg-slate-100 text-slate-600 border-none">
+                          {fee.data?.targetGroup}
+                        </Badge>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="font-black text-slate-800 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-100 text-emerald-700">
+                          ${parseFloat(fee.data?.amount).toFixed(2)}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <Badge variant="outline" className={
+                          fee.status === 'Active' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-50 text-slate-600 border-slate-200'
+                        }>
+                          {fee.status}
+                        </Badge>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
+        <DialogContent className="sm:max-w-[450px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
+          <div className="p-6 bg-gradient-to-br from-[#6F00FF] to-purple-800 text-white">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-black">Create Fee Item</DialogTitle>
+              <DialogDescription className="text-purple-100">
+                Define a new billing charge for students.
+              </DialogDescription>
+            </DialogHeader>
+          </div>
+          
+          <div className="p-6 bg-slate-50 space-y-4">
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Fee Title</label>
+              <Input 
+                placeholder="e.g. Term 1 Tuition Fee"
+                className="bg-white border-slate-200 rounded-xl"
+                value={newFee.title}
+                onChange={e => setNewFee({...newFee, title: e.target.value})}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Category</label>
+                <select 
+                  className="w-full h-10 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                  value={newFee.category}
+                  onChange={e => setNewFee({...newFee, category: e.target.value})}
+                >
+                  <option value="Tuition">Tuition</option>
+                  <option value="Boarding">Boarding</option>
+                  <option value="PTA">PTA Dues</option>
+                  <option value="Examination">Examination</option>
+                  <option value="Other">Other</option>
+                </select>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs font-bold text-slate-500 uppercase">Amount ($)</label>
-                  <Input type="number" value={formData.amount} onChange={e => setFormData({...formData, amount: e.target.value})} placeholder="500" className="mt-1" />
-                </div>
-                <div>
-                  <label className="text-xs font-bold text-slate-500 uppercase">Fee Type</label>
-                  <select value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-                    <option>Tuition</option><option>Boarding</option><option>PTA Dues</option><option>Exam Fee</option><option>Other</option>
-                  </select>
-                </div>
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Amount ($)</label>
+                <Input 
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  placeholder="0.00"
+                  className="bg-white border-slate-200 rounded-xl font-bold"
+                  value={newFee.amount}
+                  onChange={e => setNewFee({...newFee, amount: e.target.value})}
+                />
               </div>
-              <div>
-                <label className="text-xs font-bold text-slate-500 uppercase">Initial Status</label>
-                <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-                  <option>Pending</option><option>Paid</option>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Target Group</label>
+              <select 
+                className="w-full h-10 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                value={newFee.targetGroup}
+                onChange={e => setNewFee({...newFee, targetGroup: e.target.value})}
+              >
+                <option value="All Students">All Students</option>
+                <option value="Boarders Only">Boarders Only</option>
+                <option value="Day Students Only">Day Students Only</option>
+                <option value="Form 1 Only">Form 1 Only</option>
+                <option value="Form 3 Candidates">Form 3 Candidates</option>
+              </select>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Academic Year</label>
+                <Input 
+                  className="bg-white border-slate-200 rounded-xl"
+                  value={newFee.academicYear}
+                  onChange={e => setNewFee({...newFee, academicYear: e.target.value})}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Term</label>
+                <select 
+                  className="w-full h-10 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                  value={newFee.term}
+                  onChange={e => setNewFee({...newFee, term: e.target.value})}
+                >
+                  <option value="Term 1">Term 1</option>
+                  <option value="Term 2">Term 2</option>
+                  <option value="Term 3">Term 3</option>
+                  <option value="Annual">Annual (All Terms)</option>
                 </select>
               </div>
             </div>
-            <div className="p-6 border-t border-slate-100 bg-slate-50 flex gap-3">
-              <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>Cancel</Button>
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleSave}>Save Invoice</Button>
-            </div>
           </div>
-        </div>
-      )}
+          
+          <div className="p-4 bg-white border-t border-slate-100 flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600">
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleCreateFee} 
+              disabled={!newFee.title || !newFee.amount}
+              className="rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white font-bold"
+            >
+              Save Fee Item
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
