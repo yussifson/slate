@@ -173,6 +173,18 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 
 import { getSubdomainAndBase } from '@/lib/domainUtils';
+
+// High School Pages
+import SHSClasses from './pages/highschool/SHSClasses';
+import SHSStudents from './pages/highschool/SHSStudents';
+import SHSProgrammes from './pages/highschool/SHSProgrammes';
+import SHSHouses from './pages/highschool/SHSHouses';
+import SHSTimetable from './pages/highschool/SHSTimetable';
+import SHSAdmissions from './pages/highschool/SHSAdmissions';
+import SHSGrades from './pages/highschool/SHSGrades';
+import SHSFees from './pages/highschool/SHSFees';
+import SHSDashboard from './pages/highschool/SHSDashboard';
+
 import MarketingLayout from './components/layout/MarketingLayout';
 import Home from './pages/marketing/Home';
 import Features from './pages/marketing/Features';
@@ -258,6 +270,18 @@ function PlatformRoutes() {
 
       <Route path="/gamification" element={<SchoolGamification />} />
       <Route path="/teacher-evaluations" element={<SchoolTeacherEvaluations />} />
+
+      {/* High School (SHS) Routes */}
+      <Route path="/s/" element={<SHSDashboard />} />
+      <Route path="/s/students" element={<SHSStudents />} />
+      <Route path="/s/programmes" element={<SHSProgrammes />} />
+      <Route path="/s/houses" element={<SHSHouses />} />
+      <Route path="/s/classes" element={<SHSClasses />} />
+      <Route path="/s/timetable" element={<SHSTimetable />} />
+      <Route path="/s/admissions" element={<SHSAdmissions />} />
+      <Route path="/s/grades" element={<SHSGrades />} />
+      <Route path="/s/fees" element={<SHSFees />} />
+
       <Route path="/canteen-pos" element={<SchoolCanteenPOS />} />
       <Route path="/complaints" element={<SchoolComplaints />} />
       <Route path="/support-center" element={<SchoolSupportCenter />} />
