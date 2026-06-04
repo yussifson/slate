@@ -82,7 +82,10 @@ export default function Login() {
       if (!brandErr && brandData) {
          const d = Array.isArray(brandData) ? brandData[0] : brandData;
          compId = d?.id;
-      } else {
+      } 
+      
+      // If RPC succeeded but didn't expose 'id', fallback to direct table query
+      if (!compId) {
          const { data: tableData } = await supabase.from('companies').select('id').eq('subdomain', targetSubdomain).single();
          if (tableData) compId = tableData.id;
       }
