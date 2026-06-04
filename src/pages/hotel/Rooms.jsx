@@ -108,7 +108,7 @@ export default function Rooms() {
   if (isDbLoading) return <div className="flex items-center justify-center h-64 text-muted-foreground">{t("loading_room_data", "Loading room data...")}</div>;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" style={{ backgroundColor: "rgba(68, 49, 153, 0.03)", minHeight: "100vh" }}>
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-card-foreground">{t("room_management", "Room Management")}</h1>
@@ -117,7 +117,7 @@ export default function Rooms() {
             "Configure rooms, pricing, and amenities"
           )}</p>
         </div>
-        <Button onClick={() => { setEditTargetId(null); setShowModal(true); setFormData({ roomNumber: '', type: 'Standard', rate: 150, floor: '1st Floor', amenities: 'Wifi, Tv' }); }} className="gap-2 bg-amber-600 hover:bg-amber-700 text-white">
+        <Button onClick={() => { setEditTargetId(null); setShowModal(true); setFormData({ roomNumber: '', type: 'Standard', rate: 150, floor: '1st Floor', amenities: 'Wifi, Tv' }); }} className="gap-2 bg-[#443199] hover:bg-[#362878] text-white">
           <Plus className="w-4 h-4" /> {t("add_room", "Add Room")}
         </Button>
       </div>
@@ -145,7 +145,7 @@ export default function Rooms() {
                 return (
                   <tr key={room.id} className="hover:bg-muted/50 transition-colors">
                     <td className="px-6 py-4 font-bold text-card-foreground text-lg flex items-center gap-2">
-                       <Bed className={`w-5 h-5 ${room.status === 'Maintenance' ? 'text-red-500' : 'text-amber-500'}`}/> 
+                       <Bed className={`w-5 h-5 ${room.status === 'Maintenance' ? 'text-red-500' : 'text-violet-500'}`}/> 
                        {room.roomNumber}
                     </td>
                     <td className="px-6 py-4">
@@ -159,7 +159,7 @@ export default function Rooms() {
                            <Activity className="w-3 h-3 mr-1" /> {t("maintenance_alert", "Maintenance Alert")}
                          </span>
                       ) : (
-                         <span className={`inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${room.status === 'Available' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+                         <span className={`inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${room.status === 'Available' ? 'bg-green-100 text-green-700' : 'bg-violet-100 text-violet-700'}`}>
                            {room.status}
                          </span>
                       )}
@@ -216,7 +216,7 @@ export default function Rooms() {
        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4">
            <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-             {editTargetId ? <Edit className="w-5 h-5 text-amber-600"/> : <Plus className="w-5 h-5 text-amber-600"/>}
+             {editTargetId ? <Edit className="w-5 h-5 text-violet-600"/> : <Plus className="w-5 h-5 text-violet-600"/>}
              {editTargetId ? 'Edit Room Configuration' : 'Configure New Room'}
            </h2>
            <div className="space-y-3">
@@ -251,7 +251,7 @@ export default function Rooms() {
            </div>
            <div className="flex gap-3 pt-4">
              <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-             <Button className="flex-1 bg-amber-600 hover:bg-amber-700 text-white" onClick={handleSaveToDb}>{t("save_room", "Save Room")}</Button>
+             <Button className="flex-1 bg-[#443199] hover:bg-[#362878] text-white" onClick={handleSaveToDb}>{t("save_room", "Save Room")}</Button>
            </div>
          </div>
        </div>
@@ -273,7 +273,7 @@ export default function Rooms() {
               <>
                 <SheetHeader className="mb-6">
                   <SheetTitle className="text-2xl flex items-center gap-2">
-                    <Bed className="w-6 h-6 text-amber-600" />
+                    <Bed className="w-6 h-6 text-violet-600" />
                     {t("room", "Room")} {room.roomNumber} {t("details", "Details")}
                   </SheetTitle>
                   <SheetDescription>
@@ -294,7 +294,7 @@ export default function Rooms() {
                       </div>
                       <div className="bg-muted/50 p-3 rounded-lg">
                         <p className="text-xs text-muted-foreground mb-1">{t("rate_per_night", "Rate per Night")}</p>
-                        <p className="font-semibold text-amber-600">${room.rate}</p>
+                        <p className="font-semibold text-violet-600">${room.rate}</p>
                       </div>
                       <div className="bg-muted/50 p-3 rounded-lg">
                         <p className="text-xs text-muted-foreground mb-1">{t("status", "Status")}</p>
@@ -308,7 +308,7 @@ export default function Rooms() {
                     <h3 className="text-sm font-semibold text-muted-foreground mb-2">{t("amenities", "Amenities")}</h3>
                     <div className="flex flex-wrap gap-2">
                       {room.amenities?.map(a => {
-                        return (<span key={a} className="bg-amber-100 text-amber-800 px-3 py-1 rounded-md text-xs font-bold uppercase">{a}</span>);
+                        return (<span key={a} className="bg-violet-100 text-violet-800 px-3 py-1 rounded-md text-xs font-bold uppercase">{a}</span>);
                       })}
                       {(!room.amenities || room.amenities.length === 0) && (
                         <p className="text-sm text-muted-foreground">{t("no_amenities_listed", "No amenities listed.")}</p>
@@ -316,7 +316,7 @@ export default function Rooms() {
                     </div>
                   </div>
                   <div className="pt-4 flex gap-2">
-                    <Button onClick={() => { setViewDetailsId(null); handleEdit(room); }} className="flex-1 bg-amber-600 hover:bg-amber-700 text-white">
+                    <Button onClick={() => { setViewDetailsId(null); handleEdit(room); }} className="flex-1 bg-[#443199] hover:bg-[#362878] text-white">
                       <Edit className="w-4 h-4 mr-2" /> {t("edit_room", "Edit Room")}
                     </Button>
                   </div>

@@ -8,7 +8,7 @@ import { toast } from 'react-hot-toast';
 
 const statusColors = {
   'Pending': 'bg-red-100 dark:bg-red-950/20 text-red-700 dark:text-red-400 animate-pulse',
-  'In Progress': 'bg-amber-100 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400',
+  'In Progress': 'bg-violet-100 dark:bg-violet-950/20 text-violet-700 dark:text-violet-400',
   'Completed': 'bg-green-100 dark:bg-green-950/20 text-green-700 dark:text-green-400'
 };
 
@@ -102,7 +102,7 @@ export default function GuestRequests() {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" style={{ backgroundColor: "rgba(68, 49, 153, 0.03)", minHeight: "100vh" }}>
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-card-foreground">{t("guest_requests", "Guest Requests")}</h1>
@@ -111,7 +111,7 @@ export default function GuestRequests() {
             "Track and fulfill guest service requests"
           )}</p>
         </div>
-        <Button onClick={() => setShowModal(true)} className="gap-2 bg-amber-600 hover:bg-amber-700 text-white">
+        <Button onClick={() => setShowModal(true)} className="gap-2 bg-[#443199] hover:bg-[#362878] text-white">
           <Plus className="w-4 h-4" /> {t("new_request", "New Request")}
         </Button>
       </div>
@@ -139,7 +139,7 @@ export default function GuestRequests() {
                return (
                  <div key={req.id} className="p-4 sm:p-6 hover:bg-muted/40 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4 group">
                    <div className="flex gap-4 items-start">
-                      <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 bg-amber-50 dark:bg-amber-950/20 text-amber-600 dark:text-amber-400`}>
+                      <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 bg-violet-50 dark:bg-violet-950/20 text-violet-600 dark:text-violet-400`}>
                          {requestIcons[req.type] || <Bell className="w-5 h-5" />}
                       </div>
                       <div>
@@ -153,7 +153,7 @@ export default function GuestRequests() {
                    </div>
                    <div className="flex gap-2 w-full sm:w-auto items-center justify-end">
                       {req.status === 'Pending' && (
-                        <Button onClick={() => handleUpdateStatus(req, 'In Progress')} size="sm" className="w-full sm:w-auto bg-amber-600 hover:bg-amber-700 text-white">{t("accept_task", "Accept Task")}</Button>
+                        <Button onClick={() => handleUpdateStatus(req, 'In Progress')} size="sm" className="w-full sm:w-auto bg-[#443199] hover:bg-[#362878] text-white">{t("accept_task", "Accept Task")}</Button>
                       )}
                       {req.status === 'In Progress' && (
                         <Button onClick={() => handleUpdateStatus(req, 'Completed')} size="sm" className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white gap-2"><CheckCircle className="w-4 h-4"/> {t("mark_complete", "Mark Complete")}</Button>
@@ -174,7 +174,7 @@ export default function GuestRequests() {
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-sm p-6 space-y-4">
-            <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><Bell className="w-5 h-5 text-amber-600"/> {t("log_guest_request", "Log Guest Request")}</h2>
+            <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><Bell className="w-5 h-5 text-violet-600"/> {t("log_guest_request", "Log Guest Request")}</h2>
             <div className="space-y-3">
                <div>
                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("room_number", "Room Number")}</label>
@@ -196,7 +196,7 @@ export default function GuestRequests() {
             </div>
             <div className="flex gap-3 pt-2">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-amber-600 hover:bg-amber-700 text-white" onClick={handleCreateRequest}>{t("log_request", "Log Request")}</Button>
+              <Button className="flex-1 bg-[#443199] hover:bg-[#362878] text-white" onClick={handleCreateRequest}>{t("log_request", "Log Request")}</Button>
             </div>
           </div>
         </div>

@@ -29,8 +29,8 @@ const getRoomStatus = (roomNumber, reservations, today) => {
 const statusColors = {
   Available:  'bg-green-50 border-green-300 text-green-800 hover:bg-green-100',
   Occupied:   'bg-red-50 border-red-300 text-red-800 hover:bg-red-100',
-  Arriving:   'bg-amber-50 border-amber-300 text-amber-800 hover:bg-amber-100',
-  Reserved:   'bg-amber-50 border-amber-300 text-amber-800 hover:bg-amber-100',
+  Arriving:   'bg-violet-50 border-violet-300 text-violet-800 hover:bg-violet-100',
+  Reserved:   'bg-violet-50 border-violet-300 text-violet-800 hover:bg-violet-100',
   Cleaning:   'bg-yellow-50 border-yellow-300 text-yellow-800 hover:bg-yellow-100',
   Maintenance:'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200',
 };
@@ -38,8 +38,8 @@ const statusColors = {
 const statusIcons = {
   Available:   <CheckCircle2 className="w-4 h-4 text-green-500" />,
   Occupied:    <Moon className="w-4 h-4 text-red-500" />,
-  Arriving:    <LogIn className="w-4 h-4 text-amber-500" />,
-  Reserved:    <Calendar className="w-4 h-4 text-amber-500" />,
+  Arriving:    <LogIn className="w-4 h-4 text-violet-500" />,
+  Reserved:    <Calendar className="w-4 h-4 text-violet-500" />,
   Cleaning:    <Brush className="w-4 h-4 text-yellow-500" />,
   Maintenance: <Settings className="w-4 h-4 text-slate-500" />,
 };
@@ -119,7 +119,7 @@ export default function FrontDesk() {
   const floors = [1, 2, 3];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" style={{ backgroundColor: "rgba(68, 49, 153, 0.03)", minHeight: "100vh" }}>
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-card-foreground">{t("front_desk", "Front Desk")}</h1>
@@ -127,14 +127,14 @@ export default function FrontDesk() {
       </div>
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-card rounded-xl border border-border p-4 shadow-sm border-l-4 border-l-amber-500">
+        <div className="bg-card rounded-xl border border-border p-4 shadow-sm border-l-4 border-l-violet-500">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-amber-600" />
+            <div className="w-10 h-10 rounded-lg bg-violet-100 flex items-center justify-center">
+              <TrendingUp className="w-5 h-5 text-violet-600" />
             </div>
             <div>
               <p className="text-xs font-bold text-muted-foreground uppercase">{t("occupancy", "Occupancy")}</p>
-              <p className="text-2xl font-bold text-amber-600">{occupancyRate}%</p>
+              <p className="text-2xl font-bold text-violet-600">{occupancyRate}%</p>
             </div>
           </div>
         </div>
@@ -160,14 +160,14 @@ export default function FrontDesk() {
             </div>
           </div>
         </div>
-        <div className="bg-card rounded-xl border border-border p-4 shadow-sm border-l-4 border-l-amber-500">
+        <div className="bg-card rounded-xl border border-border p-4 shadow-sm border-l-4 border-l-violet-500">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
-              <Users className="w-5 h-5 text-amber-600" />
+            <div className="w-10 h-10 rounded-lg bg-violet-100 flex items-center justify-center">
+              <Users className="w-5 h-5 text-violet-600" />
             </div>
             <div>
               <p className="text-xs font-bold text-muted-foreground uppercase">{t("guests_in_house", "Guests In-House")}</p>
-              <p className="text-2xl font-bold text-amber-600">{checkedIn.length}</p>
+              <p className="text-2xl font-bold text-violet-600">{checkedIn.length}</p>
             </div>
           </div>
         </div>
@@ -237,7 +237,7 @@ export default function FrontDesk() {
                 return (
                   <div key={floor}>
                     <p className="text-xs font-bold text-muted-foreground uppercase mb-3 flex items-center gap-2">
-                      <span className="w-6 h-6 rounded bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-[10px]">{floor}</span>
+                      <span className="w-6 h-6 rounded bg-violet-100 text-violet-700 flex items-center justify-center font-bold text-[10px]">{floor}</span>
                       {t("floor", "Floor")} {floor}
                     </p>
                     <div className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-2">
@@ -248,7 +248,7 @@ export default function FrontDesk() {
                           <button
                             key={roomNum}
                             onClick={() => setSelectedRoom(isSelected ? null : roomNum)}
-                            className={`aspect-square rounded-lg border-2 flex flex-col items-center justify-center p-1 cursor-pointer transition-all duration-150 text-center ${statusColors[info.status]} ${isSelected ? 'ring-4 ring-amber-400 scale-110 shadow-lg z-10 relative' : ''}`}
+                            className={`aspect-square rounded-lg border-2 flex flex-col items-center justify-center p-1 cursor-pointer transition-all duration-150 text-center ${statusColors[info.status]} ${isSelected ? 'ring-4 ring-violet-400 scale-110 shadow-lg z-10 relative' : ''}`}
                           >
                             {statusIcons[info.status]}
                             <span className="text-[10px] font-bold mt-0.5 leading-tight">{roomNum}</span>
@@ -302,7 +302,7 @@ export default function FrontDesk() {
                     </div>
                     <div>
                       <span className="text-muted-foreground block">{t("total", "Total")}</span>
-                      <span className="font-bold text-amber-600">${selectedRoomInfo.reservation.totalAmount}</span>
+                      <span className="font-bold text-violet-600">${selectedRoomInfo.reservation.totalAmount}</span>
                     </div>
                   </div>
                 </div>
@@ -312,7 +312,7 @@ export default function FrontDesk() {
                 {selectedRoomInfo.status === 'Available' && (
                   <Button
                     onClick={() => setShowCheckInModal(true)}
-                    className="w-full bg-amber-600 hover:bg-amber-700 text-white gap-2"
+                    className="w-full bg-[#443199] hover:bg-[#362878] text-white gap-2"
                   >
                     <Key className="w-4 h-4" /> {t("check_in_guest", "Check In Guest")}
                   </Button>
@@ -363,7 +363,7 @@ export default function FrontDesk() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-              <Key className="w-5 h-5 text-amber-600" /> {t("walk_in_check_in_room", "Walk-in Check-In — Room")} {selectedRoom}
+              <Key className="w-5 h-5 text-violet-600" /> {t("walk_in_check_in_room", "Walk-in Check-In — Room")} {selectedRoom}
             </h2>
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-2">
@@ -391,7 +391,7 @@ export default function FrontDesk() {
             </div>
             <div className="flex gap-3 pt-2">
               <Button variant="outline" className="flex-1" onClick={() => { setShowCheckInModal(false); setCheckInForm({ guestName: '', guestPhone: '', roomType: 'Standard', checkOut: '' }); }}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-amber-600 hover:bg-amber-700 text-white" onClick={handleCheckIn}>{t("confirm_check_in", "Confirm Check-In")}</Button>
+              <Button className="flex-1 bg-[#443199] hover:bg-[#362878] text-white" onClick={handleCheckIn}>{t("confirm_check_in", "Confirm Check-In")}</Button>
             </div>
           </div>
         </div>

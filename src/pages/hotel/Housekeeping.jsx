@@ -57,7 +57,7 @@ export default function Housekeeping() {
 
   if (isLoading) {
     return (
-      <div className="py-12 text-center text-muted-foreground">
+      <div className="py-12 text-center text-muted-foreground" style={{ backgroundColor: "rgba(68, 49, 153, 0.03)", minHeight: "100vh" }}>
         {t("loading_housekeeping_records", "Loading housekeeping records...")}
       </div>
     );
@@ -97,7 +97,7 @@ export default function Housekeeping() {
                      <div key={room.id} className="bg-card p-4 rounded-lg shadow-sm border border-border border-l-4 border-l-red-500">
                        <p className="font-bold text-lg mb-1">{t("room", "Room")} {room.roomNumber}</p>
                        <p className="text-xs text-muted-foreground mb-3">{room.type} {t("needs_clean", "• Needs Clean")}</p>
-                       <Button onClick={() => handleUpdateStatus(room, 'Cleaning', 'Housekeeper A')} size="sm" className="w-full text-xs bg-amber-600 hover:bg-amber-700 text-white">{t("start_cleaning", "Start Cleaning")}</Button>
+                       <Button onClick={() => handleUpdateStatus(room, 'Cleaning', 'Housekeeper A')} size="sm" className="w-full text-xs bg-[#443199] hover:bg-[#362878] text-white">{t("start_cleaning", "Start Cleaning")}</Button>
                      </div>
                    );
                  })}
@@ -105,18 +105,18 @@ export default function Housekeeping() {
            </div>
 
            {/* Column 2: In Progress */}
-           <div className="bg-amber-50/50 dark:bg-amber-950/10 rounded-xl p-4 border border-amber-100 dark:border-amber-900/30 min-h-[500px]">
-              <h3 className="font-bold text-amber-900 dark:text-amber-400 flex items-center justify-between mb-4">
-                 <span className="flex items-center gap-2"><Brush className="w-4 h-4 text-amber-600 dark:text-amber-500"/> {t("in_progress", "In Progress")}</span>
-                 <span className="bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 px-2 py-0.5 rounded-full text-xs">{columns.inProgress.length}</span>
+           <div className="bg-violet-50/50 dark:bg-violet-950/10 rounded-xl p-4 border border-violet-100 dark:border-violet-900/30 min-h-[500px]">
+              <h3 className="font-bold text-violet-900 dark:text-violet-400 flex items-center justify-between mb-4">
+                 <span className="flex items-center gap-2"><Brush className="w-4 h-4 text-violet-600 dark:text-violet-500"/> {t("in_progress", "In Progress")}</span>
+                 <span className="bg-violet-100 dark:bg-violet-950 text-violet-800 dark:text-violet-300 px-2 py-0.5 rounded-full text-xs">{columns.inProgress.length}</span>
               </h3>
               <div className="space-y-3">
                  {columns.inProgress.map(room => {
                    return (
-                     <div key={room.id} className="bg-card p-4 rounded-lg shadow-sm border border-border border-l-4 border-l-amber-500">
+                     <div key={room.id} className="bg-card p-4 rounded-lg shadow-sm border border-border border-l-4 border-l-violet-500">
                        <p className="font-bold text-lg mb-1">{t("room", "Room")} {room.roomNumber}</p>
                        <p className="text-xs text-muted-foreground mb-3 flex items-center gap-1"><User className="w-3.5 h-3.5" /> {t("assigned", "Assigned:")} {room.cleaner}</p>
-                       <Button onClick={() => handleUpdateStatus(room, 'Inspecting')} size="sm" variant="outline" className="w-full text-xs border-amber-200 dark:border-amber-900 text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/35">{t("mark_ready_for_inspection", "Mark Ready for Inspection")}</Button>
+                       <Button onClick={() => handleUpdateStatus(room, 'Inspecting')} size="sm" variant="outline" className="w-full text-xs border-violet-200 dark:border-violet-900 text-violet-700 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-950/35">{t("mark_ready_for_inspection", "Mark Ready for Inspection")}</Button>
                      </div>
                    );
                  })}
@@ -124,18 +124,18 @@ export default function Housekeeping() {
            </div>
 
            {/* Column 3: Inspecting */}
-           <div className="bg-amber-50/50 dark:bg-amber-950/10 rounded-xl p-4 border border-amber-100 dark:border-amber-900/30 min-h-[500px]">
-              <h3 className="font-bold text-amber-900 dark:text-amber-400 flex items-center justify-between mb-4">
-                 <span className="flex items-center gap-2"><Sparkles className="w-4 h-4 text-amber-600 dark:text-amber-500"/> {t("inspecting", "Inspecting")}</span>
-                 <span className="bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 px-2 py-0.5 rounded-full text-xs">{columns.inspecting.length}</span>
+           <div className="bg-violet-50/50 dark:bg-violet-950/10 rounded-xl p-4 border border-violet-100 dark:border-violet-900/30 min-h-[500px]">
+              <h3 className="font-bold text-violet-900 dark:text-violet-400 flex items-center justify-between mb-4">
+                 <span className="flex items-center gap-2"><Sparkles className="w-4 h-4 text-violet-600 dark:text-violet-500"/> {t("inspecting", "Inspecting")}</span>
+                 <span className="bg-violet-100 dark:bg-violet-950 text-violet-800 dark:text-violet-300 px-2 py-0.5 rounded-full text-xs">{columns.inspecting.length}</span>
               </h3>
               <div className="space-y-3">
                  {columns.inspecting.map(room => {
                    return (
-                     <div key={room.id} className="bg-card p-4 rounded-lg shadow-sm border border-border border-l-4 border-l-amber-500">
+                     <div key={room.id} className="bg-card p-4 rounded-lg shadow-sm border border-border border-l-4 border-l-violet-500">
                        <p className="font-bold text-lg mb-1">{t("room", "Room")} {room.roomNumber}</p>
                        <p className="text-xs text-muted-foreground mb-3">{t("waiting_approval", "Waiting Approval")}</p>
-                       <Button onClick={() => handleUpdateStatus(room, 'Available', null)} size="sm" className="w-full text-xs bg-amber-600 hover:bg-amber-700 text-white">{t("approve_as_clean", "Approve as Clean")}</Button>
+                       <Button onClick={() => handleUpdateStatus(room, 'Available', null)} size="sm" className="w-full text-xs bg-[#443199] hover:bg-[#362878] text-white">{t("approve_as_clean", "Approve as Clean")}</Button>
                      </div>
                    );
                  })}
