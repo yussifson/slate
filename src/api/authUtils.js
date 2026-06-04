@@ -15,10 +15,10 @@ export const supabaseAdmin = createClient(supabaseUrl, supabaseAnonKey, {
   }
 });
 
-export const generateSaltedEmail = (realEmail, subdomain) => {
+export const generateSaltedEmail = (realEmail, companyId) => {
   const cleanEmail = realEmail.trim().toLowerCase();
   const [localPart, domain] = cleanEmail.split('@');
-  return `${localPart}+firm_${subdomain}@${domain}`;
+  return `${localPart}+firm${companyId.replace(/-/g, '')}@${domain}`;
 };
 
 /**
@@ -45,13 +45,7 @@ export const registerSchoolUser = async (realEmail, password, role, companyId, f
       return { error: { message: 'already registered in this firm' } };
     }
 
-    // 2. Fetch the subdomain to use as the salt (using authenticated client)
-    const { data: companyData } = await supabase.from('companies').select('subdomain').eq('id', companyId).single();
-    if (!companyData || !companyData.subdomain) {
-       return { error: { message: 'Could not resolve firm subdomain for registration.' } };
-    }
-
-    const proxyEmail = generateSaltedEmail(cleanEmail, companyData.subdomain);
+    const proxyEmail = generateSaltedEmail(cleanEmail, companyId);
     // 1. Create the user in Supabase Auth
     const { data, error } = await supabaseAdmin.auth.signUp({
       email: proxyEmail,

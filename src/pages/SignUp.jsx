@@ -38,6 +38,7 @@ export default function SignUp() {
 
       const user = authData.user;
       if (!user) throw new Error("Could not create user account.");
+      if (!authData.session) throw new Error("This email is already registered. Please sign in instead.");
 
       const cleanSubdomain = subdomain.toLowerCase().replace(/[^a-z0-9-]/g, '');
       if (!cleanSubdomain) throw new Error("Please enter a valid subdomain");
