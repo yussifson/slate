@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -8,7 +7,6 @@ export default function InstitutionSettings() {
   const { t } = useTranslation();
 
   return (
-    <DashboardLayout>
       <div className="max-w-6xl mx-auto space-y-6">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
@@ -81,6 +79,5 @@ export default function InstitutionSettings() {
           </TabsContent>
         </Tabs>
       </div>
-    </DashboardLayout>
   );
 }
