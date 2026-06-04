@@ -137,7 +137,7 @@ export default function Underwriting() {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(148,0,255,0.04) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh" }}>
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-card-foreground">{t("underwriting", "Underwriting")}</h1>
@@ -229,7 +229,7 @@ export default function Underwriting() {
                           onChange={e => handleUpdateDecision(app, e.target.value)}
                           className={`rounded-md border border-input px-2 py-1 text-xs font-bold ${
                             app.decision === 'Approved' ? 'bg-green-100 text-green-700' : 
-                            app.decision === 'Conditionally Approved' ? 'bg-blue-100 text-blue-700' : 
+                            app.decision === 'Conditionally Approved' ? 'bg-insurance-100 text-insurance-700' : 
                             app.decision === 'Rejected' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'
                           }`}
                         >

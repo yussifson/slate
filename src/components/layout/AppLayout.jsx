@@ -73,6 +73,8 @@ export default function AppLayout() {
         primaryColor = '251 52% 40%'; // Deep Violet/Purple (#443199)
       } else if (industry === 'hospital') {
         primaryColor = '175 84% 32%'; // Peaceful Teal/Medical Green (#0d9488)
+      } else if (industry === 'insurance') {
+        primaryColor = '275 100% 50%'; // Vibrant Purple (#9400FF)
       }
       document.documentElement.style.setProperty('--primary', primaryColor);
       document.documentElement.style.setProperty('--ring', primaryColor);

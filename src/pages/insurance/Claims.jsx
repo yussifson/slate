@@ -25,7 +25,7 @@ const CLAIM_FIELDS = [
 const statusColors = {
   'Submitted': 'bg-muted text-muted-foreground',
   'Under Review': 'bg-amber-100 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400',
-  'Approved': 'bg-blue-100 text-blue-700 dark:bg-blue-950/30 dark:text-blue-400',
+  'Approved': 'bg-insurance-100 text-insurance-700 dark:bg-insurance-950/30 dark:text-insurance-400',
   'Rejected': 'bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400',
   'Paid': 'bg-green-100 text-green-700 dark:bg-green-950/30 dark:text-green-400',
 };
@@ -152,7 +152,7 @@ export default function Claims() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(148,0,255,0.04) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh" }}>
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-card-foreground">{t("claims_processing", "Claims Processing")}</h1>
@@ -185,7 +185,7 @@ export default function Claims() {
           <p className="text-2xl font-bold text-card-foreground">{claims.filter(c => c.status === 'Approved' || c.status === 'Paid').length}</p>
         </div>
         <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
-          <div className="flex items-center gap-2 mb-2 text-blue-600"><span className="font-bold text-sm">$</span> {t("total_claimed", "Total Claimed")}</div>
+          <div className="flex items-center gap-2 mb-2 text-insurance-600"><span className="font-bold text-sm">$</span> {t("total_claimed", "Total Claimed")}</div>
           <p className="text-2xl font-bold text-card-foreground">${totalAmount.toLocaleString()}</p>
         </div>
       </div>

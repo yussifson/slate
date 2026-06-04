@@ -1,71 +1,275 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ModuleBanner } from '@/components/school/SchoolViewKit';
-import { Card, CardContent } from '@/components/ui/card';
+import { useAuth } from '@/lib/AuthContext';
+import { base44 } from '@/api/base44Client';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { UserPlus, Plus, Search, Filter } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Search, UserCheck, ArrowRight, BookOpen, Building, GraduationCap, CheckCircle } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function SHSEnrollment() {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const [admittedApplicants, setAdmittedApplicants] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  const [selectedApplicant, setSelectedApplicant] = useState(null);
+  const [enrollmentData, setEnrollmentData] = useState({
+    indexNumber: '',
+    house: '',
+    classRoom: '',
+    enrollmentDate: new Date().toISOString().split('T')[0]
+  });
+  
+  const [isEnrolling, setIsEnrolling] = useState(false);
+  const [successMsg, setSuccessMsg] = useState('');
 
-  const dummyData = [
-    { id: 1, name: "Sample Record A", status: "Active", date: "2024-03-15" },
-    { id: 2, name: "Sample Record B", status: "Pending", date: "2024-03-14" },
-    { id: 3, name: "Sample Record C", status: "Completed", date: "2024-03-12" },
-  ];
+  const fetchApplicants = async () => {
+    setLoading(true);
+    try {
+      const records = await base44.getEntities('shs_applicant', user?.company_id);
+      setAdmittedApplicants(records.filter(a => a.status === 'Admitted'));
+    } catch (error) {
+      console.error('Failed to fetch admitted applicants:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user?.company_id) {
+      fetchApplicants();
+    }
+  }, [user]);
+
+  const handleEnrollment = async () => {
+    if (!selectedApplicant) return;
+    setIsEnrolling(true);
+    try {
+      // 1. Create a new SHS Student entity
+      const studentPayload = {
+        company_id: user?.company_id,
+        case_type: 'shs_student',
+        title: selectedApplicant.title,
+        case_number: enrollmentData.indexNumber || `IDX-${Math.floor(Math.random() * 100000)}`,
+        status: 'Active',
+        data: {
+          ...selectedApplicant.data,
+          indexNumber: enrollmentData.indexNumber,
+          house: enrollmentData.house,
+          classRoom: enrollmentData.classRoom,
+          enrollmentDate: enrollmentData.enrollmentDate,
+          grade: 'Form 1',
+          program: selectedApplicant.data?.programChoice1 // Assuming they got their 1st choice
+        }
+      };
+      await base44.createEntity(studentPayload);
+      
+      // 2. Update Applicant status to Enrolled
+      await base44.updateEntity(selectedApplicant.id, { status: 'Enrolled' });
+      
+      setSuccessMsg(`Successfully enrolled ${selectedApplicant.title}!`);
+      setTimeout(() => setSuccessMsg(''), 4000);
+      
+      setSelectedApplicant(null);
+      setEnrollmentData({ indexNumber: '', house: '', classRoom: '', enrollmentDate: new Date().toISOString().split('T')[0] });
+      await fetchApplicants();
+    } catch (error) {
+      console.error('Enrollment failed:', error);
+    } finally {
+      setIsEnrolling(false);
+    }
+  };
+
+  const filteredApplicants = admittedApplicants.filter(a => 
+    a.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    a.case_number?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
-      <ModuleBanner 
-        title="Enrollment"
-        subtitle="Process accepted students into the active directory."
-        metrics={[
-          { title: "Total Records", value: "1,248", icon: UserPlus },
-          { title: "Active", value: "982", icon: UserPlus },
-          { title: "Pending Review", value: "45", icon: UserPlus }
-        ]}
-      />
-
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-        <div className="flex gap-2">
-          <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <input 
-              type="text" 
-              placeholder="Search..." 
-              className="pl-9 h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 w-full sm:w-64"
-            />
-          </div>
-          <Button variant="outline" size="icon">
-            <Filter className="w-4 h-4" />
-          </Button>
+    <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300 flex flex-col h-[calc(100vh-100px)]">
+      
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-purple-800 bg-clip-text text-transparent">
+            Student Enrollment
+          </h1>
+          <p className="text-muted-foreground mt-1 text-sm font-medium">
+            Finalize admissions by enrolling accepted applicants into the school system.
+          </p>
         </div>
-        <Button className="bg-[#6F00FF] hover:bg-[#5200c2] text-white">
-          <Plus className="w-4 h-4 mr-2" /> Add New
-        </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {dummyData.map((item) => (
-          <Card key={item.id} className="group hover:shadow-lg transition-all duration-300 border-border/50 bg-card/50 backdrop-blur-sm">
-            <CardContent className="p-6">
-              <div className="flex justify-between items-start mb-4">
-                <div className="w-12 h-12 rounded-xl bg-purple-50 text-[#6F00FF] flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <UserPlus className="w-6 h-6" />
-                </div>
-                <span className={`text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
-                  item.status === 'Active' ? 'bg-purple-100 text-purple-700' :
-                  item.status === 'Completed' ? 'bg-blue-100 text-blue-700' :
-                  'bg-amber-100 text-amber-700'
-                }`}>
-                  {item.status}
-                </span>
+      <div className="flex-1 flex flex-col md:flex-row gap-6 overflow-hidden">
+        {/* Left Panel: Admitted List */}
+        <Card className="w-full md:w-[400px] shrink-0 flex flex-col rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-purple-100/50">
+          <div className="p-4 border-b border-purple-50">
+            <h3 className="font-bold text-slate-800 mb-3 flex items-center justify-between">
+              Ready to Enroll <Badge className="bg-emerald-100 text-emerald-700">{admittedApplicants.length}</Badge>
+            </h3>
+            <div className="relative">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-purple-400" />
+              <Input 
+                placeholder="Search admitted students..." 
+                className="pl-9 h-10 bg-white border-purple-100 rounded-xl focus-visible:ring-[#6F00FF]"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </div>
+          
+          <ScrollArea className="flex-1">
+            {loading ? (
+              <div className="p-8 text-center text-purple-300 text-sm">Loading admitted students...</div>
+            ) : filteredApplicants.length === 0 ? (
+              <div className="p-8 text-center text-slate-400 text-sm">No students currently awaiting enrollment.</div>
+            ) : (
+              <div className="p-2 space-y-1">
+                {filteredApplicants.map(app => (
+                  <button
+                    key={app.id}
+                    onClick={() => setSelectedApplicant(app)}
+                    className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
+                      selectedApplicant?.id === app.id 
+                        ? 'bg-[#6F00FF] text-white shadow-md shadow-purple-500/20' 
+                        : 'hover:bg-purple-50 text-slate-700'
+                    }`}
+                  >
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0 ${
+                      selectedApplicant?.id === app.id ? 'bg-white/20' : 'bg-purple-100 text-[#6F00FF]'
+                    }`}>
+                      <UserCheck className="w-5 h-5" />
+                    </div>
+                    <div className="overflow-hidden flex-1">
+                      <p className="font-bold truncate">{app.title}</p>
+                      <p className={`text-xs truncate ${selectedApplicant?.id === app.id ? 'text-purple-200' : 'text-slate-500'}`}>
+                        {app.case_number}
+                      </p>
+                    </div>
+                    <ArrowRight className={`w-4 h-4 ${selectedApplicant?.id === app.id ? 'text-white' : 'text-slate-300'}`} />
+                  </button>
+                ))}
               </div>
-              <h3 className="font-bold text-lg mb-1 text-foreground">{item.name}</h3>
-              <p className="text-sm text-muted-foreground font-medium">Last updated: {item.date}</p>
-            </CardContent>
-          </Card>
-        ))}
+            )}
+          </ScrollArea>
+        </Card>
+
+        {/* Right Panel: Enrollment Form */}
+        <Card className="flex-1 flex flex-col rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-purple-100/50 overflow-hidden relative">
+          {successMsg && (
+            <div className="absolute inset-x-0 top-0 bg-emerald-500 text-white p-3 text-center text-sm font-bold animate-in slide-in-from-top flex justify-center items-center gap-2 z-50">
+              <CheckCircle className="w-4 h-4" /> {successMsg}
+            </div>
+          )}
+          
+          {selectedApplicant ? (
+            <>
+              <div className="p-8 bg-gradient-to-r from-purple-50 to-white border-b border-purple-100">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h2 className="text-2xl font-black text-slate-800">{selectedApplicant.title}</h2>
+                    <div className="flex items-center gap-3 mt-2">
+                      <Badge variant="outline" className="border-purple-200 text-[#6F00FF] bg-white">{selectedApplicant.case_number}</Badge>
+                      <span className="text-xs font-medium text-slate-500">Admitted to: {selectedApplicant.data?.programChoice1}</span>
+                    </div>
+                  </div>
+                  <Badge className="bg-emerald-100 text-emerald-700 px-3 py-1 gap-1 text-sm border-none shadow-sm">
+                    <CheckCircle className="w-4 h-4" /> Cleared for Enrollment
+                  </Badge>
+                </div>
+              </div>
+              
+              <ScrollArea className="flex-1 p-8">
+                <div className="max-w-xl mx-auto space-y-8">
+                  
+                  <div className="space-y-6">
+                    <h3 className="font-bold text-slate-800 border-b border-slate-100 pb-2">Assign Student Details</h3>
+                    
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-[#6F00FF] uppercase tracking-wider flex items-center gap-2">
+                        <BookOpen className="w-4 h-4" /> Official Index Number
+                      </label>
+                      <Input 
+                        placeholder="e.g. 0010123456"
+                        className="bg-slate-50 border-slate-200 focus-visible:ring-[#6F00FF] rounded-xl h-12 text-lg font-medium"
+                        value={enrollmentData.indexNumber}
+                        onChange={(e) => setEnrollmentData({...enrollmentData, indexNumber: e.target.value})}
+                      />
+                      <p className="text-xs text-slate-400">Leave blank to auto-generate a temporary ID.</p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center gap-2">
+                          <Building className="w-4 h-4" /> Boarding House
+                        </label>
+                        <select 
+                          className="w-full h-11 rounded-xl border border-slate-200 bg-slate-50 px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                          value={enrollmentData.house}
+                          onChange={(e) => setEnrollmentData({...enrollmentData, house: e.target.value})}
+                        >
+                          <option value="">Assign House...</option>
+                          <option value="Aggrey House">Aggrey House</option>
+                          <option value="Gyamfi House">Gyamfi House</option>
+                          <option value="Livingstone House">Livingstone House</option>
+                          <option value="Slessor House">Slessor House</option>
+                        </select>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center gap-2">
+                          <BookOpen className="w-4 h-4" /> Form / Class
+                        </label>
+                        <Input 
+                          placeholder="e.g. 1 Sci A"
+                          className="bg-slate-50 border-slate-200 focus-visible:ring-[#6F00FF] rounded-xl h-11"
+                          value={enrollmentData.classRoom}
+                          onChange={(e) => setEnrollmentData({...enrollmentData, classRoom: e.target.value})}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Date of Enrollment</label>
+                      <Input 
+                        type="date"
+                        className="bg-slate-50 border-slate-200 focus-visible:ring-[#6F00FF] rounded-xl h-11"
+                        value={enrollmentData.enrollmentDate}
+                        onChange={(e) => setEnrollmentData({...enrollmentData, enrollmentDate: e.target.value})}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="pt-8 border-t border-slate-100 flex justify-end">
+                    <Button 
+                      onClick={handleEnrollment}
+                      disabled={isEnrolling || !enrollmentData.house}
+                      className="rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white px-8 h-12 font-bold shadow-md w-full sm:w-auto"
+                    >
+                      {isEnrolling ? 'Processing...' : (
+                        <><GraduationCap className="w-5 h-5 mr-2" /> Complete Enrollment</>
+                      )}
+                    </Button>
+                  </div>
+                  
+                </div>
+              </ScrollArea>
+            </>
+          ) : (
+            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-50/50">
+              <div className="w-20 h-20 rounded-full bg-purple-100 flex items-center justify-center mb-6">
+                <GraduationCap className="w-10 h-10 text-purple-300" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-700">No Applicant Selected</h3>
+              <p className="text-slate-500 max-w-sm mt-2">
+                Select an admitted applicant from the left panel to assign their house, class, and officially enroll them into the system.
+              </p>
+            </div>
+          )}
+        </Card>
       </div>
     </div>
   );

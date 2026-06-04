@@ -13,6 +13,19 @@ module.exports = {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
+  			insurance: {
+  				50: '#f9f5ff',
+  				100: '#f0e6ff',
+  				200: '#e1ccff',
+  				300: '#cd99ff',
+  				400: '#b866ff',
+  				500: '#a333ff',
+  				600: '#9400FF',
+  				700: '#7500cc',
+  				800: '#5a0099',
+  				900: '#3d0066',
+  				950: '#1f0033',
+  			},
   			purple: {
   				50: '#f5efff',
   				100: '#ece1ff',

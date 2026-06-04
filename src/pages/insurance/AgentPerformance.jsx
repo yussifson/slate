@@ -144,7 +144,7 @@ export default function AgentPerformance() {
   const topPerformer = [...agents].sort((a, b) => (Number(b.policiesSold) || 0) - (Number(a.policiesSold) || 0))[0];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(148,0,255,0.04) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh" }}>
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-card-foreground">{t("agent_performance", "Agent Performance")}</h1>
@@ -163,7 +163,7 @@ export default function AgentPerformance() {
           <p className="text-2xl font-bold text-card-foreground">{agents.length}</p>
         </div>
         <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
-          <div className="flex items-center gap-2 mb-2 text-blue-600"><TrendingUp className="w-4 h-4"/> {t("avg_policies_sold", "Avg Policies Sold")}</div>
+          <div className="flex items-center gap-2 mb-2 text-insurance-600"><TrendingUp className="w-4 h-4"/> {t("avg_policies_sold", "Avg Policies Sold")}</div>
           <p className="text-2xl font-bold text-card-foreground">{avgPolicies}</p>
         </div>
         <div className="bg-card rounded-xl border border-border p-4 shadow-sm">

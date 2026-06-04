@@ -147,19 +147,19 @@ export default function Policies() {
   const totalPremium = policies.reduce((sum, p) => sum + (Number(p.premium) || 0), 0);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(148,0,255,0.04) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh" }}>
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-card-foreground">{t("policies", "Policies")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("manage_insurance_policies_and_", "Manage insurance policies and coverage")}</p>
         </div>
-        <Button onClick={openNewModal} className="gap-2 bg-indigo-600 hover:bg-indigo-700 text-white">
+        <Button onClick={openNewModal} className="gap-2 bg-insurance-600 hover:bg-insurance-700 text-white">
           <Plus className="w-4 h-4" /> {t("new_policy", "New Policy")}
         </Button>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-600">
+          <div className="w-10 h-10 rounded-xl bg-insurance-100 flex items-center justify-center text-insurance-600">
             <FileText className="w-5 h-5" />
           </div>
           <div>
@@ -186,7 +186,7 @@ export default function Policies() {
           </div>
         </div>
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600">
+          <div className="w-10 h-10 rounded-xl bg-insurance-100 flex items-center justify-center text-insurance-600">
             <span className="font-bold text-lg">$</span>
           </div>
           <div>
@@ -207,7 +207,7 @@ export default function Policies() {
             <div className="py-12 text-center text-muted-foreground">{t("loading_policies", "Loading policies...")}</div>
           ) : filtered.length === 0 ? (
             <div className="py-12 text-center text-muted-foreground">
-              <Shield className="w-12 h-12 mx-auto mb-3 opacity-30 text-indigo-600" />
+              <Shield className="w-12 h-12 mx-auto mb-3 opacity-30 text-insurance-600" />
               <p className="font-semibold text-lg text-card-foreground">{t("no_policies_found", "No policies found")}</p>
               <p className="text-xs mt-1">{t("create_a_new_policy_to_get_sta", "Create a new policy to get started.")}</p>
             </div>
@@ -227,7 +227,7 @@ export default function Policies() {
                 {filtered.map(policy => {
                   return (
                     <tr key={policy.id} className="hover:bg-muted/50 transition-colors">
-                      <td className="px-6 py-4 font-mono font-bold text-indigo-600">{policy.policyNumber}</td>
+                      <td className="px-6 py-4 font-mono font-bold text-insurance-600">{policy.policyNumber}</td>
                       <td className="px-6 py-4">
                         <p className="font-bold text-card-foreground">{policy.holderName}</p>
                         <p className="text-xs text-muted-foreground">{policy.policyType} {t("insurance", "Insurance")}</p>
@@ -320,7 +320,7 @@ export default function Policies() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditTargetId(null); }}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white" onClick={handleCreatePolicy}>{editTargetId ? 'Save Changes' : 'Create Policy'}</Button>
+              <Button className="flex-1 bg-insurance-600 hover:bg-insurance-700 text-white" onClick={handleCreatePolicy}>{editTargetId ? 'Save Changes' : 'Create Policy'}</Button>
             </div>
           </div>
         </div>
