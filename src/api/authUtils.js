@@ -14,17 +14,37 @@ export const supabaseAdmin = createClient(supabaseUrl, supabaseAnonKey, {
   }
 });
 
+export const generateSaltedEmail = (realEmail, companyId) => {
+  const cleanEmail = realEmail.trim().toLowerCase();
+  const [localPart, domain] = cleanEmail.split('@');
+  return `${localPart}+firm${companyId.replace(/-/g, '')}@${domain}`;
+};
+
 /**
- * Registers a new user for school modules (e.g. Student or Parent).
- * @param {string} proxyEmail - The derived proxy email (e.g., STU-1001@school.optalflow.com)
- * @param {string} password - The generated default password
- * @param {string} role - The role to assign (student, parent)
+ * Registers a new user for school/firm modules.
+ * @param {string} realEmail - The user's actual email
+ * @param {string} password - The generated or chosen password
+ * @param {string} role - The role to assign
  * @param {string} companyId - The current workspace ID
  * @param {string} fullName - The full name of the user
  * @returns {object} { user, error }
  */
-export const registerSchoolUser = async (proxyEmail, password, role, companyId, fullName) => {
+export const registerSchoolUser = async (realEmail, password, role, companyId, fullName) => {
   try {
+    const cleanEmail = realEmail.trim().toLowerCase();
+    
+    // 1. Pre-check if they already exist in this specific firm
+    const { data: existingProfiles, error: checkError } = await supabaseAdmin
+      .from('profiles')
+      .select('id')
+      .eq('email', cleanEmail)
+      .eq('company_id', companyId);
+      
+    if (existingProfiles && existingProfiles.length > 0) {
+      return { error: { message: 'already registered in this firm' } };
+    }
+
+    const proxyEmail = generateSaltedEmail(cleanEmail, companyId);
     // 1. Create the user in Supabase Auth
     const { data, error } = await supabaseAdmin.auth.signUp({
       email: proxyEmail,
@@ -54,7 +74,7 @@ export const registerSchoolUser = async (proxyEmail, password, role, companyId, 
           id: data.user.id,
           company_id: companyId,
           role: role,
-          email: proxyEmail,
+          email: cleanEmail, // Store real email in profile for UI
           full_name: fullName,
         }
       ]);

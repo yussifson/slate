@@ -14,6 +14,7 @@ export default function Login() {
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [workspace, setWorkspace] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [branding, setBranding] = useState({ name: 'Optalflow', logo_url: null, tagline: 'Enter your credentials to access your account' });
@@ -71,32 +72,69 @@ export default function Login() {
     setLoading(true);
     setError('');
 
+    let loginEmail = email.trim().toLowerCase();
+    let targetSubdomain = currentSubdomain || workspace.trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
+
+    if (targetSubdomain) {
+      // Fetch company_id for this subdomain to generate the salted email
+      const { data: brandData, error: brandErr } = await supabase.rpc('get_company_by_subdomain', { p_subdomain: targetSubdomain });
+      let compId = null;
+      if (!brandErr && brandData) {
+         const d = Array.isArray(brandData) ? brandData[0] : brandData;
+         compId = d?.id;
+      } else {
+         const { data: tableData } = await supabase.from('companies').select('id').eq('subdomain', targetSubdomain).single();
+         if (tableData) compId = tableData.id;
+      }
+      
+      if (compId) {
+         // Salt the email matching the generation logic in authUtils.js
+         const [localPart, domain] = loginEmail.split('@');
+         loginEmail = `${localPart}+firm${compId.replace(/-/g, '')}@${domain}`;
+      } else {
+         setError(`Workspace '${targetSubdomain}' not found.`);
+         setLoading(false);
+         return;
+      }
+    }
+
     const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({
-      email,
+      email: loginEmail,
       password,
     });
 
     if (signInError) {
-      setError(signInError.message);
+      setError(signInError.message === "Invalid login credentials" ? "Invalid email, password, or workspace." : signInError.message);
       setLoading(false);
       return;
     }
 
+    let targetSubdomain = currentSubdomain || workspace.trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
 
-
-    if (currentSubdomain) {
+    if (targetSubdomain) {
       // Check if user belongs to this subdomain
       const { data: profile } = await supabase.from('profiles').select('company_id, role').eq('id', authData.user.id).single();
       if (profile?.company_id) {
         const { data: company } = await supabase.from('companies').select('name, subdomain').eq('id', profile.company_id).single();
         const companySubdomain = company?.subdomain || company?.name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
         
-        if (companySubdomain && companySubdomain !== currentSubdomain) {
+        if (companySubdomain && companySubdomain !== currentSubdomain && !workspace) {
           const port = window.location.port ? `:${window.location.port}` : '';
           let url = `${window.location.protocol}//${companySubdomain}.${baseDomain}${port}/`;
           if (authData?.session?.access_token && authData?.session?.refresh_token) {
             url += `?access_token=${authData.session.access_token}&refresh_token=${authData.session.refresh_token}`;
           }
+          window.location.href = url;
+          return;
+        } else if (companySubdomain && workspace && !currentSubdomain) {
+          // We are on root, redirecting to the workspace
+          const port = window.location.port ? `:${window.location.port}` : '';
+          let url = `${window.location.protocol}//${companySubdomain}.${baseDomain}${port}/`;
+          if (authData?.session?.access_token && authData?.session?.refresh_token) {
+            url += `?access_token=${authData.session.access_token}&refresh_token=${authData.session.refresh_token}`;
+          }
+          if (profile?.role === 'student') url += 'student-portal';
+          else if (profile?.role === 'parent') url += 'parent-portal';
           window.location.href = url;
           return;
         }
@@ -232,9 +270,21 @@ export default function Login() {
                   className="w-full h-14 text-base bg-white text-slate-900 border-slate-200 placeholder:text-slate-400 focus-visible:ring-primary/30 focus-visible:border-primary"
                 />
               </div>
+              { !currentSubdomain && (
+                <div className="space-y-2 relative">
+                  <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">{t("workspace", "Workspace URL (Optional)")}</label>
+                  <Input
+                    placeholder="e.g. myfirm"
+                    value={workspace}
+                    onChange={(e) => setWorkspace(e.target.value)}
+                    className="h-12 bg-background/50 pl-4 border-muted hover:border-primary/50 focus:border-primary transition-colors text-foreground"
+                  />
+                  <span className="absolute right-3 top-[34px] text-muted-foreground text-sm">.{baseDomain}</span>
+                </div>
+              )}
             </div>
 
-            <Button type="submit" className="w-full h-14 text-base font-bold rounded-xl shadow-lg shadow-primary/20 bg-gradient-to-b from-primary/90 to-primary text-white transition-all hover:-translate-y-0.5 active:scale-[0.98]" disabled={loading}>
+            <Button type="submit" className="w-full h-12 text-base font-medium transition-all active:scale-[0.98]" disabled={loading}>
               {loading ? 'Signing in...' : 'Sign in to workspace'}
             </Button>
 
