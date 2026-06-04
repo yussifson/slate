@@ -153,7 +153,7 @@ export default function AgentPerformance() {
             "Track agent sales, commissions, and ratings"
           )}</p>
         </div>
-        <Button onClick={openNewModal} className="gap-2 bg-amber-600 hover:bg-amber-700 text-white">
+        <Button onClick={openNewModal} className="gap-2 bg-insurance-600 hover:bg-insurance-700 text-white">
           <Plus className="w-4 h-4" /> {t("add_agent", "Add Agent")}
         </Button>
       </div>
@@ -188,7 +188,7 @@ export default function AgentPerformance() {
             <div className="py-12 text-center text-muted-foreground">{t("loading_agents", "Loading agents...")}</div>
           ) : filtered.length === 0 ? (
             <div className="py-12 text-center text-muted-foreground">
-              <Users className="w-12 h-12 mx-auto mb-3 opacity-30 text-amber-600" />
+              <Users className="w-12 h-12 mx-auto mb-3 opacity-30 text-insurance-600" />
               <p className="font-semibold text-lg text-card-foreground">{t("no_agents_found", "No agents found")}</p>
               <p className="text-xs mt-1">{t(
                 "add_an_agent_to_start_tracking",
@@ -310,7 +310,7 @@ export default function AgentPerformance() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditTargetId(null); }}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-amber-600 hover:bg-amber-700 text-white" onClick={handleCreateAgent}>{editTargetId ? 'Save Changes' : 'Save Agent'}</Button>
+              <Button className="flex-1 bg-insurance-600 hover:bg-insurance-700 text-white" onClick={handleCreateAgent}>{editTargetId ? 'Save Changes' : 'Save Agent'}</Button>
             </div>
           </div>
         </div>

@@ -128,7 +128,7 @@ export default function PolicyholderPortal() {
               <h3 className="font-bold text-card-foreground flex items-center gap-2"><FileWarning className="w-5 h-5 text-amber-600" /> {t("claim_center", "Claim Center")}</h3>
             </div>
             <div className="p-4 space-y-4">
-               <Button onClick={() => setShowClaimModal(true)} className="w-full bg-red-600 hover:bg-red-700 text-white shadow-sm flex items-center justify-center gap-2 h-12">
+               <Button onClick={() => setShowClaimModal(true)} className="w-full bg-insurance-600 hover:bg-insurance-700 text-white shadow-sm flex items-center justify-center gap-2 h-12">
                  <Plus className="w-5 h-5" /> {t("file_a_new_claim", "File a New Claim")}
                </Button>
                
@@ -215,7 +215,7 @@ export default function PolicyholderPortal() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => setShowClaimModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-red-600 hover:bg-red-700 text-white" onClick={handleFileClaim}>{t("submit_claim", "Submit Claim")}</Button>
+              <Button className="flex-1 bg-insurance-600 hover:bg-insurance-700 text-white" onClick={handleFileClaim}>{t("submit_claim", "Submit Claim")}</Button>
             </div>
           </div>
         </div>

@@ -1,150 +1,315 @@
-import { useTranslation } from "react-i18next";
-import { useState } from 'react';
-import { ModuleBanner } from '@/components/school/SchoolViewKit';
+import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/lib/AuthContext';
+import { base44 } from '@/api/base44Client';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
-import { useCompanyId } from "@/hooks/useCompanyId";
-import { toast } from 'react-hot-toast';
-import { BookOpen, Plus, Search } from "lucide-react";
+import { Search, Plus, BookOpen, Users, UserCheck } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function SHSClasses() {
   const { t } = useTranslation();
-  const companyId = useCompanyId();
-  const queryClient = useQueryClient();
-  const [showModal, setShowModal] = useState(false);
-  const [search, setSearch] = useState('');
+  const { user } = useAuth();
+  const [classes, setClasses] = useState([]);
+  const [teachers, setTeachers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
   
-  const [formData, setFormData] = useState({
-    name: 'Form 1 Science A', capacity: 40, teacher: '', room: ''
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [newClass, setNewClass] = useState({
+    className: '',
+    grade: 'Form 1',
+    program: 'General Science',
+    classTeacherId: '',
+    capacity: 40,
+    room: ''
   });
 
-  const { data: records = [], isLoading } = useQuery({ 
-    queryKey: ["shs_classes", companyId], 
-    queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId, case_type: 'shs_class' }), 
-    enabled: !!companyId 
-  });
-
-  const mutateClass = useMutation({
-    mutationFn: (data) => data.id ? base44.entities.LegalCase.update(data.id, data) : base44.entities.LegalCase.create(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["shs_classes", companyId] });
-      toast.success("Class saved");
-      setShowModal(false);
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const [classData, teacherData] = await Promise.all([
+        base44.getEntities('shs_class', user?.company_id),
+        base44.getEntities('shs_teacher', user?.company_id)
+      ]);
+      setClasses(classData);
+      setTeachers(teacherData);
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    } finally {
+      setLoading(false);
     }
-  });
-
-  const classes = records.map(r => {
-    let extra = {};
-    try { extra = JSON.parse(r.notes || '{}'); } catch(e) {}
-    return {
-      id: r.id,
-      name: r.title,
-      capacity: extra.capacity || 40,
-      teacher: extra.teacher || 'Unassigned',
-      room: extra.room || 'TBD',
-    };
-  });
-
-  const filtered = classes.filter(c => c.name.toLowerCase().includes(search.toLowerCase()) || c.teacher.toLowerCase().includes(search.toLowerCase()));
-
-  const handleSave = () => {
-    if (!formData.name) return toast.error("Class Name is required");
-    mutateClass.mutate({
-      company_id: companyId,
-      case_type: 'shs_class',
-      title: formData.name,
-      description: 'High School Class',
-      notes: JSON.stringify({
-        capacity: formData.capacity,
-        teacher: formData.teacher,
-        room: formData.room
-      })
-    });
   };
 
-  return (
-    <div className="space-y-6">
-      <ModuleBanner 
-        title={t("classes", "Classes & Sections")} 
-        subtitle="Manage class streams, room assignments, and form masters." 
-        metrics={[
-          { title: "Total Classes", value: classes.length, icon: BookOpen }
-        ]}
-      />
+  useEffect(() => {
+    if (user?.company_id) {
+      fetchData();
+    }
+  }, [user]);
+
+  const handleAddClass = async () => {
+    try {
+      const selectedTeacher = teachers.find(t => t.id === newClass.classTeacherId);
       
-      <div className="bg-card rounded-xl border border-border p-4 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="relative flex-1 w-full max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Search classes..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
+      const payload = {
+        company_id: user?.company_id,
+        case_type: 'shs_class',
+        title: newClass.className,
+        case_number: `CLS-${Math.floor(Math.random() * 10000)}`,
+        status: 'Active',
+        data: {
+          ...newClass,
+          classTeacherName: selectedTeacher?.title || 'Unassigned'
+        }
+      };
+      
+      await base44.createEntity(payload);
+      setIsAddModalOpen(false);
+      setNewClass({
+        className: '', grade: 'Form 1', program: 'General Science', classTeacherId: '', capacity: 40, room: ''
+      });
+      fetchData();
+    } catch (error) {
+      console.error('Failed to add class:', error);
+    }
+  };
+
+  const filteredClasses = classes.filter(c => 
+    c.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    c.data?.program?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  return (
+    <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
+      
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-purple-800 bg-clip-text text-transparent">
+            Academic Classes
+          </h1>
+          <p className="text-muted-foreground mt-1 text-sm font-medium">
+            Manage classroom allocations, class teachers, and academic blocks.
+          </p>
         </div>
-        <Button onClick={() => {
-          setFormData({ name: '', capacity: 40, teacher: '', room: '' });
-          setShowModal(true);
-        }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
-          <Plus className="w-4 h-4" /> Add Class
+        
+        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white shadow-md shadow-purple-500/20">
+          <Plus className="w-4 h-4" /> Create Class
         </Button>
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-slate-50 border-b border-slate-200">
-            <tr>
-              {['Class Name', 'Form Master / Teacher', 'Room', 'Capacity'].map(h => (
-                <th key={h} className="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wide">{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {filtered.map(c => (
-              <tr key={c.id} className="hover:bg-slate-50">
-                <td className="px-4 py-3 font-semibold text-slate-900">{c.name}</td>
-                <td className="px-4 py-3 text-slate-600">{c.teacher}</td>
-                <td className="px-4 py-3 text-slate-600">{c.room}</td>
-                <td className="px-4 py-3 font-medium">{c.capacity} Students</td>
-              </tr>
-            ))}
-            {filtered.length === 0 && (
-              <tr><td colSpan="4" className="text-center py-8 text-slate-500">No classes found</td></tr>
-            )}
-          </tbody>
-        </table>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-purple-100">
+          <CardContent className="p-5 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center text-[#6F00FF] shrink-0">
+              <BookOpen className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-muted-foreground">Total Classes</p>
+              <h3 className="text-2xl font-black text-slate-800">{classes.length}</h3>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-emerald-100">
+          <CardContent className="p-5 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
+              <UserCheck className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-muted-foreground">Assigned Teachers</p>
+              <h3 className="text-2xl font-black text-slate-800">
+                {classes.filter(c => c.data?.classTeacherId).length}
+              </h3>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden border border-slate-200">
-            <div className="p-6 border-b border-slate-100">
-              <h2 className="text-xl font-bold text-slate-900">Add Class</h2>
+      <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 bg-slate-50/50 pb-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <CardTitle className="text-lg font-bold text-slate-800">Classes Directory</CardTitle>
             </div>
-            <div className="p-6 space-y-4">
-              <div>
-                <label className="text-xs font-bold text-slate-500 uppercase">Class Name</label>
-                <Input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="e.g. Form 1 Science A" className="mt-1" />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs font-bold text-slate-500 uppercase">Capacity</label>
-                  <Input type="number" value={formData.capacity} onChange={e => setFormData({...formData, capacity: e.target.value})} placeholder="40" className="mt-1" />
-                </div>
-                <div>
-                  <label className="text-xs font-bold text-slate-500 uppercase">Room</label>
-                  <Input value={formData.room} onChange={e => setFormData({...formData, room: e.target.value})} placeholder="Room 101" className="mt-1" />
-                </div>
-              </div>
-              <div>
-                <label className="text-xs font-bold text-slate-500 uppercase">Form Master</label>
-                <Input value={formData.teacher} onChange={e => setFormData({...formData, teacher: e.target.value})} placeholder="Teacher Name" className="mt-1" />
-              </div>
-            </div>
-            <div className="p-6 border-t border-slate-100 bg-slate-50 flex gap-3">
-              <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>Cancel</Button>
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleSave}>Save Class</Button>
+            
+            <div className="relative w-full sm:w-64">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Input 
+                placeholder="Search class name or program..." 
+                className="pl-9 h-9 bg-white border-slate-200 rounded-xl focus-visible:ring-[#6F00FF]"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
           </div>
-        </div>
-      )}
+        </CardHeader>
+        <CardContent className="p-0">
+          {loading ? (
+            <div className="p-12 text-center text-slate-400">Loading classes...</div>
+          ) : filteredClasses.length === 0 ? (
+            <div className="p-16 text-center">
+              <div className="w-16 h-16 rounded-2xl bg-purple-50 mx-auto flex items-center justify-center mb-4">
+                <BookOpen className="w-8 h-8 text-purple-400" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-700">No classes found</h3>
+              <p className="text-sm text-slate-500">Create a new class to set up your academic structure.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+              {filteredClasses.map(cls => (
+                <div key={cls.id} className="group p-5 rounded-2xl border border-slate-100 bg-white hover:border-[#6F00FF]/30 hover:shadow-lg hover:shadow-purple-500/5 transition-all duration-300">
+                  <div className="flex items-start justify-between mb-4">
+                    <div>
+                      <h4 className="font-black text-xl text-slate-800 group-hover:text-[#6F00FF] transition-colors">{cls.title}</h4>
+                      <Badge variant="outline" className="mt-1 bg-purple-50 text-[#6F00FF] border-purple-200">
+                        {cls.data?.grade} • {cls.data?.program}
+                      </Badge>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-3 mt-4 text-sm">
+                    <div className="flex items-center gap-3 text-slate-600 bg-slate-50 p-2 rounded-xl border border-slate-100">
+                      <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                        <UserCheck className="w-4 h-4" />
+                      </div>
+                      <div className="flex-1 overflow-hidden">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Class Teacher</p>
+                        <p className="font-bold text-slate-700 truncate">{cls.data?.classTeacherName || 'Unassigned'}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="bg-slate-50 p-2 rounded-xl border border-slate-100 text-center">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Room</p>
+                        <p className="font-bold text-slate-700">{cls.data?.room || 'TBA'}</p>
+                      </div>
+                      <div className="bg-slate-50 p-2 rounded-xl border border-slate-100 text-center">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Capacity</p>
+                        <p className="font-bold text-slate-700">{cls.data?.capacity || 40}</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-5 pt-4 border-t border-slate-50 flex justify-end gap-2">
+                    <Button variant="ghost" size="sm" className="w-full rounded-xl text-[#6F00FF] hover:bg-purple-50 font-semibold">
+                      View Students <Users className="w-4 h-4 ml-2" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
+        <DialogContent className="sm:max-w-[500px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
+          <div className="p-6 bg-gradient-to-br from-[#6F00FF] to-purple-800 text-white">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-black">Create Class</DialogTitle>
+              <DialogDescription className="text-purple-100">
+                Set up a new academic class and assign a class teacher.
+              </DialogDescription>
+            </DialogHeader>
+          </div>
+          
+          <ScrollArea className="max-h-[60vh] p-6 bg-slate-50">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Class Name</label>
+                <Input 
+                  placeholder="e.g. 1 Sci A"
+                  className="bg-white border-slate-200 rounded-xl"
+                  value={newClass.className}
+                  onChange={e => setNewClass({...newClass, className: e.target.value})}
+                />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Form / Grade</label>
+                  <select 
+                    className="w-full h-10 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                    value={newClass.grade}
+                    onChange={e => setNewClass({...newClass, grade: e.target.value})}
+                  >
+                    <option value="Form 1">Form 1</option>
+                    <option value="Form 2">Form 2</option>
+                    <option value="Form 3">Form 3</option>
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Programme</label>
+                  <select 
+                    className="w-full h-10 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                    value={newClass.program}
+                    onChange={e => setNewClass({...newClass, program: e.target.value})}
+                  >
+                    <option value="General Science">General Science</option>
+                    <option value="General Arts">General Arts</option>
+                    <option value="Business">Business</option>
+                    <option value="Visual Arts">Visual Arts</option>
+                    <option value="Home Economics">Home Economics</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Class Teacher</label>
+                <select 
+                  className="w-full h-10 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                  value={newClass.classTeacherId}
+                  onChange={e => setNewClass({...newClass, classTeacherId: e.target.value})}
+                >
+                  <option value="">Unassigned</option>
+                  {teachers.map(t => (
+                    <option key={t.id} value={t.id}>{t.title}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Room</label>
+                  <Input 
+                    placeholder="e.g. Block A, Rm 1"
+                    className="bg-white border-slate-200 rounded-xl"
+                    value={newClass.room}
+                    onChange={e => setNewClass({...newClass, room: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Capacity</label>
+                  <Input 
+                    type="number"
+                    min="1"
+                    className="bg-white border-slate-200 rounded-xl"
+                    value={newClass.capacity}
+                    onChange={e => setNewClass({...newClass, parseInt: e.target.value})}
+                  />
+                </div>
+              </div>
+
+            </div>
+          </ScrollArea>
+          
+          <div className="p-4 bg-white border-t border-slate-100 flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600">
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleAddClass} 
+              disabled={!newClass.className}
+              className="rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white font-bold"
+            >
+              Create Class
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
