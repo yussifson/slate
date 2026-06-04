@@ -56,15 +56,14 @@ export default function RetailDashboard() {
   return (
     <div className="flex-1 p-6 overflow-y-auto bg-slate-50/50">
       <div className="max-w-7xl mx-auto space-y-6">
-        <div className="relative overflow-hidden bg-gradient-to-br from-orange-500 to-amber-700 rounded-[2.5rem] p-8 md:p-12 text-white shadow-sm border border-white/10 mb-8">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-orange-400/20 blur-[100px] rounded-full pointer-events-none"></div>
-          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="relative overflow-hidden bg-gradient-to-r from-orange-500 to-amber-600 rounded-xl p-6 text-white mb-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="text-center md:text-left">
-              <h1 className="text-3xl md:text-4xl font-black tracking-tight mb-2">Welcome back, {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Manager'}!</h1>
-              <p className="text-orange-100 font-medium text-lg">{t("retail_desc", "Live metrics from your retail operations.")}</p>
+              <h1 className="text-2xl font-bold tracking-tight">Welcome back, {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Manager'}!</h1>
+              <p className="text-white/80 text-sm mt-1">{t("retail_desc", "Live metrics from your retail operations.")}</p>
             </div>
-            <div className="flex items-center gap-2 bg-white/10 p-2 rounded-2xl backdrop-blur-md border border-white/20 shadow-inner">
-              <span className="text-xs font-bold uppercase tracking-wider text-white px-3">{new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })}</span>
+            <div className="flex items-center bg-white/15 px-4 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider">
+              {new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })}
             </div>
           </div>
         </div>
