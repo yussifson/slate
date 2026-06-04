@@ -48,7 +48,7 @@ export default function RetailDashboard() {
   if (isLoading) {
     return (
       <div className="flex-1 p-6 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -56,7 +56,7 @@ export default function RetailDashboard() {
   return (
     <div className="flex-1 p-6 overflow-y-auto bg-slate-50/50">
       <div className="max-w-7xl mx-auto space-y-6">
-        <div className="relative overflow-hidden bg-gradient-to-br from-orange-500 to-amber-700 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-white/10 mb-8">
+        <div className="relative overflow-hidden bg-gradient-to-br from-orange-500 to-amber-700 rounded-[2.5rem] p-8 md:p-12 text-white shadow-sm border border-white/10 mb-8">
           <div className="absolute top-0 right-0 w-64 h-64 bg-orange-400/20 blur-[100px] rounded-full pointer-events-none"></div>
           <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="text-center md:text-left">
@@ -88,7 +88,7 @@ export default function RetailDashboard() {
           <Card className="shadow-sm border-border/50">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">{t("total_products", "Total Products")}</CardTitle>
-              <Package className="w-4 h-4 text-blue-500" />
+              <Package className="w-4 h-4 text-orange-500" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-slate-900">{products.length}</div>
@@ -114,7 +114,7 @@ export default function RetailDashboard() {
           <Card className="shadow-sm border-border/50">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">{t("active_shifts", "Active Shifts")}</CardTitle>
-              <Users className="w-4 h-4 text-indigo-500" />
+              <Users className="w-4 h-4 text-orange-500" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-slate-900">{activeShifts.length}</div>
@@ -142,7 +142,7 @@ export default function RetailDashboard() {
                       contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                       formatter={(value) => [`$${value.toFixed(2)}`, 'Revenue']}
                     />
-                    <Line type="monotone" dataKey="revenue" stroke="#3b82f6" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
+                    <Line type="monotone" dataKey="revenue" stroke="#f97316" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -183,7 +183,7 @@ export default function RetailDashboard() {
             <Card className="shadow-sm border-border/50">
               <CardHeader>
                 <CardTitle className="text-base flex items-center">
-                  <ShoppingCart className="w-4 h-4 text-blue-500 mr-2" />
+                  <ShoppingCart className="w-4 h-4 text-orange-500 mr-2" />
                   {t("recent_orders", "Recent Orders")}
                 </CardTitle>
               </CardHeader>

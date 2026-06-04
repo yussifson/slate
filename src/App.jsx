@@ -326,7 +326,7 @@ function PlatformRoutes() {
       <Route path="/complaints" element={<SchoolComplaints />} />
       <Route path="/support-center" element={<SchoolSupportCenter />} />
 
-      <Route path="/marketplace" element={<SchoolCampusMarketplace />} />
+      <Route path="/campus-marketplace" element={<SchoolCampusMarketplace />} />
       <Route path="/institution-settings" element={<SchoolInstitutionSettings />} />
 
       {/* Hospital Suite */}
