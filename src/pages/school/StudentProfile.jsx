@@ -18,7 +18,7 @@ export default function StudentProfile() {
     queryKey: ['student', id],
     queryFn: async () => {
       const rec = await base44.entities.Client.get(id);
-      if (!rec || rec.company_id !== companyId) throw new Error("Student not found");
+      if (!rec || String(rec.company_id) !== String(companyId)) throw new Error("Student not found");
       let extra = {};
       try { extra = JSON.parse(rec.notes || '{}'); } catch(e) {}
       return { ...rec, ...extra };
