@@ -129,7 +129,7 @@ export default function Attendance() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground">{t("attendance", "Attendance")}</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{t("attendance", "Attendance")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("daily_class_attendance_registe", "Daily class attendance register")}</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
@@ -152,12 +152,12 @@ export default function Attendance() {
       </div>
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-3">
+        <div className="stat-card-premium bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center">
             <Users className="w-5 h-5 text-white" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-card-foreground">{classStudents.length}</p>
+            <p className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{classStudents.length}</p>
             <p className="text-xs text-muted-foreground">{t("total_students", "Total Students")}</p>
           </div>
         </div>
@@ -190,7 +190,7 @@ export default function Attendance() {
         </div>
       </div>
       {/* Attendance Sheet */}
-      <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] overflow-hidden overflow-hidden">
         <div className="p-4 border-b border-border bg-muted/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-card-foreground font-semibold">
             <ClipboardList className="w-5 h-5 text-emerald-600" />
@@ -256,7 +256,7 @@ export default function Attendance() {
               {classStudents.length === 0 && (
                 <tr>
                   <td colSpan={4} className="text-center py-12 text-muted-foreground">
-                    <Users className="w-10 h-10 mx-auto mb-3 opacity-30 text-emerald-600" />
+                    <Users className="w-10 h-10 mx-auto mb-3 opacity-20 text-[#1A73E8]" />
                     <p className="font-medium">{t("no_students_enrolled_in", "No students enrolled in")} {selectedClass}</p>
                     <p className="text-xs mt-1">{t(
                       "enroll_students_in_the_student",
@@ -274,7 +274,7 @@ export default function Attendance() {
             <Button
               onClick={handleSubmit}
               disabled={mutateRecord.isPending || Object.keys(statusMap).length === 0}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
+              className="bg-[#1A73E8] hover:bg-[#1557B0] text-white shadow-md shadow-[#1A73E8]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold gap-2"
             >
               <Plus className="w-4 h-4" />
               {mutateRecord.isPending ? 'Submitting...' : `Submit Attendance (${markedCount}/${classStudents.length})`}
@@ -283,7 +283,7 @@ export default function Attendance() {
         )}
       </div>
       {/* Saved Attendance Records */}
-      <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] overflow-hidden overflow-hidden">
         <div className="p-4 border-b border-border bg-muted/50">
           <h3 className="font-bold text-card-foreground flex items-center gap-2">
             <CalendarDays className="w-5 h-5 text-emerald-600" />

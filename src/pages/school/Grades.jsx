@@ -171,7 +171,7 @@ export default function Grades() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground">{t("grades_results", "Grades & Results")}</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{t("grades_results", "Grades & Results")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("record_and_manage_student_exam", "Record and manage student exam scores")}</p>
         </div>
         <Button onClick={() => setShowModal(true)} className="gap-2 bg-green-600 hover:bg-green-700 text-white">
@@ -180,16 +180,16 @@ export default function Grades() {
       </div>
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-3">
+        <div className="stat-card-premium bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center">
             <BarChart3 className="w-5 h-5 text-white" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-card-foreground">{avgScore}%</p>
+            <p className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{avgScore}%</p>
             <p className="text-xs text-muted-foreground">{t("average_score", "Average Score")}</p>
           </div>
         </div>
-        <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-3">
+        <div className="stat-card-premium bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-green-500 flex items-center justify-center">
             <TrendingUp className="w-5 h-5 text-white" />
           </div>
@@ -198,7 +198,7 @@ export default function Grades() {
             <p className="text-xs text-muted-foreground">{t("highest_score", "Highest Score")}</p>
           </div>
         </div>
-        <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-3">
+        <div className="stat-card-premium bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-red-400 flex items-center justify-center">
             <Award className="w-5 h-5 text-white" />
           </div>
@@ -207,7 +207,7 @@ export default function Grades() {
             <p className="text-xs text-muted-foreground">{t("lowest_score", "Lowest Score")}</p>
           </div>
         </div>
-        <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-3">
+        <div className="stat-card-premium bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-teal-500 flex items-center justify-center">
             <CheckCircle className="w-5 h-5 text-white" />
           </div>
@@ -218,7 +218,7 @@ export default function Grades() {
         </div>
       </div>
       {/* Filters */}
-      <div className="bg-card rounded-xl border border-border p-4 shadow-sm flex flex-col sm:flex-row gap-3">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
@@ -245,7 +245,7 @@ export default function Grades() {
         </div>
       </div>
       {/* Table */}
-      <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] overflow-hidden overflow-hidden">
         <div className="overflow-x-auto">
           {isLoading ? (
             <div className="py-12 text-center text-muted-foreground">{t("loading_grade_records", "Loading grade records...")}</div>

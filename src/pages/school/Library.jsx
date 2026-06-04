@@ -164,49 +164,49 @@ export default function Library() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground">{t("library_catalog", "Library Catalog")}</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{t("library_catalog", "Library Catalog")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t(
             "manage_school_library_books_an",
             "Manage school library books and inventory"
           )}</p>
         </div>
-        <Button onClick={() => setShowModal(true)} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
+        <Button onClick={() => setShowModal(true)} className="gap-2 bg-[#1A73E8] hover:bg-[#1557B0] text-white shadow-md shadow-[#1A73E8]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">
           <Plus className="w-4 h-4" /> {t("add_book", "Add Book")}
         </Button>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
+        <div className="stat-card-premium bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex items-center gap-4">
           <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-emerald-600">
             <Book className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-card-foreground">{totalCopies}</p>
+            <p className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{totalCopies}</p>
             <p className="text-xs text-muted-foreground">{t("total_books", "Total Books")}</p>
           </div>
         </div>
-        <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
+        <div className="stat-card-premium bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex items-center gap-4">
           <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center text-green-600">
             <BookOpen className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-card-foreground">{totalAvailable}</p>
+            <p className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{totalAvailable}</p>
             <p className="text-xs text-muted-foreground">{t("available", "Available")}</p>
           </div>
         </div>
-        <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
+        <div className="stat-card-premium bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex items-center gap-4">
           <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center text-orange-600">
             <Clock className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-card-foreground">{totalBorrowed}</p>
+            <p className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{totalBorrowed}</p>
             <p className="text-xs text-muted-foreground">{t("borrowed", "Borrowed")}</p>
           </div>
         </div>
       </div>
-      <div className="bg-card rounded-xl border border-border p-4 shadow-sm flex items-center justify-between flex-wrap gap-4">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex items-center justify-between flex-wrap gap-4">
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Search catalog title, author or ISBN..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
+          <Input placeholder="Search catalog title, author or ISBN..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-[#1A73E8]" />
         </div>
         <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
       </div>
@@ -248,10 +248,10 @@ export default function Library() {
           ))}
         </div>
       ) : (
-        <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden mt-4">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] overflow-hidden overflow-hidden mt-4">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-card border-b border-border">
+              <thead className="bg-slate-50/50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800">
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("book_title", "Book Title")}</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("author", "Author")}</th>
@@ -409,7 +409,7 @@ export default function Library() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditingId(null); setFormData({ title: '', author: '', isbn: '', category: 'Science', total: 10, cover_url: '', ebook_url: '' }); }}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleCreateBook}>{editingId ? 'Save Changes' : 'Catalog Book'}</Button>
+              <Button className="flex-1 bg-[#1A73E8] hover:bg-[#1557B0] text-white shadow-md shadow-[#1A73E8]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleCreateBook}>{editingId ? 'Save Changes' : 'Catalog Book'}</Button>
             </div>
           </div>
         </div>

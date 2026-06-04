@@ -81,7 +81,7 @@ export default function AITutor() {
           <Bot className="w-6 h-6 text-primary" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground">AI Tutor</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">AI Tutor</h1>
           <p className="text-sm text-muted-foreground">Personalized 24/7 academic assistance (Live DB Sync)</p>
         </div>
       </div>

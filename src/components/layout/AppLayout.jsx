@@ -67,7 +67,7 @@ export default function AppLayout() {
       const industry = activeIndustry.toLowerCase();
       let primaryColor = '221 83% 53%'; // Default Blue (Law/Core)
       if (industry === 'school') {
-        primaryColor = '266 100% 50%'; // Electric Purple (#6F00FF)
+        primaryColor = '213 89% 50%'; // Google Blue (#1A73E8)
       } else if (industry === 'retail') {
         primaryColor = '24 98% 50%'; // Sunset Orange
       } else if (industry === 'hotel') {
@@ -199,11 +199,11 @@ export default function AppLayout() {
           );
         } else if (industry === 'school') {
           return (
-            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-all duration-1000 bg-slate-50/50 dark:bg-slate-950/50">
-              <div className="absolute inset-0 bg-gradient-to-r from-[#6F00FF]/5 via-transparent to-[#6F00FF]/5" />
-              <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[60%] rounded-full bg-[#6F00FF]/10 blur-[120px]" />
-              <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[60%] rounded-full bg-[#6F00FF]/10 blur-[120px]" />
-              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03] dark:opacity-[0.06]" />
+            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-all duration-1000 bg-[#f8fafc] dark:bg-slate-950">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#1A73E8]/5 via-transparent to-[#1A73E8]/5" />
+              <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#1A73E8]/10 blur-[120px]" />
+              <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-blue-400/5 blur-[120px]" />
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03] dark:opacity-[0.05]" />
             </div>
           );
         }

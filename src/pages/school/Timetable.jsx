@@ -182,7 +182,7 @@ export default function Timetable() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground">{t("timetable", "Timetable")}</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{t("timetable", "Timetable")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("weekly_class_schedule_grid", "Weekly class schedule grid")}</p>
         </div>
         <div className="flex items-center gap-3">
@@ -197,7 +197,7 @@ export default function Timetable() {
           </select>
           <Button
             onClick={() => { setFormData({ ...defaultForm, className: selectedClass }); setShowModal(true); }}
-            className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white"
+            className="gap-2 bg-[#1A73E8] hover:bg-[#1557B0] text-white shadow-md shadow-[#1A73E8]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold"
           >
             <Plus className="w-4 h-4" /> {t("add_slot", "Add Slot")}
           </Button>
@@ -205,32 +205,32 @@ export default function Timetable() {
       </div>
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-3">
+        <div className="stat-card-premium bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center">
             <LayoutGrid className="w-5 h-5 text-white" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-card-foreground">{classSlots.length}</p>
+            <p className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{classSlots.length}</p>
             <p className="text-xs text-muted-foreground">{t("slots_scheduled", "Slots Scheduled")}</p>
           </div>
         </div>
-        <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-3">
+        <div className="stat-card-premium bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-green-500 flex items-center justify-center">
             <Calendar className="w-5 h-5 text-white" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-card-foreground">
+            <p className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
               {[...new Set(classSlots.map(s => s.day))].length}
             </p>
             <p className="text-xs text-muted-foreground">{t("active_days", "Active Days")}</p>
           </div>
         </div>
-        <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-3">
+        <div className="stat-card-premium bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-purple-500 flex items-center justify-center">
             <Clock className="w-5 h-5 text-white" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-card-foreground">
+            <p className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
               {[...new Set(classSlots.map(s => s.subject))].length}
             </p>
             <p className="text-xs text-muted-foreground">{t("subjects", "Subjects")}</p>
@@ -241,7 +241,7 @@ export default function Timetable() {
       {isLoading ? (
         <div className="py-12 text-center text-muted-foreground">{t("loading_timetable", "Loading timetable...")}</div>
       ) : (
-        <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden overflow-x-auto">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] overflow-hidden overflow-hidden overflow-x-auto">
           <div className="min-w-[720px]">
             {/* Day Headers */}
             <div className="grid grid-cols-6 divide-x divide-border border-b border-border bg-muted">
@@ -456,7 +456,7 @@ export default function Timetable() {
                 {t("cancel", "Cancel")}
               </Button>
               <Button
-                className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white"
+                className="flex-1 bg-[#1A73E8] hover:bg-[#1557B0] text-white shadow-md shadow-[#1A73E8]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold"
                 onClick={handleAddSlot}
                 disabled={mutateRecord.isPending}
               >

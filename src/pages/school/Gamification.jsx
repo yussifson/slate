@@ -73,14 +73,14 @@ export default function Gamification() {
             <Trophy className="w-8 h-8 text-emerald-600" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-card-foreground">{user?.full_name || "Student"}</h1>
+            <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{user?.full_name || "Student"}</h1>
             <p className="text-sm text-muted-foreground flex items-center gap-2">
               <Star className="w-4 h-4 text-emerald-500 fill-emerald-500" /> {xpData.total} Total XP • LVL {xpData.level}
             </p>
           </div>
         </div>
         
-        <Button onClick={() => claimDailyXP.mutate()} className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-sm transition-all">
+        <Button onClick={() => claimDailyXP.mutate()} className="bg-[#1A73E8] hover:bg-[#1557B0] text-white shadow-md shadow-[#1A73E8]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold font-bold rounded-xl shadow-sm transition-all">
           <Zap className="w-4 h-4 mr-2" /> Claim Daily 50 XP
         </Button>
       </div>

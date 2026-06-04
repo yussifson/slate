@@ -126,10 +126,10 @@ export default function FeeManagement() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground">{t("fee_management", "Fee Management")}</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{t("fee_management", "Fee Management")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("track_student_tuition_and_paym", "Track student tuition and payments")}</p>
         </div>
-        <Button onClick={() => setShowEnrollModal(true)} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
+        <Button onClick={() => setShowEnrollModal(true)} className="gap-2 bg-[#1A73E8] hover:bg-[#1557B0] text-white shadow-md shadow-[#1A73E8]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">
           <Plus className="w-4 h-4" /> {t("quick_enroll", "Quick Enroll")}
         </Button>
       </div>
@@ -162,11 +162,11 @@ export default function FeeManagement() {
           <p className="text-3xl font-bold text-card-foreground">{fullyPaidCount} <span className="text-sm font-medium text-muted-foreground">/ {studentsFees.length}</span></p>
         </div>
       </div>
-      <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] overflow-hidden overflow-hidden">
         <div className="p-4 border-b border-border bg-muted/50">
           <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input placeholder="Search student tuition listings..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
+            <Input placeholder="Search student tuition listings..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-[#1A73E8]" />
           </div>
         </div>
         <div className="overflow-x-auto">
@@ -174,7 +174,7 @@ export default function FeeManagement() {
             <div className="py-12 text-center text-muted-foreground">{t("loading_fee_ledger", "Loading fee ledger...")}</div>
           ) : filtered.length === 0 ? (
             <div className="py-12 text-center text-muted-foreground">
-              <AlertCircle className="w-12 h-12 mx-auto mb-3 opacity-30 text-emerald-600" />
+              <AlertCircle className="w-12 h-12 mx-auto mb-3 opacity-20 text-[#1A73E8]" />
               <p className="font-semibold text-lg text-card-foreground">{t("no_students_enrolled", "No students enrolled")}</p>
               <p className="text-xs mt-1">{t(
                 "tuition_bills_are_automaticall",
@@ -183,7 +183,7 @@ export default function FeeManagement() {
             </div>
           ) : (
             <table className="w-full text-sm">
-              <thead className="bg-card border-b border-border">
+              <thead className="bg-slate-50/50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800">
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{t("student", "Student")}</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{t("class", "Class")}</th>
@@ -293,7 +293,7 @@ export default function FeeManagement() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => setShowEnrollModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => {
+              <Button className="flex-1 bg-[#1A73E8] hover:bg-[#1557B0] text-white shadow-md shadow-[#1A73E8]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={() => {
                 if (!enrollName.trim()) return toast.error("Enter student name");
                 const studentId = `STU-${Math.floor(1000 + Math.random() * 9000)}`;
                 mutateRecord.mutate({

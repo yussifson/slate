@@ -132,7 +132,7 @@ export default function SupportCenter() {
                 <Button 
                   onClick={handleIdeaSubmit}
                   disabled={isSubmitting || !idea.trim()}
-                  className="w-full rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-10 shadow-sm transition-all"
+                  className="w-full rounded-lg bg-[#1A73E8] hover:bg-[#1557B0] text-white shadow-md shadow-[#1A73E8]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold font-bold h-10 shadow-sm transition-all"
                 >
                   {isSubmitting ? 'Sending...' : <span className="flex items-center gap-2 text-sm"><Send className="w-3 h-3"/> Submit Idea to Dev Team</span>}
                 </Button>

@@ -130,7 +130,7 @@ export default function StudentPortal() {
       {/* Header & Nav */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground">{t("welcome_back", "Welcome back")}, {user?.user_metadata?.full_name || activeStudent.name.split(' ')[0]}!</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{t("welcome_back", "Welcome back")}, {user?.user_metadata?.full_name || activeStudent.name.split(' ')[0]}!</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("student_id", "Student ID:")} <span className="font-bold text-foreground">{activeStudent.studentId}</span> • {activeStudent.class}</p>
         </div>
         <div className="flex gap-1 overflow-x-auto pb-2 md:pb-0 hide-scrollbar bg-muted p-1 rounded-xl border border-border">
@@ -172,7 +172,7 @@ export default function StudentPortal() {
               </div>
             </div>
 
-            <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] overflow-hidden overflow-hidden">
               <div className="p-4 border-b border-border bg-muted/50 flex justify-between items-center">
                 <h3 className="font-bold text-card-foreground flex items-center gap-2"><Calendar className="w-5 h-5 text-muted-foreground" /> Upcoming Exams</h3>
               </div>
@@ -192,7 +192,7 @@ export default function StudentPortal() {
           </div>
 
           <div className="col-span-1 space-y-6">
-            <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] overflow-hidden overflow-hidden">
               <div className="p-4 border-b border-border bg-muted/50">
                 <h3 className="font-bold text-card-foreground flex items-center gap-2"><FileText className="w-5 h-5 text-muted-foreground" /> My Documents</h3>
               </div>
@@ -227,7 +227,7 @@ export default function StudentPortal() {
                 <p className="text-sm text-muted-foreground">Manage your enrolled courses for the semester.</p>
               </div>
               {classConfig.allowSelfRegistration && myRegisteredCourses.length === 0 && (
-                <Button onClick={handleRegisterCourses} className="bg-emerald-600 hover:bg-emerald-700 text-white">Register All Courses</Button>
+                <Button onClick={handleRegisterCourses} className="bg-[#1A73E8] hover:bg-[#1557B0] text-white shadow-md shadow-[#1A73E8]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">Register All Courses</Button>
               )}
             </div>
             
@@ -256,7 +256,7 @@ export default function StudentPortal() {
       )}
 
       {activeTab === 'grades' && (
-        <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden animate-in fade-in">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] overflow-hidden overflow-hidden animate-in fade-in">
           <div className="p-4 border-b border-border bg-muted/50">
             <h3 className="font-bold text-card-foreground">Academic Transcript</h3>
           </div>
@@ -295,7 +295,7 @@ export default function StudentPortal() {
       )}
 
       {activeTab === 'assignments' && (
-        <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden animate-in fade-in">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] overflow-hidden overflow-hidden animate-in fade-in">
           <div className="p-4 border-b border-border bg-muted/50">
             <h3 className="font-bold text-card-foreground">My Assignments</h3>
           </div>

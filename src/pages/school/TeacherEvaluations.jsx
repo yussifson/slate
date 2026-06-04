@@ -53,7 +53,7 @@ export default function TeacherEvaluations() {
     <div className="space-y-8 pb-20 max-w-5xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground">Teacher Evaluations</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Teacher Evaluations</h1>
           <p className="text-sm text-muted-foreground mt-0.5">Anonymous feedback to improve academic quality</p>
         </div>
       </div>

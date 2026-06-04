@@ -133,7 +133,7 @@ export default function Teachers() {
       />
       
       {/* Search & Filter */}
-      <div className="bg-card rounded-xl border border-border p-4 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="relative flex-1 w-full max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input placeholder="Search by name, role, or subject..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
@@ -151,7 +151,7 @@ export default function Teachers() {
             ))}
           </div>
           <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
-          <Button onClick={() => setShowModal(true)} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white shrink-0">
+          <Button onClick={() => setShowModal(true)} className="gap-2 bg-[#1A73E8] hover:bg-[#1557B0] text-white shadow-md shadow-[#1A73E8]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold shrink-0">
             <Plus className="w-4 h-4" /> {t("add_staff", "Add Staff")}
           </Button>
         </div>
@@ -161,7 +161,7 @@ export default function Teachers() {
         <div className="py-12 text-center text-muted-foreground">{t("loading", "Loading...")}</div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-12 bg-card rounded-xl border border-border">
-          <Briefcase className="w-12 h-12 mx-auto mb-3 opacity-30 text-emerald-600" />
+          <Briefcase className="w-12 h-12 mx-auto mb-3 opacity-20 text-[#1A73E8]" />
           <p className="font-semibold text-lg text-card-foreground">{t("no_teachers_found", "No teachers found")}</p>
         </div>
       ) : viewMode === 'grid' ? (
@@ -209,7 +209,7 @@ export default function Teachers() {
           ))}
         </div>
       ) : (
-        <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] overflow-hidden overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-muted border-b border-border">
@@ -301,7 +301,7 @@ export default function Teachers() {
             </div>
             <div className="flex gap-3 pt-2">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)} disabled={mutateTeacher.isPending}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleSave} disabled={mutateTeacher.isPending}>
+              <Button className="flex-1 bg-[#1A73E8] hover:bg-[#1557B0] text-white shadow-md shadow-[#1A73E8]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleSave} disabled={mutateTeacher.isPending}>
                 {mutateTeacher.isPending ? 'Saving...' : 'Save Staff Record'}
               </Button>
             </div>

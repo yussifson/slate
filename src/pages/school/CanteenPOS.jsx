@@ -73,7 +73,7 @@ export default function CanteenPOS() {
       <div className="flex-1 space-y-6">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-card-foreground">Canteen POS</h1>
+            <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Canteen POS</h1>
             <p className="text-sm text-muted-foreground mt-0.5">Order food directly from your device</p>
           </div>
         </div>
@@ -154,7 +154,7 @@ export default function CanteenPOS() {
             <Button 
               disabled={total === 0 || placeOrder.isPending}
               onClick={() => placeOrder.mutate(total)}
-              className="w-full h-12 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold"
+              className="w-full h-12 rounded-xl bg-[#1A73E8] hover:bg-[#1557B0] text-white shadow-md shadow-[#1A73E8]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold font-bold"
             >
               <CreditCard className="w-5 h-5 mr-2" /> Pay Now
             </Button>

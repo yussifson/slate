@@ -238,7 +238,7 @@ export default function Students() {
       {showSettings && <IDFormatSettings />}
 
       {/* Search and Filter */}
-      <div className="bg-card rounded-xl border border-border p-4 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="relative flex-1 w-full max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input placeholder="Search by name, ID, or class..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
@@ -256,14 +256,14 @@ export default function Students() {
             ))}
           </div>
           <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
-          <Button onClick={() => setShowModal(true)} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
+          <Button onClick={() => setShowModal(true)} className="gap-2 bg-[#1A73E8] hover:bg-[#1557B0] text-white shadow-md shadow-[#1A73E8]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">
             <Plus className="w-4 h-4" /> {t("add_student", "Add Student")}
           </Button>
         </div>
       </div>
 
       {/* Student Table */}
-      <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] overflow-hidden overflow-hidden">
         {filtered.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">
             <Users className="w-10 h-10 mx-auto mb-3 opacity-30" />
@@ -506,7 +506,7 @@ export default function Students() {
             <div className="p-6 border-t border-border bg-muted/30 flex gap-3">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setActiveTab('personal'); }} disabled={isEnrolling}>{t("cancel", "Cancel")}</Button>
               {activeTab !== 'parent' ? (
-                <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => setActiveTab(activeTab === 'personal' ? 'academic' : 'parent')}>{t("next", "Next")}</Button>
+                <Button className="flex-1 bg-[#1A73E8] hover:bg-[#1557B0] text-white shadow-md shadow-[#1A73E8]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={() => setActiveTab(activeTab === 'personal' ? 'academic' : 'parent')}>{t("next", "Next")}</Button>
               ) : (
                 <Button className="flex-1 bg-green-600 hover:bg-green-700 text-white" onClick={handleEnroll} disabled={isEnrolling}>
                   {isEnrolling ? 'Saving...' : 'Save Student & Parent'}

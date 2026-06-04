@@ -51,7 +51,7 @@ export default function Complaints() {
     <div className="space-y-8 pb-20 max-w-5xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground">Anonymous Complaints</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Anonymous Complaints</h1>
           <p className="text-sm text-muted-foreground mt-0.5">Securely report issues, bullying, or facility problems</p>
         </div>
       </div>
@@ -68,7 +68,7 @@ export default function Complaints() {
               <label className="text-xs font-bold text-muted-foreground uppercase">Details</label>
               <textarea value={details} onChange={e => setDetails(e.target.value)} placeholder="Please provide specific details..." className="w-full mt-1 bg-background border border-border rounded-lg p-3 h-32 resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
             </div>
-            <Button onClick={() => submitTicket.mutate()} disabled={submitTicket.isPending} className="w-full h-12 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold mt-2 shadow-sm">
+            <Button onClick={() => submitTicket.mutate()} disabled={submitTicket.isPending} className="w-full h-12 rounded-xl bg-[#1A73E8] hover:bg-[#1557B0] text-white shadow-md shadow-[#1A73E8]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold font-bold mt-2 shadow-sm">
               <Send className="w-4 h-4 mr-2" /> Submit Securely
             </Button>
           </div>
