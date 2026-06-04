@@ -82,7 +82,7 @@ export default function Products() {
           <h1 className="text-2xl font-bold text-card-foreground">Products Catalog</h1>
           <p className="text-sm text-muted-foreground mt-0.5">Manage your retail products, pricing, and stock.</p>
         </div>
-        <Button onClick={() => { setEditingId(null); setFormData({ name: '', sku: '', category: '', price: '', stock: '' }); setShowModal(true); }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+        <Button onClick={() => { setEditingId(null); setFormData({ name: '', sku: '', category: '', price: '', stock: '' }); setShowModal(true); }} className="gap-2 bg-orange-600 hover:bg-orange-700 text-white">
           <Plus className="w-4 h-4" /> Add Product
         </Button>
       </div>
@@ -182,7 +182,7 @@ export default function Products() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>Cancel</Button>
-              <Button className="flex-1 bg-blue-600 text-white" onClick={handleSave}>Save</Button>
+              <Button className="flex-1 bg-orange-600 text-white" onClick={handleSave}>Save</Button>
             </div>
           </div>
         </div>

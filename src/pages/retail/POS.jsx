@@ -244,13 +244,13 @@ export default function POS() {
               <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                  {filtered.map(product => {
                    return (
-                     <div key={product.sku} onClick={() => addToCart(product)} className="bg-card p-4 rounded-xl shadow-sm border border-border hover:border-blue-300 hover:shadow-md transition-all cursor-pointer flex flex-col h-32 select-none active:scale-95">
+                     <div key={product.sku} onClick={() => addToCart(product)} className="bg-card p-4 rounded-xl shadow-sm border border-border hover:border-orange-300 hover:shadow-md transition-all cursor-pointer flex flex-col h-32 select-none active:scale-95">
                        <div className="flex-1">
                           <p className="font-bold text-card-foreground leading-tight line-clamp-2">{product.name}</p>
                           <p className="text-xs text-muted-foreground font-mono mt-1">{product.sku}</p>
                        </div>
                        <div className="flex justify-between items-end mt-2">
-                          <span className="text-lg font-black text-blue-600">${product.price.toFixed(2)}</span>
+                          <span className="text-lg font-black text-orange-600">${product.price.toFixed(2)}</span>
                           <span className="text-xs font-semibold text-muted-foreground">{product.stock} {t("in_stock", "in stock")}</span>
                        </div>
                      </div>
@@ -262,16 +262,16 @@ export default function POS() {
       </div>
       {/* Cart Register */}
       <div className="w-full md:w-96 flex flex-col bg-card rounded-2xl shadow-lg border border-border overflow-hidden shrink-0">
-         <div className="p-4 bg-blue-600 text-white flex items-center justify-between">
+         <div className="p-4 bg-orange-600 text-white flex items-center justify-between">
             <h2 className="font-bold flex items-center gap-2 text-lg"><ShoppingCart className="w-5 h-5"/> {t("current_sale", "Current Sale")}</h2>
-            <span className="bg-blue-700 px-2 py-1 rounded text-xs font-mono">{cart.length} {t("items", "items")}</span>
+            <span className="bg-orange-700 px-2 py-1 rounded text-xs font-mono">{cart.length} {t("items", "items")}</span>
          </div>
          
          <div className="p-3 bg-muted border-b border-border">
            <select 
              value={selectedCustomerId} 
              onChange={e => setSelectedCustomerId(e.target.value)} 
-             className="w-full bg-card border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
+             className="w-full bg-card border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:border-orange-500"
            >
              <option value="">Walk-in Customer</option>
              {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -344,7 +344,7 @@ export default function POS() {
             </div>
             <div className="flex justify-between items-center text-2xl pt-3 border-t border-border mt-2">
                <span className="font-black text-card-foreground">{t("total", "Total")}</span>
-               <span className="font-black text-blue-600">${total.toFixed(2)}</span>
+               <span className="font-black text-orange-600">${total.toFixed(2)}</span>
             </div>
             
             <div className="grid grid-cols-2 gap-3 pt-4">

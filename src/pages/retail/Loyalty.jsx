@@ -114,7 +114,7 @@ export default function Loyalty() {
           <h1 className="text-2xl font-bold text-card-foreground">Loyalty Program</h1>
           <p className="text-sm text-muted-foreground mt-0.5">Manage rewards and tiers for your best customers.</p>
         </div>
-        <Button onClick={() => { setEditingId(null); setFormData({ customerIds: [], points: '', tier: 'Bronze' }); setShowModal(true); }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+        <Button onClick={() => { setEditingId(null); setFormData({ customerIds: [], points: '', tier: 'Bronze' }); setShowModal(true); }} className="gap-2 bg-orange-600 hover:bg-orange-700 text-white">
           <Plus className="w-4 h-4" /> Add Member(s)
         </Button>
       </div>
@@ -207,10 +207,10 @@ export default function Loyalty() {
                          <div 
                            key={c.id} 
                            onClick={() => toggleCustomer(c.id)}
-                           className={`flex items-center justify-between p-2 rounded cursor-pointer text-sm ${formData.customerIds.includes(c.id) ? 'bg-blue-50 border border-blue-200 text-blue-700 font-medium' : 'hover:bg-slate-50 text-slate-700'}`}
+                           className={`flex items-center justify-between p-2 rounded cursor-pointer text-sm ${formData.customerIds.includes(c.id) ? 'bg-orange-50 border border-orange-200 text-orange-700 font-medium' : 'hover:bg-slate-50 text-slate-700'}`}
                          >
                            {c.name}
-                           {formData.customerIds.includes(c.id) && <Check className="w-4 h-4 text-blue-600" />}
+                           {formData.customerIds.includes(c.id) && <Check className="w-4 h-4 text-orange-600" />}
                          </div>
                        ))
                      )}
@@ -228,7 +228,7 @@ export default function Loyalty() {
             </div>
             <div className="flex gap-3 pt-4 border-t">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>Cancel</Button>
-              <Button className="flex-1 bg-blue-600 text-white" onClick={handleSave}>Save</Button>
+              <Button className="flex-1 bg-orange-600 text-white" onClick={handleSave}>Save</Button>
             </div>
           </div>
         </div>

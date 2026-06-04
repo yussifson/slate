@@ -192,7 +192,7 @@ export default function PurchaseOrders() {
   const getStatusBadge = (status) => {
     switch (status) {
       case 'received': return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">Received</span>;
-      case 'sent': return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">Sent</span>;
+      case 'sent': return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-100 text-orange-700">Sent</span>;
       default: return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">Draft</span>;
     }
   };
@@ -200,7 +200,7 @@ export default function PurchaseOrders() {
   if (isPOLoading || isSuppliersLoading || isProductsLoading) {
     return (
       <div className="flex-1 p-6 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -232,7 +232,7 @@ export default function PurchaseOrders() {
             <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{t("purchase_orders", "Purchase Orders")}</h1>
             <p className="text-sm text-slate-500 mt-1">{t("po_desc", "Manage supplier orders and restock inventory.")}</p>
           </div>
-          <Button onClick={() => setIsNewDialogOpen(true)} className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm">
+          <Button onClick={() => setIsNewDialogOpen(true)} className="bg-orange-600 hover:bg-orange-700 text-white shadow-sm">
             <Plus className="w-4 h-4 mr-2" /> {t("new_po", "New PO")}
           </Button>
         </div>
@@ -522,7 +522,7 @@ export default function PurchaseOrders() {
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsNewDialogOpen(false)}>{t("cancel", "Cancel")}</Button>
-            <Button onClick={handleCreatePO} className="bg-blue-600 hover:bg-blue-700 text-white">{editingPOId ? t("update", "Update PO") : t("create", "Create PO")}</Button>
+            <Button onClick={handleCreatePO} className="bg-orange-600 hover:bg-orange-700 text-white">{editingPOId ? t("update", "Update PO") : t("create", "Create PO")}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

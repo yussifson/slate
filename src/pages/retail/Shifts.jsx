@@ -85,14 +85,14 @@ export default function Shifts() {
           <h1 className="text-2xl font-bold text-card-foreground">Staff Shifts</h1>
           <p className="text-sm text-muted-foreground mt-0.5">Manage schedules and rosters for your retail staff.</p>
         </div>
-        <Button onClick={() => { setEditingId(null); setFormData({ staffId: '', role: 'Cashier', date: new Date().toISOString().split('T')[0], startTime: '09:00', endTime: '17:00', status: 'Scheduled' }); setShowModal(true); }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+        <Button onClick={() => { setEditingId(null); setFormData({ staffId: '', role: 'Cashier', date: new Date().toISOString().split('T')[0], startTime: '09:00', endTime: '17:00', status: 'Scheduled' }); setShowModal(true); }} className="gap-2 bg-orange-600 hover:bg-orange-700 text-white">
           <Plus className="w-4 h-4" /> Schedule Shift
         </Button>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-950/20 flex items-center justify-center text-blue-600"><Clock className="w-5 h-5" /></div>
+          <div className="w-10 h-10 rounded-xl bg-orange-100 dark:bg-orange-950/20 flex items-center justify-center text-orange-600"><Clock className="w-5 h-5" /></div>
           <div><p className="text-2xl font-bold text-card-foreground">{shifts.length}</p><p className="text-xs text-muted-foreground">Total Shifts</p></div>
         </div>
         <div className="bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
@@ -134,7 +134,7 @@ export default function Shifts() {
                     <td className="px-6 py-4 font-medium">{s.date}</td>
                     <td className="px-6 py-4 text-center">{s.startTime} - {s.endTime}</td>
                     <td className="px-6 py-4 text-center">
-                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${s.status === 'Completed' ? 'bg-green-100 text-green-700' : s.status === 'Cancelled' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'}`}>{s.status}</span>
+                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${s.status === 'Completed' ? 'bg-green-100 text-green-700' : s.status === 'Cancelled' ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700'}`}>{s.status}</span>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <Button variant="ghost" size="icon" onClick={() => openEdit(s)}><Edit className="w-4 h-4" /></Button>
@@ -182,7 +182,7 @@ export default function Shifts() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>Cancel</Button>
-              <Button className="flex-1 bg-blue-600 text-white" onClick={handleSave}>Save</Button>
+              <Button className="flex-1 bg-orange-600 text-white" onClick={handleSave}>Save</Button>
             </div>
           </div>
         </div>

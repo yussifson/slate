@@ -119,11 +119,11 @@ export default function Sales() {
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-card rounded-xl border border-border p-5 shadow-sm col-span-1 md:col-span-2 bg-gradient-to-br from-blue-600 to-blue-800 text-white relative overflow-hidden">
+        <div className="bg-card rounded-xl border border-border p-5 shadow-sm col-span-1 md:col-span-2 bg-gradient-to-br from-orange-600 to-orange-800 text-white relative overflow-hidden">
            <div className="relative z-10">
-               <p className="text-sm font-bold text-blue-200 uppercase tracking-wider mb-2">{t("today_s_sales", "Today's Sales")}</p>
+               <p className="text-sm font-bold text-orange-200 uppercase tracking-wider mb-2">{t("today_s_sales", "Today's Sales")}</p>
                <h2 className="text-4xl font-black mb-1">${stats.totalSales.toFixed(2)}</h2>
-               <p className="text-sm text-blue-100 flex items-center gap-1"><ArrowUpRight className="w-4 h-4 text-green-300"/> {t("real_time_production_transacti", "Real-time production transactions")}</p>
+               <p className="text-sm text-orange-100 flex items-center gap-1"><ArrowUpRight className="w-4 h-4 text-green-300"/> {t("real_time_production_transacti", "Real-time production transactions")}</p>
            </div>
            <TrendingUp className="absolute right-[-20px] bottom-[-20px] w-48 h-48 opacity-10 text-white" />
         </div>
@@ -176,7 +176,7 @@ export default function Sales() {
                 {filtered.map(sale => {
                   return (
                     <tr key={sale.id} className="hover:bg-muted/50 transition-colors">
-                      <td className="px-6 py-4 font-mono font-bold text-blue-600">{sale.saleId}</td>
+                      <td className="px-6 py-4 font-mono font-bold text-orange-600">{sale.saleId}</td>
                       <td className="px-6 py-4 text-muted-foreground">{sale.date}</td>
                       <td className="px-6 py-4 font-medium text-card-foreground">{sale.cashier}</td>
                       <td className="px-6 py-4 text-muted-foreground">{sale.method}</td>
@@ -305,7 +305,7 @@ export default function Sales() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleUpdateStatus}>{t("save_changes", "Save Changes")}</Button>
+              <Button className="flex-1 bg-orange-600 hover:bg-orange-700 text-white" onClick={handleUpdateStatus}>{t("save_changes", "Save Changes")}</Button>
             </div>
           </div>
         </div>

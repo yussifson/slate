@@ -89,7 +89,7 @@ export default function Promotions() {
   if (isLoading) {
     return (
       <div className="flex-1 p-6 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }

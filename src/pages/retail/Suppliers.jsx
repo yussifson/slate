@@ -134,7 +134,7 @@ export default function Suppliers() {
             "Manage vendor relationships and purchase orders"
           )}</p>
         </div>
-        <Button onClick={() => { setEditingId(null); setFormData({ name: '', category: 'Electronics', contact: '', phone: '', email: '', rating: 5 }); setShowModal(true); }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+        <Button onClick={() => { setEditingId(null); setFormData({ name: '', category: 'Electronics', contact: '', phone: '', email: '', rating: 5 }); setShowModal(true); }} className="gap-2 bg-orange-600 hover:bg-orange-700 text-white">
           <Plus className="w-4 h-4" /> {t("add_supplier", "Add Supplier")}
         </Button>
       </div>
@@ -307,7 +307,7 @@ export default function Suppliers() {
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4">
-            <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><Plus className="w-5 h-5 text-blue-600"/> {editingId ? 'Edit Supplier' : 'Add Supplier'}</h2>
+            <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><Plus className="w-5 h-5 text-orange-600"/> {editingId ? 'Edit Supplier' : 'Add Supplier'}</h2>
             <div className="space-y-3">
                <div>
                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("supplier_company_name", "Supplier Company Name")}</label>
@@ -349,7 +349,7 @@ export default function Suppliers() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditingId(null); }}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleCreateSupplier}>{editingId ? 'Save Changes' : 'Configure Supplier'}</Button>
+              <Button className="flex-1 bg-orange-600 hover:bg-orange-700 text-white" onClick={handleCreateSupplier}>{editingId ? 'Save Changes' : 'Configure Supplier'}</Button>
             </div>
           </div>
         </div>

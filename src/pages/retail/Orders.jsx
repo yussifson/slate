@@ -222,7 +222,7 @@ export default function Orders() {
           <h1 className="text-2xl font-bold text-card-foreground">Orders Management</h1>
           <p className="text-sm text-muted-foreground mt-0.5">Track and manage customer purchases.</p>
         </div>
-        <Button onClick={() => { setEditingId(null); setIsNewCustomer(false); setNewCustomerData({name: '', email: '', phone: ''}); setFormData({ customerId: '', date: new Date().toISOString().split('T')[0], total: '', status: 'Pending', items: [] }); setShowModal(true); }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+        <Button onClick={() => { setEditingId(null); setIsNewCustomer(false); setNewCustomerData({name: '', email: '', phone: ''}); setFormData({ customerId: '', date: new Date().toISOString().split('T')[0], total: '', status: 'Pending', items: [] }); setShowModal(true); }} className="gap-2 bg-orange-600 hover:bg-orange-700 text-white">
           <Plus className="w-4 h-4" /> Create Order
         </Button>
       </div>
@@ -387,7 +387,7 @@ export default function Orders() {
             </div>
             <div className="flex gap-3 pt-4 border-t">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>Cancel</Button>
-              <Button className="flex-1 bg-blue-600 text-white" onClick={handleSave}>Save</Button>
+              <Button className="flex-1 bg-orange-600 text-white" onClick={handleSave}>Save</Button>
             </div>
           </div>
         </div>
