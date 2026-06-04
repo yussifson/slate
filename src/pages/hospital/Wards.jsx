@@ -167,7 +167,7 @@ export default function Wards() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh" }}>
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-card-foreground">{t("ward_management", "Ward Management")}</h1>
@@ -176,7 +176,7 @@ export default function Wards() {
             "Manage inpatient bed allocation and availability"
           )}</p>
         </div>
-        <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={() => setShowNewWardModal(true)}>
+        <Button className="bg-teal-600 hover:bg-teal-700 text-white" onClick={() => setShowNewWardModal(true)}>
           <Plus className="w-4 h-4 mr-2" /> {t("add_ward", "Add Ward")}
         </Button>
       </div>
@@ -196,7 +196,7 @@ export default function Wards() {
             <div key={wIdx} className={`bg-card rounded-xl border shadow-sm overflow-hidden transition-colors ${isCritical ? 'border-red-300' : 'border-border'}`}>
               <div className={`p-4 border-b flex items-center justify-between transition-colors ${isCritical ? 'bg-red-50/80 border-red-200' : 'bg-muted/50 border-border'}`}>
                  <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-                   <BedDouble className={`w-5 h-5 ${isCritical ? 'text-red-500' : 'text-blue-500'}`}/> 
+                   <BedDouble className={`w-5 h-5 ${isCritical ? 'text-red-500' : 'text-teal-500'}`}/> 
                    {ward.name}
                    {isCritical && (
                      <span className="ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-700 uppercase tracking-wider">
@@ -216,7 +216,7 @@ export default function Wards() {
                      <p className="font-bold mt-2 text-lg">{bed.id}</p>
                      <p className="text-xs font-semibold uppercase mt-1 opacity-80">{bed.status}</p>
                      {bed.patient && (
-                       <Link to="/hospital/patients" onClick={e => e.stopPropagation()} className="text-xs mt-2 truncate w-full px-1 font-bold text-blue-600 hover:underline">
+                       <Link to="/hospital/patients" onClick={e => e.stopPropagation()} className="text-xs mt-2 truncate w-full px-1 font-bold text-teal-600 hover:underline">
                          {bed.patient}
                        </Link>
                      )}
@@ -250,7 +250,7 @@ export default function Wards() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleSaveBedStatus}>{t("save_changes", "Save Changes")}</Button>
+              <Button className="flex-1 bg-teal-600 hover:bg-teal-700 text-white" onClick={handleSaveBedStatus}>{t("save_changes", "Save Changes")}</Button>
             </div>
           </div>
         </div>
@@ -271,7 +271,7 @@ export default function Wards() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => setShowNewWardModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleCreateWard}>{t("create_ward", "Create Ward")}</Button>
+              <Button className="flex-1 bg-teal-600 hover:bg-teal-700 text-white" onClick={handleCreateWard}>{t("create_ward", "Create Ward")}</Button>
             </div>
           </div>
         </div>

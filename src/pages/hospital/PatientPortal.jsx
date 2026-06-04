@@ -62,7 +62,7 @@ export default function PatientPortal() {
   if (mappedPatients.length === 0) {
     return (
       <div className="py-12 text-center max-w-md mx-auto bg-card rounded-xl border border-border p-6 shadow-sm">
-        <Activity className="w-12 h-12 mx-auto mb-3 opacity-30 text-blue-600 animate-pulse" />
+        <Activity className="w-12 h-12 mx-auto mb-3 opacity-30 text-teal-600 animate-pulse" />
         <p className="font-semibold text-lg text-card-foreground">{t("no_health_profile_found", "No health profile found")}</p>
         <p className="text-sm text-muted-foreground mt-1 mb-4">{t(
           "please_contact_your_healthcare",
@@ -73,12 +73,12 @@ export default function PatientPortal() {
   }
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
+    <div className="space-y-6 max-w-5xl mx-auto" style={{ background: "linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh" }}>
       {/* Header */}
-      <div className="bg-gradient-to-r from-teal-600 to-blue-700 rounded-2xl p-6 md:p-8 text-white shadow-md relative overflow-hidden">
+      <div className="bg-gradient-to-r from-teal-600 to-teal-700 rounded-2xl p-6 md:p-8 text-white shadow-md relative overflow-hidden">
         <div className="relative z-10">
           <h1 className="text-2xl md:text-3xl font-bold mb-2">{t("welcome", "Welcome,")} {activePatient.name}</h1>
-          <p className="text-blue-100 max-w-xl">{t(
+          <p className="text-teal-100 max-w-xl">{t(
             "view_your_medical_records_upco",
             "View your medical records, upcoming appointments, and secure lab results in one place."
           )}</p>
@@ -117,10 +117,10 @@ export default function PatientPortal() {
             
             <div className="bg-card rounded-xl border border-border p-5 shadow-sm">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-950/20 flex items-center justify-center text-blue-600"><Beaker className="w-4 h-4" /></div>
+                <div className="w-8 h-8 rounded-full bg-teal-100 dark:bg-teal-950/20 flex items-center justify-center text-teal-600"><Beaker className="w-4 h-4" /></div>
                 <h3 className="font-bold text-foreground">{t("lab_results", "Lab Results")}</h3>
               </div>
-              <p className="text-3xl font-extrabold text-blue-600 mb-1">{t("new", "New")}</p>
+              <p className="text-3xl font-extrabold text-teal-600 mb-1">{t("new", "New")}</p>
               <p className="text-xs text-muted-foreground">{t("ready_for_viewing", "Ready for viewing")}</p>
             </div>
           </div>
@@ -134,7 +134,7 @@ export default function PatientPortal() {
                 return (
                   <div key={i} className="flex items-center gap-4 p-3 hover:bg-muted dark:hover:bg-muted/30 rounded-lg transition-colors">
                     <div className="w-20 shrink-0 text-center flex flex-col items-center">
-                      <span className="text-xs font-bold text-blue-600 bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded w-full">{item.date}</span>
+                      <span className="text-xs font-bold text-teal-600 bg-teal-50 dark:bg-teal-900/20 px-2 py-1 rounded w-full">{item.date}</span>
                       <span className="text-[10px] font-semibold text-muted-foreground mt-1">{item.time}</span>
                     </div>
                     <div className="flex-1">
@@ -173,7 +173,7 @@ export default function PatientPortal() {
                     </div>
                     {doc.file_url && (
                       <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50">
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-teal-600 hover:text-teal-700 hover:bg-teal-50">
                           <Download className="w-4 h-4" />
                         </Button>
                       </a>

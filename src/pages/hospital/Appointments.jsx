@@ -15,13 +15,13 @@ import { useNotifications } from "@/hooks/integrations/useNotifications";
 import { MessageSquare, Bell } from "lucide-react";
 
 const typeColors = {
-  Consultation: 'bg-blue-50 text-blue-700 border-blue-200',
+  Consultation: 'bg-teal-50 text-teal-700 border-teal-200',
   'Follow-up': 'bg-purple-50 text-purple-700 border-purple-200',
   Emergency: 'bg-red-50 text-red-700 border-red-200',
 };
 
 const statusColors = {
-  Scheduled: 'text-blue-500 bg-blue-50 border-blue-200',
+  Scheduled: 'text-teal-500 bg-teal-50 border-teal-200',
   'In Progress': 'text-amber-600 bg-amber-50 border-amber-200 animate-pulse',
   Completed: 'text-green-600 bg-green-50 border-green-200',
 };
@@ -165,7 +165,7 @@ export default function Appointments() {
   if (isDbLoading) return <div className="flex items-center justify-center h-64 text-muted-foreground">{t("loading_appointments", "Loading appointments...")}</div>;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh" }}>
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-card-foreground">{t("appointments", "Appointments")}</h1>
@@ -176,23 +176,23 @@ export default function Appointments() {
         </div>
         <div className="flex items-center gap-3">
            <Input type="date" value={date} onChange={e => setDate(e.target.value)} className="w-auto bg-card" />
-           <Button onClick={() => setShowModal(true)} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white"><Plus className="w-4 h-4"/> {t("book_appointment", "Book Appointment")}</Button>
+           <Button onClick={() => setShowModal(true)} className="gap-2 bg-teal-600 hover:bg-teal-700 text-white"><Plus className="w-4 h-4"/> {t("book_appointment", "Book Appointment")}</Button>
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
          {/* Sidebar Calendar List */}
          <div className="col-span-1 bg-card rounded-xl border border-border p-4 shadow-sm h-[600px] overflow-y-auto space-y-4">
-            <h3 className="font-bold text-card-foreground flex items-center gap-2 border-b border-border pb-3"><CalendarIcon className="w-4 h-4 text-blue-500"/> {t("scheduled_visits", "Scheduled Visits (")}{filteredAppts.length})</h3>
+            <h3 className="font-bold text-card-foreground flex items-center gap-2 border-b border-border pb-3"><CalendarIcon className="w-4 h-4 text-teal-500"/> {t("scheduled_visits", "Scheduled Visits (")}{filteredAppts.length})</h3>
             <div className="space-y-3">
                {filteredAppts.map(appt => {
                  return (
-                   <div key={appt.id} onClick={() => setSelectedAppt(appt)} className={`p-3 rounded-lg border cursor-pointer hover:shadow-md transition-all flex flex-col gap-2 ${selectedAppt?.id === appt.id ? 'ring-2 ring-blue-500 border-transparent bg-blue-50/20' : 'border-border'}`}>
+                   <div key={appt.id} onClick={() => setSelectedAppt(appt)} className={`p-3 rounded-lg border cursor-pointer hover:shadow-md transition-all flex flex-col gap-2 ${selectedAppt?.id === appt.id ? 'ring-2 ring-teal-500 border-transparent bg-teal-50/20' : 'border-border'}`}>
                      <div className="flex justify-between items-start">
                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${typeColors[appt.type]}`}>{appt.type}</span>
                         <span className={`text-[10px] font-semibold px-2 py-0.5 rounded border ${statusColors[appt.status]}`}>{appt.status}</span>
                      </div>
                      <div>
-                        <Link to="/hospital/patients" className="font-bold text-sm text-blue-600 hover:underline">{appt.patient}</Link>
+                        <Link to="/hospital/patients" className="font-bold text-sm text-teal-600 hover:underline">{appt.patient}</Link>
                         <p className="text-xs text-muted-foreground font-medium">{appt.doctor}</p>
                      </div>
                      <div className="flex items-center justify-between gap-1 text-xs text-muted-foreground mt-1 border-t border-dashed border-border pt-2">
@@ -221,7 +221,7 @@ export default function Appointments() {
               <div className="bg-card rounded-xl border border-border p-6 shadow-sm space-y-6">
                 <div className="flex justify-between items-start">
                   <div>
-                    <Link to="/hospital/patients" className="text-xl font-bold text-blue-600 hover:underline">{selectedAppt.patient}</Link>
+                    <Link to="/hospital/patients" className="text-xl font-bold text-teal-600 hover:underline">{selectedAppt.patient}</Link>
                     <p className="text-sm text-muted-foreground mt-0.5">{t("assigned", "Assigned:")} <strong>{selectedAppt.doctor}</strong></p>
                   </div>
                   <span className={`text-xs font-bold px-3 py-1 rounded-full border ${statusColors[selectedAppt.status]}`}>{selectedAppt.status}</span>
@@ -234,7 +234,7 @@ export default function Appointments() {
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground uppercase font-bold">{t("schedule_time", "Schedule Time")}</p>
-                    <p className="font-semibold text-foreground flex items-center gap-1.5"><Clock className="w-4 h-4 text-blue-500" /> {selectedAppt.time}</p>
+                    <p className="font-semibold text-foreground flex items-center gap-1.5"><Clock className="w-4 h-4 text-teal-500" /> {selectedAppt.time}</p>
                   </div>
                 </div>
 
@@ -264,8 +264,8 @@ export default function Appointments() {
               </div>
             ) : (
               <div className="bg-card rounded-xl border border-border p-6 shadow-sm flex flex-col items-center justify-center min-h-[300px] text-center">
-                 <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-4">
-                    <Stethoscope className="w-8 h-8 text-blue-500" />
+                 <div className="w-16 h-16 bg-teal-50 rounded-full flex items-center justify-center mb-4">
+                    <Stethoscope className="w-8 h-8 text-teal-500" />
                  </div>
                  <h2 className="text-lg font-bold text-card-foreground mb-2">{t("select_an_appointment", "Select an appointment")}</h2>
                  <p className="text-sm text-muted-foreground max-w-sm">{t(
@@ -328,7 +328,7 @@ export default function Appointments() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleSaveToDb} disabled={isGenerating || isSyncing}>
+              <Button className="flex-1 bg-teal-600 hover:bg-teal-700 text-white" onClick={handleSaveToDb} disabled={isGenerating || isSyncing}>
                 {(isGenerating || isSyncing) ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : null}
                 {t("book_visit", "Book Visit")}
               </Button>

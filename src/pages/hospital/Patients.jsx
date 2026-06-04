@@ -15,7 +15,7 @@ import { useCompanyId } from "@/hooks/useCompanyId";
 
 const statusColors = {
   Admitted: 'bg-red-100 text-red-700',
-  Outpatient: 'bg-blue-100 text-blue-700',
+  Outpatient: 'bg-teal-100 text-teal-700',
   Discharged: 'bg-green-100 text-green-700',
 };
 
@@ -122,7 +122,7 @@ export default function Patients() {
   if (isLoading) return <div className="flex items-center justify-center h-64 text-muted-foreground">{t("loading_patients", "Loading patients...")}</div>;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh" }}>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -132,14 +132,14 @@ export default function Patients() {
             "Manage patient records and clinical history"
           )}</p>
         </div>
-        <Button onClick={openAdd} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+        <Button onClick={openAdd} className="gap-2 bg-teal-600 hover:bg-teal-700 text-white">
           <UserPlus className="w-4 h-4" /> {t("register_patient", "Register Patient")}
         </Button>
       </div>
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 shadow-sm">
-          <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600"><Users className="w-5 h-5" /></div>
+          <div className="w-10 h-10 rounded-xl bg-teal-100 flex items-center justify-center text-teal-600"><Users className="w-5 h-5" /></div>
           <div><p className="text-2xl font-bold text-card-foreground">{patients.length}</p><p className="text-xs text-muted-foreground">{t("total_patients", "Total Patients")}</p></div>
         </div>
         <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 shadow-sm">
@@ -196,7 +196,7 @@ export default function Patients() {
                     <td className="px-6 py-4 text-muted-foreground text-sm">{p.diagnosis || '—'}</td>
                     <td className="px-6 py-4 text-center text-muted-foreground font-medium">{p.lastVisit}</td>
                     <td className="px-6 py-4 text-center">
-                      <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${statusColors[p.status] || 'bg-blue-100 text-blue-700'}`}>{p.status}</span>
+                      <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${statusColors[p.status] || 'bg-teal-100 text-teal-700'}`}>{p.status}</span>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <DropdownMenu>
@@ -285,7 +285,7 @@ export default function Patients() {
             </div>
             <div className="flex gap-3 pt-2">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditingPatient(null); }}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleSave} disabled={mutateRecord.isPending}>
+              <Button className="flex-1 bg-teal-600 hover:bg-teal-700 text-white" onClick={handleSave} disabled={mutateRecord.isPending}>
                 {mutateRecord.isPending ? 'Saving...' : editingPatient ? 'Update Patient' : 'Register Patient'}
               </Button>
             </div>

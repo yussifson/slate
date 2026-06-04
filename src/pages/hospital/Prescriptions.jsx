@@ -138,7 +138,7 @@ export default function Prescriptions() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh" }}>
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-card-foreground">{t("prescriptions", "Prescriptions")}</h1>
@@ -147,7 +147,7 @@ export default function Prescriptions() {
             "Manage patient medications and pharmacy orders"
           )}</p>
         </div>
-        <Button onClick={() => setShowModal(true)} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+        <Button onClick={() => setShowModal(true)} className="gap-2 bg-teal-600 hover:bg-teal-700 text-white">
           <Plus className="w-4 h-4" /> {t("issue_prescription", "Issue Prescription")}
         </Button>
       </div>
@@ -174,14 +174,14 @@ export default function Prescriptions() {
               {filtered.map(rx => {
                 return (
                   <tr key={rx.id} className="hover:bg-muted/50">
-                    <td className="px-6 py-4 font-mono text-xs font-bold text-blue-600">{rx.rxId}</td>
+                    <td className="px-6 py-4 font-mono text-xs font-bold text-teal-600">{rx.rxId}</td>
                     <td className="px-6 py-4 font-semibold text-card-foreground">
-                      <Link to="/hospital/patients" className="text-blue-600 hover:underline">{rx.patient}</Link>
+                      <Link to="/hospital/patients" className="text-teal-600 hover:underline">{rx.patient}</Link>
                     </td>
                     <td className="px-6 py-4">
                       <p className="font-bold text-card-foreground flex items-center gap-2">
-                        <Pill className="w-3.5 h-3.5 text-blue-500"/> 
-                        <Link to="/hospital/pharmacy" className="text-blue-600 hover:underline">{rx.drug}</Link>
+                        <Pill className="w-3.5 h-3.5 text-teal-500"/> 
+                        <Link to="/hospital/pharmacy" className="text-teal-600 hover:underline">{rx.drug}</Link>
                       </p>
                       <p className="text-xs text-muted-foreground mt-1">{rx.dosage} • {rx.frequency} • {rx.duration}</p>
                     </td>
@@ -238,7 +238,7 @@ export default function Prescriptions() {
       {showModal && (
        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-lg p-6 space-y-4">
-           <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><FileText className="w-5 h-5 text-blue-600"/> {t("new_prescription", "New Prescription")}</h2>
+           <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><FileText className="w-5 h-5 text-teal-600"/> {t("new_prescription", "New Prescription")}</h2>
            <div className="space-y-3">
               <div>
                 <label className="text-xs font-bold text-muted-foreground uppercase">{t("patient_name", "Patient Name")}</label>
@@ -273,7 +273,7 @@ export default function Prescriptions() {
            </div>
            <div className="flex gap-3 pt-4">
              <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditingRx(null); }}>{t("cancel", "Cancel")}</Button>
-             <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleSaveToDb}>{t("sign_issue", "Sign & Issue")}</Button>
+             <Button className="flex-1 bg-teal-600 hover:bg-teal-700 text-white" onClick={handleSaveToDb}>{t("sign_issue", "Sign & Issue")}</Button>
            </div>
          </div>
        </div>
@@ -292,11 +292,11 @@ export default function Prescriptions() {
               </div>
               <div>
                 <h3 className="text-sm font-medium text-muted-foreground">{t("patient", "Patient")}</h3>
-                <Link to="/hospital/patients" className="text-base font-semibold text-blue-600 hover:underline">{viewRx.patient}</Link>
+                <Link to="/hospital/patients" className="text-base font-semibold text-teal-600 hover:underline">{viewRx.patient}</Link>
               </div>
               <div>
                 <h3 className="text-sm font-medium text-muted-foreground">{t("medication", "Medication")}</h3>
-                <Link to="/hospital/pharmacy" className="text-base font-semibold text-blue-600 hover:underline">{viewRx.drug}</Link>
+                <Link to="/hospital/pharmacy" className="text-base font-semibold text-teal-600 hover:underline">{viewRx.drug}</Link>
               </div>
               <div>
                 <h3 className="text-sm font-medium text-muted-foreground">{t("dosage_frequency", "Dosage & Frequency")}</h3>
