@@ -1,10 +1,10 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { BookOpen, Users, Search, Plus, UserCog, Calendar, Trash2, Layers, MoreVertical } from 'lucide-react';
+import { BookOpen, Users, Search, Plus, UserCog, Calendar, Trash2, Layers, MoreVertical, Hash, LayoutGrid } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Link } from 'react-router-dom';
-import { ViewModeToggle, ClassGridCard } from '@/components/school/SchoolViewKit';
+import { ViewModeToggle, ClassGridCard, ModuleBanner } from '@/components/school/SchoolViewKit';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -124,64 +124,29 @@ export default function Classes() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-card-foreground">{t("classes", "Classes")}</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">{t("manage_classes_subjects_and_te", "Manage classes, subjects, and teachers")}</p>
+      <ModuleBanner
+        title={t("classes_subjects", "Classes & Subjects")}
+        subtitle={t("manage_class_sections", "Manage class sections, assigned subjects, and schedules.")}
+        metrics={[
+          { title: "Total Classes", value: classesData.length, icon: BookOpen },
+          { title: "Subjects", value: new Set(classesData.map(c => c.subject)).size || 1, icon: Hash },
+          { title: "Total Capacity", value: classesData.reduce((acc, c) => acc + (c.students || 0), 0), icon: Users },
+          { title: "Self Registration", value: classesData.filter(c => c.allowSelfRegistration).length, icon: LayoutGrid }
+        ]}
+      />
+
+      {/* Search & Filters */}
+      <div className="bg-card rounded-xl border border-border p-4 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="relative flex-1 w-full max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input placeholder="Search by class name or subject..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
         </div>
-        <div className="flex items-center gap-2">
-          <Button onClick={() => setShowModal(true)} size="sm" className="gap-1.5 text-sm font-bold bg-emerald-600 text-white hover:bg-emerald-700 rounded-xl">
+        <div className="flex items-center gap-3 w-full md:w-auto">
+          <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
+          <Button onClick={() => setShowModal(true)} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
             <Plus className="w-4 h-4" /> {t("add_class", "Add Class")}
           </Button>
         </div>
-      </div>
-      {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 shadow-sm">
-          <div className="w-10 h-10 rounded-xl bg-purple-500 flex items-center justify-center">
-            <BookOpen className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-card-foreground">{classesData.length}</p>
-            <p className="text-xs text-muted-foreground">{t("total_classes", "Total Classes")}</p>
-          </div>
-        </div>
-        <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 shadow-sm">
-          <div className="w-10 h-10 rounded-xl bg-green-500 flex items-center justify-center">
-            <UserCog className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-card-foreground">{[...new Set(classesData.map(c => c.teacher))].length}</p>
-            <p className="text-xs text-muted-foreground">{t("teachers", "Teachers")}</p>
-          </div>
-        </div>
-        <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 shadow-sm">
-          <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center">
-            <Users className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-card-foreground">{classesData.reduce((acc, curr) => acc + (curr.students || 0), 0)}</p>
-            <p className="text-xs text-muted-foreground">{t("students_enrolled", "Students Enrolled")}</p>
-          </div>
-        </div>
-        <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 shadow-sm">
-          <div className="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center">
-            <Layers className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-card-foreground">{[...new Set(classesData.map(c => c.subject))].length}</p>
-            <p className="text-xs text-muted-foreground">{t("subjects", "Subjects")}</p>
-          </div>
-        </div>
-      </div>
-      {/* Search */}
-      <div className="bg-card rounded-xl border border-border p-4 shadow-sm flex items-center justify-between flex-wrap gap-4">
-        <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Search classes or teachers..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
-        </div>
-        <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
       </div>
       {/* Class List */}
       {isDbLoading ? (

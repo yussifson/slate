@@ -1,5 +1,5 @@
 import React from "react";
-import { LayoutGrid, List, Edit, Trash2, Eye, BookOpen, Calendar, Clock, MapPin, FileText } from "lucide-react";
+import { LayoutGrid, List, Edit, Trash2, Eye, BookOpen, Calendar, Clock, MapPin, FileText, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -248,5 +248,52 @@ export function ExamGridCard({ exam, onEdit, onDelete, onView, onStatusChange })
         </div>
       </div>
     </article>
+  );
+}
+
+export function ModuleBanner({ title, subtitle, dateText, onRefresh, isRefreshing, metrics }) {
+  return (
+    <div className="bg-emerald-600 rounded-3xl p-6 relative overflow-hidden mb-6 shadow-sm">
+      <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-700 rounded-full blur-3xl opacity-50 translate-y-1/3 -translate-x-1/4 pointer-events-none" />
+      
+      <div className="relative z-10 flex flex-col md:flex-row md:items-start justify-between gap-6 mb-6">
+        <div>
+          {dateText && (
+            <p className="text-emerald-100 text-[10px] font-bold tracking-widest uppercase mb-1">
+              {dateText}
+            </p>
+          )}
+          <h1 className="text-2xl md:text-3xl font-black text-white mb-1 tracking-tight">
+            {title}
+          </h1>
+          <p className="text-emerald-50 text-sm font-medium opacity-90">
+            {subtitle}
+          </p>
+        </div>
+        {onRefresh && (
+          <div className="flex items-center gap-2 shrink-0">
+            <Button onClick={onRefresh} disabled={isRefreshing} size="sm" className="gap-1.5 text-xs font-bold bg-white/20 hover:bg-white/30 text-white rounded-xl border-0 shadow-sm backdrop-blur-md">
+              <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} /> Refresh
+            </Button>
+          </div>
+        )}
+      </div>
+
+      {metrics && metrics.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 relative z-10">
+          {metrics.map((m, i) => (
+            <div key={i} className="bg-white/10 border border-white/20 rounded-2xl p-4 flex flex-col items-center justify-center text-center relative overflow-hidden group">
+              <div className="absolute inset-0 bg-white/0 group-hover:bg-white/5 transition-colors pointer-events-none" />
+              <p className="text-2xl font-black text-white mb-1 relative z-10">{m.value}</p>
+              <div className="flex items-center gap-1.5 relative z-10">
+                {m.icon && <m.icon className="w-3.5 h-3.5 text-emerald-100" />}
+                <p className="text-xs font-bold text-emerald-50 uppercase tracking-wider">{m.title}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }

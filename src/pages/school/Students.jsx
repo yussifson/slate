@@ -1,10 +1,10 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { Users, Search, Plus, GraduationCap, Phone, Mail, Filter, MoreVertical, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { Users, Search, Plus, GraduationCap, Phone, Mail, Filter, MoreVertical, CheckCircle, XCircle, Clock, UserCheck, AlertCircle } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Link } from 'react-router-dom';
-import { ViewModeToggle, StudentGridCard } from '@/components/school/SchoolViewKit';
+import { ViewModeToggle, StudentGridCard, ModuleBanner } from '@/components/school/SchoolViewKit';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/lib/AuthContext';
@@ -26,6 +26,7 @@ export default function Students() {
   const { notifyTeam } = useNotifications();
   const { user } = useAuth();
   const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('All');
   const [filterClass, setFilterClass] = useState('All');
   const [showModal, setShowModal] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -90,18 +91,10 @@ export default function Students() {
     };
   });
 
-  const classes = ['All', 'Grade 7B', 'Grade 8C', 'Grade 9A', 'Grade 9B', 'Grade 10A', 'Grade 10B', 'Grade 11A', 'Grade 12A'];
   const filtered = students.filter(s =>
-    (filterClass === 'All' || s.class === filterClass) &&
+    (statusFilter === 'All' || s.status === statusFilter) &&
     (s.name?.toLowerCase().includes(search.toLowerCase()) || s.studentId?.includes(search))
   );
-
-  const stats = [
-    { label: 'Total Students', value: students.length, color: 'bg-emerald-500', icon: Users },
-    { label: 'Active', value: students.filter(s => s.status === 'Active').length, color: 'bg-green-500', icon: CheckCircle },
-    { label: 'Fees Owing', value: students.filter(s => s.feeStatus !== 'Paid').length, color: 'bg-red-500', icon: XCircle },
-    { label: 'Classes', value: 8, color: 'bg-purple-500', icon: GraduationCap },
-  ];
 
   const [isEnrolling, setIsEnrolling] = useState(false);
 
@@ -218,61 +211,44 @@ export default function Students() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-card-foreground">{t("students_directory", "Students Directory")}</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">{t("manage_enrollment", "Manage enrollments, assign classes, and track fees.")}</p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setShowSettings(!showSettings)} className="gap-2">
-            <Settings className="w-4 h-4" /> {t("id_settings", "ID Settings")}
-          </Button>
-          <Button onClick={() => setShowModal(true)} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
-            <Plus className="w-4 h-4" /> {t("enroll_student", "Enroll Student")}
-          </Button>
-        </div>
-      </div>
+      <ModuleBanner
+        title={t("students_directory", "Students Directory")}
+        subtitle={t("manage_student_records", "Manage student records, enrollments, and academic status")}
+        metrics={[
+          { title: "Total Students", value: students.length, icon: Users },
+          { title: "Active", value: students.filter(s => s.status === 'Active').length, icon: UserCheck },
+          { title: "Graduated", value: students.filter(s => s.status === 'Graduated').length, icon: GraduationCap },
+          { title: "Suspended", value: students.filter(s => s.status === 'Suspended').length, icon: AlertCircle }
+        ]}
+      />
       
       {showSettings && <IDFormatSettings />}
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((s, i) => (
-          <div key={i} className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 shadow-sm">
-            <div className={`w-10 h-10 rounded-xl ${s.color} text-white flex items-center justify-center`}>
-              <s.icon className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-card-foreground">{s.value}</p>
-              <p className="text-xs text-muted-foreground">{s.label}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-      
-      {/* Filters */}
-      <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
-        <div className="flex flex-col sm:flex-row gap-3">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input placeholder="Search by name or ID..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
-          </div>
-          <div className="flex gap-2 flex-wrap">
-            {classes.map(c => {
-              return (
-                <button key={c} onClick={() => setFilterClass(c)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${filterClass === c ? 'bg-emerald-600 text-white' : 'bg-muted text-muted-foreground hover:bg-slate-200'}`}>
-                  {c}
-                </button>
-              );
-            })}
-          </div>
+      {/* Search and Filter */}
+      <div className="bg-card rounded-xl border border-border p-4 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="relative flex-1 w-full max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input placeholder="Search by name, ID, or class..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
         </div>
-        <div className="mt-4 flex justify-end">
+        <div className="flex items-center gap-3 w-full md:w-auto">
+          <div className="flex bg-muted p-1 rounded-lg">
+            {['All', 'Active', 'Suspended', 'Graduated'].map(s => (
+              <button
+                key={s}
+                onClick={() => setStatusFilter(s)}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${statusFilter === s ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
           <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
+          <Button onClick={() => setShowModal(true)} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
+            <Plus className="w-4 h-4" /> {t("add_student", "Add Student")}
+          </Button>
         </div>
       </div>
+
       {/* Student Table */}
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         {filtered.length === 0 ? (

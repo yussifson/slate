@@ -8,7 +8,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
-import { ViewModeToggle, ClassGridCard } from '@/components/school/SchoolViewKit';
+import { ViewModeToggle, ClassGridCard, ModuleBanner } from '@/components/school/SchoolViewKit';
 
 export default function Teachers() {
   const { t } = useTranslation();
@@ -100,16 +100,16 @@ export default function Teachers() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-card-foreground">{t("teachers_staff", "Teachers & Staff")}</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">{t("manage_academic_staff", "Manage academic staff, subjects, and qualifications")}</p>
-        </div>
-        <Button onClick={() => setShowModal(true)} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
-          <Plus className="w-4 h-4" /> {t("add_teacher", "Add Teacher")}
-        </Button>
-      </div>
+      <ModuleBanner
+        title={t("teachers_staff", "Teachers & Staff")}
+        subtitle={t("manage_academic_staff", "Manage academic staff, subjects, and qualifications")}
+        metrics={[
+          { title: "Total Teachers", value: teachers.length, icon: Users },
+          { title: "Departments", value: new Set(teachers.map(t => t.department)).size || 1, icon: Briefcase },
+          { title: "Active", value: teachers.filter(t => t.status === 'Active').length, icon: Users },
+          { title: "On Leave", value: teachers.filter(t => t.status === 'On Leave').length, icon: Calendar }
+        ]}
+      />
       
       {/* Search */}
       <div className="bg-card rounded-xl border border-border p-4 shadow-sm flex items-center justify-between gap-4">
@@ -117,7 +117,12 @@ export default function Teachers() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input placeholder="Search by name or subject..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
         </div>
-        <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
+        <div className="flex items-center gap-3">
+          <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
+          <Button onClick={() => setShowModal(true)} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
+            <Plus className="w-4 h-4" /> {t("add_teacher", "Add Teacher")}
+          </Button>
+        </div>
       </div>
 
       {isLoading ? (
