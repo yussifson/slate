@@ -152,6 +152,33 @@ export const INDUSTRIES = {
     ],
   },
 
+  college: {
+    name: 'College',
+    icon: '🎓',
+    terms: {
+      client: 'Student', clients: 'Students',
+      case: 'Course', cases: 'Courses',
+      staff: 'Lecturer', staffPlural: 'Lecturers',
+      venue: 'Campus', intake: 'Admissions',
+      hearing: 'Lecture', hearings: 'Lectures',
+    },
+    roles: [
+      { value: 'company_admin', label: 'Principal / Dean' },
+      { value: 'lecturer', label: 'Lecturer' },
+      { value: 'finance', label: 'Finance' },
+      { value: 'student', label: 'Student' },
+    ],
+    nav: [
+      { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
+      { label: 'Students', path: '/students', icon: 'Users' },
+      { label: 'Courses', path: '/courses', icon: 'BookOpen' },
+      { label: 'Faculty', path: '/faculty', icon: 'Briefcase' },
+      { label: 'Admissions', path: '/admissions', icon: 'FileText' },
+      { label: 'Finance', path: '/finance', icon: 'Banknote' },
+      { label: 'Settings', path: '/settings', icon: 'Settings' },
+    ],
+  },
+
   online: {
     name: 'Online Learning',
     icon: '💻',

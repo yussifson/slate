@@ -11,6 +11,7 @@ import confetti from 'canvas-confetti';
 import { useToast } from '@/components/ui/use-toast';
 import { getSubdomainAndBase } from '@/lib/domainUtils';
 import { getTerm, INDUSTRIES } from '@/config/industries';
+import { COUNTRIES_CURRENCIES } from '@/config/countries';
 
 export default function OnboardingWizard() {
   const { t } = useTranslation();
@@ -29,10 +30,17 @@ export default function OnboardingWizard() {
   }, [step]);
 
   // Step 1: Firm profile
-  const [country, setCountry] = useState('Nigeria');
-  const [currency, setCurrency] = useState('NGN');
+  const [country, setCountry] = useState('United States of America');
+  const [currency, setCurrency] = useState('USD');
   const [industry, setIndustry] = useState(user?.company_industry || 'law');
-  const [educationLevel, setEducationLevel] = useState('primary');
+  const [educationLevel, setEducationLevel] = useState('basic');
+
+  useEffect(() => {
+    const selected = COUNTRIES_CURRENCIES.find(c => c.country === country);
+    if (selected) {
+      setCurrency(selected.currency);
+    }
+  }, [country]);
 
   // Step 2: Setup Mode
   const [setupMode, setSetupMode] = useState('template'); // 'template', 'orbit', 'custom'
@@ -92,11 +100,13 @@ export default function OnboardingWizard() {
       }
 
       // 1. Update company details
+      const finalIndustry = (industry === 'school' && educationLevel !== 'basic') ? educationLevel : industry;
+
       const { error: compError } = await supabase
         .from('companies')
           .update({
-            industry_type: industry,
-            education_level: industry === 'school' ? educationLevel : null,
+            industry_type: finalIndustry,
+            education_level: (industry === 'school' && educationLevel === 'basic') ? 'basic' : null,
             country: country,
             currency: currency,
             status: 'active'
@@ -270,40 +280,39 @@ export default function OnboardingWizard() {
 
                 <div className="space-y-5">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("industry", "Suite Selection")}</label>
+                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("industry", "Workspace Selection")}</label>
                     <Select value={industry} onValueChange={setIndustry}>
                       <SelectTrigger className="h-12 bg-white border-slate-200 rounded-xl text-slate-900 focus:ring-blue-500">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-white text-slate-900 border-slate-200">
-                        <SelectItem value="law">{t("law_firm", "Law Firm Suite")}</SelectItem>
-                        <SelectItem value="retail">{t("retail_pos", "Retail / POS Suite")}</SelectItem>
-                        <SelectItem value="school">{t("school_education", "Basic Education Suite (Preschool to JHS)")}</SelectItem>
-                        <SelectItem value="highschool">High School Suite</SelectItem>
-                        <SelectItem value="university">University / College Suite</SelectItem>
-                        <SelectItem value="online">Online Learning Platform Suite</SelectItem>
-                        <SelectItem value="vocational">Vocational / Technical Suite</SelectItem>
-                        <SelectItem value="hospital">{t("hospital_healthcare", "Healthcare Suite")}</SelectItem>
-                        <SelectItem value="hotel">{t("hotel_hospitality", "Hospitality Suite")}</SelectItem>
-                        <SelectItem value="logistics">{t("logistics_delivery", "Logistics Suite")}</SelectItem>
-                        <SelectItem value="insurance">{t("insurance", "Insurance Suite")}</SelectItem>
-                        <SelectItem value="church">{t("church_religion", "Church Suite")}</SelectItem>
-                        <SelectItem value="hr">{t("hr_erp", "HR & ERP Suite")}</SelectItem>
+                        <SelectItem value="law">{t("law_firm", "Law Firm")}</SelectItem>
+                        <SelectItem value="retail">{t("retail_pos", "Retail / POS")}</SelectItem>
+                        <SelectItem value="school">{t("school_education", "School & Education")}</SelectItem>
+                        <SelectItem value="hospital">{t("hospital_healthcare", "Hospital & Healthcare")}</SelectItem>
+                        <SelectItem value="hotel">{t("hotel_hospitality", "Hotel & Hospitality")}</SelectItem>
+                        <SelectItem value="logistics">{t("logistics_delivery", "Logistics & Delivery")}</SelectItem>
+                        <SelectItem value="insurance">{t("insurance", "Insurance Agency")}</SelectItem>
+                        <SelectItem value="church">{t("church_religion", "Church & Religion")}</SelectItem>
+                        <SelectItem value="hr">{t("hr_erp", "HR & ERP")}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   {industry === 'school' && (
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("education_level", "Basic Education Level")}</label>
+                      <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Education Level</label>
                       <Select value={educationLevel} onValueChange={setEducationLevel}>
                         <SelectTrigger className="w-full h-12 bg-blue-50/50 border-blue-200 rounded-xl text-slate-900 focus:ring-blue-500">
-                          <SelectValue placeholder="Select basic level" />
+                          <SelectValue placeholder="Select level" />
                         </SelectTrigger>
                         <SelectContent className="bg-white text-slate-900 border-slate-200">
-                          <SelectItem value="preschool">Preschool / Kindergarten</SelectItem>
-                          <SelectItem value="primary">Primary / Elementary School</SelectItem>
-                          <SelectItem value="jhs">Junior High School</SelectItem>
+                          <SelectItem value="basic">Basic</SelectItem>
+                          <SelectItem value="highschool">High School</SelectItem>
+                          <SelectItem value="university">University</SelectItem>
+                          <SelectItem value="college">College</SelectItem>
+                          <SelectItem value="online">Online Learning Platform</SelectItem>
+                          <SelectItem value="vocational">Vocational / Technical</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -314,18 +323,14 @@ export default function OnboardingWizard() {
                       <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("country", "Country")}</label>
                       <Select value={country} onValueChange={(v) => {
                         setCountry(v);
-                        if (v === 'Ghana') setCurrency('GHS');
-                        else if (v === 'Nigeria') setCurrency('NGN');
-                        else if (v === 'Sierra Leone') setCurrency('SLL');
-                        else setCurrency('USD');
                       }}>
                         <SelectTrigger className="h-12 bg-white border-slate-200 rounded-xl text-slate-900 focus:ring-blue-500">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="bg-white text-slate-900 border-slate-200">
-                          <SelectItem value="Nigeria">{t("nigeria", "Nigeria")}</SelectItem>
-                          <SelectItem value="Ghana">{t("ghana", "Ghana")}</SelectItem>
-                          <SelectItem value="Sierra Leone">{t("sierra_leone", "Sierra Leone")}</SelectItem>
+                          {COUNTRIES_CURRENCIES.map((c) => (
+                            <SelectItem key={c.country} value={c.country}>{c.country}</SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </div>
@@ -337,11 +342,9 @@ export default function OnboardingWizard() {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="bg-white text-slate-900 border-slate-200">
-                          <SelectItem value="NGN">{t("ngn", "NGN (₦)")}</SelectItem>
-                          <SelectItem value="GHS">{t("ghs", "GHS (₵)")}</SelectItem>
-                          <SelectItem value="SLL">{t("sll_le", "SLL (Le)")}</SelectItem>
-                          <SelectItem value="ZAR">{t("zar_r", "ZAR (R)")}</SelectItem>
-                          <SelectItem value="USD">{t("usd", "USD ($)")}</SelectItem>
+                          {Array.from(new Set(COUNTRIES_CURRENCIES.map(c => c.currency))).sort().map(curr => (
+                            <SelectItem key={curr} value={curr}>{curr}</SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </div>
