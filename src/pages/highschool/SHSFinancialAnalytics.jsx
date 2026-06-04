@@ -1,72 +1,157 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ModuleBanner } from '@/components/school/SchoolViewKit';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { TrendingUp, Plus, Search, Filter } from 'lucide-react';
+import { useAuth } from '@/lib/AuthContext';
+import { base44 } from '@/api/base44Client';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { BarChart, TrendingUp, DollarSign, Activity, PieChart as PieChartIcon } from 'lucide-react';
 
 export default function SHSFinancialAnalytics() {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  
+  const [loading, setLoading] = useState(true);
+  const [payments, setPayments] = useState([]);
+  const [invoices, setInvoices] = useState([]);
 
-  const dummyData = [
-    { id: 1, name: "Sample Record A", status: "Active", date: "2024-03-15" },
-    { id: 2, name: "Sample Record B", status: "Pending", date: "2024-03-14" },
-    { id: 3, name: "Sample Record C", status: "Completed", date: "2024-03-12" },
-  ];
+  useEffect(() => {
+    const fetchFinancials = async () => {
+      setLoading(true);
+      try {
+        const [paymentRecords, invoiceRecords] = await Promise.all([
+          base44.getEntities('shs_payment', user?.company_id),
+          base44.getEntities('shs_invoice', user?.company_id)
+        ]);
+        setPayments(paymentRecords);
+        setInvoices(invoiceRecords);
+      } catch (error) {
+        console.error('Failed to fetch financial analytics:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user?.company_id) {
+      fetchFinancials();
+    }
+  }, [user]);
+
+  // Aggregate Metrics
+  const totalBilled = invoices.reduce((sum, i) => sum + (parseFloat(i.data?.amount) || 0), 0);
+  const totalCollected = payments.reduce((sum, p) => sum + (parseFloat(p.data?.amountPaid) || 0), 0);
+  const totalArrears = Math.max(0, totalBilled - totalCollected);
+  
+  const collectionRate = totalBilled > 0 ? ((totalCollected / totalBilled) * 100).toFixed(1) : 0;
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
-      <ModuleBanner 
-        title="Financial Analytics"
-        subtitle="Revenue projections and collection efficiency."
-        metrics={[
-          { title: "Total Records", value: "1,248", icon: TrendingUp },
-          { title: "Active", value: "982", icon: TrendingUp },
-          { title: "Pending Review", value: "45", icon: TrendingUp }
-        ]}
-      />
-
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-        <div className="flex gap-2">
-          <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <input 
-              type="text" 
-              placeholder="Search..." 
-              className="pl-9 h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 w-full sm:w-64"
-            />
-          </div>
-          <Button variant="outline" size="icon">
-            <Filter className="w-4 h-4" />
-          </Button>
+    <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
+      
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-purple-800 bg-clip-text text-transparent">
+            Financial Analytics
+          </h1>
+          <p className="text-muted-foreground mt-1 text-sm font-medium">
+            High-level dashboard measuring revenue health and collection rates.
+          </p>
         </div>
-        <Button className="bg-[#6F00FF] hover:bg-[#5200c2] text-white">
-          <Plus className="w-4 h-4 mr-2" /> Add New
-        </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {dummyData.map((item) => (
-          <Card key={item.id} className="group hover:shadow-lg transition-all duration-300 border-border/50 bg-card/50 backdrop-blur-sm">
-            <CardContent className="p-6">
-              <div className="flex justify-between items-start mb-4">
-                <div className="w-12 h-12 rounded-xl bg-purple-50 text-[#6F00FF] flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <TrendingUp className="w-6 h-6" />
+      {loading ? (
+        <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+          <CardContent className="p-20 text-center text-slate-400">Loading analytics dashboard...</CardContent>
+        </Card>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center text-[#6F00FF]">
+                    <Activity className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-slate-500 uppercase tracking-wider">Collection Rate</p>
+                  </div>
                 </div>
-                <span className={`text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
-                  item.status === 'Active' ? 'bg-purple-100 text-purple-700' :
-                  item.status === 'Completed' ? 'bg-blue-100 text-blue-700' :
-                  'bg-amber-100 text-amber-700'
-                }`}>
-                  {item.status}
-                </span>
+                <h3 className={`text-4xl font-black ${collectionRate >= 80 ? 'text-emerald-500' : collectionRate >= 50 ? 'text-amber-500' : 'text-rose-500'}`}>
+                  {collectionRate}%
+                </h3>
+                <div className="w-full bg-slate-100 h-2 rounded-full mt-4 overflow-hidden">
+                  <div 
+                    className={`h-full ${collectionRate >= 80 ? 'bg-emerald-500' : collectionRate >= 50 ? 'bg-amber-500' : 'bg-rose-500'}`} 
+                    style={{ width: `${collectionRate}%` }}
+                  ></div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-3xl border-none shadow-sm bg-gradient-to-br from-[#6F00FF] to-purple-800 text-white">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center text-white">
+                    <TrendingUp className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-purple-200 uppercase tracking-wider">Collected YTD</p>
+                  </div>
+                </div>
+                <h3 className="text-4xl font-black text-white">${totalCollected.toFixed(2)}</h3>
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500">
+                    <DollarSign className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-slate-500 uppercase tracking-wider">Total Billed</p>
+                  </div>
+                </div>
+                <h3 className="text-4xl font-black text-slate-800">${totalBilled.toFixed(2)}</h3>
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-rose-100">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-rose-100 flex items-center justify-center text-rose-600">
+                    <PieChartIcon className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-rose-600/70 uppercase tracking-wider">Arrears</p>
+                  </div>
+                </div>
+                <h3 className="text-4xl font-black text-rose-700">${totalArrears.toFixed(2)}</h3>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+            <CardHeader className="border-b border-slate-100 bg-slate-50/50 p-6">
+              <CardTitle className="text-lg font-bold text-slate-800 flex items-center gap-2">
+                <BarChart className="w-5 h-5 text-[#6F00FF]" /> Cash Flow Visualization
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-16 flex items-center justify-center min-h-[300px]">
+              <div className="text-center space-y-4">
+                <div className="w-20 h-20 rounded-3xl bg-slate-50 mx-auto flex items-center justify-center border border-slate-100">
+                  <BarChart className="w-10 h-10 text-slate-300" />
+                </div>
+                <p className="text-slate-500 font-medium">Interactive charts are enabled when connecting to a Charting provider.</p>
+                <div className="flex gap-4 justify-center items-end h-32 mt-8 opacity-40">
+                  <div className="w-12 bg-purple-200 rounded-t-lg h-1/4"></div>
+                  <div className="w-12 bg-[#6F00FF] rounded-t-lg h-3/4 shadow-lg shadow-purple-500/50"></div>
+                  <div className="w-12 bg-purple-200 rounded-t-lg h-2/4"></div>
+                  <div className="w-12 bg-[#6F00FF] rounded-t-lg h-full shadow-lg shadow-purple-500/50"></div>
+                  <div className="w-12 bg-purple-200 rounded-t-lg h-3/4"></div>
+                </div>
               </div>
-              <h3 className="font-bold text-lg mb-1 text-foreground">{item.name}</h3>
-              <p className="text-sm text-muted-foreground font-medium">Last updated: {item.date}</p>
             </CardContent>
           </Card>
-        ))}
-      </div>
+        </>
+      )}
     </div>
   );
 }

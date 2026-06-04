@@ -1,72 +1,279 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ModuleBanner } from '@/components/school/SchoolViewKit';
-import { Card, CardContent } from '@/components/ui/card';
+import { useAuth } from '@/lib/AuthContext';
+import { base44 } from '@/api/base44Client';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Laptop, Plus, Search, Filter } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Search, Plus, Cloud, FileText, Download, UploadCloud, Trash2, Folder, ExternalLink } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
 
 export default function SHSDigitalResources() {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  
+  const [resources, setResources] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [newResource, setNewResource] = useState({
+    title: '',
+    category: 'Past Questions', // Past Questions, Syllabus, Lecture Notes, Study Guide
+    targetClass: 'All Forms', // Form 1, Form 2, Form 3, All
+    subject: 'General',
+    linkUrl: ''
+  });
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  const dummyData = [
-    { id: 1, name: "Sample Record A", status: "Active", date: "2024-03-15" },
-    { id: 2, name: "Sample Record B", status: "Pending", date: "2024-03-14" },
-    { id: 3, name: "Sample Record C", status: "Completed", date: "2024-03-12" },
-  ];
+  const fetchResources = async () => {
+    setLoading(true);
+    try {
+      const records = await base44.getEntities('shs_digital_resource', user?.company_id);
+      setResources(records);
+    } catch (error) {
+      console.error('Failed to fetch digital resources:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user?.company_id) {
+      fetchResources();
+    }
+  }, [user]);
+
+  const handleUpload = async () => {
+    setIsProcessing(true);
+    try {
+      const payload = {
+        company_id: user?.company_id,
+        case_type: 'shs_digital_resource',
+        title: newResource.title,
+        case_number: `RES-${Math.floor(Math.random() * 100000)}`,
+        status: 'Published',
+        data: {
+          ...newResource,
+          uploadDate: new Date().toISOString().split('T')[0]
+        }
+      };
+      
+      await base44.createEntity(payload);
+      setIsUploadModalOpen(false);
+      setNewResource({ title: '', category: 'Past Questions', targetClass: 'All Forms', subject: 'General', linkUrl: '' });
+      fetchResources();
+    } catch (error) {
+      console.error('Failed to upload resource:', error);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await base44.updateEntity(id, { status: 'Archived' });
+      fetchResources();
+    } catch (error) {
+      console.error('Failed to delete resource:', error);
+    }
+  };
+
+  const filteredResources = resources.filter(r => 
+    r.status !== 'Archived' &&
+    (r.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    r.data?.category?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    r.data?.subject?.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
-      <ModuleBanner 
-        title="Digital Resources"
-        subtitle="E-books, past questions, and online papers."
-        metrics={[
-          { title: "Total Records", value: "1,248", icon: Laptop },
-          { title: "Active", value: "982", icon: Laptop },
-          { title: "Pending Review", value: "45", icon: Laptop }
-        ]}
-      />
-
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-        <div className="flex gap-2">
-          <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <input 
-              type="text" 
-              placeholder="Search..." 
-              className="pl-9 h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 w-full sm:w-64"
-            />
-          </div>
-          <Button variant="outline" size="icon">
-            <Filter className="w-4 h-4" />
-          </Button>
+    <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
+      
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-purple-800 bg-clip-text text-transparent">
+            E-Library & Resources
+          </h1>
+          <p className="text-muted-foreground mt-1 text-sm font-medium">
+            Manage digital learning materials, past questions, and study guides.
+          </p>
         </div>
-        <Button className="bg-[#6F00FF] hover:bg-[#5200c2] text-white">
-          <Plus className="w-4 h-4 mr-2" /> Add New
+        
+        <Button onClick={() => setIsUploadModalOpen(true)} className="h-9 gap-2 rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white shadow-md shadow-purple-500/20">
+          <UploadCloud className="w-4 h-4" /> Upload Resource
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {dummyData.map((item) => (
-          <Card key={item.id} className="group hover:shadow-lg transition-all duration-300 border-border/50 bg-card/50 backdrop-blur-sm">
-            <CardContent className="p-6">
-              <div className="flex justify-between items-start mb-4">
-                <div className="w-12 h-12 rounded-xl bg-purple-50 text-[#6F00FF] flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Laptop className="w-6 h-6" />
-                </div>
-                <span className={`text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
-                  item.status === 'Active' ? 'bg-purple-100 text-purple-700' :
-                  item.status === 'Completed' ? 'bg-blue-100 text-blue-700' :
-                  'bg-amber-100 text-amber-700'
-                }`}>
-                  {item.status}
-                </span>
-              </div>
-              <h3 className="font-bold text-lg mb-1 text-foreground">{item.name}</h3>
-              <p className="text-sm text-muted-foreground font-medium">Last updated: {item.date}</p>
-            </CardContent>
-          </Card>
-        ))}
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-slate-100">
+          <CardContent className="p-5 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center text-[#6F00FF] shrink-0">
+              <Cloud className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-muted-foreground">Total Files</p>
+              <h3 className="text-2xl font-black text-slate-800">{resources.filter(r => r.status === 'Published').length}</h3>
+            </div>
+          </CardContent>
+        </Card>
       </div>
+
+      <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 bg-slate-50/50 pb-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <CardTitle className="text-lg font-bold text-slate-800 flex items-center gap-2">
+                <Folder className="w-5 h-5 text-[#6F00FF]" /> Resource Directory
+              </CardTitle>
+            </div>
+            
+            <div className="relative w-full sm:w-64">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Input 
+                placeholder="Search resources..." 
+                className="pl-9 h-9 bg-white border-slate-200 rounded-xl focus-visible:ring-[#6F00FF]"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="p-0">
+          {loading ? (
+            <div className="p-12 text-center text-slate-400">Loading resources...</div>
+          ) : filteredResources.length === 0 ? (
+            <div className="p-16 text-center">
+              <div className="w-16 h-16 rounded-2xl bg-purple-50 mx-auto flex items-center justify-center mb-4">
+                <FileText className="w-8 h-8 text-purple-400" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-700">No resources found</h3>
+              <p className="text-sm text-slate-500">Upload study materials to populate the E-Library.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6 bg-slate-50/30">
+              {filteredResources.map(resource => (
+                <div key={resource.id} className="p-5 rounded-2xl border border-slate-200 bg-white hover:border-[#6F00FF]/50 hover:shadow-lg hover:shadow-purple-500/10 transition-all group">
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
+                      <FileText className="w-5 h-5 text-blue-500" />
+                    </div>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => handleDelete(resource.id)}
+                      className="text-slate-400 hover:text-rose-600 hover:bg-rose-50 h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  
+                  <h4 className="font-bold text-slate-800 line-clamp-2 min-h-[40px] mb-1">{resource.title}</h4>
+                  <p className="text-xs text-slate-500 mb-4">{resource.data?.subject} • {resource.data?.targetClass}</p>
+                  
+                  <div className="flex justify-between items-center mt-auto">
+                    <Badge variant="outline" className="bg-slate-50 text-slate-600 border-none font-medium text-[10px]">
+                      {resource.data?.category}
+                    </Badge>
+                    <a href={resource.data?.linkUrl || '#'} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-xs font-bold text-[#6F00FF] hover:underline">
+                      View File <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <Dialog open={isUploadModalOpen} onOpenChange={setIsUploadModalOpen}>
+        <DialogContent className="sm:max-w-[450px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
+          <div className="p-6 bg-gradient-to-br from-[#6F00FF] to-purple-800 text-white">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-black">Upload Resource</DialogTitle>
+              <DialogDescription className="text-purple-100">
+                Add a new study material to the E-Library.
+              </DialogDescription>
+            </DialogHeader>
+          </div>
+          
+          <div className="p-6 bg-slate-50 space-y-4">
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Resource Title</label>
+              <Input 
+                placeholder="e.g. 2022 WASSCE Core Maths Past Questions"
+                className="bg-white border-slate-200 rounded-xl"
+                value={newResource.title}
+                onChange={e => setNewResource({...newResource, title: e.target.value})}
+              />
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Category</label>
+                <select 
+                  className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                  value={newResource.category}
+                  onChange={e => setNewResource({...newResource, category: e.target.value})}
+                >
+                  <option value="Past Questions">Past Questions</option>
+                  <option value="Syllabus">Syllabus</option>
+                  <option value="Lecture Notes">Lecture Notes</option>
+                  <option value="Study Guide">Study Guide</option>
+                  <option value="Audio/Video">Audio/Video Link</option>
+                </select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Target Class</label>
+                <select 
+                  className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                  value={newResource.targetClass}
+                  onChange={e => setNewResource({...newResource, targetClass: e.target.value})}
+                >
+                  <option value="All Forms">All Forms</option>
+                  <option value="Form 1">Form 1</option>
+                  <option value="Form 2">Form 2</option>
+                  <option value="Form 3">Form 3</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Subject</label>
+              <Input 
+                placeholder="e.g. Core Mathematics, General Knowledge"
+                className="bg-white border-slate-200 rounded-xl"
+                value={newResource.subject}
+                onChange={e => setNewResource({...newResource, subject: e.target.value})}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Cloud Link (URL)</label>
+              <Input 
+                placeholder="https://drive.google.com/..."
+                className="bg-white border-slate-200 rounded-xl"
+                value={newResource.linkUrl}
+                onChange={e => setNewResource({...newResource, linkUrl: e.target.value})}
+              />
+              <p className="text-[10px] text-slate-400">Link to the external hosted file (Google Drive, Dropbox, AWS).</p>
+            </div>
+          </div>
+          
+          <div className="p-4 bg-white border-t border-slate-100 flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setIsUploadModalOpen(false)} className="rounded-xl font-semibold text-slate-600">
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleUpload} 
+              disabled={!newResource.title || !newResource.linkUrl || isProcessing}
+              className="rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white font-bold"
+            >
+              {isProcessing ? 'Publishing...' : 'Publish Resource'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

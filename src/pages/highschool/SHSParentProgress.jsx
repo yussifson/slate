@@ -1,72 +1,168 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ModuleBanner } from '@/components/school/SchoolViewKit';
-import { Card, CardContent } from '@/components/ui/card';
+import { useAuth } from '@/lib/AuthContext';
+import { base44 } from '@/api/base44Client';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { LineChart, Plus, Search, Filter } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Award, BookOpen, Download, LineChart, FileText, User } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 export default function SHSParentProgress() {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  
+  const [loading, setLoading] = useState(true);
+  const [wards, setWards] = useState([]);
+  const [selectedWardId, setSelectedWardId] = useState('');
+  
+  const [reportCards, setReportCards] = useState([]);
 
-  const dummyData = [
-    { id: 1, name: "Sample Record A", status: "Active", date: "2024-03-15" },
-    { id: 2, name: "Sample Record B", status: "Pending", date: "2024-03-14" },
-    { id: 3, name: "Sample Record C", status: "Completed", date: "2024-03-12" },
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        // Mock finding wards for the logged in parent.
+        // In a real app, we filter by parentId. Here we just take a few students.
+        const students = await base44.getEntities('shs_student', user?.company_id);
+        const myWards = students.slice(0, 2); // Simulating 2 children
+        setWards(myWards);
+        if (myWards.length > 0) setSelectedWardId(myWards[0].id);
+        
+        // Fetch published report cards for these wards
+        const reports = await base44.getEntities('shs_report_card', user?.company_id);
+        setReportCards(reports.filter(r => r.status === 'Published'));
+        
+      } catch (error) {
+        console.error('Failed to fetch parent progress data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user?.company_id) {
+      fetchData();
+    }
+  }, [user]);
+
+  const selectedWard = wards.find(w => w.id === selectedWardId);
+  const wardReports = reportCards.filter(r => r.data?.studentId === selectedWardId);
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
-      <ModuleBanner 
-        title="Student Progress"
-        subtitle="Academic performance view for parents."
-        metrics={[
-          { title: "Total Records", value: "1,248", icon: LineChart },
-          { title: "Active", value: "982", icon: LineChart },
-          { title: "Pending Review", value: "45", icon: LineChart }
-        ]}
-      />
-
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-        <div className="flex gap-2">
-          <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <input 
-              type="text" 
-              placeholder="Search..." 
-              className="pl-9 h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 w-full sm:w-64"
-            />
-          </div>
-          <Button variant="outline" size="icon">
-            <Filter className="w-4 h-4" />
-          </Button>
+    <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
+      
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-purple-800 bg-clip-text text-transparent">
+            Academic Progress
+          </h1>
+          <p className="text-muted-foreground mt-1 text-sm font-medium">
+            View termly report cards and academic trends for your children.
+          </p>
         </div>
-        <Button className="bg-[#6F00FF] hover:bg-[#5200c2] text-white">
-          <Plus className="w-4 h-4 mr-2" /> Add New
-        </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {dummyData.map((item) => (
-          <Card key={item.id} className="group hover:shadow-lg transition-all duration-300 border-border/50 bg-card/50 backdrop-blur-sm">
-            <CardContent className="p-6">
-              <div className="flex justify-between items-start mb-4">
-                <div className="w-12 h-12 rounded-xl bg-purple-50 text-[#6F00FF] flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <LineChart className="w-6 h-6" />
-                </div>
-                <span className={`text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
-                  item.status === 'Active' ? 'bg-purple-100 text-purple-700' :
-                  item.status === 'Completed' ? 'bg-blue-100 text-blue-700' :
-                  'bg-amber-100 text-amber-700'
+      {loading ? (
+        <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+          <CardContent className="p-20 text-center text-slate-400">Loading academic records...</CardContent>
+        </Card>
+      ) : wards.length === 0 ? (
+        <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+          <CardContent className="p-20 text-center">
+            <div className="w-16 h-16 rounded-2xl bg-purple-50 mx-auto flex items-center justify-center mb-4">
+              <User className="w-8 h-8 text-purple-400" />
+            </div>
+            <h3 className="text-lg font-bold text-slate-700">No Wards Linked</h3>
+            <p className="text-sm text-slate-500">Contact the school administration to link your child's account.</p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          
+          <div className="lg:col-span-1 space-y-4">
+            <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider pl-2">Select Child</h3>
+            {wards.map(ward => (
+              <button
+                key={ward.id}
+                onClick={() => setSelectedWardId(ward.id)}
+                className={`w-full p-4 rounded-2xl border text-left transition-all duration-300 flex items-center gap-4 ${
+                  selectedWardId === ward.id 
+                    ? 'bg-[#6F00FF] border-[#6F00FF] text-white shadow-lg shadow-purple-500/20 scale-100' 
+                    : 'bg-white border-slate-200 text-slate-700 hover:border-[#6F00FF]/50 scale-95'
+                }`}
+              >
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg shrink-0 ${
+                  selectedWardId === ward.id ? 'bg-white/20 text-white' : 'bg-slate-100 text-[#6F00FF]'
                 }`}>
-                  {item.status}
-                </span>
-              </div>
-              <h3 className="font-bold text-lg mb-1 text-foreground">{item.name}</h3>
-              <p className="text-sm text-muted-foreground font-medium">Last updated: {item.date}</p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+                  {ward.title.charAt(0)}
+                </div>
+                <div>
+                  <h4 className="font-bold">{ward.title}</h4>
+                  <p className={`text-xs ${selectedWardId === ward.id ? 'text-purple-200' : 'text-slate-500'}`}>
+                    {ward.data?.classRoom || 'Form 1'} • {ward.data?.programmeName || 'General'}
+                  </p>
+                </div>
+              </button>
+            ))}
+          </div>
+
+          <div className="lg:col-span-3 space-y-6">
+            <Card className="rounded-3xl border-none shadow-sm bg-gradient-to-br from-[#6F00FF] to-purple-800 text-white overflow-hidden">
+              <CardContent className="p-8">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h2 className="text-2xl font-black mb-1">{selectedWard?.title}'s Performance</h2>
+                    <p className="text-purple-200 text-sm">Overall Academic Standing: Excellent</p>
+                  </div>
+                  <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center">
+                    <LineChart className="w-8 h-8 text-white" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100">
+              <CardHeader className="border-b border-slate-100 bg-slate-50/50">
+                <CardTitle className="text-lg font-bold text-slate-800 flex items-center gap-2">
+                  <BookOpen className="w-5 h-5 text-[#6F00FF]" /> Published Report Cards
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                {wardReports.length === 0 ? (
+                  <div className="p-16 text-center text-slate-500">
+                    <FileText className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+                    No report cards have been published for this student yet.
+                  </div>
+                ) : (
+                  <div className="divide-y divide-slate-100">
+                    {wardReports.map(report => (
+                      <div key={report.id} className="p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:bg-slate-50/50 transition-colors">
+                        <div className="flex items-start gap-4">
+                          <div className="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center shrink-0">
+                            <Award className="w-6 h-6 text-[#6F00FF]" />
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-slate-800 text-lg">{report.title}</h4>
+                            <p className="text-sm text-slate-500">{report.data?.academicYear} • {report.data?.term}</p>
+                            <div className="flex gap-4 mt-2 text-sm font-semibold">
+                              <span className="text-emerald-600">Avg: {report.data?.overallAverage}%</span>
+                              <span className="text-blue-600">Pos: {report.data?.positionInClass} / {report.data?.totalInClass}</span>
+                            </div>
+                          </div>
+                        </div>
+                        <Button variant="outline" className="shrink-0 h-10 gap-2 rounded-xl border-[#6F00FF]/20 text-[#6F00FF] hover:bg-purple-50">
+                          <Download className="w-4 h-4" /> Download PDF
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+        </div>
+      )}
     </div>
   );
 }

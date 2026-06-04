@@ -1,72 +1,294 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ModuleBanner } from '@/components/school/SchoolViewKit';
-import { Card, CardContent } from '@/components/ui/card';
+import { useAuth } from '@/lib/AuthContext';
+import { base44 } from '@/api/base44Client';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { BookMarked, Plus, Search, Filter } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Search, Plus, BookOpen, Hash, Tag, Layers } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
 
 export default function SHSBooks() {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [newBook, setNewBook] = useState({
+    title: '',
+    author: '',
+    isbn: '',
+    category: 'Textbook', // Textbook, Fiction, Reference, Journal
+    quantity: 1,
+    rackLocation: ''
+  });
 
-  const dummyData = [
-    { id: 1, name: "Sample Record A", status: "Active", date: "2024-03-15" },
-    { id: 2, name: "Sample Record B", status: "Pending", date: "2024-03-14" },
-    { id: 3, name: "Sample Record C", status: "Completed", date: "2024-03-12" },
-  ];
+  const fetchBooks = async () => {
+    setLoading(true);
+    try {
+      const records = await base44.getEntities('shs_library_book', user?.company_id);
+      setBooks(records);
+    } catch (error) {
+      console.error('Failed to fetch books:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user?.company_id) {
+      fetchBooks();
+    }
+  }, [user]);
+
+  const handleAddBook = async () => {
+    try {
+      const payload = {
+        company_id: user?.company_id,
+        case_type: 'shs_library_book',
+        title: newBook.title,
+        case_number: `LIB-${Math.floor(Math.random() * 100000)}`,
+        status: 'Available',
+        data: {
+          ...newBook,
+          quantity: parseInt(newBook.quantity) || 1,
+          availableQuantity: parseInt(newBook.quantity) || 1
+        }
+      };
+      
+      await base44.createEntity(payload);
+      setIsAddModalOpen(false);
+      setNewBook({ title: '', author: '', isbn: '', category: 'Textbook', quantity: 1, rackLocation: '' });
+      fetchBooks();
+    } catch (error) {
+      console.error('Failed to add book:', error);
+    }
+  };
+
+  const filteredBooks = books.filter(b => 
+    b.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    b.data?.author?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    b.data?.isbn?.includes(searchQuery)
+  );
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
-      <ModuleBanner 
-        title="Library Books"
-        subtitle="Catalog of all books, journals, and materials."
-        metrics={[
-          { title: "Total Records", value: "1,248", icon: BookMarked },
-          { title: "Active", value: "982", icon: BookMarked },
-          { title: "Pending Review", value: "45", icon: BookMarked }
-        ]}
-      />
-
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-        <div className="flex gap-2">
-          <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <input 
-              type="text" 
-              placeholder="Search..." 
-              className="pl-9 h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 w-full sm:w-64"
-            />
-          </div>
-          <Button variant="outline" size="icon">
-            <Filter className="w-4 h-4" />
-          </Button>
+    <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
+      
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-purple-800 bg-clip-text text-transparent">
+            Library Catalog
+          </h1>
+          <p className="text-muted-foreground mt-1 text-sm font-medium">
+            Manage school library inventory, categories, and stock locations.
+          </p>
         </div>
-        <Button className="bg-[#6F00FF] hover:bg-[#5200c2] text-white">
-          <Plus className="w-4 h-4 mr-2" /> Add New
+        
+        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white shadow-md shadow-purple-500/20">
+          <Plus className="w-4 h-4" /> Add Book
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {dummyData.map((item) => (
-          <Card key={item.id} className="group hover:shadow-lg transition-all duration-300 border-border/50 bg-card/50 backdrop-blur-sm">
-            <CardContent className="p-6">
-              <div className="flex justify-between items-start mb-4">
-                <div className="w-12 h-12 rounded-xl bg-purple-50 text-[#6F00FF] flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <BookMarked className="w-6 h-6" />
-                </div>
-                <span className={`text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
-                  item.status === 'Active' ? 'bg-purple-100 text-purple-700' :
-                  item.status === 'Completed' ? 'bg-blue-100 text-blue-700' :
-                  'bg-amber-100 text-amber-700'
-                }`}>
-                  {item.status}
-                </span>
-              </div>
-              <h3 className="font-bold text-lg mb-1 text-foreground">{item.name}</h3>
-              <p className="text-sm text-muted-foreground font-medium">Last updated: {item.date}</p>
-            </CardContent>
-          </Card>
-        ))}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <Card className="rounded-2xl border-none shadow-sm bg-white/60 backdrop-blur-xl ring-1 ring-purple-100">
+          <CardContent className="p-5 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center text-[#6F00FF] shrink-0">
+              <BookOpen className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-muted-foreground">Unique Titles</p>
+              <h3 className="text-2xl font-black text-slate-800">{books.length}</h3>
+            </div>
+          </CardContent>
+        </Card>
       </div>
+
+      <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 bg-slate-50/50 pb-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <CardTitle className="text-lg font-bold text-slate-800">Inventory Management</CardTitle>
+            </div>
+            
+            <div className="relative w-full sm:w-64">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Input 
+                placeholder="Search title, author, or ISBN..." 
+                className="pl-9 h-9 bg-white border-slate-200 rounded-xl focus-visible:ring-[#6F00FF]"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="p-0">
+          {loading ? (
+            <div className="p-12 text-center text-slate-400">Loading catalog...</div>
+          ) : filteredBooks.length === 0 ? (
+            <div className="p-16 text-center">
+              <div className="w-16 h-16 rounded-2xl bg-purple-50 mx-auto flex items-center justify-center mb-4">
+                <Layers className="w-8 h-8 text-purple-400" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-700">No books found</h3>
+              <p className="text-sm text-slate-500">Add physical books to your library inventory.</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="bg-slate-50/80 text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
+                  <tr>
+                    <th className="px-6 py-4 rounded-tl-xl">Book Details</th>
+                    <th className="px-6 py-4">Category</th>
+                    <th className="px-6 py-4">Location</th>
+                    <th className="px-6 py-4 text-center">Availability</th>
+                    <th className="px-6 py-4 text-right rounded-tr-xl">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {filteredBooks.map((book) => {
+                    const total = book.data?.quantity || 1;
+                    const available = book.data?.availableQuantity ?? total;
+                    const availabilityColor = available > 0 ? 'text-emerald-600' : 'text-rose-600';
+                    return (
+                      <tr key={book.id} className="hover:bg-slate-50/50 transition-colors">
+                        <td className="px-6 py-4">
+                          <p className="font-bold text-slate-800">{book.title}</p>
+                          <div className="flex items-center gap-2 mt-1 text-xs text-slate-500">
+                            <span className="font-medium text-slate-600">By {book.data?.author || 'Unknown'}</span>
+                            <span className="text-slate-300">•</span>
+                            <span className="flex items-center gap-1 font-mono"><Hash className="w-3 h-3"/> {book.data?.isbn || 'N/A'}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-1.5">
+                            <Tag className="w-3.5 h-3.5 text-slate-400" />
+                            <span className="font-semibold text-slate-700">{book.data?.category}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <Badge variant="outline" className="bg-slate-50 text-slate-600 border-slate-200">
+                            {book.data?.rackLocation || 'Unassigned'}
+                          </Badge>
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <p className={`font-black text-lg ${availabilityColor}`}>{available} <span className="text-sm font-medium text-slate-400">/ {total}</span></p>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <Badge variant="outline" className={
+                            available > 0 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-rose-50 text-rose-700 border-rose-200'
+                          }>
+                            {available > 0 ? 'Available' : 'Out of Stock'}
+                          </Badge>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
+        <DialogContent className="sm:max-w-[500px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
+          <div className="p-6 bg-gradient-to-br from-[#6F00FF] to-purple-800 text-white">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-black">Add to Catalog</DialogTitle>
+              <DialogDescription className="text-purple-100">
+                Register a new book title into the school library.
+              </DialogDescription>
+            </DialogHeader>
+          </div>
+          
+          <div className="p-6 bg-slate-50 space-y-4">
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Book Title</label>
+              <Input 
+                placeholder="e.g. Essential Mathematics for SHS"
+                className="bg-white border-slate-200 rounded-xl"
+                value={newBook.title}
+                onChange={e => setNewBook({...newBook, title: e.target.value})}
+              />
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Author(s)</label>
+                <Input 
+                  placeholder="e.g. J.K. Rowling"
+                  className="bg-white border-slate-200 rounded-xl"
+                  value={newBook.author}
+                  onChange={e => setNewBook({...newBook, author: e.target.value})}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">ISBN</label>
+                <Input 
+                  placeholder="e.g. 978-3-16-148410-0"
+                  className="bg-white border-slate-200 rounded-xl"
+                  value={newBook.isbn}
+                  onChange={e => setNewBook({...newBook, isbn: e.target.value})}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Category</label>
+                <select 
+                  className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF]"
+                  value={newBook.category}
+                  onChange={e => setNewBook({...newBook, category: e.target.value})}
+                >
+                  <option value="Textbook">Textbook</option>
+                  <option value="Fiction">Fiction / Novel</option>
+                  <option value="Reference">Reference</option>
+                  <option value="Journal">Journal</option>
+                  <option value="Past Questions">Past Questions</option>
+                </select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Initial Quantity</label>
+                <Input 
+                  type="number"
+                  min="1"
+                  className="bg-white border-slate-200 rounded-xl h-11 font-bold text-lg"
+                  value={newBook.quantity}
+                  onChange={e => setNewBook({...newBook, quantity: e.target.value})}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Rack / Shelf Location</label>
+              <Input 
+                placeholder="e.g. Section B, Shelf 4"
+                className="bg-white border-slate-200 rounded-xl"
+                value={newBook.rackLocation}
+                onChange={e => setNewBook({...newBook, rackLocation: e.target.value})}
+              />
+            </div>
+          </div>
+          
+          <div className="p-4 bg-white border-t border-slate-100 flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600">
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleAddBook} 
+              disabled={!newBook.title || !newBook.quantity}
+              className="rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white font-bold"
+            >
+              Add to Catalog
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

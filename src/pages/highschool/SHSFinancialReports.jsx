@@ -1,72 +1,178 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ModuleBanner } from '@/components/school/SchoolViewKit';
-import { Card, CardContent } from '@/components/ui/card';
+import { useAuth } from '@/lib/AuthContext';
+import { base44 } from '@/api/base44Client';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { PieChart, Plus, Search, Filter } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Calendar as CalendarIcon, FileSpreadsheet, Download, TrendingUp, DollarSign, Filter } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 export default function SHSFinancialReports() {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  
+  const [loading, setLoading] = useState(true);
+  const [payments, setPayments] = useState([]);
+  const [invoices, setInvoices] = useState([]);
+  
+  const [startDate, setStartDate] = useState(() => {
+    const d = new Date();
+    d.setDate(d.getDate() - 30);
+    return d.toISOString().split('T')[0];
+  });
+  const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
 
-  const dummyData = [
-    { id: 1, name: "Sample Record A", status: "Active", date: "2024-03-15" },
-    { id: 2, name: "Sample Record B", status: "Pending", date: "2024-03-14" },
-    { id: 3, name: "Sample Record C", status: "Completed", date: "2024-03-12" },
-  ];
+  useEffect(() => {
+    const fetchFinancials = async () => {
+      setLoading(true);
+      try {
+        const [paymentRecords, invoiceRecords] = await Promise.all([
+          base44.getEntities('shs_payment', user?.company_id),
+          base44.getEntities('shs_invoice', user?.company_id)
+        ]);
+
+        // Filter payments by date range
+        const pFiltered = paymentRecords.filter(r => r.data?.date >= startDate && r.data?.date <= endDate);
+        setPayments(pFiltered);
+        
+        // We might want to see all invoices for the current term, but let's just use all for the ledger overview
+        setInvoices(invoiceRecords);
+      } catch (error) {
+        console.error('Failed to fetch financial reports:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user?.company_id && startDate && endDate) {
+      fetchFinancials();
+    }
+  }, [startDate, endDate, user]);
+
+  const totalCollected = payments.reduce((sum, p) => sum + (parseFloat(p.data?.amountPaid) || 0), 0);
+  const totalBilled = invoices.reduce((sum, i) => sum + (parseFloat(i.data?.amount) || 0), 0);
+  const totalOutstanding = invoices.reduce((sum, i) => {
+    const amt = parseFloat(i.data?.amount) || 0;
+    const paid = parseFloat(i.data?.amountPaid) || 0;
+    return sum + Math.max(0, amt - paid);
+  }, 0);
+
+  // Group by payment method
+  const methodStats = {};
+  payments.forEach(p => {
+    const m = p.data?.paymentMethod || 'Unknown';
+    if (!methodStats[m]) methodStats[m] = 0;
+    methodStats[m] += parseFloat(p.data?.amountPaid) || 0;
+  });
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
-      <ModuleBanner 
-        title="Financial Reports"
-        subtitle="Income, expenditure, and debtor analysis."
-        metrics={[
-          { title: "Total Records", value: "1,248", icon: PieChart },
-          { title: "Active", value: "982", icon: PieChart },
-          { title: "Pending Review", value: "45", icon: PieChart }
-        ]}
-      />
-
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-        <div className="flex gap-2">
-          <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <input 
-              type="text" 
-              placeholder="Search..." 
-              className="pl-9 h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 w-full sm:w-64"
-            />
-          </div>
-          <Button variant="outline" size="icon">
-            <Filter className="w-4 h-4" />
-          </Button>
+    <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
+      
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-[#6F00FF] to-purple-800 bg-clip-text text-transparent">
+            Financial Reports
+          </h1>
+          <p className="text-muted-foreground mt-1 text-sm font-medium">
+            Revenue collection summaries and outstanding balances.
+          </p>
         </div>
-        <Button className="bg-[#6F00FF] hover:bg-[#5200c2] text-white">
-          <Plus className="w-4 h-4 mr-2" /> Add New
+        <Button className="h-9 gap-2 rounded-xl bg-white border border-slate-200 text-slate-700 shadow-sm hover:bg-slate-50">
+          <FileSpreadsheet className="w-4 h-4 text-emerald-600" /> Export CSV
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {dummyData.map((item) => (
-          <Card key={item.id} className="group hover:shadow-lg transition-all duration-300 border-border/50 bg-card/50 backdrop-blur-sm">
-            <CardContent className="p-6">
-              <div className="flex justify-between items-start mb-4">
-                <div className="w-12 h-12 rounded-xl bg-purple-50 text-[#6F00FF] flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <PieChart className="w-6 h-6" />
+      <Card className="rounded-3xl border-none shadow-sm bg-white/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 bg-slate-50/50 p-6">
+          <div className="flex flex-col sm:flex-row gap-6 items-end">
+            <div className="space-y-2 flex-1 max-w-xs">
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
+                <CalendarIcon className="w-4 h-4 text-[#6F00FF]" /> Start Date
+              </label>
+              <Input 
+                type="date"
+                className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF] font-semibold text-slate-700"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2 flex-1 max-w-xs">
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
+                <CalendarIcon className="w-4 h-4 text-[#6F00FF]" /> End Date
+              </label>
+              <Input 
+                type="date"
+                className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-[#6F00FF] font-semibold text-slate-700"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </div>
+            <Button className="h-11 px-6 rounded-xl bg-[#6F00FF] hover:bg-[#5200c2] text-white shadow-md font-bold">
+              <Filter className="w-4 h-4 mr-2" /> Apply Filter
+            </Button>
+          </div>
+        </CardHeader>
+        
+        <CardContent className="p-8">
+          {loading ? (
+            <div className="py-20 text-center text-slate-400">Compiling financial data...</div>
+          ) : (
+            <div className="space-y-8">
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="p-6 rounded-3xl bg-emerald-50 border border-emerald-100 flex flex-col justify-center text-left">
+                  <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 mb-4">
+                    <TrendingUp className="w-6 h-6" />
+                  </div>
+                  <p className="text-sm font-bold text-emerald-600/70 uppercase tracking-wider mb-1">Total Collected</p>
+                  <p className="text-4xl font-black text-emerald-700">${totalCollected.toFixed(2)}</p>
+                  <p className="text-xs text-emerald-600/80 mt-2 font-medium">Within selected date range</p>
                 </div>
-                <span className={`text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
-                  item.status === 'Active' ? 'bg-purple-100 text-purple-700' :
-                  item.status === 'Completed' ? 'bg-blue-100 text-blue-700' :
-                  'bg-amber-100 text-amber-700'
-                }`}>
-                  {item.status}
-                </span>
+                
+                <div className="p-6 rounded-3xl bg-slate-50 border border-slate-200 flex flex-col justify-center text-left">
+                  <div className="w-12 h-12 rounded-xl bg-slate-200 flex items-center justify-center text-slate-600 mb-4">
+                    <DollarSign className="w-6 h-6" />
+                  </div>
+                  <p className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-1">Total Billed</p>
+                  <p className="text-4xl font-black text-slate-800">${totalBilled.toFixed(2)}</p>
+                  <p className="text-xs text-slate-500 mt-2 font-medium">All generated invoices</p>
+                </div>
+
+                <div className="p-6 rounded-3xl bg-rose-50 border border-rose-100 flex flex-col justify-center text-left">
+                  <div className="w-12 h-12 rounded-xl bg-rose-100 flex items-center justify-center text-rose-600 mb-4">
+                    <Filter className="w-6 h-6" />
+                  </div>
+                  <p className="text-sm font-bold text-rose-600/70 uppercase tracking-wider mb-1">Total Arrears</p>
+                  <p className="text-4xl font-black text-rose-700">${totalOutstanding.toFixed(2)}</p>
+                  <p className="text-xs text-rose-600/80 mt-2 font-medium">Outstanding student balances</p>
+                </div>
               </div>
-              <h3 className="font-bold text-lg mb-1 text-foreground">{item.name}</h3>
-              <p className="text-sm text-muted-foreground font-medium">Last updated: {item.date}</p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+
+              <div className="h-px bg-slate-100 w-full my-4"></div>
+              
+              <div>
+                <h3 className="text-lg font-bold text-slate-800 mb-4">Collection by Payment Method</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {Object.keys(methodStats).length === 0 ? (
+                    <div className="col-span-4 p-8 text-center text-slate-500 bg-slate-50 rounded-2xl border border-slate-100">
+                      No payments found in this period.
+                    </div>
+                  ) : (
+                    Object.entries(methodStats).map(([method, amount]) => (
+                      <div key={method} className="p-5 rounded-2xl border border-slate-100 bg-white hover:border-[#6F00FF]/30 transition-colors">
+                        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">{method}</p>
+                        <p className="text-2xl font-black text-slate-700">${amount.toFixed(2)}</p>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
