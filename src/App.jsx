@@ -179,6 +179,20 @@ import UniDashboard from './pages/university/UniDashboard';
 import UniStudents from './pages/university/UniStudents';
 import UniFaculties from './pages/university/UniFaculties';
 import UniCourses from './pages/university/UniCourses';
+import UniAdmissions from './pages/university/UniAdmissions';
+import UniFinance from './pages/university/UniFinance';
+
+// Vocational Pages
+import VocDashboard from './pages/vocational/VocDashboard';
+import VocApprentices from './pages/vocational/VocApprentices';
+import VocPrograms from './pages/vocational/VocPrograms';
+import VocWorkshops from './pages/vocational/VocWorkshops';
+
+// Online Learning Pages
+import OnlineDashboard from './pages/online/OnlineDashboard';
+import OnlineLearners from './pages/online/OnlineLearners';
+import OnlineCourses from './pages/online/OnlineCourses';
+import OnlineSales from './pages/online/OnlineSales';
 
 // High School Pages
 import SHSClasses from './pages/highschool/SHSClasses';
@@ -282,6 +296,20 @@ function PlatformRoutes() {
       <Route path="/u/students" element={<UniStudents />} />
       <Route path="/u/faculties" element={<UniFaculties />} />
       <Route path="/u/courses" element={<UniCourses />} />
+      <Route path="/u/admissions" element={<UniAdmissions />} />
+      <Route path="/u/finance" element={<UniFinance />} />
+
+      {/* Vocational Suite Routes */}
+      <Route path="/v/" element={<VocDashboard />} />
+      <Route path="/v/apprentices" element={<VocApprentices />} />
+      <Route path="/v/programs" element={<VocPrograms />} />
+      <Route path="/v/workshops" element={<VocWorkshops />} />
+
+      {/* Online Learning Suite Routes */}
+      <Route path="/o/" element={<OnlineDashboard />} />
+      <Route path="/o/learners" element={<OnlineLearners />} />
+      <Route path="/o/courses" element={<OnlineCourses />} />
+      <Route path="/o/sales" element={<OnlineSales />} />
 
       {/* High School (SHS) Routes */}
       <Route path="/s/" element={<SHSDashboard />} />
