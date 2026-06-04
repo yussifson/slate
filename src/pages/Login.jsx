@@ -115,6 +115,20 @@ export default function Login() {
             }
          }
          
+         // 3. If that STILL fails, try the RAW unsalted email (because Super Admins sign up without a salt!)
+         if (signInError && signInError.message === "Invalid login credentials") {
+            proxyEmail = loginEmail; // The original raw email
+            const rawRetry = await supabase.auth.signInWithPassword({
+               email: proxyEmail,
+               password
+            });
+            
+            if (!rawRetry.error) {
+               authData = rawRetry.data;
+               signInError = null;
+            }
+         }
+         
          if (!signInError) {
              loginEmail = proxyEmail;
          }
