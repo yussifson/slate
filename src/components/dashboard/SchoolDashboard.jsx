@@ -20,13 +20,14 @@ import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tool
 
 function MetricCard({ title, value, icon: Icon, iconBg, iconColor, subtitle, subtitleColor }) {
   return (
-    <div className="bg-card rounded-xl border border-border p-4 flex items-center justify-between shadow-sm">
-      <div>
+    <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-3xl border border-white/20 p-6 flex items-center justify-between shadow-sm relative overflow-hidden group">
+      <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/40 via-transparent to-transparent dark:from-emerald-900/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+      <div className="relative z-10">
         <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{title}</p>
         <p className="text-3xl font-black text-slate-900 dark:text-white">{value}</p>
-        {subtitle && <p className={`text-xs mt-1 font-semibold ${subtitleColor || "text-slate-400"}`}>{subtitle}</p>}
+        {subtitle && <p className={`text-xs mt-1 font-bold ${subtitleColor || "text-slate-400"}`}>{subtitle}</p>}
       </div>
-      <div className={`w-14 h-14 rounded-2xl ${iconBg} flex items-center justify-center`}>
+      <div className={`w-14 h-14 rounded-[1.25rem] ${iconBg} flex items-center justify-center relative z-10 shadow-inner group-hover:scale-105 transition-transform duration-300`}>
         <Icon className={`w-6 h-6 ${iconColor}`} />
       </div>
     </div>
@@ -137,21 +138,21 @@ export default function SchoolDashboard({ companyId, company, isAdmin }) {
           <Button variant="outline" size="sm" className="gap-1.5 text-sm font-bold rounded-xl">
             <BarChart2 className="w-4 h-4" /> {t("analytics", "Analytics")}
           </Button>
-          <Button onClick={handleRefresh} disabled={isRefreshing} size="sm" className="gap-1.5 text-sm font-bold bg-blue-600 text-white hover:bg-blue-700 rounded-xl">
+          <Button onClick={handleRefresh} disabled={isRefreshing} size="sm" className="gap-1.5 text-sm font-bold bg-emerald-600 text-white hover:bg-emerald-700 rounded-xl shadow-sm">
             <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} /> {t("refresh", "Refresh")}
           </Button>
         </div>
       </div>
       {/* Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard title={`Active ${casesTermPlural}`} value={activeCases.length} icon={Briefcase} iconBg="bg-blue-100" iconColor="text-blue-500" subtitle={`${cases.length} total`} />
-        <MetricCard title={`Active ${clientsTermPlural}`} value={students.filter((s) => s.status === "active" || s.status === "Active").length} icon={Users} iconBg="bg-purple-100" iconColor="text-purple-500"
+        <MetricCard title={`Active ${casesTermPlural}`} value={activeCases.length} icon={Briefcase} iconBg="bg-emerald-100" iconColor="text-emerald-600" subtitle={`${cases.length} total`} />
+        <MetricCard title={`Active ${clientsTermPlural}`} value={students.filter((s) => s.status === "active" || s.status === "Active").length} icon={Users} iconBg="bg-teal-100" iconColor="text-teal-600"
           subtitle={`${students.length} enrolled`}
-          subtitleColor="text-green-600" />
-        <MetricCard title="Total Revenue" value={formatCurrency(totalRevenue, currency)} icon={DollarSign} iconBg="bg-green-100" iconColor="text-green-500" subtitle="This year" />
-        <MetricCard title="Pending Tasks" value={pendingTasks.length} icon={Clock} iconBg="bg-orange-100" iconColor="text-orange-500"
+          subtitleColor="text-emerald-600" />
+        <MetricCard title="Total Revenue" value={formatCurrency(totalRevenue, currency)} icon={DollarSign} iconBg="bg-green-100" iconColor="text-green-600" subtitle="This year" />
+        <MetricCard title="Pending Tasks" value={pendingTasks.length} icon={Clock} iconBg="bg-amber-100" iconColor="text-amber-600"
           subtitle={overdueInvoices > 0 ? `${overdueInvoices} invoices overdue` : `${upcomingHearings.length} ${hearingsTermPlural.toLowerCase()} due`}
-          subtitleColor={overdueInvoices > 0 ? "text-red-500" : "text-muted-foreground"} />
+          subtitleColor={overdueInvoices > 0 ? "text-red-500" : "text-slate-400"} />
       </div>
       {/* Analytics Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -166,15 +167,15 @@ export default function SchoolDashboard({ companyId, company, isAdmin }) {
               <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#2247fc" stopOpacity={0.2}/>
-                    <stop offset="95%" stopColor="#2247fc" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
+                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                 <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} tickLine={false} />
                 <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} />
                 <Tooltip />
-                <Area type="monotone" dataKey="Revenue" stroke="#2247fc" strokeWidth={2} fillOpacity={1} fill="url(#colorRev)" />
+                <Area type="monotone" dataKey="Revenue" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorRev)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -184,7 +185,7 @@ export default function SchoolDashboard({ companyId, company, isAdmin }) {
         <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 shadow-sm p-6 space-y-6">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-black text-slate-900 dark:text-white">{caseTerm} {t("distribution_by_stage", "Distribution by Stage")}</h3>
-            <span className="text-[10px] bg-blue-50 text-blue-700 py-1 px-3 rounded-full font-black border border-blue-100 uppercase tracking-wider">{t("active_pipelines", "Active Pipelines")}</span>
+            <span className="text-[10px] bg-emerald-50 text-emerald-700 py-1 px-3 rounded-full font-black border border-emerald-100 uppercase tracking-wider">{t("active_pipelines", "Active Pipelines")}</span>
           </div>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -193,7 +194,7 @@ export default function SchoolDashboard({ companyId, company, isAdmin }) {
                 <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} tickLine={false} />
                 <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} />
                 <Tooltip />
-                <Bar dataKey="count" fill="#2247fc" radius={[4, 4, 0, 0]} barSize={25} />
+                <Bar dataKey="count" fill="#10b981" radius={[4, 4, 0, 0]} barSize={25} />
               </BarChart>
             </ResponsiveContainer>
           </div>
