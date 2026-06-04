@@ -75,6 +75,9 @@ export default function Login() {
     let loginEmail = email.trim().toLowerCase();
     let targetSubdomain = currentSubdomain || workspace.trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
 
+    let authData = null;
+    let signInError = null;
+
     if (targetSubdomain) {
       // Fetch company_id for this subdomain to generate the salted email
       const { data: brandData, error: brandErr } = await supabase.rpc('get_company_by_subdomain', { p_subdomain: targetSubdomain });
@@ -85,28 +88,56 @@ export default function Login() {
       } 
       
       if (compId) {
-         // Salt the email matching the generation logic in authUtils.js
          const [localPart, domain] = loginEmail.split('@');
-         loginEmail = `${localPart}+firm${compId.replace(/-/g, '')}@${domain}`;
+         
+         // 1. Try the primary UUID salt strategy
+         let proxyEmail = `${localPart}+firm${compId.replace(/-/g, '')}@${domain}`;
+         
+         const primaryAuth = await supabase.auth.signInWithPassword({
+            email: proxyEmail,
+            password
+         });
+         
+         authData = primaryAuth.data;
+         signInError = primaryAuth.error;
+         
+         // 2. If it fails with Invalid Credentials, try the legacy Subdomain salt strategy
+         if (signInError && signInError.message === "Invalid login credentials") {
+            proxyEmail = `${localPart}+firm_${targetSubdomain}@${domain}`;
+            const retry = await supabase.auth.signInWithPassword({
+               email: proxyEmail,
+               password
+            });
+            
+            if (!retry.error) {
+               authData = retry.data;
+               signInError = null;
+            }
+         }
+         
+         if (!signInError) {
+             loginEmail = proxyEmail;
+         }
       } else {
          setError(`Workspace '${targetSubdomain}' not found.`);
          setLoading(false);
          return;
       }
+    } else {
+      // Base domain login
+      const baseAuth = await supabase.auth.signInWithPassword({
+        email: loginEmail,
+        password,
+      });
+      authData = baseAuth.data;
+      signInError = baseAuth.error;
     }
-
-    const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({
-      email: loginEmail,
-      password,
-    });
 
     if (signInError) {
       setError(signInError.message === "Invalid login credentials" ? "Invalid email, password, or workspace." : signInError.message);
       setLoading(false);
       return;
     }
-
-    if (targetSubdomain) {
       // Check if user belongs to this subdomain
       const { data: profile } = await supabase.from('profiles').select('company_id, role').eq('id', authData.user.id).single();
       if (profile?.company_id) {
