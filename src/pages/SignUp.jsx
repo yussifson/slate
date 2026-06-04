@@ -84,7 +84,12 @@ export default function SignUp() {
         const port = window.location.port ? `:${window.location.port}` : '';
         const targetHost = `${companyData.subdomain}.${baseDomain}${port}`;
         
-        window.location.href = `${window.location.protocol}//${targetHost}/onboarding`;
+        let url = `${window.location.protocol}//${targetHost}/onboarding`;
+        if (authData?.session?.access_token && authData?.session?.refresh_token) {
+           url += `?access_token=${authData.session.access_token}&refresh_token=${authData.session.refresh_token}`;
+        }
+        
+        window.location.href = url;
       }, 2000);
 
     } catch (err) {
