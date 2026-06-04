@@ -66,7 +66,8 @@ export default function Students() {
 
   // Form State
   const [formData, setFormData] = useState({ 
-    firstName: '', lastName: '', email: '', dateOfBirth: '', gender: 'Female', class: 'Grade 7B', 
+    firstName: '', lastName: '', email: '', dateOfBirth: '', gender: 'Female', class: 'Form 1A', 
+    programme: 'General Arts', house: 'Unassigned', boardingStatus: 'Day',
     parentName: '', parentPhone: '', parentEmail: '', address: '', medicalNotes: '', previousSchool: '', studentId: '', parentId: '', defaultPassword: '', parentPassword: '',
     emergencyContactName: '', emergencyContactPhone: '', transferStatus: 'No', alumniStatus: 'Active'
   });
@@ -86,13 +87,18 @@ export default function Students() {
       class: extra.class || 'Unknown',
       age: extra.age || 0,
       gender: extra.gender || 'Unknown',
+      programme: extra.programme || 'Unknown',
+      house: extra.house || 'Unassigned',
+      boardingStatus: extra.boardingStatus || 'Day',
       parent: extra.parent || '',
       feeStatus: extra.feeStatus || 'Unknown',
       avatar: extra.avatar || r.name?.substring(0,2).toUpperCase()
     };
   });
 
-  const classes = ['All', 'Grade 7B', 'Grade 8C', 'Grade 9A', 'Grade 9B', 'Grade 10A', 'Grade 10B', 'Grade 11A', 'Grade 12A'];
+  const classes = ['All', 'Form 1A', 'Form 1B', 'Form 2A', 'Form 2B', 'Form 3A', 'Form 3B'];
+  const programmes = ['General Arts', 'General Science', 'Business', 'Visual Arts', 'Home Economics', 'Agriculture'];
+  const houses = ['Unassigned', 'House A', 'House B', 'House C', 'House D'];
 
   const filtered = students.filter(s =>
     (statusFilter === 'All' || s.status === statusFilter) &&
@@ -162,6 +168,9 @@ export default function Students() {
           class: formData.class,
           age,
           gender: formData.gender,
+          programme: formData.programme,
+          house: formData.house,
+          boardingStatus: formData.boardingStatus,
           parent: formData.parentName,
           parentEmail: parentEmail,
           parentId: parentId,
@@ -207,7 +216,7 @@ export default function Students() {
       queryClient.invalidateQueries({ queryKey: ["clients", companyId] });
       setShowModal(false);
       setEditingId(null);
-      setFormData({ firstName: '', lastName: '', email: '', dateOfBirth: '', gender: 'Female', class: 'Grade 7B', parentName: '', parentPhone: '', parentEmail: '', address: '', medicalNotes: '', previousSchool: '', studentId: '', parentId: '', defaultPassword: '', parentPassword: '', emergencyContactName: '', emergencyContactPhone: '', transferStatus: 'No', alumniStatus: 'Active' });
+      setFormData({ firstName: '', lastName: '', email: '', dateOfBirth: '', gender: 'Female', class: 'Form 1A', programme: 'General Arts', house: 'Unassigned', boardingStatus: 'Day', parentName: '', parentPhone: '', parentEmail: '', address: '', medicalNotes: '', previousSchool: '', studentId: '', parentId: '', defaultPassword: '', parentPassword: '', emergencyContactName: '', emergencyContactPhone: '', transferStatus: 'No', alumniStatus: 'Active' });
       setActiveTab('personal');
     } catch (err) {
       toast.error(err?.message || "Failed to save records");
@@ -290,6 +299,9 @@ export default function Students() {
                     medicalNotes: s.medicalNotes || '',
                     previousSchool: s.previousSchool || '',
                     dateOfBirth: s.dateOfBirth || '',
+                    programme: s.programme || 'General Arts',
+                    house: s.house || 'Unassigned',
+                    boardingStatus: s.boardingStatus || 'Day',
                     emergencyContactName: s.emergencyContactName || '',
                     emergencyContactPhone: s.emergencyContactPhone || '',
                     transferStatus: s.transferStatus || 'No',
@@ -306,7 +318,7 @@ export default function Students() {
             <table className="w-full text-sm">
               <thead className="bg-muted border-b border-border">
                 <tr>
-                  {['Student', 'ID', 'Class', 'Age', 'Parent / Guardian', 'Fee Status', 'Status', 'Actions'].map(h => {
+                  {['Student', 'ID', 'Programme', 'Class', 'House', 'Fee Status', 'Status', 'Actions'].map(h => {
                     return (<th key={h} className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{h}</th>);
                   })}
                 </tr>
@@ -327,14 +339,9 @@ export default function Students() {
                       </div>
                     </td>
                     <td className="px-4 py-3 text-muted-foreground font-mono text-xs">{s.studentId}</td>
-                    <td className="px-4 py-3"><Link to={`/classes`} className="bg-emerald-50 text-emerald-700 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{s.class}</Link></td>
-                    <td className="px-4 py-3 text-foreground">{s.age} {t("yrs", "yrs")}</td>
-                    <td className="px-4 py-3">
-                      <div>
-                        <p className="text-foreground font-medium">{s.parent}</p>
-                        <p className="text-xs text-muted-foreground">{s.phone}</p>
-                      </div>
-                    </td>
+                    <td className="px-4 py-3"><span className="text-xs font-medium text-blue-700 bg-blue-50 px-2 py-1 rounded">{s.programme}</span></td>
+                    <td className="px-4 py-3"><Link to={`/s/classes`} className="bg-emerald-50 text-emerald-700 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{s.class}</Link></td>
+                    <td className="px-4 py-3 text-foreground text-xs">{s.house} ({s.boardingStatus})</td>
                     <td className="px-4 py-3"><span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${feeColors[s.feeStatus] || 'bg-gray-100 text-gray-700'}`}>{s.feeStatus}</span></td>
                     <td className="px-4 py-3"><span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${statusColors[s.status] || 'bg-blue-100 text-emerald-700'}`}>{s.status}</span></td>
                     <td className="px-4 py-3">
@@ -441,11 +448,33 @@ export default function Students() {
                 <div className="space-y-4 animate-in fade-in zoom-in duration-200">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-xs font-bold text-muted-foreground uppercase">{t("class", "Class/Level")}</label>
+                      <label className="text-xs font-bold text-muted-foreground uppercase">{t("class", "Form/Stream")}</label>
                       <select value={formData.class} onChange={e => setFormData({...formData, class: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
                         {classes.filter(c => c !== 'All').map(c => <option key={c}>{c}</option>)}
                       </select>
                     </div>
+                    <div>
+                      <label className="text-xs font-bold text-muted-foreground uppercase">{t("programme", "Programme")}</label>
+                      <select value={formData.programme} onChange={e => setFormData({...formData, programme: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+                        {programmes.map(p => <option key={p}>{p}</option>)}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-xs font-bold text-muted-foreground uppercase">{t("house", "House")}</label>
+                      <select value={formData.house} onChange={e => setFormData({...formData, house: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+                        {houses.map(h => <option key={h}>{h}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold text-muted-foreground uppercase">{t("boarding_status", "Boarding Status")}</label>
+                      <select value={formData.boardingStatus} onChange={e => setFormData({...formData, boardingStatus: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+                        <option>Day</option><option>Boarding</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="text-xs font-bold text-muted-foreground uppercase">{t("status", "Status")}</label>
                       <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
@@ -540,16 +569,16 @@ export default function Students() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-muted/50 p-3 rounded-lg">
-                  <p className="text-xs text-muted-foreground uppercase font-semibold">{t("class", "Class")}</p>
-                  <Link to="/classes" className="text-primary hover:underline font-medium">{viewDetails.class}</Link>
+                  <p className="text-xs text-muted-foreground uppercase font-semibold">{t("class", "Form/Stream")}</p>
+                  <Link to="/s/classes" className="text-primary hover:underline font-medium">{viewDetails.class}</Link>
                 </div>
                 <div className="bg-muted/50 p-3 rounded-lg">
-                  <p className="text-xs text-muted-foreground uppercase font-semibold">{t("age", "Age")}</p>
-                  <p className="font-medium text-foreground">{viewDetails.age} {t("yrs", "yrs")}</p>
+                  <p className="text-xs text-muted-foreground uppercase font-semibold">{t("programme", "Programme")}</p>
+                  <p className="font-medium text-foreground">{viewDetails.programme}</p>
                 </div>
                 <div className="bg-muted/50 p-3 rounded-lg">
-                  <p className="text-xs text-muted-foreground uppercase font-semibold">{t("gender", "Gender")}</p>
-                  <p className="font-medium text-foreground">{viewDetails.gender}</p>
+                  <p className="text-xs text-muted-foreground uppercase font-semibold">{t("house", "House")}</p>
+                  <p className="font-medium text-foreground">{viewDetails.house} ({viewDetails.boardingStatus})</p>
                 </div>
                 <div className="bg-muted/50 p-3 rounded-lg">
                   <p className="text-xs text-muted-foreground uppercase font-semibold">{t("fee_status", "Fee Status")}</p>
