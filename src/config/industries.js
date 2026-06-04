@@ -114,7 +114,7 @@ export const INDUSTRIES = {
       { value: 'hr', label: 'HR Officer' },
       { value: 'student', label: 'Student' },
     ],
-            nav: [
+                nav: [
       { label: 'Dashboard', path: '/s/', icon: 'LayoutDashboard' },
       
       { section: 'Administration', label: 'Directory', path: '/s/students', icon: 'Users' },
@@ -185,33 +185,6 @@ export const INDUSTRIES = {
       { label: 'Financial', path: '/s/financial-analytics', icon: 'TrendingUp' },
       
       { section: 'System', label: 'Settings', path: '/settings', icon: 'Settings' },
-    ],
-  },
-
-  college: {
-    name: 'College',
-    icon: '🎓',
-    terms: {
-      client: 'Student', clients: 'Students',
-      case: 'Course', cases: 'Courses',
-      staff: 'Lecturer', staffPlural: 'Lecturers',
-      venue: 'Campus', intake: 'Admissions',
-      hearing: 'Lecture', hearings: 'Lectures',
-    },
-    roles: [
-      { value: 'company_admin', label: 'Principal / Dean' },
-      { value: 'lecturer', label: 'Lecturer' },
-      { value: 'finance', label: 'Finance' },
-      { value: 'student', label: 'Student' },
-    ],
-    nav: [
-      { label: 'Dashboard', path: '/u/', icon: 'LayoutDashboard' },
-      { label: 'Students', path: '/u/students', icon: 'Users' },
-      { label: 'Courses', path: '/u/courses', icon: 'BookOpen' },
-      { label: 'Faculty', path: '/u/faculties', icon: 'Briefcase' },
-      { label: 'Admissions', path: '/u/admissions', icon: 'FileText' },
-      { label: 'Finance', path: '/u/finance', icon: 'Banknote' },
-      { label: 'Settings', path: '/settings', icon: 'Settings' },
     ],
   },
 
