@@ -32,11 +32,11 @@ export default function SHSDashboard() {
 
   const stats = [
     { title: "Total Students", value: students.length, icon: Users, color: "text-blue-600", bg: "bg-blue-100" },
-    { title: "Staff Overview", value: "142", icon: UserPlus, color: "text-purple-600", bg: "bg-purple-100" },
-    { title: "Attendance Rate", value: "94%", icon: ClipboardCheck, color: "text-emerald-600", bg: "bg-emerald-100" },
+    { title: "Staff Overview", value: "142", icon: UserPlus, color: "text-[#6F00FF]", bg: "bg-purple-100" },
+    { title: "Attendance Rate", value: "94%", icon: ClipboardCheck, color: "text-[#6F00FF]", bg: "bg-purple-100" },
     { title: "Pending Applications", value: pendingApps, icon: ClipboardCheck, color: "text-amber-600", bg: "bg-amber-100" },
     { title: "Outstanding Fees", value: `$${uncollectedFees.toLocaleString()}`, icon: Banknote, color: "text-red-600", bg: "bg-red-100" },
-    { title: "Grades Recorded", value: grades.length, icon: GraduationCap, color: "text-emerald-600", bg: "bg-emerald-100" },
+    { title: "Grades Recorded", value: grades.length, icon: GraduationCap, color: "text-[#6F00FF]", bg: "bg-purple-100" },
   ];
 
   return (
@@ -93,8 +93,8 @@ export default function SHSDashboard() {
             </h3>
             <div className="space-y-4">
               <div className="flex gap-3">
-                <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center shrink-0">
+                  <CheckCircle2 className="w-4 h-4 text-[#6F00FF]" />
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-slate-900">Term 3 Results Published</p>

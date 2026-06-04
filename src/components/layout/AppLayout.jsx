@@ -66,7 +66,7 @@ export default function AppLayout() {
       const industry = user.company_industry.toLowerCase();
       let primaryColor = '221 83% 53%'; // Default Blue (Law/Core)
       if (industry === 'school') {
-        primaryColor = '160 84% 39%'; // Emerald Green
+        primaryColor = '266 100% 50%'; // Electric Purple (#6F00FF)
       } else if (industry === 'retail') {
         primaryColor = '24 98% 50%'; // Sunset Orange
       } else if (industry === 'hotel') {

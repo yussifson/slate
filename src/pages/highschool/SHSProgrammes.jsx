@@ -90,7 +90,7 @@ export default function SHSProgrammes() {
           setEditingId(null);
           setFormData({ name: '', code: '', description: '', coreSubjects: '', electiveSubjects: '' });
           setShowModal(true);
-        }} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
+        }} className="gap-2 bg-[#6F00FF] hover:bg-[#5200c2] text-white">
           <Plus className="w-4 h-4" /> Add Programme
         </Button>
       </div>
@@ -101,7 +101,7 @@ export default function SHSProgrammes() {
             <div className="flex justify-between items-start mb-4">
               <div>
                 <h3 className="text-lg font-bold text-slate-900">{p.name}</h3>
-                <span className="text-xs font-semibold px-2 py-1 bg-emerald-100 text-emerald-700 rounded-md mt-1 inline-block">{p.code || 'NO CODE'}</span>
+                <span className="text-xs font-semibold px-2 py-1 bg-purple-100 text-purple-700 rounded-md mt-1 inline-block">{p.code || 'NO CODE'}</span>
               </div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -168,7 +168,7 @@ export default function SHSProgrammes() {
             </div>
             <div className="p-6 border-t border-slate-100 bg-slate-50 flex gap-3">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>Cancel</Button>
-              <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleSave}>Save</Button>
+              <Button className="flex-1 bg-[#6F00FF] hover:bg-[#5200c2] text-white" onClick={handleSave}>Save</Button>
             </div>
           </div>
         </div>

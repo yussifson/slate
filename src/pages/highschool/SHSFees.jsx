@@ -109,14 +109,14 @@ export default function SHSFees() {
                 <td className="px-4 py-3 text-slate-500">{f.type}</td>
                 <td className="px-4 py-3 font-bold text-slate-900">${parseFloat(f.amount).toLocaleString()}</td>
                 <td className="px-4 py-3">
-                  <span className={`text-[10px] font-bold px-2 py-1 rounded-full uppercase ${f.status === 'Paid' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
+                  <span className={`text-[10px] font-bold px-2 py-1 rounded-full uppercase ${f.status === 'Paid' ? 'bg-purple-100 text-purple-700' : 'bg-amber-100 text-amber-700'}`}>
                     {f.status}
                   </span>
                 </td>
                 <td className="px-4 py-3 text-slate-500 text-xs">{f.date}</td>
                 <td className="px-4 py-3">
                   {f.status === 'Pending' && (
-                    <Button variant="ghost" size="sm" onClick={() => mutateFee.mutate({ id: f.id, status: 'Paid' })} className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 text-xs">
+                    <Button variant="ghost" size="sm" onClick={() => mutateFee.mutate({ id: f.id, status: 'Paid' })} className="text-[#6F00FF] hover:text-purple-700 hover:bg-purple-50 text-xs">
                       <CheckCircle2 className="w-3.5 h-3.5 mr-1" /> Mark Paid
                     </Button>
                   )}

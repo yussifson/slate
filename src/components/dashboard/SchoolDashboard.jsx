@@ -24,8 +24,8 @@ function MetricCard({ title, value, icon: Icon }) {
       <div className="absolute inset-0 bg-white/0 group-hover:bg-white/5 transition-colors pointer-events-none" />
       <p className="text-2xl font-black text-white mb-1 relative z-10">{value}</p>
       <div className="flex items-center gap-1.5 relative z-10">
-        <Icon className="w-3.5 h-3.5 text-emerald-100" />
-        <p className="text-xs font-bold text-emerald-50 uppercase tracking-wider">{title}</p>
+        <Icon className="w-3.5 h-3.5 text-purple-100" />
+        <p className="text-xs font-bold text-purple-50 uppercase tracking-wider">{title}</p>
       </div>
     </div>
   );
@@ -126,25 +126,25 @@ export default function SchoolDashboard({ companyId, company, isAdmin }) {
       {/* 24h Hearing Reminders */}
       <HearingReminders hearings={hearings} userEmail={user?.email} isAdmin={isAdmin} />
       {/* Hero Banner Area */}
-      <div className="bg-emerald-600 rounded-3xl p-6 relative overflow-hidden">
+      <div className="bg-[#6F00FF] rounded-3xl p-6 relative overflow-hidden">
         {/* Abstract Background Shapes */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/3 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-700 rounded-full blur-3xl opacity-50 translate-y-1/3 -translate-x-1/4 pointer-events-none" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-purple-500 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#5200c2] rounded-full blur-3xl opacity-50 translate-y-1/3 -translate-x-1/4 pointer-events-none" />
         
         <div className="relative z-10 flex flex-col md:flex-row md:items-start justify-between gap-6 mb-6">
           <div>
-            <p className="text-emerald-100 text-sm font-bold tracking-widest uppercase mb-2">
+            <p className="text-purple-100 text-sm font-bold tracking-widest uppercase mb-2">
               {format(new Date(), "eeee, d MMMM")}
             </p>
             <h1 className="text-3xl md:text-4xl font-black text-white mb-2 tracking-tight">
               Welcome back, {user?.user_metadata?.full_name || user?.email?.split('@')[0]} <span className="inline-block animate-wave">👋</span>
             </h1>
-            <p className="text-emerald-50 text-base font-medium opacity-90">
+            <p className="text-purple-50 text-base font-medium opacity-90">
               Here's your school at a glance
             </p>
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            <Button variant="outline" size="sm" className="gap-1.5 text-sm font-bold rounded-xl border-emerald-400 text-emerald-50 hover:bg-emerald-500 hover:text-white bg-emerald-600/50 backdrop-blur-md border-0">
+            <Button variant="outline" size="sm" className="gap-1.5 text-sm font-bold rounded-xl border-purple-400 text-purple-50 hover:bg-purple-500 hover:text-white bg-[#6F00FF]/50 backdrop-blur-md border-0">
               <BarChart2 className="w-4 h-4" /> {t("analytics", "Analytics")}
             </Button>
             <Button onClick={handleRefresh} disabled={isRefreshing} size="sm" className="gap-1.5 text-sm font-bold bg-white/20 text-white hover:bg-white/30 rounded-xl border-0 shadow-sm backdrop-blur-md">
@@ -167,7 +167,7 @@ export default function SchoolDashboard({ companyId, company, isAdmin }) {
         <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 shadow-sm p-6 space-y-6">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-black text-slate-900 dark:text-white">{t("revenue_growth_curve", "Revenue Growth Curve (")}{currency})</h3>
-            <span className="text-[10px] bg-emerald-50 text-emerald-700 py-1 px-3 rounded-full font-black border border-emerald-100 uppercase tracking-wider">{t("paid_invoices", "Paid Invoices")}</span>
+            <span className="text-[10px] bg-purple-50 text-purple-700 py-1 px-3 rounded-full font-black border border-purple-100 uppercase tracking-wider">{t("paid_invoices", "Paid Invoices")}</span>
           </div>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -192,7 +192,7 @@ export default function SchoolDashboard({ companyId, company, isAdmin }) {
         <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 shadow-sm p-6 space-y-6">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-black text-slate-900 dark:text-white">{caseTerm} {t("distribution_by_stage", "Distribution by Stage")}</h3>
-            <span className="text-[10px] bg-emerald-50 text-emerald-700 py-1 px-3 rounded-full font-black border border-emerald-100 uppercase tracking-wider">{t("active_pipelines", "Active Pipelines")}</span>
+            <span className="text-[10px] bg-purple-50 text-purple-700 py-1 px-3 rounded-full font-black border border-purple-100 uppercase tracking-wider">{t("active_pipelines", "Active Pipelines")}</span>
           </div>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">

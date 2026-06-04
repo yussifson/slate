@@ -40,7 +40,7 @@ export default function SHSAttendanceReports() {
             <Filter className="w-4 h-4" />
           </Button>
         </div>
-        <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
+        <Button className="bg-[#6F00FF] hover:bg-[#5200c2] text-white">
           <Plus className="w-4 h-4 mr-2" /> Add New
         </Button>
       </div>
@@ -50,11 +50,11 @@ export default function SHSAttendanceReports() {
           <Card key={item.id} className="group hover:shadow-lg transition-all duration-300 border-border/50 bg-card/50 backdrop-blur-sm">
             <CardContent className="p-6">
               <div className="flex justify-between items-start mb-4">
-                <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <div className="w-12 h-12 rounded-xl bg-purple-50 text-[#6F00FF] flex items-center justify-center group-hover:scale-110 transition-transform">
                   <BarChart2 className="w-6 h-6" />
                 </div>
                 <span className={`text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
-                  item.status === 'Active' ? 'bg-emerald-100 text-emerald-700' :
+                  item.status === 'Active' ? 'bg-purple-100 text-purple-700' :
                   item.status === 'Completed' ? 'bg-blue-100 text-blue-700' :
                   'bg-amber-100 text-amber-700'
                 }`}>

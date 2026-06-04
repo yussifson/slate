@@ -13,7 +13,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 const statusColors = { 
   'Applied': 'bg-blue-100 text-blue-700', 
   'Testing': 'bg-amber-100 text-amber-700', 
-  'Admitted': 'bg-emerald-100 text-emerald-700', 
+  'Admitted': 'bg-purple-100 text-purple-700', 
   'Rejected': 'bg-red-100 text-red-700' 
 };
 

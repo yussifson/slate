@@ -69,7 +69,7 @@ export default function SHSGrades() {
   };
 
   const getGradeColor = (grade) => {
-    if (['A1', 'B2', 'B3'].includes(grade)) return 'bg-emerald-100 text-emerald-700';
+    if (['A1', 'B2', 'B3'].includes(grade)) return 'bg-purple-100 text-purple-700';
     if (['C4', 'C5', 'C6'].includes(grade)) return 'bg-blue-100 text-blue-700';
     if (['D7', 'E8'].includes(grade)) return 'bg-amber-100 text-amber-700';
     return 'bg-red-100 text-red-700';
