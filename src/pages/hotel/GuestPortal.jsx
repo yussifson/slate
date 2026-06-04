@@ -85,7 +85,7 @@ export default function GuestPortal() {
           <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
             <div className="p-4 md:p-5 border-b border-border bg-muted/50 flex justify-between items-center">
               <h3 className="font-bold text-card-foreground flex items-center gap-2"><Calendar className="w-5 h-5 text-muted-foreground" /> {t("your_stay_details", "Your Stay Details")}</h3>
-              <Badge variant="outline" className={`${activeRes.status === 'Checked-in' ? 'bg-blue-100 text-blue-700 border-blue-200' : 'bg-amber-100 text-amber-700 border-amber-200'}`}>{activeRes.status}</Badge>
+              <Badge variant="outline" className={`${activeRes.status === 'Checked-in' ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-amber-100 text-amber-700 border-amber-200'}`}>{activeRes.status}</Badge>
             </div>
             <div className="p-5 grid grid-cols-2 md:grid-cols-4 gap-6">
               <div>
@@ -126,7 +126,7 @@ export default function GuestPortal() {
             </div>
 
             <div onClick={() => { setRequestData({ ...requestData, type: 'Housekeeping' }); setShowRequestModal(true); }} className="bg-card hover:bg-muted/50 cursor-pointer transition-colors rounded-xl border border-border p-5 shadow-sm flex items-center gap-4">
-               <div className="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+               <div className="w-12 h-12 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
                  <Bell className="w-6 h-6" />
                </div>
                <div>

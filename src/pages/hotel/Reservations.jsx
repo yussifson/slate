@@ -15,7 +15,7 @@ import { useNotifications } from "@/hooks/integrations/useNotifications";
 import { MessageSquare } from "lucide-react";
 
 const statusColors = {
-  'Checked-in': 'bg-blue-100 text-blue-700',
+  'Checked-in': 'bg-amber-100 text-amber-700',
   'Confirmed': 'bg-amber-100 text-amber-700',
   'Checked-out': 'bg-muted text-foreground',
   'Cancelled': 'bg-red-100 text-red-700'
@@ -200,7 +200,7 @@ export default function Reservations() {
                     <td className="px-6 py-4 text-center font-bold text-card-foreground">${res.total}</td>
                     <td className="px-6 py-4 text-right flex justify-end gap-2">
                       {res.status === 'Confirmed' && (
-                        <Button onClick={() => handleStatusChange(res, 'Checked-in')} size="sm" className="h-8 bg-blue-600 hover:bg-blue-700 text-white">{t("check_in", "Check In")}</Button>
+                        <Button onClick={() => handleStatusChange(res, 'Checked-in')} size="sm" className="h-8 bg-amber-600 hover:bg-amber-700 text-white">{t("check_in", "Check In")}</Button>
                       )}
                       {res.status === 'Checked-in' && (
                         <Button onClick={() => handleStatusChange(res, 'Checked-out')} size="sm" className="h-8 bg-green-600 hover:bg-green-700 text-white">{t("check_out", "Check Out")}</Button>
@@ -339,7 +339,7 @@ export default function Reservations() {
                       </div>
                       <div className="bg-muted/50 p-3 rounded-lg">
                         <p className="text-xs text-muted-foreground mb-1">{t("status", "Status")}</p>
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-bold ${res.status === 'Confirmed' ? 'bg-amber-100 text-amber-700' : res.status === 'Checked-in' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}`}>
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-bold ${res.status === 'Confirmed' ? 'bg-amber-100 text-amber-700' : res.status === 'Checked-in' ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700'}`}>
                           <Activity className="w-3 h-3 mr-1" /> {res.status}
                         </span>
                       </div>

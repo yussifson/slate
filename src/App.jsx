@@ -311,16 +311,7 @@ function PlatformRoutes() {
       <Route path="/o/courses" element={<OnlineCourses />} />
       <Route path="/o/sales" element={<OnlineSales />} />
 
-      {/* High School (SHS) Routes */}
-      <Route path="/s/" element={<SHSDashboard />} />
-      <Route path="/s/students" element={<SHSStudents />} />
-      <Route path="/s/programmes" element={<SHSProgrammes />} />
-      <Route path="/s/houses" element={<SHSHouses />} />
-      <Route path="/s/classes" element={<SHSClasses />} />
-      <Route path="/s/timetable" element={<SHSTimetable />} />
-      <Route path="/s/admissions" element={<SHSAdmissions />} />
-      <Route path="/s/grades" element={<SHSGrades />} />
-      <Route path="/s/fees" element={<SHSFees />} />
+      } />} />} />} />} />} />} />} />} />
 
       <Route path="/canteen-pos" element={<SchoolCanteenPOS />} />
       <Route path="/complaints" element={<SchoolComplaints />} />
@@ -403,6 +394,65 @@ function PlatformRoutes() {
       <Route path="/loyalty" element={<Loyalty />} />
       <Route path="/pickups" element={<GenericModulePage />} />
       <Route path="/orders" element={<Orders />} />
+      {/* High School (SHS) Routes */}
+      <Route path="/s/" element={<SHSDashboard />} />
+      <Route path="/s/students" element={<SHSStudents />} />
+      <Route path="/s/student-profiles" element={<SHSStudentProfiles />} />
+      <Route path="/s/promotion" element={<SHSStudentPromotion />} />
+      <Route path="/s/transfers" element={<SHSStudentTransfers />} />
+      <Route path="/s/discipline" element={<SHSDisciplineRecords />} />
+      <Route path="/s/medical" element={<SHSMedicalRecords />} />
+      <Route path="/s/admissions" element={<SHSAdmissions />} />
+      <Route path="/s/applicant-review" element={<SHSApplicantReview />} />
+      <Route path="/s/admission-decisions" element={<SHSAdmissionDecisions />} />
+      <Route path="/s/enrollment" element={<SHSEnrollment />} />
+      <Route path="/s/classes" element={<SHSClasses />} />
+      <Route path="/s/programmes" element={<SHSProgrammes />} />
+      <Route path="/s/houses" element={<SHSHouses />} />
+      <Route path="/s/streams" element={<SHSStreams />} />
+      <Route path="/s/subjects" element={<SHSSubjects />} />
+      <Route path="/s/electives" element={<SHSElectives />} />
+      <Route path="/s/academic-calendar" element={<SHSAcademicCalendar />} />
+      <Route path="/s/timetable" element={<SHSTimetable />} />
+      <Route path="/s/daily-attendance" element={<SHSDailyAttendance />} />
+      <Route path="/s/class-attendance" element={<SHSClassAttendance />} />
+      <Route path="/s/teacher-attendance" element={<SHSTeacherAttendance />} />
+      <Route path="/s/attendance-reports" element={<SHSAttendanceReports />} />
+      <Route path="/s/internal-exams" element={<SHSInternalExams />} />
+      <Route path="/s/mock-exams" element={<SHSMockExams />} />
+      <Route path="/s/assessment" element={<SHSContinuousAssessment />} />
+      <Route path="/s/grades" element={<SHSGrades />} />
+      <Route path="/s/results" element={<SHSResultsProcessing />} />
+      <Route path="/s/report-cards" element={<SHSReportCards />} />
+      <Route path="/s/dormitories" element={<SHSDormitories />} />
+      <Route path="/s/room-allocation" element={<SHSRoomAllocation />} />
+      <Route path="/s/house-masters" element={<SHSHouseMasters />} />
+      <Route path="/s/boarding-attendance" element={<SHSBoardingAttendance />} />
+      <Route path="/s/parent-progress" element={<SHSParentProgress />} />
+      <Route path="/s/parent-attendance" element={<SHSParentAttendance />} />
+      <Route path="/s/parent-fees" element={<SHSParentFees />} />
+      <Route path="/s/parent-comms" element={<SHSParentComms />} />
+      <Route path="/s/fees" element={<SHSFees />} />
+      <Route path="/s/invoices" element={<SHSInvoices />} />
+      <Route path="/s/payments" element={<SHSPayments />} />
+      <Route path="/s/scholarships" element={<SHSScholarships />} />
+      <Route path="/s/financial-reports" element={<SHSFinancialReports />} />
+      <Route path="/s/books" element={<SHSBooks />} />
+      <Route path="/s/borrowing" element={<SHSBorrowing />} />
+      <Route path="/s/returns" element={<SHSReturns />} />
+      <Route path="/s/digital-resources" element={<SHSDigitalResources />} />
+      <Route path="/s/buses" element={<SHSBuses />} />
+      <Route path="/s/bus-routes" element={<SHSRoutes />} />
+      <Route path="/s/bus-assignments" element={<SHSStudentAssignments />} />
+      <Route path="/s/notices" element={<SHSNotices />} />
+      <Route path="/s/sms" element={<SHSSMS />} />
+      <Route path="/s/whatsapp" element={<SHSWhatsApp />} />
+      <Route path="/s/email-comms" element={<SHSEmailComms />} />
+      <Route path="/s/academic-analytics" element={<SHSAcademicAnalytics />} />
+      <Route path="/s/attendance-analytics" element={<SHSAttendanceAnalytics />} />
+      <Route path="/s/financial-analytics" element={<SHSFinancialAnalytics />} />
+
+
       
       {/* OrbitBolt & Builder */}
       <Route path="/modules/BOLT" element={<CreateModulePage isBoltOpen={true} />} />

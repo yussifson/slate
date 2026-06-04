@@ -124,18 +124,18 @@ export default function Housekeeping() {
            </div>
 
            {/* Column 3: Inspecting */}
-           <div className="bg-blue-50/50 dark:bg-blue-950/10 rounded-xl p-4 border border-blue-100 dark:border-blue-900/30 min-h-[500px]">
-              <h3 className="font-bold text-blue-900 dark:text-blue-400 flex items-center justify-between mb-4">
-                 <span className="flex items-center gap-2"><Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-500"/> {t("inspecting", "Inspecting")}</span>
-                 <span className="bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300 px-2 py-0.5 rounded-full text-xs">{columns.inspecting.length}</span>
+           <div className="bg-amber-50/50 dark:bg-amber-950/10 rounded-xl p-4 border border-amber-100 dark:border-amber-900/30 min-h-[500px]">
+              <h3 className="font-bold text-amber-900 dark:text-amber-400 flex items-center justify-between mb-4">
+                 <span className="flex items-center gap-2"><Sparkles className="w-4 h-4 text-amber-600 dark:text-amber-500"/> {t("inspecting", "Inspecting")}</span>
+                 <span className="bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 px-2 py-0.5 rounded-full text-xs">{columns.inspecting.length}</span>
               </h3>
               <div className="space-y-3">
                  {columns.inspecting.map(room => {
                    return (
-                     <div key={room.id} className="bg-card p-4 rounded-lg shadow-sm border border-border border-l-4 border-l-blue-500">
+                     <div key={room.id} className="bg-card p-4 rounded-lg shadow-sm border border-border border-l-4 border-l-amber-500">
                        <p className="font-bold text-lg mb-1">{t("room", "Room")} {room.roomNumber}</p>
                        <p className="text-xs text-muted-foreground mb-3">{t("waiting_approval", "Waiting Approval")}</p>
-                       <Button onClick={() => handleUpdateStatus(room, 'Available', null)} size="sm" className="w-full text-xs bg-blue-600 hover:bg-blue-700 text-white">{t("approve_as_clean", "Approve as Clean")}</Button>
+                       <Button onClick={() => handleUpdateStatus(room, 'Available', null)} size="sm" className="w-full text-xs bg-amber-600 hover:bg-amber-700 text-white">{t("approve_as_clean", "Approve as Clean")}</Button>
                      </div>
                    );
                  })}

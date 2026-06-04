@@ -30,7 +30,7 @@ const statusColors = {
   Available:  'bg-green-50 border-green-300 text-green-800 hover:bg-green-100',
   Occupied:   'bg-red-50 border-red-300 text-red-800 hover:bg-red-100',
   Arriving:   'bg-amber-50 border-amber-300 text-amber-800 hover:bg-amber-100',
-  Reserved:   'bg-blue-50 border-blue-300 text-blue-800 hover:bg-blue-100',
+  Reserved:   'bg-amber-50 border-amber-300 text-amber-800 hover:bg-amber-100',
   Cleaning:   'bg-yellow-50 border-yellow-300 text-yellow-800 hover:bg-yellow-100',
   Maintenance:'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200',
 };
@@ -39,7 +39,7 @@ const statusIcons = {
   Available:   <CheckCircle2 className="w-4 h-4 text-green-500" />,
   Occupied:    <Moon className="w-4 h-4 text-red-500" />,
   Arriving:    <LogIn className="w-4 h-4 text-amber-500" />,
-  Reserved:    <Calendar className="w-4 h-4 text-blue-500" />,
+  Reserved:    <Calendar className="w-4 h-4 text-amber-500" />,
   Cleaning:    <Brush className="w-4 h-4 text-yellow-500" />,
   Maintenance: <Settings className="w-4 h-4 text-slate-500" />,
 };
@@ -160,14 +160,14 @@ export default function FrontDesk() {
             </div>
           </div>
         </div>
-        <div className="bg-card rounded-xl border border-border p-4 shadow-sm border-l-4 border-l-blue-500">
+        <div className="bg-card rounded-xl border border-border p-4 shadow-sm border-l-4 border-l-amber-500">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-              <Users className="w-5 h-5 text-blue-600" />
+            <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
+              <Users className="w-5 h-5 text-amber-600" />
             </div>
             <div>
               <p className="text-xs font-bold text-muted-foreground uppercase">{t("guests_in_house", "Guests In-House")}</p>
-              <p className="text-2xl font-bold text-blue-600">{checkedIn.length}</p>
+              <p className="text-2xl font-bold text-amber-600">{checkedIn.length}</p>
             </div>
           </div>
         </div>
