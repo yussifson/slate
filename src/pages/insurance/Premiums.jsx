@@ -170,7 +170,7 @@ export default function Premiums() {
             "Manage policy premium payments and collections"
           )}</p>
         </div>
-        <Button onClick={openNewModal} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
+        <Button onClick={openNewModal} className="gap-2 bg-insurance-600 hover:bg-insurance-700 text-white">
           <Plus className="w-4 h-4" /> {t("record_payment", "Record Payment")}
         </Button>
       </div>
@@ -204,7 +204,7 @@ export default function Premiums() {
             <div className="py-12 text-center text-muted-foreground">{t("loading_premium_records", "Loading premium records...")}</div>
           ) : filtered.length === 0 ? (
             <div className="py-12 text-center text-muted-foreground">
-              <DollarSign className="w-12 h-12 mx-auto mb-3 opacity-30 text-emerald-600" />
+              <DollarSign className="w-12 h-12 mx-auto mb-3 opacity-30 text-insurance-600" />
               <p className="font-semibold text-lg text-card-foreground">{t("no_premium_records_found", "No premium records found")}</p>
               <p className="text-xs mt-1">{t("record_a_new_payment_to_see_it", "Record a new payment to see it here.")}</p>
             </div>
@@ -225,7 +225,7 @@ export default function Premiums() {
                   return (
                     <tr key={premium.id} className="hover:bg-muted/50 transition-colors">
                       <td className="px-6 py-4">
-                        <p className="font-mono font-bold text-emerald-600">{premium.receiptNumber}</p>
+                        <p className="font-mono font-bold text-insurance-600">{premium.receiptNumber}</p>
                         <p className="text-xs text-muted-foreground mt-0.5">{premium.paymentMethod}</p>
                       </td>
                       <td className="px-6 py-4">
@@ -311,7 +311,7 @@ export default function Premiums() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditTargetId(null); }}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleCreatePremium} disabled={isPaymentLoading}>
+              <Button className="flex-1 bg-insurance-600 hover:bg-insurance-700 text-white" onClick={handleCreatePremium} disabled={isPaymentLoading}>
                 {isPaymentLoading ? 'Processing...' : editTargetId ? 'Save Changes' : 'Save Record'}
               </Button>
             </div>
