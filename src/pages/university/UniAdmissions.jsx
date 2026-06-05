@@ -1,22 +1,18 @@
 import React, { useState } from 'react';
-import { useTranslation } from "react-i18next";
-import { GraduationCap, Search, Filter, CheckCircle, XCircle, Clock, Plus, Sparkles, Mail, Eye, Calendar, CalendarCheck } from 'lucide-react';
-import { ModuleBanner } from '@/components/school/SchoolViewKit';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { useCompanyId } from "@/hooks/useCompanyId";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { GraduationCap, Search, Filter, CheckCircle, XCircle, Clock, Plus, Eye, Calendar, CalendarCheck } from 'lucide-react';
+import OrbitTable from '@/components/university/OrbitTable';
+import OrbitStatusBadge from '@/components/university/OrbitStatusBadge';
+import OrbitEmptyState from '@/components/university/OrbitEmptyState';
+
+function cn(...classes) { return classes.filter(Boolean).join(' '); }
 
 export default function UniAdmissions() {
-  const { t } = useTranslation();
   const companyId = useCompanyId();
   const queryClient = useQueryClient();
-  const [search, setSearch] = useState('');
-  const [activeTab, setActiveTab] = useState('directory'); // directory, add, interviews
+  const [activeTab, setActiveTab] = useState('directory');
   const [selectedApplicant, setSelectedApplicant] = useState(null);
   const [formData, setFormData] = useState({ name: '', email: '', major: 'Computer Science', gpa: '3.90', statement: '' });
 
@@ -36,6 +32,38 @@ export default function UniAdmissions() {
     }
   });
 
+  const updateApplicantStatusMutation = useMutation({
+    mutationFn: async ({ id, status }) => {
+      const app = applicants.find(a => a.id === id);
+      if (!app) return;
+      let extra = {};
+      try { extra = JSON.parse(app.extra_data || '{}'); } catch(e) {}
+      extra.status = status;
+      await base44.entities.Client.update(id, { extra_data: JSON.stringify(extra) });
+      
+      if (status === 'Admitted') {
+        await base44.entities.Client.create({
+          company_id: companyId,
+          name: app.name,
+          email: app.email,
+          type: 'uni_student',
+          extra_data: JSON.stringify({
+            studentId: `UID${Math.floor(Math.random() * 90000) + 10000}`,
+            major: extra.major,
+            year: 'Freshman',
+            gpa: extra.gpa,
+            status: 'Active'
+          })
+        });
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["clients", companyId, "uni_admission"]);
+      queryClient.invalidateQueries(["clients", companyId, "uni_student"]);
+      setSelectedApplicant(null);
+    }
+  });
+
   const parsedApplicants = applicants.map(a => {
     let extra = {};
     try { extra = JSON.parse(a.extra_data || '{}'); } catch(e) {}
@@ -51,8 +79,6 @@ export default function UniAdmissions() {
     };
   });
 
-  const filtered = parsedApplicants.filter(a => a.name?.toLowerCase().includes(search.toLowerCase()));
-
   const handleCreateApplicant = (e) => {
     e.preventDefault();
     if (!formData.name) return;
@@ -62,243 +88,131 @@ export default function UniAdmissions() {
       email: formData.email,
       type: 'uni_admission',
       extra_data: JSON.stringify({
-        major: formData.major,
-        gpa: formData.gpa,
-        statement: formData.statement,
-        appliedDate: new Date().toISOString().split('T')[0],
-        status: 'Pending'
+        major: formData.major, gpa: formData.gpa, statement: formData.statement,
+        appliedDate: new Date().toISOString().split('T')[0], status: 'Pending'
       })
     });
   };
 
-  const getStatusBadge = (status) => {
-    switch(status?.toLowerCase()) {
-      case 'admitted':
-      case 'approved':
-        return <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200"><CheckCircle className="w-3 h-3 mr-1"/> Admitted</Badge>;
-      case 'rejected':
-        return <Badge className="bg-rose-100 text-rose-800 border-rose-200"><XCircle className="w-3 h-3 mr-1"/> Rejected</Badge>;
-      default:
-        return <Badge className="bg-amber-100 text-amber-800 border-amber-200"><Clock className="w-3 h-3 mr-1"/> Reviewing</Badge>;
-    }
-  };
+  const columns = [
+    { id: 'name', header: 'Candidate Name', render: (_, r) => <div className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-[var(--color-module-admissions)] text-white flex items-center justify-center font-bold text-xs">{r.name?.substring(0,2).toUpperCase()}</div><span className="font-semibold text-[var(--color-text-primary)]">{r.name}</span></div> },
+    { id: 'email', header: 'Contact', render: (_, r) => <span className="text-[var(--color-text-secondary)]">{r.email}</span> },
+    { id: 'major', header: 'Intended Major', render: (_, r) => <span className="inline-flex items-center px-2 py-1 rounded-[var(--radius-sm)] text-[11px] font-medium bg-[var(--color-surface-2)] text-[var(--color-text-secondary)]">{r.major}</span> },
+    { id: 'gpa', header: 'Entrance GPA', render: (_, r) => <span className="font-mono font-bold text-[var(--color-text-primary)]">{r.gpa}</span> },
+    { id: 'status', header: 'Status', render: (_, r) => <OrbitStatusBadge status={r.status} /> },
+    { id: 'actions', header: 'Actions', align: 'right', render: (_, r) => <button onClick={(e) => { e.stopPropagation(); setSelectedApplicant(r); }} className="px-3 py-1.5 text-xs font-bold text-[var(--color-accent-primary)] hover:bg-[var(--color-surface-3)] rounded-[var(--radius-md)] transition-colors flex items-center gap-1"><Eye className="w-4 h-4"/> Review</button> }
+  ];
+
+  const inputClass = "w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--color-module-admissions)] focus:ring-1 focus:ring-[var(--color-module-admissions)] font-body";
 
   return (
-    <div className="space-y-6">
-      <ModuleBanner
-        title={t("uni_admissions", "Admissions & Intake Board")}
-        subtitle="Process freshman candidate profiles, review personal statements, and extend academic offers."
-        metrics={[
-          { title: "Total Candidates", value: applicants.length, icon: GraduationCap }
-        ]}
-      />
-
-      <div className="flex border-b border-slate-200 dark:border-slate-800 gap-4">
-        <button
-          onClick={() => { setActiveTab('directory'); setSelectedApplicant(null); }}
-          className={`pb-3 text-sm font-bold border-b-2 transition-all ${activeTab === 'directory' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
-        >
-          Applicants Directory
-        </button>
-        <button
-          onClick={() => setActiveTab('interviews')}
-          className={`pb-3 text-sm font-bold border-b-2 transition-all ${activeTab === 'interviews' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
-        >
-          Interview Schedules
-        </button>
-        <button
-          onClick={() => setActiveTab('add')}
-          className={`pb-3 text-sm font-bold border-b-2 transition-all ${activeTab === 'add' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
-        >
-          Log Candidate Application
-        </button>
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="flex items-end justify-between border-b border-[var(--color-border-subtle)] pb-4">
+        <div>
+          <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Admissions & Intake Board</h1>
+          <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Process freshman candidate profiles, review personal statements, and extend academic offers.</p>
+        </div>
+        <div className="flex items-center bg-[var(--color-surface-2)] p-1 rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
+          {[{ id: 'directory', label: 'Applicants Directory' }, { id: 'interviews', label: 'Interview Schedules' }, { id: 'add', label: 'Log Candidate' }].map(tab => (
+            <button key={tab.id} onClick={() => { setActiveTab(tab.id); setSelectedApplicant(null); }} className={cn("px-4 py-1.5 text-[var(--text-sm)] font-medium rounded-[var(--radius-md)] transition-all", activeTab === tab.id ? "bg-[var(--color-surface-0)] text-[var(--color-text-primary)] shadow-sm border border-[var(--color-border-subtle)]" : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] border border-transparent")}>{tab.label}</button>
+          ))}
+        </div>
       </div>
 
-      {activeTab === 'directory' && !selectedApplicant && (
-        <div className="space-y-6">
-          <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="relative flex-1 w-full max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <Input 
-                placeholder="Search candidates by name..." 
-                value={search} 
-                onChange={e => setSearch(e.target.value)} 
-                className="pl-9 border-slate-200 dark:border-slate-800 focus-visible:ring-primary" 
-              />
-            </div>
-            <Button size="sm" variant="outline" className="gap-2"><Filter className="w-4 h-4" /> Filter Majors</Button>
+      <div className="min-h-[400px]">
+        {activeTab === 'directory' && !selectedApplicant && (
+          <div className="space-y-6">
+            {parsedApplicants.length > 0 ? (
+              <OrbitTable columns={columns} data={parsedApplicants} title="All Applicants" showToolbar={true} onRowClick={(r) => setSelectedApplicant(r)} />
+            ) : (
+              <OrbitEmptyState icon={GraduationCap} title="No applicant profiles logged" description="Use the 'Log Candidate' tab to add applicant records." moduleColor="var(--color-module-admissions)" actionLabel="Add Applicant" onAction={() => setActiveTab('add')} />
+            )}
           </div>
+        )}
 
-          <Card className="border-slate-100 shadow-sm overflow-hidden">
-            <CardContent className="p-0">
-              {filtered.length === 0 ? (
-                <div className="text-center py-16 text-slate-400 bg-white dark:bg-slate-900 rounded-xl border border-slate-100">
-                  <GraduationCap className="w-12 h-12 mx-auto mb-4 opacity-20" />
-                  <p className="text-lg font-bold">No applicant profiles logged yet</p>
-                  <p className="text-sm mt-1">Use the "Log Candidate Application" tab to add records.</p>
-                </div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader className="bg-slate-50 border-b border-slate-200">
-                      <TableRow>
-                        <TableHead className="font-semibold text-slate-700 py-4 pl-6">Candidate Name</TableHead>
-                        <TableHead className="font-semibold text-slate-700">Contact</TableHead>
-                        <TableHead className="font-semibold text-slate-700">Intended Major</TableHead>
-                        <TableHead className="font-semibold text-slate-700">Entrance GPA</TableHead>
-                        <TableHead className="font-semibold text-slate-700">Status</TableHead>
-                        <TableHead className="font-semibold text-slate-700 text-right pr-6">Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filtered.map(app => (
-                        <TableRow key={app.id} className="hover:bg-slate-50/50 transition-colors group">
-                          <TableCell className="pl-6 py-4">
-                            <div className="flex items-center gap-3">
-                              <div className="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">
-                                {app.name?.substring(0,2).toUpperCase()}
-                              </div>
-                              <span className="font-bold text-slate-900 group-hover:text-primary transition-colors">{app.name}</span>
-                            </div>
-                          </TableCell>
-                          <TableCell className="text-slate-500">{app.email}</TableCell>
-                          <TableCell>
-                            <Badge variant="outline" className="border-primary/20 bg-primary/5 text-primary">
-                              {app.major}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="font-semibold text-slate-700">{app.gpa}</TableCell>
-                          <TableCell>{getStatusBadge(app.status)}</TableCell>
-                          <TableCell className="text-right pr-6">
-                            <Button size="sm" variant="ghost" onClick={() => setSelectedApplicant(app)} className="text-primary hover:text-primary/80 gap-1 font-bold">
-                              <Eye className="w-4 h-4" /> Review
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      {activeTab === 'directory' && selectedApplicant && (
-        <Card className="border-slate-100 shadow-md">
-          <CardHeader className="bg-slate-50/50 dark:bg-slate-800/20 pb-6">
-            <div className="flex items-center gap-4 justify-between">
+        {activeTab === 'directory' && selectedApplicant && (
+          <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
+            <div className="bg-[var(--color-surface-2)] p-6 border-b border-[var(--color-border-subtle)] flex justify-between items-center">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center font-black text-xl">
+                <div className="w-16 h-16 rounded-[var(--radius-lg)] bg-[var(--color-module-admissions)] text-white flex items-center justify-center font-display text-[var(--text-2xl)] shadow-glow-sm shadow-[var(--color-module-admissions)]">
                   {selectedApplicant.name?.substring(0, 2).toUpperCase()}
                 </div>
                 <div>
-                  <CardTitle className="text-xl font-black">{selectedApplicant.name}</CardTitle>
-                  <CardDescription>Major: {selectedApplicant.major} · Entry GPA: {selectedApplicant.gpa}</CardDescription>
+                  <h2 className="font-display font-semibold text-[var(--text-2xl)] text-[var(--color-text-primary)] tracking-tight">{selectedApplicant.name}</h2>
+                  <div className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1 flex items-center gap-3">
+                    <span>Major: {selectedApplicant.major}</span>
+                    <span className="w-1 h-1 rounded-full bg-[var(--color-border-strong)]" />
+                    <span>Entry GPA: <span className="font-mono font-bold text-[var(--color-text-primary)]">{selectedApplicant.gpa}</span></span>
+                    <span className="w-1 h-1 rounded-full bg-[var(--color-border-strong)]" />
+                    <OrbitStatusBadge status={selectedApplicant.status} />
+                  </div>
                 </div>
               </div>
-              <Button size="sm" variant="outline" onClick={() => setSelectedApplicant(null)}>Close Profile</Button>
+              <button onClick={() => setSelectedApplicant(null)} className="px-4 py-2 bg-[var(--color-surface-0)] border border-[var(--color-border-default)] hover:bg-[var(--color-surface-3)] text-[var(--color-text-primary)] text-[var(--text-sm)] font-medium rounded-[var(--radius-md)] transition-colors">Close Profile</button>
             </div>
-          </CardHeader>
-          <CardContent className="p-6 space-y-6">
-            <div>
-              <h4 className="font-bold text-slate-800 text-sm">Personal Statement / Essay</h4>
-              <p className="text-xs text-slate-600 bg-slate-50 border p-4 rounded-xl leading-relaxed mt-2">{selectedApplicant.statement}</p>
-            </div>
-            <div className="flex gap-2">
-              <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold">Admit Candidate</Button>
-              <Button size="sm" variant="outline" className="text-red-500 hover:text-red-700 font-bold border-red-200">Reject Application</Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {activeTab === 'interviews' && (
-        <Card className="border-slate-100 shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-sm font-bold flex items-center gap-1.5"><Calendar className="w-4 h-4 text-primary" /> Interview Matrix</CardTitle>
-            <CardDescription>Scheduled entrance evaluation sessions.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="p-4 bg-slate-50 border rounded-2xl flex items-center gap-3">
-              <CalendarCheck className="w-8 h-8 text-primary shrink-0" />
+            
+            <div className="p-6 space-y-6">
               <div>
-                <p className="text-xs font-bold text-slate-800">Interviews scheduled for tomorrow</p>
-                <p className="text-[10px] text-slate-500">Dr. Alan Turing with candidate John Doe regarding Computer Science admission offer.</p>
+                <h4 className="font-bold text-[var(--color-text-primary)] text-sm">Personal Statement / Essay</h4>
+                <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] bg-[var(--color-surface-1)] border border-[var(--color-border-subtle)] p-4 rounded-[var(--radius-lg)] leading-relaxed mt-2">{selectedApplicant.statement}</p>
+              </div>
+              
+              <div className="flex gap-3 pt-4 border-t border-[var(--color-border-subtle)]">
+                <button onClick={() => updateApplicantStatusMutation.mutate({ id: selectedApplicant.id, status: 'Admitted' })} className="px-6 py-2.5 bg-[var(--color-success)] hover:opacity-90 text-white font-medium rounded-[var(--radius-md)] transition-all">Admit Candidate</button>
+                <button onClick={() => updateApplicantStatusMutation.mutate({ id: selectedApplicant.id, status: 'Rejected' })} className="px-6 py-2.5 border border-[var(--color-danger)] text-[var(--color-danger)] hover:bg-[var(--color-danger-subtle)] font-medium rounded-[var(--radius-md)] transition-all">Reject Application</button>
               </div>
             </div>
-          </CardContent>
-        </Card>
-      )}
+          </div>
+        )}
 
-      {activeTab === 'add' && (
-        <Card className="border-slate-100 shadow-sm max-w-xl">
-          <CardHeader>
-            <CardTitle>Log Candidate Application</CardTitle>
-            <CardDescription>Submit admission candidacy data.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleCreateApplicant} className="space-y-4">
+        {activeTab === 'interviews' && (
+          <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 shadow-sm">
+            <h2 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-1.5 mb-1"><Calendar className="w-4 h-4 text-[var(--color-module-admissions)]" /> Interview Matrix</h2>
+            <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mb-6">Scheduled entrance evaluation sessions.</p>
+            
+            <div className="p-4 bg-[var(--color-surface-1)] border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] flex items-start gap-4">
+              <CalendarCheck className="w-8 h-8 text-[var(--color-module-admissions)] shrink-0" />
               <div>
-                <label className="text-xs font-bold text-slate-500 uppercase">Applicant Name</label>
-                <Input 
-                  value={formData.name} 
-                  onChange={e => setFormData({ ...formData, name: e.target.value })} 
-                  placeholder="e.g. Rosalind Franklin" 
-                  className="mt-1" 
-                  required
-                />
+                <p className="font-bold text-[var(--color-text-primary)] text-sm">Interviews scheduled for tomorrow</p>
+                <p className="text-[var(--text-xs)] text-[var(--color-text-secondary)] mt-1">Dr. Alan Turing with candidate John Doe regarding Computer Science admission offer.</p>
               </div>
-              <div>
-                <label className="text-xs font-bold text-slate-500 uppercase">Contact Email</label>
-                <Input 
-                  type="email" 
-                  value={formData.email} 
-                  onChange={e => setFormData({ ...formData, email: e.target.value })} 
-                  placeholder="e.g. rfranklin@gmail.com" 
-                  className="mt-1" 
-                />
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'add' && (
+          <div className="max-w-xl mx-auto bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-8 shadow-sm">
+            <h2 className="font-display text-[var(--text-2xl)] font-semibold tracking-tight text-[var(--color-text-primary)] mb-6">Log Candidate Application</h2>
+            <form onSubmit={handleCreateApplicant} className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Applicant Name</label>
+                <input value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} placeholder="e.g. Rosalind Franklin" className={inputClass} required />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Contact Email</label>
+                <input type="email" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} placeholder="e.g. rfranklin@gmail.com" className={inputClass} />
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs font-bold text-slate-500 uppercase">Intended Major</label>
-                  <select 
-                    value={formData.major} 
-                    onChange={e => setFormData({ ...formData, major: e.target.value })}
-                    className="w-full mt-1 border rounded-md p-2 bg-white text-sm"
-                  >
-                    <option value="Computer Science">Computer Science</option>
-                    <option value="Software Engineering">Software Engineering</option>
-                    <option value="Applied Physics">Applied Physics</option>
+                <div className="space-y-2">
+                  <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Intended Major</label>
+                  <select value={formData.major} onChange={e => setFormData({ ...formData, major: e.target.value })} className={inputClass}>
+                    <option value="Computer Science">Computer Science</option><option value="Software Engineering">Software Engineering</option><option value="Applied Physics">Applied Physics</option>
                   </select>
                 </div>
-                <div>
-                  <label className="text-xs font-bold text-slate-500 uppercase">High School GPA</label>
-                  <Input 
-                    type="number"
-                    step="0.01" 
-                    value={formData.gpa} 
-                    onChange={e => setFormData({ ...formData, gpa: e.target.value })} 
-                    className="mt-1" 
-                  />
+                <div className="space-y-2">
+                  <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">High School GPA</label>
+                  <input type="number" step="0.01" value={formData.gpa} onChange={e => setFormData({ ...formData, gpa: e.target.value })} className={inputClass} />
                 </div>
               </div>
-              <div>
-                <label className="text-xs font-bold text-slate-500 uppercase">Personal Statement</label>
-                <textarea 
-                  value={formData.statement} 
-                  onChange={e => setFormData({ ...formData, statement: e.target.value })} 
-                  rows={4}
-                  placeholder="Explain your academic pursuits..."
-                  className="w-full mt-1 border rounded-md p-3 bg-white text-sm outline-none focus:ring-1 focus:ring-primary"
-                />
+              <div className="space-y-2">
+                <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Personal Statement</label>
+                <textarea value={formData.statement} onChange={e => setFormData({ ...formData, statement: e.target.value })} rows={4} placeholder="Explain your academic pursuits..." className={cn(inputClass, "min-h-[100px]")} />
               </div>
-              <Button type="submit" className="bg-primary hover:bg-primary/95 text-white w-full">Submit Application</Button>
+              <button type="submit" className="w-full flex items-center justify-center gap-2 py-2.5 bg-[var(--color-module-admissions)] hover:opacity-90 text-white font-medium rounded-[var(--radius-md)] transition-all">Submit Application</button>
             </form>
-          </CardContent>
-        </Card>
-      )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

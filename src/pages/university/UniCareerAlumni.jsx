@@ -1,110 +1,79 @@
 import React, { useState } from 'react';
-import { useTranslation } from "react-i18next";
-import { ModuleBanner } from '@/components/school/SchoolViewKit';
 import { Briefcase, Landmark, Trophy, Users, HeartHandshake, ArrowUpRight } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import OrbitEmptyState from '@/components/university/OrbitEmptyState';
+
+function cn(...classes) { return classes.filter(Boolean).join(' '); }
 
 export default function UniCareerAlumni() {
-  const { t } = useTranslation();
   const [jobs] = useState([
     { title: "Junior Software Architect", employer: "Google Cloud", location: "Silicon Valley (Hybrid)", type: "Full Time" },
     { title: "Quantitative Risk Intern", employer: "Goldman Sachs", location: "New York City", type: "Internship" }
   ]);
 
+  const stats = [
+    { label: 'Active Internships', value: jobs.length || 18, icon: Briefcase, color: 'var(--color-module-career)' },
+    { label: 'Partnered Employers', value: '142', icon: Landmark, color: 'var(--color-info)' },
+    { label: 'Alumni Directory', value: '12K', icon: Users, color: 'var(--color-warning)' },
+    { label: 'Donations Received', value: '$450K', icon: HeartHandshake, color: 'var(--color-success)' }
+  ];
+
   return (
-    <div className="space-y-6">
-      <ModuleBanner 
-        title={t("uni_career_alumni", "Career Services & Alumni Hub")} 
-        subtitle="Manage internship pipelines, view corporate job postings, access the alumni database, and track donor contributions." 
-      />
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="border-b border-[var(--color-border-subtle)] pb-4">
+        <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Career Services & Alumni Hub</h1>
+        <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage internship pipelines, view corporate job postings, access the alumni database, and track donor contributions.</p>
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border-slate-100 hover:shadow-lg transition-all school-card">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Active Jobs / Internships</p>
-              <h3 className="text-3xl font-black text-slate-900 mt-1">{jobs.length || 18}</h3>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {stats.map((stat, i) => (
+          <div key={i} className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">{stat.label}</p>
+                <h3 className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-text-primary)] mt-1 tracking-tight">{stat.value}</h3>
+              </div>
+              <div className="w-12 h-12 rounded-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: `color-mix(in srgb, ${stat.color} 15%, transparent)` }}>
+                <stat.icon className="w-6 h-6" style={{ color: stat.color }} />
+              </div>
             </div>
-            <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-              <Briefcase className="w-6 h-6 text-primary" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-slate-100 hover:shadow-lg transition-all school-card">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Partnered Employers</p>
-              <h3 className="text-3xl font-black text-slate-900 mt-1">142</h3>
-            </div>
-            <div className="w-12 h-12 rounded-2xl bg-indigo-100 flex items-center justify-center">
-              <Landmark className="w-6 h-6 text-indigo-600" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-slate-100 hover:shadow-lg transition-all school-card">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Alumni Directory</p>
-              <h3 className="text-3xl font-black text-slate-900 mt-1">12K Profiles</h3>
-            </div>
-            <div className="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center">
-              <Users className="w-6 h-6 text-amber-600" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-slate-100 hover:shadow-lg transition-all school-card">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider font-sans">Donations Received</p>
-              <h3 className="text-3xl font-black text-slate-900 mt-1">$450K</h3>
-            </div>
-            <div className="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center">
-              <HeartHandshake className="w-6 h-6 text-emerald-600" />
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+        ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-2 border-slate-100 shadow-sm">
-          <CardHeader>
-            <CardTitle>Active Job Board & Placements</CardTitle>
-            <CardDescription>Browse active listings uploaded by vetted partners.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+        <div className="lg:col-span-2 bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] overflow-hidden shadow-sm">
+          <div className="p-6 border-b border-[var(--color-border-subtle)]">
+            <h2 className="font-semibold text-[var(--color-text-primary)]">Active Job Board & Placements</h2>
+            <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Browse active listings uploaded by vetted partners.</p>
+          </div>
+          <div className="p-6 space-y-4">
             {jobs.map((job, idx) => (
-              <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-100 flex justify-between items-center text-xs">
+              <div key={idx} className="p-4 bg-[var(--color-surface-1)] border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] flex justify-between items-center text-[var(--text-xs)]">
                 <div>
-                  <h4 className="font-extrabold text-sm text-slate-800">{job.title}</h4>
-                  <p className="text-slate-500 mt-1">Employer: {job.employer} · {job.location}</p>
+                  <h4 className="font-bold text-[var(--text-sm)] text-[var(--color-text-primary)]">{job.title}</h4>
+                  <p className="text-[var(--color-text-secondary)] mt-1">Employer: {job.employer} · {job.location}</p>
                 </div>
-                <Button size="sm" className="bg-primary hover:bg-primary/95 text-white gap-1 font-bold h-8">
+                <button className="flex items-center gap-1 px-4 py-2 bg-[var(--color-module-career)] hover:opacity-90 text-white font-medium rounded-[var(--radius-md)] transition-all text-xs">
                   Apply <ArrowUpRight className="w-3.5 h-3.5" />
-                </Button>
+                </button>
               </div>
             ))}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <Card className="border-slate-100 shadow-sm">
-          <CardHeader>
-            <CardTitle>Alumni Relations & Events</CardTitle>
-            <CardDescription>Keep in touch with graduating classes.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="p-3 bg-amber-50 text-amber-800 rounded-xl text-xs space-y-1">
-              <p className="font-bold flex items-center gap-1.5"><Trophy className="w-4 h-4 text-amber-600" /> Annual Alumni Gala 2026</p>
-              <p className="text-[10px] text-amber-700">Scheduled for November 12 inside the Grand Ballroom. Registration open.</p>
+        <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 h-fit shadow-sm">
+          <h2 className="font-semibold text-[var(--color-text-primary)] mb-1">Alumni Relations & Events</h2>
+          <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mb-4">Keep in touch with graduating classes.</p>
+          <div className="space-y-4">
+            <div className="p-4 bg-[var(--color-warning-subtle)] border border-[var(--color-warning)] text-[var(--color-warning)] rounded-[var(--radius-md)] text-[var(--text-sm)] space-y-1">
+              <p className="font-bold flex items-center gap-1.5"><Trophy className="w-4 h-4" /> Annual Alumni Gala 2026</p>
+              <p className="text-[var(--text-xs)] opacity-90">Scheduled for November 12 inside the Grand Ballroom. Registration open.</p>
             </div>
-            <Button size="sm" className="w-full bg-primary hover:bg-primary/95 text-white">
+            <button className="w-full py-2 bg-[var(--color-module-career)] hover:opacity-90 text-white font-medium rounded-[var(--radius-md)] transition-all text-sm">
               Browse Alumni Database
-            </Button>
-          </CardContent>
-        </Card>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

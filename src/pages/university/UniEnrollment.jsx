@@ -1,11 +1,8 @@
 import React from 'react';
-import { useTranslation } from "react-i18next";
-import { ModuleBanner } from '@/components/school/SchoolViewKit';
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { Users, UserPlus, CheckCircle2, XCircle, TrendingUp, BarChart4 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 
 const defaultEnrollmentHistory = [
@@ -17,7 +14,6 @@ const defaultEnrollmentHistory = [
 ];
 
 export default function UniEnrollment() {
-  const { t } = useTranslation();
   const companyId = useCompanyId();
 
   const { data: students = [] } = useQuery({
@@ -36,139 +32,106 @@ export default function UniEnrollment() {
   const pendingCount = applicants.filter(a => a.status === 'Pending' || a.status === 'Reviewing').length;
   const rejectedCount = applicants.filter(a => a.status === 'Rejected').length;
 
+  const stats = [
+    { label: 'Total Active Enrolled', value: students.length || 3240, icon: Users, color: 'var(--color-module-orbit)' },
+    { label: 'Admitted (Current Batch)', value: admittedCount || 412, icon: CheckCircle2, color: 'var(--color-success)' },
+    { label: 'Pending Applications', value: pendingCount || 185, icon: UserPlus, color: 'var(--color-warning)' },
+    { label: 'Rejected Applications', value: rejectedCount || 54, icon: XCircle, color: 'var(--color-danger)' }
+  ];
+
   return (
-    <div className="space-y-6">
-      <ModuleBanner 
-        title={t("uni_enrollment_analytics", "Enrollment Analytics")} 
-        subtitle="Track enrollment trends, pipeline yield metrics, and historical admissions data." 
-      />
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="border-b border-[var(--color-border-subtle)] pb-4">
+        <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Enrollment Analytics</h1>
+        <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Track enrollment trends, pipeline yield metrics, and historical admissions data.</p>
+      </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border-slate-100 hover:shadow-lg transition-all school-card">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Active Enrolled</p>
-              <h3 className="text-3xl font-black text-slate-900 mt-1">{students.length || 3240}</h3>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {stats.map((stat, i) => (
+          <div key={i} className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">{stat.label}</p>
+                <h3 className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-text-primary)] mt-1 tracking-tight">{stat.value}</h3>
+              </div>
+              <div className="w-12 h-12 rounded-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: `color-mix(in srgb, ${stat.color} 15%, transparent)` }}>
+                <stat.icon className="w-6 h-6" style={{ color: stat.color }} />
+              </div>
             </div>
-            <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-              <Users className="w-6 h-6 text-primary" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-slate-100 hover:shadow-lg transition-all school-card">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Admitted (Current Batch)</p>
-              <h3 className="text-3xl font-black text-slate-900 mt-1">{admittedCount || 412}</h3>
-            </div>
-            <div className="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center">
-              <CheckCircle2 className="w-6 h-6 text-emerald-600" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-slate-100 hover:shadow-lg transition-all school-card">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Pending Applications</p>
-              <h3 className="text-3xl font-black text-slate-900 mt-1">{pendingCount || 185}</h3>
-            </div>
-            <div className="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center">
-              <UserPlus className="w-6 h-6 text-amber-600" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-slate-100 hover:shadow-lg transition-all school-card">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Rejected Applications</p>
-              <h3 className="text-3xl font-black text-slate-900 mt-1">{rejectedCount || 54}</h3>
-            </div>
-            <div className="w-12 h-12 rounded-2xl bg-rose-100 flex items-center justify-center">
-              <XCircle className="w-6 h-6 text-rose-600" />
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+        ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-2 border-slate-100 shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-lg font-bold text-slate-900 flex items-center gap-2">
-              <BarChart4 className="w-5 h-5 text-primary" /> Enrollment & Application Growth
-            </CardTitle>
-            <CardDescription>Historical comparison of student applications versus final enrollments.</CardDescription>
-          </CardHeader>
-          <CardContent className="p-6">
-            <div className="h-[300px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={defaultEnrollmentHistory} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="colorEnrolled" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
-                    </linearGradient>
-                    <linearGradient id="colorApplied" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                  <XAxis dataKey="term" tick={{fill: '#64748b', fontSize: 12}} />
-                  <YAxis tick={{fill: '#64748b', fontSize: 12}} />
-                  <Tooltip />
-                  <Area type="monotone" dataKey="applied" stroke="#10b981" fillOpacity={1} fill="url(#colorApplied)" strokeWidth={2} />
-                  <Area type="monotone" dataKey="enrolled" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorEnrolled)" strokeWidth={2} />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="lg:col-span-2 bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 shadow-sm">
+          <h2 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-2 mb-1">
+            <BarChart4 className="w-5 h-5 text-[var(--color-module-orbit)]" /> Enrollment & Application Growth
+          </h2>
+          <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mb-6">Historical comparison of student applications versus final enrollments.</p>
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={defaultEnrollmentHistory} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorEnrolled" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#1A73E8" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#1A73E8" stopOpacity={0}/>
+                  </linearGradient>
+                  <linearGradient id="colorApplied" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-border-subtle)" />
+                <XAxis dataKey="term" tick={{fill: 'var(--color-text-secondary)', fontSize: 12}} />
+                <YAxis tick={{fill: 'var(--color-text-secondary)', fontSize: 12}} />
+                <Tooltip contentStyle={{ backgroundColor: 'var(--color-surface-0)', borderColor: 'var(--color-border-subtle)', borderRadius: '8px' }} />
+                <Area type="monotone" dataKey="applied" stroke="#10b981" fillOpacity={1} fill="url(#colorApplied)" strokeWidth={2} />
+                <Area type="monotone" dataKey="enrolled" stroke="#1A73E8" fillOpacity={1} fill="url(#colorEnrolled)" strokeWidth={2} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
 
-        <Card className="border-slate-100 shadow-sm">
-          <CardHeader>
-            <CardTitle>Conversion Overview</CardTitle>
-            <CardDescription>Funnel metrics from initial review to registration.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
+        <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 shadow-sm">
+          <h2 className="font-semibold text-[var(--color-text-primary)] mb-1">Conversion Overview</h2>
+          <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mb-6">Funnel metrics from initial review to registration.</p>
+          <div className="space-y-6">
             <div>
-              <div className="flex justify-between text-sm font-semibold mb-1">
+              <div className="flex justify-between text-[var(--text-sm)] font-semibold mb-1 text-[var(--color-text-primary)]">
                 <span>Application to Interview Rate</span>
                 <span>82%</span>
               </div>
-              <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                <div className="bg-primary h-full rounded-full" style={{ width: '82%' }} />
+              <div className="w-full bg-[var(--color-surface-2)] h-2 rounded-full overflow-hidden">
+                <div className="bg-[var(--color-module-orbit)] h-full rounded-full" style={{ width: '82%' }} />
               </div>
             </div>
             <div>
-              <div className="flex justify-between text-sm font-semibold mb-1">
+              <div className="flex justify-between text-[var(--text-sm)] font-semibold mb-1 text-[var(--color-text-primary)]">
                 <span>Interview to Offer Yield</span>
                 <span>65%</span>
               </div>
-              <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                <div className="bg-emerald-500 h-full rounded-full" style={{ width: '65%' }} />
+              <div className="w-full bg-[var(--color-surface-2)] h-2 rounded-full overflow-hidden">
+                <div className="bg-[var(--color-success)] h-full rounded-full" style={{ width: '65%' }} />
               </div>
             </div>
             <div>
-              <div className="flex justify-between text-sm font-semibold mb-1">
+              <div className="flex justify-between text-[var(--text-sm)] font-semibold mb-1 text-[var(--color-text-primary)]">
                 <span>Offer Acceptance Rate</span>
                 <span>78%</span>
               </div>
-              <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                <div className="bg-indigo-500 h-full rounded-full" style={{ width: '78%' }} />
+              <div className="w-full bg-[var(--color-surface-2)] h-2 rounded-full overflow-hidden">
+                <div className="bg-[var(--color-info)] h-full rounded-full" style={{ width: '78%' }} />
               </div>
             </div>
-            <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 flex items-center justify-between">
+            <div className="p-4 bg-[var(--color-surface-1)] border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] flex items-center justify-between">
               <div>
-                <p className="text-xs font-bold text-slate-500 uppercase">Current Term Yield</p>
-                <p className="text-2xl font-black text-slate-900 mt-1">74.2%</p>
+                <p className="text-[11px] font-bold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Current Term Yield</p>
+                <p className="text-[var(--text-2xl)] font-display font-black text-[var(--color-text-primary)] mt-1">74.2%</p>
               </div>
-              <TrendingUp className="w-8 h-8 text-emerald-500" />
+              <TrendingUp className="w-8 h-8 text-[var(--color-success)]" />
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );

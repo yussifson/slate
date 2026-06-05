@@ -1,9 +1,5 @@
 import React, { useState } from 'react';
-import { useTranslation } from "react-i18next";
-import { ModuleBanner } from '@/components/school/SchoolViewKit';
-import { Building2, School, Landmark, GraduationCap, ChevronRight, Award, Plus } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Building2, School, Landmark, GraduationCap, ChevronRight, Plus } from 'lucide-react';
 
 const defaultStructure = [
   {
@@ -44,70 +40,76 @@ const defaultStructure = [
 ];
 
 export default function UniAcademicStructure() {
-  const { t } = useTranslation();
   const [structure] = useState(defaultStructure);
 
   return (
-    <div className="space-y-6">
-      <ModuleBanner 
-        title={t("uni_academic_structure", "University Academic Structure")} 
-        subtitle="Manage faculties, departments, schools, course programs, majors, and minors." 
-      />
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="border-b border-[var(--color-border-subtle)] pb-4">
+        <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">University Academic Structure</h1>
+        <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage faculties, departments, schools, course programs, majors, and minors.</p>
+      </div>
 
-      <div className="flex justify-between items-center bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
-        <div className="flex gap-2">
-          <Button size="sm" className="bg-primary hover:bg-primary/95 text-white gap-1.5"><Plus className="w-4 h-4" /> Add Faculty</Button>
-          <Button size="sm" variant="outline" className="gap-1.5"><Plus className="w-4 h-4" /> Add Department</Button>
+      <div className="flex justify-between items-center bg-[var(--color-surface-0)] p-4 rounded-[var(--radius-xl)] border border-[var(--color-border-subtle)] shadow-sm">
+        <div className="flex gap-3">
+          <button className="flex items-center gap-2 px-4 py-2 bg-[var(--color-module-academic)] hover:opacity-90 text-white text-sm font-medium rounded-[var(--radius-md)] transition-all">
+            <Plus className="w-4 h-4" /> Add Faculty
+          </button>
+          <button className="flex items-center gap-2 px-4 py-2 bg-[var(--color-surface-2)] hover:bg-[var(--color-surface-3)] text-[var(--color-text-primary)] border border-[var(--color-border-default)] text-sm font-medium rounded-[var(--radius-md)] transition-all">
+            <Plus className="w-4 h-4" /> Add Department
+          </button>
         </div>
-        <p className="text-xs text-muted-foreground font-semibold">Total Faculties: {structure.length}</p>
+        <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Total Faculties: {structure.length}</p>
       </div>
 
       <div className="space-y-6">
         {structure.map((fac, idx) => (
-          <Card key={idx} className="border-slate-100 hover:shadow-md transition-shadow">
-            <CardHeader className="flex flex-row items-center gap-3 bg-slate-50/50 dark:bg-slate-800/20 py-4">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+          <div key={idx} className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] hover:border-[var(--color-module-academic)] transition-colors rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
+            <div className="flex items-center gap-4 bg-[var(--color-surface-1)] px-6 py-4 border-b border-[var(--color-border-subtle)]">
+              <div className="w-10 h-10 rounded-[var(--radius-lg)] bg-[var(--color-module-academic)] text-white flex items-center justify-center shadow-glow-sm shadow-[var(--color-module-academic)]">
                 <fac.icon className="w-5 h-5" />
               </div>
               <div>
-                <CardTitle className="text-lg font-extrabold text-slate-800">{fac.faculty}</CardTitle>
-                <CardDescription>Academic Board Jurisdiction</CardDescription>
+                <h2 className="text-[var(--text-lg)] font-display font-semibold text-[var(--color-text-primary)] tracking-tight">{fac.faculty}</h2>
+                <p className="text-[var(--text-xs)] text-[var(--color-text-secondary)]">Academic Board Jurisdiction</p>
               </div>
-            </CardHeader>
-            <CardContent className="p-6 space-y-4">
+            </div>
+            
+            <div className="p-6 space-y-6">
               {fac.schools.map((school, sIdx) => (
-                <div key={sIdx} className="pl-4 border-l-2 border-slate-200 dark:border-slate-800 space-y-4">
-                  <div className="flex items-center gap-2 text-slate-700 font-bold text-sm">
-                    <School className="w-4 h-4 text-primary" /> {school.name}
+                <div key={sIdx} className="pl-4 border-l-2 border-[var(--color-border-subtle)] space-y-4">
+                  <div className="flex items-center gap-2 text-[var(--color-text-primary)] font-semibold text-[var(--text-sm)]">
+                    <School className="w-4 h-4 text-[var(--color-module-academic)]" /> {school.name}
                   </div>
+                  
                   {school.departments.map((dept, dIdx) => (
-                    <div key={dIdx} className="pl-6 border-l-2 border-dashed border-slate-200 dark:border-slate-800 space-y-3">
-                      <div className="text-slate-600 font-bold text-xs flex items-center gap-1.5">
-                        <Landmark className="w-3.5 h-3.5 text-indigo-500" /> {dept.name}
+                    <div key={dIdx} className="pl-6 border-l-2 border-dashed border-[var(--color-border-subtle)] space-y-3">
+                      <div className="text-[var(--color-text-secondary)] font-bold text-[var(--text-xs)] flex items-center gap-1.5">
+                        <Landmark className="w-3.5 h-3.5" style={{ color: 'var(--color-info)' }} /> {dept.name}
                       </div>
+                      
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-4">
                         {dept.programs.map((prog, pIdx) => (
-                          <div key={pIdx} className="bg-slate-50 dark:bg-slate-800 p-4 rounded-xl border border-slate-100 flex flex-col justify-between">
+                          <div key={pIdx} className="bg-[var(--color-surface-1)] border border-[var(--color-border-subtle)] p-4 rounded-[var(--radius-lg)] flex flex-col justify-between hover:bg-[var(--color-surface-2)] transition-colors">
                             <div>
-                              <p className="font-extrabold text-xs text-slate-800 flex items-center gap-1.5">
-                                <GraduationCap className="w-4 h-4 text-primary" /> {prog.name}
+                              <p className="font-bold text-[var(--text-xs)] text-[var(--color-text-primary)] flex items-center gap-1.5">
+                                <GraduationCap className="w-4 h-4 text-[var(--color-module-academic)]" /> {prog.name}
                               </p>
                               <div className="mt-2 space-y-1">
                                 {prog.majors.length > 0 && (
-                                  <p className="text-[10px] text-slate-500">
-                                    <strong>Majors:</strong> {prog.majors.join(", ")}
+                                  <p className="text-[10px] text-[var(--color-text-secondary)]">
+                                    <strong className="text-[var(--color-text-primary)]">Majors:</strong> {prog.majors.join(", ")}
                                   </p>
                                 )}
                                 {prog.minors.length > 0 && (
-                                  <p className="text-[10px] text-slate-500">
-                                    <strong>Minors:</strong> {prog.minors.join(", ")}
+                                  <p className="text-[10px] text-[var(--color-text-secondary)]">
+                                    <strong className="text-[var(--color-text-primary)]">Minors:</strong> {prog.minors.join(", ")}
                                   </p>
                                 )}
                               </div>
                             </div>
-                            <Button variant="ghost" size="sm" className="self-end text-[10px] h-6 mt-4 gap-0.5 text-primary hover:text-primary/80">
+                            <button className="self-end text-[10px] font-semibold flex items-center gap-0.5 mt-4 text-[var(--color-module-academic)] hover:opacity-80 transition-opacity">
                               View Curriculum <ChevronRight className="w-3 h-3" />
-                            </Button>
+                            </button>
                           </div>
                         ))}
                       </div>
@@ -115,8 +117,8 @@ export default function UniAcademicStructure() {
                   ))}
                 </div>
               ))}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         ))}
       </div>
     </div>

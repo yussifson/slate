@@ -1,20 +1,18 @@
 import React, { useState } from 'react';
-import { useTranslation } from "react-i18next";
-import { DollarSign, Search, ArrowUpRight, ArrowDownRight, CreditCard, Download, Filter, Wallet } from 'lucide-react';
-import { ModuleBanner } from '@/components/school/SchoolViewKit';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { useCompanyId } from "@/hooks/useCompanyId";
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { DollarSign, Search, ArrowUpRight, ArrowDownRight, CreditCard, Download, Filter, Wallet, Plus } from 'lucide-react';
+import OrbitTable from '@/components/university/OrbitTable';
+import OrbitStatusBadge from '@/components/university/OrbitStatusBadge';
+import OrbitEmptyState from '@/components/university/OrbitEmptyState';
+
+function cn(...classes) { return classes.filter(Boolean).join(' '); }
 
 export default function UniFinance() {
-  const { t } = useTranslation();
   const companyId = useCompanyId();
-  const [search, setSearch] = useState('');
-  
+  const [activeTab, setActiveTab] = useState('ledger');
+
   const { data: records = [] } = useQuery({ 
     queryKey: ["cases", companyId, "uni_finance"], 
     queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId, case_type: 'uni_finance' }), 
@@ -37,136 +35,99 @@ export default function UniFinance() {
     };
   });
 
-  const filtered = transactions.filter(t => t.description?.toLowerCase().includes(search.toLowerCase()));
-
   const totalIncome = transactions.filter(t => t.isIncome).reduce((acc, t) => acc + t.amount, 0);
   const totalExpense = transactions.filter(t => !t.isIncome).reduce((acc, t) => acc + t.amount, 0);
 
+  const columns = [
+    { id: 'description', header: 'Description', render: (_, r) => <span className="font-medium text-[var(--color-text-primary)]">{r.description}</span> },
+    { id: 'category', header: 'Category', render: (_, r) => <span className="inline-flex items-center px-2 py-1 rounded-[var(--radius-sm)] text-[11px] font-medium bg-[var(--color-surface-2)] text-[var(--color-text-secondary)]">{r.category}</span> },
+    { id: 'date', header: 'Date', render: (_, r) => <span className="text-[var(--text-sm)] text-[var(--color-text-secondary)]">{r.date}</span> },
+    { id: 'status', header: 'Status', render: (_, r) => <OrbitStatusBadge status={r.status === 'Completed' ? 'success' : 'pending'} label={r.status} /> },
+    { id: 'amount', header: 'Amount', align: 'right', render: (_, r) => <span className={cn("font-semibold text-right", r.isIncome ? "text-[var(--color-success)]" : "text-[var(--color-text-primary)]")}>{r.isIncome ? '+' : '-'}${r.amount.toLocaleString()}</span> }
+  ];
+
   return (
-    <div className="space-y-6">
-      <ModuleBanner
-        title={t("uni_finance", "Financial Management")}
-        subtitle={t("manage_finance", "Track tuition payments, grants, and operational expenses")}
-        metrics={[
-          { title: "Total Transactions", value: transactions.length, icon: Wallet }
-        ]}
-      />
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="flex items-end justify-between border-b border-[var(--color-border-subtle)] pb-4">
+        <div>
+          <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Financial Management</h1>
+          <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Track tuition payments, grants, and operational expenses.</p>
+        </div>
+        <div className="flex items-center bg-[var(--color-surface-2)] p-1 rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
+          {[{ id: 'ledger', label: 'Ledger' }, { id: 'tuition', label: 'Tuition Billing' }, { id: 'add', label: 'New Record' }].map(tab => (
+            <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={cn("px-4 py-1.5 text-[var(--text-sm)] font-medium rounded-[var(--radius-md)] transition-all", activeTab === tab.id ? "bg-[var(--color-surface-0)] text-[var(--color-text-primary)] shadow-sm border border-[var(--color-border-subtle)]" : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] border border-transparent")}>{tab.label}</button>
+          ))}
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="bg-white border-slate-200 shadow-sm">
-          <CardContent className="p-6">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="text-sm font-medium text-slate-500 mb-1">Total Revenue</p>
-                <h3 className="text-3xl font-bold text-slate-900">${totalIncome.toLocaleString()}</h3>
-              </div>
-              <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
-                <ArrowUpRight className="w-6 h-6" />
-              </div>
+        <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Total Revenue</p>
+              <h3 className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-text-primary)] mt-1 tracking-tight">${totalIncome.toLocaleString()}</h3>
             </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-white border-slate-200 shadow-sm">
-          <CardContent className="p-6">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="text-sm font-medium text-slate-500 mb-1">Total Expenses</p>
-                <h3 className="text-3xl font-bold text-slate-900">${totalExpense.toLocaleString()}</h3>
-              </div>
-              <div className="w-12 h-12 rounded-xl bg-rose-50 flex items-center justify-center text-rose-600">
-                <ArrowDownRight className="w-6 h-6" />
-              </div>
+            <div className="w-12 h-12 rounded-[var(--radius-lg)] bg-[var(--color-success-subtle)] flex items-center justify-center">
+              <ArrowUpRight className="w-6 h-6 text-[var(--color-success)]" />
             </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-indigo-600 text-white border-indigo-700 shadow-md shadow-indigo-200">
-          <CardContent className="p-6">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="text-sm font-medium text-indigo-200 mb-1">Net Balance</p>
-                <h3 className="text-3xl font-bold text-white">${(totalIncome - totalExpense).toLocaleString()}</h3>
-              </div>
-              <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-white">
-                <CreditCard className="w-6 h-6" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-      
-      <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="relative flex-1 w-full max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-          <Input 
-            placeholder="Search transactions..." 
-            value={search} 
-            onChange={e => setSearch(e.target.value)} 
-            className="pl-9 border-slate-200 focus-visible:ring-indigo-500" 
-          />
+          </div>
         </div>
-        <div className="flex items-center gap-3 w-full md:w-auto">
-          <Button variant="outline" className="gap-2 text-slate-600">
-            <Filter className="w-4 h-4" /> Filter
-          </Button>
-          <Button variant="outline" className="gap-2 text-slate-600">
-            <Download className="w-4 h-4" /> Report
-          </Button>
-          <Button className="gap-2 bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-200">
-            <DollarSign className="w-4 h-4" /> New Transaction
-          </Button>
+
+        <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Total Expenses</p>
+              <h3 className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-text-primary)] mt-1 tracking-tight">${totalExpense.toLocaleString()}</h3>
+            </div>
+            <div className="w-12 h-12 rounded-[var(--radius-lg)] bg-[var(--color-danger-subtle)] flex items-center justify-center">
+              <ArrowDownRight className="w-6 h-6 text-[var(--color-danger)]" />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-br from-[var(--color-module-finance)] to-[var(--color-accent-primary)] rounded-[var(--radius-xl)] p-6 text-white shadow-md shadow-[var(--color-accent-glow)]">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[11px] font-semibold text-white/80 uppercase tracking-[var(--tracking-widest)]">Net Balance</p>
+              <h3 className="text-[var(--text-3xl)] font-display font-semibold mt-1 tracking-tight">${(totalIncome - totalExpense).toLocaleString()}</h3>
+            </div>
+            <div className="w-12 h-12 rounded-[var(--radius-lg)] bg-white/20 flex items-center justify-center">
+              <CreditCard className="w-6 h-6" />
+            </div>
+          </div>
         </div>
       </div>
 
-      <Card className="border-slate-200 shadow-sm overflow-hidden">
-        <CardHeader className="bg-slate-50 border-b border-slate-200 py-4">
-          <CardTitle className="text-lg font-medium text-slate-800">Recent Transactions</CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          {filtered.length === 0 ? (
-            <div className="text-center py-16 text-slate-400">
-              <DollarSign className="w-12 h-12 mx-auto mb-4 opacity-20" />
-              <p className="text-lg">No transactions found</p>
+      <div className="min-h-[400px]">
+        {activeTab === 'ledger' && (
+          <div className="space-y-6">
+            {transactions.length > 0 ? (
+              <OrbitTable columns={columns} data={transactions} title="General Ledger" showToolbar={true} />
+            ) : (
+              <OrbitEmptyState icon={DollarSign} title="No Transactions" description="The financial ledger is currently empty." actionLabel="New Record" onAction={() => setActiveTab('add')} moduleColor="var(--color-module-finance)" />
+            )}
+          </div>
+        )}
+        
+        {activeTab === 'tuition' && (
+          <OrbitEmptyState icon={Wallet} title="Tuition Billing Active" description="Tuition module is connected to Student accounts. Select a student to bill." moduleColor="var(--color-module-finance)" />
+        )}
+        
+        {activeTab === 'add' && (
+          <div className="max-w-xl mx-auto bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-8 shadow-sm">
+            <h2 className="font-display text-[var(--text-2xl)] font-semibold tracking-tight text-[var(--color-text-primary)] mb-6">Log Transaction</h2>
+            <div className="p-4 bg-[var(--color-info-subtle)] border border-[var(--color-info)] text-[var(--color-info)] rounded-[var(--radius-md)] text-sm mb-6 flex gap-2">
+              <Wallet className="w-4 h-4 shrink-0 mt-0.5" />
+              <span>Use the billing form to deduct or credit the general ledger. This form is connected to base44 case engine.</span>
             </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader className="bg-white">
-                  <TableRow>
-                    <TableHead className="font-semibold text-slate-500 py-3 pl-6">Description</TableHead>
-                    <TableHead className="font-semibold text-slate-500">Category</TableHead>
-                    <TableHead className="font-semibold text-slate-500">Date</TableHead>
-                    <TableHead className="font-semibold text-slate-500">Status</TableHead>
-                    <TableHead className="font-semibold text-slate-500 text-right pr-6">Amount</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filtered.map(txn => (
-                    <TableRow key={txn.id} className="hover:bg-slate-50/50">
-                      <TableCell className="pl-6 py-4">
-                        <div className="font-medium text-slate-900">{txn.description}</div>
-                      </TableCell>
-                      <TableCell>
-                        <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-slate-100 text-slate-600">
-                          {txn.category}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-slate-500">{txn.date}</TableCell>
-                      <TableCell>
-                        <span className="text-sm text-slate-500">{txn.status}</span>
-                      </TableCell>
-                      <TableCell className={`text-right pr-6 font-semibold ${txn.isIncome ? 'text-emerald-600' : 'text-slate-900'}`}>
-                        {txn.isIncome ? '+' : '-'}${txn.amount.toLocaleString()}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+            <div className="space-y-4 text-center">
+              <button className="flex items-center justify-center gap-2 px-6 py-3 w-full bg-[var(--color-module-finance)] hover:opacity-90 text-white rounded-[var(--radius-md)] font-medium transition-all">
+                <Plus className="w-4 h-4" /> Initialize Form
+              </button>
             </div>
-          )}
-        </CardContent>
-      </Card>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

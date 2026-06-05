@@ -1,12 +1,11 @@
 import React from 'react';
-import { useTranslation } from "react-i18next";
-import { ModuleBanner } from '@/components/school/SchoolViewKit';
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { DollarSign, Percent, Gift, FileText, CheckCircle2, TrendingUp } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import OrbitStatusBadge from '@/components/university/OrbitStatusBadge';
+import OrbitEmptyState from '@/components/university/OrbitEmptyState';
 
 const defaultRevenueData = [
   { month: 'Jan', Tuition: 45000, Scholarships: 5000, Housing: 8000 },
@@ -18,7 +17,6 @@ const defaultRevenueData = [
 ];
 
 export default function UniRevenue() {
-  const { t } = useTranslation();
   const companyId = useCompanyId();
 
   const { data: finances = [] } = useQuery({
@@ -39,122 +37,84 @@ export default function UniRevenue() {
 
   const pendingCollection = totalInvoiced - collectedRevenue;
 
+  const stats = [
+    { label: 'Total Billing Invoiced', value: `$${totalInvoiced.toLocaleString() || "450,000"}`, icon: DollarSign, color: 'var(--color-module-orbit)' },
+    { label: 'Collected Tuition', value: `$${collectedRevenue.toLocaleString() || "320,000"}`, icon: CheckCircle2, color: 'var(--color-success)' },
+    { label: 'Outstanding Balances', value: `$${pendingCollection.toLocaleString() || "130,000"}`, icon: Percent, color: 'var(--color-danger)' },
+    { label: 'Scholarship Relief', value: '$45,000', icon: Gift, color: 'var(--color-info)' }
+  ];
+
   return (
-    <div className="space-y-6">
-      <ModuleBanner 
-        title={t("uni_revenue", "Revenue & Financial Operations")} 
-        subtitle="Comprehensive tuition monitoring, scholarship allocations, and billing status." 
-      />
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="border-b border-[var(--color-border-subtle)] pb-4">
+        <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Revenue & Financial Operations</h1>
+        <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Comprehensive tuition monitoring, scholarship allocations, and billing status.</p>
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border-slate-100 hover:shadow-lg transition-all school-card">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Billing Invoiced</p>
-              <h3 className="text-2xl font-black text-slate-900 mt-1">${totalInvoiced.toLocaleString() || "$450,000"}</h3>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {stats.map((stat, i) => (
+          <div key={i} className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">{stat.label}</p>
+                <h3 className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-text-primary)] mt-1 tracking-tight">{stat.value}</h3>
+              </div>
+              <div className="w-12 h-12 rounded-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: `color-mix(in srgb, ${stat.color} 15%, transparent)` }}>
+                <stat.icon className="w-6 h-6" style={{ color: stat.color }} />
+              </div>
             </div>
-            <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-              <DollarSign className="w-6 h-6 text-primary" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-slate-100 hover:shadow-lg transition-all school-card">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Collected Tuition</p>
-              <h3 className="text-2xl font-black text-slate-900 mt-1">${collectedRevenue.toLocaleString() || "$320,000"}</h3>
-            </div>
-            <div className="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center">
-              <CheckCircle2 className="w-6 h-6 text-emerald-600" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-slate-100 hover:shadow-lg transition-all school-card">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Outstanding Balances</p>
-              <h3 className="text-2xl font-black text-slate-900 mt-1">${pendingCollection.toLocaleString() || "$130,000"}</h3>
-            </div>
-            <div className="w-12 h-12 rounded-2xl bg-rose-100 flex items-center justify-center">
-              <Percent className="w-6 h-6 text-rose-600" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-slate-100 hover:shadow-lg transition-all school-card">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Scholarship Relief</p>
-              <h3 className="text-2xl font-black text-slate-900 mt-1">$45,000</h3>
-            </div>
-            <div className="w-12 h-12 rounded-2xl bg-indigo-100 flex items-center justify-center">
-              <Gift className="w-6 h-6 text-indigo-600" />
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+        ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-2 border-slate-100 shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-lg font-bold text-slate-900 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-primary" /> Monthly Revenue Breakdown
-            </CardTitle>
-            <CardDescription>Visual metrics showing distribution of tuition, housing payments, and grants.</CardDescription>
-          </CardHeader>
-          <CardContent className="p-6">
-            <div className="h-[300px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={defaultRevenueData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                  <XAxis dataKey="month" tick={{fill: '#64748b', fontSize: 12}} />
-                  <YAxis tick={{fill: '#64748b', fontSize: 12}} />
-                  <Tooltip />
-                  <Bar dataKey="Tuition" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="Housing" fill="#10b981" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="Scholarships" fill="#f43f5e" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="lg:col-span-2 bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 shadow-sm">
+          <h2 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-2 mb-1">
+            <TrendingUp className="w-5 h-5 text-[var(--color-module-orbit)]" /> Monthly Revenue Breakdown
+          </h2>
+          <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mb-6">Visual metrics showing distribution of tuition, housing payments, and grants.</p>
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={defaultRevenueData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-border-subtle)" />
+                <XAxis dataKey="month" tick={{fill: 'var(--color-text-secondary)', fontSize: 12}} />
+                <YAxis tick={{fill: 'var(--color-text-secondary)', fontSize: 12}} />
+                <Tooltip contentStyle={{ backgroundColor: 'var(--color-surface-0)', borderColor: 'var(--color-border-subtle)', borderRadius: '8px' }} />
+                <Bar dataKey="Tuition" fill="#1A73E8" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="Housing" fill="#10b981" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="Scholarships" fill="#f43f5e" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
 
-        <Card className="border-slate-100 shadow-sm">
-          <CardHeader>
-            <CardTitle>Invoicing Summary</CardTitle>
-            <CardDescription>Current fee structures and collection rates.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+        <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 shadow-sm">
+          <h2 className="font-semibold text-[var(--color-text-primary)] mb-1">Invoicing Summary</h2>
+          <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mb-6">Current fee structures and collection rates.</p>
+          <div className="space-y-4">
             {finances.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <FileText className="w-10 h-10 mx-auto mb-3 opacity-30" />
-                <p>No billing invoices generated yet.</p>
-              </div>
+              <OrbitEmptyState icon={FileText} title="No Invoices" description="No billing invoices generated yet." moduleColor="var(--color-module-orbit)" />
             ) : (
               <div className="space-y-3">
                 {finances.slice(0, 5).map((f, i) => {
                   let parsed = {}; try { parsed = JSON.parse(f.notes); } catch(e){}
                   return (
-                    <div key={i} className="flex justify-between items-center p-3 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-100">
+                    <div key={i} className="flex justify-between items-center p-4 bg-[var(--color-surface-1)] rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-2)] transition-colors">
                       <div>
-                        <p className="font-bold text-sm text-slate-800">{parsed.title || "Tuition Invoice"}</p>
-                        <p className="text-xs text-slate-500">Invoice ID: {f.id.substring(0, 8)}</p>
+                        <p className="font-bold text-[var(--text-sm)] text-[var(--color-text-primary)]">{parsed.title || "Tuition Invoice"}</p>
+                        <p className="text-[var(--text-xs)] text-[var(--color-text-secondary)]">Invoice ID: {f.id.substring(0, 8)}</p>
                       </div>
-                      <div className="text-right">
-                        <p className="font-extrabold text-sm text-slate-900">${parsed.amount || 1200}</p>
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${f.status === 'Paid' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
-                          {f.status}
-                        </span>
+                      <div className="text-right flex flex-col items-end">
+                        <p className="font-display font-bold text-[var(--text-sm)] text-[var(--color-text-primary)] mb-1">${parsed.amount || 1200}</p>
+                        <OrbitStatusBadge status={f.status === 'Paid' ? 'success' : 'warning'} label={f.status} />
                       </div>
                     </div>
                   );
                 })}
               </div>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
