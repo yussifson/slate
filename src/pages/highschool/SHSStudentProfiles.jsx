@@ -5,7 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, UserCircle, MapPin, Phone, Mail, GraduationCap, ShieldAlert, FileText, HeartPulse } from 'lucide-react';
+import { Search, UserCircle, Users, MapPin, Phone, Mail, GraduationCap, ShieldAlert, FileText, HeartPulse } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';

@@ -1,114 +1,167 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Award, Search, Filter, Plus, ChevronRight, MoreHorizontal, ArrowUpRight } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+import { useAuth } from '@/lib/AuthContext';
+import { base44 } from '@/api/base44Client';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Search, Award, Download, CheckCircle, Clock, Plus, ShieldCheck } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function VCertificates() {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const [certificates, setCertificates] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCert, setSelectedCert] = useState(null);
+
+  const fetchCertificates = async () => {
+    setLoading(true);
+    try {
+      const records = await base44.getEntities('voc_certificate', user?.company_id);
+      setCertificates(records);
+      if (records.length > 0 && !selectedCert) {
+        setSelectedCert(records[0]);
+      }
+    } catch (error) {
+      console.error('Failed to fetch certificates:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user?.company_id) {
+      fetchCertificates();
+    }
+  }, [user]);
+
+  const filteredCerts = certificates.filter(c => 
+    c.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    c.data?.student_name?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
-    <div className="flex-1 space-y-6 p-8 bg-slate-50/50 dark:bg-slate-900/50 min-h-screen">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300 h-[calc(100vh-100px)] flex flex-col">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-3">
-            <div className="p-2 bg-primary/10 rounded-xl text-primary">
-              <Award className="w-6 h-6" />
-            </div>
-            Certificates
-          </h2>
-          <p className="text-muted-foreground mt-1">Issue and manage course completion certificates.</p>
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-rose-600 via-rose-700 to-slate-900 bg-clip-text text-transparent">
+            Certificates Directory
+          </h1>
+          <p className="text-muted-foreground mt-1 text-sm font-medium">
+            Generate, verify, and manage vocational certificates.
+          </p>
         </div>
-        
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input 
-              placeholder="Search..." 
-              className="pl-9 w-[250px] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus-visible:ring-primary/20"
-            />
+        <Button className="rounded-xl shadow-lg shadow-rose-200 bg-rose-600 hover:bg-rose-700 text-white">
+          <Plus className="w-4 h-4 mr-2" /> Issue Certificate
+        </Button>
+      </div>
+
+      <div className="flex-1 flex gap-6 overflow-hidden">
+        <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-rose-100/50">
+          <div className="p-4 border-b border-rose-50">
+            <div className="relative">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-rose-500" />
+              <Input 
+                placeholder="Search by student or ID..." 
+                className="pl-9 h-10 bg-white dark:bg-slate-900 border-rose-100 dark:border-slate-700 rounded-xl focus-visible:ring-rose-600"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
           </div>
-          <Button variant="outline" className="gap-2 bg-white dark:bg-slate-900">
-            <Filter className="w-4 h-4" /> Filter
-          </Button>
-          <Button className="gap-2 shadow-lg shadow-primary/20 transition-all hover:scale-105">
-            <Plus className="w-4 h-4" /> Add New
-          </Button>
-        </div>
-      </div>
-
-      {/* Main Content Area */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Stats Cards */}
-        <Card className="bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl border-slate-200/60 dark:border-slate-800/60 shadow-sm hover:shadow-md transition-all">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Active</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-slate-900 dark:text-white">124</div>
-            <div className="text-xs text-emerald-500 flex items-center gap-1 mt-1 font-medium">
-              <ArrowUpRight className="w-3 h-3" /> +12% this month
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl border-slate-200/60 dark:border-slate-800/60 shadow-sm hover:shadow-md transition-all">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Pending Review</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-slate-900 dark:text-white">18</div>
-            <div className="text-xs text-amber-500 flex items-center gap-1 mt-1 font-medium">
-              Needs attention
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl border-slate-200/60 dark:border-slate-800/60 shadow-sm hover:shadow-md transition-all bg-gradient-to-br from-primary/5 via-transparent to-transparent">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-primary">Completion Rate</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-primary">94%</div>
-            <div className="text-xs text-primary/70 flex items-center gap-1 mt-1 font-medium">
-              Above average
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Main Data Section */}
-      <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-        <div className="p-6 border-b border-slate-100 dark:border-slate-800">
-          <h3 className="text-lg font-semibold">Recent Records</h3>
-        </div>
-        <div className="p-0">
-          <div className="divide-y divide-slate-100 dark:divide-slate-800">
-            {[1, 2, 3, 4, 5].map((item) => (
-              <div key={item} className="flex items-center justify-between p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
-                    #{item}
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-primary transition-colors">Record Item {item}</h4>
-                    <p className="text-xs text-muted-foreground mt-0.5">Updated 2 days ago</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <Badge variant="secondary" className="bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400 hover:bg-emerald-200 border-none">Active</Badge>
-                  <Button variant="ghost" size="icon" className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-                    <ChevronRight className="w-4 h-4" />
-                  </Button>
-                </div>
+          <ScrollArea className="flex-1">
+            {loading ? (
+              <div className="p-8 text-center text-rose-300 text-sm">Loading certificates...</div>
+            ) : filteredCerts.length === 0 ? (
+              <div className="p-8 text-center text-slate-400 text-sm">No certificates found.</div>
+            ) : (
+              <div className="p-2 space-y-1">
+                {filteredCerts.map(cert => (
+                  <button
+                    key={cert.id}
+                    onClick={() => setSelectedCert(cert)}
+                    className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
+                      selectedCert?.id === cert.id 
+                        ? 'bg-rose-600 text-white shadow-md shadow-rose-500/20' 
+                        : 'hover:bg-rose-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200'
+                    }`}
+                  >
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0 ${
+                      selectedCert?.id === cert.id ? 'bg-white/20' : 'bg-rose-100 text-rose-600'
+                    }`}>
+                      <Award className="w-5 h-5" />
+                    </div>
+                    <div className="overflow-hidden">
+                      <p className="font-bold truncate">{cert.data?.student_name || cert.title}</p>
+                      <p className={`text-xs truncate ${selectedCert?.id === cert.id ? 'text-rose-200' : 'text-slate-500'}`}>
+                        {cert.data?.qualification_name || 'Certificate'}
+                      </p>
+                    </div>
+                  </button>
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
-      </Card>
+            )}
+          </ScrollArea>
+        </Card>
+
+        <Card className="flex-1 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-rose-100/50 overflow-hidden relative">
+          {selectedCert ? (
+            <>
+              <div className="h-40 bg-gradient-to-r from-slate-900 via-rose-900 to-rose-700 relative shrink-0 flex items-center justify-center">
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20"></div>
+                {/* Decorative Certificate Background Element */}
+                <div className="absolute inset-4 border-2 border-rose-400/30 rounded-xl pointer-events-none"></div>
+                <Award className="w-20 h-20 text-rose-300/50 absolute right-8" />
+              </div>
+              
+              <ScrollArea className="flex-1 -mt-16">
+                <div className="px-8 pb-8">
+                  <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 shadow-xl border border-slate-100 dark:border-slate-800 relative z-10 text-center max-w-2xl mx-auto mt-4">
+                    <ShieldCheck className="w-16 h-16 text-rose-500 mx-auto mb-6" />
+                    <h2 className="text-sm font-bold text-slate-400 tracking-widest uppercase mb-2">Certificate of Completion</h2>
+                    <h1 className="text-4xl font-serif text-slate-800 dark:text-slate-100 mb-6">{selectedCert.data?.student_name || selectedCert.title}</h1>
+                    <p className="text-slate-600 mb-6">has successfully completed the requirements for the</p>
+                    <h3 className="text-2xl font-bold text-rose-600 mb-8">{selectedCert.data?.qualification_name || 'Vocational Training Program'}</h3>
+                    
+                    <div className="flex justify-between items-end border-t border-slate-100 pt-8 mt-8">
+                      <div className="text-left">
+                        <p className="font-bold text-slate-800">{selectedCert.data?.issue_date || new Date(selectedCert.created_date).toLocaleDateString()}</p>
+                        <p className="text-xs text-slate-500">Date of Issue</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-bold text-slate-800">{selectedCert.data?.certificate_id || `CERT-${selectedCert.id.substring(0,6).toUpperCase()}`}</p>
+                        <p className="text-xs text-slate-500">Certificate ID</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-8 flex justify-center gap-4">
+                    <Button variant="outline" className="border-rose-200 text-rose-600 hover:bg-rose-50 rounded-xl">
+                      <CheckCircle className="w-4 h-4 mr-2" /> Verify Status
+                    </Button>
+                    <Button className="rounded-xl shadow-md shadow-rose-200 bg-rose-600 hover:bg-rose-700">
+                      <Download className="w-4 h-4 mr-2" /> Download PDF
+                    </Button>
+                  </div>
+                </div>
+              </ScrollArea>
+            </>
+          ) : (
+            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
+              <div className="w-20 h-20 rounded-full bg-rose-50 flex items-center justify-center mb-6">
+                <Award className="w-10 h-10 text-rose-300" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-700">No Certificate Selected</h3>
+              <p className="text-slate-500 max-w-sm mt-2">
+                Select a certificate from the list to view its details, verify authenticity, or download a copy.
+              </p>
+            </div>
+          )}
+        </Card>
+      </div>
     </div>
   );
 }

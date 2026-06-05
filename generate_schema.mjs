@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'fs';
 import { SCHEMA_COLUMNS } from './src/api/schemaColumns.js';
 
 const out = ['import { column, Schema, Table } from \'@powersync/web\';\n\nexport const AppSchema = new Schema({'];

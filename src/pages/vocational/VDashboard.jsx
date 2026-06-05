@@ -1,114 +1,168 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LayoutDashboard, Search, Filter, Plus, ChevronRight, MoreHorizontal, ArrowUpRight } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+import { useAuth } from '@/lib/AuthContext';
+import { base44 } from '@/api/base44Client';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Briefcase, Users, GraduationCap, TrendingUp, Activity, Wrench, Building2, UserCheck } from 'lucide-react';
 
 export default function VDashboard() {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const [stats, setStats] = useState({
+    trades: 0,
+    trainees: 0,
+    placements: 0,
+    loading: true
+  });
+
+  useEffect(() => {
+    const fetchDashboardStats = async () => {
+      if (!user?.company_id) return;
+      try {
+        const [trades, trainees, placements] = await Promise.all([
+          base44.getEntities('voc_trade', user.company_id),
+          base44.getEntities('voc_trainee', user.company_id),
+          base44.getEntities('voc_placement', user.company_id)
+        ]);
+        
+        setStats({
+          trades: trades.length,
+          trainees: trainees.length,
+          placements: placements.length,
+          loading: false
+        });
+      } catch (error) {
+        console.error('Failed to fetch dashboard stats', error);
+        setStats(s => ({ ...s, loading: false }));
+      }
+    };
+
+    fetchDashboardStats();
+  }, [user]);
 
   return (
-    <div className="flex-1 space-y-6 p-8 bg-slate-50/50 dark:bg-slate-900/50 min-h-screen">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-3">
-            <div className="p-2 bg-primary/10 rounded-xl text-primary">
-              <LayoutDashboard className="w-6 h-6" />
-            </div>
-            Vocational Dashboard
-          </h2>
-          <p className="text-muted-foreground mt-1">Overview of trainee statistics, course completion, and placement rates.</p>
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-indigo-800 to-slate-900 bg-clip-text text-transparent">
+            Vocational Overview
+          </h1>
+          <p className="text-muted-foreground mt-1 text-sm font-medium">
+            Monitor training programs, trainee progress, and placement rates.
+          </p>
         </div>
-        
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input 
-              placeholder="Search..." 
-              className="pl-9 w-[250px] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus-visible:ring-primary/20"
-            />
-          </div>
-          <Button variant="outline" className="gap-2 bg-white dark:bg-slate-900">
-            <Filter className="w-4 h-4" /> Filter
+        <div className="flex gap-2">
+          <Button variant="outline" className="rounded-xl border-blue-200 text-blue-700 hover:bg-blue-50">
+            Download Report
           </Button>
-          <Button className="gap-2 shadow-lg shadow-primary/20 transition-all hover:scale-105">
-            <Plus className="w-4 h-4" /> Add New
+          <Button className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-200 dark:shadow-none">
+            New Placement
           </Button>
         </div>
       </div>
 
-      {/* Main Content Area */}
+      {/* Top Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Stats Cards */}
-        <Card className="bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl border-slate-200/60 dark:border-slate-800/60 shadow-sm hover:shadow-md transition-all">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Active</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-slate-900 dark:text-white">124</div>
-            <div className="text-xs text-emerald-500 flex items-center gap-1 mt-1 font-medium">
-              <ArrowUpRight className="w-3 h-3" /> +12% this month
+        <Card className="rounded-3xl border-none shadow-sm bg-gradient-to-br from-blue-500 to-blue-700 text-white overflow-hidden relative">
+          <div className="absolute right-0 top-0 opacity-10 translate-x-4 -translate-y-4">
+            <Users className="w-32 h-32" />
+          </div>
+          <CardContent className="p-6 relative z-10">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-blue-100 font-medium mb-1">Total Trainees</p>
+                <h3 className="text-4xl font-black">{stats.loading ? '...' : stats.trainees}</h3>
+              </div>
+              <div className="p-3 bg-white/20 rounded-2xl backdrop-blur-sm">
+                <Users className="w-6 h-6 text-white" />
+              </div>
             </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl border-slate-200/60 dark:border-slate-800/60 shadow-sm hover:shadow-md transition-all">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Pending Review</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-slate-900 dark:text-white">18</div>
-            <div className="text-xs text-amber-500 flex items-center gap-1 mt-1 font-medium">
-              Needs attention
+            <div className="mt-6 flex items-center gap-2 text-sm text-blue-100">
+              <TrendingUp className="w-4 h-4 text-emerald-300" />
+              <span><strong className="text-white">+12%</strong> from last cohort</span>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl border-slate-200/60 dark:border-slate-800/60 shadow-sm hover:shadow-md transition-all bg-gradient-to-br from-primary/5 via-transparent to-transparent">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-primary">Completion Rate</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-primary">94%</div>
-            <div className="text-xs text-primary/70 flex items-center gap-1 mt-1 font-medium">
-              Above average
+        <Card className="rounded-3xl border-none shadow-sm bg-gradient-to-br from-indigo-500 to-indigo-700 text-white overflow-hidden relative">
+          <div className="absolute right-0 top-0 opacity-10 translate-x-4 -translate-y-4">
+            <Briefcase className="w-32 h-32" />
+          </div>
+          <CardContent className="p-6 relative z-10">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-indigo-100 font-medium mb-1">Active Trades</p>
+                <h3 className="text-4xl font-black">{stats.loading ? '...' : stats.trades}</h3>
+              </div>
+              <div className="p-3 bg-white/20 rounded-2xl backdrop-blur-sm">
+                <Wrench className="w-6 h-6 text-white" />
+              </div>
+            </div>
+            <div className="mt-6 flex items-center gap-2 text-sm text-indigo-100">
+              <Activity className="w-4 h-4" />
+              <span>Across 4 departments</span>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="rounded-3xl border-none shadow-sm bg-gradient-to-br from-emerald-500 to-teal-700 text-white overflow-hidden relative">
+          <div className="absolute right-0 top-0 opacity-10 translate-x-4 -translate-y-4">
+            <Building2 className="w-32 h-32" />
+          </div>
+          <CardContent className="p-6 relative z-10">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-emerald-100 font-medium mb-1">Job Placements</p>
+                <h3 className="text-4xl font-black">{stats.loading ? '...' : stats.placements}</h3>
+              </div>
+              <div className="p-3 bg-white/20 rounded-2xl backdrop-blur-sm">
+                <UserCheck className="w-6 h-6 text-white" />
+              </div>
+            </div>
+            <div className="mt-6 flex items-center gap-2 text-sm text-emerald-100">
+              <TrendingUp className="w-4 h-4 text-white" />
+              <span><strong className="text-white">85%</strong> placement rate</span>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Main Data Section */}
-      <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-        <div className="p-6 border-b border-slate-100 dark:border-slate-800">
-          <h3 className="text-lg font-semibold">Recent Records</h3>
-        </div>
-        <div className="p-0">
-          <div className="divide-y divide-slate-100 dark:divide-slate-800">
-            {[1, 2, 3, 4, 5].map((item) => (
-              <div key={item} className="flex items-center justify-between p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
-                    #{item}
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-primary transition-colors">Record Item {item}</h4>
-                    <p className="text-xs text-muted-foreground mt-0.5">Updated 2 days ago</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <Badge variant="secondary" className="bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400 hover:bg-emerald-200 border-none">Active</Badge>
-                  <Button variant="ghost" size="icon" className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-                    <ChevronRight className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </Card>
+      {/* Secondary Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 dark:ring-slate-800">
+          <CardHeader>
+            <CardTitle className="text-xl flex items-center gap-2">
+              <GraduationCap className="w-5 h-5 text-indigo-500" /> Recent Graduates
+            </CardTitle>
+            <CardDescription>Trainees who recently completed their modules</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <GraduationCap className="w-12 h-12 text-slate-200 dark:text-slate-700 mb-3" />
+              <p className="text-slate-500 font-medium">No recent graduates to display.</p>
+              <p className="text-sm text-slate-400 mt-1">Completion data will appear here once trainees finish their final assessments.</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 dark:ring-slate-800">
+          <CardHeader>
+            <CardTitle className="text-xl flex items-center gap-2">
+              <Building2 className="w-5 h-5 text-emerald-500" /> Partner Employers
+            </CardTitle>
+            <CardDescription>Top companies hiring our trainees</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <Building2 className="w-12 h-12 text-slate-200 dark:text-slate-700 mb-3" />
+              <p className="text-slate-500 font-medium">No employer data available.</p>
+              <p className="text-sm text-slate-400 mt-1">Add partner companies to track placements.</p>
+              <Button variant="outline" className="mt-4 rounded-xl">Add Employer</Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

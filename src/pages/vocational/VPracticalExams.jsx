@@ -1,114 +1,183 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { FileCheck, Search, Filter, Plus, ChevronRight, MoreHorizontal, ArrowUpRight } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '@/lib/AuthContext';
+import { base44 } from '@/api/base44Client';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Search, PenTool, CheckCircle, XCircle, Award, Calendar } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function VPracticalExams() {
-  const { t } = useTranslation();
+  const { user } = useAuth();
+  const [exams, setExams] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedExam, setSelectedExam] = useState(null);
+
+  const fetchExams = async () => {
+    setLoading(true);
+    try {
+      const records = await base44.getEntities('voc_exam', user?.company_id);
+      setExams(records);
+      if (records.length > 0 && !selectedExam) {
+        setSelectedExam(records[0]);
+      }
+    } catch (error) {
+      console.error('Failed to fetch practical exams:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user?.company_id) {
+      fetchExams();
+    }
+  }, [user]);
+
+  const filteredExams = exams.filter(e => 
+    e.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    e.data?.trainee_name?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
-    <div className="flex-1 space-y-6 p-8 bg-slate-50/50 dark:bg-slate-900/50 min-h-screen">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300 h-[calc(100vh-100px)] flex flex-col">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-3">
-            <div className="p-2 bg-primary/10 rounded-xl text-primary">
-              <FileCheck className="w-6 h-6" />
-            </div>
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-rose-600 via-pink-600 to-slate-900 bg-clip-text text-transparent">
             Practical Exams
-          </h2>
-          <p className="text-muted-foreground mt-1">Schedule and record grades for hands-on practical exams.</p>
+          </h1>
+          <p className="text-muted-foreground mt-1 text-sm font-medium">
+            Manage scheduling and grading for hands-on practical examinations.
+          </p>
         </div>
-        
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input 
-              placeholder="Search..." 
-              className="pl-9 w-[250px] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus-visible:ring-primary/20"
-            />
+      </div>
+
+      <div className="flex-1 flex gap-6 overflow-hidden">
+        <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-rose-100/50">
+          <div className="p-4 border-b border-rose-50 dark:border-slate-800">
+            <div className="relative">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-rose-500" />
+              <Input 
+                placeholder="Search exams..." 
+                className="pl-9 h-10 bg-white dark:bg-slate-900 border-rose-100 dark:border-slate-700 rounded-xl focus-visible:ring-rose-600"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
           </div>
-          <Button variant="outline" className="gap-2 bg-white dark:bg-slate-900">
-            <Filter className="w-4 h-4" /> Filter
-          </Button>
-          <Button className="gap-2 shadow-lg shadow-primary/20 transition-all hover:scale-105">
-            <Plus className="w-4 h-4" /> Add New
-          </Button>
-        </div>
-      </div>
-
-      {/* Main Content Area */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Stats Cards */}
-        <Card className="bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl border-slate-200/60 dark:border-slate-800/60 shadow-sm hover:shadow-md transition-all">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Active</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-slate-900 dark:text-white">124</div>
-            <div className="text-xs text-emerald-500 flex items-center gap-1 mt-1 font-medium">
-              <ArrowUpRight className="w-3 h-3" /> +12% this month
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl border-slate-200/60 dark:border-slate-800/60 shadow-sm hover:shadow-md transition-all">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Pending Review</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-slate-900 dark:text-white">18</div>
-            <div className="text-xs text-amber-500 flex items-center gap-1 mt-1 font-medium">
-              Needs attention
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl border-slate-200/60 dark:border-slate-800/60 shadow-sm hover:shadow-md transition-all bg-gradient-to-br from-primary/5 via-transparent to-transparent">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-primary">Completion Rate</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-primary">94%</div>
-            <div className="text-xs text-primary/70 flex items-center gap-1 mt-1 font-medium">
-              Above average
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Main Data Section */}
-      <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-        <div className="p-6 border-b border-slate-100 dark:border-slate-800">
-          <h3 className="text-lg font-semibold">Recent Records</h3>
-        </div>
-        <div className="p-0">
-          <div className="divide-y divide-slate-100 dark:divide-slate-800">
-            {[1, 2, 3, 4, 5].map((item) => (
-              <div key={item} className="flex items-center justify-between p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
-                    #{item}
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-primary transition-colors">Record Item {item}</h4>
-                    <p className="text-xs text-muted-foreground mt-0.5">Updated 2 days ago</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <Badge variant="secondary" className="bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400 hover:bg-emerald-200 border-none">Active</Badge>
-                  <Button variant="ghost" size="icon" className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-                    <ChevronRight className="w-4 h-4" />
-                  </Button>
-                </div>
+          <ScrollArea className="flex-1">
+            {loading ? (
+              <div className="p-8 text-center text-rose-500/50 text-sm">Loading exams...</div>
+            ) : filteredExams.length === 0 ? (
+              <div className="p-8 text-center text-slate-400 dark:text-slate-500 text-sm">No exams found.</div>
+            ) : (
+              <div className="p-2 space-y-1">
+                {filteredExams.map(exam => (
+                  <button
+                    key={exam.id}
+                    onClick={() => setSelectedExam(exam)}
+                    className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
+                      selectedExam?.id === exam.id 
+                        ? 'bg-rose-600 text-white shadow-md shadow-rose-500/20' 
+                        : 'hover:bg-rose-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'
+                    }`}
+                  >
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0 ${
+                      selectedExam?.id === exam.id ? 'bg-white/20' : 'bg-rose-100 dark:bg-slate-800 text-rose-600'
+                    }`}>
+                      <PenTool className="w-5 h-5" />
+                    </div>
+                    <div className="overflow-hidden">
+                      <p className="font-bold truncate">{exam.title}</p>
+                      <p className={`text-xs truncate ${selectedExam?.id === exam.id ? 'text-rose-100' : 'text-slate-500'}`}>
+                        {exam.data?.trainee_name || 'Trainee'} • {exam.data?.date || 'Unscheduled'}
+                      </p>
+                    </div>
+                  </button>
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
-      </Card>
+            )}
+          </ScrollArea>
+        </Card>
+
+        <Card className="flex-1 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-rose-100/50 overflow-hidden relative">
+          {selectedExam ? (
+            <>
+              <div className="h-32 bg-gradient-to-r from-rose-500 to-pink-600 relative shrink-0">
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+              </div>
+              
+              <ScrollArea className="flex-1 -mt-12">
+                <div className="px-8 pb-8">
+                  <div className="flex flex-col sm:flex-row gap-6 items-end sm:items-center relative z-10">
+                    <div className="w-24 h-24 rounded-3xl bg-white dark:bg-slate-900 p-1 shadow-xl shrink-0">
+                      <div className="w-full h-full rounded-2xl bg-rose-50 dark:bg-slate-800 flex items-center justify-center text-rose-600">
+                        <Award className="w-12 h-12" />
+                      </div>
+                    </div>
+                    <div className="flex-1 mt-4 sm:mt-12">
+                      <h2 className="text-3xl font-black text-slate-800 dark:text-slate-100">{selectedExam.title}</h2>
+                      <div className="flex items-center gap-3 mt-2 text-sm text-slate-600 dark:text-slate-300 font-medium">
+                        <span className="flex items-center gap-1.5"><Badge variant="outline" className="border-rose-200 dark:border-slate-600 bg-rose-50 dark:bg-slate-800 text-rose-600">{selectedExam.data?.trainee_name}</Badge></span>
+                        <span>•</span>
+                        <span className="flex items-center gap-1.5"><Calendar className="w-4 h-4 text-rose-500" /> {selectedExam.data?.date || 'No date set'}</span>
+                        <span>•</span>
+                        <Badge className={selectedExam.data?.result === 'Pass' ? 'bg-emerald-500' : selectedExam.data?.result === 'Fail' ? 'bg-red-500' : 'bg-slate-500'}>
+                          {selectedExam.data?.result || 'Pending'}
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-8">
+                    <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-2">Examiner</h3>
+                          <p className="text-lg font-medium text-slate-800 dark:text-slate-100">{selectedExam.data?.examiner || 'Not Assigned'}</p>
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-2">Final Score</h3>
+                          <div className="flex items-center gap-2">
+                            <span className="text-3xl font-bold text-slate-800 dark:text-slate-100">{selectedExam.data?.score || '--'}</span>
+                            <span className="text-slate-500">/ 100</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-2">Feedback & Comments</h3>
+                        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700 min-h-[100px]">
+                          <p className="text-slate-700 dark:text-slate-300">
+                            {selectedExam.data?.feedback || 'No feedback provided yet.'}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-700">
+                        <Button variant="outline" className="text-slate-600">Print Certificate</Button>
+                        <Button className="bg-rose-600 hover:bg-rose-700 text-white">Edit Exam Result</Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ScrollArea>
+            </>
+          ) : (
+            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
+              <div className="w-20 h-20 rounded-full bg-rose-50 dark:bg-slate-800 flex items-center justify-center mb-6">
+                <PenTool className="w-10 h-10 text-rose-300" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200">No Exam Selected</h3>
+              <p className="text-slate-500 max-w-sm mt-2">
+                Select an exam from the list to view the score, examiner feedback, and pass/fail status.
+              </p>
+            </div>
+          )}
+        </Card>
+      </div>
     </div>
   );
 }
