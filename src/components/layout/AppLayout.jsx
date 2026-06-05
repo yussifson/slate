@@ -65,12 +65,17 @@ export default function AppLayout() {
     const activeIndustry = impersonatedCompany?.industry_type || user?.company_industry;
     if (activeIndustry) {
       const industry = activeIndustry.toLowerCase();
-      let primaryColor = '221 83% 53%'; // Default Blue (Law/Core)
-      if (industry === 'school' || industry === 'highschool' || industry === 'university') {
+      if (industry === 'university') {
+        primaryColor = '180 100% 20%'; // Teal (#006666)
+        document.body.classList.add('theme-university');
+        document.body.classList.remove('theme-school');
+      } else if (industry === 'school' || industry === 'highschool') {
         primaryColor = '213 89% 50%'; // Google Blue (#1A73E8)
         document.body.classList.add('theme-school');
+        document.body.classList.remove('theme-university');
       } else {
         document.body.classList.remove('theme-school');
+        document.body.classList.remove('theme-university');
         if (industry === 'retail') {
           primaryColor = '24 98% 50%'; // Sunset Orange
         } else if (industry === 'hotel') {
@@ -85,6 +90,7 @@ export default function AppLayout() {
       document.documentElement.style.setProperty('--ring', primaryColor);
     } else {
       document.body.classList.remove('theme-school');
+      document.body.classList.remove('theme-university');
     }
   }, [user?.company_industry, impersonatedCompany?.industry_type]);
 
@@ -203,7 +209,21 @@ export default function AppLayout() {
               <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-[0.06] dark:opacity-[0.1]" />
             </div>
           );
-        } else if (industry === 'school' || industry === 'highschool' || industry === 'university') {
+        } else if (industry === 'university') {
+          return (
+            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-all duration-1000 bg-white dark:bg-[#0A0F1C]">
+              {/* Clean White Background with subtle Teal accents */}
+              <div className="absolute inset-0 bg-gradient-to-br from-[#006666]/[0.02] via-transparent to-[#006666]/[0.05] dark:from-[#006666]/10 dark:via-[#0A0F1C] dark:to-[#006666]/20" />
+              
+              {/* Soft Radial Glows - Teal */}
+              <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-[#006666]/5 blur-[150px] mix-blend-multiply dark:mix-blend-screen" />
+              <div className="absolute bottom-[-15%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[#006666]/5 blur-[160px] mix-blend-multiply dark:mix-blend-screen" />
+              
+              {/* Subtle Noise Texture for depth */}
+              <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.15] mix-blend-overlay" />
+            </div>
+          );
+        } else if (industry === 'school' || industry === 'highschool') {
           return (
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-all duration-1000 bg-[#FAFAFA] dark:bg-[#0A0F1C]">
               {/* Premium Silicon Valley Gradient Mesh */}
