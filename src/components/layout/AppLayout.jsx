@@ -65,6 +65,7 @@ export default function AppLayout() {
     const activeIndustry = impersonatedCompany?.industry_type || user?.company_industry;
     if (activeIndustry) {
       const industry = activeIndustry.toLowerCase();
+      let primaryColor = '221 83% 53%'; // Default Blue (Law/Core)
       if (industry === 'university') {
         primaryColor = '180 100% 20%'; // Teal (#006666)
         document.body.classList.add('theme-university');
