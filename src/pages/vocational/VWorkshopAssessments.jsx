@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, ClipboardCheck, Tool, AlertTriangle, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { Search, ClipboardCheck, Wrench, AlertTriangle, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
@@ -114,7 +114,7 @@ export default function VWorkshopAssessments() {
                   <div className="flex flex-col sm:flex-row gap-6 items-end sm:items-center relative z-10">
                     <div className="w-24 h-24 rounded-3xl bg-white dark:bg-slate-900 p-1 shadow-xl shrink-0">
                       <div className="w-full h-full rounded-2xl bg-indigo-50 dark:bg-slate-800 flex items-center justify-center text-indigo-600">
-                        <Tool className="w-12 h-12" />
+                        <Wrench className="w-12 h-12" />
                       </div>
                     </div>
                     <div className="flex-1 mt-4 sm:mt-12">

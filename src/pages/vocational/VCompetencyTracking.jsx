@@ -1,114 +1,203 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { Target, Search, Filter, Plus, ChevronRight, MoreHorizontal, ArrowUpRight } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '@/lib/AuthContext';
+import { base44 } from '@/api/base44Client';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Search, Star, BarChart3, TrendingUp, CheckCircle, Shield } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function VCompetencyTracking() {
-  const { t } = useTranslation();
+  const { user } = useAuth();
+  const [competencies, setCompetencies] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCompetency, setSelectedCompetency] = useState(null);
+
+  const fetchCompetencies = async () => {
+    setLoading(true);
+    try {
+      const records = await base44.getEntities('voc_competency', user?.company_id);
+      setCompetencies(records);
+      if (records.length > 0 && !selectedCompetency) {
+        setSelectedCompetency(records[0]);
+      }
+    } catch (error) {
+      console.error('Failed to fetch competencies:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user?.company_id) {
+      fetchCompetencies();
+    }
+  }, [user]);
+
+  const filteredCompetencies = competencies.filter(c => 
+    c.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    c.data?.framework?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
-    <div className="flex-1 space-y-6 p-8 bg-slate-50/50 dark:bg-slate-900/50 min-h-screen">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300 h-[calc(100vh-100px)] flex flex-col">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-3">
-            <div className="p-2 bg-primary/10 rounded-xl text-primary">
-              <Target className="w-6 h-6" />
-            </div>
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-cyan-600 via-blue-600 to-slate-900 bg-clip-text text-transparent">
             Competency Tracking
-          </h2>
-          <p className="text-muted-foreground mt-1">Map and track trainee competencies against industry standards.</p>
+          </h1>
+          <p className="text-muted-foreground mt-1 text-sm font-medium">
+            Monitor mastery levels of core industry skills and standards across trainees.
+          </p>
         </div>
-        
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input 
-              placeholder="Search..." 
-              className="pl-9 w-[250px] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus-visible:ring-primary/20"
-            />
+      </div>
+
+      <div className="flex-1 flex gap-6 overflow-hidden">
+        <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-cyan-100/50">
+          <div className="p-4 border-b border-cyan-50 dark:border-slate-800">
+            <div className="relative">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-cyan-500" />
+              <Input 
+                placeholder="Search competencies..." 
+                className="pl-9 h-10 bg-white dark:bg-slate-900 border-cyan-100 dark:border-slate-700 rounded-xl focus-visible:ring-cyan-600"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
           </div>
-          <Button variant="outline" className="gap-2 bg-white dark:bg-slate-900">
-            <Filter className="w-4 h-4" /> Filter
-          </Button>
-          <Button className="gap-2 shadow-lg shadow-primary/20 transition-all hover:scale-105">
-            <Plus className="w-4 h-4" /> Add New
-          </Button>
-        </div>
-      </div>
-
-      {/* Main Content Area */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Stats Cards */}
-        <Card className="bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl border-slate-200/60 dark:border-slate-800/60 shadow-sm hover:shadow-md transition-all">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Active</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-slate-900 dark:text-white">124</div>
-            <div className="text-xs text-emerald-500 flex items-center gap-1 mt-1 font-medium">
-              <ArrowUpRight className="w-3 h-3" /> +12% this month
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl border-slate-200/60 dark:border-slate-800/60 shadow-sm hover:shadow-md transition-all">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Pending Review</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-slate-900 dark:text-white">18</div>
-            <div className="text-xs text-amber-500 flex items-center gap-1 mt-1 font-medium">
-              Needs attention
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl border-slate-200/60 dark:border-slate-800/60 shadow-sm hover:shadow-md transition-all bg-gradient-to-br from-primary/5 via-transparent to-transparent">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-primary">Completion Rate</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-primary">94%</div>
-            <div className="text-xs text-primary/70 flex items-center gap-1 mt-1 font-medium">
-              Above average
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Main Data Section */}
-      <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-        <div className="p-6 border-b border-slate-100 dark:border-slate-800">
-          <h3 className="text-lg font-semibold">Recent Records</h3>
-        </div>
-        <div className="p-0">
-          <div className="divide-y divide-slate-100 dark:divide-slate-800">
-            {[1, 2, 3, 4, 5].map((item) => (
-              <div key={item} className="flex items-center justify-between p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
-                    #{item}
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-primary transition-colors">Record Item {item}</h4>
-                    <p className="text-xs text-muted-foreground mt-0.5">Updated 2 days ago</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <Badge variant="secondary" className="bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400 hover:bg-emerald-200 border-none">Active</Badge>
-                  <Button variant="ghost" size="icon" className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-                    <ChevronRight className="w-4 h-4" />
-                  </Button>
-                </div>
+          <ScrollArea className="flex-1">
+            {loading ? (
+              <div className="p-8 text-center text-cyan-500/50 text-sm">Loading competencies...</div>
+            ) : filteredCompetencies.length === 0 ? (
+              <div className="p-8 text-center text-slate-400 dark:text-slate-500 text-sm">No competencies found.</div>
+            ) : (
+              <div className="p-2 space-y-1">
+                {filteredCompetencies.map(comp => (
+                  <button
+                    key={comp.id}
+                    onClick={() => setSelectedCompetency(comp)}
+                    className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
+                      selectedCompetency?.id === comp.id 
+                        ? 'bg-cyan-600 text-white shadow-md shadow-cyan-500/20' 
+                        : 'hover:bg-cyan-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'
+                    }`}
+                  >
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0 ${
+                      selectedCompetency?.id === comp.id ? 'bg-white/20' : 'bg-cyan-100 dark:bg-slate-800 text-cyan-600'
+                    }`}>
+                      <Star className="w-5 h-5" />
+                    </div>
+                    <div className="overflow-hidden">
+                      <p className="font-bold truncate">{comp.title}</p>
+                      <p className={`text-xs truncate ${selectedCompetency?.id === comp.id ? 'text-cyan-100' : 'text-slate-500'}`}>
+                        {comp.data?.framework || 'General'} • Level {comp.data?.level || '1'}
+                      </p>
+                    </div>
+                  </button>
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
-      </Card>
+            )}
+          </ScrollArea>
+        </Card>
+
+        <Card className="flex-1 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-cyan-100/50 overflow-hidden relative">
+          {selectedCompetency ? (
+            <>
+              <div className="h-32 bg-gradient-to-r from-cyan-500 to-blue-600 relative shrink-0">
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/graphy.png')] opacity-20"></div>
+              </div>
+              
+              <ScrollArea className="flex-1 -mt-12">
+                <div className="px-8 pb-8">
+                  <div className="flex flex-col sm:flex-row gap-6 items-end sm:items-center relative z-10">
+                    <div className="w-24 h-24 rounded-3xl bg-white dark:bg-slate-900 p-1 shadow-xl shrink-0">
+                      <div className="w-full h-full rounded-2xl bg-cyan-50 dark:bg-slate-800 flex items-center justify-center text-cyan-600">
+                        <BarChart3 className="w-12 h-12" />
+                      </div>
+                    </div>
+                    <div className="flex-1 mt-4 sm:mt-12">
+                      <h2 className="text-3xl font-black text-slate-800 dark:text-slate-100">{selectedCompetency.title}</h2>
+                      <div className="flex items-center gap-3 mt-2 text-sm text-slate-600 dark:text-slate-300 font-medium">
+                        <span className="flex items-center gap-1.5"><Badge variant="outline" className="border-cyan-200 dark:border-slate-600 bg-cyan-50 dark:bg-slate-800 text-cyan-600">{selectedCompetency.data?.framework}</Badge></span>
+                        <span>•</span>
+                        <span className="flex items-center gap-1.5">Level: {selectedCompetency.data?.level || 'N/A'}</span>
+                        <span>•</span>
+                        <span className="flex items-center gap-1.5"><Shield className="w-4 h-4 text-cyan-500" /> {selectedCompetency.data?.industry_standard || 'Standard'}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-8 space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="p-6 rounded-2xl bg-cyan-50/50 dark:bg-slate-800/50 border border-cyan-100 dark:border-slate-700">
+                        <h3 className="text-sm font-bold text-cyan-700 dark:text-cyan-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                          <TrendingUp className="w-4 h-4" /> Completion Rate
+                        </h3>
+                        <div className="flex items-end gap-2">
+                          <span className="text-5xl font-black text-slate-800 dark:text-slate-100">{selectedCompetency.data?.completion_rate || '0%'}</span>
+                          <span className="text-slate-500 mb-1">of enrolled trainees</span>
+                        </div>
+                        <div className="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full mt-4 overflow-hidden">
+                          <div className="bg-cyan-500 h-full rounded-full" style={{ width: selectedCompetency.data?.completion_rate || '0%' }}></div>
+                        </div>
+                      </div>
+
+                      <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+                        <h3 className="text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-4">Required Evidence</h3>
+                        <ul className="space-y-3">
+                          {selectedCompetency.data?.evidence_required ? (
+                            selectedCompetency.data.evidence_required.split(',').map((item, idx) => (
+                              <li key={idx} className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-300">
+                                <CheckCircle className="w-4 h-4 text-cyan-500 shrink-0 mt-0.5" />
+                                <span>{item.trim()}</span>
+                              </li>
+                            ))
+                          ) : (
+                            <>
+                              <li className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-300">
+                                <CheckCircle className="w-4 h-4 text-cyan-500 shrink-0 mt-0.5" />
+                                <span>Practical Demonstration Video</span>
+                              </li>
+                              <li className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-300">
+                                <CheckCircle className="w-4 h-4 text-cyan-500 shrink-0 mt-0.5" />
+                                <span>Written Assessment Score &gt; 80%</span>
+                              </li>
+                            </>
+                          )}
+                        </ul>
+                      </div>
+                    </div>
+
+                    <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-sm">
+                      <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider mb-2">Description & Standards</h3>
+                      <p className="text-slate-600 dark:text-slate-300 text-sm whitespace-pre-wrap leading-relaxed">
+                        {selectedCompetency.data?.description || 'No detailed description provided for this competency standard.'}
+                      </p>
+                      
+                      <div className="mt-6 flex justify-end">
+                        <Button className="bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl">View Mapped Courses</Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ScrollArea>
+            </>
+          ) : (
+            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
+              <div className="w-20 h-20 rounded-full bg-cyan-50 dark:bg-slate-800 flex items-center justify-center mb-6">
+                <BarChart3 className="w-10 h-10 text-cyan-300" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200">No Competency Selected</h3>
+              <p className="text-slate-500 max-w-sm mt-2">
+                Select a competency standard to view tracking metrics, evidence requirements, and completion rates.
+              </p>
+            </div>
+          )}
+        </Card>
+      </div>
     </div>
   );
 }
