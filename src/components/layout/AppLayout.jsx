@@ -67,7 +67,7 @@ export default function AppLayout() {
       const industry = activeIndustry.toLowerCase();
       let primaryColor = '221 83% 53%'; // Default Blue (Law/Core)
       if (industry === 'university') {
-        primaryColor = '180 100% 20%'; // Teal (#006666)
+        primaryColor = '158 68% 38%'; // Emerald Green
         document.body.classList.add('theme-university');
         document.body.classList.remove('theme-school');
       } else if (industry === 'school' || industry === 'highschool') {
@@ -213,12 +213,12 @@ export default function AppLayout() {
         } else if (industry === 'university') {
           return (
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-all duration-1000 bg-white dark:bg-[#0A0F1C]">
-              {/* Clean White Background with subtle Teal accents */}
-              <div className="absolute inset-0 bg-gradient-to-br from-[#006666]/[0.02] via-transparent to-[#006666]/[0.05] dark:from-[#006666]/10 dark:via-[#0A0F1C] dark:to-[#006666]/20" />
+              {/* Clean White Background with subtle Emerald Green accents */}
+              <div className="absolute inset-0 bg-gradient-to-br from-[hsl(158,68%,38%)]/[0.03] via-transparent to-[hsl(158,68%,38%)]/[0.06] dark:from-[hsl(158,68%,38%)]/10 dark:via-[#0A0F1C] dark:to-[hsl(158,68%,38%)]/20" />
               
-              {/* Soft Radial Glows - Teal */}
-              <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-[#006666]/5 blur-[150px] mix-blend-multiply dark:mix-blend-screen" />
-              <div className="absolute bottom-[-15%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[#006666]/5 blur-[160px] mix-blend-multiply dark:mix-blend-screen" />
+              {/* Soft Radial Glows - Emerald Green */}
+              <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-[hsl(158,68%,38%)]/5 blur-[150px] mix-blend-multiply dark:mix-blend-screen" />
+              <div className="absolute bottom-[-15%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[hsl(158,68%,38%)]/5 blur-[160px] mix-blend-multiply dark:mix-blend-screen" />
               
               {/* Subtle Noise Texture for depth */}
               <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.15] mix-blend-overlay" />

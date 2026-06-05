@@ -315,3 +315,20 @@ body.theme-school .school-heading {
 .dark body.theme-school .school-heading {
   color: #F1F5F9;
 }
+
+/* ============================================================
+   UNIVERSITY SUITE THEME — Emerald Green & Pure White
+   ============================================================ */
+body.theme-university {
+  --color-border-subtle: hsl(158 68% 38% / 0.15);
+  --color-border-default: hsl(158 68% 38% / 0.25);
+  --color-border-strong: hsl(158 68% 38% / 0.4);
+  --border: 158 68% 38%;
+}
+
+.dark body.theme-university {
+  --color-border-subtle: hsl(158 68% 38% / 0.25);
+  --color-border-default: hsl(158 68% 38% / 0.4);
+  --color-border-strong: hsl(158 68% 38% / 0.6);
+  --border: 158 68% 38%;
+}
