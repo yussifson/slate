@@ -188,6 +188,50 @@ export const INDUSTRIES = {
     ],
   },
 
+  university: {
+    name: 'University',
+    icon: '🎓',
+    terms: {
+      client: 'Student', clients: 'Students',
+      case: 'Course', cases: 'Courses',
+      staff: 'Lecturer', staffPlural: 'Lecturers',
+      venue: 'Campus', intake: 'Admission Form',
+      hearing: 'Session', hearings: 'Sessions',
+    },
+    roles: [
+      { value: 'company_admin', label: 'Chancellor / Dean' },
+      { value: 'lecturer', label: 'Lecturer' },
+      { value: 'student', label: 'Student' },
+    ],
+    nav: [
+      { label: 'Dashboard', path: '/u/', icon: 'LayoutDashboard' },
+      
+      { section: 'Executive Pages', label: 'Enrollment', path: '/u/enrollment', icon: 'Users' },
+      { label: 'Revenue', path: '/u/revenue', icon: 'TrendingUp' },
+      { label: 'Faculties', path: '/u/faculties', icon: 'Building' },
+      { label: 'Research Activity', path: '/u/research-activity', icon: 'FlaskConical' },
+      { label: 'Graduation Stats', path: '/u/graduation-stats', icon: 'GraduationCap' },
+
+      { section: 'Academic Structure', label: 'Structure', path: '/u/academic-structure', icon: 'Network' },
+      { label: 'Course Catalog', path: '/u/courses', icon: 'BookOpen' },
+      { label: 'Registration Portal', path: '/u/registration', icon: 'ClipboardCheck' },
+
+      { section: 'Student Info', label: 'Students Directory', path: '/u/students', icon: 'UserSquare2' },
+      
+      { section: 'Admissions', label: 'Portal', path: '/u/admissions', icon: 'PlusSquare' },
+
+      { section: 'Learning & Exams', label: 'LMS Workspaces', path: '/u/lms', icon: 'FolderOpen' },
+      { label: 'Exams & Grading', path: '/u/exams', icon: 'Award' },
+
+      { section: 'Campus Life', label: 'Hostels', path: '/u/hostel', icon: 'BedDouble' },
+      { label: 'Library Catalog', path: '/u/library', icon: 'Library' },
+      { label: 'Career & Alumni', path: '/u/career-alumni', icon: 'Briefcase' },
+      { label: 'Finance Operations', path: '/u/finance', icon: 'Banknote' },
+
+      { section: 'System', label: 'Settings', path: '/settings', icon: 'Settings' },
+    ],
+  },
+
   online: {
     name: 'Online Learning',
     icon: '💻',
@@ -216,7 +260,7 @@ export const INDUSTRIES = {
     name: 'Vocational / Technical',
     icon: '🔧',
     terms: {
-      client: 'Apprentice', clients: 'Apprentices',
+      client: 'Trainee', clients: 'Trainees',
       case: 'Program', cases: 'Programs',
       staff: 'Instructor', staffPlural: 'Instructors',
       venue: 'Workshop', intake: 'Enrollment',
@@ -225,14 +269,45 @@ export const INDUSTRIES = {
     roles: [
       { value: 'company_admin', label: 'Director' },
       { value: 'instructor', label: 'Instructor' },
-      { value: 'apprentice', label: 'Apprentice' },
+      { value: 'apprentice', label: 'Trainee' },
     ],
     nav: [
       { label: 'Dashboard', path: '/v/', icon: 'LayoutDashboard' },
-      { label: 'Apprentices', path: '/v/apprentices', icon: 'Users' },
-      { label: 'Programs', path: '/v/programs', icon: 'BookOpen' },
+      
+      { section: 'Programs', label: 'Trades', path: '/v/trades', icon: 'BookOpen' },
+      { label: 'Courses', path: '/v/courses', icon: 'FileText' },
       { label: 'Workshops', path: '/v/workshops', icon: 'Building2' },
-      { label: 'Settings', path: '/settings', icon: 'Settings' },
+      { label: 'Practical Modules', path: '/v/practical-modules', icon: 'Layers' },
+      
+      { section: 'Trainee Management', label: 'Profiles', path: '/v/trainee-profiles', icon: 'Users' },
+      { label: 'Progress', path: '/v/training-progress', icon: 'TrendingUp' },
+      
+      { section: 'Assessments', label: 'Workshop Ass.', path: '/v/workshop-assessments', icon: 'CheckSquare' },
+      { label: 'Practical Exams', path: '/v/practical-exams', icon: 'PenTool' },
+      { label: 'Skill Demos', path: '/v/skill-demonstrations', icon: 'Sparkles' },
+      { label: 'Competency', path: '/v/competency-tracking', icon: 'Target' },
+      
+      { section: 'Equipment', label: 'Inventory', path: '/v/equipment-inventory', icon: 'Package' },
+      { label: 'Reservations', path: '/v/equipment-reservations', icon: 'Calendar' },
+      { label: 'Maintenance', path: '/v/maintenance', icon: 'Wrench' },
+      
+      { section: 'Attachments', label: 'Internships', path: '/v/internship-tracking', icon: 'Briefcase' },
+      { label: 'Ind. Attachments', path: '/v/industrial-attachments', icon: 'Building2' },
+      { label: 'Evaluations', path: '/v/employer-evaluations', icon: 'Star' },
+      
+      { section: 'Certification', label: 'Certificates', path: '/v/certificates', icon: 'Award' },
+      { label: 'Skill Badges', path: '/v/skill-badges', icon: 'ShieldCheck' },
+      { label: 'Qualifications', path: '/v/qualification-tracking', icon: 'GraduationCap' },
+      
+      { section: 'Placements', label: 'Job Opportunities', path: '/v/job-opportunities', icon: 'Search' },
+      { label: 'Employers', path: '/v/employers', icon: 'Users2' },
+      { label: 'Placement Reports', path: '/v/placement-reports', icon: 'FileText' },
+      
+      { section: 'Analytics', label: 'Certification Rates', path: '/v/certification-rates', icon: 'PieChart' },
+      { label: 'Employment Rates', path: '/v/employment-rates', icon: 'TrendingUp' },
+      { label: 'Course Performance', path: '/v/course-performance', icon: 'BarChart2' },
+      
+      { section: 'System', label: 'Settings', path: '/settings', icon: 'Settings' },
     ],
   },
 

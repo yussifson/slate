@@ -181,12 +181,45 @@ import UniFaculties from './pages/university/UniFaculties';
 import UniCourses from './pages/university/UniCourses';
 import UniAdmissions from './pages/university/UniAdmissions';
 import UniFinance from './pages/university/UniFinance';
+import UniEnrollment from './pages/university/UniEnrollment';
+import UniRevenue from './pages/university/UniRevenue';
+import UniResearchActivity from './pages/university/UniResearchActivity';
+import UniGraduationStats from './pages/university/UniGraduationStats';
+import UniAcademicStructure from './pages/university/UniAcademicStructure';
+import UniRegistration from './pages/university/UniRegistration';
+import UniLMS from './pages/university/UniLMS';
+import UniExams from './pages/university/UniExams';
+import UniHostel from './pages/university/UniHostel';
+import UniLibrary from './pages/university/UniLibrary';
+import UniCareerAlumni from './pages/university/UniCareerAlumni';
 
 // Vocational Pages
-import VocDashboard from './pages/vocational/VocDashboard';
-import VocApprentices from './pages/vocational/VocApprentices';
-import VocPrograms from './pages/vocational/VocPrograms';
-import VocWorkshops from './pages/vocational/VocWorkshops';
+import VDashboard from './pages/vocational/VDashboard';
+import VTrades from './pages/vocational/VTrades';
+import VCourses from './pages/vocational/VCourses';
+import VWorkshops from './pages/vocational/VWorkshops';
+import VPracticalModules from './pages/vocational/VPracticalModules';
+import VTraineeProfiles from './pages/vocational/VTraineeProfiles';
+import VTrainingProgress from './pages/vocational/VTrainingProgress';
+import VWorkshopAssessments from './pages/vocational/VWorkshopAssessments';
+import VPracticalExams from './pages/vocational/VPracticalExams';
+import VSkillDemonstrations from './pages/vocational/VSkillDemonstrations';
+import VCompetencyTracking from './pages/vocational/VCompetencyTracking';
+import VEquipmentInventory from './pages/vocational/VEquipmentInventory';
+import VEquipmentReservations from './pages/vocational/VEquipmentReservations';
+import VMaintenance from './pages/vocational/VMaintenance';
+import VInternshipTracking from './pages/vocational/VInternshipTracking';
+import VIndustrialAttachments from './pages/vocational/VIndustrialAttachments';
+import VEmployerEvaluations from './pages/vocational/VEmployerEvaluations';
+import VCertificates from './pages/vocational/VCertificates';
+import VSkillBadges from './pages/vocational/VSkillBadges';
+import VQualificationTracking from './pages/vocational/VQualificationTracking';
+import VJobOpportunities from './pages/vocational/VJobOpportunities';
+import VEmployers from './pages/vocational/VEmployers';
+import VPlacementReports from './pages/vocational/VPlacementReports';
+import VCertificationRates from './pages/vocational/VCertificationRates';
+import VEmploymentRates from './pages/vocational/VEmploymentRates';
+import VCoursePerformance from './pages/vocational/VCoursePerformance';
 
 // Online Learning Pages
 import OnlineDashboard from './pages/online/OnlineDashboard';
@@ -345,12 +378,45 @@ function PlatformRoutes() {
       <Route path="/u/courses" element={<UniCourses />} />
       <Route path="/u/admissions" element={<UniAdmissions />} />
       <Route path="/u/finance" element={<UniFinance />} />
+      <Route path="/u/enrollment" element={<UniEnrollment />} />
+      <Route path="/u/revenue" element={<UniRevenue />} />
+      <Route path="/u/research-activity" element={<UniResearchActivity />} />
+      <Route path="/u/graduation-stats" element={<UniGraduationStats />} />
+      <Route path="/u/academic-structure" element={<UniAcademicStructure />} />
+      <Route path="/u/registration" element={<UniRegistration />} />
+      <Route path="/u/lms" element={<UniLMS />} />
+      <Route path="/u/exams" element={<UniExams />} />
+      <Route path="/u/hostel" element={<UniHostel />} />
+      <Route path="/u/library" element={<UniLibrary />} />
+      <Route path="/u/career-alumni" element={<UniCareerAlumni />} />
 
       {/* Vocational Suite Routes */}
-      <Route path="/v/" element={<VocDashboard />} />
-      <Route path="/v/apprentices" element={<VocApprentices />} />
-      <Route path="/v/programs" element={<VocPrograms />} />
-      <Route path="/v/workshops" element={<VocWorkshops />} />
+      <Route path="/v/" element={<VDashboard />} />
+      <Route path="/v/trades" element={<VTrades />} />
+      <Route path="/v/courses" element={<VCourses />} />
+      <Route path="/v/workshops" element={<VWorkshops />} />
+      <Route path="/v/practical-modules" element={<VPracticalModules />} />
+      <Route path="/v/trainee-profiles" element={<VTraineeProfiles />} />
+      <Route path="/v/training-progress" element={<VTrainingProgress />} />
+      <Route path="/v/workshop-assessments" element={<VWorkshopAssessments />} />
+      <Route path="/v/practical-exams" element={<VPracticalExams />} />
+      <Route path="/v/skill-demonstrations" element={<VSkillDemonstrations />} />
+      <Route path="/v/competency-tracking" element={<VCompetencyTracking />} />
+      <Route path="/v/equipment-inventory" element={<VEquipmentInventory />} />
+      <Route path="/v/equipment-reservations" element={<VEquipmentReservations />} />
+      <Route path="/v/maintenance" element={<VMaintenance />} />
+      <Route path="/v/internship-tracking" element={<VInternshipTracking />} />
+      <Route path="/v/industrial-attachments" element={<VIndustrialAttachments />} />
+      <Route path="/v/employer-evaluations" element={<VEmployerEvaluations />} />
+      <Route path="/v/certificates" element={<VCertificates />} />
+      <Route path="/v/skill-badges" element={<VSkillBadges />} />
+      <Route path="/v/qualification-tracking" element={<VQualificationTracking />} />
+      <Route path="/v/job-opportunities" element={<VJobOpportunities />} />
+      <Route path="/v/employers" element={<VEmployers />} />
+      <Route path="/v/placement-reports" element={<VPlacementReports />} />
+      <Route path="/v/certification-rates" element={<VCertificationRates />} />
+      <Route path="/v/employment-rates" element={<VEmploymentRates />} />
+      <Route path="/v/course-performance" element={<VCoursePerformance />} />
 
       {/* Online Learning Suite Routes */}
       <Route path="/o/" element={<OnlineDashboard />} />

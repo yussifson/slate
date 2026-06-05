@@ -66,8 +66,8 @@ export default function AppLayout() {
     if (activeIndustry) {
       const industry = activeIndustry.toLowerCase();
       let primaryColor = '221 83% 53%'; // Default Blue (Law/Core)
-      if (industry === 'school') {
-        primaryColor = '224 64% 33%'; // Deep Navy (#1E3A8A)
+      if (industry === 'school' || industry === 'highschool' || industry === 'university') {
+        primaryColor = '213 89% 50%'; // Google Blue (#1A73E8)
         document.body.classList.add('theme-school');
       } else {
         document.body.classList.remove('theme-school');
@@ -203,7 +203,7 @@ export default function AppLayout() {
               <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-[0.06] dark:opacity-[0.1]" />
             </div>
           );
-        } else if (industry === 'school' || industry === 'highschool') {
+        } else if (industry === 'school' || industry === 'highschool' || industry === 'university') {
           return (
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-all duration-1000 bg-[#FAFAFA] dark:bg-[#0A0F1C]">
               {/* Premium Silicon Valley Gradient Mesh */}

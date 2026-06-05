@@ -831,4 +831,9 @@ export const SCHEMA_COLUMNS = {
   "hr_employees": ["id","created_date","updated_date","created_by","company_id","type","name","email","phone","address","city","country","id_number","status","notes","total_cases","total_billed"],
   "hr_projects": ["id","created_date","updated_date","created_by","company_id","case_number","title","description","case_type","status","priority","client_id","client_name","assigned_staff","assigned_staff_name","start_date","end_date","notes","tags"],
   "hr_interviews": ["id","created_date","updated_date","created_by","company_id","case_id","case_title","title","date","time","venue_name","staff_email","staff_name","status","notes","outcome"],
+  "online_courses": ["id","created_date","updated_date","created_by","company_id","title","description","category","instructor_id","instructor_name","price","currency","level","duration_hours","thumbnail_url","status","rating","total_reviews","total_students","featured","tags"],
+  "online_lessons": ["id","created_date","updated_date","created_by","company_id","course_id","title","description","video_url","content","order_index","is_preview","duration_minutes","resources"],
+  "online_enrollments": ["id","created_date","updated_date","created_by","company_id","course_id","student_id","student_name","student_email","enrollment_date","progress_percent","status","last_accessed","certificate_issued","certificate_url"],
+  "online_assessments": ["id","created_date","updated_date","created_by","company_id","course_id","lesson_id","title","type","questions","passing_score","time_limit_minutes"],
+  "online_certificates": ["id","created_date","updated_date","created_by","company_id","enrollment_id","student_id","student_name","course_id","course_title","issue_date","credential_id","pdf_url","status"]
 };

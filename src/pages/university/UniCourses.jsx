@@ -59,11 +59,11 @@ export default function UniCourses() {
             placeholder="Search by course name or code..." 
             value={search} 
             onChange={e => setSearch(e.target.value)} 
-            className="pl-9 border-slate-200 focus-visible:ring-indigo-500" 
+            className="pl-9 border-slate-200 focus-visible:ring-primary" 
           />
         </div>
         <div className="flex items-center gap-3 w-full md:w-auto">
-          <Button className="gap-2 bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-200">
+          <Button className="gap-2 bg-primary hover:bg-primary/90 text-white shadow-md shadow-primary/10">
             <Plus className="w-4 h-4" /> Create Course
           </Button>
         </div>
@@ -81,14 +81,14 @@ export default function UniCourses() {
                <CardContent className="p-0 flex flex-col h-full">
                  <div className="p-5 border-b border-slate-100 flex-1">
                    <div className="flex justify-between items-start mb-3">
-                     <Badge className="bg-indigo-50 text-indigo-700 border-indigo-200 font-mono">
+                     <Badge className="bg-primary/10 text-primary border-primary/20 font-mono">
                        {course.code}
                      </Badge>
                      <Badge variant="outline" className={course.status === 'Active' ? 'text-emerald-600 border-emerald-200 bg-emerald-50' : 'text-amber-600 border-amber-200 bg-amber-50'}>
                        {course.status}
                      </Badge>
                    </div>
-                   <h3 className="text-lg font-bold text-slate-900 leading-tight mb-2 group-hover:text-indigo-600 transition-colors line-clamp-2">
+                   <h3 className="text-lg font-bold text-slate-900 leading-tight mb-2 group-hover:text-primary transition-colors line-clamp-2">
                      {course.name}
                    </h3>
                    <p className="text-sm text-slate-500 mb-4">{course.teacher}</p>
