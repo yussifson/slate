@@ -324,6 +324,38 @@ body.theme-university {
   --color-border-default: hsl(158 68% 38% / 0.25);
   --color-border-strong: hsl(158 68% 38% / 0.4);
   --border: 158 68% 38%;
+  
+  --color-text-primary: hsl(158 68% 18%);
+  --color-text-secondary: hsl(158 68% 28%);
+  --color-text-tertiary: hsl(158 68% 38%);
+  
+  --color-surface-0: #FFFFFF;
+  --color-surface-1: #FFFFFF;
+  --color-surface-2: #F6FFF9;
+  --color-surface-3: #E6F8F0;
+  --color-surface-4: #D1F0E1;
+
+  --color-module-orbit: hsl(158 68% 38%);
+  --color-module-academic: hsl(158 68% 38%);
+  --color-module-admissions: hsl(158 68% 38%);
+  --color-module-courses: hsl(158 68% 38%);
+  --color-module-students: hsl(158 68% 38%);
+  --color-module-exams: hsl(158 68% 38%);
+  --color-module-faculty: hsl(158 68% 38%);
+  --color-module-research: hsl(158 68% 38%);
+  --color-module-library: hsl(158 68% 38%);
+  --color-module-hostel: hsl(158 68% 38%);
+  --color-module-finance: hsl(158 68% 38%);
+  --color-module-career: hsl(158 68% 38%);
+  --color-module-lms: hsl(158 68% 38%);
+  --color-accent-primary: hsl(158 68% 38%);
+  --color-accent-subtle: hsl(158 68% 38% / 0.1);
+
+  --chart-1: 158 68% 38%;
+  --chart-2: 158 68% 48%;
+  --chart-3: 158 68% 58%;
+  --chart-4: 158 68% 68%;
+  --chart-5: 158 68% 78%;
 }
 
 .dark body.theme-university {
@@ -331,4 +363,36 @@ body.theme-university {
   --color-border-default: hsl(158 68% 38% / 0.4);
   --color-border-strong: hsl(158 68% 38% / 0.6);
   --border: 158 68% 38%;
+
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: hsl(158 68% 85%);
+  --color-text-tertiary: hsl(158 68% 70%);
+
+  --color-surface-0: transparent;
+  --color-surface-1: rgba(255, 255, 255, 0.03);
+  --color-surface-2: rgba(255, 255, 255, 0.05);
+  --color-surface-3: rgba(255, 255, 255, 0.08);
+  --color-surface-4: rgba(255, 255, 255, 0.12);
+
+  --color-module-orbit: hsl(158 68% 38%);
+  --color-module-academic: hsl(158 68% 38%);
+  --color-module-admissions: hsl(158 68% 38%);
+  --color-module-courses: hsl(158 68% 38%);
+  --color-module-students: hsl(158 68% 38%);
+  --color-module-exams: hsl(158 68% 38%);
+  --color-module-faculty: hsl(158 68% 38%);
+  --color-module-research: hsl(158 68% 38%);
+  --color-module-library: hsl(158 68% 38%);
+  --color-module-hostel: hsl(158 68% 38%);
+  --color-module-finance: hsl(158 68% 38%);
+  --color-module-career: hsl(158 68% 38%);
+  --color-module-lms: hsl(158 68% 38%);
+  --color-accent-primary: hsl(158 68% 38%);
+  --color-accent-subtle: hsl(158 68% 38% / 0.2);
+
+  --chart-1: 158 68% 38%;
+  --chart-2: 158 68% 48%;
+  --chart-3: 158 68% 58%;
+  --chart-4: 158 68% 68%;
+  --chart-5: 158 68% 78%;
 }

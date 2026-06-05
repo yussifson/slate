@@ -314,7 +314,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
           </div>
         )}
         {navItems.map((item, idx) => {
-          const isActive = location.pathname === item.path || (item.path !== "/" && item.path !== "/s/" && location.pathname.startsWith(item.path)) || (item.path === "/s/" && location.pathname === "/s/");
+          const isRootPath = ["/", "/s/", "/u/", "/v/", "/o/"].includes(item.path);
+          const isActive = location.pathname === item.path || (!isRootPath && location.pathname.startsWith(item.path));
           const IconComp = typeof item.icon === 'string' ? ICON_MAP[item.icon] || LayoutDashboard : item.icon;
           const showSection = item.section && !collapsed;
           return (
