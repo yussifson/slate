@@ -226,6 +226,26 @@ import OnlineDashboard from './pages/online/OnlineDashboard';
 import OnlineLearners from './pages/online/OnlineLearners';
 import OnlineCourses from './pages/online/OnlineCourses';
 import OnlineSales from './pages/online/OnlineSales';
+import OnlineMarketplace from './pages/online/OnlineMarketplace';
+import CourseDetails from './pages/online/CourseDetails';
+import InstructorProfile from './pages/online/InstructorProfile';
+import OnlineBuilder from './pages/online/OnlineBuilder';
+import LessonBuilder from './pages/online/LessonBuilder';
+import AssessmentBuilder from './pages/online/AssessmentBuilder';
+import MediaManager from './pages/online/MediaManager';
+import LearningPlayer from './pages/online/LearningPlayer';
+import StudentDashboard from './pages/online/StudentDashboard';
+import LearnerProfile from './pages/online/LearnerProfile';
+import NotesCenter from './pages/online/NotesCenter';
+import OnlineAssessments from './pages/online/OnlineAssessments';
+import OnlineCertificates from './pages/online/OnlineCertificates';
+import OnlineLive from './pages/online/OnlineLive';
+import Checkout from './pages/online/Checkout';
+import OnlineSubscriptions from './pages/online/OnlineSubscriptions';
+import OnlineAffiliates from './pages/online/OnlineAffiliates';
+import CorporateDashboard from './pages/online/CorporateDashboard';
+import OnlineCommunity from './pages/online/OnlineCommunity';
+import OrbitAIAssistant from './pages/online/OrbitAIAssistant';
 
 // High School Pages
 import SHSClasses from './pages/highschool/SHSClasses';
@@ -350,9 +370,13 @@ function PlatformRoutes() {
 
       {/* School Routes */}
       <Route path="/students" element={<SchoolStudents />} />
-      <Route path="/students/:id" element={<StudentProfile />} />
-      <Route path="/parents" element={<SchoolParents />} />
-      <Route path="/teachers" element={<SchoolTeachers />} />
+      <Route path="/o/learner/:id" element={<LearnerProfile />} />
+      <Route path="/o/notes" element={<NotesCenter />} />
+      <Route path="/o/assessments" element={<OnlineAssessments />} />
+      <Route path="/o/certificates" element={<OnlineCertificates />} />
+      <Route path="/o/live" element={<OnlineLive />} />
+
+      <Route path="/canteen-pos" element={<SchoolCanteenPOS />} />
       <Route path="/classes" element={<SchoolClasses />} />
       <Route path="/timetable" element={<SchoolTimetable />} />
       <Route path="/assignments" element={<SchoolAssignments />} />
@@ -424,7 +448,24 @@ function PlatformRoutes() {
       <Route path="/o/courses" element={<OnlineCourses />} />
       <Route path="/o/sales" element={<OnlineSales />} />
 
-      } />} />} />} />} />} />} />} />} />
+      <Route path="/o/builder" element={<OnlineBuilder />} />
+      <Route path="/o/builder/course/:courseId" element={<OnlineBuilder />} />
+      <Route path="/o/builder/lesson/:courseId/:moduleId?" element={<LessonBuilder />} />
+      <Route path="/o/builder/assessment/:courseId" element={<AssessmentBuilder />} />
+      <Route path="/o/media" element={<MediaManager />} />
+      <Route path="/o/learn/:courseId" element={<LearningPlayer />} />
+      <Route path="/o/student-dashboard" element={<StudentDashboard />} />
+      <Route path="/o/learner/:id" element={<LearnerProfile />} />
+      <Route path="/o/notes" element={<NotesCenter />} />
+      <Route path="/o/assessments" element={<OnlineAssessments />} />
+      <Route path="/o/certificates" element={<OnlineCertificates />} />
+      <Route path="/o/live" element={<OnlineLive />} />
+      <Route path="/o/checkout/:courseId" element={<Checkout />} />
+      <Route path="/o/subscriptions" element={<OnlineSubscriptions />} />
+      <Route path="/o/affiliates" element={<OnlineAffiliates />} />
+      <Route path="/o/corporate" element={<CorporateDashboard />} />
+      <Route path="/o/community" element={<OnlineCommunity />} />
+      <Route path="/o/ai" element={<OrbitAIAssistant />} />
 
       <Route path="/canteen-pos" element={<SchoolCanteenPOS />} />
       <Route path="/complaints" element={<SchoolComplaints />} />

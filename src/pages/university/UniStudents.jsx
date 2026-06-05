@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
-import { useTranslation } from "react-i18next";
-import { Users, Search, Plus, Filter, GraduationCap, Mail, Calendar, Sparkles, BookOpen, AlertCircle, FileText, CheckCircle2 } from 'lucide-react';
-import { ModuleBanner } from '@/components/school/SchoolViewKit';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { useCompanyId } from "@/hooks/useCompanyId";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Users, Search, Filter, GraduationCap, Calendar, FileText, CheckCircle2, AlertCircle, Plus, ChevronRight } from 'lucide-react';
+import OrbitTable from '@/components/university/OrbitTable';
+import OrbitStatusBadge from '@/components/university/OrbitStatusBadge';
+import OrbitEmptyState from '@/components/university/OrbitEmptyState';
+
+function cn(...classes) {
+  return classes.filter(Boolean).join(' ');
+}
 
 export default function UniStudents() {
-  const { t } = useTranslation();
   const companyId = useCompanyId();
   const queryClient = useQueryClient();
-  const [search, setSearch] = useState('');
+  const [activeTab, setActiveTab] = useState('directory');
   const [selectedStudent, setSelectedStudent] = useState(null);
-  const [activeTab, setActiveTab] = useState('directory'); // directory, add, standing
+  
   const [formData, setFormData] = useState({ name: '', email: '', major: 'Computer Science', year: 'Freshman', gpa: '3.80' });
 
   const { data: records = [], refetch } = useQuery({ 
@@ -50,11 +50,6 @@ export default function UniStudents() {
     };
   });
 
-  const filtered = students.filter(s => 
-    s.name?.toLowerCase().includes(search.toLowerCase()) || 
-    s.studentId?.toLowerCase().includes(search.toLowerCase())
-  );
-
   const handleCreateStudent = (e) => {
     e.preventDefault();
     if (!formData.name) return;
@@ -73,209 +68,266 @@ export default function UniStudents() {
     });
   };
 
-  return (
-    <div className="space-y-6">
-      <ModuleBanner
-        title={t("uni_students", "Student Information System")}
-        subtitle="Manage student lifecycle, academic directory, records, and GPA standings."
-        metrics={[
-          { title: "Enrolled Students", value: students.length, icon: Users }
-        ]}
-      />
-
-      <div className="flex border-b border-slate-200 dark:border-slate-800 gap-4">
-        <button
-          onClick={() => { setActiveTab('directory'); setSelectedStudent(null); }}
-          className={`pb-3 text-sm font-bold border-b-2 transition-all ${activeTab === 'directory' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
-        >
-          Student Directory
-        </button>
-        <button
-          onClick={() => setActiveTab('standing')}
-          className={`pb-3 text-sm font-bold border-b-2 transition-all ${activeTab === 'standing' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
-        >
-          Academic Standing & Honors
-        </button>
-        <button
-          onClick={() => setActiveTab('add')}
-          className={`pb-3 text-sm font-bold border-b-2 transition-all ${activeTab === 'add' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
-        >
-          Add New Student
-        </button>
-      </div>
-
-      {activeTab === 'directory' && !selectedStudent && (
-        <div className="space-y-6">
-          <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="relative flex-1 w-full max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <Input 
-                placeholder="Search students..." 
-                value={search} 
-                onChange={e => setSearch(e.target.value)} 
-                className="pl-9 border-slate-200 dark:border-slate-800 focus-visible:ring-primary" 
-              />
-            </div>
-            <Button size="sm" variant="outline" className="gap-2"><Filter className="w-4 h-4" /> Filter Majors</Button>
+  const directoryColumns = [
+    { 
+      id: 'student', 
+      header: 'Student', 
+      render: (_, row) => (
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-[var(--color-surface-4)] text-[var(--color-text-secondary)] flex items-center justify-center text-xs font-semibold">
+            {row.name?.substring(0, 2).toUpperCase() || 'UN'}
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filtered.length === 0 ? (
-              <div className="col-span-full text-center py-16 text-slate-400 bg-white dark:bg-slate-900 rounded-xl border border-slate-200">
-                <Users className="w-12 h-12 mx-auto mb-4 opacity-20" />
-                <p className="text-lg font-bold">No students registered yet</p>
-                <p className="text-sm">Use the "Add New Student" form to start enrolling undergraduates.</p>
-              </div>
-            ) : (
-              filtered.map(student => (
-                <Card key={student.id} onClick={() => setSelectedStudent(student)} className="border-slate-100 hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer school-card relative overflow-hidden group">
-                  <div className="p-6">
-                    <div className="flex justify-between items-start mb-4">
-                      <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center font-bold text-lg">
-                        {student.name?.substring(0, 2).toUpperCase()}
-                      </div>
-                      <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200">{student.status}</Badge>
-                    </div>
-                    <h3 className="text-md font-extrabold text-slate-900 group-hover:text-primary transition-colors">{student.name}</h3>
-                    <p className="text-xs text-muted-foreground font-mono mt-0.5">{student.studentId}</p>
-                    <div className="mt-4 space-y-2 text-xs font-semibold text-slate-600">
-                      <div className="flex items-center gap-1.5"><GraduationCap className="w-4 h-4 text-primary" /> {student.major}</div>
-                      <div className="flex items-center gap-1.5"><Calendar className="w-4 h-4 text-primary" /> {student.year}</div>
-                    </div>
-                  </div>
-                  <div className="bg-primary/5 p-3 px-6 border-t flex justify-between items-center text-xs">
-                    <span className="font-bold text-slate-500">CGPA</span>
-                    <span className="font-black text-slate-900">{student.gpa}</span>
-                  </div>
-                </Card>
-              ))
-            )}
+          <div>
+            <div className="font-medium text-[var(--color-text-primary)]">{row.name}</div>
+            <div className="text-[11px] text-[var(--color-text-tertiary)]">{row.studentId}</div>
           </div>
         </div>
-      )}
+      ) 
+    },
+    { 
+      id: 'program', 
+      header: 'Program', 
+      render: (_, row) => (
+        <div className="flex items-center gap-1.5 text-[var(--color-text-secondary)] text-[var(--text-sm)]">
+          <GraduationCap className="w-4 h-4" /> {row.major}
+        </div>
+      )
+    },
+    { 
+      id: 'year', 
+      header: 'Year', 
+      render: (_, row) => (
+        <div className="flex items-center gap-1.5 text-[var(--color-text-secondary)] text-[var(--text-sm)]">
+          <Calendar className="w-4 h-4" /> {row.year}
+        </div>
+      )
+    },
+    { 
+      id: 'gpa', 
+      header: 'CGPA', 
+      render: (_, row) => <span className="font-mono font-bold text-[var(--color-text-primary)]">{row.gpa}</span>
+    },
+    { 
+      id: 'status', 
+      header: 'Status', 
+      render: (_, row) => <OrbitStatusBadge status={row.status} /> 
+    }
+  ];
 
-      {activeTab === 'directory' && selectedStudent && (
-        <Card className="border-slate-100 shadow-lg">
-          <CardHeader className="bg-slate-50/50 dark:bg-slate-800/20 pb-6">
-            <div className="flex items-center gap-4 justify-between">
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-3xl bg-primary/10 text-primary flex items-center justify-center font-black text-2xl shadow-inner">
+  return (
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      
+      {/* Module Header */}
+      <div className="flex items-end justify-between border-b border-[var(--color-border-subtle)] pb-4">
+        <div>
+          <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Student Population</h1>
+          <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage enrollments, academic standing, and student records.</p>
+        </div>
+        
+        <div className="flex items-center bg-[var(--color-surface-2)] p-1 rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
+          {[
+            { id: 'directory', label: 'Directory' },
+            { id: 'standing', label: 'Academic Standing' },
+            { id: 'add', label: 'Enroll New' }
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => { setActiveTab(tab.id); setSelectedStudent(null); }}
+              className={cn(
+                "px-4 py-1.5 text-[var(--text-sm)] font-medium rounded-[var(--radius-md)] transition-all",
+                activeTab === tab.id 
+                  ? "bg-[var(--color-surface-0)] text-[var(--color-text-primary)] shadow-sm border border-[var(--color-border-subtle)]" 
+                  : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] border border-transparent"
+              )}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="min-h-[500px]">
+        {activeTab === 'directory' && !selectedStudent && (
+          <div className="bg-[var(--color-surface-0)] rounded-[var(--radius-xl)] shadow-sm">
+            {students.length > 0 ? (
+              <OrbitTable 
+                columns={directoryColumns}
+                data={students}
+                showToolbar={true}
+                onRowClick={(row) => setSelectedStudent(row)}
+              />
+            ) : (
+              <OrbitEmptyState 
+                title="No students found"
+                description="The directory is currently empty. Begin by enrolling a new student into a program."
+                actionLabel="Enroll Student"
+                onAction={() => setActiveTab('add')}
+                icon={Users}
+                moduleColor="var(--color-module-students)"
+              />
+            )}
+          </div>
+        )}
+
+        {activeTab === 'directory' && selectedStudent && (
+          <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] overflow-hidden shadow-sm">
+            <div className="bg-[var(--color-surface-2)] p-6 md:p-8 flex items-center justify-between border-b border-[var(--color-border-subtle)]">
+              <div className="flex items-center gap-6">
+                <div className="w-20 h-20 rounded-full bg-[var(--color-module-students)] text-white flex items-center justify-center font-display text-[var(--text-3xl)] shadow-glow-sm shadow-[var(--color-module-students)]">
                   {selectedStudent.name?.substring(0, 2).toUpperCase()}
                 </div>
                 <div>
-                  <CardTitle className="text-2xl font-black text-slate-800">{selectedStudent.name}</CardTitle>
-                  <CardDescription className="font-mono mt-0.5">{selectedStudent.studentId} · {selectedStudent.major}</CardDescription>
+                  <h2 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">{selectedStudent.name}</h2>
+                  <div className="flex items-center gap-3 mt-1.5 text-[var(--color-text-secondary)] font-mono text-[var(--text-sm)]">
+                    <span className="flex items-center gap-1.5"><FileText className="w-4 h-4" /> {selectedStudent.studentId}</span>
+                    <span className="w-1 h-1 rounded-full bg-[var(--color-border-strong)]" />
+                    <span className="flex items-center gap-1.5"><GraduationCap className="w-4 h-4" /> {selectedStudent.major}</span>
+                  </div>
                 </div>
               </div>
-              <Button size="sm" variant="outline" onClick={() => setSelectedStudent(null)}>Back to Directory</Button>
+              <button 
+                onClick={() => setSelectedStudent(null)}
+                className="px-4 py-2 bg-[var(--color-surface-0)] border border-[var(--color-border-default)] hover:bg-[var(--color-surface-3)] text-[var(--color-text-primary)] text-[var(--text-sm)] font-medium rounded-[var(--radius-md)] transition-colors"
+              >
+                Back to Directory
+              </button>
             </div>
-          </CardHeader>
-          <CardContent className="p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-6">
-              <h4 className="font-bold text-slate-800 flex items-center gap-1.5"><FileText className="w-5 h-5 text-primary" /> Academic History & Transcript Log</h4>
-              <div className="border-l-2 border-slate-200 pl-4 space-y-4">
-                <div className="relative">
-                  <div className="absolute -left-[22px] top-1.5 w-3.5 h-3.5 rounded-full bg-primary ring-4 ring-white" />
-                  <p className="text-xs font-bold text-slate-800">Fall Semester 2025</p>
-                  <p className="text-xs text-slate-500 mt-1">CS-302: HCI (Grade: A) · CS-401: Distributed Systems (Grade: A-)</p>
+            
+            <div className="p-6 md:p-8 grid grid-cols-1 lg:grid-cols-3 gap-8 bg-[var(--color-surface-1)]">
+              <div className="lg:col-span-2 space-y-6">
+                <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] p-6">
+                  <h3 className="font-semibold text-[var(--color-text-primary)] mb-6 flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-[var(--color-module-students)]" /> Academic History & Transcript
+                  </h3>
+                  
+                  <div className="relative border-l border-[var(--color-border-strong)] ml-3 space-y-8 pb-4">
+                    <div className="relative pl-6">
+                      <div className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-[var(--color-module-students)] shadow-glow-sm shadow-[var(--color-module-students)]" />
+                      <h4 className="font-medium text-[var(--color-text-primary)]">Fall Semester 2025 <span className="ml-2 font-mono text-[var(--color-text-tertiary)] text-xs">Current</span></h4>
+                      <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">CS-302: HCI (Grade: A) · CS-401: Distributed Systems (Grade: A-)</p>
+                    </div>
+                    <div className="relative pl-6">
+                      <div className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-[var(--color-border-strong)]" />
+                      <h4 className="font-medium text-[var(--color-text-primary)]">Spring Semester 2025</h4>
+                      <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">MATH-202: Linear Algebra (Grade: B+) · ENG-102: Rhetoric (Grade: A)</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="relative">
-                  <div className="absolute -left-[22px] top-1.5 w-3.5 h-3.5 rounded-full bg-slate-300 ring-4 ring-white" />
-                  <p className="text-xs font-bold text-slate-800">Spring Semester 2025</p>
-                  <p className="text-xs text-slate-500 mt-1">MATH-202: Linear Algebra (Grade: B+) · ENG-102: Rhetoric (Grade: A)</p>
+              </div>
+              
+              <div className="space-y-6">
+                <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] p-6">
+                  <h3 className="font-semibold text-[var(--color-text-primary)] mb-4">Current Standing</h3>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center py-2 border-b border-[var(--color-border-subtle)]">
+                      <span className="text-[var(--color-text-secondary)] text-[var(--text-sm)]">Year</span>
+                      <span className="font-medium text-[var(--color-text-primary)]">{selectedStudent.year}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 border-b border-[var(--color-border-subtle)]">
+                      <span className="text-[var(--color-text-secondary)] text-[var(--text-sm)]">CGPA</span>
+                      <span className="font-mono font-bold text-[var(--color-text-primary)]">{selectedStudent.gpa}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 border-b border-[var(--color-border-subtle)]">
+                      <span className="text-[var(--color-text-secondary)] text-[var(--text-sm)]">Status</span>
+                      <OrbitStatusBadge status={selectedStudent.status} />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="space-y-4">
-              <h4 className="font-bold text-slate-800">Student Milestones</h4>
-              <div className="p-4 bg-slate-50 dark:bg-slate-800 border rounded-xl space-y-3">
-                <div className="flex justify-between items-center text-xs">
-                  <span>Current Year:</span>
-                  <span className="font-bold">{selectedStudent.year}</span>
-                </div>
-                <div className="flex justify-between items-center text-xs">
-                  <span>Email:</span>
-                  <span className="font-bold">{selectedStudent.email}</span>
-                </div>
-                <div className="flex justify-between items-center text-xs">
-                  <span>Academic Standing:</span>
-                  <span className="font-bold text-emerald-600">Good Standing</span>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+          </div>
+        )}
 
-      {activeTab === 'standing' && (
-        <Card className="border-slate-100 shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-lg font-bold flex items-center gap-1.5"><Sparkles className="w-5 h-5 text-amber-500" /> Dean's Honor Roll & Standing</CardTitle>
-            <CardDescription>Academic honors lists and probationary alerts.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="p-5 bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-100 rounded-2xl">
-                <h4 className="font-bold text-sm text-emerald-800 flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-emerald-600" /> President's list (CGPA &gt; 3.90)</h4>
-                <p className="text-xs text-emerald-700 mt-2">Students eligible for academic honors and scholarship endowments.</p>
+        {activeTab === 'standing' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-[var(--color-success-subtle)] border border-[var(--color-success)] rounded-[var(--radius-xl)] p-8">
+              <div className="flex items-center gap-3 mb-4">
+                <CheckCircle2 className="w-6 h-6 text-[var(--color-success)]" />
+                <h3 className="font-display text-[var(--text-xl)] text-[var(--color-success)] font-semibold tracking-tight">Dean's Honor Roll</h3>
               </div>
-              <div className="p-5 bg-rose-50/50 dark:bg-rose-950/20 border border-rose-100 rounded-2xl">
-                <h4 className="font-bold text-sm text-rose-800 flex items-center gap-1.5"><AlertCircle className="w-4 h-4 text-rose-600" /> Academic Probation (CGPA &lt; 2.00)</h4>
-                <p className="text-xs text-rose-700 mt-2">Active advisory sessions and enrollment credit locks.</p>
+              <p className="text-[var(--color-text-primary)] mb-6">Students with CGPA &gt; 3.80 are eligible for academic honors and scholarship endowments.</p>
+              <div className="space-y-2">
+                {students.filter(s => parseFloat(s.gpa) >= 3.8).map(s => (
+                  <div key={s.id} className="flex items-center justify-between p-3 bg-white/50 backdrop-blur rounded-[var(--radius-md)]">
+                    <span className="font-medium">{s.name}</span>
+                    <span className="font-mono font-bold text-[var(--color-success)]">{s.gpa}</span>
+                  </div>
+                ))}
               </div>
             </div>
-          </CardContent>
-        </Card>
-      )}
+            
+            <div className="bg-[var(--color-danger-subtle)] border border-[var(--color-danger)] rounded-[var(--radius-xl)] p-8">
+              <div className="flex items-center gap-3 mb-4">
+                <AlertCircle className="w-6 h-6 text-[var(--color-danger)]" />
+                <h3 className="font-display text-[var(--text-xl)] text-[var(--color-danger)] font-semibold tracking-tight">Academic Probation</h3>
+              </div>
+              <p className="text-[var(--color-text-primary)] mb-6">Students with CGPA &lt; 2.50 requiring advisory sessions and enrollment locks.</p>
+              <div className="space-y-2">
+                {students.filter(s => parseFloat(s.gpa) < 2.5).length === 0 ? (
+                  <div className="p-3 text-[var(--color-text-secondary)] text-sm italic">No students currently on probation.</div>
+                ) : (
+                  students.filter(s => parseFloat(s.gpa) < 2.5).map(s => (
+                    <div key={s.id} className="flex items-center justify-between p-3 bg-white/50 backdrop-blur rounded-[var(--radius-md)]">
+                      <span className="font-medium">{s.name}</span>
+                      <span className="font-mono font-bold text-[var(--color-danger)]">{s.gpa}</span>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
-      {activeTab === 'add' && (
-        <Card className="border-slate-100 shadow-sm max-w-xl">
-          <CardHeader>
-            <CardTitle>Enroll New Undergraduate</CardTitle>
-            <CardDescription>Register a fresh student profile with institutional metadata.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleCreateStudent} className="space-y-4">
-              <div>
-                <label className="text-xs font-bold text-slate-500 uppercase">Full Name</label>
-                <Input 
-                  value={formData.name} 
-                  onChange={e => setFormData({ ...formData, name: e.target.value })} 
-                  placeholder="e.g. Marie Curie" 
-                  className="mt-1" 
-                  required
-                />
-              </div>
-              <div>
-                <label className="text-xs font-bold text-slate-500 uppercase">Institutional Email</label>
-                <Input 
-                  type="email" 
-                  value={formData.email} 
-                  onChange={e => setFormData({ ...formData, email: e.target.value })} 
-                  placeholder="e.g. mcurie@university.edu" 
-                  className="mt-1" 
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs font-bold text-slate-500 uppercase">Intended Major</label>
+        {activeTab === 'add' && (
+          <div className="max-w-2xl mx-auto bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-8 shadow-sm">
+            <div className="mb-8">
+              <h2 className="font-display text-[var(--text-2xl)] font-semibold tracking-tight text-[var(--color-text-primary)]">Enroll New Undergraduate</h2>
+              <p className="text-[var(--color-text-secondary)] mt-2">Register a fresh student profile with institutional metadata into the system.</p>
+            </div>
+            
+            <form onSubmit={handleCreateStudent} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Full Name</label>
+                  <input 
+                    type="text"
+                    value={formData.name} 
+                    onChange={e => setFormData({ ...formData, name: e.target.value })} 
+                    placeholder="e.g. Marie Curie" 
+                    className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--color-module-students)] focus:ring-1 focus:ring-[var(--color-module-students)] font-body"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Institutional Email</label>
+                  <input 
+                    type="email"
+                    value={formData.email} 
+                    onChange={e => setFormData({ ...formData, email: e.target.value })} 
+                    placeholder="e.g. mcurie@university.edu" 
+                    className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--color-module-students)] focus:ring-1 focus:ring-[var(--color-module-students)] font-body"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Intended Major</label>
                   <select 
                     value={formData.major} 
                     onChange={e => setFormData({ ...formData, major: e.target.value })}
-                    className="w-full mt-1 border rounded-md p-2 bg-white text-sm"
+                    className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-module-students)] focus:ring-1 focus:ring-[var(--color-module-students)] font-body"
                   >
                     <option value="Computer Science">Computer Science</option>
                     <option value="Software Engineering">Software Engineering</option>
-                    <option value="Applied Physics">Applied Physics</option>
+                    <option value="Electrical Engineering">Electrical Engineering</option>
+                    <option value="Physics">Physics</option>
                     <option value="Finance & Economics">Finance & Economics</option>
                   </select>
                 </div>
-                <div>
-                  <label className="text-xs font-bold text-slate-500 uppercase">Academic Year</label>
+                <div className="space-y-2">
+                  <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Academic Year</label>
                   <select 
                     value={formData.year} 
                     onChange={e => setFormData({ ...formData, year: e.target.value })}
-                    className="w-full mt-1 border rounded-md p-2 bg-white text-sm"
+                    className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-module-students)] focus:ring-1 focus:ring-[var(--color-module-students)] font-body"
                   >
                     <option value="Freshman">Freshman</option>
                     <option value="Sophomore">Sophomore</option>
@@ -284,11 +336,21 @@ export default function UniStudents() {
                   </select>
                 </div>
               </div>
-              <Button type="submit" className="bg-primary hover:bg-primary/95 text-white w-full">Save Student Profile</Button>
+              
+              <div className="pt-4 border-t border-[var(--color-border-subtle)] flex justify-end">
+                <button 
+                  type="submit" 
+                  disabled={createStudentMutation.isPending}
+                  className="flex items-center gap-2 px-6 py-2.5 bg-[var(--color-module-students)] hover:opacity-90 text-white rounded-[var(--radius-md)] font-medium transition-all shadow-sm disabled:opacity-50"
+                >
+                  <Plus className="w-4 h-4" />
+                  {createStudentMutation.isPending ? 'Saving...' : 'Enroll Student'}
+                </button>
+              </div>
             </form>
-          </CardContent>
-        </Card>
-      )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

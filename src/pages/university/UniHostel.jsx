@@ -1,128 +1,168 @@
 import React, { useState } from 'react';
-import { useTranslation } from "react-i18next";
-import { ModuleBanner } from '@/components/school/SchoolViewKit';
-import { Home, UserCheck, Settings, AlertTriangle, Plus, ClipboardList } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { base44 } from "@/api/base44Client";
+import { useCompanyId } from "@/hooks/useCompanyId";
+import { Home, Bed, Wrench, Users, AlertTriangle, Plus, CheckCircle2 } from 'lucide-react';
+import OrbitTable from '@/components/university/OrbitTable';
+import OrbitStatusBadge from '@/components/university/OrbitStatusBadge';
+import OrbitEmptyState from '@/components/university/OrbitEmptyState';
+import { useToast } from "@/components/ui/use-toast";
+
+function cn(...classes) { return classes.filter(Boolean).join(' '); }
 
 export default function UniHostel() {
-  const { t } = useTranslation();
-  const [tickets, setTickets] = useState([
-    { id: "MNT-2041", room: "Block A, Room 302", issue: "Faulty AC Unit", priority: "High", status: "Assigned" },
-    { id: "MNT-2045", room: "Block B, Room 104", issue: "Broken shower head", priority: "Medium", status: "Pending" }
-  ]);
+  const companyId = useCompanyId();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [activeTab, setActiveTab] = useState('overview');
+  const [allocForm, setAllocForm] = useState({ studentId: '', block: 'A', roomNumber: '' });
+  const [ticketForm, setTicketForm] = useState({ room: '', issue: '', priority: 'Medium' });
+
+  const { data: students = [] } = useQuery({ queryKey: ["clients", companyId, "uni_student"], queryFn: () => base44.entities.Client.filter({ company_id: companyId, type: 'uni_student' }), enabled: !!companyId });
+  const { data: ticketRecords = [] } = useQuery({ queryKey: ["cases", companyId, "uni_hostel_ticket"], queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId, case_type: 'uni_hostel_ticket' }), enabled: !!companyId });
+
+  const parsedStudents = students.map(s => { let extra = {}; try { extra = JSON.parse(s.extra_data || '{}'); } catch(e) {} return { id: s.id, name: s.name, hostel: extra.hostel || null, room: extra.room || null }; });
+  const allocatedStudents = parsedStudents.filter(s => s.hostel);
+  const tickets = ticketRecords.map(t => { let extra = {}; try { extra = JSON.parse(t.notes || '{}'); } catch(e) {} return { id: t.id, room: extra.room || 'N/A', issue: extra.issue || t.case_name || 'Maintenance Issue', priority: extra.priority || 'Medium', status: extra.status || 'Open', createdAt: t.created_date || 'N/A' }; });
+
+  const allocateMutation = useMutation({
+    mutationFn: async ({ studentId, block, roomNumber }) => {
+      const student = students.find(s => s.id === studentId); if (!student) return;
+      let extra = {}; try { extra = JSON.parse(student.extra_data || '{}'); } catch(e) {}
+      extra.hostel = `Block ${block}`; extra.room = roomNumber;
+      await base44.entities.Client.update(studentId, { extra_data: JSON.stringify(extra) });
+    },
+    onSuccess: () => { queryClient.invalidateQueries(["clients", companyId, "uni_student"]); toast({ title: "Room Allocated" }); setAllocForm({ studentId: '', block: 'A', roomNumber: '' }); setActiveTab('overview'); }
+  });
+
+  const ticketMutation = useMutation({
+    mutationFn: (ticket) => base44.entities.LegalCase.create(ticket),
+    onSuccess: () => { queryClient.invalidateQueries(["cases", companyId, "uni_hostel_ticket"]); toast({ title: "Ticket Created" }); setTicketForm({ room: '', issue: '', priority: 'Medium' }); setActiveTab('overview'); }
+  });
+
+  const handleAllocate = (e) => { e.preventDefault(); if (!allocForm.studentId || !allocForm.roomNumber) { toast({ title: "Validation", description: "Fill all fields.", variant: "destructive" }); return; } allocateMutation.mutate(allocForm); };
+  const handleTicket = (e) => { e.preventDefault(); if (!ticketForm.room || !ticketForm.issue) { toast({ title: "Validation", description: "Fill all fields.", variant: "destructive" }); return; } ticketMutation.mutate({ company_id: companyId, case_name: ticketForm.issue, case_type: 'uni_hostel_ticket', notes: JSON.stringify({ room: ticketForm.room, issue: ticketForm.issue, priority: ticketForm.priority, status: 'Open' }) }); };
+
+  const inputClass = "w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--color-module-hostel)] focus:ring-1 focus:ring-[var(--color-module-hostel)] font-body";
+  const stats = [
+    { label: 'Total Beds', value: '1,200', icon: Bed, color: 'var(--color-module-hostel)' },
+    { label: 'Occupied', value: allocatedStudents.length, icon: Users, color: 'var(--color-success)' },
+    { label: 'Work Orders', value: tickets.filter(t => t.status === 'Open').length, icon: Wrench, color: 'var(--color-warning)' },
+    { label: 'Urgent Faults', value: tickets.filter(t => t.priority === 'High').length, icon: AlertTriangle, color: 'var(--color-danger)' }
+  ];
+
+  const ticketColumns = [
+    { id: 'room', header: 'Room', render: (_, r) => <span className="font-mono font-bold">{r.room}</span> },
+    { id: 'issue', header: 'Issue', render: (_, r) => <span className="text-[var(--color-text-primary)]">{r.issue}</span> },
+    { id: 'priority', header: 'Priority', render: (_, r) => <OrbitStatusBadge status={r.priority === 'High' ? 'danger' : r.priority === 'Medium' ? 'warning' : 'info'} label={r.priority} /> },
+    { id: 'status', header: 'Status', render: (_, r) => <OrbitStatusBadge status={r.status === 'Open' ? 'warning' : 'success'} label={r.status} /> }
+  ];
 
   return (
-    <div className="space-y-6">
-      <ModuleBanner 
-        title={t("uni_hostel", "Hostel & Housing Management")} 
-        subtitle="Manage residential accommodations, allocate student rooms, and track campus maintenance requests." 
-      />
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border-slate-100 hover:shadow-lg transition-all school-card">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Bed Capacity</p>
-              <h3 className="text-3xl font-black text-slate-900 mt-1">2,400</h3>
-            </div>
-            <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-              <Home className="w-6 h-6 text-primary" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-slate-100 hover:shadow-lg transition-all school-card">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider font-sans">Occupied Beds</p>
-              <h3 className="text-3xl font-black text-slate-900 mt-1">2,150 (89.5%)</h3>
-            </div>
-            <div className="w-12 h-12 rounded-2xl bg-indigo-100 flex items-center justify-center">
-              <UserCheck className="w-6 h-6 text-indigo-600" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-slate-100 hover:shadow-lg transition-all school-card">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Active Work Orders</p>
-              <h3 className="text-3xl font-black text-slate-900 mt-1">{tickets.length}</h3>
-            </div>
-            <div className="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center">
-              <Settings className="w-6 h-6 text-amber-600" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-slate-100 hover:shadow-lg transition-all school-card">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Urgent Faults</p>
-              <h3 className="text-3xl font-black text-slate-900 mt-1">1</h3>
-            </div>
-            <div className="w-12 h-12 rounded-2xl bg-rose-100 flex items-center justify-center">
-              <AlertTriangle className="w-6 h-6 text-rose-600" />
-            </div>
-          </CardContent>
-        </Card>
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="flex items-end justify-between border-b border-[var(--color-border-subtle)] pb-4">
+        <div>
+          <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Hostel & Housing</h1>
+          <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage room allocations, maintenance tickets, and housing capacity.</p>
+        </div>
+        <div className="flex items-center bg-[var(--color-surface-2)] p-1 rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
+          {[{ id: 'overview', label: 'Overview' }, { id: 'allocate', label: 'Allocate' }, { id: 'tickets', label: 'Tickets' }].map(tab => (
+            <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={cn("px-4 py-1.5 text-[var(--text-sm)] font-medium rounded-[var(--radius-md)] transition-all", activeTab === tab.id ? "bg-[var(--color-surface-0)] text-[var(--color-text-primary)] shadow-sm border border-[var(--color-border-subtle)]" : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] border border-transparent")}>{tab.label}</button>
+          ))}
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-2 border-slate-100 shadow-sm">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle>Hostel Maintenance Tickets</CardTitle>
-              <CardDescription>Active repairs and service reports submitted by residents.</CardDescription>
-            </div>
-            <Button size="sm" className="bg-primary hover:bg-primary/95 text-white gap-1">
-              <Plus className="w-4 h-4" /> Log Ticket
-            </Button>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {tickets.map((t, idx) => (
-              <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-800 border rounded-xl flex justify-between items-center text-xs">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-slate-800">{t.room}</span>
-                    <span className="text-[10px] text-slate-400 font-semibold">{t.id}</span>
-                  </div>
-                  <p className="text-slate-500 mt-1">{t.issue} · Priority: <strong className={t.priority === 'High' ? 'text-red-650' : 'text-amber-600'}>{t.priority}</strong></p>
-                </div>
-                <span className={`px-2.5 py-1 rounded font-bold text-[10px] ${t.status === 'Assigned' ? 'bg-indigo-100 text-indigo-800' : 'bg-amber-100 text-amber-800'}`}>
-                  {t.status}
-                </span>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {stats.map((stat, i) => (
+          <div key={i} className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">{stat.label}</p>
+                <h3 className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-text-primary)] mt-1 tracking-tight">{stat.value}</h3>
               </div>
-            ))}
-          </CardContent>
-        </Card>
+              <div className="w-12 h-12 rounded-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: `color-mix(in srgb, ${stat.color} 15%, transparent)` }}>
+                <stat.icon className="w-6 h-6" style={{ color: stat.color }} />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
 
-        <Card className="border-slate-100 shadow-sm">
-          <CardHeader>
-            <CardTitle>Hostel Allocation Hub</CardTitle>
-            <CardDescription>Allocate students to hostel blocks.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2 text-xs font-semibold text-slate-700">
-              <div className="flex justify-between items-center pb-2 border-b">
-                <span>Block A (Male Undergraduate)</span>
-                <span>95% Full</span>
-              </div>
-              <div className="flex justify-between items-center pb-2 border-b">
-                <span>Block B (Female Undergraduate)</span>
-                <span>88% Full</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span>Block C (Postgraduate/Masters)</span>
-                <span>72% Full</span>
+      <div className="min-h-[400px]">
+        {activeTab === 'overview' && (
+          <div className="space-y-6">
+            <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] overflow-hidden">
+              <div className="p-4 border-b border-[var(--color-border-subtle)]"><h3 className="font-semibold text-[var(--color-text-primary)]">Housing Directory</h3></div>
+              <div className="p-4 space-y-2">
+                {allocatedStudents.length === 0 ? (
+                  <p className="text-center text-[var(--color-text-tertiary)] py-8">No room allocations yet.</p>
+                ) : allocatedStudents.map((s, i) => (
+                  <div key={i} className="flex justify-between items-center p-3 bg-[var(--color-surface-1)] rounded-[var(--radius-md)] border border-[var(--color-border-subtle)]">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-[var(--color-module-hostel)] text-white flex items-center justify-center text-xs font-bold">{s.name?.substring(0, 2).toUpperCase()}</div>
+                      <span className="font-medium text-[var(--color-text-primary)]">{s.name}</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="font-mono text-[var(--text-sm)] text-[var(--color-text-secondary)]">{s.hostel} · Room {s.room}</span>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-            <Button size="sm" className="w-full bg-primary hover:bg-primary/95 text-white gap-1 mt-2">
-              <ClipboardList className="w-4 h-4" /> Run Room Allocations
-            </Button>
-          </CardContent>
-        </Card>
+            {tickets.length > 0 && <OrbitTable columns={ticketColumns} data={tickets} title="Maintenance Tickets" showToolbar={true} />}
+          </div>
+        )}
+
+        {activeTab === 'allocate' && (
+          <div className="max-w-lg mx-auto bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-8 shadow-sm">
+            <h2 className="font-display text-[var(--text-2xl)] font-semibold tracking-tight text-[var(--color-text-primary)] mb-6">Room Allocation</h2>
+            <form onSubmit={handleAllocate} className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Student</label>
+                <select value={allocForm.studentId} onChange={e => setAllocForm({ ...allocForm, studentId: e.target.value })} className={inputClass} required>
+                  <option value="">-- Select Student --</option>
+                  {parsedStudents.filter(s => !s.hostel).map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                </select>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Block</label>
+                  <select value={allocForm.block} onChange={e => setAllocForm({ ...allocForm, block: e.target.value })} className={inputClass}>
+                    {['A','B','C','D','E'].map(b => <option key={b} value={b}>Block {b}</option>)}
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Room Number</label>
+                  <input placeholder="e.g. 205" value={allocForm.roomNumber} onChange={e => setAllocForm({ ...allocForm, roomNumber: e.target.value })} className={inputClass} required />
+                </div>
+              </div>
+              <button type="submit" className="w-full flex items-center justify-center gap-2 py-2.5 bg-[var(--color-module-hostel)] hover:opacity-90 text-white font-medium rounded-[var(--radius-md)] transition-all"><Home className="w-4 h-4" /> Allocate Room</button>
+            </form>
+          </div>
+        )}
+
+        {activeTab === 'tickets' && (
+          <div className="max-w-lg mx-auto bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-8 shadow-sm">
+            <h2 className="font-display text-[var(--text-2xl)] font-semibold tracking-tight text-[var(--color-text-primary)] mb-6">New Maintenance Ticket</h2>
+            <form onSubmit={handleTicket} className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Room Number</label>
+                <input placeholder="e.g. B-305" value={ticketForm.room} onChange={e => setTicketForm({ ...ticketForm, room: e.target.value })} className={inputClass} required />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Issue Description</label>
+                <textarea value={ticketForm.issue} onChange={e => setTicketForm({ ...ticketForm, issue: e.target.value })} placeholder="Describe issue..." className={cn(inputClass, "min-h-[100px]")} required />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Priority</label>
+                <select value={ticketForm.priority} onChange={e => setTicketForm({ ...ticketForm, priority: e.target.value })} className={inputClass}>
+                  <option value="Low">Low</option><option value="Medium">Medium</option><option value="High">High (Urgent)</option>
+                </select>
+              </div>
+              <button type="submit" className="w-full flex items-center justify-center gap-2 py-2.5 bg-[var(--color-warning)] hover:opacity-90 text-white font-medium rounded-[var(--radius-md)] transition-all"><Wrench className="w-4 h-4" /> Submit Ticket</button>
+            </form>
+          </div>
+        )}
       </div>
     </div>
   );

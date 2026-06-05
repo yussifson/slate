@@ -1,125 +1,116 @@
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { CheckCircle, Clock, FileText, AlertCircle, RefreshCw } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import React, { useState } from 'react';
+import { Card } from "@/components/ui/card";
+import { Search, Filter, CheckCircle, Clock, AlertCircle, FileText, Download, ChevronRight } from 'lucide-react';
 
 export default function OnlineAssessments() {
+  const [activeTab, setActiveTab] = useState('pending');
+
+  const assessments = [
+    { id: 1, student: "Alex Johnson", course: "UI Design Fundamentals", module: "Color Theory Assignment", status: "pending", date: "2 Hours Ago", score: null },
+    { id: 2, student: "Sarah Williams", course: "Advanced React Patterns", module: "Custom Hooks Quiz", status: "graded", date: "Yesterday", score: "92%" },
+    { id: 3, student: "Michael Chen", course: "UI Design Fundamentals", module: "Typography Project", status: "pending", date: "5 Hours Ago", score: null },
+    { id: 4, student: "Emily Davis", course: "Intro to Python", module: "Final Project", status: "needs_revision", date: "2 Days Ago", score: "65%" },
+  ];
+
+  const filteredAssessments = assessments.filter(a => {
+    if (activeTab === 'pending') return a.status === 'pending';
+    if (activeTab === 'completed') return a.status !== 'pending';
+    return true;
+  });
+
   return (
-    <div className="space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 font-sans bg-[#F5F7F8] min-h-screen">
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Assessments</h1>
-          <p className="text-gray-500 mt-1">Manage quizzes, exams, and grading.</p>
+    <div className="h-[calc(100vh-64px)] bg-void flex flex-col font-body text-text-primary overflow-hidden">
+      {/* Header */}
+      <div className="px-8 py-6 border-b border-border bg-overlay shrink-0">
+        <h1 className="text-2xl font-display font-medium mb-2">Assessment Center</h1>
+        <p className="text-text-secondary text-sm">Review submissions, grade assignments, and track learner progress.</p>
+        
+        {/* Quick Stats */}
+        <div className="flex gap-4 mt-6">
+            <div className="bg-surface/50 border border-border px-4 py-3 rounded-lg flex items-center gap-3 w-48">
+                <Clock className="w-5 h-5 text-orbit" />
+                <div>
+                    <div className="text-xl font-mono font-medium">12</div>
+                    <div className="text-xs text-text-muted">Pending Review</div>
+                </div>
+            </div>
+            <div className="bg-surface/50 border border-border px-4 py-3 rounded-lg flex items-center gap-3 w-48">
+                <CheckCircle className="w-5 h-5 text-emerald-500" />
+                <div>
+                    <div className="text-xl font-mono font-medium">148</div>
+                    <div className="text-xs text-text-muted">Graded This Week</div>
+                </div>
+            </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <div className="lg:col-span-3 space-y-6">
-          <Card className="border-0 shadow-sm rounded-xl overflow-hidden">
-            <CardHeader className="bg-white border-b pb-4">
-              <CardTitle className="text-xl">Pending Grading</CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              <div className="divide-y">
-                {[
-                  { course: "Machine Learning", assignment: "Week 3: Neural Networks", type: "Peer Review", status: "Requires action", icon: AlertCircle, color: "text-orange-500", bg: "bg-orange-50" },
-                  { course: "React Web Dev", assignment: "Final Project Submission", type: "Instructor Grading", status: "15 pending", icon: Clock, color: "text-blue-500", bg: "bg-blue-50" },
-                ].map((item, i) => (
-                  <div key={i} className="p-5 flex items-center hover:bg-gray-50 transition-colors">
-                    <div className={`p-3 rounded-full mr-4 ${item.bg} ${item.color}`}>
-                      <item.icon className="h-6 w-6" />
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-bold text-gray-900">{item.assignment}</h4>
-                      <p className="text-sm text-gray-500">{item.course} • {item.type}</p>
-                    </div>
-                    <div className="flex flex-col items-end">
-                      <span className={`text-sm font-medium ${item.color} mb-2`}>{item.status}</span>
-                      <Button size="sm" variant="outline" className="border-[#0056D2] text-[#0056D2] hover:bg-blue-50">Review Now</Button>
-                    </div>
-                  </div>
-                ))}
+      <div className="flex-1 flex flex-col min-w-0 p-8 overflow-hidden">
+          
+          {/* Controls */}
+          <div className="flex justify-between items-center mb-6 shrink-0">
+              <div className="flex gap-1 bg-surface p-1 rounded-lg border border-border">
+                  <button 
+                      onClick={() => setActiveTab('pending')}
+                      className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${activeTab === 'pending' ? 'bg-orbit text-orbit-light shadow-sm' : 'text-text-secondary hover:text-text-primary'}`}
+                  >Needs Grading</button>
+                  <button 
+                      onClick={() => setActiveTab('completed')}
+                      className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${activeTab === 'completed' ? 'bg-orbit text-orbit-light shadow-sm' : 'text-text-secondary hover:text-text-primary'}`}
+                  >History</button>
               </div>
-            </CardContent>
-          </Card>
 
-          <Card className="border-0 shadow-sm rounded-xl">
-            <CardHeader>
-              <div className="flex justify-between items-center">
-                <CardTitle className="text-xl">Auto-Graded Quizzes</CardTitle>
-                <Button variant="ghost" size="sm" className="text-[#0056D2]"><RefreshCw className="h-4 w-4 mr-2"/> Sync Results</Button>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                {[
-                  { title: "Python Basics Quiz", attempts: 124, avgScore: 85, passRate: 92 },
-                  { title: "React State Management", attempts: 89, avgScore: 72, passRate: 65 },
-                  { title: "Data Structures", attempts: 210, avgScore: 88, passRate: 95 },
-                ].map((q, i) => (
-                  <div key={i} className="flex flex-col md:flex-row items-center p-4 border rounded-lg bg-gray-50">
-                    <div className="flex-1 mb-4 md:mb-0">
-                      <h4 className="font-bold text-gray-900">{q.title}</h4>
-                      <p className="text-sm text-gray-500">{q.attempts} attempts this week</p>
-                    </div>
-                    <div className="flex gap-8 text-center">
-                      <div>
-                        <div className="text-2xl font-bold text-gray-900">{q.avgScore}%</div>
-                        <div className="text-xs text-gray-500 uppercase font-semibold tracking-wider">Avg Score</div>
-                      </div>
-                      <div>
-                        <div className={`text-2xl font-bold ${q.passRate > 80 ? 'text-green-600' : 'text-orange-500'}`}>{q.passRate}%</div>
-                        <div className="text-xs text-gray-500 uppercase font-semibold tracking-wider">Pass Rate</div>
-                      </div>
-                      <Button variant="outline" size="sm" className="mt-1">Details</Button>
-                    </div>
+              <div className="flex gap-3">
+                  <div className="relative">
+                      <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
+                      <input type="text" placeholder="Search students..." className="w-64 bg-surface border border-border rounded-lg pl-9 pr-4 py-2 text-sm text-text-primary focus:outline-none focus:border-orbit" />
                   </div>
-                ))}
+                  <button className="orbit-btn-secondary px-3 py-2 flex items-center gap-2 text-sm">
+                      <Filter className="w-4 h-4" /> Filter
+                  </button>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+          </div>
 
-        <div className="lg:col-span-1 space-y-6">
-          <Card className="border-0 shadow-sm rounded-xl bg-[#0056D2] text-white">
-            <CardContent className="p-6">
-              <h3 className="font-bold text-lg mb-2">Create Assessment</h3>
-              <p className="text-blue-100 text-sm mb-6">Build a new quiz, exam, or programming assignment.</p>
-              <div className="space-y-3">
-                <Button className="w-full bg-white text-[#0056D2] hover:bg-gray-100 font-medium">New Quiz</Button>
-                <Button className="w-full bg-blue-600 text-white hover:bg-blue-700 font-medium border border-blue-400">New Assignment</Button>
-              </div>
-            </CardContent>
-          </Card>
+          {/* List */}
+          <div className="flex-1 overflow-y-auto custom-scrollbar bg-deep border border-border rounded-xl">
+              <table className="w-full text-left border-collapse">
+                  <thead className="bg-surface/50 text-xs font-medium text-text-muted sticky top-0 z-10 backdrop-blur-md">
+                      <tr>
+                          <th className="px-6 py-4 font-mono font-normal">Student / Submission</th>
+                          <th className="px-6 py-4 font-mono font-normal">Course</th>
+                          <th className="px-6 py-4 font-mono font-normal">Submitted</th>
+                          <th className="px-6 py-4 font-mono font-normal">Status / Score</th>
+                          <th className="px-6 py-4 text-right font-mono font-normal">Action</th>
+                      </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border">
+                      {filteredAssessments.length === 0 ? (
+                          <tr><td colSpan="5" className="px-6 py-12 text-center text-text-muted">No assessments found.</td></tr>
+                      ) : (
+                          filteredAssessments.map(a => (
+                              <tr key={a.id} className="hover:bg-surface/30 transition-colors group">
+                                  <td className="px-6 py-4">
+                                      <div className="font-medium text-sm text-orbit-light mb-1">{a.student}</div>
+                                      <div className="text-xs text-text-secondary flex items-center gap-1"><FileText className="w-3 h-3"/> {a.module}</div>
+                                  </td>
+                                  <td className="px-6 py-4 text-sm text-text-secondary">{a.course}</td>
+                                  <td className="px-6 py-4 text-sm text-text-muted font-mono">{a.date}</td>
+                                  <td className="px-6 py-4">
+                                      {a.status === 'pending' && <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-500 border border-amber-500/20"><Clock className="w-3 h-3" /> Pending Review</span>}
+                                      {a.status === 'graded' && <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"><CheckCircle className="w-3 h-3" /> Graded: {a.score}</span>}
+                                      {a.status === 'needs_revision' && <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20"><AlertCircle className="w-3 h-3" /> Revision: {a.score}</span>}
+                                  </td>
+                                  <td className="px-6 py-4 text-right">
+                                      <button className="orbit-btn-primary px-3 py-1.5 text-xs inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                          {a.status === 'pending' ? 'Grade Now' : 'View'} <ChevronRight className="w-3 h-3" />
+                                      </button>
+                                  </td>
+                              </tr>
+                          ))
+                      )}
+                  </tbody>
+              </table>
+          </div>
 
-          <Card className="border-0 shadow-sm rounded-xl">
-            <CardHeader>
-              <CardTitle className="text-lg">Recent Completions</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {[
-                  { name: "John Doe", score: "95%", badge: "Pass", color: "bg-green-100 text-green-700" },
-                  { name: "Alice Smith", score: "100%", badge: "Pass", color: "bg-green-100 text-green-700" },
-                  { name: "Bob Wilson", score: "60%", badge: "Fail", color: "bg-red-100 text-red-700" },
-                ].map((s, i) => (
-                  <div key={i} className="flex justify-between items-center">
-                    <div className="flex items-center gap-3">
-                      <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-600">{s.name.charAt(0)}</div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">{s.name}</p>
-                        <p className="text-xs text-gray-500">Score: {s.score}</p>
-                      </div>
-                    </div>
-                    <Badge className={s.color} variant="secondary">{s.badge}</Badge>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
       </div>
     </div>
   );

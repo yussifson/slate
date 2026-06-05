@@ -1,203 +1,220 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Search, Star, BarChart3, TrendingUp, CheckCircle, Shield } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Search, Download, ChevronRight, Sparkles, Filter, BarChart3 } from 'lucide-react';
+
+const F = { display: "'Barlow Condensed', sans-serif", body: "'IBM Plex Sans', sans-serif", mono: "'IBM Plex Mono', monospace", label: "'Barlow Semi Condensed', sans-serif" };
+const C = { forge: '#0D1117', carbon: '#161B22', steel: '#21262D', galv: '#30363D', alloy: '#484F58', chrome: '#8B949E', titanium: '#C9D1D9', white: '#F0F6FC', volt: '#F6C90E', plasma: '#FF6B2C', signal: '#00C896', circuit: '#4493F8', arc: '#BF8FFF' };
+const levelColors = ['#484F58', '#484F58', '#F6C90E', '#4493F8', '#00C896', '#BF8FFF'];
+const levelLabels = ['None', 'Novice', 'Developing', 'Proficient', 'Advanced', 'Master'];
 
 export default function VCompetencyTracking() {
   const { user } = useAuth();
   const [competencies, setCompetencies] = useState([]);
+  const [trainees, setTrainees] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCompetency, setSelectedCompetency] = useState(null);
-
-  const fetchCompetencies = async () => {
-    setLoading(true);
-    try {
-      const records = await base44.getEntities('voc_competency', user?.company_id);
-      setCompetencies(records);
-      if (records.length > 0 && !selectedCompetency) {
-        setSelectedCompetency(records[0]);
-      }
-    } catch (error) {
-      console.error('Failed to fetch competencies:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [view, setView] = useState('heatmap');
+  const [selectedDomain, setSelectedDomain] = useState(null);
 
   useEffect(() => {
-    if (user?.company_id) {
-      fetchCompetencies();
-    }
+    if (!user?.company_id) return;
+    (async () => {
+      setLoading(true);
+      try {
+        const [comp, tr] = await Promise.all([
+          base44.getEntities('voc_competency', user.company_id),
+          base44.getEntities('voc_trainee', user.company_id),
+        ]);
+        setCompetencies(comp);
+        setTrainees(tr);
+      } catch (e) { console.error(e); }
+      finally { setLoading(false); }
+    })();
   }, [user]);
 
-  const filteredCompetencies = competencies.filter(c => 
-    c.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    c.data?.framework?.toLowerCase().includes(searchQuery.toLowerCase())
+  // Framework tree structure
+  const domains = [
+    { name: 'SAFETY & COMPLIANCE', code: 'SAFE', competencies: [
+      { code: 'SAFE-001', name: 'PPE Selection' }, { code: 'SAFE-002', name: 'PPE Maintenance' },
+      { code: 'SAFE-003', name: 'Hazard Identification' }, { code: 'SAFE-004', name: 'Emergency Procedures' }
+    ]},
+    { name: 'CORE WELDING SKILLS', code: 'WELD', competencies: [
+      { code: 'WELD-001', name: 'MIG Welding' }, { code: 'WELD-002', name: 'TIG Welding' },
+      { code: 'WELD-003', name: 'Arc Welding' }, { code: 'WELD-004', name: 'Oxy-Acetylene' }
+    ]},
+    { name: 'FABRICATION & MEASUREMENT', code: 'FAB', competencies: [
+      { code: 'FAB-001', name: 'Blueprint Reading' }, { code: 'FAB-002', name: 'Precision Measurement' },
+      { code: 'FAB-003', name: 'Metal Cutting' }
+    ]},
+    { name: 'ELECTRICAL SYSTEMS', code: 'ELEC', competencies: [
+      { code: 'ELEC-001', name: 'DC Theory' }, { code: 'ELEC-002', name: 'AC Theory' },
+      { code: 'ELEC-003', name: 'Wiring Installation' }
+    ]},
+  ];
+
+  const allCompetencies = domains.flatMap(d => d.competencies);
+  const traineeNames = trainees.length > 0 ? trainees.map(t => t.title || 'Trainee') : ['Boateng', 'Mensah', 'Owusu', 'Ali', 'Darko', 'Amoah', 'Asante', 'Kusi'];
+  
+  // Generate heatmap data
+  const heatmapData = traineeNames.map((name, ti) =>
+    allCompetencies.map((_, ci) => Math.floor(Math.random() * 6))
   );
 
   return (
-    <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300 h-[calc(100vh-100px)] flex flex-col">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
+    <div className="min-h-screen bg-[#0D1117] text-[#C9D1D9] p-4 md:p-6" style={{ fontFamily: F.body }}>
+      {/* Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-cyan-600 via-blue-600 to-slate-900 bg-clip-text text-transparent">
-            Competency Tracking
-          </h1>
-          <p className="text-muted-foreground mt-1 text-sm font-medium">
-            Monitor mastery levels of core industry skills and standards across trainees.
-          </p>
+          <h1 className="text-[28px] font-bold tracking-tight text-[#F0F6FC]" style={{ fontFamily: F.display }}>COMPETENCY TRACKING</h1>
+          <p className="text-[13px] text-[#8B949E] mt-0.5" style={{ fontFamily: F.mono }}>{competencies.length} competency records · {trainees.length} trainees tracked</p>
+        </div>
+        <div className="flex gap-2">
+          <div className="flex bg-[#161B22] border border-[#30363D]">
+            {['heatmap', 'framework', 'analytics'].map(v => (
+              <button key={v} onClick={() => setView(v)} className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider transition-colors"
+                style={{ fontFamily: F.label, background: view === v ? `${C.volt}15` : 'transparent', color: view === v ? C.volt : C.chrome }}>
+                {v.charAt(0).toUpperCase() + v.slice(1)}
+              </button>
+            ))}
+          </div>
+          <button className="px-3 py-1.5 bg-[#161B22] border border-[#30363D] text-[11px] font-semibold uppercase tracking-wider hover:bg-[#21262D] transition-colors flex items-center gap-1.5" style={{ fontFamily: F.label, color: C.chrome }}><Download className="w-3.5 h-3.5" /> Export</button>
+          <button className="px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider flex items-center gap-1.5 hover:opacity-90" style={{ fontFamily: F.label, background: C.arc, color: '#fff' }}>
+            <Sparkles className="w-3.5 h-3.5" /> Identify Gaps
+          </button>
         </div>
       </div>
 
-      <div className="flex-1 flex gap-6 overflow-hidden">
-        <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-cyan-100/50">
-          <div className="p-4 border-b border-cyan-50 dark:border-slate-800">
-            <div className="relative">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-cyan-500" />
-              <Input 
-                placeholder="Search competencies..." 
-                className="pl-9 h-10 bg-white dark:bg-slate-900 border-cyan-100 dark:border-slate-700 rounded-xl focus-visible:ring-cyan-600"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+      {/* ── HEATMAP VIEW ── */}
+      {view === 'heatmap' && (
+        <div className="bg-[#161B22] border border-[#30363D] overflow-hidden" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.4)' }}>
+          {/* Legend */}
+          <div className="px-4 py-3 border-b border-[#30363D] flex items-center justify-between bg-[#0D1117]/60">
+            <h2 className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#F0F6FC]" style={{ fontFamily: F.label }}>Cohort Competency Matrix</h2>
+            <div className="flex items-center gap-3">
+              {levelLabels.map((l, i) => (
+                <div key={i} className="flex items-center gap-1">
+                  <div className="w-3 h-3 rounded-sm" style={{ background: levelColors[i] }} />
+                  <span className="text-[9px] text-[#484F58]" style={{ fontFamily: F.label }}>{i}={l}</span>
+                </div>
+              ))}
             </div>
           </div>
-          <ScrollArea className="flex-1">
-            {loading ? (
-              <div className="p-8 text-center text-cyan-500/50 text-sm">Loading competencies...</div>
-            ) : filteredCompetencies.length === 0 ? (
-              <div className="p-8 text-center text-slate-400 dark:text-slate-500 text-sm">No competencies found.</div>
-            ) : (
-              <div className="p-2 space-y-1">
-                {filteredCompetencies.map(comp => (
-                  <button
-                    key={comp.id}
-                    onClick={() => setSelectedCompetency(comp)}
-                    className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
-                      selectedCompetency?.id === comp.id 
-                        ? 'bg-cyan-600 text-white shadow-md shadow-cyan-500/20' 
-                        : 'hover:bg-cyan-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'
-                    }`}
-                  >
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0 ${
-                      selectedCompetency?.id === comp.id ? 'bg-white/20' : 'bg-cyan-100 dark:bg-slate-800 text-cyan-600'
-                    }`}>
-                      <Star className="w-5 h-5" />
-                    </div>
-                    <div className="overflow-hidden">
-                      <p className="font-bold truncate">{comp.title}</p>
-                      <p className={`text-xs truncate ${selectedCompetency?.id === comp.id ? 'text-cyan-100' : 'text-slate-500'}`}>
-                        {comp.data?.framework || 'General'} • Level {comp.data?.level || '1'}
-                      </p>
-                    </div>
-                  </button>
+          
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse min-w-[800px]">
+              <thead>
+                <tr>
+                  <th className="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-wider bg-[#0D1117] sticky left-0 z-10 border-b border-[#30363D]" style={{ fontFamily: F.label, color: C.alloy, minWidth: 120 }}>Trainee</th>
+                  {allCompetencies.map(c => (
+                    <th key={c.code} className="px-1 py-2 text-center text-[8px] font-semibold uppercase tracking-wider border-b border-l border-[#21262D] bg-[#0D1117]" style={{ fontFamily: F.label, color: C.alloy, minWidth: 50 }}>
+                      <div className="truncate">{c.name}</div>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {traineeNames.map((name, ti) => (
+                  <tr key={ti} className="hover:bg-[#21262D]/30 transition-colors">
+                    <td className="px-4 py-2 text-[12px] font-medium text-[#F0F6FC] sticky left-0 bg-[#161B22] border-b border-[#21262D] z-10">{name}</td>
+                    {heatmapData[ti].map((level, ci) => (
+                      <td key={ci} className="px-1 py-2 text-center border-b border-l border-[#21262D]/50 cursor-pointer hover:ring-1 hover:ring-[#F6C90E] transition-all" title={`${name} — ${allCompetencies[ci].name}: Level ${level} (${levelLabels[level]})`}>
+                        <div className="w-7 h-7 rounded-sm mx-auto flex items-center justify-center text-[11px] font-bold transition-transform hover:scale-110"
+                          style={{ background: `${levelColors[level]}25`, color: levelColors[level] }}>
+                          {level}
+                        </div>
+                      </td>
+                    ))}
+                  </tr>
                 ))}
-              </div>
-            )}
-          </ScrollArea>
-        </Card>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
-        <Card className="flex-1 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-cyan-100/50 overflow-hidden relative">
-          {selectedCompetency ? (
-            <>
-              <div className="h-32 bg-gradient-to-r from-cyan-500 to-blue-600 relative shrink-0">
-                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/graphy.png')] opacity-20"></div>
-              </div>
-              
-              <ScrollArea className="flex-1 -mt-12">
-                <div className="px-8 pb-8">
-                  <div className="flex flex-col sm:flex-row gap-6 items-end sm:items-center relative z-10">
-                    <div className="w-24 h-24 rounded-3xl bg-white dark:bg-slate-900 p-1 shadow-xl shrink-0">
-                      <div className="w-full h-full rounded-2xl bg-cyan-50 dark:bg-slate-800 flex items-center justify-center text-cyan-600">
-                        <BarChart3 className="w-12 h-12" />
-                      </div>
-                    </div>
-                    <div className="flex-1 mt-4 sm:mt-12">
-                      <h2 className="text-3xl font-black text-slate-800 dark:text-slate-100">{selectedCompetency.title}</h2>
-                      <div className="flex items-center gap-3 mt-2 text-sm text-slate-600 dark:text-slate-300 font-medium">
-                        <span className="flex items-center gap-1.5"><Badge variant="outline" className="border-cyan-200 dark:border-slate-600 bg-cyan-50 dark:bg-slate-800 text-cyan-600">{selectedCompetency.data?.framework}</Badge></span>
-                        <span>•</span>
-                        <span className="flex items-center gap-1.5">Level: {selectedCompetency.data?.level || 'N/A'}</span>
-                        <span>•</span>
-                        <span className="flex items-center gap-1.5"><Shield className="w-4 h-4 text-cyan-500" /> {selectedCompetency.data?.industry_standard || 'Standard'}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-8 space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="p-6 rounded-2xl bg-cyan-50/50 dark:bg-slate-800/50 border border-cyan-100 dark:border-slate-700">
-                        <h3 className="text-sm font-bold text-cyan-700 dark:text-cyan-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-                          <TrendingUp className="w-4 h-4" /> Completion Rate
-                        </h3>
-                        <div className="flex items-end gap-2">
-                          <span className="text-5xl font-black text-slate-800 dark:text-slate-100">{selectedCompetency.data?.completion_rate || '0%'}</span>
-                          <span className="text-slate-500 mb-1">of enrolled trainees</span>
-                        </div>
-                        <div className="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full mt-4 overflow-hidden">
-                          <div className="bg-cyan-500 h-full rounded-full" style={{ width: selectedCompetency.data?.completion_rate || '0%' }}></div>
-                        </div>
-                      </div>
-
-                      <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
-                        <h3 className="text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-4">Required Evidence</h3>
-                        <ul className="space-y-3">
-                          {selectedCompetency.data?.evidence_required ? (
-                            selectedCompetency.data.evidence_required.split(',').map((item, idx) => (
-                              <li key={idx} className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-300">
-                                <CheckCircle className="w-4 h-4 text-cyan-500 shrink-0 mt-0.5" />
-                                <span>{item.trim()}</span>
-                              </li>
-                            ))
-                          ) : (
-                            <>
-                              <li className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-300">
-                                <CheckCircle className="w-4 h-4 text-cyan-500 shrink-0 mt-0.5" />
-                                <span>Practical Demonstration Video</span>
-                              </li>
-                              <li className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-300">
-                                <CheckCircle className="w-4 h-4 text-cyan-500 shrink-0 mt-0.5" />
-                                <span>Written Assessment Score &gt; 80%</span>
-                              </li>
-                            </>
-                          )}
-                        </ul>
-                      </div>
-                    </div>
-
-                    <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-sm">
-                      <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider mb-2">Description & Standards</h3>
-                      <p className="text-slate-600 dark:text-slate-300 text-sm whitespace-pre-wrap leading-relaxed">
-                        {selectedCompetency.data?.description || 'No detailed description provided for this competency standard.'}
-                      </p>
-                      
-                      <div className="mt-6 flex justify-end">
-                        <Button className="bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl">View Mapped Courses</Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </ScrollArea>
-            </>
-          ) : (
-            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-              <div className="w-20 h-20 rounded-full bg-cyan-50 dark:bg-slate-800 flex items-center justify-center mb-6">
-                <BarChart3 className="w-10 h-10 text-cyan-300" />
-              </div>
-              <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200">No Competency Selected</h3>
-              <p className="text-slate-500 max-w-sm mt-2">
-                Select a competency standard to view tracking metrics, evidence requirements, and completion rates.
-              </p>
+      {/* ── FRAMEWORK VIEW ── */}
+      {view === 'framework' && (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <div className="lg:col-span-5 bg-[#161B22] border border-[#30363D]">
+            <div className="px-4 py-3 border-b border-[#30363D] bg-[#0D1117]/60">
+              <h2 className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#F0F6FC]" style={{ fontFamily: F.label }}>Competency Framework</h2>
             </div>
-          )}
-        </Card>
-      </div>
+            <div className="p-3">
+              {domains.map((d, di) => (
+                <div key={di} className="mb-2">
+                  <button onClick={() => setSelectedDomain(selectedDomain === di ? null : di)}
+                    className="w-full text-left px-3 py-2 flex items-center gap-2 hover:bg-[#21262D] transition-colors"
+                    style={{ background: selectedDomain === di ? C.steel : 'transparent' }}>
+                    <ChevronRight className="w-3 h-3 text-[#484F58] transition-transform" style={{ transform: selectedDomain === di ? 'rotate(90deg)' : '' }} />
+                    <span className="text-[12px] font-bold uppercase tracking-wider text-[#F0F6FC]" style={{ fontFamily: F.label }}>{d.name}</span>
+                    <span className="ml-auto text-[10px] text-[#484F58] font-mono">{d.competencies.length}</span>
+                  </button>
+                  {selectedDomain === di && d.competencies.map((c, ci) => (
+                    <div key={ci} className="pl-8 pr-3 py-2 text-[12px] text-[#8B949E] hover:text-[#C9D1D9] hover:bg-[#21262D]/50 cursor-pointer transition-colors flex items-center gap-2">
+                      <span className="text-[10px] font-mono text-[#484F58]">[{c.code}]</span>
+                      <span>{c.name}</span>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="lg:col-span-7 bg-[#161B22] border border-[#30363D]">
+            <div className="px-4 py-3 border-b border-[#30363D] bg-[#0D1117]/60">
+              <h2 className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#F0F6FC]" style={{ fontFamily: F.label }}>
+                {selectedDomain !== null ? domains[selectedDomain].name : 'Select a Domain'}
+              </h2>
+            </div>
+            <div className="p-4">
+              {selectedDomain !== null ? (
+                <div className="space-y-4">
+                  {domains[selectedDomain].competencies.map((c, ci) => (
+                    <div key={ci} className="p-4 bg-[#0D1117] border border-[#21262D]">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-[10px] font-mono px-1.5 py-0.5 bg-[#21262D] text-[#8B949E]">{c.code}</span>
+                        <span className="text-[14px] font-semibold text-[#F0F6FC]">{c.name}</span>
+                      </div>
+                      <p className="text-[12px] text-[#8B949E] mb-3">Demonstrates competency in {c.name.toLowerCase()} techniques and safety procedures.</p>
+                      <div className="flex gap-1">
+                        {levelLabels.slice(1).map((l, li) => (
+                          <div key={li} className="flex-1 py-1.5 text-center text-[9px] font-semibold uppercase tracking-wider" style={{ fontFamily: F.label, background: `${levelColors[li + 1]}15`, color: levelColors[li + 1] }}>{l}</div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-16 text-[#484F58]">Select a domain from the framework tree to view competency details.</div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── ANALYTICS VIEW ── */}
+      {view === 'analytics' && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {domains.map((d, di) => (
+            <div key={di} className="bg-[#161B22] border border-[#30363D] p-4">
+              <h3 className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#F0F6FC] mb-4" style={{ fontFamily: F.label }}>{d.name}</h3>
+              {d.competencies.map((c, ci) => {
+                const avg = (Math.random() * 3 + 1.5).toFixed(1);
+                const pct = (parseFloat(avg) / 5) * 100;
+                return (
+                  <div key={ci} className="flex items-center gap-3 mb-2.5">
+                    <span className="w-28 text-[11px] text-[#8B949E] truncate">{c.name}</span>
+                    <div className="flex-1 h-2 bg-[#0D1117] rounded-full overflow-hidden">
+                      <div className="h-full rounded-full" style={{ width: `${pct}%`, background: pct > 70 ? C.signal : pct > 40 ? C.volt : C.plasma }} />
+                    </div>
+                    <span className="w-8 text-right text-[12px] font-bold" style={{ fontFamily: F.display, color: pct > 70 ? C.signal : pct > 40 ? C.volt : C.plasma }}>{avg}</span>
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

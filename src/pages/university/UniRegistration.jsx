@@ -1,115 +1,173 @@
 import React, { useState } from 'react';
-import { useTranslation } from "react-i18next";
-import { ModuleBanner } from '@/components/school/SchoolViewKit';
-import { Calendar, UserCheck, Plus, CheckCircle, AlertTriangle, Play } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { base44 } from "@/api/base44Client";
+import { useCompanyId } from "@/hooks/useCompanyId";
+import { Calendar, Plus, CheckCircle, CheckCircle2, AlertTriangle } from 'lucide-react';
+import OrbitStatusBadge from '@/components/university/OrbitStatusBadge';
+import { useToast } from "@/components/ui/use-toast";
+
+function cn(...classes) { return classes.filter(Boolean).join(' '); }
 
 export default function UniRegistration() {
-  const { t } = useTranslation();
-  const [courses, setCourses] = useState([
-    { code: "CS-101", title: "Introduction to Computer Science", credits: 4, schedule: "Mon/Wed 9:00 - 10:30 AM", enrolled: true },
-    { code: "MATH-202", title: "Linear Algebra & Vector Spaces", credits: 3, schedule: "Tue/Thu 11:00 AM - 12:30 PM", enrolled: true },
-    { code: "PHY-301", title: "Quantum Physics for Engineers", credits: 4, schedule: "Mon/Wed/Fri 2:00 - 3:30 PM", enrolled: false, waitlist: true },
-    { code: "ENG-102", title: "Academic Writing and Rhetoric", credits: 2, schedule: "Tue 4:00 - 6:00 PM", enrolled: false }
-  ]);
+  const companyId = useCompanyId();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [selectedStudentId, setSelectedStudentId] = useState('');
 
-  const toggleCourse = (code) => {
-    setCourses(courses.map(c => {
-      if (c.code === code) {
-        if (c.enrolled) return { ...c, enrolled: false, waitlist: false };
-        return { ...c, enrolled: true, waitlist: false };
-      }
-      return c;
-    }));
+  const { data: students = [] } = useQuery({
+    queryKey: ["clients", companyId, "uni_student"],
+    queryFn: () => base44.entities.Client.filter({ company_id: companyId, type: 'uni_student' }),
+    enabled: !!companyId
+  });
+
+  const { data: records = [] } = useQuery({ 
+    queryKey: ["cases", companyId, "uni_course"], 
+    queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId, case_type: 'uni_course' }), 
+    enabled: !!companyId 
+  });
+
+  const courses = records.map(r => {
+    let extra = {};
+    try { extra = JSON.parse(r.notes || '{}'); } catch(e) {}
+    return {
+      id: r.id, name: r.case_name || r.name || 'Untitled Course',
+      code: extra.code || `CS-${Math.floor(Math.random() * 800) + 101}`,
+      teacher: extra.lecturer || 'Prof. Unassigned',
+      credits: parseInt(extra.credits || '4'),
+      schedule: extra.schedule || 'MWF 10:00 AM',
+      prerequisite: extra.prerequisite || ''
+    };
+  });
+
+  const parsedStudents = students.map(s => {
+    let extra = {};
+    try { extra = JSON.parse(s.extra_data || '{}'); } catch(e) {}
+    return { id: s.id, name: s.name, gpa: parseFloat(extra.gpa || '3.50'), status: extra.status || 'Active', major: extra.major || 'Computer Science', courses: extra.courses || [] };
+  });
+
+  const activeStudent = parsedStudents.find(s => s.id === selectedStudentId);
+
+  const updateStudentCoursesMutation = useMutation({
+    mutationFn: async ({ studentId, updatedCourses }) => {
+      const student = students.find(s => s.id === studentId);
+      if (!student) return;
+      let extra = {};
+      try { extra = JSON.parse(student.extra_data || '{}'); } catch(e) {}
+      extra.courses = updatedCourses;
+      await base44.entities.Client.update(studentId, { extra_data: JSON.stringify(extra) });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["clients", companyId, "uni_student"]);
+      toast({ title: "Registration Processed", description: "Course registration updated." });
+    }
+  });
+
+  const toggleCourse = (courseCode) => {
+    if (!activeStudent) { toast({ title: "No Student Selected", variant: "destructive" }); return; }
+    if (activeStudent.gpa < 2.0) { toast({ title: "Academic Lockout", description: "Student is on probation.", variant: "destructive" }); return; }
+    const targeted = courses.find(c => c.code === courseCode);
+    if (!targeted) return;
+    const isEnrolled = activeStudent.courses.includes(courseCode);
+    if (!isEnrolled) {
+      const currentCredits = courses.filter(c => activeStudent.courses.includes(c.code)).reduce((sum, c) => sum + c.credits, 0);
+      if (currentCredits + targeted.credits > 18) { toast({ title: "Credit Limit Exceeded", description: "Max 18 credit hours.", variant: "destructive" }); return; }
+      if (targeted.prerequisite && !activeStudent.courses.includes(targeted.prerequisite)) { toast({ title: "Missing Prerequisite", description: `Prerequisite ${targeted.prerequisite} required.`, variant: "destructive" }); return; }
+    }
+    const updatedCourses = isEnrolled ? activeStudent.courses.filter(code => code !== courseCode) : [...activeStudent.courses, courseCode];
+    updateStudentCoursesMutation.mutate({ studentId: activeStudent.id, updatedCourses });
   };
 
-  const registeredCredits = courses.filter(c => c.enrolled).reduce((sum, c) => sum + c.credits, 0);
+  const registeredCredits = activeStudent ? courses.filter(c => activeStudent.courses.includes(c.code)).reduce((sum, c) => sum + c.credits, 0) : 0;
+  const selectClass = "w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-accent-primary)] focus:ring-1 focus:ring-[var(--color-accent-primary)] font-body";
 
   return (
-    <div className="space-y-6">
-      <ModuleBanner 
-        title={t("uni_registration", "Course Registration Portal")} 
-        subtitle="Submit module choices, add or drop courses, review waitlists, and access advisory records." 
-      />
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-2 border-slate-100 shadow-sm">
-          <CardHeader>
-            <CardTitle>Course Enrollment Worksheet</CardTitle>
-            <CardDescription>Select or drop courses for the upcoming Academic Semester.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {courses.map((course, idx) => (
-              <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-black text-primary bg-primary/10 px-2 py-0.5 rounded">{course.code}</span>
-                    <h4 className="font-extrabold text-sm text-slate-800">{course.title}</h4>
-                  </div>
-                  <div className="flex gap-4 mt-2 text-xs text-muted-foreground font-semibold">
-                    <span>{course.credits} Credits</span>
-                    <span>{course.schedule}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  {course.enrolled ? (
-                    <>
-                      <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-full flex items-center gap-1 border border-emerald-100">
-                        <CheckCircle className="w-3.5 h-3.5" /> Enrolled
-                      </span>
-                      <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-700 hover:bg-red-50 text-xs font-bold h-8" onClick={() => toggleCourse(course.code)}>
-                        Drop
-                      </Button>
-                    </>
-                  ) : course.waitlist ? (
-                    <>
-                      <span className="text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1.5 rounded-full flex items-center gap-1 border border-amber-100">
-                        <AlertTriangle className="w-3.5 h-3.5" /> Waitlist (#3)
-                      </span>
-                      <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-700 hover:bg-red-50 text-xs font-bold h-8" onClick={() => toggleCourse(course.code)}>
-                        Cancel
-                      </Button>
-                    </>
-                  ) : (
-                    <Button size="sm" className="bg-primary text-white hover:bg-primary/95 text-xs font-bold h-8 gap-1" onClick={() => toggleCourse(course.code)}>
-                      <Plus className="w-3.5 h-3.5" /> Add Course
-                    </Button>
-                  )}
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        <Card className="border-slate-100 shadow-sm">
-          <CardHeader>
-            <CardTitle>Registration Status</CardTitle>
-            <CardDescription>Review semester milestones and advisory logs.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-100 space-y-4">
-              <div className="flex justify-between text-xs">
-                <span className="font-semibold">Registered Credits:</span>
-                <span className="font-bold text-primary">{registeredCredits} / 18 Max</span>
-              </div>
-              <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                <div className="bg-primary h-full" style={{ width: `${(registeredCredits / 18) * 100}%` }} />
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5"><UserCheck className="w-4 h-4 text-indigo-500" /> Academic Advisor Feedback</h4>
-              <div className="p-3 bg-slate-50 dark:bg-slate-800 border rounded-xl text-xs space-y-1.5">
-                <p className="font-bold text-slate-800">Dr. Elizabeth Blackwell</p>
-                <p className="text-slate-500 font-medium leading-relaxed">"Your course choices align perfectly with your Software Engineering track. I recommend adding CS-101 before the deadline."</p>
-                <p className="text-[10px] text-muted-foreground text-right mt-1">Approved Yesterday</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="border-b border-[var(--color-border-subtle)] pb-4">
+        <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Course Registration</h1>
+        <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Submit module choices, validate credit workloads, and satisfy prerequisites.</p>
       </div>
+
+      <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6">
+        <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Active Student Profile</label>
+        <select value={selectedStudentId} onChange={e => setSelectedStudentId(e.target.value)} className={cn(selectClass, "mt-2")}>
+          <option value="">-- Choose Undergraduate --</option>
+          {parsedStudents.map(s => <option key={s.id} value={s.id}>{s.name} ({s.major}) - GPA: {s.gpa}</option>)}
+        </select>
+      </div>
+
+      {activeStudent ? (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] overflow-hidden">
+            <div className="p-6 border-b border-[var(--color-border-subtle)]">
+              <h2 className="font-semibold text-[var(--color-text-primary)]">Registration Grid</h2>
+              <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Select courses. System verifies requirements automatically.</p>
+            </div>
+            <div className="p-4 space-y-3">
+              {courses.length === 0 ? (
+                <p className="text-[var(--color-text-tertiary)] text-center py-8">No courses found. Create courses in the Course Catalog first.</p>
+              ) : courses.map((course, idx) => {
+                const isEnrolled = activeStudent.courses.includes(course.code);
+                return (
+                  <div key={idx} className="p-4 bg-[var(--color-surface-1)] rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-mono font-bold text-[var(--color-accent-primary)] bg-[var(--color-accent-subtle)] px-2 py-0.5 rounded-[var(--radius-sm)]">{course.code}</span>
+                        <h4 className="font-semibold text-[var(--text-sm)] text-[var(--color-text-primary)]">{course.name}</h4>
+                      </div>
+                      <div className="flex flex-wrap gap-4 mt-2 text-[var(--text-xs)] text-[var(--color-text-secondary)] font-medium">
+                        <span>{course.credits} Credits</span>
+                        <span>{course.schedule}</span>
+                        {course.prerequisite && <span className="text-[var(--color-warning)]">Prereq: {course.prerequisite}</span>}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {isEnrolled ? (
+                        <>
+                          <OrbitStatusBadge status="enrolled" />
+                          <button onClick={() => toggleCourse(course.code)} className="px-3 py-1.5 text-xs font-medium text-[var(--color-danger)] hover:bg-[var(--color-danger-subtle)] rounded-[var(--radius-md)] transition-colors">Drop</button>
+                        </>
+                      ) : (
+                        <button onClick={() => toggleCourse(course.code)} className="flex items-center gap-1 px-3 py-1.5 bg-[var(--color-accent-primary)] hover:opacity-90 text-white text-xs font-medium rounded-[var(--radius-md)] transition-all">
+                          <Plus className="w-3.5 h-3.5" /> Add
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 h-fit space-y-6">
+            <h3 className="font-semibold text-[var(--color-text-primary)]">Workload Summary</h3>
+            <div className="space-y-3">
+              <div className="flex justify-between text-[var(--text-sm)]">
+                <span className="text-[var(--color-text-secondary)]">Credit Load:</span>
+                <span className="font-mono font-bold text-[var(--color-accent-primary)]">{registeredCredits} / 18</span>
+              </div>
+              <div className="w-full bg-[var(--color-surface-3)] h-2 rounded-full overflow-hidden">
+                <div className="bg-[var(--color-accent-primary)] h-full transition-all" style={{ width: `${Math.min(100, (registeredCredits / 18) * 100)}%` }} />
+              </div>
+            </div>
+            <div className="space-y-3 pt-4 border-t border-[var(--color-border-subtle)]">
+              <div className="flex justify-between text-[var(--text-sm)]">
+                <span className="text-[var(--color-text-secondary)]">Standing:</span>
+                <span className={activeStudent.gpa >= 2.0 ? 'text-[var(--color-success)] font-medium' : 'text-[var(--color-danger)] font-medium'}>
+                  {activeStudent.gpa >= 2.0 ? 'Good Standing' : 'Probation'}
+                </span>
+              </div>
+              <div className="flex justify-between text-[var(--text-sm)]">
+                <span className="text-[var(--color-text-secondary)]">Advising:</span>
+                <span className="text-[var(--color-success)] font-medium flex items-center gap-1"><CheckCircle2 className="w-3.5 h-3.5" /> Cleared</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-12 text-center text-[var(--color-text-tertiary)]">
+          Select a student to manage course registration.
+        </div>
+      )}
     </div>
   );
 }

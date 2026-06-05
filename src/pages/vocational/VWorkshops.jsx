@@ -1,235 +1,200 @@
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Search, Plus, Wrench, MapPin, Users, Activity } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
+import { Calendar, ChevronLeft, ChevronRight, Plus, Users, Clock, MapPin, Printer, AlertTriangle, CheckCircle2 } from 'lucide-react';
+
+const F = { display: "'Barlow Condensed', sans-serif", body: "'IBM Plex Sans', sans-serif", mono: "'IBM Plex Mono', monospace", label: "'Barlow Semi Condensed', sans-serif" };
+const C = { forge: '#0D1117', carbon: '#161B22', steel: '#21262D', galv: '#30363D', alloy: '#484F58', chrome: '#8B949E', titanium: '#C9D1D9', white: '#F0F6FC', volt: '#F6C90E', plasma: '#FF6B2C', signal: '#00C896', circuit: '#4493F8', arc: '#BF8FFF' };
+
+const tradeColors = { 'Welding': C.volt, 'Electrical': C.circuit, 'Plumbing': C.signal, 'Carpentry': '#F59E0B', 'Automotive': C.plasma, 'Safety': '#EF4444', 'Assessment': C.arc, 'CNC': '#06B6D4' };
 
 export default function VWorkshops() {
-  const { t } = useTranslation();
   const { user } = useAuth();
   const [workshops, setWorkshops] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [newWorkshop, setNewWorkshop] = useState({ title: '', location: '', capacity: '', status: 'Active' });
-  const [selectedWorkshop, setSelectedWorkshop] = useState(null);
-
-  const fetchWorkshops = async () => {
-    setLoading(true);
-    try {
-      const records = await base44.getEntities('voc_workshop', user?.company_id);
-      setWorkshops(records);
-      if (records.length > 0 && !selectedWorkshop) {
-        setSelectedWorkshop(records[0]);
-      }
-    } catch (error) {
-      console.error('Failed to fetch workshops:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [viewMode, setViewMode] = useState('week');
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedSession, setSelectedSession] = useState(null);
 
   useEffect(() => {
-    if (user?.company_id) {
-      fetchWorkshops();
-    }
+    if (!user?.company_id) return;
+    (async () => {
+      setLoading(true);
+      try { setWorkshops(await base44.getEntities('voc_workshop', user.company_id)); }
+      catch (e) { console.error(e); }
+      finally { setLoading(false); }
+    })();
   }, [user]);
 
-  const handleCreateWorkshop = async () => {
-    if (!newWorkshop.title) return;
-    try {
-      const created = await base44.createEntity('voc_workshop', {
-        title: newWorkshop.title,
-        data: {
-          location: newWorkshop.location,
-          capacity: newWorkshop.capacity,
-          status: newWorkshop.status,
-        }
-      }, user?.company_id);
-      setWorkshops([...workshops, created]);
-      setIsDialogOpen(false);
-      setNewWorkshop({ title: '', location: '', capacity: '', status: 'Active' });
-      setSelectedWorkshop(created);
-    } catch (error) {
-      console.error('Failed to create workshop:', error);
-    }
-  };
+  const weekStart = new Date(currentDate);
+  weekStart.setDate(weekStart.getDate() - weekStart.getDay() + 1);
+  const weekDays = Array.from({ length: 6 }, (_, i) => {
+    const d = new Date(weekStart);
+    d.setDate(d.getDate() + i);
+    return d;
+  });
+  const hours = Array.from({ length: 14 }, (_, i) => 7 + i);
+  const rooms = ['Workshop A', 'Workshop B', 'Workshop C', 'Lab 1', 'Lab 2'];
+  const dayLabels = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
-  const filteredWorkshops = workshops.filter(w => 
-    w.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    w.data?.location?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Generate sample session blocks from real data + fallbacks
+  const sessionBlocks = workshops.slice(0, 8).map((w, i) => {
+    const trade = w.data?.trade || ['Welding', 'Electrical', 'Plumbing', 'CNC', 'Automotive', 'Safety'][i % 6];
+    const statuses = ['live', 'scheduled', 'completed', 'scheduled'];
+    return {
+      id: w.id,
+      title: w.title || w.data?.name || `${trade} Session`,
+      trade,
+      room: rooms[i % rooms.length],
+      dayIndex: i % 6,
+      startHour: 8 + (i % 4) * 2,
+      duration: 2 + (i % 3),
+      instructor: w.data?.instructor || `Instructor ${i + 1}`,
+      trainees: w.data?.enrolled || Math.floor(Math.random() * 15) + 8,
+      capacity: w.data?.capacity || 20,
+      status: statuses[i % 4],
+      color: tradeColors[trade] || C.circuit,
+    };
+  });
+
+  const prevWeek = () => { const d = new Date(currentDate); d.setDate(d.getDate() - 7); setCurrentDate(d); };
+  const nextWeek = () => { const d = new Date(currentDate); d.setDate(d.getDate() + 7); setCurrentDate(d); };
+  const weekLabel = `${weekDays[0].toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${weekDays[5].toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
 
   return (
-    <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300 h-[calc(100vh-100px)] flex flex-col">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
+    <div className="min-h-screen bg-[#0D1117] text-[#C9D1D9] p-4 md:p-6" style={{ fontFamily: F.body }}>
+      {/* Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-amber-600 via-orange-600 to-slate-900 bg-clip-text text-transparent">
-            Workshop & Facility Management
-          </h1>
-          <p className="text-muted-foreground mt-1 text-sm font-medium">
-            Manage training facilities, capacities, and workshop status.
-          </p>
+          <h1 className="text-[28px] font-bold tracking-tight text-[#F0F6FC]" style={{ fontFamily: F.display }}>WORKSHOP SCHEDULE</h1>
+          <p className="text-[13px] text-[#8B949E] mt-0.5" style={{ fontFamily: F.mono }}>{workshops.length} workshops · {rooms.length} rooms</p>
         </div>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="bg-amber-600 hover:bg-amber-700 text-white rounded-xl shadow-lg shadow-amber-200 dark:shadow-none">
-              <Plus className="w-4 h-4 mr-2" /> Add Facility
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] rounded-2xl">
-            <DialogHeader>
-              <DialogTitle>Add New Facility</DialogTitle>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="title">Facility Name</Label>
-                <Input id="title" placeholder="e.g. Main Welding Shop" value={newWorkshop.title} onChange={e => setNewWorkshop({...newWorkshop, title: e.target.value})} className="rounded-xl" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="location">Location / Building</Label>
-                <Input id="location" placeholder="e.g. Block C" value={newWorkshop.location} onChange={e => setNewWorkshop({...newWorkshop, location: e.target.value})} className="rounded-xl" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="capacity">Max Capacity</Label>
-                <Input id="capacity" type="number" placeholder="e.g. 30" value={newWorkshop.capacity} onChange={e => setNewWorkshop({...newWorkshop, capacity: e.target.value})} className="rounded-xl" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="status">Status</Label>
-                <Input id="status" placeholder="e.g. Active, Under Maintenance" value={newWorkshop.status} onChange={e => setNewWorkshop({...newWorkshop, status: e.target.value})} className="rounded-xl" />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button onClick={handleCreateWorkshop} className="bg-amber-600 hover:bg-amber-700 rounded-xl">Save Facility</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center bg-[#161B22] border border-[#30363D]">
+            <button onClick={prevWeek} className="p-2 hover:bg-[#21262D] transition-colors"><ChevronLeft className="w-4 h-4 text-[#8B949E]" /></button>
+            <span className="px-3 text-[12px] font-semibold text-[#F0F6FC]" style={{ fontFamily: F.label }}>{weekLabel}</span>
+            <button onClick={nextWeek} className="p-2 hover:bg-[#21262D] transition-colors"><ChevronRight className="w-4 h-4 text-[#8B949E]" /></button>
+          </div>
+          <div className="flex bg-[#161B22] border border-[#30363D]">
+            {['Day', 'Week', 'Month'].map(v => (
+              <button key={v} onClick={() => setViewMode(v.toLowerCase())} className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider transition-colors"
+                style={{ fontFamily: F.label, background: viewMode === v.toLowerCase() ? `${C.volt}15` : 'transparent', color: viewMode === v.toLowerCase() ? C.volt : C.chrome }}>
+                {v}
+              </button>
+            ))}
+          </div>
+          <button className="px-3 py-1.5 bg-[#161B22] border border-[#30363D] text-[11px] font-semibold uppercase tracking-wider hover:bg-[#21262D] transition-colors flex items-center gap-1.5" style={{ fontFamily: F.label, color: C.chrome }}><Printer className="w-3.5 h-3.5" /> Print</button>
+          <button className="px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wider flex items-center gap-1.5 hover:opacity-90" style={{ fontFamily: F.label, background: C.volt, color: C.forge }}>
+            <Plus className="w-4 h-4" /> Schedule
+          </button>
+        </div>
       </div>
 
-      <div className="flex-1 flex gap-6 overflow-hidden">
-        {/* Left Panel */}
-        <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-amber-100/50">
-          <div className="p-4 border-b border-amber-50 dark:border-slate-800">
-            <div className="relative">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-amber-500" />
-              <Input 
-                placeholder="Search facilities..." 
-                className="pl-9 h-10 bg-amber-50/50 dark:bg-slate-800/50 border-amber-100 dark:border-slate-700 rounded-xl focus-visible:ring-amber-600"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+      {/* Room filter chips */}
+      <div className="flex gap-2 mb-4 overflow-x-auto pb-2">
+        {rooms.map(room => (
+          <button key={room} className="px-3 py-1 text-[10px] font-semibold uppercase tracking-wider whitespace-nowrap border transition-colors"
+            style={{ fontFamily: F.label, background: C.carbon, borderColor: C.galv, color: C.chrome }}>
+            <MapPin className="w-3 h-3 inline mr-1" />{room}
+          </button>
+        ))}
+      </div>
+
+      {/* Calendar Grid */}
+      <div className="bg-[#161B22] border border-[#30363D] overflow-hidden" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.4), 0 4px 12px rgba(0,0,0,0.3)' }}>
+        <div className="overflow-x-auto">
+          <div className="min-w-[900px]">
+            {/* Day headers */}
+            <div className="grid grid-cols-[80px_repeat(6,1fr)] border-b border-[#30363D]">
+              <div className="p-3 bg-[#0D1117]" />
+              {weekDays.map((d, i) => (
+                <div key={i} className="p-3 text-center border-l border-[#21262D] bg-[#0D1117]">
+                  <div className="text-[10px] font-semibold uppercase tracking-wider" style={{ fontFamily: F.label, color: C.alloy }}>{dayLabels[i]}</div>
+                  <div className="text-[14px] font-bold text-[#F0F6FC] mt-0.5" style={{ fontFamily: F.display }}>{d.getDate()}</div>
+                </div>
+              ))}
             </div>
+
+            {/* Time grid */}
+            {hours.map(h => (
+              <div key={h} className="grid grid-cols-[80px_repeat(6,1fr)] border-b border-[#21262D]/50" style={{ minHeight: 52 }}>
+                <div className="px-3 py-1 text-[10px] font-mono text-[#484F58] text-right pr-4 pt-2">{String(h).padStart(2, '0')}:00</div>
+                {dayLabels.map((_, di) => {
+                  const block = sessionBlocks.find(b => b.dayIndex === di && b.startHour === h);
+                  return (
+                    <div key={di} className="border-l border-[#21262D]/30 relative" style={{ minHeight: 52 }}>
+                      {block && (
+                        <div
+                          className="absolute left-1 right-1 top-1 rounded-sm px-2 py-1 cursor-pointer transition-all hover:opacity-90 group overflow-hidden"
+                          style={{
+                            backgroundColor: `${block.color}18`,
+                            borderLeft: `3px solid ${block.color}`,
+                            height: `${block.duration * 52 - 4}px`,
+                            zIndex: 10,
+                          }}
+                          onClick={() => setSelectedSession(block)}
+                        >
+                          <div className="flex items-center gap-1 mb-0.5">
+                            {block.status === 'live' && (
+                              <span className="relative flex h-1.5 w-1.5">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: C.signal }} />
+                                <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ background: C.signal }} />
+                              </span>
+                            )}
+                            {block.status === 'completed' && <CheckCircle2 className="w-3 h-3" style={{ color: C.alloy }} />}
+                            <span className="text-[10px] font-bold uppercase truncate" style={{ fontFamily: F.label, color: block.color }}>{block.title}</span>
+                          </div>
+                          <div className="text-[9px] text-[#8B949E]" style={{ fontFamily: F.mono }}>{block.room} · {block.instructor}</div>
+                          <div className="text-[9px] text-[#484F58] mt-0.5 flex items-center gap-1"><Users className="w-2.5 h-2.5" />{block.trainees}/{block.capacity}</div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
           </div>
-          <ScrollArea className="flex-1">
-            {loading ? (
-              <div className="p-8 text-center text-amber-300 text-sm">Loading facilities...</div>
-            ) : filteredWorkshops.length === 0 ? (
-              <div className="p-8 text-center text-slate-400 text-sm">No facilities found.</div>
-            ) : (
-              <div className="p-2 space-y-1">
-                {filteredWorkshops.map(workshop => (
-                  <button
-                    key={workshop.id}
-                    onClick={() => setSelectedWorkshop(workshop)}
-                    className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
-                      selectedWorkshop?.id === workshop.id 
-                        ? 'bg-amber-600 text-white shadow-md shadow-amber-500/20' 
-                        : 'hover:bg-amber-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'
-                    }`}
-                  >
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-                      selectedWorkshop?.id === workshop.id ? 'bg-white/20' : 'bg-amber-100 dark:bg-slate-800 text-amber-600'
-                    }`}>
-                      <Wrench className="w-5 h-5" />
-                    </div>
-                    <div className="overflow-hidden">
-                      <p className="font-bold truncate">{workshop.title}</p>
-                      <p className={`text-xs truncate flex items-center gap-1 ${selectedWorkshop?.id === workshop.id ? 'text-amber-200' : 'text-slate-500'}`}>
-                        <MapPin className="w-3 h-3" /> {workshop.data?.location || 'Unknown'}
-                      </p>
-                    </div>
-                  </button>
+        </div>
+      </div>
+
+      {/* Session Detail Slide-over */}
+      {selectedSession && (
+        <div className="fixed inset-0 z-50 flex justify-end" onClick={() => setSelectedSession(null)}>
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+          <div className="relative w-[400px] bg-[#161B22] border-l border-[#30363D] h-full overflow-y-auto animate-in slide-in-from-right duration-200" onClick={e => e.stopPropagation()}>
+            <div className="p-4 border-b border-[#30363D] flex items-center justify-between">
+              <h2 className="text-[16px] font-bold text-[#F0F6FC]" style={{ fontFamily: F.display }}>{selectedSession.title}</h2>
+              <button onClick={() => setSelectedSession(null)} className="text-[#8B949E] hover:text-[#F0F6FC]"><ChevronRight className="w-5 h-5" /></button>
+            </div>
+            <div className="p-4 space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                {[{ label: 'Room', value: selectedSession.room, icon: MapPin }, { label: 'Time', value: `${selectedSession.startHour}:00 – ${selectedSession.startHour + selectedSession.duration}:00`, icon: Clock }, { label: 'Instructor', value: selectedSession.instructor, icon: Users }, { label: 'Capacity', value: `${selectedSession.trainees}/${selectedSession.capacity}`, icon: Users }].map(d => (
+                  <div key={d.label} className="p-3 bg-[#0D1117] border border-[#21262D]">
+                    <div className="flex items-center gap-1 text-[9px] text-[#484F58] uppercase tracking-wider mb-1" style={{ fontFamily: F.label }}><d.icon className="w-3 h-3" />{d.label}</div>
+                    <div className="text-[13px] text-[#F0F6FC] font-semibold">{d.value}</div>
+                  </div>
                 ))}
               </div>
-            )}
-          </ScrollArea>
-        </Card>
-
-        {/* Right Panel */}
-        <Card className="flex-1 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-amber-100/50 overflow-hidden relative">
-          {selectedWorkshop ? (
-            <>
-              <div className="h-32 bg-gradient-to-r from-amber-500 to-orange-600 relative shrink-0 flex items-center px-8">
-                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-                <div className="relative z-10 flex items-center gap-6 translate-y-10">
-                  <div className="w-24 h-24 rounded-2xl bg-white dark:bg-slate-900 p-2 shadow-xl shrink-0">
-                    <div className="w-full h-full rounded-xl bg-amber-50 dark:bg-slate-800 flex items-center justify-center text-amber-600">
-                      <Wrench className="w-10 h-10" />
+              <div>
+                <h3 className="text-[11px] font-semibold uppercase tracking-wider text-[#484F58] mb-2" style={{ fontFamily: F.label }}>Attendance Roster</h3>
+                <div className="space-y-1">
+                  {Array.from({ length: Math.min(selectedSession.trainees, 6) }, (_, i) => (
+                    <div key={i} className="flex items-center gap-2 p-2 bg-[#0D1117] border border-[#21262D]">
+                      <div className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold" style={{ background: `${C.volt}20`, color: C.volt }}>T{i + 1}</div>
+                      <span className="text-[12px] text-[#C9D1D9] flex-1">Trainee {i + 1}</span>
+                      <span className="text-[10px] font-semibold uppercase" style={{ fontFamily: F.label, color: i < 4 ? C.signal : i === 4 ? C.volt : C.plasma }}>{i < 4 ? '✓ Present' : i === 4 ? '⚠ Late' : '✕ Absent'}</span>
                     </div>
-                  </div>
+                  ))}
                 </div>
               </div>
-              
-              <ScrollArea className="flex-1 mt-12">
-                <div className="px-8 pb-8">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h2 className="text-3xl font-black text-slate-800 dark:text-slate-100">{selectedWorkshop.title}</h2>
-                      <div className="flex items-center gap-3 mt-2 text-sm text-slate-600 dark:text-slate-300 font-medium">
-                        <Badge variant="outline" className={`border-amber-200 bg-amber-50 text-amber-700 dark:bg-slate-800 dark:text-amber-400`}>
-                          {selectedWorkshop.data?.status || 'Active'}
-                        </Badge>
-                        <span>•</span>
-                        <span className="flex items-center gap-1.5">
-                          <MapPin className="w-4 h-4 text-slate-400" /> {selectedWorkshop.data?.location || 'No Location Set'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="p-6 rounded-2xl bg-amber-50/50 dark:bg-slate-800/50 border border-amber-100 dark:border-slate-700 flex items-center gap-4">
-                      <div className="p-4 bg-amber-100 dark:bg-slate-700 text-amber-600 rounded-xl">
-                        <Users className="w-8 h-8" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Max Capacity</p>
-                        <p className="text-2xl font-black text-slate-800 dark:text-slate-100">{selectedWorkshop.data?.capacity || 'N/A'}</p>
-                      </div>
-                    </div>
-                    <div className="p-6 rounded-2xl bg-orange-50/50 dark:bg-slate-800/50 border border-orange-100 dark:border-slate-700 flex items-center gap-4">
-                      <div className="p-4 bg-orange-100 dark:bg-slate-700 text-orange-600 rounded-xl">
-                        <Activity className="w-8 h-8" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Current Status</p>
-                        <p className="text-2xl font-black text-slate-800 dark:text-slate-100">{selectedWorkshop.data?.status || 'Active'}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </ScrollArea>
-            </>
-          ) : (
-            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-              <div className="w-20 h-20 rounded-full bg-amber-50 dark:bg-slate-800 flex items-center justify-center mb-6">
-                <Wrench className="w-10 h-10 text-amber-300" />
+              <div className="flex gap-2">
+                <button className="flex-1 py-2 text-[11px] font-semibold uppercase tracking-wider text-center border border-[#30363D] text-[#C9D1D9] hover:bg-[#21262D] transition-colors" style={{ fontFamily: F.label }}>End Session</button>
+                <button className="flex-1 py-2 text-[11px] font-semibold uppercase tracking-wider text-center hover:opacity-90" style={{ fontFamily: F.label, background: C.plasma, color: '#fff' }}>Flag Incident</button>
               </div>
-              <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200">No Facility Selected</h3>
-              <p className="text-slate-500 dark:text-slate-400 max-w-sm mt-2">
-                Select a workshop/facility from the list to view its details or add a new one.
-              </p>
             </div>
-          )}
-        </Card>
-      </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

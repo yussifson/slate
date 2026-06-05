@@ -1,107 +1,153 @@
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { MessageSquare, Users, TrendingUp, Search, Plus } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import React, { useState } from 'react';
+import { Card } from "@/components/ui/card";
+import { MessageSquare, Users, TrendingUp, Search, Plus, ThumbsUp, MessageCircle, MoreVertical } from 'lucide-react';
 
 export default function OnlineCommunity() {
+  const [activeTab, setActiveTab] = useState('popular');
+
+  const discussions = [
+    { id: 1, author: "Alex J.", avatar: "A", title: "Best resources for learning React Hooks in depth?", content: "I've gone through the basic tutorial but I'm looking for some advanced use cases for useMemo and useCallback. Any suggestions?", replies: 24, likes: 156, tags: ["React", "Advanced"], time: "2 hours ago" },
+    { id: 2, author: "Sarah W.", avatar: "S", title: "Showcase: My final project for UI Fundamentals", content: "Hey everyone! I just finished the final project for the UI Design course. I redesigned a local coffee shop's mobile app. Would love some feedback!", replies: 42, likes: 320, tags: ["Design", "Showcase"], time: "5 hours ago" },
+    { id: 3, author: "Michael C.", avatar: "M", title: "Stuck on Module 4 Assignment - Help!", content: "I keep getting a CORS error when trying to fetch data from the mock API provided in the assignment. Here is my fetch function...", replies: 8, likes: 12, tags: ["Help", "API"], time: "1 day ago" },
+  ];
+
   return (
-    <div className="space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 font-sans bg-[#F5F7F8] min-h-screen">
-      <div className="flex justify-between items-center mb-6">
+    <div className="h-[calc(100vh-64px)] bg-void flex flex-col font-body text-text-primary overflow-hidden">
+      {/* Header */}
+      <div className="px-8 py-6 border-b border-border bg-overlay shrink-0 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Community & Forums</h1>
-          <p className="text-gray-500 mt-1">Engage with students, answer questions, and build discussions.</p>
+            <h1 className="text-2xl font-display font-medium mb-1 flex items-center gap-2">
+                <Users className="w-6 h-6 text-orbit" /> Learner Community
+            </h1>
+            <p className="text-text-secondary text-sm">Ask questions, share projects, and network with peers globally.</p>
         </div>
-        <Button className="bg-[#0056D2] hover:bg-[#004bb5] text-white"><Plus className="h-4 w-4 mr-2" /> New Topic</Button>
+        
+        <div className="flex items-center gap-3 w-full md:w-auto">
+            <div className="relative flex-1 md:w-64">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+                <input type="text" placeholder="Search discussions..." className="w-full bg-surface border border-border rounded-lg pl-9 pr-4 py-2 text-sm text-text-primary focus:outline-none focus:border-orbit" />
+            </div>
+            <button className="orbit-btn-primary px-4 py-2 text-sm flex items-center gap-2 shrink-0">
+                <Plus className="w-4 h-4" /> New Topic
+            </button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <div className="lg:col-span-1 space-y-6">
-          <Card className="border-0 shadow-sm rounded-xl">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg">Navigation</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <Button variant="ghost" className="w-full justify-start text-[#0056D2] bg-blue-50 font-semibold">
-                <MessageSquare className="h-5 w-5 mr-3" /> All Discussions
-              </Button>
-              <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-[#0056D2] hover:bg-blue-50">
-                <Users className="h-5 w-5 mr-3" /> Student Groups
-              </Button>
-              <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-[#0056D2] hover:bg-blue-50">
-                <TrendingUp className="h-5 w-5 mr-3" /> Trending Topics
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-sm rounded-xl bg-gradient-to-br from-[#0056D2] to-blue-800 text-white">
-            <CardContent className="p-6">
-              <h3 className="font-bold text-lg mb-2">Community Stats</h3>
-              <div className="space-y-4 mt-4">
-                <div>
-                  <p className="text-blue-200 text-sm">Active Members</p>
-                  <p className="text-2xl font-bold">12,450</p>
-                </div>
-                <div>
-                  <p className="text-blue-200 text-sm">Posts this week</p>
-                  <p className="text-2xl font-bold">342</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="lg:col-span-3">
-          <Card className="border-0 shadow-sm rounded-xl mb-6">
-            <CardContent className="p-4 flex items-center gap-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                <Input placeholder="Search discussions..." className="pl-10 border-gray-200" />
-              </div>
-              <Button variant="outline" className="border-gray-200">Filter</Button>
-            </CardContent>
-          </Card>
-
-          <div className="space-y-4">
-            {[
-              { title: "Help with Neural Network Assignment (Week 3)", author: "Sarah M.", replies: 12, views: 145, time: "2 hours ago", tag: "Help Required" },
-              { title: "React 18 vs React 19: What should I learn?", author: "David K.", replies: 45, views: 890, time: "5 hours ago", tag: "Discussion" },
-              { title: "Looking for study partners for Data Science certification", author: "Priya P.", replies: 8, views: 56, time: "1 day ago", tag: "Networking" },
-              { title: "Instructor Announcement: Office hours rescheduled", author: "Dr. Andrew Ng", replies: 3, views: 230, time: "2 days ago", tag: "Announcement", isInstructor: true },
-            ].map((topic, i) => (
-              <Card key={i} className="border-0 shadow-sm rounded-xl overflow-hidden hover:shadow-md transition-shadow cursor-pointer border border-transparent hover:border-blue-100 group">
-                <CardContent className="p-5 flex flex-col md:flex-row gap-4 items-start md:items-center">
-                  <div className="flex-1 space-y-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      {topic.isInstructor ? (
-                        <Badge className="bg-blue-100 text-[#0056D2] hover:bg-blue-100">Instructor Post</Badge>
-                      ) : (
-                        <Badge variant="secondary" className="text-gray-600">{topic.tag}</Badge>
-                      )}
-                    </div>
-                    <h3 className="font-bold text-lg text-gray-900 group-hover:text-[#0056D2] transition-colors">{topic.title}</h3>
-                    <p className="text-sm text-gray-500">Posted by <span className="font-medium text-gray-700">{topic.author}</span> • {topic.time}</p>
-                  </div>
-                  <div className="flex items-center gap-6 text-sm text-gray-500 w-full md:w-auto justify-start md:justify-end border-t md:border-0 pt-3 md:pt-0">
-                    <div className="text-center">
-                      <div className="font-bold text-gray-900">{topic.replies}</div>
-                      <div className="text-xs uppercase tracking-wider">Replies</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="font-bold text-gray-900">{topic.views}</div>
-                      <div className="text-xs uppercase tracking-wider">Views</div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+      <div className="flex-1 flex overflow-hidden">
           
-          <div className="flex justify-center mt-8">
-            <Button variant="outline" className="text-[#0056D2] border-[#0056D2]">Load More Discussions</Button>
+          {/* Main Feed */}
+          <div className="flex-1 overflow-y-auto custom-scrollbar p-8">
+              <div className="max-w-4xl mx-auto">
+                  
+                  {/* Tabs */}
+                  <div className="flex gap-1 bg-surface p-1 rounded-lg border border-border inline-flex mb-8">
+                      {['popular', 'recent', 'my_posts'].map(tab => (
+                          <button 
+                              key={tab}
+                              onClick={() => setActiveTab(tab)}
+                              className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors capitalize ${activeTab === tab ? 'bg-orbit text-orbit-light shadow-sm' : 'text-text-secondary hover:text-text-primary'}`}
+                          >{tab.replace('_', ' ')}</button>
+                      ))}
+                  </div>
+
+                  <div className="space-y-4">
+                      {discussions.map(post => (
+                          <Card key={post.id} className="bg-deep border-border hover:border-orbit/50 transition-colors p-6 flex gap-4 cursor-pointer">
+                              <div className="shrink-0 flex flex-col items-center gap-2">
+                                  <div className="w-12 h-12 rounded-full bg-surface border border-border flex items-center justify-center text-orbit font-bold text-lg">
+                                      {post.avatar}
+                                  </div>
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                  <div className="flex justify-between items-start mb-1">
+                                      <h3 className="font-display font-medium text-lg text-white hover:text-orbit transition-colors line-clamp-1">{post.title}</h3>
+                                      <button className="text-text-muted hover:text-text-primary p-1"><MoreVertical className="w-4 h-4" /></button>
+                                  </div>
+                                  <div className="text-xs text-text-muted mb-3 flex items-center gap-2">
+                                      <span className="font-medium text-text-secondary">{post.author}</span> • <span>{post.time}</span>
+                                  </div>
+                                  <p className="text-text-secondary text-sm mb-4 line-clamp-2 leading-relaxed">
+                                      {post.content}
+                                  </p>
+                                  <div className="flex items-center justify-between">
+                                      <div className="flex gap-2">
+                                          {post.tags.map(tag => (
+                                              <span key={tag} className="px-2 py-1 bg-surface text-text-secondary border border-border rounded text-[10px] uppercase tracking-wider font-medium">
+                                                  {tag}
+                                              </span>
+                                          ))}
+                                      </div>
+                                      <div className="flex items-center gap-4 text-text-muted text-sm font-medium">
+                                          <div className="flex items-center gap-1.5 hover:text-emerald-400 transition-colors">
+                                              <ThumbsUp className="w-4 h-4" /> {post.likes}
+                                          </div>
+                                          <div className="flex items-center gap-1.5 hover:text-orbit transition-colors">
+                                              <MessageCircle className="w-4 h-4" /> {post.replies}
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </Card>
+                      ))}
+                  </div>
+              </div>
           </div>
-        </div>
+
+          {/* Sidebar */}
+          <div className="hidden lg:block w-80 border-l border-border bg-overlay p-6 overflow-y-auto custom-scrollbar shrink-0">
+              
+              <div className="mb-8">
+                  <h3 className="text-sm font-display font-medium text-text-secondary uppercase tracking-widest mb-4">Trending Topics</h3>
+                  <div className="space-y-3">
+                      {[
+                          { tag: "React", count: "1.2k posts" },
+                          { tag: "CareerAdvice", count: "856 posts" },
+                          { tag: "PortfolioReview", count: "643 posts" },
+                          { tag: "Web3", count: "420 posts" }
+                      ].map((t, i) => (
+                          <div key={i} className="flex justify-between items-center cursor-pointer group">
+                              <span className="text-sm font-medium text-orbit-light group-hover:underline">#{t.tag}</span>
+                              <span className="text-xs text-text-muted">{t.count}</span>
+                          </div>
+                      ))}
+                  </div>
+              </div>
+
+              <div className="mb-8">
+                  <h3 className="text-sm font-display font-medium text-text-secondary uppercase tracking-widest mb-4">Top Contributors</h3>
+                  <div className="space-y-4">
+                      {[
+                          { name: "David K.", points: 15420, badge: "Master" },
+                          { name: "Emily R.", points: 12100, badge: "Expert" },
+                          { name: "John S.", points: 9850, badge: "Mentor" }
+                      ].map((u, i) => (
+                          <div key={i} className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-full bg-orbit/20 flex items-center justify-center text-orbit text-xs font-bold">
+                                  {u.name[0]}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                  <div className="text-sm font-medium text-white truncate">{u.name}</div>
+                                  <div className="text-[10px] text-text-muted">{u.badge} • {u.points} pts</div>
+                              </div>
+                          </div>
+                      ))}
+                  </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-orbit/20 to-deep border border-orbit/30 p-5 rounded-xl">
+                  <h4 className="font-display font-medium text-white mb-2 flex items-center gap-2">
+                      <TrendingUp className="w-4 h-4 text-orbit" /> Level Up
+                  </h4>
+                  <p className="text-xs text-text-secondary mb-4 leading-relaxed">
+                      Help others in the community to earn points, unlock exclusive badges, and gain access to beta courses!
+                  </p>
+                  <div className="h-1.5 w-full bg-surface rounded-full overflow-hidden">
+                      <div className="h-full bg-orbit w-[60%]"></div>
+                  </div>
+                  <div className="text-right text-[10px] text-text-muted mt-1">400 pts to next level</div>
+              </div>
+
+          </div>
       </div>
     </div>
   );
