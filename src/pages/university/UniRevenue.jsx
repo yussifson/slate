@@ -80,9 +80,9 @@ export default function UniRevenue() {
                 <XAxis dataKey="month" tick={{fill: 'var(--color-text-secondary)', fontSize: 12}} />
                 <YAxis tick={{fill: 'var(--color-text-secondary)', fontSize: 12}} />
                 <Tooltip contentStyle={{ backgroundColor: 'var(--color-surface-0)', borderColor: 'var(--color-border-subtle)', borderRadius: '8px' }} />
-                <Bar dataKey="Tuition" fill="#1A73E8" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="Housing" fill="#10b981" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="Scholarships" fill="#f43f5e" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="Tuition" fill="var(--chart-1)" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="Housing" fill="var(--chart-2)" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="Scholarships" fill="var(--chart-3)" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

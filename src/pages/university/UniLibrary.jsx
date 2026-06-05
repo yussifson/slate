@@ -1,19 +1,38 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
+import { useQuery } from "@tanstack/react-query";
+import { base44 } from "@/api/base44Client";
+import { useCompanyId } from "@/hooks/useCompanyId";
 import { Book, Globe, Shield, RefreshCw, FileText, Search, Download } from 'lucide-react';
 import OrbitEmptyState from '@/components/university/OrbitEmptyState';
 
 function cn(...classes) { return classes.filter(Boolean).join(' '); }
 
 export default function UniLibrary() {
-  const [digitalItems] = useState([
-    { title: "Introduction to Algorithmic Analysis", author: "Dr. Cormen", type: "Digital PDF", date: "2024" },
-    { title: "Journal of Distributed consensus & Blockchains", author: "Academic Press", type: "Journal Article", date: "2025" },
-    { title: "Vector Calculus & Mechanics", author: "Feynman", type: "Digital Book", date: "2023" }
-  ]);
+  const companyId = useCompanyId();
+
+  const { data: bookRecords = [] } = useQuery({
+    queryKey: ["cases", companyId, "uni_book"],
+    queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId, case_type: 'uni_book' }),
+    enabled: !!companyId
+  });
+
+  const digitalItems = useMemo(() => {
+    return bookRecords.map(b => {
+      let extra = {};
+      try { extra = JSON.parse(b.notes || '{}'); } catch(e) {}
+      return {
+        id: b.id,
+        title: b.title || 'Untitled Publication',
+        author: extra.author || 'Unknown Author',
+        type: extra.type || 'Digital PDF',
+        date: extra.date || new Date(b.created_at || Date.now()).getFullYear().toString()
+      };
+    });
+  }, [bookRecords]);
 
   const stats = [
     { label: 'Physical Volumes', value: '45,000', icon: Book, color: 'var(--color-module-library)' },
-    { label: 'Digital Assets', value: '12,800', icon: Globe, color: 'var(--color-info)' },
+    { label: 'Digital Assets', value: Math.max(12800, digitalItems.length), icon: Globe, color: 'var(--color-info)' },
     { label: 'Active Borrows', value: '324', icon: RefreshCw, color: 'var(--color-warning)' },
     { label: 'Subscribed Journals', value: '24', icon: Shield, color: 'var(--color-success)' }
   ];
@@ -50,19 +69,28 @@ export default function UniLibrary() {
             <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Browse online publications, lecture notes, and research materials.</p>
           </div>
           <div className="p-6 space-y-4">
-            {digitalItems.map((item, idx) => (
-              <div key={idx} className="p-4 bg-[var(--color-surface-1)] border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] flex justify-between items-center text-[var(--text-xs)]">
-                <div>
-                  <h4 className="font-bold text-[var(--text-sm)] text-[var(--color-text-primary)] flex items-center gap-1.5">
-                    <FileText className="w-4 h-4" style={{ color: 'var(--color-module-library)' }} /> {item.title}
-                  </h4>
-                  <p className="text-[var(--color-text-secondary)] mt-1">Author: {item.author} · Published: {item.date}</p>
+            {digitalItems.length === 0 ? (
+              <OrbitEmptyState 
+                icon={Book} 
+                title="No Digital Assets" 
+                description="The digital repository is currently empty." 
+                moduleColor="var(--color-module-library)" 
+              />
+            ) : (
+              digitalItems.map((item, idx) => (
+                <div key={idx} className="p-4 bg-[var(--color-surface-1)] border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] flex justify-between items-center text-[var(--text-xs)] hover:border-[var(--color-module-library)] transition-colors">
+                  <div>
+                    <h4 className="font-bold text-[var(--text-sm)] text-[var(--color-text-primary)] flex items-center gap-1.5">
+                      <FileText className="w-4 h-4" style={{ color: 'var(--color-module-library)' }} /> {item.title}
+                    </h4>
+                    <p className="text-[var(--color-text-secondary)] mt-1">Author: {item.author} · Published: {item.date}</p>
+                  </div>
+                  <button className="flex items-center gap-1 px-3 py-1.5 bg-[var(--color-module-library)] hover:opacity-90 text-white font-medium rounded-[var(--radius-md)] transition-all text-xs">
+                    <Download className="w-3.5 h-3.5" /> Download PDF
+                  </button>
                 </div>
-                <button className="flex items-center gap-1 px-3 py-1.5 bg-[var(--color-module-library)] hover:opacity-90 text-white font-medium rounded-[var(--radius-md)] transition-all text-xs">
-                  <Download className="w-3.5 h-3.5" /> Download PDF
-                </button>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
 

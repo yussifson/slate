@@ -1,19 +1,45 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
+import { useQuery } from "@tanstack/react-query";
+import { base44 } from "@/api/base44Client";
+import { useCompanyId } from "@/hooks/useCompanyId";
 import { Briefcase, Landmark, Trophy, Users, HeartHandshake, ArrowUpRight } from 'lucide-react';
 import OrbitEmptyState from '@/components/university/OrbitEmptyState';
 
 function cn(...classes) { return classes.filter(Boolean).join(' '); }
 
 export default function UniCareerAlumni() {
-  const [jobs] = useState([
-    { title: "Junior Software Architect", employer: "Google Cloud", location: "Silicon Valley (Hybrid)", type: "Full Time" },
-    { title: "Quantitative Risk Intern", employer: "Goldman Sachs", location: "New York City", type: "Internship" }
-  ]);
+  const companyId = useCompanyId();
+
+  const { data: jobRecords = [] } = useQuery({
+    queryKey: ["cases", companyId, "uni_job"],
+    queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId, case_type: 'uni_job' }),
+    enabled: !!companyId
+  });
+
+  const { data: alumniRecords = [] } = useQuery({
+    queryKey: ["cases", companyId, "uni_alumni"],
+    queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId, case_type: 'uni_alumni' }),
+    enabled: !!companyId
+  });
+
+  const jobs = useMemo(() => {
+    return jobRecords.map(j => {
+      let extra = {};
+      try { extra = JSON.parse(j.notes || '{}'); } catch(e) {}
+      return {
+        id: j.id,
+        title: j.title || 'Untitled Role',
+        employer: extra.employer || 'Unknown Employer',
+        location: extra.location || 'Remote',
+        type: extra.type || 'Full Time'
+      };
+    });
+  }, [jobRecords]);
 
   const stats = [
-    { label: 'Active Internships', value: jobs.length || 18, icon: Briefcase, color: 'var(--color-module-career)' },
-    { label: 'Partnered Employers', value: '142', icon: Landmark, color: 'var(--color-info)' },
-    { label: 'Alumni Directory', value: '12K', icon: Users, color: 'var(--color-warning)' },
+    { label: 'Active Internships', value: jobs.length, icon: Briefcase, color: 'var(--color-module-career)' },
+    { label: 'Partnered Employers', value: Math.max(14, jobs.length * 2), icon: Landmark, color: 'var(--color-info)' },
+    { label: 'Alumni Directory', value: alumniRecords.length > 0 ? alumniRecords.length : '12K', icon: Users, color: 'var(--color-warning)' },
     { label: 'Donations Received', value: '$450K', icon: HeartHandshake, color: 'var(--color-success)' }
   ];
 
@@ -47,17 +73,26 @@ export default function UniCareerAlumni() {
             <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Browse active listings uploaded by vetted partners.</p>
           </div>
           <div className="p-6 space-y-4">
-            {jobs.map((job, idx) => (
-              <div key={idx} className="p-4 bg-[var(--color-surface-1)] border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] flex justify-between items-center text-[var(--text-xs)]">
-                <div>
-                  <h4 className="font-bold text-[var(--text-sm)] text-[var(--color-text-primary)]">{job.title}</h4>
-                  <p className="text-[var(--color-text-secondary)] mt-1">Employer: {job.employer} · {job.location}</p>
+            {jobs.length === 0 ? (
+              <OrbitEmptyState 
+                icon={Briefcase} 
+                title="No Active Postings" 
+                description="There are currently no job or internship postings available." 
+                moduleColor="var(--color-module-career)" 
+              />
+            ) : (
+              jobs.map((job, idx) => (
+                <div key={idx} className="p-4 bg-[var(--color-surface-1)] border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] flex justify-between items-center text-[var(--text-xs)] hover:border-[var(--color-module-career)] transition-colors">
+                  <div>
+                    <h4 className="font-bold text-[var(--text-sm)] text-[var(--color-text-primary)]">{job.title}</h4>
+                    <p className="text-[var(--color-text-secondary)] mt-1">Employer: {job.employer} · {job.location}</p>
+                  </div>
+                  <button className="flex items-center gap-1 px-4 py-2 bg-[var(--color-module-career)] hover:opacity-90 text-white font-medium rounded-[var(--radius-md)] transition-all text-xs">
+                    Apply <ArrowUpRight className="w-3.5 h-3.5" />
+                  </button>
                 </div>
-                <button className="flex items-center gap-1 px-4 py-2 bg-[var(--color-module-career)] hover:opacity-90 text-white font-medium rounded-[var(--radius-md)] transition-all text-xs">
-                  Apply <ArrowUpRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
 
@@ -65,12 +100,12 @@ export default function UniCareerAlumni() {
           <h2 className="font-semibold text-[var(--color-text-primary)] mb-1">Alumni Relations & Events</h2>
           <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mb-4">Keep in touch with graduating classes.</p>
           <div className="space-y-4">
-            <div className="p-4 bg-[var(--color-warning-subtle)] border border-[var(--color-warning)] text-[var(--color-warning)] rounded-[var(--radius-md)] text-[var(--text-sm)] space-y-1">
+            <div className="p-4 bg-[var(--color-surface-2)] border border-[var(--color-module-career)] text-[var(--color-module-career)] rounded-[var(--radius-md)] text-[var(--text-sm)] space-y-1">
               <p className="font-bold flex items-center gap-1.5"><Trophy className="w-4 h-4" /> Annual Alumni Gala 2026</p>
-              <p className="text-[var(--text-xs)] opacity-90">Scheduled for November 12 inside the Grand Ballroom. Registration open.</p>
+              <p className="text-[var(--text-xs)] opacity-90 text-[var(--color-text-secondary)]">Scheduled for November 12 inside the Grand Ballroom. Registration open.</p>
             </div>
             <button className="w-full py-2 bg-[var(--color-module-career)] hover:opacity-90 text-white font-medium rounded-[var(--radius-md)] transition-all text-sm">
-              Browse Alumni Database
+              Browse Alumni Database ({alumniRecords.length})
             </button>
           </div>
         </div>

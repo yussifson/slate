@@ -73,20 +73,20 @@ export default function UniEnrollment() {
               <AreaChart data={defaultEnrollmentHistory} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorEnrolled" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#1A73E8" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#1A73E8" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0}/>
                   </linearGradient>
                   <linearGradient id="colorApplied" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="var(--chart-2)" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="var(--chart-2)" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-border-subtle)" />
                 <XAxis dataKey="term" tick={{fill: 'var(--color-text-secondary)', fontSize: 12}} />
                 <YAxis tick={{fill: 'var(--color-text-secondary)', fontSize: 12}} />
                 <Tooltip contentStyle={{ backgroundColor: 'var(--color-surface-0)', borderColor: 'var(--color-border-subtle)', borderRadius: '8px' }} />
-                <Area type="monotone" dataKey="applied" stroke="#10b981" fillOpacity={1} fill="url(#colorApplied)" strokeWidth={2} />
-                <Area type="monotone" dataKey="enrolled" stroke="#1A73E8" fillOpacity={1} fill="url(#colorEnrolled)" strokeWidth={2} />
+                <Area type="monotone" dataKey="applied" stroke="var(--chart-2)" fillOpacity={1} fill="url(#colorApplied)" strokeWidth={2} />
+                <Area type="monotone" dataKey="enrolled" stroke="var(--chart-1)" fillOpacity={1} fill="url(#colorEnrolled)" strokeWidth={2} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
