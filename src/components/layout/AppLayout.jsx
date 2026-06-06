@@ -73,10 +73,15 @@ export default function AppLayout() {
       } else if (industry === 'school' || industry === 'highschool') {
         primaryColor = '213 89% 50%'; // Google Blue (#1A73E8)
         document.body.classList.add('theme-school');
-        document.body.classList.remove('theme-university');
+        document.body.classList.remove('theme-university', 'theme-online');
+      } else if (industry === 'online') {
+        primaryColor = '213 89% 50%'; // Google Blue (#1A73E8)
+        document.body.classList.add('theme-online');
+        document.body.classList.remove('theme-school', 'theme-university');
       } else {
         document.body.classList.remove('theme-school');
         document.body.classList.remove('theme-university');
+        document.body.classList.remove('theme-online');
         if (industry === 'retail') {
           primaryColor = '24 98% 50%'; // Sunset Orange
         } else if (industry === 'hotel') {
@@ -92,6 +97,7 @@ export default function AppLayout() {
     } else {
       document.body.classList.remove('theme-school');
       document.body.classList.remove('theme-university');
+      document.body.classList.remove('theme-online');
     }
   }, [user?.company_industry, impersonatedCompany?.industry_type]);
 
@@ -237,6 +243,24 @@ export default function AppLayout() {
               
               {/* Elegant Grid Pattern */}
               <div className="absolute inset-0 bg-[linear-gradient(rgba(30,58,138,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(30,58,138,0.03)_1px,transparent_1px)] bg-[size:40px_40px] dark:bg-[linear-gradient(rgba(59,130,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.03)_1px,transparent_1px)]" />
+              
+              {/* Subtle Noise Texture for depth */}
+              <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.25] mix-blend-overlay" />
+            </div>
+          );
+        } else if (industry === 'online') {
+          return (
+            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-all duration-1000 bg-[#FAFAFA] dark:bg-[#0A0F1C]">
+              {/* Deep Tech Blue Gradient Mesh */}
+              <div className="absolute inset-0 bg-gradient-to-br from-[#F0F4FF] via-transparent to-[#DBEAFE]/40 dark:from-[#1E3A8A]/10 dark:via-[#0F172A] dark:to-[#172554]/20" />
+              
+              {/* Soft Radial Glows - Bright Blue */}
+              <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-[#1A73E8]/10 blur-[150px] mix-blend-multiply dark:mix-blend-screen" />
+              <div className="absolute bottom-[-15%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[#1A73E8]/8 blur-[160px] mix-blend-multiply dark:mix-blend-screen" />
+              <div className="absolute top-[20%] right-[10%] w-[40%] h-[40%] rounded-full bg-[#1A73E8]/5 blur-[120px] mix-blend-multiply dark:mix-blend-screen" />
+              
+              {/* Elegant Grid Pattern */}
+              <div className="absolute inset-0 bg-[linear-gradient(rgba(26,115,232,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(26,115,232,0.03)_1px,transparent_1px)] bg-[size:40px_40px] dark:bg-[linear-gradient(rgba(59,130,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.03)_1px,transparent_1px)]" />
               
               {/* Subtle Noise Texture for depth */}
               <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.25] mix-blend-overlay" />

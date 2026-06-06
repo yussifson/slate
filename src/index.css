@@ -400,3 +400,64 @@ body.theme-university {
   --chart-4: 158 68% 68%;
   --chart-5: 158 68% 78%;
 }
+
+/* ============================================================
+   ONLINE LEARNING SUITE THEME — Deep Tech Blue
+   ============================================================ */
+body.theme-online {
+  font-family: 'Outfit', system-ui, sans-serif;
+  --font-body: 'Outfit', sans-serif;
+  --font-display: 'Outfit', sans-serif;
+
+  --color-border-subtle: hsl(213 89% 50% / 0.15);
+  --color-border-default: hsl(213 89% 50% / 0.25);
+  --color-border-strong: hsl(213 89% 50% / 0.4);
+  --border: 213 89% 50%;
+  
+  --color-text-primary: hsl(213 89% 25%);
+  --color-text-secondary: hsl(213 89% 35%);
+  --color-text-tertiary: hsl(213 89% 45%);
+  
+  --color-surface-0: #FFFFFF;
+  --color-surface-1: #FFFFFF;
+  --color-surface-2: #F0F4FF;
+  --color-surface-3: #E8EEFF;
+  --color-surface-4: #DBEAFE;
+
+  --color-module-online: hsl(213 89% 50%);
+  --color-accent-primary: hsl(213 89% 50%);
+  --color-accent-subtle: hsl(213 89% 50% / 0.1);
+
+  --chart-1: 213 89% 50%;
+  --chart-2: 213 89% 40%;
+  --chart-3: 213 89% 30%;
+  --chart-4: 213 89% 60%;
+  --chart-5: 213 89% 70%;
+}
+
+.dark body.theme-online {
+  --color-border-subtle: hsl(213 89% 50% / 0.25);
+  --color-border-default: hsl(213 89% 50% / 0.4);
+  --color-border-strong: hsl(213 89% 50% / 0.6);
+  --border: 213 89% 50%;
+
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: hsl(213 89% 85%);
+  --color-text-tertiary: hsl(213 89% 70%);
+
+  --color-surface-0: transparent;
+  --color-surface-1: rgba(255, 255, 255, 0.03);
+  --color-surface-2: rgba(255, 255, 255, 0.05);
+  --color-surface-3: rgba(255, 255, 255, 0.08);
+  --color-surface-4: rgba(255, 255, 255, 0.12);
+
+  --color-module-online: hsl(213 89% 50%);
+  --color-accent-primary: hsl(213 89% 50%);
+  --color-accent-subtle: hsl(213 89% 50% / 0.2);
+
+  --chart-1: 213 89% 50%;
+  --chart-2: 213 89% 40%;
+  --chart-3: 213 89% 30%;
+  --chart-4: 213 89% 60%;
+  --chart-5: 213 89% 70%;
+}

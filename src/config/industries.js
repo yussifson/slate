@@ -252,7 +252,23 @@ export const INDUSTRIES = {
       { label: 'Learners', path: '/o/learners', icon: 'Users' },
       { label: 'Courses', path: '/o/courses', icon: 'BookOpen' },
       { label: 'Sales', path: '/o/sales', icon: 'Banknote' },
-      { label: 'Settings', path: '/settings', icon: 'Settings' },
+
+      { section: 'Course Creation', label: 'Builder', path: '/o/builder', icon: 'Hammer' },
+      { label: 'Media Manager', path: '/o/media', icon: 'Image' },
+
+      { section: 'Student Experience', label: 'Student Dashboard', path: '/o/student-dashboard', icon: 'PlayCircle' },
+      { label: 'Notes', path: '/o/notes', icon: 'StickyNote' },
+      { label: 'Assessments', path: '/o/assessments', icon: 'ClipboardCheck' },
+      { label: 'Certificates', path: '/o/certificates', icon: 'Award' },
+      { label: 'Live Sessions', path: '/o/live', icon: 'Video' },
+      
+      { section: 'E-commerce', label: 'Subscriptions', path: '/o/subscriptions', icon: 'RefreshCw' },
+      { label: 'Affiliates', path: '/o/affiliates', icon: 'Users2' },
+      { label: 'Corporate', path: '/o/corporate', icon: 'Building2' },
+      
+      { section: 'Community & AI', label: 'Community', path: '/o/community', icon: 'MessageSquare' },
+      
+      { section: 'System', label: 'Settings', path: '/settings', icon: 'Settings' },
     ],
   },
 
