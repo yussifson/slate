@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { ArrowLeft, PlayCircle, CheckCircle2, ChevronDown, MessageSquare, BookOpen, FileText } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function LearningPlayer() {
   const { courseId } = useParams();
@@ -38,60 +39,83 @@ export default function LearningPlayer() {
       <div className="flex flex-1 overflow-hidden">
         
         {/* Player Area */}
-        <div className="flex-1 flex flex-col overflow-y-auto">
+        <div className="flex-1 flex flex-col overflow-y-auto bg-[var(--color-surface-0)] relative">
+          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] mix-blend-overlay pointer-events-none" />
+          
           {/* Video Placeholder */}
-          <div className="w-full aspect-video bg-black relative flex items-center justify-center flex-shrink-0 group">
-            <PlayCircle className="w-20 h-20 text-white/80 group-hover:text-white group-hover:scale-110 transition-all cursor-pointer shadow-xl rounded-full" />
-            <div className="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-black/60 to-transparent flex items-end px-4 pb-3">
-              <div className="w-full h-1 bg-white/30 rounded-full overflow-hidden cursor-pointer">
-                <div className="h-full bg-[var(--color-module-online)] w-1/3"></div>
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="w-full aspect-video bg-black relative flex items-center justify-center flex-shrink-0 group overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-module-online)]/20 to-transparent opacity-50" />
+            <PlayCircle className="w-24 h-24 text-white/80 group-hover:text-[var(--color-module-online)] group-hover:scale-110 transition-all duration-300 cursor-pointer drop-shadow-2xl z-10" />
+            <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end px-6 pb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+              <div className="flex items-center gap-3 mb-2 text-white/90 text-sm font-medium">
+                <PlayCircle className="w-4 h-4 text-[var(--color-module-online)]" />
+                <span>1. Introduction</span>
+                <span className="ml-auto text-xs opacity-70">0:45 / 5:00</span>
+              </div>
+              <div className="w-full h-1.5 bg-white/30 rounded-full overflow-hidden cursor-pointer group/progress">
+                <div className="h-full bg-[var(--color-module-online)] w-1/3 relative group-hover/progress:bg-blue-400 transition-colors">
+                  <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow scale-0 group-hover/progress:scale-100 transition-transform" />
+                </div>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Content Below Video */}
-          <div className="p-6 max-w-5xl mx-auto w-full">
-            <div className="flex items-center gap-4 border-b border-[var(--color-border-subtle)] pb-4">
-              <button onClick={() => setActiveTab('overview')} className={`px-4 py-2 font-medium text-sm transition-colors border-b-2 ${activeTab === 'overview' ? 'border-[var(--color-module-online)] text-[var(--color-module-online)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}>
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="p-8 max-w-5xl mx-auto w-full relative z-10"
+          >
+            <div className="flex items-center gap-6 border-b border-[var(--color-border-subtle)] pb-0">
+              <button onClick={() => setActiveTab('overview')} className={`px-2 py-4 font-semibold text-sm transition-colors border-b-2 -mb-[1px] ${activeTab === 'overview' ? 'border-[var(--color-module-online)] text-[var(--color-module-online)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}>
                 Overview
               </button>
-              <button onClick={() => setActiveTab('qna')} className={`px-4 py-2 font-medium text-sm transition-colors border-b-2 ${activeTab === 'qna' ? 'border-[var(--color-module-online)] text-[var(--color-module-online)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}>
+              <button onClick={() => setActiveTab('qna')} className={`px-2 py-4 font-semibold text-sm transition-colors border-b-2 -mb-[1px] ${activeTab === 'qna' ? 'border-[var(--color-module-online)] text-[var(--color-module-online)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}>
                 Q&A
               </button>
-              <button onClick={() => setActiveTab('resources')} className={`px-4 py-2 font-medium text-sm transition-colors border-b-2 ${activeTab === 'resources' ? 'border-[var(--color-module-online)] text-[var(--color-module-online)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}>
+              <button onClick={() => setActiveTab('resources')} className={`px-2 py-4 font-semibold text-sm transition-colors border-b-2 -mb-[1px] ${activeTab === 'resources' ? 'border-[var(--color-module-online)] text-[var(--color-module-online)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}>
                 Resources
               </button>
             </div>
 
-            <div className="py-6">
+            <div className="py-8">
               {activeTab === 'overview' && (
-                <div className="prose prose-sm max-w-none text-[var(--color-text-secondary)]">
-                  <h2 className="text-xl font-bold text-[var(--color-text-primary)] mb-3">About this lesson</h2>
-                  <p>In this lesson, we will cover the foundational concepts required for the rest of the course. Make sure to download the attached resources and take notes.</p>
-                </div>
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="prose prose-sm max-w-none text-[var(--color-text-secondary)] leading-relaxed">
+                  <h2 className="text-xl font-bold text-[var(--color-text-primary)] mb-4 font-display">About this lesson</h2>
+                  <p>In this lesson, we will cover the foundational concepts required for the rest of the course. Make sure to download the attached resources and take notes. We'll be using practical examples throughout to solidify your understanding.</p>
+                </motion.div>
               )}
               {activeTab === 'qna' && (
-                <div className="space-y-4">
-                  <div className="flex gap-4 p-4 bg-[var(--color-surface-1)] rounded-[var(--radius-md)] border border-[var(--color-border-default)]">
-                    <MessageSquare className="w-5 h-5 text-[var(--color-text-tertiary)] flex-shrink-0" />
-                    <input type="text" placeholder="Ask a new question..." className="bg-transparent border-none outline-none w-full text-sm text-[var(--color-text-primary)]" />
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+                  <div className="flex gap-4 p-1 bg-[var(--color-surface-1)] rounded-full border border-[var(--color-border-default)] focus-within:border-[var(--color-module-online)] focus-within:ring-1 focus-within:ring-[var(--color-module-online)] transition-all">
+                    <input type="text" placeholder="Ask a new question..." className="bg-transparent border-none outline-none w-full text-sm text-[var(--color-text-primary)] px-4 py-2" />
+                    <button className="bg-[var(--color-module-online)] text-white rounded-full p-2.5 hover:opacity-90 transition-opacity">
+                      <MessageSquare className="w-4 h-4" />
+                    </button>
                   </div>
-                  <p className="text-sm text-[var(--color-text-secondary)] text-center py-8">No questions asked yet. Be the first!</p>
-                </div>
+                  <p className="text-sm text-[var(--color-text-tertiary)] text-center py-12">No questions asked yet. Be the first!</p>
+                </motion.div>
               )}
               {activeTab === 'resources' && (
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between p-3 border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] hover:bg-[var(--color-surface-1)] transition-colors cursor-pointer group">
-                    <div className="flex items-center gap-3 text-sm text-[var(--color-text-primary)] font-medium">
-                      <FileText className="w-4 h-4 text-[var(--color-text-tertiary)] group-hover:text-[var(--color-module-online)]" />
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
+                  <div className="flex items-center justify-between p-4 border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] hover:bg-[var(--color-surface-1)] hover:border-[var(--color-module-online)] transition-all cursor-pointer group bg-[var(--color-surface-0)] glass-card">
+                    <div className="flex items-center gap-3 text-sm text-[var(--color-text-primary)] font-semibold">
+                      <div className="p-2 bg-[var(--color-module-online)]/10 text-[var(--color-module-online)] rounded-md">
+                        <FileText className="w-5 h-5" />
+                      </div>
                       Syllabus.pdf
                     </div>
-                    <span className="text-xs text-[var(--color-text-secondary)]">1.2 MB</span>
+                    <span className="text-xs font-medium text-[var(--color-text-secondary)] px-3 py-1 bg-[var(--color-surface-2)] rounded-full group-hover:bg-[var(--color-surface-0)] transition-colors">1.2 MB</span>
                   </div>
-                </div>
+                </motion.div>
               )}
             </div>
-          </div>
+          </motion.div>
         </div>
 
         {/* Sidebar Curriculum */}
