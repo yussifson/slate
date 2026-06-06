@@ -1,119 +1,122 @@
-import { useTranslation } from "react-i18next";
-import { ModuleBanner } from '@/components/school/SchoolViewKit';
+import React, { useState } from 'react';
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { useCompanyId } from "@/hooks/useCompanyId";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Plus, Search, Mail, User } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { Users, Search, Mail, Phone, Calendar, MoreHorizontal, GraduationCap } from 'lucide-react';
 
 export default function OnlineLearners() {
-  const { t } = useTranslation();
   const companyId = useCompanyId();
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const { data: learners = [], isLoading } = useQuery({ 
-    queryKey: ["online_learners", companyId], 
-    queryFn: () => base44.entities.Client.filter({ company_id: companyId, type: 'online_learner' }), 
-    enabled: !!companyId 
+  const { data: learners = [] } = useQuery({
+    queryKey: ["cases", companyId, "online_learner"],
+    queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId, case_type: 'online_learner' }),
+    enabled: !!companyId
   });
 
   const filteredLearners = learners.filter(l => 
-    l.name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    l.email?.toLowerCase().includes(searchTerm.toLowerCase())
+    (l.title || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
-    <div className="space-y-6">
-      <ModuleBanner 
-        title={t("online_learners", "Learners Management")} 
-        subtitle="Manage students, their progress, and enrollments." 
-      />
-
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div className="relative w-full sm:w-96">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-          <Input 
-            placeholder="Search learners by name or email..." 
-            className="pl-9 bg-white border-slate-200"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="border-b border-[var(--color-border-subtle)] pb-4 flex justify-between items-end">
+        <div>
+          <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Learners Directory</h1>
+          <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage and communicate with all registered learners on the platform.</p>
         </div>
-        <Button className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white shadow-sm">
-          <Plus className="h-4 w-4 mr-2" /> Add Learner
-        </Button>
+        <button className="px-4 py-2 bg-[var(--color-module-online)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">
+          Add Learner
+        </button>
       </div>
 
-      <Card className="border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden flex flex-col">
+        <div className="p-4 border-b border-[var(--color-border-subtle)] flex gap-4 bg-[var(--color-surface-1)]">
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-[var(--color-text-tertiary)]" />
+            <input 
+              type="text" 
+              placeholder="Search learners by name..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full bg-[var(--color-surface-0)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--color-module-online)] focus:ring-1 focus:ring-[var(--color-module-online)] font-body"
+            />
+          </div>
+        </div>
+
         <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left">
-            <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-[var(--color-surface-1)] border-b border-[var(--color-border-subtle)] text-[var(--color-text-secondary)]">
               <tr>
-                <th className="px-6 py-4 font-semibold">Learner</th>
-                <th className="px-6 py-4 font-semibold">Status</th>
-                <th className="px-6 py-4 font-semibold">Enrolled Courses</th>
-                <th className="px-6 py-4 font-semibold">Joined Date</th>
-                <th className="px-6 py-4 font-semibold text-right">Actions</th>
+                <th className="px-6 py-3 font-semibold">Learner Name</th>
+                <th className="px-6 py-3 font-semibold">Contact Info</th>
+                <th className="px-6 py-3 font-semibold">Joined Date</th>
+                <th className="px-6 py-3 font-semibold">Enrolled Courses</th>
+                <th className="px-6 py-3 font-semibold text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200 bg-white">
-              {isLoading ? (
+            <tbody className="divide-y divide-[var(--color-border-subtle)] bg-[var(--color-surface-0)] text-[var(--color-text-primary)]">
+              {filteredLearners.length === 0 ? (
                 <tr>
-                  <td colSpan="5" className="px-6 py-8 text-center text-slate-500">Loading learners...</td>
-                </tr>
-              ) : filteredLearners.length === 0 ? (
-                <tr>
-                  <td colSpan="5" className="px-6 py-8 text-center text-slate-500">
-                    <div className="flex flex-col items-center justify-center">
-                      <User className="h-12 w-12 text-slate-300 mb-3" />
-                      <p>No learners found.</p>
-                    </div>
+                  <td colSpan="5" className="px-6 py-12 text-center text-[var(--color-text-tertiary)]">
+                    <Users className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                    <p className="font-medium text-[var(--color-text-secondary)]">No learners found</p>
+                    <p className="text-sm mt-1">Try adjusting your search or add a new learner.</p>
                   </td>
                 </tr>
               ) : (
-                filteredLearners.map((learner) => (
-                  <tr key={learner.id} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="h-9 w-9 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
-                          {learner.name?.charAt(0) || 'U'}
+                filteredLearners.map((learner, idx) => {
+                  let extra = {};
+                  try { extra = JSON.parse(learner.notes || '{}'); } catch(e) {}
+                  
+                  return (
+                    <tr key={idx} className="hover:bg-[var(--color-surface-1)] transition-colors group">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-[var(--color-surface-2)] text-[var(--color-module-online)] flex items-center justify-center font-bold text-xs uppercase shadow-sm">
+                            {(learner.title || 'U').charAt(0)}
+                          </div>
+                          <span className="font-medium">{learner.title || 'Unnamed Learner'}</span>
                         </div>
-                        <div>
-                          <p className="font-medium text-slate-900">{learner.name}</p>
-                          <p className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
-                            <Mail className="h-3 w-3" /> {learner.email}
-                          </p>
+                      </td>
+                      <td className="px-6 py-4 space-y-1">
+                        {extra.email && (
+                          <div className="flex items-center gap-1.5 text-xs text-[var(--color-text-secondary)]">
+                            <Mail className="w-3.5 h-3.5" /> {extra.email}
+                          </div>
+                        )}
+                        {extra.phone && (
+                          <div className="flex items-center gap-1.5 text-xs text-[var(--color-text-secondary)]">
+                            <Phone className="w-3.5 h-3.5" /> {extra.phone}
+                          </div>
+                        )}
+                        {!extra.email && !extra.phone && <span className="text-xs italic text-[var(--color-text-tertiary)]">No contact info</span>}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-1.5 text-xs text-[var(--color-text-secondary)]">
+                          <Calendar className="w-3.5 h-3.5" /> 
+                          {new Date(learner.created_at || Date.now()).toLocaleDateString()}
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
-                        {learner.status || 'Active'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="font-medium text-slate-700">
-                        {learner.notes ? JSON.parse(learner.notes).courses || 0 : 0}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-slate-500">
-                      {new Date(learner.created_at).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-800 hover:bg-blue-50">
-                        View Profile
-                      </Button>
-                    </td>
-                  </tr>
-                ))
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-1.5 text-xs font-semibold text-[var(--color-text-primary)]">
+                          <GraduationCap className="w-4 h-4 text-[var(--color-module-online)]" />
+                          {extra.enrolled_count || 0} courses
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <button className="p-1.5 text-[var(--color-text-tertiary)] hover:text-[var(--color-module-online)] hover:bg-[var(--color-surface-2)] rounded-md transition-colors opacity-0 group-hover:opacity-100">
+                          <MoreHorizontal className="w-4 h-4" />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
         </div>
-      </Card>
+      </div>
     </div>
   );
 }
