@@ -227,7 +227,7 @@ export default function AppLayout() {
               <div className="absolute bottom-[-15%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[hsl(158,68%,38%)]/5 blur-[160px] mix-blend-multiply dark:mix-blend-screen" />
               
               {/* Subtle Noise Texture for depth */}
-              <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.15] mix-blend-overlay" />
+              {/* Noise overlay removed to fix 404 */}
             </div>
           );
         } else if (industry === 'school' || industry === 'highschool') {
@@ -245,7 +245,7 @@ export default function AppLayout() {
               <div className="absolute inset-0 bg-[linear-gradient(rgba(30,58,138,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(30,58,138,0.03)_1px,transparent_1px)] bg-[size:40px_40px] dark:bg-[linear-gradient(rgba(59,130,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.03)_1px,transparent_1px)]" />
               
               {/* Subtle Noise Texture for depth */}
-              <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.25] mix-blend-overlay" />
+              {/* Noise overlay removed to fix 404 */}
             </div>
           );
         } else if (industry === 'online') {
@@ -263,7 +263,7 @@ export default function AppLayout() {
               <div className="absolute inset-0 bg-[linear-gradient(rgba(26,115,232,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(26,115,232,0.03)_1px,transparent_1px)] bg-[size:40px_40px] dark:bg-[linear-gradient(rgba(59,130,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.03)_1px,transparent_1px)]" />
               
               {/* Subtle Noise Texture for depth */}
-              <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.25] mix-blend-overlay" />
+              {/* Noise overlay removed to fix 404 */}
             </div>
           );
         }

@@ -64,6 +64,24 @@ export default function OnlineBuilder() {
     }
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: () => base44.entities.LegalCase.delete(courseId),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["cases", companyId, "online_course"]);
+      toast({ title: "Success", description: "Course deleted successfully." });
+      navigate('/o/courses', { replace: true });
+    },
+    onError: () => {
+      toast({ variant: "destructive", title: "Error", description: "Failed to delete course." });
+    }
+  });
+
+  const handleDelete = () => {
+    if(window.confirm("Are you sure you want to delete this course? This action cannot be undone.")) {
+      deleteMutation.mutate();
+    }
+  };
+
   const handleSave = () => {
     if (!title.trim()) {
       toast({ variant: "destructive", title: "Validation Error", description: "Course title is required." });
@@ -137,26 +155,11 @@ export default function OnlineBuilder() {
               {activeTab === 'curriculum' && (
                 <div className="space-y-6">
                   {courseId ? (
-                    <div className="bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-lg)] p-5">
-                      <div className="flex justify-between items-center mb-4">
-                        <h3 className="font-bold text-[var(--color-text-primary)]">Module 1: Introduction</h3>
-                        <button className="flex items-center gap-1.5 text-xs font-semibold text-[var(--color-text-secondary)] hover:text-[var(--color-module-online)] transition-colors">
-                          <PlusCircle className="w-3.5 h-3.5" /> Add Item
-                        </button>
-                      </div>
-                      <div className="space-y-3">
-                        <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] p-3 rounded-[var(--radius-md)] flex justify-between items-center group hover:border-[var(--color-module-online)] transition-colors cursor-pointer">
-                          <div className="flex items-center gap-3 text-[var(--color-text-primary)] text-sm font-medium">
-                            <Video className="w-4 h-4 text-[var(--color-text-tertiary)]" /> Welcome to the Course
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <span className="text-xs text-[var(--color-text-tertiary)]">5:00</span>
-                            <button className="text-[var(--color-error)] opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-[var(--color-error-subtle)] rounded">
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        </div>
-                      </div>
+                    <div className="text-center py-12 border-2 border-dashed border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] text-[var(--color-text-secondary)] text-sm">
+                      <p className="mb-4">No modules created yet.</p>
+                      <button className="px-4 py-2 bg-[var(--color-surface-1)] border border-[var(--color-border-default)] text-[var(--color-text-primary)] font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors">
+                        Create First Module
+                      </button>
                     </div>
                   ) : (
                     <div className="text-center py-12 border-2 border-dashed border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] text-[var(--color-text-secondary)] text-sm">
@@ -182,6 +185,15 @@ export default function OnlineBuilder() {
                       placeholder="Brief overview of what students will learn..."
                     />
                   </div>
+                  {courseId && (
+                    <div className="pt-6 mt-6 border-t border-[var(--color-border-subtle)]">
+                      <h4 className="text-[var(--color-error)] font-semibold mb-2">Danger Zone</h4>
+                      <p className="text-xs text-[var(--color-text-secondary)] mb-4">Deleting this course will permanently remove it and all associated content. This action cannot be undone.</p>
+                      <button onClick={handleDelete} disabled={deleteMutation.isPending} className="px-4 py-2 bg-[var(--color-error-subtle)] text-[var(--color-error)] text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">
+                        {deleteMutation.isPending ? 'Deleting...' : 'Delete Course'}
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
 

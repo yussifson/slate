@@ -40,7 +40,7 @@ export default function LearningPlayer() {
         
         {/* Player Area */}
         <div className="flex-1 flex flex-col overflow-y-auto bg-[var(--color-surface-0)] relative">
-          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] mix-blend-overlay pointer-events-none" />
+          {/* Noise overlay removed to fix 404 */}
           
           {/* Video Placeholder */}
           <motion.div 

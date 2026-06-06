@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { useCompanyId } from "@/hooks/useCompanyId";
-import { BookOpen, Search, PlayCircle, Clock, Users, Star, ArrowRight, Sparkles, Loader2 } from 'lucide-react';
+import { BookOpen, Search, PlayCircle, Clock, Users, Star, ArrowRight, Sparkles, Loader2, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from "@/components/ui/use-toast";
 
@@ -11,6 +12,18 @@ export default function OnlineCourses() {
   const [searchTerm, setSearchTerm] = useState('');
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const navigate = useNavigate();
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => base44.entities.LegalCase.delete(id),
+    onSuccess: () => {
+      toast({ title: "Success", description: "Course deleted successfully." });
+      queryClient.invalidateQueries(["cases", companyId, "online_course"]);
+    },
+    onError: () => {
+      toast({ variant: "destructive", title: "Error", description: "Failed to delete course." });
+    }
+  });
 
   const { data: courses = [], isLoading } = useQuery({
     queryKey: ["cases", companyId, "online_course"],
@@ -30,7 +43,7 @@ export default function OnlineCourses() {
           <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage learning modules, update curriculum, and track course performance.</p>
         </div>
         <div className="flex gap-3">
-          <button className="px-4 py-2 bg-[var(--color-module-online)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">
+          <button onClick={() => navigate('/o/builder')} className="px-4 py-2 bg-[var(--color-module-online)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">
             Create Course
           </button>
         </div>
@@ -121,9 +134,12 @@ export default function OnlineCourses() {
                       </div>
                     </div>
                   </div>
-                  <div className="bg-[var(--color-surface-1)] border-t border-[var(--color-border-subtle)] px-5 py-3 group-hover:bg-[var(--color-module-online)] transition-colors duration-300">
-                    <button className="text-sm font-semibold text-[var(--color-module-online)] group-hover:text-white flex items-center gap-1 transition-colors w-full justify-between">
+                  <div className="bg-[var(--color-surface-1)] border-t border-[var(--color-border-subtle)] px-5 py-3 group-hover:bg-[var(--color-module-online)] transition-colors duration-300 flex items-center justify-between">
+                    <button onClick={() => navigate(`/o/builder/course/${course.id}`)} className="text-sm font-semibold text-[var(--color-module-online)] group-hover:text-white flex items-center gap-1 transition-colors">
                       Manage Course <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </button>
+                    <button onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(course.id); }} className="text-[var(--color-error)] opacity-0 group-hover:opacity-100 hover:text-white transition-all bg-white/50 group-hover:bg-transparent rounded-md p-1.5 backdrop-blur-sm shadow-sm" title="Delete Course">
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 </motion.div>

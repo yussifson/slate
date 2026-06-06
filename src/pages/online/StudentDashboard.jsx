@@ -25,7 +25,7 @@ export default function StudentDashboard() {
         animate={{ opacity: 1, y: 0 }}
         className="flex justify-between items-center bg-gradient-to-r from-[var(--color-module-online)] to-[hsl(213,89%,35%)] rounded-[var(--radius-xl)] p-8 text-white shadow-lg overflow-hidden relative"
       >
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.15] mix-blend-overlay pointer-events-none" />
+        {/* Noise overlay removed to fix 404 */}
         <div className="absolute top-[-50%] right-[-10%] w-[50%] h-[200%] bg-white/10 blur-[80px] rounded-full pointer-events-none" />
         <div className="relative z-10">
           <h1 className="text-3xl font-display font-bold mb-2">Welcome back, Learner!</h1>
