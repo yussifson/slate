@@ -22,21 +22,13 @@ export default function OnlineSales() {
     }, 0);
   }, [sales]);
 
-  // Mock revenue history for the chart
-  const revenueHistory = [
-    { month: 'Jan', revenue: 12000, subscriptions: 8000 },
-    { month: 'Feb', revenue: 15000, subscriptions: 9500 },
-    { month: 'Mar', revenue: 14000, subscriptions: 11000 },
-    { month: 'Apr', revenue: 18000, subscriptions: 12500 },
-    { month: 'May', revenue: 22000, subscriptions: 15000 },
-    { month: 'Jun', revenue: 26500, subscriptions: 18000 },
-  ];
+  const revenueHistory = [];
 
   const stats = [
     { label: 'Total Revenue', value: `$${totalRevenue.toLocaleString()}`, icon: Banknote, color: 'var(--color-success)' },
-    { label: 'Avg Order Value', value: '$124.50', icon: ShoppingCart, color: 'var(--color-module-online)' },
-    { label: 'Monthly Recurring', value: '$18,000', icon: CreditCard, color: 'var(--color-info)' },
-    { label: 'Growth (YoY)', value: '+42%', icon: TrendingUp, color: 'var(--color-warning)' },
+    { label: 'Avg Order Value', value: '$0.00', icon: ShoppingCart, color: 'var(--color-module-online)' },
+    { label: 'Monthly Recurring', value: '$0', icon: CreditCard, color: 'var(--color-info)' },
+    { label: 'Growth (YoY)', value: '0%', icon: TrendingUp, color: 'var(--color-warning)' },
   ];
 
   return (
@@ -75,17 +67,8 @@ export default function OnlineSales() {
               <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)]">One-time purchases vs Subscriptions</p>
             </div>
           </div>
-          <div className="h-[300px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={revenueHistory} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-border-subtle)" />
-                <XAxis dataKey="month" tick={{fill: 'var(--color-text-secondary)', fontSize: 12}} axisLine={false} tickLine={false} />
-                <YAxis tick={{fill: 'var(--color-text-secondary)', fontSize: 12}} axisLine={false} tickLine={false} />
-                <Tooltip contentStyle={{ backgroundColor: 'var(--color-surface-0)', borderColor: 'var(--color-border-subtle)', borderRadius: '8px' }} cursor={{fill: 'var(--color-surface-2)'}} />
-                <Bar dataKey="revenue" stackId="a" fill="var(--chart-1)" radius={[0, 0, 4, 4]} name="One-Time Sales" />
-                <Bar dataKey="subscriptions" stackId="a" fill="var(--chart-2)" radius={[4, 4, 0, 0]} name="Subscriptions" />
-              </BarChart>
-            </ResponsiveContainer>
+          <div className="h-[300px] w-full flex items-center justify-center border border-dashed border-[var(--color-border-subtle)] rounded-xl">
+            <p className="text-[var(--color-text-secondary)] text-sm">Not enough data to display chart.</p>
           </div>
         </div>
 
@@ -96,22 +79,8 @@ export default function OnlineSales() {
               <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)]">Total lifetime value generated</p>
             </div>
           </div>
-          <div className="h-[300px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={revenueHistory} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="var(--chart-3)" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="var(--chart-3)" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-border-subtle)" />
-                <XAxis dataKey="month" tick={{fill: 'var(--color-text-secondary)', fontSize: 12}} axisLine={false} tickLine={false} />
-                <YAxis tick={{fill: 'var(--color-text-secondary)', fontSize: 12}} axisLine={false} tickLine={false} />
-                <Tooltip contentStyle={{ backgroundColor: 'var(--color-surface-0)', borderColor: 'var(--color-border-subtle)', borderRadius: '8px' }} />
-                <Area type="monotone" dataKey="revenue" stroke="var(--chart-3)" fillOpacity={1} fill="url(#colorTotal)" strokeWidth={2} name="Total Growth" />
-              </AreaChart>
-            </ResponsiveContainer>
+          <div className="h-[300px] w-full flex items-center justify-center border border-dashed border-[var(--color-border-subtle)] rounded-xl">
+            <p className="text-[var(--color-text-secondary)] text-sm">Not enough data to display chart.</p>
           </div>
         </div>
       </div>

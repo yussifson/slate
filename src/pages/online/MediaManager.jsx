@@ -6,14 +6,7 @@ export default function MediaManager() {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Mock data for assets
-  const [assets, setAssets] = useState([
-    { id: 1, name: 'course_intro.mp4', type: 'video', size: '24.5 MB', date: 'Oct 12, 2026' },
-    { id: 2, name: 'syllabus_v2.pdf', type: 'document', size: '1.2 MB', date: 'Oct 10, 2026' },
-    { id: 3, name: 'hero_banner.png', type: 'image', size: '3.4 MB', date: 'Oct 09, 2026' },
-    { id: 4, name: 'module_1_slides.pdf', type: 'document', size: '5.1 MB', date: 'Oct 08, 2026' },
-    { id: 5, name: 'instructor_avatar.jpg', type: 'image', size: '800 KB', date: 'Oct 05, 2026' },
-  ]);
+  const [assets, setAssets] = useState([]);
 
   const filteredAssets = assets.filter(a => a.name.toLowerCase().includes(searchTerm.toLowerCase()));
 

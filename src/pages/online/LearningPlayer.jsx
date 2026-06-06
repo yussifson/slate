@@ -31,7 +31,7 @@ export default function LearningPlayer() {
           {courseTitle}
         </h1>
         <div className="ml-4 flex items-center gap-2 text-sm text-[var(--color-text-secondary)]">
-          <span className="font-semibold text-[var(--color-module-online)]">Module 1:</span> Introduction
+          {/* Real module title would go here */}
         </div>
       </div>
 
@@ -53,11 +53,10 @@ export default function LearningPlayer() {
             <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end px-6 pb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
               <div className="flex items-center gap-3 mb-2 text-white/90 text-sm font-medium">
                 <PlayCircle className="w-4 h-4 text-[var(--color-module-online)]" />
-                <span>1. Introduction</span>
-                <span className="ml-auto text-xs opacity-70">0:45 / 5:00</span>
+                <span>{courseTitle}</span>
               </div>
               <div className="w-full h-1.5 bg-white/30 rounded-full overflow-hidden cursor-pointer group/progress">
-                <div className="h-full bg-[var(--color-module-online)] w-1/3 relative group-hover/progress:bg-blue-400 transition-colors">
+                <div className="h-full bg-[var(--color-module-online)] w-0 relative group-hover/progress:bg-blue-400 transition-colors">
                   <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow scale-0 group-hover/progress:scale-100 transition-transform" />
                 </div>
               </div>
@@ -103,15 +102,7 @@ export default function LearningPlayer() {
               )}
               {activeTab === 'resources' && (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
-                  <div className="flex items-center justify-between p-4 border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] hover:bg-[var(--color-surface-1)] hover:border-[var(--color-module-online)] transition-all cursor-pointer group bg-[var(--color-surface-0)] glass-card">
-                    <div className="flex items-center gap-3 text-sm text-[var(--color-text-primary)] font-semibold">
-                      <div className="p-2 bg-[var(--color-module-online)]/10 text-[var(--color-module-online)] rounded-md">
-                        <FileText className="w-5 h-5" />
-                      </div>
-                      Syllabus.pdf
-                    </div>
-                    <span className="text-xs font-medium text-[var(--color-text-secondary)] px-3 py-1 bg-[var(--color-surface-2)] rounded-full group-hover:bg-[var(--color-surface-0)] transition-colors">1.2 MB</span>
-                  </div>
+                  <p className="text-sm text-[var(--color-text-secondary)] text-center py-12 border-2 border-dashed border-[var(--color-border-subtle)] rounded-[var(--radius-lg)]">No resources available for this module yet.</p>
                 </motion.div>
               )}
             </div>
@@ -125,40 +116,13 @@ export default function LearningPlayer() {
             <div className="w-full bg-[var(--color-border-default)] h-1.5 rounded-full mt-3 overflow-hidden">
               <div className="bg-[var(--color-module-online)] h-full w-1/3"></div>
             </div>
-            <p className="text-xs text-[var(--color-text-secondary)] mt-1.5">33% Complete</p>
+            <p className="text-xs text-[var(--color-text-secondary)] mt-1.5">0% Complete</p>
           </div>
           
-          <div className="flex-1 overflow-y-auto p-2 space-y-1">
-            {/* Module 1 */}
-            <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] overflow-hidden">
-              <div className="flex items-center justify-between p-3 cursor-pointer bg-[var(--color-surface-2)]">
-                <h3 className="text-sm font-bold text-[var(--color-text-primary)]">Module 1</h3>
-                <ChevronDown className="w-4 h-4 text-[var(--color-text-tertiary)]" />
-              </div>
-              <div className="divide-y divide-[var(--color-border-subtle)]">
-                <button className="w-full flex items-start gap-3 p-3 text-left hover:bg-[var(--color-surface-1)] transition-colors bg-[var(--color-surface-1)] border-l-2 border-[var(--color-module-online)]">
-                  <CheckCircle2 className="w-4 h-4 text-[var(--color-success)] mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="text-xs font-semibold text-[var(--color-text-primary)]">1. Introduction</p>
-                    <p className="text-[10px] text-[var(--color-text-secondary)] mt-0.5">5:00</p>
-                  </div>
-                </button>
-                <button className="w-full flex items-start gap-3 p-3 text-left hover:bg-[var(--color-surface-1)] transition-colors">
-                  <PlayCircle className="w-4 h-4 text-[var(--color-text-tertiary)] mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="text-xs text-[var(--color-text-secondary)]">2. Setup Environment</p>
-                    <p className="text-[10px] text-[var(--color-text-secondary)] mt-0.5">12:30</p>
-                  </div>
-                </button>
-              </div>
-            </div>
-
-            {/* Module 2 */}
-            <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] overflow-hidden opacity-70">
-              <div className="flex items-center justify-between p-3 cursor-pointer hover:bg-[var(--color-surface-1)] transition-colors">
-                <h3 className="text-sm font-bold text-[var(--color-text-primary)]">Module 2</h3>
-                <ChevronDown className="w-4 h-4 text-[var(--color-text-tertiary)] -rotate-90" />
-              </div>
+          <div className="flex-1 overflow-y-auto p-4 space-y-1">
+            <div className="text-center py-8">
+              <BookOpen className="w-8 h-8 text-[var(--color-text-tertiary)] mx-auto mb-2 opacity-50" />
+              <p className="text-xs text-[var(--color-text-secondary)]">No modules found for this course.</p>
             </div>
           </div>
         </div>

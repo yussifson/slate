@@ -22,29 +22,6 @@ export default function OnlineCourses() {
     (c.title || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const seedMutation = useMutation({
-    mutationFn: async () => {
-      const demoCourses = [
-        { title: 'Advanced React Patterns & Next.js', extra: { level: 'Advanced', duration: '6 Weeks', enrolled: 1240, rating: 4.9, reviews: 342 }, desc: 'Master advanced React patterns, Server Components, and build scalable Next.js enterprise applications.' },
-        { title: 'UI/UX Design Systems in Figma', extra: { level: 'Intermediate', duration: '4 Weeks', enrolled: 890, rating: 4.8, reviews: 215 }, desc: 'Learn to build robust design systems, component libraries, and master auto-layout in Figma.' },
-        { title: 'Fullstack AI Application Development', extra: { level: 'All Levels', duration: '8 Weeks', enrolled: 2100, rating: 5.0, reviews: 890 }, desc: 'Build real-world AI applications using LangChain, OpenAI APIs, and Vector Databases.' }
-      ];
-      for (const c of demoCourses) {
-        await base44.entities.LegalCase.create({
-          company_id: companyId,
-          case_type: 'online_course',
-          title: c.title,
-          notes: JSON.stringify({ ...c.extra, description: c.desc }),
-          status: 'published'
-        });
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(["cases", companyId, "online_course"]);
-      toast({ title: 'Success', description: 'Demo courses have been generated!' });
-    }
-  });
-
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="border-b border-[var(--color-border-subtle)] pb-4 flex justify-between items-end">
@@ -53,14 +30,6 @@ export default function OnlineCourses() {
           <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage learning modules, update curriculum, and track course performance.</p>
         </div>
         <div className="flex gap-3">
-          <button 
-            onClick={() => seedMutation.mutate()} 
-            disabled={seedMutation.isPending}
-            className="flex items-center gap-2 px-4 py-2 bg-[var(--color-surface-1)] border border-[var(--color-border-default)] text-[var(--color-text-primary)] text-sm font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors disabled:opacity-50"
-          >
-            {seedMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4 text-[var(--color-warning)]" />}
-            Seed Demo Data
-          </button>
           <button className="px-4 py-2 bg-[var(--color-module-online)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">
             Create Course
           </button>
@@ -104,13 +73,7 @@ export default function OnlineCourses() {
           >
             <BookOpen className="w-12 h-12 mx-auto mb-4 opacity-30 text-[var(--color-module-online)]" />
             <h3 className="font-semibold text-lg text-[var(--color-text-primary)] mb-1">No courses found</h3>
-            <p className="text-sm text-[var(--color-text-secondary)] mb-6 max-w-sm mx-auto">Get started by creating your first online course, or seed some demo data to see how the catalog looks.</p>
-            <button 
-              onClick={() => seedMutation.mutate()}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--color-surface-1)] border border-[var(--color-border-default)] text-[var(--color-text-primary)] text-sm font-medium rounded-full hover:bg-[var(--color-surface-2)] transition-colors shadow-sm"
-            >
-              <Sparkles className="w-4 h-4 text-[var(--color-warning)]" /> Populate Demo Data
-            </button>
+            <p className="text-sm text-[var(--color-text-secondary)] mb-6 max-w-sm mx-auto">Get started by creating your first online course.</p>
           </motion.div>
         ) : (
           <AnimatePresence>

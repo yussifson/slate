@@ -36,22 +36,13 @@ export default function OnlineDashboard() {
 
   const recentCourses = useMemo(() => courses.slice(0, 4), [courses]);
 
-  // Mock chart data representing recent enrollments
-  const chartData = [
-    { name: 'Mon', enrollments: 12 },
-    { name: 'Tue', enrollments: 19 },
-    { name: 'Wed', enrollments: 15 },
-    { name: 'Thu', enrollments: 22 },
-    { name: 'Fri', enrollments: 28 },
-    { name: 'Sat', enrollments: 35 },
-    { name: 'Sun', enrollments: 31 },
-  ];
+  const chartData = [];
 
   const stats = [
     { label: 'Total Learners', value: learners.length || 0, icon: Users, color: 'var(--color-module-online)' },
     { label: 'Active Courses', value: courses.length || 0, icon: BookOpen, color: 'var(--color-info)' },
     { label: 'Total Sales', value: `$${totalRevenue.toLocaleString()}`, icon: Banknote, color: 'var(--color-success)' },
-    { label: 'Avg. Completion', value: '68%', icon: TrendingUp, color: 'var(--color-warning)' },
+    { label: 'Avg. Completion', value: '0%', icon: TrendingUp, color: 'var(--color-warning)' },
   ];
 
   return (
@@ -85,22 +76,8 @@ export default function OnlineDashboard() {
               <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)]">Platform-wide enrollments over the last 7 days.</p>
             </div>
           </div>
-          <div className="h-[300px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="colorEnrollments" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-border-subtle)" />
-                <XAxis dataKey="name" tick={{fill: 'var(--color-text-secondary)', fontSize: 12}} axisLine={false} tickLine={false} />
-                <YAxis tick={{fill: 'var(--color-text-secondary)', fontSize: 12}} axisLine={false} tickLine={false} />
-                <Tooltip contentStyle={{ backgroundColor: 'var(--color-surface-0)', borderColor: 'var(--color-border-subtle)', borderRadius: '8px' }} />
-                <Area type="monotone" dataKey="enrollments" stroke="var(--chart-1)" fillOpacity={1} fill="url(#colorEnrollments)" strokeWidth={2} />
-              </AreaChart>
-            </ResponsiveContainer>
+          <div className="h-[300px] w-full flex items-center justify-center border border-dashed border-[var(--color-border-subtle)] rounded-xl">
+            <p className="text-[var(--color-text-secondary)] text-sm">Not enough data to display chart.</p>
           </div>
         </div>
 

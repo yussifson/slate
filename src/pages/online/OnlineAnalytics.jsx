@@ -95,20 +95,8 @@ export default function OnlineAnalytics() {
             <CardDescription>Daily active users over the last 30 days.</CardDescription>
           </CardHeader>
           <CardContent>
-            {/* Mock Chart Area */}
-            <div className="h-[300px] w-full flex items-end justify-between px-2 pb-4 pt-10 gap-2 border-b border-l border-gray-200 relative">
-              <div className="absolute top-0 left-0 text-xs text-gray-400 -ml-8">5k</div>
-              <div className="absolute top-1/2 left-0 text-xs text-gray-400 -ml-8">2.5k</div>
-              <div className="absolute bottom-0 left-0 text-xs text-gray-400 -ml-4">0</div>
-              
-              {[40, 50, 45, 60, 75, 80, 65, 70, 85, 90, 85, 95, 100, 90, 80].map((h, i) => (
-                <div key={i} className="w-full bg-[#0056D2] opacity-80 hover:opacity-100 rounded-t-sm transition-opacity" style={{ height: `${h}%` }}></div>
-              ))}
-            </div>
-            <div className="flex justify-between mt-2 text-xs text-gray-400">
-              <span>Oct 1</span>
-              <span>Oct 15</span>
-              <span>Oct 30</span>
+            <div className="h-[300px] w-full flex items-center justify-center border-2 border-dashed border-gray-200 rounded-xl mt-4">
+              <p className="text-sm text-gray-500">Not enough data to display chart.</p>
             </div>
           </CardContent>
         </Card>
@@ -119,22 +107,8 @@ export default function OnlineAnalytics() {
             <CardDescription>Percentage of enrolled students who finished the course.</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-6">
-              {[
-                { title: "Machine Learning Specialization", rate: 72 },
-                { title: "React Web Development", rate: 58 },
-                { title: "Data Science Fundamentals", rate: 85 },
-                { title: "UI/UX Design Principles", rate: 45 },
-                { title: "Advanced Python", rate: 64 },
-              ].map((c, i) => (
-                <div key={i}>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span className="font-medium text-gray-900">{c.title}</span>
-                    <span className="font-bold text-[#0056D2]">{c.rate}%</span>
-                  </div>
-                  <Progress value={c.rate} className="h-2" />
-                </div>
-              ))}
+            <div className="flex items-center justify-center py-12 border-2 border-dashed border-gray-200 rounded-xl mt-4">
+              <p className="text-sm text-gray-500">No course data available.</p>
             </div>
           </CardContent>
         </Card>
