@@ -1,141 +1,97 @@
-import React, { useState } from 'react';
-import { Card } from "@/components/ui/card";
-import { Video, Calendar, Users, Clock, PlayCircle, ExternalLink, MessageSquare, Mic, Camera } from 'lucide-react';
+import React from 'react';
+import { Video, Users, Calendar, Clock, PlayCircle, MoreHorizontal } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export default function OnlineLive() {
-  const [activeTab, setActiveTab] = useState('upcoming');
+  const navigate = useNavigate();
 
   const sessions = [
-    { id: 1, title: "Q&A: Advanced React Patterns", course: "Advanced React Patterns", date: "Today", time: "14:00 EST", instructor: "Dan Abramov", status: "upcoming", type: "office_hours" },
-    { id: 2, title: "Live Code Review: Portfolio Projects", course: "UI Design Fundamentals", date: "Tomorrow", time: "10:00 EST", instructor: "Sarah Jenkins", status: "upcoming", type: "workshop" },
-    { id: 3, title: "Guest Lecture: System Design", course: "Software Engineering 101", date: "June 10", time: "15:00 EST", instructor: "Alex Xu", status: "upcoming", type: "webinar" },
-    { id: 4, title: "State Management Deep Dive", course: "Advanced React Patterns", date: "June 1", time: "14:00 EST", instructor: "Dan Abramov", status: "recorded", type: "webinar" },
+    { id: 1, title: 'React Q&A Session', date: 'Today', time: '2:00 PM', attendees: 45, status: 'upcoming', host: 'Sarah Jenkins' },
+    { id: 2, title: 'Advanced Routing Workshop', date: 'Tomorrow', time: '10:00 AM', attendees: 120, status: 'upcoming', host: 'Michael Chen' },
+    { id: 3, title: 'Hooks Deep Dive', date: 'Oct 10, 2026', time: '1:00 PM', attendees: 85, status: 'completed', host: 'Sarah Jenkins' },
   ];
 
-  const filteredSessions = sessions.filter(s => {
-      if (activeTab === 'upcoming') return s.status === 'upcoming';
-      if (activeTab === 'recordings') return s.status === 'recorded';
-      return true;
-  });
-
   return (
-    <div className="h-[calc(100vh-64px)] bg-void flex flex-col font-body text-text-primary overflow-hidden">
-      {/* Header */}
-      <div className="px-8 py-6 border-b border-border bg-overlay shrink-0 flex justify-between items-start">
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-6xl mx-auto py-6">
+      <div className="border-b border-[var(--color-border-subtle)] pb-4 flex justify-between items-end">
         <div>
-            <h1 className="text-2xl font-display font-medium mb-2 flex items-center gap-2">
-                <Video className="w-6 h-6 text-pulse" /> Live Learning
-            </h1>
-            <p className="text-text-secondary text-sm max-w-xl">Join live webinars, office hours, and workshops. Interact with instructors and peers in real-time.</p>
+          <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Live Sessions</h1>
+          <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Join virtual classrooms, webinars, and interactive Q&A sessions.</p>
         </div>
-        
-        <div className="flex gap-2 bg-surface p-1 rounded-lg border border-border">
-            <button 
-                onClick={() => setActiveTab('upcoming')}
-                className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${activeTab === 'upcoming' ? 'bg-orbit text-orbit-light shadow-sm' : 'text-text-secondary hover:text-text-primary'}`}
-            >Upcoming</button>
-            <button 
-                onClick={() => setActiveTab('recordings')}
-                className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${activeTab === 'recordings' ? 'bg-orbit text-orbit-light shadow-sm' : 'text-text-secondary hover:text-text-primary'}`}
-            >Recordings</button>
-        </div>
+        <button className="px-4 py-2 bg-[var(--color-module-online)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity flex items-center gap-2">
+          <Video className="w-4 h-4" /> Schedule Session
+        </button>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 overflow-y-auto custom-scrollbar p-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-6">
+          <h2 className="text-xl font-bold font-display text-[var(--color-text-primary)]">Upcoming & Completed</h2>
           
-          {/* Hero Session (if upcoming) */}
-          {activeTab === 'upcoming' && filteredSessions.length > 0 && (
-              <div className="mb-10 bg-gradient-to-r from-orbit/20 via-deep to-deep border border-orbit/30 rounded-2xl p-8 relative overflow-hidden flex flex-col md:flex-row gap-8 items-center">
-                  <div className="absolute -top-24 -left-24 w-64 h-64 bg-orbit/20 rounded-full blur-3xl pointer-events-none"></div>
-                  
-                  <div className="flex-1 relative z-10">
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-pulse/10 text-pulse border border-pulse/20 rounded-full text-xs font-bold uppercase tracking-wider mb-4 animate-pulse">
-                          <span className="w-2 h-2 rounded-full bg-pulse"></span> Starting Soon
-                      </div>
-                      <h2 className="text-3xl font-display font-medium text-orbit-light mb-2">{filteredSessions[0].title}</h2>
-                      <p className="text-text-secondary mb-6">{filteredSessions[0].course} • with {filteredSessions[0].instructor}</p>
-                      
-                      <div className="flex flex-wrap gap-4 text-sm mb-8">
-                          <div className="flex items-center gap-2 text-text-primary bg-surface/50 px-4 py-2 rounded-lg border border-border">
-                              <Calendar className="w-4 h-4 text-orbit" /> {filteredSessions[0].date}
-                          </div>
-                          <div className="flex items-center gap-2 text-text-primary bg-surface/50 px-4 py-2 rounded-lg border border-border">
-                              <Clock className="w-4 h-4 text-orbit" /> {filteredSessions[0].time}
-                          </div>
-                      </div>
-
-                      <div className="flex gap-4">
-                          <button className="orbit-btn-primary px-6 py-3 font-medium flex items-center gap-2">
-                              Join Session <ExternalLink className="w-4 h-4" />
-                          </button>
-                          <button className="orbit-btn-secondary px-4 py-3 flex items-center gap-2">
-                              <Camera className="w-4 h-4" /> Test Setup
-                          </button>
-                      </div>
+          <div className="space-y-4">
+            {sessions.map(session => (
+              <div key={session.id} className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-5 shadow-sm flex flex-col sm:flex-row gap-5 items-start sm:items-center group hover:border-[var(--color-module-online)] transition-colors">
+                <div className="w-16 h-16 rounded-[var(--radius-lg)] flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-[var(--color-surface-1)] to-[var(--color-surface-2)] border border-[var(--color-border-default)]">
+                  {session.status === 'upcoming' ? (
+                    <Calendar className="w-8 h-8 text-[var(--color-module-online)]" />
+                  ) : (
+                    <PlayCircle className="w-8 h-8 text-[var(--color-text-tertiary)]" />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    {session.status === 'upcoming' ? (
+                      <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-[var(--color-warning-subtle)] text-[var(--color-warning)] uppercase tracking-wider border border-[var(--color-warning)]">
+                        Upcoming
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-[var(--color-surface-2)] text-[var(--color-text-secondary)] uppercase tracking-wider">
+                        Completed
+                      </span>
+                    )}
+                    <span className="text-xs text-[var(--color-text-secondary)] font-medium">Host: {session.host}</span>
                   </div>
-                  
-                  {/* Decorative Video Placeholder */}
-                  <div className="w-full md:w-[400px] aspect-video bg-void border border-border rounded-xl flex items-center justify-center relative overflow-hidden shadow-2xl">
-                      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800')] bg-cover bg-center opacity-20 grayscale"></div>
-                      <div className="relative z-10 flex gap-4">
-                          <div className="w-12 h-12 rounded-full bg-surface/80 border border-border flex items-center justify-center backdrop-blur-md">
-                              <Mic className="w-5 h-5 text-text-muted" />
-                          </div>
-                          <div className="w-12 h-12 rounded-full bg-surface/80 border border-border flex items-center justify-center backdrop-blur-md">
-                              <Camera className="w-5 h-5 text-text-muted" />
-                          </div>
-                      </div>
+                  <h3 className="font-bold text-[var(--text-lg)] text-[var(--color-text-primary)] truncate">{session.title}</h3>
+                  <div className="flex items-center gap-4 mt-2 text-xs text-[var(--color-text-secondary)]">
+                    <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" /> {session.date}</span>
+                    <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> {session.time}</span>
+                    <span className="flex items-center gap-1.5"><Users className="w-3.5 h-3.5" /> {session.attendees} Registered</span>
                   </div>
+                </div>
+                {session.status === 'upcoming' ? (
+                  <button className="w-full sm:w-auto px-6 py-2 bg-[var(--color-module-online)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity whitespace-nowrap">
+                    Join Room
+                  </button>
+                ) : (
+                  <button className="w-full sm:w-auto px-6 py-2 bg-[var(--color-surface-1)] border border-[var(--color-border-default)] text-[var(--color-text-primary)] text-sm font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors whitespace-nowrap">
+                    Watch Recording
+                  </button>
+                )}
               </div>
-          )}
-
-          {/* List Grid */}
-          <h3 className="text-lg font-display font-medium text-text-secondary mb-6">
-              {activeTab === 'upcoming' ? 'All Scheduled Sessions' : 'Past Recordings'}
-          </h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredSessions.map((session, idx) => {
-                  if (activeTab === 'upcoming' && idx === 0) return null; // Skip hero
-
-                  return (
-                      <Card key={session.id} className="bg-deep border-border hover:border-orbit/50 transition-colors group">
-                          <div className="p-6 h-full flex flex-col">
-                              <div className="flex justify-between items-start mb-4">
-                                  <div className="px-2 py-1 bg-surface border border-border rounded text-[10px] uppercase tracking-wider text-text-muted font-medium">
-                                      {session.type.replace('_', ' ')}
-                                  </div>
-                                  {activeTab === 'recordings' && <PlayCircle className="w-5 h-5 text-text-muted group-hover:text-orbit transition-colors" />}
-                              </div>
-                              
-                              <h4 className="font-display font-medium text-lg text-orbit-light mb-1 line-clamp-2">{session.title}</h4>
-                              <p className="text-xs text-text-secondary mb-6">{session.course}</p>
-                              
-                              <div className="mt-auto space-y-3 border-t border-border pt-4">
-                                  <div className="flex justify-between items-center text-sm">
-                                      <span className="flex items-center gap-1.5 text-text-muted"><Calendar className="w-3.5 h-3.5" /> {session.date}</span>
-                                      <span className="flex items-center gap-1.5 text-text-muted"><Clock className="w-3.5 h-3.5" /> {session.time}</span>
-                                  </div>
-                                  <div className="flex justify-between items-center">
-                                      <span className="text-xs text-text-secondary">Host: {session.instructor}</span>
-                                      <button className="text-xs font-medium text-orbit hover:text-orbit-light transition-colors flex items-center gap-1">
-                                          {activeTab === 'upcoming' ? 'RSVP' : 'Watch'} <ChevronRight className="w-3 h-3" />
-                                      </button>
-                                  </div>
-                              </div>
-                          </div>
-                      </Card>
-                  );
-              })}
-              
-              {filteredSessions.length === 0 && (
-                  <div className="col-span-full py-12 text-center border border-dashed border-border rounded-xl bg-surface/20">
-                      <Calendar className="w-12 h-12 text-text-muted mx-auto mb-4 opacity-50" />
-                      <p className="text-text-secondary">No {activeTab} sessions found.</p>
-                  </div>
-              )}
+            ))}
           </div>
+        </div>
+
+        <div className="space-y-6">
+          <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
+            <div className="bg-[var(--color-surface-1)] p-4 border-b border-[var(--color-border-subtle)]">
+              <h2 className="font-bold text-[var(--color-text-primary)]">Quick Join Link</h2>
+            </div>
+            <div className="p-6">
+              <p className="text-sm text-[var(--color-text-secondary)] mb-3">Share this link to invite guests to your personal meeting room.</p>
+              <div className="flex">
+                <input 
+                  type="text" 
+                  readOnly 
+                  value="https://airflake.com/meet/u/john-doe" 
+                  className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-l-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-secondary)] focus:outline-none"
+                />
+                <button className="bg-[var(--color-surface-2)] border border-l-0 border-[var(--color-border-default)] px-4 text-sm font-medium rounded-r-[var(--radius-md)] hover:bg-[var(--color-surface-3)] transition-colors text-[var(--color-text-primary)]">
+                  Copy
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

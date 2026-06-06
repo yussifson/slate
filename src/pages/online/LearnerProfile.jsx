@@ -1,133 +1,116 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
-import { useAuth } from '@/lib/AuthContext';
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Award, BookOpen, Clock, MapPin, Calendar, Share2, Shield } from 'lucide-react';
+import { useQuery } from "@tanstack/react-query";
+import { base44 } from "@/api/base44Client";
+import { useCompanyId } from "@/hooks/useCompanyId";
+import { User, MapPin, Mail, Award, BookOpen, Clock, Calendar } from 'lucide-react';
 
 export default function LearnerProfile() {
   const { id } = useParams();
-  const { user } = useAuth();
   const navigate = useNavigate();
+  const companyId = useCompanyId();
   
-  const [profile, setProfile] = useState(null);
-  const [enrollments, setEnrollments] = useState([]);
-  const [courses, setCourses] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('courses');
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        // In a real system, you'd fetch the public profile. Here we mock it slightly using users table or metadata if available
-        // For now, we will simulate fetching a user's public info
-        setProfile({
-            id: id,
-            full_name: 'Alex Johnson',
-            bio: 'Passionate learner and software developer exploring the latest in web technologies.',
-            location: 'San Francisco, CA',
-            joined: '2025-01-15',
-            avatar_url: `https://ui-avatars.com/api/?name=Alex+Johnson&background=0056D2&color=fff&size=200`
-        });
+  const { data: learner } = useQuery({
+    queryKey: ["case", id],
+    queryFn: () => base44.entities.LegalCase.get(id),
+    enabled: !!id && !!companyId
+  });
 
-        // Fetch public enrollments or completed courses
-        const e = await base44.entities.online_enrollments.filter({ student_id: id });
-        const completed = (e || []).filter(en => en.progress_percent >= 100);
-        setEnrollments(completed);
+  const title = learner?.title || 'Unknown Learner';
+  let extra = {};
+  try { extra = JSON.parse(learner?.notes || '{}'); } catch(e) {}
 
-        if (completed.length > 0) {
-            const courseIds = completed.map(c => c.course_id);
-            const cList = await base44.entities.online_courses.filter({ id: courseIds });
-            const cMap = {};
-            cList.forEach(c => cMap[c.id] = c);
-            setCourses(cMap);
-        }
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    if (id) fetchData();
-  }, [id]);
-
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-[#F5F7F8]"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0056D2]"></div></div>;
-
-  const isOwnProfile = user?.id === id;
+  const navClass = (tab) => `px-6 py-4 font-medium text-sm transition-colors border-b-2 ${activeTab === tab ? 'border-[var(--color-module-online)] text-[var(--color-module-online)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`;
 
   return (
-    <div className="min-h-screen bg-[#F5F7F8] font-sans pb-20">
-      {/* Profile Header */}
-      <div className="bg-[#1A1A1A] pt-20 pb-32 px-4 relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-20">
-              <div className="absolute top-[-10%] right-[-5%] w-96 h-96 bg-[#0056D2] rounded-full blur-[100px]"></div>
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-5xl mx-auto pb-12">
+      {/* Cover Profile Header */}
+      <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
+        <div className="h-32 bg-gradient-to-r from-[var(--color-surface-2)] to-[var(--color-surface-1)]"></div>
+        <div className="px-8 pb-8 relative">
+          <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-end -mt-12 sm:-mt-16 mb-6">
+            <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-[var(--color-surface-0)] border-4 border-[var(--color-surface-0)] flex items-center justify-center shadow-md flex-shrink-0">
+              <div className="w-full h-full rounded-full bg-gradient-to-br from-[var(--color-module-online)] to-[var(--color-success)] flex items-center justify-center text-white text-3xl sm:text-4xl font-bold font-display">
+                {title.charAt(0)}
+              </div>
+            </div>
+            <div className="flex-1 pb-2">
+              <h1 className="text-3xl font-bold font-display text-[var(--color-text-primary)]">{title}</h1>
+              <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-[var(--color-text-secondary)]">
+                {extra.location && <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4 text-[var(--color-text-tertiary)]" /> {extra.location}</span>}
+                {extra.email && <span className="flex items-center gap-1.5"><Mail className="w-4 h-4 text-[var(--color-text-tertiary)]" /> {extra.email}</span>}
+                <span className="flex items-center gap-1.5"><Calendar className="w-4 h-4 text-[var(--color-text-tertiary)]" /> Joined {new Date(learner?.created_at || Date.now()).toLocaleDateString()}</span>
+              </div>
+            </div>
+            <div className="pb-2">
+              <button className="px-4 py-2 bg-[var(--color-surface-1)] border border-[var(--color-border-default)] text-[var(--color-text-primary)] text-sm font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors whitespace-nowrap">
+                Message Learner
+              </button>
+            </div>
           </div>
-          <div className="max-w-5xl mx-auto relative z-10 flex flex-col items-center text-center">
-              <img src={profile.avatar_url} alt="Profile" className="w-32 h-32 rounded-full border-4 border-[#1A1A1A] shadow-xl bg-white mb-6" />
-              <h1 className="text-4xl font-extrabold text-white mb-2">{profile.full_name}</h1>
-              <p className="text-xl text-gray-300 max-w-2xl mb-6">{profile.bio}</p>
-              
-              <div className="flex items-center gap-6 text-sm text-gray-400">
-                  <span className="flex items-center gap-2"><MapPin className="w-4 h-4" /> {profile.location}</span>
-                  <span className="flex items-center gap-2"><Calendar className="w-4 h-4" /> Joined {new Date(profile.joined).toLocaleDateString()}</span>
-              </div>
-          </div>
-      </div>
 
-      <div className="max-w-5xl mx-auto px-4 -mt-16 relative z-20">
-          <Card className="border-0 shadow-xl rounded-2xl overflow-hidden bg-white mb-8">
-              <div className="flex divide-x divide-gray-100">
-                  <div className="flex-1 p-6 text-center">
-                      <div className="text-3xl font-extrabold text-[#0056D2] mb-1">{enrollments.length}</div>
-                      <div className="text-xs font-bold text-gray-500 uppercase tracking-wider">Completed Courses</div>
-                  </div>
-                  <div className="flex-1 p-6 text-center">
-                      <div className="text-3xl font-extrabold text-gray-900 mb-1">12</div>
-                      <div className="text-xs font-bold text-gray-500 uppercase tracking-wider">Certificates Earned</div>
-                  </div>
-                  <div className="flex-1 p-6 text-center flex flex-col items-center justify-center">
-                      {isOwnProfile ? (
-                          <Button variant="outline" className="w-full max-w-[200px] border-gray-300"><Shield className="w-4 h-4 mr-2"/> Edit Privacy</Button>
-                      ) : (
-                          <Button className="w-full max-w-[200px] bg-[#0056D2] hover:bg-[#004bb5]"><Share2 className="w-4 h-4 mr-2"/> Share Profile</Button>
-                      )}
-                  </div>
-              </div>
-          </Card>
-
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Learning Achievements</h2>
-          
-          {enrollments.length === 0 ? (
-              <div className="text-center py-16 bg-white rounded-xl shadow-sm">
-                  <Award className="w-16 h-16 text-gray-200 mx-auto mb-4" />
-                  <h3 className="text-xl font-bold text-gray-900">No achievements yet</h3>
-                  <p className="text-gray-500 mt-2">Completed courses and certificates will appear here.</p>
-              </div>
-          ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {enrollments.map(en => {
-                      const course = courses[en.course_id];
-                      if (!course) return null;
-                      return (
-                          <Card key={en.id} className="border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                              <CardContent className="p-6 flex gap-6 items-center">
-                                  <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center shrink-0">
-                                      <Award className="w-8 h-8 text-[#0056D2]" />
-                                  </div>
-                                  <div>
-                                      <h3 className="font-bold text-lg text-gray-900 line-clamp-2 leading-tight mb-1">{course.title}</h3>
-                                      <p className="text-sm text-gray-500 flex items-center gap-2">
-                                          <Clock className="w-4 h-4" /> Completed {new Date(en.last_accessed).toLocaleDateString()}
-                                      </p>
-                                  </div>
-                              </CardContent>
-                          </Card>
-                      )
-                  })}
-              </div>
+          {extra.bio && (
+            <div className="prose prose-sm text-[var(--color-text-secondary)] max-w-3xl">
+              <p>{extra.bio}</p>
+            </div>
           )}
+        </div>
+        
+        <div className="border-t border-[var(--color-border-subtle)] bg-[var(--color-surface-1)] flex px-4">
+          <button onClick={() => setActiveTab('courses')} className={navClass('courses')}>Enrolled Courses</button>
+          <button onClick={() => setActiveTab('certificates')} className={navClass('certificates')}>Certificates</button>
+          <button onClick={() => setActiveTab('activity')} className={navClass('activity')}>Recent Activity</button>
+        </div>
       </div>
+
+      {activeTab === 'courses' && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-5 shadow-sm hover:border-[var(--color-module-online)] transition-colors cursor-pointer group">
+            <div className="w-12 h-12 bg-[var(--color-surface-1)] rounded-[var(--radius-md)] flex items-center justify-center mb-4 text-[var(--color-module-online)]">
+              <BookOpen className="w-6 h-6" />
+            </div>
+            <h3 className="font-bold text-[var(--text-lg)] text-[var(--color-text-primary)] mb-2">React Foundations</h3>
+            <div className="w-full bg-[var(--color-border-default)] h-1.5 rounded-full mb-2 overflow-hidden">
+              <div className="bg-[var(--color-module-online)] h-full w-[65%]"></div>
+            </div>
+            <p className="text-xs text-[var(--color-text-secondary)]">65% Complete</p>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'certificates' && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-5 shadow-sm flex gap-4 items-center">
+            <div className="w-16 h-16 bg-[var(--color-success-subtle)] rounded-full flex items-center justify-center text-[var(--color-success)] flex-shrink-0">
+              <Award className="w-8 h-8" />
+            </div>
+            <div>
+              <h3 className="font-bold text-[var(--color-text-primary)]">Introduction to HTML/CSS</h3>
+              <p className="text-sm text-[var(--color-text-secondary)] mt-1">Issued: Sep 12, 2026</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'activity' && (
+        <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 shadow-sm">
+          <div className="relative pl-6 border-l-2 border-[var(--color-border-default)] space-y-8">
+            <div className="relative">
+              <div className="absolute w-3 h-3 bg-[var(--color-module-online)] rounded-full -left-[31px] top-1.5 ring-4 ring-[var(--color-surface-0)]"></div>
+              <h4 className="font-semibold text-[var(--color-text-primary)]">Completed Module 4 Assessment</h4>
+              <p className="text-xs text-[var(--color-text-secondary)] mt-1">Today at 10:45 AM</p>
+            </div>
+            <div className="relative">
+              <div className="absolute w-3 h-3 bg-[var(--color-surface-2)] rounded-full -left-[31px] top-1.5 ring-4 ring-[var(--color-surface-0)]"></div>
+              <h4 className="font-semibold text-[var(--color-text-primary)]">Enrolled in React Foundations</h4>
+              <p className="text-xs text-[var(--color-text-secondary)] mt-1">Yesterday</p>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

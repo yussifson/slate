@@ -1,114 +1,90 @@
-import React, { useState } from 'react';
-import { Card } from "@/components/ui/card";
-import { Check, Star, Zap, Shield, Crown } from 'lucide-react';
+import React from 'react';
+import { CreditCard, CheckCircle2, Clock, ShieldCheck, ArrowRight } from 'lucide-react';
 
 export default function OnlineSubscriptions() {
-  const [billingCycle, setBillingCycle] = useState('yearly');
-
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-void flex flex-col font-body text-text-primary py-12 px-4 sm:px-6 lg:px-8">
-      
-      <div className="max-w-7xl mx-auto w-full">
-          <div className="text-center mb-16 relative">
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-orbit/20 rounded-full blur-[100px] pointer-events-none"></div>
-              <h1 className="text-4xl md:text-5xl font-display font-medium text-orbit-light mb-4 relative z-10">Choose Your Learning Journey</h1>
-              <p className="text-lg text-text-secondary max-w-2xl mx-auto relative z-10">Get unlimited access to top courses, guided learning paths, and exclusive certifications.</p>
-              
-              <div className="mt-8 flex justify-center relative z-10">
-                  <div className="bg-surface border border-border p-1 rounded-xl inline-flex relative">
-                      <button 
-                          onClick={() => setBillingCycle('monthly')}
-                          className={`px-6 py-2.5 text-sm font-medium rounded-lg transition-colors relative z-10 ${billingCycle === 'monthly' ? 'bg-deep text-text-primary shadow-sm border border-border' : 'text-text-secondary hover:text-text-primary'}`}
-                      >Monthly</button>
-                      <button 
-                          onClick={() => setBillingCycle('yearly')}
-                          className={`px-6 py-2.5 text-sm font-medium rounded-lg transition-colors relative z-10 flex items-center gap-2 ${billingCycle === 'yearly' ? 'bg-deep text-text-primary shadow-sm border border-border' : 'text-text-secondary hover:text-text-primary'}`}
-                      >
-                          Annually <span className="bg-emerald-500/10 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">Save 20%</span>
-                      </button>
-                  </div>
-              </div>
-          </div>
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-6xl mx-auto py-8 px-4">
+      <div className="text-center max-w-2xl mx-auto mb-12">
+        <h1 className="text-4xl font-bold font-display text-[var(--color-text-primary)] mb-4">Pro Membership</h1>
+        <p className="text-lg text-[var(--color-text-secondary)]">Unlock unlimited access to all premium courses, live sessions, and exclusive community forums.</p>
+      </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-              
-              {/* Basic Tier */}
-              <Card className="bg-deep border border-border rounded-2xl flex flex-col hover:border-orbit/30 transition-colors">
-                  <div className="p-8 border-b border-border">
-                      <h3 className="text-xl font-display font-medium mb-2">Basic</h3>
-                      <p className="text-sm text-text-secondary mb-6 h-10">Perfect for self-paced learners looking to pick up a new skill.</p>
-                      <div className="flex items-baseline gap-1">
-                          <span className="text-4xl font-display font-medium text-orbit-light">${billingCycle === 'yearly' ? '19' : '25'}</span>
-                          <span className="text-text-muted">/mo</span>
-                      </div>
-                      {billingCycle === 'yearly' && <div className="text-xs text-text-muted mt-2">Billed $228 annually</div>}
-                      <button className="w-full mt-6 orbit-btn-secondary py-3">Start 7-Day Free Trial</button>
-                  </div>
-                  <div className="p-8 flex-1 bg-surface/30">
-                      <ul className="space-y-4 text-sm text-text-secondary">
-                          <li className="flex items-start gap-3"><Check className="w-5 h-5 text-orbit shrink-0" /> Access to 1,000+ basic courses</li>
-                          <li className="flex items-start gap-3"><Check className="w-5 h-5 text-orbit shrink-0" /> Ad-free learning experience</li>
-                          <li className="flex items-start gap-3"><Check className="w-5 h-5 text-orbit shrink-0" /> Community forum access</li>
-                          <li className="flex items-start gap-3 text-text-muted"><Check className="w-5 h-5 text-text-muted/50 shrink-0" /> No certificates included</li>
-                      </ul>
-                  </div>
-              </Card>
-
-              {/* Pro Tier */}
-              <Card className="bg-void border-2 border-orbit shadow-[0_0_40px_rgba(108,99,255,0.15)] rounded-2xl flex flex-col relative transform md:-translate-y-4">
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-orbit text-white text-xs font-bold px-4 py-1 rounded-full uppercase tracking-widest flex items-center gap-1.5">
-                      <Star className="w-3.5 h-3.5 fill-current" /> Most Popular
-                  </div>
-                  <div className="p-8 border-b border-border bg-gradient-to-b from-orbit/10 to-transparent">
-                      <h3 className="text-xl font-display font-medium mb-2 text-orbit-light flex items-center gap-2">Professional <Zap className="w-5 h-5 text-orbit" /></h3>
-                      <p className="text-sm text-text-secondary mb-6 h-10">For career builders needing certifications and advanced projects.</p>
-                      <div className="flex items-baseline gap-1">
-                          <span className="text-4xl font-display font-medium text-white">${billingCycle === 'yearly' ? '39' : '49'}</span>
-                          <span className="text-text-muted">/mo</span>
-                      </div>
-                      {billingCycle === 'yearly' && <div className="text-xs text-text-muted mt-2">Billed $468 annually</div>}
-                      <button className="w-full mt-6 orbit-btn-primary py-3 font-medium">Subscribe Now</button>
-                  </div>
-                  <div className="p-8 flex-1">
-                      <p className="text-sm font-medium text-text-primary mb-4">Everything in Basic, plus:</p>
-                      <ul className="space-y-4 text-sm text-text-secondary">
-                          <li className="flex items-start gap-3"><Check className="w-5 h-5 text-orbit shrink-0" /> <span className="text-text-primary">Unlimited Certificates</span></li>
-                          <li className="flex items-start gap-3"><Check className="w-5 h-5 text-orbit shrink-0" /> Access to 5,000+ premium courses</li>
-                          <li className="flex items-start gap-3"><Check className="w-5 h-5 text-orbit shrink-0" /> Graded assessments & projects</li>
-                          <li className="flex items-start gap-3"><Check className="w-5 h-5 text-orbit shrink-0" /> Downloadable resources for offline</li>
-                      </ul>
-                  </div>
-              </Card>
-
-              {/* Enterprise/Team Tier */}
-              <Card className="bg-deep border border-border rounded-2xl flex flex-col hover:border-orbit/30 transition-colors">
-                  <div className="p-8 border-b border-border">
-                      <h3 className="text-xl font-display font-medium mb-2 flex items-center gap-2">Teams <Crown className="w-5 h-5 text-amber-400" /></h3>
-                      <p className="text-sm text-text-secondary mb-6 h-10">For organizations upskilling their workforce.</p>
-                      <div className="flex items-baseline gap-1">
-                          <span className="text-4xl font-display font-medium text-orbit-light">Custom</span>
-                      </div>
-                      <div className="text-xs text-text-muted mt-2 opacity-0">Spacer</div>
-                      <button className="w-full mt-6 orbit-btn-secondary py-3">Contact Sales</button>
-                  </div>
-                  <div className="p-8 flex-1 bg-surface/30">
-                      <p className="text-sm font-medium text-text-primary mb-4">Everything in Pro, plus:</p>
-                      <ul className="space-y-4 text-sm text-text-secondary">
-                          <li className="flex items-start gap-3"><Check className="w-5 h-5 text-orbit shrink-0" /> Admin dashboard & analytics</li>
-                          <li className="flex items-start gap-3"><Check className="w-5 h-5 text-orbit shrink-0" /> Dedicated success manager</li>
-                          <li className="flex items-start gap-3"><Check className="w-5 h-5 text-orbit shrink-0" /> SSO & API Integration</li>
-                          <li className="flex items-start gap-3"><Check className="w-5 h-5 text-orbit shrink-0" /> Custom learning paths</li>
-                      </ul>
-                  </div>
-              </Card>
-
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        {/* Monthly Plan */}
+        <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-8 shadow-sm hover:border-[var(--color-module-online)] transition-colors relative flex flex-col">
+          <h2 className="text-2xl font-bold font-display text-[var(--color-text-primary)] mb-2">Monthly</h2>
+          <p className="text-[var(--color-text-secondary)] text-sm mb-6">Perfect for short-term learning goals.</p>
+          <div className="flex items-end gap-1 mb-8">
+            <span className="text-5xl font-bold font-display text-[var(--color-text-primary)]">$29</span>
+            <span className="text-[var(--color-text-secondary)] font-medium mb-1">/month</span>
           </div>
           
-          <div className="mt-20 max-w-4xl mx-auto text-center border-t border-border pt-12">
-              <Shield className="w-12 h-12 text-text-muted mx-auto mb-4 opacity-50" />
-              <h3 className="text-xl font-display font-medium mb-2">Secure & Transparent</h3>
-              <p className="text-text-secondary max-w-xl mx-auto text-sm">Cancel anytime from your account settings. If you're not satisfied within the first 14 days, we'll refund your payment—no questions asked.</p>
+          <div className="space-y-4 flex-1 mb-8">
+            <div className="flex items-start gap-3">
+              <CheckCircle2 className="w-5 h-5 text-[var(--color-success)] flex-shrink-0" />
+              <span className="text-sm text-[var(--color-text-primary)]">Access to 500+ courses</span>
+            </div>
+            <div className="flex items-start gap-3">
+              <CheckCircle2 className="w-5 h-5 text-[var(--color-success)] flex-shrink-0" />
+              <span className="text-sm text-[var(--color-text-primary)]">Weekly live Q&A sessions</span>
+            </div>
+            <div className="flex items-start gap-3">
+              <CheckCircle2 className="w-5 h-5 text-[var(--color-success)] flex-shrink-0" />
+              <span className="text-sm text-[var(--color-text-primary)]">Community forum access</span>
+            </div>
+            <div className="flex items-start gap-3">
+              <CheckCircle2 className="w-5 h-5 text-[var(--color-success)] flex-shrink-0" />
+              <span className="text-sm text-[var(--color-text-primary)]">Cancel anytime</span>
+            </div>
           </div>
+
+          <button className="w-full py-3 bg-[var(--color-surface-1)] border border-[var(--color-border-default)] text-[var(--color-text-primary)] font-bold rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors">
+            Subscribe Monthly
+          </button>
+        </div>
+
+        {/* Annual Plan */}
+        <div className="bg-[var(--color-module-online)] rounded-[var(--radius-xl)] p-8 shadow-lg relative flex flex-col text-white transform md:-translate-y-4 border border-[var(--color-module-online)]">
+          <div className="absolute top-0 right-0 bg-[var(--color-warning)] text-[var(--color-warning-foreground)] text-xs font-bold px-3 py-1 rounded-bl-[var(--radius-lg)] rounded-tr-[var(--radius-xl)] uppercase tracking-wider">
+            Best Value
+          </div>
+          <h2 className="text-2xl font-bold font-display mb-2">Annually</h2>
+          <p className="text-white/80 text-sm mb-6">Commit to your growth and save 20%.</p>
+          <div className="flex items-end gap-1 mb-8">
+            <span className="text-5xl font-bold font-display">$278</span>
+            <span className="text-white/80 font-medium mb-1">/year</span>
+          </div>
+          
+          <div className="space-y-4 flex-1 mb-8">
+            <div className="flex items-start gap-3">
+              <CheckCircle2 className="w-5 h-5 text-white flex-shrink-0" />
+              <span className="text-sm">Everything in Monthly</span>
+            </div>
+            <div className="flex items-start gap-3">
+              <CheckCircle2 className="w-5 h-5 text-white flex-shrink-0" />
+              <span className="text-sm font-semibold">1-on-1 Mentorship Session</span>
+            </div>
+            <div className="flex items-start gap-3">
+              <CheckCircle2 className="w-5 h-5 text-white flex-shrink-0" />
+              <span className="text-sm font-semibold">Downloadable offline courses</span>
+            </div>
+            <div className="flex items-start gap-3">
+              <CheckCircle2 className="w-5 h-5 text-white flex-shrink-0" />
+              <span className="text-sm font-semibold">Official physical certificate</span>
+            </div>
+          </div>
+
+          <button className="w-full py-3 bg-white text-[var(--color-module-online)] font-bold rounded-[var(--radius-md)] hover:bg-gray-50 transition-colors shadow-sm">
+            Subscribe Annually
+          </button>
+        </div>
+      </div>
+
+      <div className="max-w-4xl mx-auto mt-12 bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 shadow-sm flex items-center justify-between">
+        <div>
+          <h3 className="font-bold text-[var(--color-text-primary)] flex items-center gap-2"><ShieldCheck className="w-5 h-5 text-[var(--color-success)]" /> 30-Day Money-Back Guarantee</h3>
+          <p className="text-sm text-[var(--color-text-secondary)] mt-1">If you're not completely satisfied, we'll refund your payment. No questions asked.</p>
+        </div>
       </div>
     </div>
   );

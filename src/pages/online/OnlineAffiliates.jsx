@@ -1,158 +1,120 @@
-import React, { useState } from 'react';
-import { Card } from "@/components/ui/card";
-import { Link2, Users, DollarSign, Copy, Check, TrendingUp, ArrowUpRight, BarChart3 } from 'lucide-react';
+import React from 'react';
+import { Users, TrendingUp, DollarSign, Link as LinkIcon, Copy } from 'lucide-react';
+import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 
 export default function OnlineAffiliates() {
-  const [copied, setCopied] = useState(false);
-  const affiliateLink = "https://learn.airflake.com/ref/alexj99";
-
-  const handleCopy = () => {
-      navigator.clipboard.writeText(affiliateLink);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-  };
-
-  const recentReferrals = [
-      { id: 1, name: "M. Chen", date: "Today", course: "UI Design Fundamentals", commission: "$44.70", status: "cleared" },
-      { id: 2, name: "S. Williams", date: "Yesterday", course: "Advanced React Patterns", commission: "$29.80", status: "pending" },
-      { id: 3, name: "J. Doe", date: "June 2", subscription: "Pro Annual", commission: "$93.60", status: "cleared" },
+  const chartData = [
+    { name: 'Mon', clicks: 120, conversions: 12 },
+    { name: 'Tue', clicks: 190, conversions: 19 },
+    { name: 'Wed', clicks: 150, conversions: 15 },
+    { name: 'Thu', clicks: 220, conversions: 22 },
+    { name: 'Fri', clicks: 280, conversions: 28 },
+    { name: 'Sat', clicks: 350, conversions: 35 },
+    { name: 'Sun', clicks: 310, conversions: 31 },
   ];
 
   return (
-    <div className="h-[calc(100vh-64px)] bg-void flex flex-col font-body text-text-primary overflow-hidden">
-      {/* Header */}
-      <div className="px-8 py-6 border-b border-border bg-overlay shrink-0">
-        <h1 className="text-2xl font-display font-medium mb-2 flex items-center gap-2">
-            <Link2 className="w-6 h-6 text-orbit" /> Affiliate Program
-        </h1>
-        <p className="text-text-secondary text-sm">Share your unique link and earn 30% commission on every sale.</p>
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 py-6">
+      <div className="border-b border-[var(--color-border-subtle)] pb-4 flex justify-between items-end">
+        <div>
+          <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Affiliate Dashboard</h1>
+          <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Track your referrals, conversions, and commission payouts.</p>
+        </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto custom-scrollbar p-8">
-          <div className="max-w-6xl mx-auto space-y-8">
-              
-              {/* Top Stats & Link */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  
-                  {/* Copy Link Card */}
-                  <Card className="lg:col-span-2 bg-gradient-to-br from-deep via-deep to-orbit/10 border-border p-6 flex flex-col justify-center relative overflow-hidden">
-                      <div className="absolute -right-20 -bottom-20 w-64 h-64 bg-orbit/20 rounded-full blur-3xl pointer-events-none"></div>
-                      <div className="relative z-10">
-                          <h3 className="text-sm font-medium text-text-secondary mb-4 uppercase tracking-wider">Your Referral Link</h3>
-                          <div className="flex bg-void border border-border rounded-lg overflow-hidden p-1">
-                              <div className="flex-1 px-4 py-3 text-orbit-light font-mono text-sm truncate flex items-center select-all">
-                                  {affiliateLink}
-                              </div>
-                              <button 
-                                  onClick={handleCopy}
-                                  className={`px-6 py-2 rounded-md font-medium text-sm flex items-center gap-2 transition-colors ${copied ? 'bg-emerald-500 text-white' : 'bg-orbit hover:bg-orbit-light text-white'}`}
-                              >
-                                  {copied ? <><Check className="w-4 h-4"/> Copied</> : <><Copy className="w-4 h-4"/> Copy Link</>}
-                              </button>
-                          </div>
-                          <p className="text-xs text-text-muted mt-4">Share this link on your blog, social media, or with friends. Cookies last for 60 days.</p>
-                      </div>
-                  </Card>
-
-                  {/* Available Balance */}
-                  <Card className="bg-deep border-border p-6 flex flex-col justify-between">
-                      <div>
-                          <div className="flex items-center gap-2 text-sm text-text-secondary mb-2">
-                              <DollarSign className="w-4 h-4 text-emerald-400" /> Available to Payout
-                          </div>
-                          <div className="text-4xl font-display font-medium text-white">$138.30</div>
-                      </div>
-                      <div className="mt-6">
-                          <button className="w-full orbit-btn-secondary py-2.5 text-sm">Withdraw Funds</button>
-                          <div className="text-center text-xs text-text-muted mt-2">Next auto-payout: July 1</div>
-                      </div>
-                  </Card>
-              </div>
-
-              {/* Metrics Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <Card className="bg-surface/30 border-border p-6">
-                      <div className="flex justify-between items-start">
-                          <div>
-                              <div className="text-sm text-text-secondary mb-1">Total Clicks</div>
-                              <div className="text-2xl font-mono text-white">1,248</div>
-                          </div>
-                          <div className="p-2 bg-blue-500/10 rounded-lg">
-                              <BarChart3 className="w-5 h-5 text-blue-400" />
-                          </div>
-                      </div>
-                      <div className="mt-4 flex items-center gap-1 text-xs text-emerald-400">
-                          <ArrowUpRight className="w-3 h-3" /> 12% from last month
-                      </div>
-                  </Card>
-                  
-                  <Card className="bg-surface/30 border-border p-6">
-                      <div className="flex justify-between items-start">
-                          <div>
-                              <div className="text-sm text-text-secondary mb-1">Signups</div>
-                              <div className="text-2xl font-mono text-white">84</div>
-                          </div>
-                          <div className="p-2 bg-orbit/10 rounded-lg">
-                              <Users className="w-5 h-5 text-orbit" />
-                          </div>
-                      </div>
-                      <div className="mt-4 flex items-center gap-1 text-xs text-emerald-400">
-                          <ArrowUpRight className="w-3 h-3" /> 5% from last month
-                      </div>
-                  </Card>
-
-                  <Card className="bg-surface/30 border-border p-6">
-                      <div className="flex justify-between items-start">
-                          <div>
-                              <div className="text-sm text-text-secondary mb-1">Conversion Rate</div>
-                              <div className="text-2xl font-mono text-white">6.7%</div>
-                          </div>
-                          <div className="p-2 bg-amber-500/10 rounded-lg">
-                              <TrendingUp className="w-5 h-5 text-amber-400" />
-                          </div>
-                      </div>
-                      <div className="mt-4 text-xs text-text-muted">
-                          Industry avg: 2.5%
-                      </div>
-                  </Card>
-              </div>
-
-              {/* Recent Conversions */}
-              <div>
-                  <h3 className="text-lg font-display font-medium text-white mb-4">Recent Referrals</h3>
-                  <div className="bg-deep border border-border rounded-xl overflow-hidden">
-                      <table className="w-full text-left border-collapse">
-                          <thead className="bg-surface/50 text-xs font-medium text-text-muted border-b border-border">
-                              <tr>
-                                  <th className="px-6 py-4">Referred User</th>
-                                  <th className="px-6 py-4">Product</th>
-                                  <th className="px-6 py-4">Date</th>
-                                  <th className="px-6 py-4">Commission</th>
-                                  <th className="px-6 py-4 text-right">Status</th>
-                              </tr>
-                          </thead>
-                          <tbody className="divide-y divide-border">
-                              {recentReferrals.map(ref => (
-                                  <tr key={ref.id} className="hover:bg-surface/30 transition-colors">
-                                      <td className="px-6 py-4 text-sm font-medium text-white">{ref.name}</td>
-                                      <td className="px-6 py-4 text-sm text-text-secondary">{ref.course || ref.subscription}</td>
-                                      <td className="px-6 py-4 text-sm text-text-muted font-mono">{ref.date}</td>
-                                      <td className="px-6 py-4 text-sm font-mono text-emerald-400 font-medium">{ref.commission}</td>
-                                      <td className="px-6 py-4 text-right">
-                                          {ref.status === 'cleared' ? (
-                                              <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-400"><Check className="w-3 h-3" /> Cleared</span>
-                                          ) : (
-                                              <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-400">Pending (30 days)</span>
-                                          )}
-                                      </td>
-                                  </tr>
-                              ))}
-                          </tbody>
-                      </table>
-                  </div>
-              </div>
-
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 shadow-sm flex flex-col justify-center">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-10 rounded-full bg-[var(--color-info-subtle)] flex items-center justify-center text-[var(--color-info)]">
+              <Users className="w-5 h-5" />
+            </div>
+            <h3 className="font-semibold text-[var(--color-text-secondary)] text-sm uppercase tracking-wider">Total Referrals</h3>
           </div>
+          <p className="text-4xl font-bold font-display text-[var(--color-text-primary)]">1,248</p>
+        </div>
+        
+        <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 shadow-sm flex flex-col justify-center">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-10 rounded-full bg-[var(--color-warning-subtle)] flex items-center justify-center text-[var(--color-warning)]">
+              <TrendingUp className="w-5 h-5" />
+            </div>
+            <h3 className="font-semibold text-[var(--color-text-secondary)] text-sm uppercase tracking-wider">Conversion Rate</h3>
+          </div>
+          <p className="text-4xl font-bold font-display text-[var(--color-text-primary)]">4.2%</p>
+        </div>
+        
+        <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 shadow-sm flex flex-col justify-center">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-10 rounded-full bg-[var(--color-success-subtle)] flex items-center justify-center text-[var(--color-success)]">
+              <DollarSign className="w-5 h-5" />
+            </div>
+            <h3 className="font-semibold text-[var(--color-text-secondary)] text-sm uppercase tracking-wider">Earned Commission</h3>
+          </div>
+          <p className="text-4xl font-bold font-display text-[var(--color-text-primary)]">$4,250</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] shadow-sm p-6">
+          <h2 className="font-bold text-[var(--color-text-primary)] mb-6 font-display">Performance Overview</h2>
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorClicks" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-border-subtle)" />
+                <XAxis dataKey="name" tick={{fill: 'var(--color-text-secondary)', fontSize: 12}} axisLine={false} tickLine={false} />
+                <YAxis tick={{fill: 'var(--color-text-secondary)', fontSize: 12}} axisLine={false} tickLine={false} />
+                <Tooltip contentStyle={{ backgroundColor: 'var(--color-surface-0)', borderColor: 'var(--color-border-subtle)', borderRadius: '8px' }} />
+                <Area type="monotone" dataKey="clicks" stroke="var(--chart-1)" fillOpacity={1} fill="url(#colorClicks)" strokeWidth={2} name="Clicks" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] shadow-sm p-6">
+            <h2 className="font-bold text-[var(--color-text-primary)] mb-4 font-display flex items-center gap-2">
+              <LinkIcon className="w-5 h-5 text-[var(--color-module-online)]" /> Your Affiliate Link
+            </h2>
+            <p className="text-sm text-[var(--color-text-secondary)] mb-4">Share this link to earn a 20% commission on every course purchased.</p>
+            <div className="flex bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] p-1">
+              <input 
+                type="text" 
+                readOnly 
+                value="https://airflake.com/ref/johndoe123" 
+                className="w-full bg-transparent px-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none"
+              />
+              <button className="bg-[var(--color-surface-0)] border border-[var(--color-border-default)] p-2 rounded-[var(--radius-sm)] hover:bg-[var(--color-surface-2)] transition-colors text-[var(--color-text-primary)] shadow-sm">
+                <Copy className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] shadow-sm p-6">
+            <h2 className="font-bold text-[var(--color-text-primary)] mb-4 font-display">Recent Payouts</h2>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center py-2 border-b border-[var(--color-border-subtle)]">
+                <div>
+                  <p className="text-sm font-semibold text-[var(--color-text-primary)]">Oct 01, 2026</p>
+                  <p className="text-xs text-[var(--color-text-secondary)]">PayPal</p>
+                </div>
+                <span className="font-bold text-[var(--color-success)]">+$450.00</span>
+              </div>
+              <div className="flex justify-between items-center py-2 border-b border-[var(--color-border-subtle)]">
+                <div>
+                  <p className="text-sm font-semibold text-[var(--color-text-primary)]">Sep 01, 2026</p>
+                  <p className="text-xs text-[var(--color-text-secondary)]">PayPal</p>
+                </div>
+                <span className="font-bold text-[var(--color-success)]">+$320.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -1,101 +1,207 @@
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { PlusCircle, Save, Video, FileText, CheckSquare, Award } from "lucide-react";
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { base44 } from "@/api/base44Client";
+import { useCompanyId } from "@/hooks/useCompanyId";
+import { PlusCircle, Save, Video, FileText, CheckSquare, Award, ArrowLeft, Trash2 } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function OnlineBuilder() {
+  const { courseId } = useParams();
+  const navigate = useNavigate();
+  const companyId = useCompanyId();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const [activeTab, setActiveTab] = useState('curriculum');
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [price, setPrice] = useState('');
+
+  const { data: courseData, isLoading } = useQuery({
+    queryKey: ["case", courseId],
+    queryFn: () => base44.entities.LegalCase.get(courseId),
+    enabled: !!courseId && !!companyId
+  });
+
+  useEffect(() => {
+    if (courseData) {
+      setTitle(courseData.title || '');
+      let extra = {};
+      try { extra = JSON.parse(courseData.notes || '{}'); } catch(e) {}
+      setDescription(extra.description || '');
+      setPrice(extra.price || '');
+    }
+  }, [courseData]);
+
+  const saveMutation = useMutation({
+    mutationFn: async () => {
+      const extra = { description, price };
+      if (courseId) {
+        return base44.entities.LegalCase.update(courseId, {
+          title,
+          notes: JSON.stringify(extra)
+        });
+      } else {
+        return base44.entities.LegalCase.create({
+          company_id: companyId,
+          case_type: 'online_course',
+          title,
+          notes: JSON.stringify(extra),
+          status: 'draft'
+        });
+      }
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["cases", companyId, "online_course"]);
+      toast({ title: "Success", description: "Course saved successfully." });
+      if (!courseId && data?.id) {
+        navigate(`/o/builder/course/${data.id}`, { replace: true });
+      }
+    },
+    onError: () => {
+      toast({ variant: "destructive", title: "Error", description: "Failed to save course." });
+    }
+  });
+
+  const handleSave = () => {
+    if (!title.trim()) {
+      toast({ variant: "destructive", title: "Validation Error", description: "Course title is required." });
+      return;
+    }
+    saveMutation.mutate();
+  };
+
+  const navClass = (tab) => `h-full px-6 border-b-2 font-medium transition-colors ${activeTab === tab ? 'border-[var(--color-module-online)] text-[var(--color-module-online)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`;
+
   return (
-    <div className="space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 font-sans bg-[#F5F7F8] min-h-screen">
-      <div className="flex justify-between items-center mb-6">
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="flex items-center gap-4 mb-2">
+        <button onClick={() => navigate('/o/courses')} className="p-2 hover:bg-[var(--color-surface-2)] rounded-[var(--radius-md)] text-[var(--color-text-secondary)] transition-colors">
+          <ArrowLeft className="w-5 h-5" />
+        </button>
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Course Builder</h1>
-          <p className="text-gray-500 mt-1">Create and organize your course curriculum.</p>
+          <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Course Builder</h1>
+          <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Design your curriculum and configure settings.</p>
         </div>
-        <div className="flex gap-4">
-          <Button variant="outline" className="text-[#0056D2] border-[#0056D2]">Preview Course</Button>
-          <Button className="bg-[#0056D2] hover:bg-[#004bb5] text-white flex items-center gap-2"><Save className="h-4 w-4"/> Publish</Button>
+        <div className="ml-auto flex gap-3">
+          <button className="px-4 py-2 bg-[var(--color-surface-1)] border border-[var(--color-border-default)] text-[var(--color-text-primary)] text-sm font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors">
+            Preview Course
+          </button>
+          <button onClick={handleSave} disabled={saveMutation.isPending} className="flex items-center gap-2 px-4 py-2 bg-[var(--color-module-online)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity disabled:opacity-50">
+            <Save className="w-4 h-4" /> {saveMutation.isPending ? 'Saving...' : 'Save & Publish'}
+          </button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div className="lg:col-span-1 space-y-4">
-          <Card className="border-0 shadow-sm rounded-xl">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg">Add Content</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-[#0056D2] hover:bg-blue-50">
-                <Video className="h-5 w-5 mr-3" /> Video Lesson
-              </Button>
-              <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-[#0056D2] hover:bg-blue-50">
-                <FileText className="h-5 w-5 mr-3" /> Reading Material
-              </Button>
-              <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-[#0056D2] hover:bg-blue-50">
-                <CheckSquare className="h-5 w-5 mr-3" /> Quiz / Assessment
-              </Button>
-              <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-[#0056D2] hover:bg-blue-50">
-                <Award className="h-5 w-5 mr-3" /> Certificate
-              </Button>
-            </CardContent>
-          </Card>
+          <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] shadow-sm p-4">
+            <h3 className="font-semibold text-[var(--color-text-primary)] mb-4">Add Content</h3>
+            <div className="space-y-2">
+              <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--color-module-online)] rounded-[var(--radius-md)] transition-colors">
+                <Video className="w-4 h-4" /> Video Lesson
+              </button>
+              <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--color-module-online)] rounded-[var(--radius-md)] transition-colors">
+                <FileText className="w-4 h-4" /> Reading Material
+              </button>
+              <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--color-module-online)] rounded-[var(--radius-md)] transition-colors">
+                <CheckSquare className="w-4 h-4" /> Quiz / Assessment
+              </button>
+              <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--color-module-online)] rounded-[var(--radius-md)] transition-colors">
+                <Award className="w-4 h-4" /> Certificate
+              </button>
+            </div>
+          </div>
         </div>
 
         <div className="lg:col-span-3">
-          <Card className="border-0 shadow-sm rounded-xl">
-            <CardHeader>
-              <Input placeholder="Enter Course Title..." className="text-2xl font-bold border-0 border-b border-gray-200 rounded-none px-0 focus-visible:ring-0 focus-visible:border-[#0056D2]" />
-            </CardHeader>
-            <CardContent>
-              <Tabs defaultValue="curriculum" className="w-full">
-                <TabsList className="w-full justify-start border-b rounded-none h-12 bg-transparent p-0">
-                  <TabsTrigger value="curriculum" className="data-[state=active]:border-b-2 data-[state=active]:border-[#0056D2] data-[state=active]:text-[#0056D2] rounded-none h-full px-6">Curriculum</TabsTrigger>
-                  <TabsTrigger value="settings" className="data-[state=active]:border-b-2 data-[state=active]:border-[#0056D2] data-[state=active]:text-[#0056D2] rounded-none h-full px-6">Settings</TabsTrigger>
-                  <TabsTrigger value="pricing" className="data-[state=active]:border-b-2 data-[state=active]:border-[#0056D2] data-[state=active]:text-[#0056D2] rounded-none h-full px-6">Pricing</TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="curriculum" className="pt-6">
-                  <div className="space-y-4">
-                    <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+          <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
+            <div className="p-6 border-b border-[var(--color-border-subtle)]">
+              <input 
+                type="text" 
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Enter Course Title..." 
+                className="w-full text-[var(--text-2xl)] font-bold font-display text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] bg-transparent border-0 border-b border-transparent hover:border-[var(--color-border-default)] focus:border-[var(--color-module-online)] focus:ring-0 px-0 transition-colors" 
+              />
+            </div>
+            
+            <div className="flex border-b border-[var(--color-border-subtle)] h-12 bg-[var(--color-surface-1)] px-2">
+              <button onClick={() => setActiveTab('curriculum')} className={navClass('curriculum')}>Curriculum</button>
+              <button onClick={() => setActiveTab('settings')} className={navClass('settings')}>Settings</button>
+              <button onClick={() => setActiveTab('pricing')} className={navClass('pricing')}>Pricing</button>
+            </div>
+            
+            <div className="p-6">
+              {activeTab === 'curriculum' && (
+                <div className="space-y-6">
+                  {courseId ? (
+                    <div className="bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-lg)] p-5">
                       <div className="flex justify-between items-center mb-4">
-                        <h3 className="font-bold text-lg">Module 1: Introduction</h3>
-                        <Button variant="ghost" size="sm" className="text-gray-500"><PlusCircle className="h-4 w-4 mr-2" /> Add Item</Button>
+                        <h3 className="font-bold text-[var(--color-text-primary)]">Module 1: Introduction</h3>
+                        <button className="flex items-center gap-1.5 text-xs font-semibold text-[var(--color-text-secondary)] hover:text-[var(--color-module-online)] transition-colors">
+                          <PlusCircle className="w-3.5 h-3.5" /> Add Item
+                        </button>
                       </div>
-                      <div className="space-y-2">
-                        <div className="bg-white p-3 rounded border flex justify-between items-center group hover:border-[#0056D2] transition-colors cursor-pointer">
-                          <div className="flex items-center gap-3">
-                            <Video className="h-5 w-5 text-gray-400" />
-                            <span>Welcome to the Course</span>
+                      <div className="space-y-3">
+                        <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] p-3 rounded-[var(--radius-md)] flex justify-between items-center group hover:border-[var(--color-module-online)] transition-colors cursor-pointer">
+                          <div className="flex items-center gap-3 text-[var(--color-text-primary)] text-sm font-medium">
+                            <Video className="w-4 h-4 text-[var(--color-text-tertiary)]" /> Welcome to the Course
                           </div>
-                          <span className="text-sm text-gray-400">5:00</span>
-                        </div>
-                        <div className="bg-white p-3 rounded border flex justify-between items-center group hover:border-[#0056D2] transition-colors cursor-pointer">
                           <div className="flex items-center gap-3">
-                            <FileText className="h-5 w-5 text-gray-400" />
-                            <span>Course Syllabus</span>
+                            <span className="text-xs text-[var(--color-text-tertiary)]">5:00</span>
+                            <button className="text-[var(--color-error)] opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-[var(--color-error-subtle)] rounded">
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
                           </div>
-                          <span className="text-sm text-gray-400">PDF</span>
                         </div>
                       </div>
                     </div>
+                  ) : (
+                    <div className="text-center py-12 border-2 border-dashed border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] text-[var(--color-text-secondary)] text-sm">
+                      Please save the course first to start adding modules.
+                    </div>
+                  )}
 
-                    <Button variant="outline" className="w-full border-dashed py-8 text-gray-500 hover:text-[#0056D2] hover:border-[#0056D2] hover:bg-blue-50">
-                      <PlusCircle className="h-5 w-5 mr-2" /> Add New Module
-                    </Button>
+                  <button className="w-full flex items-center justify-center gap-2 py-6 border-2 border-dashed border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] text-[var(--color-text-secondary)] font-medium hover:text-[var(--color-module-online)] hover:border-[var(--color-module-online)] hover:bg-[var(--color-surface-1)] transition-colors">
+                    <PlusCircle className="w-5 h-5" /> Add New Module
+                  </button>
+                </div>
+              )}
+
+              {activeTab === 'settings' && (
+                <div className="space-y-4 max-w-2xl">
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1">Course Description</label>
+                    <textarea 
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      rows={5}
+                      className="w-full bg-[var(--color-surface-0)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-module-online)] focus:ring-1 focus:ring-[var(--color-module-online)]"
+                      placeholder="Brief overview of what students will learn..."
+                    />
                   </div>
-                </TabsContent>
-                
-                <TabsContent value="settings" className="pt-6">
-                  <p className="text-gray-500">Course settings, thumbnail, and descriptions will go here.</p>
-                </TabsContent>
+                </div>
+              )}
 
-                <TabsContent value="pricing" className="pt-6">
-                  <p className="text-gray-500">Set up pricing, subscriptions, and discounts here.</p>
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
+              {activeTab === 'pricing' && (
+                <div className="space-y-4 max-w-sm">
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1">Price (USD)</label>
+                    <input 
+                      type="number" 
+                      value={price}
+                      onChange={(e) => setPrice(e.target.value)}
+                      placeholder="0.00"
+                      className="w-full bg-[var(--color-surface-0)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-module-online)] focus:ring-1 focus:ring-[var(--color-module-online)]"
+                    />
+                    <p className="text-xs text-[var(--color-text-tertiary)] mt-1">Leave at 0 to make this course free.</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

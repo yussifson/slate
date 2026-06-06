@@ -1,52 +1,148 @@
-import React from 'react';
-import { Card } from "@/components/ui/card";
-import { Folder, FileVideo, Image as ImageIcon, FileText, Upload, Search, Filter } from 'lucide-react';
+import React, { useState } from 'react';
+import { UploadCloud, Folder, File, Search, MoreVertical, Trash2, Download, Image as ImageIcon, Video, FileText } from 'lucide-react';
+import { useToast } from "@/components/ui/use-toast";
 
 export default function MediaManager() {
+  const { toast } = useToast();
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Mock data for assets
+  const [assets, setAssets] = useState([
+    { id: 1, name: 'course_intro.mp4', type: 'video', size: '24.5 MB', date: 'Oct 12, 2026' },
+    { id: 2, name: 'syllabus_v2.pdf', type: 'document', size: '1.2 MB', date: 'Oct 10, 2026' },
+    { id: 3, name: 'hero_banner.png', type: 'image', size: '3.4 MB', date: 'Oct 09, 2026' },
+    { id: 4, name: 'module_1_slides.pdf', type: 'document', size: '5.1 MB', date: 'Oct 08, 2026' },
+    { id: 5, name: 'instructor_avatar.jpg', type: 'image', size: '800 KB', date: 'Oct 05, 2026' },
+  ]);
+
+  const filteredAssets = assets.filter(a => a.name.toLowerCase().includes(searchTerm.toLowerCase()));
+
+  const handleUpload = () => {
+    toast({ title: "Upload Started", description: "Your file is being uploaded to the media library." });
+  };
+
+  const getIcon = (type) => {
+    switch(type) {
+      case 'video': return <Video className="w-5 h-5 text-[var(--color-info)]" />;
+      case 'image': return <ImageIcon className="w-5 h-5 text-[var(--color-success)]" />;
+      case 'document': return <FileText className="w-5 h-5 text-[var(--color-warning)]" />;
+      default: return <File className="w-5 h-5 text-[var(--color-text-secondary)]" />;
+    }
+  };
+
   return (
-    <div className="h-[calc(100vh-64px)] bg-void flex flex-col font-body text-text-primary overflow-hidden">
-      <div className="px-8 py-6 border-b border-border bg-overlay shrink-0 flex justify-between items-center">
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="border-b border-[var(--color-border-subtle)] pb-4 flex justify-between items-end">
         <div>
-            <h1 className="text-2xl font-display font-medium mb-1 flex items-center gap-2">
-                <Folder className="w-6 h-6 text-orbit" /> Media Manager
-            </h1>
-            <p className="text-text-secondary text-sm">Organize and upload all your course assets.</p>
+          <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Media Library</h1>
+          <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage all your uploaded videos, documents, and images centrally.</p>
         </div>
-        <button className="orbit-btn-primary px-4 py-2 text-sm flex items-center gap-2">
-            <Upload className="w-4 h-4" /> Upload Asset
+        <button onClick={handleUpload} className="flex items-center gap-2 px-4 py-2 bg-[var(--color-module-online)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">
+          <UploadCloud className="w-4 h-4" /> Upload Asset
         </button>
       </div>
 
-      <div className="flex-1 p-8 overflow-y-auto custom-scrollbar">
-          <div className="flex gap-4 mb-8">
-              <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-                  <input type="text" placeholder="Search files..." className="w-full bg-surface border border-border rounded-lg pl-9 pr-4 py-2 text-sm text-text-primary focus:outline-none focus:border-orbit" />
-              </div>
-              <button className="orbit-btn-secondary px-3 py-2 flex items-center gap-2 text-sm">
-                  <Filter className="w-4 h-4" /> Filter
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="lg:col-span-1 space-y-4">
+          <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] shadow-sm p-4">
+            <h3 className="font-semibold text-[var(--color-text-primary)] mb-4">Folders</h3>
+            <div className="space-y-1">
+              <button className="w-full flex items-center justify-between px-3 py-2 text-sm bg-[var(--color-surface-1)] text-[var(--color-module-online)] rounded-[var(--radius-md)] font-medium">
+                <div className="flex items-center gap-3">
+                  <Folder className="w-4 h-4" /> All Assets
+                </div>
+                <span className="text-xs bg-[var(--color-surface-2)] px-2 py-0.5 rounded-full">{assets.length}</span>
               </button>
+              <button className="w-full flex items-center justify-between px-3 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--color-text-primary)] rounded-[var(--radius-md)] transition-colors">
+                <div className="flex items-center gap-3">
+                  <Folder className="w-4 h-4" /> Course Videos
+                </div>
+              </button>
+              <button className="w-full flex items-center justify-between px-3 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--color-text-primary)] rounded-[var(--radius-md)] transition-colors">
+                <div className="flex items-center gap-3">
+                  <Folder className="w-4 h-4" /> Documents
+                </div>
+              </button>
+            </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
-              {[
-                  { name: 'Intro_Video_v2.mp4', type: 'video', size: '124 MB' },
-                  { name: 'UI_Kit_Assets.zip', type: 'file', size: '45 MB' },
-                  { name: 'Course_Thumbnail.png', type: 'image', size: '2.4 MB' },
-                  { name: 'React_Hooks_Cheatsheet.pdf', type: 'file', size: '1.2 MB' },
-                  { name: 'Lesson_3_Recording.mp4', type: 'video', size: '310 MB' }
-              ].map((file, i) => (
-                  <Card key={i} className="bg-deep border-border p-4 hover:border-orbit/50 transition-colors flex flex-col items-center justify-center text-center group cursor-pointer">
-                      <div className="w-16 h-16 bg-surface rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                          {file.type === 'video' && <FileVideo className="w-8 h-8 text-emerald-400" />}
-                          {file.type === 'image' && <ImageIcon className="w-8 h-8 text-amber-400" />}
-                          {file.type === 'file' && <FileText className="w-8 h-8 text-orbit" />}
-                      </div>
-                      <div className="text-sm font-medium text-white truncate w-full px-2" title={file.name}>{file.name}</div>
-                      <div className="text-xs text-text-muted mt-1">{file.size}</div>
-                  </Card>
-              ))}
+          <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] shadow-sm p-6 text-center">
+            <div className="w-16 h-16 bg-[var(--color-surface-1)] rounded-full flex items-center justify-center mx-auto mb-4">
+              <UploadCloud className="w-8 h-8 text-[var(--color-module-online)]" />
+            </div>
+            <h4 className="font-semibold text-[var(--color-text-primary)]">Quick Upload</h4>
+            <p className="text-xs text-[var(--color-text-secondary)] mt-1 mb-4">Drag & drop files here</p>
+            <button className="text-sm text-[var(--color-module-online)] font-medium hover:underline">Browse Files</button>
           </div>
+        </div>
+
+        <div className="lg:col-span-3">
+          <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden flex flex-col h-[600px]">
+            <div className="p-4 border-b border-[var(--color-border-subtle)] flex gap-4 bg-[var(--color-surface-1)]">
+              <div className="relative flex-1 max-w-md">
+                <Search className="absolute left-3 top-2.5 h-4 w-4 text-[var(--color-text-tertiary)]" />
+                <input 
+                  type="text" 
+                  placeholder="Search assets..." 
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full bg-[var(--color-surface-0)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--color-module-online)] focus:ring-1 focus:ring-[var(--color-module-online)] font-body"
+                />
+              </div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-[var(--color-surface-0)] border-b border-[var(--color-border-subtle)] text-[var(--color-text-secondary)] sticky top-0">
+                  <tr>
+                    <th className="px-6 py-3 font-semibold">Name</th>
+                    <th className="px-6 py-3 font-semibold">Size</th>
+                    <th className="px-6 py-3 font-semibold">Date Added</th>
+                    <th className="px-6 py-3 font-semibold text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[var(--color-border-subtle)] bg-[var(--color-surface-0)] text-[var(--color-text-primary)]">
+                  {filteredAssets.length === 0 ? (
+                    <tr>
+                      <td colSpan="4" className="px-6 py-12 text-center text-[var(--color-text-tertiary)]">
+                        <File className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                        <p className="font-medium text-[var(--color-text-secondary)]">No assets found</p>
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredAssets.map((asset) => (
+                      <tr key={asset.id} className="hover:bg-[var(--color-surface-1)] transition-colors group">
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-[var(--radius-md)] bg-[var(--color-surface-2)] flex items-center justify-center">
+                              {getIcon(asset.type)}
+                            </div>
+                            <span className="font-medium">{asset.name}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-[var(--color-text-secondary)]">{asset.size}</td>
+                        <td className="px-6 py-4 text-[var(--color-text-secondary)]">{asset.date}</td>
+                        <td className="px-6 py-4 text-right">
+                          <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button className="p-1.5 text-[var(--color-text-secondary)] hover:text-[var(--color-module-online)] hover:bg-[var(--color-surface-2)] rounded-md transition-colors">
+                              <Download className="w-4 h-4" />
+                            </button>
+                            <button className="p-1.5 text-[var(--color-text-secondary)] hover:text-[var(--color-error)] hover:bg-[var(--color-error-subtle)] rounded-md transition-colors">
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                            <button className="p-1.5 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-2)] rounded-md transition-colors">
+                              <MoreVertical className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

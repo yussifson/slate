@@ -1,147 +1,140 @@
 import React, { useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import { CreditCard, ShieldCheck, CheckCircle2, ChevronLeft, ArrowRight, Lock } from 'lucide-react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useQuery } from "@tanstack/react-query";
+import { base44 } from "@/api/base44Client";
+import { useCompanyId } from "@/hooks/useCompanyId";
+import { CreditCard, ShieldCheck, ArrowRight, Lock } from 'lucide-react';
+import { useToast } from "@/components/ui/use-toast";
 
 export default function Checkout() {
   const { courseId } = useParams();
   const navigate = useNavigate();
-  const [processing, setProcessing] = useState(false);
+  const companyId = useCompanyId();
+  const { toast } = useToast();
+  
+  const [loading, setLoading] = useState(false);
 
-  // Mock course data
-  const course = {
-      title: "UI Design Fundamentals",
-      instructor: "Sarah Jenkins",
-      price: 149.00,
-      thumbnail: "https://images.unsplash.com/photo-1587614382346-4ec70e388b28?q=80&w=600"
-  };
+  const { data: course } = useQuery({
+    queryKey: ["case", courseId],
+    queryFn: () => base44.entities.LegalCase.get(courseId),
+    enabled: !!courseId && !!companyId
+  });
 
-  const handlePayment = () => {
-      setProcessing(true);
-      setTimeout(() => {
-          setProcessing(false);
-          alert("Payment successful! Redirecting to course...");
-          navigate(`/o/learn/${courseId}`);
-      }, 2000);
+  const title = course?.title || 'Loading...';
+  let extra = {};
+  try { extra = JSON.parse(course?.notes || '{}'); } catch(e) {}
+  const price = extra.price || '99.00';
+
+  const handleCheckout = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      toast({ title: "Payment Successful", description: "You are now enrolled in the course." });
+      navigate('/o/student-dashboard');
+    }, 1500);
   };
 
   return (
-    <div className="min-h-screen bg-void flex flex-col font-body text-text-primary">
-      {/* Checkout Header */}
-      <div className="h-16 border-b border-border bg-overlay flex items-center px-8 shrink-0 justify-between">
-          <Link to={`/o/courses/${courseId}`} className="text-text-secondary hover:text-orbit-light flex items-center gap-2 text-sm font-medium transition-colors">
-              <ChevronLeft className="w-4 h-4" /> Back to Course
-          </Link>
-          <div className="flex items-center gap-2 text-text-muted text-sm font-medium">
-              <Lock className="w-4 h-4" /> Secure Checkout
-          </div>
-      </div>
+    <div className="min-h-[calc(100vh-4rem)] bg-[var(--color-surface-1)] py-12 px-4 animate-in fade-in duration-500">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold font-display text-[var(--color-text-primary)]">Secure Checkout</h1>
+          <p className="text-[var(--color-text-secondary)] mt-2 flex items-center justify-center gap-2">
+            <Lock className="w-4 h-4" /> 256-bit SSL Encrypted Payment
+          </p>
+        </div>
 
-      <div className="flex-1 max-w-6xl w-full mx-auto p-8 grid grid-cols-1 lg:grid-cols-12 gap-12">
-          
-          {/* Payment Form (Left) */}
-          <div className="lg:col-span-7 space-y-8">
-              <div>
-                  <h1 className="text-3xl font-display font-medium text-orbit-light mb-2">Complete your purchase</h1>
-                  <p className="text-text-secondary">Get instant access to the course material.</p>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Order Summary */}
+          <div className="lg:col-span-1 lg:order-2">
+            <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden sticky top-6">
+              <div className="bg-[var(--color-surface-1)] p-4 border-b border-[var(--color-border-subtle)]">
+                <h2 className="font-semibold text-[var(--color-text-primary)]">Order Summary</h2>
               </div>
-
-              <div className="bg-deep border border-border rounded-2xl p-8">
-                  <h2 className="text-xl font-display font-medium mb-6 flex items-center gap-2">
-                      <CreditCard className="w-5 h-5 text-orbit" /> Payment Method
-                  </h2>
-                  
-                  <div className="space-y-4">
-                      {/* Name on Card */}
-                      <div>
-                          <label className="block text-sm font-medium text-text-secondary mb-1">Name on Card</label>
-                          <input type="text" placeholder="John Doe" className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-orbit focus:ring-1 focus:ring-orbit transition-all" />
-                      </div>
-                      
-                      {/* Card Number */}
-                      <div>
-                          <label className="block text-sm font-medium text-text-secondary mb-1">Card Number</label>
-                          <div className="relative">
-                              <input type="text" placeholder="0000 0000 0000 0000" className="w-full bg-surface border border-border rounded-xl pl-12 pr-4 py-3 text-text-primary font-mono focus:outline-none focus:border-orbit focus:ring-1 focus:ring-orbit transition-all" />
-                              <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
-                          </div>
-                      </div>
-                      
-                      {/* Expiry & CVC */}
-                      <div className="grid grid-cols-2 gap-4">
-                          <div>
-                              <label className="block text-sm font-medium text-text-secondary mb-1">Expiry Date</label>
-                              <input type="text" placeholder="MM/YY" className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-text-primary font-mono focus:outline-none focus:border-orbit focus:ring-1 focus:ring-orbit transition-all" />
-                          </div>
-                          <div>
-                              <label className="block text-sm font-medium text-text-secondary mb-1">CVC</label>
-                              <input type="text" placeholder="123" className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-text-primary font-mono focus:outline-none focus:border-orbit focus:ring-1 focus:ring-orbit transition-all" />
-                          </div>
-                      </div>
-                  </div>
-
-                  <div className="mt-8 flex items-center gap-3 text-sm text-text-muted bg-surface/50 p-4 rounded-xl border border-border/50">
-                      <ShieldCheck className="w-8 h-8 text-emerald-500 shrink-0" />
-                      <p>Your payment is processed securely. We do not store your full credit card information.</p>
-                  </div>
+              <div className="p-6 space-y-4 border-b border-[var(--color-border-subtle)]">
+                <div className="flex justify-between items-start gap-4">
+                  <div className="font-medium text-sm text-[var(--color-text-primary)]">{title}</div>
+                  <div className="font-semibold text-[var(--color-text-primary)]">${price}</div>
+                </div>
               </div>
+              <div className="p-6 bg-[var(--color-surface-1)] space-y-2">
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-[var(--color-text-secondary)]">Subtotal</span>
+                  <span className="font-medium text-[var(--color-text-primary)]">${price}</span>
+                </div>
+                <div className="flex justify-between items-center text-sm pb-4 border-b border-[var(--color-border-subtle)]">
+                  <span className="text-[var(--color-text-secondary)]">Tax</span>
+                  <span className="font-medium text-[var(--color-text-primary)]">$0.00</span>
+                </div>
+                <div className="flex justify-between items-center pt-2">
+                  <span className="font-bold text-[var(--color-text-primary)] text-lg">Total</span>
+                  <span className="font-bold text-[var(--color-text-primary)] text-lg">${price}</span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Order Summary (Right) */}
-          <div className="lg:col-span-5 relative">
-              <div className="sticky top-8 bg-overlay border border-border rounded-2xl p-8 shadow-2xl shadow-orbit/5">
-                  <h2 className="text-xl font-display font-medium mb-6">Order Summary</h2>
-                  
-                  <div className="flex gap-4 mb-6 pb-6 border-b border-border">
-                      <img src={course.thumbnail} alt="Course" className="w-24 h-24 rounded-lg object-cover border border-border" />
-                      <div>
-                          <h3 className="font-medium text-orbit-light leading-tight mb-1">{course.title}</h3>
-                          <p className="text-xs text-text-secondary mb-2">by {course.instructor}</p>
-                          <div className="text-sm text-text-muted">Lifetime Access</div>
-                      </div>
+          {/* Payment Form */}
+          <div className="lg:col-span-2 lg:order-1 space-y-6">
+            <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] shadow-sm p-6 sm:p-8">
+              <h2 className="text-xl font-bold font-display text-[var(--color-text-primary)] mb-6 flex items-center gap-2">
+                <CreditCard className="w-5 h-5 text-[var(--color-module-online)]" /> Payment Details
+              </h2>
+              
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1">Name on Card</label>
+                  <input 
+                    type="text" 
+                    placeholder="John Doe" 
+                    className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-4 py-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-module-online)] focus:ring-1 focus:ring-[var(--color-module-online)] font-body"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1">Card Number</label>
+                  <div className="relative">
+                    <input 
+                      type="text" 
+                      placeholder="0000 0000 0000 0000" 
+                      className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] pl-12 pr-4 py-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-module-online)] focus:ring-1 focus:ring-[var(--color-module-online)] font-body"
+                    />
+                    <CreditCard className="absolute left-4 top-3.5 h-5 w-5 text-[var(--color-text-tertiary)]" />
                   </div>
-
-                  <div className="space-y-3 mb-6">
-                      <div className="flex justify-between text-text-secondary">
-                          <span>Original Price</span>
-                          <span>${course.price.toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between text-emerald-400">
-                          <span>Discount</span>
-                          <span>-$0.00</span>
-                      </div>
+                </div>
+                <div className="grid grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1">Expiry Date</label>
+                    <input 
+                      type="text" 
+                      placeholder="MM/YY" 
+                      className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-4 py-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-module-online)] focus:ring-1 focus:ring-[var(--color-module-online)] font-body"
+                    />
                   </div>
-
-                  <div className="flex justify-between items-end mb-8 pt-6 border-t border-border">
-                      <span className="text-text-primary font-medium">Total</span>
-                      <span className="text-3xl font-display font-medium text-orbit-light">${course.price.toFixed(2)}</span>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1">CVC</label>
+                    <input 
+                      type="text" 
+                      placeholder="123" 
+                      className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-4 py-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-module-online)] focus:ring-1 focus:ring-[var(--color-module-online)] font-body"
+                    />
                   </div>
-
-                  <button 
-                      onClick={handlePayment} 
-                      disabled={processing}
-                      className="w-full orbit-btn-primary py-4 text-lg font-medium flex justify-center items-center gap-2"
-                  >
-                      {processing ? (
-                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                      ) : (
-                          <>Pay ${course.price.toFixed(2)} <ArrowRight className="w-5 h-5" /></>
-                      )}
-                  </button>
-
-                  <div className="mt-6 space-y-2">
-                      <div className="flex items-center gap-2 text-xs text-text-muted">
-                          <CheckCircle2 className="w-4 h-4 text-orbit" /> 30-Day Money-Back Guarantee
-                      </div>
-                      <div className="flex items-center gap-2 text-xs text-text-muted">
-                          <CheckCircle2 className="w-4 h-4 text-orbit" /> Full lifetime access
-                      </div>
-                      <div className="flex items-center gap-2 text-xs text-text-muted">
-                          <CheckCircle2 className="w-4 h-4 text-orbit" /> Certificate of completion
-                      </div>
-                  </div>
+                </div>
               </div>
-          </div>
 
+              <button 
+                onClick={handleCheckout} 
+                disabled={loading}
+                className="w-full mt-8 py-4 bg-[var(--color-module-online)] text-white text-base font-bold rounded-[var(--radius-md)] hover:opacity-90 transition-opacity flex items-center justify-center gap-2 shadow-md disabled:opacity-70"
+              >
+                {loading ? 'Processing...' : `Pay $${price}`} <ArrowRight className="w-5 h-5" />
+              </button>
+
+              <div className="mt-6 flex items-center justify-center gap-2 text-xs text-[var(--color-text-tertiary)]">
+                <ShieldCheck className="w-4 h-4 text-[var(--color-success)]" /> Payments are secure and encrypted.
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
