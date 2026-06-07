@@ -45,7 +45,7 @@ export default function VDashboard() {
     <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-indigo-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-indigo-800 to-slate-900 bg-clip-text text-transparent">
             Vocational Overview
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -53,10 +53,10 @@ export default function VDashboard() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="rounded-xl border-blue-200 text-blue-700 hover:bg-blue-50">
+          <Button variant="outline" className="rounded-xl border-emerald-200 text-emerald-700 hover:bg-emerald-50">
             Download Report
           </Button>
-          <Button className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-200 dark:shadow-none">
+          <Button className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-200 dark:shadow-none">
             New Placement
           </Button>
         </div>
@@ -64,21 +64,21 @@ export default function VDashboard() {
 
       {/* Top Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="rounded-3xl border-none shadow-sm bg-gradient-to-br from-blue-500 to-blue-700 text-white overflow-hidden relative">
+        <Card className="rounded-3xl border-none shadow-sm bg-gradient-to-br from-emerald-500 to-emerald-700 text-white overflow-hidden relative">
           <div className="absolute right-0 top-0 opacity-10 translate-x-4 -translate-y-4">
             <Users className="w-32 h-32" />
           </div>
           <CardContent className="p-6 relative z-10">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-blue-100 font-medium mb-1">Total Trainees</p>
+                <p className="text-emerald-100 font-medium mb-1">Total Trainees</p>
                 <h3 className="text-4xl font-black">{stats.loading ? '...' : stats.trainees}</h3>
               </div>
               <div className="p-3 bg-white/20 rounded-2xl backdrop-blur-sm">
                 <Users className="w-6 h-6 text-white" />
               </div>
             </div>
-            <div className="mt-6 flex items-center gap-2 text-sm text-blue-100">
+            <div className="mt-6 flex items-center gap-2 text-sm text-emerald-100">
               <TrendingUp className="w-4 h-4 text-emerald-300" />
               <span><strong className="text-white">+12%</strong> from last cohort</span>
             </div>

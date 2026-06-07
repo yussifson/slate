@@ -39,8 +39,8 @@ import { RETAIL_BRAND } from "@/components/retail/RetailViewKit";
 
 // Use professional enterprise colors instead of potentially playful brand colors
 const CHART_COLORS = ["#1e3a8a", "#2563eb", "#3b82f6", "#60a5fa", "#0f172a", "#334155"];
-const THEME_BLUE = "text-blue-700 dark:text-blue-400";
-const BG_BLUE_LIGHT = "bg-blue-50 dark:bg-blue-900/20";
+const THEME_BLUE = "text-emerald-700 dark:text-emerald-400";
+const BG_BLUE_LIGHT = "bg-emerald-50 dark:bg-emerald-900/20";
 
 function ReportMetricCard({ title, value, sub, icon: Icon, trend }) {
   return (

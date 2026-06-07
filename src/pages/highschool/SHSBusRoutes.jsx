@@ -77,7 +77,7 @@ export default function SHSBusRoutes() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 bg-clip-text text-transparent">
             Transport Routes
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -85,7 +85,7 @@ export default function SHSBusRoutes() {
           </p>
         </div>
         
-        <Button onClick={() => setIsModalOpen(true)} className="h-9 gap-2 rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white shadow-md shadow-blue-500/20">
+        <Button onClick={() => setIsModalOpen(true)} className="h-9 gap-2 rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white shadow-md shadow-emerald-500/20">
           <Plus className="w-4 h-4" /> Add Route
         </Button>
       </div>
@@ -101,7 +101,7 @@ export default function SHSBusRoutes() {
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
               <Input 
                 placeholder="Search route or zone..." 
-                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500"
+                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-emerald-600 dark:focus-visible:ring-emerald-500"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -113,8 +113,8 @@ export default function SHSBusRoutes() {
             <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading routes...</div>
           ) : filteredRoutes.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
-                <Navigation className="w-8 h-8 text-blue-500 dark:text-blue-500" />
+              <div className="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                <Navigation className="w-8 h-8 text-emerald-500 dark:text-emerald-500" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No routes defined</h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Add transport routes to map out the school network.</p>
@@ -122,7 +122,7 @@ export default function SHSBusRoutes() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50">
               {filteredRoutes.map((route) => (
-                <Card key={route.id} className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900 hover:ring-1 hover:ring-blue-600/30 dark:hover:ring-blue-500/30 transition-all">
+                <Card key={route.id} className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900 hover:ring-1 hover:ring-emerald-600/30 dark:hover:ring-emerald-500/30 transition-all">
                   <CardContent className="p-6">
                     <div className="flex justify-between items-start mb-4">
                       <div>
@@ -164,10 +164,10 @@ export default function SHSBusRoutes() {
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="sm:max-w-[450px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
-          <div className="p-6 bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 text-white">
+          <div className="p-6 bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-black">Define Route</DialogTitle>
-              <DialogDescription className="text-blue-100 dark:text-blue-900">
+              <DialogDescription className="text-emerald-100 dark:text-emerald-900">
                 Create a new bus route and set the transport fee.
               </DialogDescription>
             </DialogHeader>
@@ -211,7 +211,7 @@ export default function SHSBusRoutes() {
               <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Pickup Points (Comma separated)</label>
               <textarea 
                 placeholder="e.g. Danquah Circle, Labadi Beach, Trade Fair"
-                className="w-full h-24 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 resize-none text-sm"
+                className="w-full h-24 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500 resize-none text-sm"
                 value={newRoute.pickupPoints}
                 onChange={e => setNewRoute({...newRoute, pickupPoints: e.target.value})}
               />
@@ -225,7 +225,7 @@ export default function SHSBusRoutes() {
             <Button 
               onClick={handleSaveRoute} 
               disabled={!newRoute.routeName || !newRoute.feeAmount}
-              className="rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold"
+              className="rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white font-bold"
             >
               Save Route
             </Button>

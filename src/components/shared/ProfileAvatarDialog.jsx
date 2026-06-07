@@ -88,7 +88,7 @@ export default function ProfileAvatarDialog({ open, onOpenChange }) {
             onChange={handleFileChange} 
           />
           <Button 
-            className="w-full h-12 text-md font-semibold bg-blue-600 hover:bg-blue-700"
+            className="w-full h-12 text-md font-semibold bg-emerald-600 hover:bg-emerald-700"
             disabled={isSaving}
             onClick={() => fileInputRef.current?.click()}
           >

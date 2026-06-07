@@ -394,7 +394,7 @@ export default function GlobalChatPanel({ isOpen, onClose }) {
                       
                       {/* Name for group chats if not me */}
                       {!isMe && showTail && rooms.find(r => r.id === activeRoomId)?.name !== null && (
-                         <div className="text-[11px] font-bold text-blue-500 mb-0.5">{senderName}</div>
+                         <div className="text-[11px] font-bold text-emerald-500 mb-0.5">{senderName}</div>
                       )}
 
                       {/* Tail */}
@@ -414,9 +414,9 @@ export default function GlobalChatPanel({ isOpen, onClose }) {
                                 <video src={msg.content.split('|')[2]} controls className="max-w-[250px] rounded" />
                               ) : (
                                 <a href={msg.content.split('|')[2]} target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-md p-1 transition-colors">
-                                  <FileText className="w-8 h-8 text-blue-500 shrink-0" />
+                                  <FileText className="w-8 h-8 text-emerald-500 shrink-0" />
                                   <div className="flex flex-col min-w-0">
-                                    <span className="text-sm font-semibold truncate max-w-[150px] text-blue-600 hover:underline">{msg.content.split('|')[1]}</span>
+                                    <span className="text-sm font-semibold truncate max-w-[150px] text-emerald-600 hover:underline">{msg.content.split('|')[1]}</span>
                                     <span className="text-xs text-muted-foreground uppercase">{msg.content.split('|')[1]?.split('.').pop() || 'DOCUMENT'}</span>
                                   </div>
                                 </a>
@@ -435,7 +435,7 @@ export default function GlobalChatPanel({ isOpen, onClose }) {
                           if (!room) return <Check className="w-3.5 h-3.5" />;
                           const otherParticipants = room.chat_participants?.filter(p => p.user_id !== user.id) || [];
                           const isReadByAny = otherParticipants.some(p => p.last_read_at && new Date(p.last_read_at) >= new Date(msg.created_at));
-                          if (isReadByAny) return <CheckCheck className="w-3.5 h-3.5 text-blue-500" />;
+                          if (isReadByAny) return <CheckCheck className="w-3.5 h-3.5 text-emerald-500" />;
                           return <CheckCheck className="w-3.5 h-3.5 text-muted-foreground" />;
                         })()}
                       </div>
@@ -524,8 +524,8 @@ export default function GlobalChatPanel({ isOpen, onClose }) {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent side="top" align="start" className="w-48 p-2 mb-2 rounded-2xl flex flex-col gap-1 shadow-xl">
-                   <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-blue-50 hover:text-blue-600" onClick={() => document.getElementById('chat-doc-upload')?.click()}>
-                     <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600"><FileText className="w-4 h-4"/></div>
+                   <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-emerald-50 hover:text-emerald-600" onClick={() => document.getElementById('chat-doc-upload')?.click()}>
+                     <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600"><FileText className="w-4 h-4"/></div>
                      Document
                    </Button>
                    <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-rose-50 hover:text-rose-600" onClick={() => document.getElementById('chat-image-upload')?.click()}>
@@ -548,7 +548,7 @@ export default function GlobalChatPanel({ isOpen, onClose }) {
                   placeholder="Type a message"
                   className="w-full bg-transparent border-none px-4 py-2.5 text-sm focus:ring-0 focus:outline-none"
                 />
-                <button onClick={handleAiAssist} className="absolute right-3 p-1 text-blue-500 hover:bg-blue-500/10 rounded-full transition-colors" title="AI Magic Rewrite">
+                <button onClick={handleAiAssist} className="absolute right-3 p-1 text-emerald-500 hover:bg-emerald-500/10 rounded-full transition-colors" title="AI Magic Rewrite">
                   <Sparkles className="w-4 h-4" />
                 </button>
               </div>

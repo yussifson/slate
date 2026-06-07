@@ -189,11 +189,11 @@ export default function Teachers() {
                 </DropdownMenu>
               </div>
               
-              <div className="w-20 h-20 rounded-[1.25rem] bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/40 dark:to-teal-900/40 border border-white/50 shadow-inner flex items-center justify-center text-[#1E3A8A] dark:text-blue-400 dark:text-emerald-400 font-black text-2xl mb-4 group-hover:scale-105 transition-transform duration-300 relative z-10">
+              <div className="w-20 h-20 rounded-[1.25rem] bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/40 dark:to-teal-900/40 border border-white/50 shadow-inner flex items-center justify-center text-[#1E3A8A] dark:text-emerald-400 dark:text-emerald-400 font-black text-2xl mb-4 group-hover:scale-105 transition-transform duration-300 relative z-10">
                 {teacher.avatar}
               </div>
-              <h3 className="font-extrabold text-card-foreground text-xl tracking-tight group-hover:text-[#1E3A8A] dark:text-blue-400 transition-colors relative z-10">{teacher.name}</h3>
-              <p className="text-xs font-bold text-[#1E3A8A] dark:text-blue-400 dark:text-emerald-400 uppercase tracking-widest mb-4 opacity-90 relative z-10">{teacher.position}</p>
+              <h3 className="font-extrabold text-card-foreground text-xl tracking-tight group-hover:text-[#1E3A8A] dark:text-emerald-400 transition-colors relative z-10">{teacher.name}</h3>
+              <p className="text-xs font-bold text-[#1E3A8A] dark:text-emerald-400 dark:text-emerald-400 uppercase tracking-widest mb-4 opacity-90 relative z-10">{teacher.position}</p>
               
               <div className="w-full space-y-2 mt-auto relative z-10">
                 <div className="flex items-center gap-3 text-xs text-muted-foreground bg-slate-50/50 dark:bg-slate-900/50 border border-border/50 p-2.5 rounded-xl shadow-sm">
@@ -212,7 +212,7 @@ export default function Teachers() {
         <div className="school-card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-blue-100 dark:border-slate-700">
+              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-emerald-100 dark:border-slate-700">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Name</th>
                   <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Subjects</th>
@@ -225,7 +225,7 @@ export default function Teachers() {
                 <tr key={p.id} className="hover:bg-muted/50 transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-[#F0F4FF] dark:bg-blue-900/30 flex items-center justify-center text-[#1E3A8A] dark:text-blue-300 font-bold text-xs">
+                      <div className="w-9 h-9 rounded-full bg-[#F0F4FF] dark:bg-emerald-900/30 flex items-center justify-center text-[#1E3A8A] dark:text-emerald-300 font-bold text-xs">
                         {p.avatar}
                       </div>
                       <div>

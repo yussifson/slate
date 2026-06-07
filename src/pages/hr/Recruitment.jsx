@@ -227,7 +227,7 @@ export default function Recruitment() {
                     className={`text-xs font-bold px-2 py-1 rounded-full border border-input ${
                       cand.stage === 'Offer' ? 'bg-green-100 text-green-700' :
                       cand.stage === 'Hired' ? 'bg-violet-100 text-violet-700' :
-                      cand.stage === 'Interview' ? 'bg-blue-100 text-blue-700' : 
+                      cand.stage === 'Interview' ? 'bg-orange-100 text-orange-700' : 
                       cand.stage === 'Rejected' ? 'bg-red-100 text-red-700' : 'bg-muted text-foreground'
                     }`}
                   >

@@ -486,7 +486,7 @@ export default function Integrations() {
           <Badge variant="outline" className="h-8 gap-1.5 bg-emerald-50 text-emerald-700 border-emerald-200">
             <ShieldCheck className="w-3.5 h-3.5" /> {t("secure_oauth_2_0", "Secure OAuth 2.0")}
           </Badge>
-          <Button variant="ghost" size="sm" className="h-8 text-slate-500 hover:text-blue-600">
+          <Button variant="ghost" size="sm" className="h-8 text-slate-500 hover:text-emerald-600">
             <HelpCircle className="w-4 h-4 mr-1.5" /> {t("api_docs", "API Docs")}
           </Button>
         </div>
@@ -501,7 +501,7 @@ export default function Integrations() {
                 onClick={() => setActiveCategory(cat)}
                 className={`px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all ${
                   activeCategory === cat 
-                    ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20' 
+                    ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20' 
                     : 'bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
                 }`}
               >
@@ -523,7 +523,7 @@ export default function Integrations() {
       {/* Integration Grid */}
       {initialLoading ? (
         <div className="py-24 flex justify-center">
-          <Loader2 className="w-8 h-8 animate-spin text-blue-600 dark:text-blue-500" />
+          <Loader2 className="w-8 h-8 animate-spin text-emerald-600 dark:text-emerald-500" />
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -544,7 +544,7 @@ export default function Integrations() {
                 key={app.id} 
                 className={`bg-white dark:bg-slate-900 rounded-2xl border transition-all duration-300 flex flex-col overflow-hidden ${
                   isConnected 
-                    ? 'border-blue-500 shadow-lg shadow-blue-500/10 ring-1 ring-blue-500/20' 
+                    ? 'border-emerald-500 shadow-lg shadow-emerald-500/10 ring-1 ring-emerald-500/20' 
                     : 'border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-700 hover:-translate-y-1'
                 }`}
               >
@@ -567,7 +567,7 @@ export default function Integrations() {
                       </Badge>
                     )}
                     {!isConnected && app.popular && (
-                      <Badge variant="outline" className="text-xs font-bold text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-500/20 bg-blue-50 dark:bg-blue-500/10 px-3 py-1 rounded-full">
+                      <Badge variant="outline" className="text-xs font-bold text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20 bg-emerald-50 dark:bg-emerald-500/10 px-3 py-1 rounded-full">
                         {t("popular", "Popular")}
                       </Badge>
                     )}
@@ -582,7 +582,7 @@ export default function Integrations() {
                     href={app.learnMore} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="text-sm font-bold text-blue-600 dark:text-blue-500 hover:text-blue-800 dark:hover:text-blue-400 flex items-center gap-1.5 transition-colors"
+                    className="text-sm font-bold text-emerald-600 dark:text-emerald-500 hover:text-emerald-800 dark:hover:text-emerald-400 flex items-center gap-1.5 transition-colors"
                   >
                     {t("learn_more", "Learn more")} <ExternalLink className="w-3.5 h-3.5" />
                   </a>
@@ -594,7 +594,7 @@ export default function Integrations() {
                           variant="secondary" 
                           disabled={isLoading}
                           onClick={() => handleTestSync(app)}
-                          className="h-10 px-4 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-500/20 font-bold transition-colors shadow-sm"
+                          className="h-10 px-4 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 font-bold transition-colors shadow-sm"
                         >
                           {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Test Sync"}
                         </Button>
@@ -622,7 +622,7 @@ export default function Integrations() {
                     <Button 
                       disabled={isLoading}
                       onClick={() => handleConnect(app)}
-                      className="h-10 px-6 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold shadow-md shadow-blue-600/20 transition-all hover:translate-y-[-1px]"
+                      className="h-10 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-md shadow-emerald-600/20 transition-all hover:translate-y-[-1px]"
                     >
                       {isLoading ? (
                         <Loader2 className="w-4 h-4 animate-spin" />
@@ -824,7 +824,7 @@ export default function Integrations() {
           </div>
           <div className="flex justify-end gap-2.5 mt-4">
             <Button variant="ghost" onClick={() => setModalApp(null)}>Cancel</Button>
-            <Button onClick={handleSaveCredentials} disabled={loadingAppId === modalApp?.id} className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-5">
+            <Button onClick={handleSaveCredentials} disabled={loadingAppId === modalApp?.id} className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5">
               {loadingAppId === modalApp?.id ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save Connection"}
             </Button>
           </div>

@@ -1,4 +1,4 @@
-﻿import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useEffect, useRef, useState } from 'react';
@@ -152,7 +152,7 @@ const firms = [
   {
     name: 'Nexus Cloud',
     logo: (
-      <svg className="w-6 h-6 mr-2 text-blue-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+      <svg className="w-6 h-6 mr-2 text-emerald-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
         <circle cx="8" cy="12" r="6" />
         <circle cx="16" cy="12" r="6" />
       </svg>
@@ -227,7 +227,7 @@ const firms = [
   {
     name: 'APEX',
     logo: (
-      <svg className="w-6 h-6 mr-2 text-blue-700" fill="currentColor" viewBox="0 0 24 24">
+      <svg className="w-6 h-6 mr-2 text-emerald-700" fill="currentColor" viewBox="0 0 24 24">
         <path d="M12 2L1 21h22L12 2zm0 4.5l7 12H5l7-12z" />
       </svg>
     ),
@@ -308,7 +308,7 @@ function SuitesSection() {
 
   return (
     <section className="py-16 md:py-24 lg:py-32 bg-white relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-500/10 blur-[120px] rounded-full pointer-events-none transform translate-x-1/3 -translate-y-1/3"></div>
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-emerald-500/10 blur-[120px] rounded-full pointer-events-none transform translate-x-1/3 -translate-y-1/3"></div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <FadeIn>
           <div className="text-center max-w-3xl mx-auto mb-16">
@@ -345,29 +345,29 @@ function SuitesSection() {
                     onClick={() => setActiveSuite(suite)}
                     className={`w-full text-left px-6 py-4 md:py-5 transition-all duration-300 relative group overflow-hidden ${
                       activeSuite.id === suite.id
-                        ? 'bg-gradient-to-r from-blue-50/80 to-transparent'
+                        ? 'bg-gradient-to-r from-emerald-50/80 to-transparent'
                         : 'bg-transparent hover:bg-slate-50'
                     }`}
                   >
                     {/* Active Indicator Line */}
                     {activeSuite.id === suite.id ? (
-                      <div className="absolute top-0 left-[-1px] w-[3px] h-full bg-blue-600 rounded-r-full shadow-[0_0_10px_rgba(37,99,235,0.4)]"></div>
+                      <div className="absolute top-0 left-[-1px] w-[3px] h-full bg-emerald-600 rounded-r-full shadow-[0_0_10px_rgba(37,99,235,0.4)]"></div>
                     ) : (
                       <div className="absolute top-0 left-[-1px] w-[3px] h-full bg-slate-300 scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-center rounded-r-full"></div>
                     )}
                     <div className="relative z-10 flex items-center justify-between">
                       <div>
-                        <div className={`font-bold text-base transition-colors ${activeSuite.id === suite.id ? 'text-blue-700' : 'text-slate-700 group-hover:text-slate-900'}`}>
+                        <div className={`font-bold text-base transition-colors ${activeSuite.id === suite.id ? 'text-emerald-700' : 'text-slate-700 group-hover:text-slate-900'}`}>
                           {suite.name}
                         </div>
-                        <div className={`text-[13px] font-medium mt-1 transition-colors ${activeSuite.id === suite.id ? 'text-blue-600/80' : 'text-slate-500'}`}>
+                        <div className={`text-[13px] font-medium mt-1 transition-colors ${activeSuite.id === suite.id ? 'text-emerald-600/80' : 'text-slate-500'}`}>
                           {suite.tagline}
                         </div>
                       </div>
                       
                       {/* Arrow Icon on Active */}
                       <div className={`transition-all duration-300 ${activeSuite.id === suite.id ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}>
-                        <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                         </svg>
                       </div>
@@ -382,12 +382,12 @@ function SuitesSection() {
           <div className="lg:col-span-8 lg:sticky lg:top-24">
             <div className="bg-white border border-slate-200/60 rounded-[2rem] p-10 md:p-14 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] relative overflow-hidden">
               {/* Subtle background glow */}
-              <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-blue-100/50 via-transparent to-transparent opacity-60 rounded-bl-[100px] pointer-events-none"></div>
+              <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-emerald-100/50 via-transparent to-transparent opacity-60 rounded-bl-[100px] pointer-events-none"></div>
               
               <div className="relative z-10">
                 <FadeIn key={activeSuite.id}>
                   <div className="flex items-center gap-3 mb-6">
-                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600 shadow-sm border border-blue-100/50">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 shadow-sm border border-emerald-100/50">
                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                       </svg>
@@ -395,7 +395,7 @@ function SuitesSection() {
                     <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold uppercase tracking-widest">
                       {activeSuite.name}
                     </div>
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-bold uppercase tracking-widest">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-widest">
                       <Sparkles className="w-3.5 h-3.5" /> {t("orbit_ai_powered", "Orbit AI Powered")}
                     </div>
                   </div>
@@ -412,8 +412,8 @@ function SuitesSection() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {activeSuite.features.map((feat, idx) => {
                       return (
-                        <div key={idx} className="flex items-start gap-3 bg-white border border-slate-100 p-4 rounded-xl shadow-sm hover:shadow-md hover:border-blue-100 transition-all">
-                          <div className="mt-0.5 w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+                        <div key={idx} className="flex items-start gap-3 bg-white border border-slate-100 p-4 rounded-xl shadow-sm hover:shadow-md hover:border-emerald-100 transition-all">
+                          <div className="mt-0.5 w-6 h-6 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0">
                             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                             </svg>
@@ -427,7 +427,7 @@ function SuitesSection() {
                   <div className="mt-12 pt-8 border-t border-slate-100 flex items-center">
                     <Button 
                       onClick={() => setIsModalOpen(true)}
-                      className="bg-blue-600 text-white hover:bg-blue-700 font-bold py-6 px-10 rounded-full shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5"
+                      className="bg-emerald-600 text-white hover:bg-emerald-700 font-bold py-6 px-10 rounded-full shadow-lg shadow-emerald-600/20 transition-all hover:-translate-y-0.5"
                     >
                       {t("explore", "Explore")} {activeSuite.name} {t("details", "details")}
                     </Button>
@@ -450,7 +450,7 @@ function SuitesSection() {
             {/* Header */}
             <div className="flex-none p-6 sm:p-8 border-b border-slate-100 flex justify-between items-start bg-slate-50/50">
               <div>
-                <div className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-[10px] font-bold uppercase tracking-widest mb-3">
+                <div className="inline-flex items-center px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-[10px] font-bold uppercase tracking-widest mb-3">
                   {t("workspace_module", "Workspace Module")}
                 </div>
                 <h3 className="text-3xl font-extrabold text-slate-900 tracking-tight">{activeSuite.name}</h3>
@@ -470,7 +470,7 @@ function SuitesSection() {
             <div className="flex-1 overflow-y-auto p-6 sm:p-8 bg-white">
               <div className="max-w-3xl mx-auto">
                 <h4 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
@@ -481,7 +481,7 @@ function SuitesSection() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
                   {activeSuite.features.map((feat, idx) => {
                     return (
-                      <div key={idx} className="bg-slate-50 rounded-2xl p-6 border border-slate-100 hover:border-blue-100 transition-colors">
+                      <div key={idx} className="bg-slate-50 rounded-2xl p-6 border border-slate-100 hover:border-emerald-100 transition-colors">
                         <h5 className="font-bold text-slate-900 text-lg mb-2">{feat}</h5>
                         <p className="text-slate-500 text-sm leading-relaxed font-medium">
                           {t(
@@ -494,16 +494,16 @@ function SuitesSection() {
                   })}
                 </div>
                 
-                <div className="bg-blue-600 rounded-3xl p-8 sm:p-10 text-white relative overflow-hidden">
+                <div className="bg-emerald-600 rounded-3xl p-8 sm:p-10 text-white relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-[50px] -translate-y-1/2 translate-x-1/3"></div>
                   <h4 className="text-2xl font-bold mb-4 relative z-10">{t("ready_to_transform_your_workfl", "Ready to transform your workflow?")}</h4>
-                  <p className="text-blue-100 font-medium mb-8 max-w-lg relative z-10">
+                  <p className="text-emerald-100 font-medium mb-8 max-w-lg relative z-10">
                     {t("get_started_today_and_see_how", "Get started today and see how")} {activeSuite.name} {t(
                       "can_streamline_your_daily_oper",
                       "can streamline your daily operations and boost your bottom line."
                     )}
                   </p>
-                  <Button className="bg-white text-blue-600 hover:bg-slate-50 font-bold py-6 px-8 rounded-xl shadow-lg relative z-10">
+                  <Button className="bg-white text-emerald-600 hover:bg-slate-50 font-bold py-6 px-8 rounded-xl shadow-lg relative z-10">
                     {t("start_your_free_trial", "Start Your Free Trial")}
                   </Button>
                 </div>
@@ -543,7 +543,7 @@ export default function Home() {
           <FadeIn>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 text-xs font-semibold text-slate-600 mb-8 shadow-sm">
               <span className="flex h-2 w-2 rounded-full bg-green-500" />
-              {t("trusted_by_500_enterprise_team", "Trusted by 500+ Enterprise Teams  •")}  <span className="font-bold text-blue-600 flex items-center gap-1"><Sparkles className="w-3 h-3"/> {t("powered_by_orbit_ai", "Powered by Orbit AI")}</span>
+              {t("trusted_by_500_enterprise_team", "Trusted by 500+ Enterprise Teams  •")}  <span className="font-bold text-emerald-600 flex items-center gap-1"><Sparkles className="w-3 h-3"/> {t("powered_by_orbit_ai", "Powered by Orbit AI")}</span>
             </div>
           </FadeIn>
 
@@ -595,19 +595,19 @@ export default function Home() {
       {/*  ORBIT AI HERO (INTERACTIVE DEMO)                            */}
       {/* ============================================================ */}
       <section className="py-20 md:py-24 bg-white text-slate-900 relative overflow-hidden border-t border-slate-100">
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-100/40 blur-[120px] rounded-full pointer-events-none transform translate-x-1/3 -translate-y-1/3"></div>
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-emerald-100/40 blur-[120px] rounded-full pointer-events-none transform translate-x-1/3 -translate-y-1/3"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             
             <FadeIn>
               <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-bold uppercase tracking-widest mb-6">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-widest mb-6">
                   <Sparkles className="w-3.5 h-3.5" />
                   {t("your_intelligent_agent", "Your Intelligent Agent")}
                 </div>
                 <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-6 leading-[1.1]">
                   {t("meet", "Meet")} <br/>
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-6xl md:text-8xl drop-shadow-sm font-extrabold pb-2 inline-block tracking-tighter">
+                  <span className="text-emerald-600 text-6xl md:text-8xl drop-shadow-sm font-extrabold pb-2 inline-block tracking-tighter">
                     {t("orbit_ai", "Orbit AI")}
                   </span>
                 </h2>
@@ -618,9 +618,9 @@ export default function Home() {
                   )}
                 </p>
                 <ul className="space-y-4 mb-10 text-slate-700 font-medium">
-                  <li className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0"><Clock className="w-4 h-4" /></div> {t("saves_an_average_of_14_hours_p", "Saves an average of 14 hours per week")}</li>
-                  <li className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0"><Shield className="w-4 h-4" /></div> {t("bank_grade_secure_long_term_me", "Bank-grade secure long-term memory")}</li>
-                  <li className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0"><Briefcase className="w-4 h-4" /></div> {t(
+                  <li className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0"><Clock className="w-4 h-4" /></div> {t("saves_an_average_of_14_hours_p", "Saves an average of 14 hours per week")}</li>
+                  <li className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0"><Shield className="w-4 h-4" /></div> {t("bank_grade_secure_long_term_me", "Bank-grade secure long-term memory")}</li>
+                  <li className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0"><Briefcase className="w-4 h-4" /></div> {t(
                       "understands_all_9_industry_sec",
                       "Understands all 9 industry sectors natively"
                     )}</li>
@@ -694,10 +694,10 @@ export default function Home() {
               return (
                 <FadeIn key={i} delay={`delay-${(i + 1) * 100}`}>
                   <div className="relative bg-white rounded-3xl p-8 border border-slate-100 shadow-sm text-center z-10 group hover:shadow-md transition-shadow">
-                    <div className="w-16 h-16 mx-auto bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-inner">
+                    <div className="w-16 h-16 mx-auto bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-inner">
                       <step.icon className="w-8 h-8" />
                     </div>
-                    <div className="absolute -top-4 -right-4 w-12 h-12 bg-blue-600 text-white font-black rounded-xl flex items-center justify-center text-lg shadow-lg transform rotate-6 group-hover:rotate-12 transition-transform">
+                    <div className="absolute -top-4 -right-4 w-12 h-12 bg-emerald-600 text-white font-black rounded-xl flex items-center justify-center text-lg shadow-lg transform rotate-6 group-hover:rotate-12 transition-transform">
                       {step.step}
                     </div>
                     <h3 className="text-2xl font-bold text-slate-900 mb-4">{step.title}</h3>
@@ -757,7 +757,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <FadeIn>
             <div className="text-center max-w-2xl mx-auto mb-20">
-              <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-slate-200 text-blue-600 text-xs font-bold uppercase tracking-widest mb-6 shadow-sm">
+              <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-slate-200 text-emerald-600 text-xs font-bold uppercase tracking-widest mb-6 shadow-sm">
                 {t("unified_architecture", "Unified Architecture")}
               </span>
               <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-6">
@@ -780,24 +780,24 @@ export default function Home() {
               const isWide = i === 0 || i === 3;
               return (
                 <FadeIn key={i} delay={`delay-[${i * 80}ms]`} className={isWide ? "lg:col-span-2" : "col-span-1"}>
-                  <div className="group relative bg-white rounded-[2.5rem] border border-blue-100/60 shadow-[0_8px_30px_-12px_rgba(37,99,235,0.08)] hover:shadow-2xl hover:shadow-blue-900/15 transition-all duration-500 overflow-hidden h-full flex flex-col p-10 md:p-12 z-0">
+                  <div className="group relative bg-white rounded-[2.5rem] border border-emerald-100/60 shadow-[0_8px_30px_-12px_rgba(37,99,235,0.08)] hover:shadow-2xl hover:shadow-emerald-900/15 transition-all duration-500 overflow-hidden h-full flex flex-col p-10 md:p-12 z-0">
                     
                     {/* Vibrant Background Gradient (Always Partially Visible) */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-50/90 via-white to-indigo-50/50 opacity-100 group-hover:from-blue-100/60 group-hover:to-indigo-100/40 transition-colors duration-700 -z-10"></div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/90 via-white to-indigo-50/50 opacity-100 group-hover:from-emerald-100/60 group-hover:to-indigo-100/40 transition-colors duration-700 -z-10"></div>
                     
                     {/* Abstract Decorative Icon Watermark (Always Visible) */}
-                    <div className="absolute -bottom-12 -right-12 text-blue-600 opacity-[0.03] group-hover:opacity-[0.06] transition-all duration-700 -z-10 transform scale-100 group-hover:scale-110 group-hover:-rotate-12 ease-out">
+                    <div className="absolute -bottom-12 -right-12 text-emerald-600 opacity-[0.03] group-hover:opacity-[0.06] transition-all duration-700 -z-10 transform scale-100 group-hover:scale-110 group-hover:-rotate-12 ease-out">
                       <feature.icon className="w-72 h-72" strokeWidth={0.5} />
                     </div>
 
                     <div className="relative z-10 flex-1">
                       {/* Jewel-like Icon Container (Blue by Default) */}
-                      <div className="w-16 h-16 rounded-[1.25rem] bg-gradient-to-br from-blue-100 to-white border border-blue-200/60 shadow-sm shadow-blue-600/10 flex items-center justify-center mb-10 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:from-blue-600 group-hover:to-indigo-600 group-hover:border-transparent group-hover:shadow-[0_8px_16px_rgba(37,99,235,0.3)] transition-all duration-500">
-                        <feature.icon className="w-8 h-8 text-blue-600 group-hover:text-white transition-colors duration-500" strokeWidth={1.5} />
+                      <div className="w-16 h-16 rounded-[1.25rem] bg-gradient-to-br from-emerald-100 to-white border border-emerald-200/60 shadow-sm shadow-emerald-600/10 flex items-center justify-center mb-10 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:from-emerald-600 group-hover:to-indigo-600 group-hover:border-transparent group-hover:shadow-[0_8px_16px_rgba(37,99,235,0.3)] transition-all duration-500">
+                        <feature.icon className="w-8 h-8 text-emerald-600 group-hover:text-white transition-colors duration-500" strokeWidth={1.5} />
                       </div>
                       
                       {/* Premium Typography (Blue theme) */}
-                      <h4 className="text-[28px] leading-[1.2] font-black text-blue-950 tracking-tight mb-5 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-700 group-hover:to-indigo-700 transition-all duration-300">
+                      <h4 className="text-[28px] leading-[1.2] font-black text-emerald-950 tracking-tight mb-5 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-emerald-700 group-hover:to-indigo-700 transition-all duration-300">
                         {feature.title}
                       </h4>
                       <p className="text-slate-600 leading-[1.7] font-medium text-lg">
@@ -806,9 +806,9 @@ export default function Home() {
                     </div>
                     
                     {/* Elegant Reveal Link (Always visible but enhances on hover) */}
-                    <div className="relative z-10 mt-12 flex items-center text-blue-700 font-extrabold text-lg opacity-80 group-hover:opacity-100 transition-all duration-500 ease-out">
+                    <div className="relative z-10 mt-12 flex items-center text-emerald-700 font-extrabold text-lg opacity-80 group-hover:opacity-100 transition-all duration-500 ease-out">
                       {t("explore_capabilities", "Explore capabilities")}
-                      <span className="ml-3 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center group-hover:bg-blue-600 text-blue-700 group-hover:text-white transition-all duration-500 shadow-sm transform group-hover:translate-x-1">
+                      <span className="ml-3 w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center group-hover:bg-emerald-600 text-emerald-700 group-hover:text-white transition-all duration-500 shadow-sm transform group-hover:translate-x-1">
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                         </svg>
@@ -832,7 +832,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <FadeIn>
             <div className="text-center max-w-2xl mx-auto mb-20">
-              <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-bold uppercase tracking-widest mb-6">
+              <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-widest mb-6">
                 {t("client_success", "Client Success")}
               </span>
               <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
@@ -845,8 +845,8 @@ export default function Home() {
             {testimonials.map((item, idx) => {
               return (
                 <FadeIn key={idx} delay={`delay-[${idx * 120}ms]`}>
-                  <div className="bg-white border border-slate-200 rounded-[2rem] p-10 flex flex-col justify-between hover:border-blue-300 hover:shadow-2xl hover:shadow-blue-900/5 transition-all duration-300 h-full group relative overflow-hidden">
-                    <div className="absolute top-0 right-0 p-8 opacity-5 text-[8rem] font-serif leading-none font-black text-blue-900 group-hover:text-blue-600 group-hover:opacity-10 transition-colors duration-500">"</div>
+                  <div className="bg-white border border-slate-200 rounded-[2rem] p-10 flex flex-col justify-between hover:border-emerald-300 hover:shadow-2xl hover:shadow-emerald-900/5 transition-all duration-300 h-full group relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-8 opacity-5 text-[8rem] font-serif leading-none font-black text-emerald-900 group-hover:text-emerald-600 group-hover:opacity-10 transition-colors duration-500">"</div>
                     
                     <div className="relative z-10">
                       <div className="flex gap-1.5 mb-8">
@@ -865,7 +865,7 @@ export default function Home() {
                     </div>
 
                     <div className="flex items-center gap-4 pt-6 border-t border-slate-100 relative z-10">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center text-blue-700 font-bold text-lg shadow-inner">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-100 to-emerald-200 flex items-center justify-center text-emerald-700 font-bold text-lg shadow-inner">
                         {item.author
                           .split(' ')
                           .map((n) => n[0])
@@ -893,7 +893,7 @@ export default function Home() {
       <section className="py-16 md:py-24 lg:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
-            <div className="relative bg-gradient-to-br from-primary to-blue-700 rounded-3xl px-6 py-20 md:py-24 md:px-12 text-center overflow-hidden shadow-[0_20px_60px_hsl(var(--primary)/0.3)]">
+            <div className="relative bg-gradient-to-br from-primary to-emerald-700 rounded-3xl px-6 py-20 md:py-24 md:px-12 text-center overflow-hidden shadow-[0_20px_60px_hsl(var(--primary)/0.3)]">
               {/* Decorative glow circles */}
               <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.2)_0%,transparent_50%)] pointer-events-none" />
               <div className="absolute -bottom-32 -left-20 w-96 h-96 rounded-full bg-white/[0.07] blur-3xl pointer-events-none" />

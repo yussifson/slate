@@ -234,7 +234,7 @@ export default function AdminFirms() {
                               variant="outline" 
                               size="sm" 
                               onClick={() => handleOpenMessageDialog(c)}
-                              className="h-8 text-xs gap-1.5 px-3 rounded-lg border-blue-200 text-blue-700 bg-blue-50 hover:bg-blue-100 hover:text-blue-800"
+                              className="h-8 text-xs gap-1.5 px-3 rounded-lg border-emerald-200 text-orange-700 bg-orange-50 hover:bg-emerald-100 hover:text-emerald-800"
                             >
                               <MessageSquare className="w-3.5 h-3.5" /> {t("message", "Message")}
                             </Button>
@@ -278,7 +278,7 @@ export default function AdminFirms() {
         <DialogContent className="max-w-md rounded-2xl border border-slate-100 shadow-xl bg-white p-6 font-sans">
           <DialogHeader>
             <DialogTitle className="text-slate-900 font-extrabold text-base flex items-center gap-1.5">
-              <MessageSquare className="w-4 h-4 text-blue-600" />
+              <MessageSquare className="w-4 h-4 text-emerald-600" />
               {t("message_firm_admin", "Message Firm Admin:")} {selectedCompany?.name}
             </DialogTitle>
           </DialogHeader>
@@ -290,7 +290,7 @@ export default function AdminFirms() {
                 onChange={(e) => setMessageContent(e.target.value)}
                 rows={4}
                 placeholder="Type your message to the firm administrator here..."
-                className="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none bg-slate-50 text-sm resize-none"
+                className="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-slate-50 text-sm resize-none"
               />
             </div>
           </div>
@@ -305,7 +305,7 @@ export default function AdminFirms() {
             <Button 
               onClick={handleSendMessage}
               disabled={sendingMessage}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl h-11"
+              className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl h-11"
             >
               {sendingMessage ? (
                 <Loader2 className="w-4 h-4 animate-spin" />

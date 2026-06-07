@@ -114,7 +114,7 @@ export default function Transport() {
                   <Map className="w-6 h-6" />
                 </div>
                 <h3 className="font-bold text-card-foreground text-lg line-clamp-1" title={r.route}>{r.route}</h3>
-                <p className="text-xs font-semibold text-[#1E3A8A] dark:text-blue-400 uppercase tracking-wide mb-3">{r.vehicle}</p>
+                <p className="text-xs font-semibold text-[#1E3A8A] dark:text-emerald-400 uppercase tracking-wide mb-3">{r.vehicle}</p>
                 
                 <div className="w-full space-y-2 mt-2">
                   <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 p-2 rounded-lg">

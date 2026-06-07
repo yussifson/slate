@@ -116,7 +116,7 @@ export default function EmailInbox() {
       <div className="w-16 md:w-56 border-r border-border bg-slate-50/50 flex flex-col py-4 flex-shrink-0 transition-all z-10">
         <div className="px-2 md:px-4 mb-6">
           <Button 
-            className="w-full h-12 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-md flex justify-center items-center"
+            className="w-full h-12 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-md flex justify-center items-center"
             onClick={() => {
               setComposeInitialData(null);
               setShowCompose(true);
@@ -204,8 +204,8 @@ export default function EmailInbox() {
           />
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-slate-50/30">
-            <div className="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center mb-6">
-              <Mail className="w-10 h-10 text-blue-300" />
+            <div className="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center mb-6">
+              <Mail className="w-10 h-10 text-emerald-300" />
             </div>
             <h2 className="text-xl font-medium text-slate-600 mb-2">Select an item to read</h2>
             <p className="text-slate-400 text-sm">Nothing is selected</p>
@@ -235,15 +235,15 @@ function TabButton({ icon: Icon, label, active, onClick, count }) {
     <button
       onClick={onClick}
       className={`w-full flex items-center md:justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-        active ? "bg-blue-100/50 text-blue-800 font-semibold" : "text-slate-600 hover:bg-slate-100"
+        active ? "bg-emerald-100/50 text-emerald-800 font-semibold" : "text-slate-600 hover:bg-slate-100"
       }`}
     >
       <div className="flex items-center gap-3 mx-auto md:mx-0">
-        <Icon className={`w-4 h-4 ${active ? "text-blue-600" : "text-slate-400"}`} />
+        <Icon className={`w-4 h-4 ${active ? "text-emerald-600" : "text-slate-400"}`} />
         <span className="hidden md:inline">{label}</span>
       </div>
       {(count > 0 && active) && (
-        <span className="hidden md:inline text-[11px] font-bold px-2 py-0.5 rounded-full bg-blue-200 text-blue-800">
+        <span className="hidden md:inline text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-800">
           {count}
         </span>
       )}
@@ -264,7 +264,7 @@ function EmailRow({ email, isSelected, onClick, isStarred, onToggleStar }) {
       onClick={onClick}
       className={cn(
         "flex flex-col px-4 py-3 cursor-pointer transition-colors group relative border-l-4",
-        isSelected ? "bg-blue-50/50 border-blue-500" : "bg-white hover:bg-slate-50 border-transparent"
+        isSelected ? "bg-emerald-50/50 border-emerald-500" : "bg-white hover:bg-slate-50 border-transparent"
       )}
     >
       <div className="flex items-center gap-3 mb-1">
@@ -275,7 +275,7 @@ function EmailRow({ email, isSelected, onClick, isStarred, onToggleStar }) {
           <span className={cn("truncate text-[15px]", isUnread && !isSelected ? "font-bold text-slate-900" : "font-medium text-slate-700")}>
             {senderName}
           </span>
-          <span className={cn("text-[11px] shrink-0 ml-2", isUnread && !isSelected ? "font-bold text-blue-600" : "text-slate-400 font-medium")}>
+          <span className={cn("text-[11px] shrink-0 ml-2", isUnread && !isSelected ? "font-bold text-emerald-600" : "text-slate-400 font-medium")}>
             {email.created_date ? formatDistanceToNow(new Date(email.created_date), { addSuffix: false }) : ''}
           </span>
           <button onClick={onToggleStar} className={cn("ml-2 p-1 rounded-full transition-colors", isStarred ? "text-amber-400" : "text-slate-200 hover:text-slate-400")}>
@@ -365,11 +365,11 @@ export function EmailDetail({ email, onBack, isStarred, onToggleStar, onDelete, 
                     const atts = typeof email.attachments === 'string' ? JSON.parse(email.attachments) : email.attachments;
                     return atts.map((att, i) => (
                       <a key={i} href={att.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors max-w-xs group">
-                        <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                        <div className="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
                           <Paperclip className="w-5 h-5" />
                         </div>
                         <div className="min-w-0">
-                          <p className="text-sm font-medium text-slate-700 truncate group-hover:text-blue-600 transition-colors">{att.name}</p>
+                          <p className="text-sm font-medium text-slate-700 truncate group-hover:text-emerald-600 transition-colors">{att.name}</p>
                           <p className="text-xs text-slate-400">{(att.size / 1024).toFixed(1)} KB</p>
                         </div>
                       </a>
@@ -605,13 +605,13 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
 
           <div className="px-4 py-3 border-t border-border flex items-center justify-between bg-white shrink-0">
             <div className="flex items-center gap-3">
-              <Button type="submit" disabled={isLoading || isUploading} className="bg-blue-600 hover:bg-blue-700 text-white px-6 rounded-full font-bold shadow-sm h-9">
+              <Button type="submit" disabled={isLoading || isUploading} className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 rounded-full font-bold shadow-sm h-9">
                 {isLoading || isUploading ? "Sending..." : t("send", "Send")}
               </Button>
               <input type="file" multiple ref={fileInputRef} className="hidden" onChange={handleFileChange} />
               <button type="button" onClick={() => fileInputRef.current?.click()} className="w-8 h-8 flex items-center justify-center text-slate-500 hover:bg-slate-100 rounded-full transition-colors relative">
                 <Paperclip className="w-5 h-5" />
-                {attachments.length > 0 && <span className="absolute -top-1 -right-1 w-4 h-4 bg-blue-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center">{attachments.length}</span>}
+                {attachments.length > 0 && <span className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center">{attachments.length}</span>}
               </button>
             </div>
             

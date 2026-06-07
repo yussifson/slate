@@ -87,7 +87,7 @@ export default function DynamicGrid({ data, fieldDefinitions, theme, onRefresh }
             <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
               <button
                 onClick={() => setViewRecord(record)}
-                className="p-1.5 rounded-lg bg-white/80 backdrop-blur border border-slate-200 text-slate-500 hover:text-blue-600 hover:border-blue-300 transition-colors shadow-sm"
+                className="p-1.5 rounded-lg bg-white/80 backdrop-blur border border-slate-200 text-slate-500 hover:text-emerald-600 hover:border-emerald-300 transition-colors shadow-sm"
                 title="View"
               >
                 <Eye className="w-3.5 h-3.5" />
@@ -189,7 +189,7 @@ export default function DynamicGrid({ data, fieldDefinitions, theme, onRefresh }
                 return (
                   <div key={f.name} className="space-y-1">
                     <label className="text-xs font-semibold text-slate-600 uppercase tracking-wide">{label}</label>
-                    <select value={val} onChange={e => setEditData({ ...editData, [f.name]: e.target.value })} className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <select value={val} onChange={e => setEditData({ ...editData, [f.name]: e.target.value })} className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500">
                       <option value="">Select...</option>
                       {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                     </select>
@@ -206,7 +206,7 @@ export default function DynamicGrid({ data, fieldDefinitions, theme, onRefresh }
           </div>
           <DialogFooter className="mt-6 pt-4 border-t border-slate-100">
             <Button variant="outline" onClick={() => setEditRecord(null)}>Cancel</Button>
-            <Button onClick={handleSaveEdit} disabled={isSaving} className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Button onClick={handleSaveEdit} disabled={isSaving} className="bg-emerald-600 hover:bg-emerald-700 text-white">
               {isSaving ? 'Saving...' : 'Save Changes'}
             </Button>
           </DialogFooter>

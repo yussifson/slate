@@ -68,7 +68,7 @@ export default function SHSInvoices() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 bg-clip-text text-transparent">
             Student Invoices
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -76,7 +76,7 @@ export default function SHSInvoices() {
           </p>
         </div>
         
-        <Button onClick={() => setIsGenerateModalOpen(true)} className="h-9 gap-2 rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white shadow-md shadow-blue-500/20">
+        <Button onClick={() => setIsGenerateModalOpen(true)} className="h-9 gap-2 rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white shadow-md shadow-emerald-500/20">
           <Receipt className="w-4 h-4" /> Generate Term Bills
         </Button>
       </div>
@@ -134,7 +134,7 @@ export default function SHSInvoices() {
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
               <Input 
                 placeholder="Search invoices..." 
-                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500"
+                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-emerald-600 dark:focus-visible:ring-emerald-500"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -194,10 +194,10 @@ export default function SHSInvoices() {
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex justify-end gap-2">
-                          <Button size="sm" variant="ghost" className="text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:bg-slate-800">
+                          <Button size="sm" variant="ghost" className="text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:bg-slate-800">
                             <Download className="w-4 h-4" />
                           </Button>
-                          <Button size="sm" variant="ghost" className="text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:bg-slate-800">
+                          <Button size="sm" variant="ghost" className="text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:bg-slate-800">
                             <Send className="w-4 h-4" />
                           </Button>
                         </div>
@@ -213,10 +213,10 @@ export default function SHSInvoices() {
 
       <Dialog open={isGenerateModalOpen} onOpenChange={setIsGenerateModalOpen}>
         <DialogContent className="sm:max-w-[450px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
-          <div className="p-6 bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 text-white">
+          <div className="p-6 bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-black">Generate Bills</DialogTitle>
-              <DialogDescription className="text-blue-100 dark:text-blue-900">
+              <DialogDescription className="text-emerald-100 dark:text-emerald-900">
                 Run the billing engine to generate term invoices.
               </DialogDescription>
             </DialogHeader>
@@ -237,7 +237,7 @@ export default function SHSInvoices() {
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Term</label>
-                <select className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500">
+                <select className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500">
                   <option value="Term 1">Term 1</option>
                   <option value="Term 2">Term 2</option>
                   <option value="Term 3">Term 3</option>
@@ -253,7 +253,7 @@ export default function SHSInvoices() {
             <Button 
               onClick={handleGenerateInvoices} 
               disabled={isGenerating}
-              className="rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold"
+              className="rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white font-bold"
             >
               {isGenerating ? 'Processing...' : 'Run Billing Engine'}
             </Button>

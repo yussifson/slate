@@ -22,7 +22,7 @@ const STATUS_ICONS = {
 
 const STATUS_COLORS = {
   pending: "bg-muted text-muted-foreground",
-  in_progress: "bg-blue-100 text-blue-700",
+  in_progress: "bg-orange-100 text-orange-700",
   completed: "bg-green-100 text-green-700",
   waived: "bg-amber-100 text-amber-700",
 };

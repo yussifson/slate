@@ -56,12 +56,12 @@ export default function Contact() {
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 text-xs font-semibold text-slate-600 mb-8 shadow-sm">
-            <span className="flex h-2 w-2 rounded-full bg-blue-500" />
+            <span className="flex h-2 w-2 rounded-full bg-emerald-500" />
             {t("get_in_touch", "Get in Touch")}
           </div>
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1] max-w-4xl mx-auto mb-6">
             {t("we_re_here_to", "We're here to")}{' '}
-            <span className="bg-blue-100 text-blue-900 px-4 py-1 rounded-[1.5rem] inline-block mt-2">
+            <span className="bg-emerald-100 text-emerald-900 px-4 py-1 rounded-[1.5rem] inline-block mt-2">
               {t("support", "support")}
             </span>{' '}
             {t("you", "you")}
@@ -83,7 +83,7 @@ export default function Contact() {
             
             {/* Left Column — Contact Form */}
             <div className="lg:col-span-7">
-              <div className="bg-white rounded-[2rem] border border-slate-200/60 p-8 md:p-12 shadow-2xl shadow-slate-200/40 hover:shadow-blue-900/5 transition-all duration-300">
+              <div className="bg-white rounded-[2rem] border border-slate-200/60 p-8 md:p-12 shadow-2xl shadow-slate-200/40 hover:shadow-emerald-900/5 transition-all duration-300">
                 {formSubmitted ? (
                   <div className="text-center py-20 space-y-6">
                     <div className="w-20 h-20 rounded-full bg-green-50 text-green-500 flex items-center justify-center mx-auto border-8 border-green-50/50 shadow-inner">
@@ -101,7 +101,7 @@ export default function Contact() {
                     <div className="pt-8">
                       <Button
                         onClick={() => setFormSubmitted(false)}
-                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-6 px-10 rounded-full shadow-lg transition-all duration-300"
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-6 px-10 rounded-full shadow-lg transition-all duration-300"
                       >
                         {t("send_another_message", "Send another message")}
                       </Button>
@@ -191,12 +191,12 @@ export default function Contact() {
                         value={formData.message}
                         onChange={handleInputChange}
                         placeholder="Tell us about your project or inquiry..."
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-medium text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent focus:bg-white resize-none transition-colors"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-medium text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent focus:bg-white resize-none transition-colors"
                         required
                       ></textarea>
                     </div>
 
-                    <Button type="submit" className="w-full h-14 bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg rounded-xl shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 hover:-translate-y-0.5 transition-all duration-300">
+                    <Button type="submit" className="w-full h-14 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-lg rounded-xl shadow-lg shadow-emerald-600/20 hover:shadow-emerald-600/40 hover:-translate-y-0.5 transition-all duration-300">
                       {t("send_message", "Send Message")}
                     </Button>
                   </form>
@@ -206,8 +206,8 @@ export default function Contact() {
 
             {/* Right Column — Contact Info */}
             <div className="lg:col-span-5 space-y-8 lg:pl-4">
-              <div className="bg-blue-50 border border-blue-100 rounded-3xl p-8 flex items-start gap-4">
-                <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white shrink-0 mt-1 shadow-md shadow-blue-600/20">
+              <div className="bg-emerald-50 border border-emerald-100 rounded-3xl p-8 flex items-start gap-4">
+                <div className="w-12 h-12 bg-emerald-600 rounded-xl flex items-center justify-center text-white shrink-0 mt-1 shadow-md shadow-emerald-600/20">
                   <Clock className="w-6 h-6" />
                 </div>
                 <div>
@@ -216,7 +216,7 @@ export default function Contact() {
                     {t("monday_friday", "Monday – Friday")}<br />
                     {t("8_00_am_5_00_pm_gmt", "8:00 AM – 5:00 PM (GMT)")}
                   </p>
-                  <p className="text-sm text-blue-600 font-bold mt-4 pt-4 border-t border-blue-200">
+                  <p className="text-sm text-emerald-600 font-bold mt-4 pt-4 border-t border-emerald-200">
                     {t(
                       "enterprise_subscribers_receive",
                       "* Enterprise subscribers receive 24/7 priority support."
@@ -232,20 +232,20 @@ export default function Contact() {
                     return (
                       <div
                         key={idx}
-                        className="group rounded-3xl p-6 bg-white border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 transition-colors duration-300 flex items-start gap-5"
+                        className="group rounded-3xl p-6 bg-white border border-slate-100 hover:border-emerald-200 hover:bg-emerald-50/30 transition-colors duration-300 flex items-start gap-5"
                       >
-                        <div className="w-10 h-10 rounded-full bg-slate-100 group-hover:bg-blue-100 flex items-center justify-center text-slate-500 group-hover:text-blue-600 shrink-0 transition-colors">
+                        <div className="w-10 h-10 rounded-full bg-slate-100 group-hover:bg-emerald-100 flex items-center justify-center text-slate-500 group-hover:text-emerald-600 shrink-0 transition-colors">
                           <MapPin className="w-5 h-5" />
                         </div>
                         <div className="space-y-3">
                           <h4 className="font-bold text-slate-900 text-lg">{office.city}</h4>
                           <div className="text-slate-600 font-medium text-sm space-y-2">
                             <p>{office.address}</p>
-                            <p className="flex items-center gap-2 group-hover:text-blue-600 transition-colors">
+                            <p className="flex items-center gap-2 group-hover:text-emerald-600 transition-colors">
                               <Phone className="w-4 h-4 shrink-0" />
                               <span>{office.phone}</span>
                             </p>
-                            <p className="flex items-center gap-2 group-hover:text-blue-600 transition-colors">
+                            <p className="flex items-center gap-2 group-hover:text-emerald-600 transition-colors">
                               <Mail className="w-4 h-4 shrink-0" />
                               <span>{office.email}</span>
                             </p>

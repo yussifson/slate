@@ -12,7 +12,7 @@ import { toast } from "react-hot-toast";
 import { supabase } from "@/api/supabaseClient";
 
 const ACTIVITY_ICONS = {
-  note: <FileText className="w-4 h-4 text-blue-500" />,
+  note: <FileText className="w-4 h-4 text-emerald-500" />,
   call: <Activity className="w-4 h-4 text-green-500" />,
   meeting: <Clock className="w-4 h-4 text-purple-500" />,
   status_change: <CheckCircle className="w-4 h-4 text-amber-500" />,

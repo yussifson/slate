@@ -84,7 +84,7 @@ export default function SHSHouses() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 bg-clip-text text-transparent">
             Boarding Houses
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -92,7 +92,7 @@ export default function SHSHouses() {
           </p>
         </div>
         
-        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white shadow-md shadow-blue-500/20">
+        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white shadow-md shadow-emerald-500/20">
           <Plus className="w-4 h-4" /> Add House
         </Button>
       </div>
@@ -102,15 +102,15 @@ export default function SHSHouses() {
           <div className="col-span-full p-12 text-center text-slate-400 dark:text-slate-500">Loading houses...</div>
         ) : filteredHouses.length === 0 ? (
           <div className="col-span-full p-16 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
-              <Home className="w-8 h-8 text-blue-500 dark:text-blue-500" />
+            <div className="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+              <Home className="w-8 h-8 text-emerald-500 dark:text-emerald-500" />
             </div>
             <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No houses defined</h3>
             <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Create boarding houses to allocate students.</p>
           </div>
         ) : (
           filteredHouses.map(house => (
-            <Card key={house.id} className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-md hover:ring-blue-600/30 dark:hover:ring-blue-500/30 transition-all group overflow-hidden relative">
+            <Card key={house.id} className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-md hover:ring-emerald-600/30 dark:hover:ring-emerald-500/30 transition-all group overflow-hidden relative">
               <div 
                 className="absolute top-0 left-0 w-2 h-full" 
                 style={{ backgroundColor: house.data?.color || '#6F00FF' }}
@@ -124,7 +124,7 @@ export default function SHSHouses() {
                     <Home className="w-6 h-6" />
                   </div>
                   <Badge variant="outline" className={
-                    house.data?.gender === 'Boys' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                    house.data?.gender === 'Boys' ? 'bg-orange-50 text-orange-700 border-emerald-200' :
                     house.data?.gender === 'Girls' ? 'bg-pink-50 text-pink-700 border-pink-200' :
                     'bg-emerald-50 text-emerald-700 border-emerald-200'
                   }>
@@ -153,7 +153,7 @@ export default function SHSHouses() {
                 </div>
                 
                 <div className="mt-5 pt-4 border-t border-slate-50 flex justify-end gap-2">
-                  <Button variant="ghost" size="sm" className="w-full rounded-xl text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:bg-slate-800 font-semibold">
+                  <Button variant="ghost" size="sm" className="w-full rounded-xl text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:bg-slate-800 font-semibold">
                     Manage Residents <Users className="w-4 h-4 ml-2" />
                   </Button>
                 </div>
@@ -165,10 +165,10 @@ export default function SHSHouses() {
 
       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
         <DialogContent className="sm:max-w-[450px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
-          <div className="p-6 bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 text-white">
+          <div className="p-6 bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-black">Add Boarding House</DialogTitle>
-              <DialogDescription className="text-blue-100 dark:text-blue-900">
+              <DialogDescription className="text-emerald-100 dark:text-emerald-900">
                 Register a new residential hall for students.
               </DialogDescription>
             </DialogHeader>
@@ -205,7 +205,7 @@ export default function SHSHouses() {
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Gender</label>
                 <select 
-                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
+                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500"
                   value={newHouse.gender}
                   onChange={e => setNewHouse({...newHouse, gender: e.target.value})}
                 >
@@ -219,7 +219,7 @@ export default function SHSHouses() {
             <div className="space-y-2">
               <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">House Master/Mistress</label>
               <select 
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500"
                 value={newHouse.houseMasterId}
                 onChange={e => setNewHouse({...newHouse, houseMasterId: e.target.value})}
               >
@@ -249,7 +249,7 @@ export default function SHSHouses() {
             <Button 
               onClick={handleAddHouse} 
               disabled={!newHouse.name}
-              className="rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold"
+              className="rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white font-bold"
             >
               Save House
             </Button>

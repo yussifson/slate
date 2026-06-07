@@ -83,7 +83,7 @@ export default function SHSResultsProcessing() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 bg-clip-text text-transparent">
             Results Processing
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -97,10 +97,10 @@ export default function SHSResultsProcessing() {
           <div className="flex flex-col md:flex-row gap-6 items-end">
             <div className="space-y-2 flex-1">
               <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                <FileText className="w-4 h-4 text-blue-600 dark:text-blue-400" /> Target Exam Cycle
+                <FileText className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> Target Exam Cycle
               </label>
               <select 
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 font-semibold text-slate-700 dark:text-slate-200"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500 font-semibold text-slate-700 dark:text-slate-200"
                 value={selectedExamId}
                 onChange={(e) => setSelectedExamId(e.target.value)}
               >
@@ -122,8 +122,8 @@ export default function SHSResultsProcessing() {
             <div className="py-12 text-center text-slate-400 dark:text-slate-500">Loading exams...</div>
           ) : !selectedExamId ? (
             <div className="py-20 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
-                <Calculator className="w-8 h-8 text-blue-500 dark:text-blue-500" />
+              <div className="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                <Calculator className="w-8 h-8 text-emerald-500 dark:text-emerald-500" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">Select an exam to process</h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500 max-w-sm mx-auto mt-2">
@@ -153,10 +153,10 @@ export default function SHSResultsProcessing() {
               {isProcessing || progress > 0 ? (
                 <div className="space-y-3 p-8 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
                   <div className="flex justify-between text-sm font-bold">
-                    <span className="text-blue-600 dark:text-blue-400">Processing Data...</span>
+                    <span className="text-emerald-600 dark:text-emerald-400">Processing Data...</span>
                     <span className="text-slate-500 dark:text-slate-400 dark:text-slate-500">{progress}%</span>
                   </div>
-                  <Progress value={progress} className="h-3 bg-blue-100 dark:bg-slate-800 [&>div]:bg-blue-600 dark:bg-blue-500" />
+                  <Progress value={progress} className="h-3 bg-emerald-100 dark:bg-slate-800 [&>div]:bg-emerald-600 dark:bg-emerald-500" />
                   <p className="text-xs text-slate-400 dark:text-slate-500 text-center mt-4">
                     {progress < 30 ? 'Aggregating raw scores...' : 
                      progress < 60 ? 'Calculating class averages...' : 
@@ -179,7 +179,7 @@ export default function SHSResultsProcessing() {
                 <div className="flex justify-center pt-4">
                   <Button 
                     onClick={handleProcessResults}
-                    className="h-14 px-10 rounded-2xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white shadow-xl shadow-purple-500/30 text-lg font-black group transition-all"
+                    className="h-14 px-10 rounded-2xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white shadow-xl shadow-purple-500/30 text-lg font-black group transition-all"
                   >
                     Run Processing Engine
                     <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />

@@ -362,7 +362,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
                         : rowIdx % 2 === 0
                         ? 'bg-white'
                         : 'bg-slate-50/30'
-                    } hover:bg-blue-50/40`}
+                    } hover:bg-emerald-50/40`}
                   >
                     {/* Checkbox */}
                     <td className="px-3 py-2 text-center border-r border-slate-100/60 sticky left-0 bg-inherit z-10">
@@ -387,7 +387,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
                         <td
                           key={field.name}
                           className={`px-1 py-1 border-r border-slate-100/60 last:border-r-0 ${
-                            isEditing ? 'bg-blue-50 ring-2 ring-inset ring-blue-400' : ''
+                            isEditing ? 'bg-emerald-50 ring-2 ring-inset ring-emerald-400' : ''
                           }`}
                         >
                           {/* Boolean - toggle immediately */}
@@ -436,7 +436,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
                                     onKeyDown={handleKeyDown}
                                     onBlur={saveCell}
                                     autoFocus
-                                    className="w-full bg-white border border-blue-300 rounded px-2 py-1 text-sm text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-400"
+                                    className="w-full bg-white border border-emerald-300 rounded px-2 py-1 text-sm text-slate-800 focus:outline-none focus:ring-1 focus:ring-emerald-400"
                                   />
                                 </div>
                               ) : (

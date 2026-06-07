@@ -15,7 +15,7 @@ import AddOptionInline from "@/components/shared/AddOptionInline";
 
 const roleColors = {
   company_admin: "bg-purple-100 text-purple-700",
-  lawyer: "bg-blue-100 text-blue-700",
+  lawyer: "bg-orange-100 text-orange-700",
   paralegal: "bg-cyan-100 text-cyan-700",
   hr: "bg-green-100 text-green-700",
   finance: "bg-amber-100 text-amber-700",

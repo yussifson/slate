@@ -28,7 +28,7 @@ function calcGrade(score, maxScore) {
 
 const GRADE_COLORS = {
   A: 'bg-green-100 text-green-700',
-  B: 'bg-blue-50 text-[#1E3A8A] dark:bg-blue-900/30 dark:text-blue-300',
+  B: 'bg-emerald-50 text-[#1E3A8A] dark:bg-emerald-900/30 dark:text-emerald-300',
   C: 'bg-amber-100 text-amber-700',
   D: 'bg-orange-100 text-orange-700',
   F: 'bg-red-100 text-red-700',
@@ -260,7 +260,7 @@ export default function Grades() {
             </div>
           ) : (
             <table className="w-full text-sm">
-              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-blue-100 dark:border-slate-700">
+              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-emerald-100 dark:border-slate-700">
                 <tr>
                   {['Student', 'Class', 'Subject', 'Exam', 'Date', 'Score', 'Grade', ''].map(h => {
                     return (<th key={h} className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{h}</th>);
@@ -280,7 +280,7 @@ export default function Grades() {
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <Link to="/classes" className="bg-[#F0F4FF] dark:bg-blue-900/20 text-[#1E3A8A] dark:text-blue-300 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{g.className}</Link>
+                        <Link to="/classes" className="bg-[#F0F4FF] dark:bg-emerald-900/20 text-[#1E3A8A] dark:text-emerald-300 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{g.className}</Link>
                       </td>
                       <td className="px-4 py-3 text-muted-foreground">{g.subject}</td>
                       <td className="px-4 py-3 text-foreground font-medium">{g.examName}</td>

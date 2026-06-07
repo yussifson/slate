@@ -23,7 +23,7 @@ const CASE_TYPES = [
 
 const URGENCY_CONFIG = {
   low: { label: "Not Urgent", color: "bg-slate-100 text-slate-600" },
-  medium: { label: "Within 1–2 Weeks", color: "bg-blue-100 text-blue-700" },
+  medium: { label: "Within 1–2 Weeks", color: "bg-orange-100 text-orange-700" },
   high: { label: "Within a Few Days", color: "bg-amber-100 text-amber-700" },
   urgent: { label: "Extremely Urgent", color: "bg-red-100 text-red-700" },
 };
@@ -109,7 +109,7 @@ View in App: ${window.location.origin}/leads`,
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-emerald-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full text-center">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="w-8 h-8 text-green-600" />
@@ -127,7 +127,7 @@ View in App: ${window.location.origin}/leads`,
               "A member of our team will contact you shortly via your preferred method."
             )}
           </p>
-          <Badge className="mt-4 bg-blue-100 text-blue-700">{t(
+          <Badge className="mt-4 bg-orange-100 text-orange-700">{t(
             "response_expected_within_24_bu",
             "Response expected within 24 business hours"
           )}</Badge>
@@ -137,7 +137,7 @@ View in App: ${window.location.origin}/leads`,
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-10 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-emerald-50 py-10 px-4">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">

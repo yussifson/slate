@@ -112,7 +112,7 @@ export default function VInternshipTracking() {
         <Card className="flex-1 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-indigo-100/50 overflow-hidden relative">
           {selectedInternship ? (
             <>
-              <div className="h-32 bg-gradient-to-r from-indigo-700 to-blue-500 relative shrink-0">
+              <div className="h-32 bg-gradient-to-r from-indigo-700 to-emerald-500 relative shrink-0">
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
               </div>
               
@@ -130,7 +130,7 @@ export default function VInternshipTracking() {
                         <span className="flex items-center gap-1.5"><Building2 className="w-4 h-4 text-indigo-500" /> {selectedInternship.data?.company_name || 'TBD'}</span>
                         <span>•</span>
                         <span className="flex items-center gap-1.5">
-                          <Badge className={selectedInternship.status === 'Active' ? 'bg-emerald-500' : selectedInternship.status === 'Completed' ? 'bg-blue-500' : 'bg-amber-500'}>
+                          <Badge className={selectedInternship.status === 'Active' ? 'bg-emerald-500' : selectedInternship.status === 'Completed' ? 'bg-emerald-500' : 'bg-amber-500'}>
                             {selectedInternship.status || 'Pending'}
                           </Badge>
                         </span>

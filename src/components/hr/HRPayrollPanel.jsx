@@ -17,7 +17,7 @@ import { Play, FileText, CheckCircle, Banknote, Plus, Trash2, Printer, Eye, Chev
 
 const STATUS_COLORS = {
   draft: "bg-slate-100 text-slate-600",
-  approved: "bg-blue-100 text-blue-700",
+  approved: "bg-orange-100 text-orange-700",
   paid: "bg-green-100 text-green-700",
 };
 
@@ -155,7 +155,7 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
           </div>
           <div className="flex gap-4 text-sm">
             {draftCount > 0 && <span className="text-slate-600">{draftCount} {t("draft", "Draft")}</span>}
-            {approvedCount > 0 && <span className="text-blue-600">{approvedCount} {t("approved", "Approved")}</span>}
+            {approvedCount > 0 && <span className="text-emerald-600">{approvedCount} {t("approved", "Approved")}</span>}
             {paidCount > 0 && <span className="text-green-600">{paidCount} {t("paid", "Paid")}</span>}
           </div>
         </div>

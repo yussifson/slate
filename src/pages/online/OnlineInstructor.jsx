@@ -19,7 +19,7 @@ export default function OnlineInstructor() {
         <Card className="border-0 shadow-sm rounded-xl">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-blue-50 text-[#0056D2] rounded-lg">
+              <div className="p-3 bg-emerald-50 text-[#0056D2] rounded-lg">
                 <Users className="h-6 w-6" />
               </div>
               <div>

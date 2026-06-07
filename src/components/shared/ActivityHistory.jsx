@@ -6,7 +6,7 @@ import { formatDistanceToNow } from 'date-fns';
 
 const ACTION_CONFIG = {
   CREATE: { label: 'Created', color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400', icon: Plus },
-  UPDATE: { label: 'Updated', color: 'bg-blue-100 text-blue-700 dark:bg-blue-950/30 dark:text-blue-400', icon: Edit },
+  UPDATE: { label: 'Updated', color: 'bg-orange-100 text-orange-700 dark:bg-emerald-950/30 dark:text-emerald-400', icon: Edit },
   DELETE: { label: 'Deleted', color: 'bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400', icon: Trash2 },
 };
 

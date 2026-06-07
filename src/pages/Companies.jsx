@@ -91,7 +91,7 @@ export default function Companies() {
       header: "Subscription",
       render: row => {
         return (
-          <Badge className={`text-[10px] ${row.subscription_status === "active" ? "bg-green-100 text-green-700" : row.subscription_status === "trial" ? "bg-blue-100 text-blue-700" : "bg-slate-100 text-slate-600"}`}>
+          <Badge className={`text-[10px] ${row.subscription_status === "active" ? "bg-green-100 text-green-700" : row.subscription_status === "trial" ? "bg-orange-100 text-orange-700" : "bg-slate-100 text-slate-600"}`}>
             {row.subscription_status}
           </Badge>
         );

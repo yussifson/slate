@@ -91,7 +91,7 @@ export default function Discipline() {
         <div className="school-card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-blue-100 dark:border-slate-700">
+              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-emerald-100 dark:border-slate-700">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Student Name</th>
                   <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Type</th>

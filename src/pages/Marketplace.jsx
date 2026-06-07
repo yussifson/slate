@@ -208,7 +208,7 @@ export default function Marketplace() {
               onClick={() => setActiveCategory(cat)}
               className={`px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all ${
                 activeCategory === cat
-                  ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20'
+                  ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
                   : 'bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
               }`}
             >
@@ -230,7 +230,7 @@ export default function Marketplace() {
       {/* Module Grid */}
       {loading ? (
         <div className="py-24 flex justify-center">
-          <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+          <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
         </div>
       ) : filteredModules.length === 0 ? (
         <div className="py-24 flex flex-col items-center justify-center text-center px-4 bg-white rounded-2xl border border-slate-200 border-dashed">
@@ -258,14 +258,14 @@ export default function Marketplace() {
                 key={mod.id}
                 className={`bg-white dark:bg-slate-900 rounded-2xl border transition-all duration-300 flex flex-col overflow-hidden ${
                   isInstalled || isOwned
-                    ? 'border-blue-500 shadow-lg shadow-blue-500/10 ring-1 ring-blue-500/20'
+                    ? 'border-emerald-500 shadow-lg shadow-emerald-500/10 ring-1 ring-emerald-500/20'
                     : 'border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-700 hover:-translate-y-1'
                 }`}
               >
                 <div className="p-6 sm:p-7 flex-1">
                   <div className="flex justify-between items-start mb-6">
                     <div className="w-16 h-16 rounded-2xl bg-white border border-slate-200 dark:border-slate-700 flex items-center justify-center p-3 shadow-sm">
-                      <IconComp className="w-8 h-8 text-blue-600" />
+                      <IconComp className="w-8 h-8 text-emerald-600" />
                     </div>
 
                     {(isInstalled || isOwned) ? (
@@ -273,7 +273,7 @@ export default function Marketplace() {
                         <CheckCircle2 className="w-4 h-4" /> {isOwned ? 'Owned' : 'Installed'}
                       </Badge>
                     ) : (
-                      <Badge variant="outline" className="text-xs font-bold text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-500/20 bg-blue-50 dark:bg-blue-500/10 px-3 py-1 rounded-full">
+                      <Badge variant="outline" className="text-xs font-bold text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20 bg-emerald-50 dark:bg-emerald-500/10 px-3 py-1 rounded-full">
                         Free
                       </Badge>
                     )}
@@ -315,7 +315,7 @@ export default function Marketplace() {
                     <Button
                       disabled={isInstalling}
                       onClick={() => handleInstall(mod)}
-                      className="h-10 px-6 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold shadow-md shadow-blue-600/20 transition-all hover:translate-y-[-1px]"
+                      className="h-10 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-md shadow-emerald-600/20 transition-all hover:translate-y-[-1px]"
                     >
                       {isInstalling ? (
                         <Loader2 className="w-4 h-4 animate-spin" />
@@ -362,7 +362,7 @@ export default function Marketplace() {
             <strong>{installSuccessModal?.name}</strong> has been successfully installed and added to your Slate sidebar. You can now start using it immediately.
           </div>
           <div className="mt-8 w-full">
-            <Button className="w-full h-11 text-base font-bold bg-blue-600 hover:bg-blue-700" onClick={() => setInstallSuccessModal(null)}>
+            <Button className="w-full h-11 text-base font-bold bg-emerald-600 hover:bg-emerald-700" onClick={() => setInstallSuccessModal(null)}>
               Awesome, thanks!
             </Button>
           </div>

@@ -54,7 +54,7 @@ export default function OnlinePortal() {
           <h2 className="text-xl font-bold text-gray-900">Up Next for You</h2>
           <Card className="border-0 shadow-sm rounded-xl p-0 overflow-hidden">
             <div className="flex flex-col sm:flex-row items-center p-4 group hover:bg-gray-50 transition-colors border-b last:border-0 cursor-pointer">
-              <div className="bg-blue-100 p-3 rounded-full text-[#0056D2] mr-4">
+              <div className="bg-emerald-100 p-3 rounded-full text-[#0056D2] mr-4">
                 <PlayCircle className="h-6 w-6" />
               </div>
               <div className="flex-1">
@@ -111,7 +111,7 @@ export default function OnlinePortal() {
                 <p className="text-sm text-gray-500">React Web Dev</p>
               </div>
             </div>
-            <Button variant="outline" className="w-full mt-6 text-[#0056D2] border-[#0056D2] hover:bg-blue-50">View Calendar</Button>
+            <Button variant="outline" className="w-full mt-6 text-[#0056D2] border-[#0056D2] hover:bg-emerald-50">View Calendar</Button>
           </Card>
         </div>
       </div>

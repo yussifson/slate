@@ -318,7 +318,7 @@ export default function Login() {
 
             <div className="text-center mt-8 pb-12 lg:pb-0">
               <span className="text-sm text-slate-500 font-medium">{t("don_t_have_an_account", "Don't have an account?")} </span>
-              <a href="/signup" className="text-sm font-bold text-blue-600 hover:underline">
+              <a href="/signup" className="text-sm font-bold text-emerald-600 hover:underline">
                 {t("create_workspace", "Create workspace")}
               </a>
             </div>
@@ -329,11 +329,11 @@ export default function Login() {
       <div className="hidden lg:flex flex-1 relative items-center justify-center bg-slate-50 overflow-hidden">
         {/* Abstract Pattern Background */}
         <div className="absolute inset-0 bg-slate-900/5 mix-blend-overlay"></div>
-        <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-gradient-to-br from-blue-400/20 to-indigo-500/20 blur-[100px] rounded-full pointer-events-none"></div>
-        <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-gradient-to-tr from-cyan-300/20 to-blue-400/20 blur-[100px] rounded-full pointer-events-none"></div>
+        <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-gradient-to-br from-emerald-400/20 to-indigo-500/20 blur-[100px] rounded-full pointer-events-none"></div>
+        <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-gradient-to-tr from-cyan-300/20 to-emerald-400/20 blur-[100px] rounded-full pointer-events-none"></div>
 
         <div className="relative z-10 w-full max-w-2xl bg-white rounded-[2rem] border border-slate-200/60 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] p-12 lg:p-16 flex flex-col justify-center relative group">
-          <div className="absolute top-0 right-0 p-8 opacity-[0.03] text-[10rem] font-serif leading-none font-black text-blue-900 group-hover:text-blue-600 group-hover:opacity-10 transition-colors duration-700 pointer-events-none">"</div>
+          <div className="absolute top-0 right-0 p-8 opacity-[0.03] text-[10rem] font-serif leading-none font-black text-emerald-900 group-hover:text-emerald-600 group-hover:opacity-10 transition-colors duration-700 pointer-events-none">"</div>
           
           <div className="relative z-10">
             <div className="flex gap-2 mb-8">
@@ -350,7 +350,7 @@ export default function Login() {
             </p>
             
             <div className="flex items-center gap-5 pt-8 relative z-10">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 flex items-center justify-center text-blue-700 font-bold text-xl shadow-inner">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-50 to-emerald-100 border border-emerald-200 flex items-center justify-center text-emerald-700 font-bold text-xl shadow-inner">
                 {t("mk", "MK")}
               </div>
               <div>

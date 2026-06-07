@@ -153,7 +153,7 @@ export default function Tithes() {
         </div>
         <div className="bg-card rounded-xl border border-border p-5 shadow-sm">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-950/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
+            <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-950/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
               <DollarSign className="w-4 h-4" />
             </div>
             <h3 className="font-semibold text-foreground text-sm">{t("special_building_funds", "Special/Building Funds")}</h3>

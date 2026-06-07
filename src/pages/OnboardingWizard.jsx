@@ -238,7 +238,7 @@ export default function OnboardingWizard() {
     <div className="min-h-[100dvh] bg-[#f8fafc] flex flex-col justify-center items-center sm:py-12 sm:px-6 relative overflow-hidden font-sans">
       
       {/* Background Decorative Elements */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-100 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-100 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
       <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-indigo-100 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
       {/* Main Container */}
@@ -257,7 +257,7 @@ export default function OnboardingWizard() {
           <div className="relative">
             <div className="absolute top-1/2 left-0 w-full h-1 bg-slate-100 -translate-y-1/2 rounded-full"></div>
             <div 
-              className="absolute top-1/2 left-0 h-1 bg-blue-600 -translate-y-1/2 rounded-full transition-all duration-500 ease-in-out"
+              className="absolute top-1/2 left-0 h-1 bg-emerald-600 -translate-y-1/2 rounded-full transition-all duration-500 ease-in-out"
               style={{ width: `${((step - 1) / (steps.length - 1)) * 100}%` }}
             ></div>
             
@@ -269,13 +269,13 @@ export default function OnboardingWizard() {
                   <div key={s.num} className="flex flex-col items-center">
                     <div 
                       className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ring-4 ring-white
-                        ${isCompleted ? 'bg-blue-600 text-white shadow-md' : 
-                          isCurrent ? 'bg-white border-2 border-blue-600 text-blue-600 shadow-md' : 
+                        ${isCompleted ? 'bg-emerald-600 text-white shadow-md' : 
+                          isCurrent ? 'bg-white border-2 border-emerald-600 text-emerald-600 shadow-md' : 
                           'bg-slate-100 text-slate-400 border-2 border-slate-100'}`}
                     >
                       {isCompleted ? <Check className="w-4 h-4" /> : s.num}
                     </div>
-                    <span className={`text-xs mt-2 font-medium transition-colors duration-300 ${isCurrent ? 'text-blue-600' : isCompleted ? 'text-slate-700' : 'text-slate-400'}`}>
+                    <span className={`text-xs mt-2 font-medium transition-colors duration-300 ${isCurrent ? 'text-emerald-600' : isCompleted ? 'text-slate-700' : 'text-slate-400'}`}>
                       {s.title}
                     </span>
                   </div>
@@ -333,7 +333,7 @@ export default function OnboardingWizard() {
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("industry", "Workspace Selection")}</label>
                     <Select value={industry} onValueChange={setIndustry}>
-                      <SelectTrigger className="h-12 bg-white border-slate-200 rounded-xl text-slate-900 focus:ring-blue-500">
+                      <SelectTrigger className="h-12 bg-white border-slate-200 rounded-xl text-slate-900 focus:ring-emerald-500">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-white text-slate-900 border-slate-200">
@@ -354,7 +354,7 @@ export default function OnboardingWizard() {
                     <div className="space-y-2">
                       <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Education Level</label>
                       <Select value={educationLevel} onValueChange={setEducationLevel}>
-                        <SelectTrigger className="w-full h-12 bg-blue-50/50 border-blue-200 rounded-xl text-slate-900 focus:ring-blue-500">
+                        <SelectTrigger className="w-full h-12 bg-emerald-50/50 border-emerald-200 rounded-xl text-slate-900 focus:ring-emerald-500">
                           <SelectValue placeholder="Select level" />
                         </SelectTrigger>
                         <SelectContent className="bg-white text-slate-900 border-slate-200">
@@ -375,7 +375,7 @@ export default function OnboardingWizard() {
                       <Select value={country} onValueChange={(v) => {
                         setCountry(v);
                       }}>
-                        <SelectTrigger className="h-12 bg-white border-slate-200 rounded-xl text-slate-900 focus:ring-blue-500">
+                        <SelectTrigger className="h-12 bg-white border-slate-200 rounded-xl text-slate-900 focus:ring-emerald-500">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="bg-white text-slate-900 border-slate-200">
@@ -389,7 +389,7 @@ export default function OnboardingWizard() {
                     <div className="space-y-2">
                       <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("currency", "Currency")}</label>
                       <Select value={currency} onValueChange={setCurrency}>
-                        <SelectTrigger className="h-12 bg-white border-slate-200 rounded-xl text-slate-900 focus:ring-blue-500">
+                        <SelectTrigger className="h-12 bg-white border-slate-200 rounded-xl text-slate-900 focus:ring-emerald-500">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="bg-white text-slate-900 border-slate-200">
@@ -418,7 +418,7 @@ export default function OnboardingWizard() {
 
                 <div className="space-y-4">
                   {/* Template Option */}
-                  <label className={`block relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${setupMode === 'template' ? 'border-blue-600 bg-blue-50/50 shadow-sm' : 'border-slate-200 hover:border-blue-300 bg-white'}`}>
+                  <label className={`block relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${setupMode === 'template' ? 'border-emerald-600 bg-emerald-50/50 shadow-sm' : 'border-slate-200 hover:border-emerald-300 bg-white'}`}>
                     <input 
                       type="radio" 
                       name="setupMode" 
@@ -428,11 +428,11 @@ export default function OnboardingWizard() {
                       className="sr-only" 
                     />
                     <div className="flex items-start gap-4">
-                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center mt-0.5 shrink-0 transition-colors ${setupMode === 'template' ? 'border-blue-600 bg-blue-600' : 'border-slate-300'}`}>
+                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center mt-0.5 shrink-0 transition-colors ${setupMode === 'template' ? 'border-emerald-600 bg-emerald-600' : 'border-slate-300'}`}>
                         {setupMode === 'template' && <div className="w-2 h-2 rounded-full bg-white"></div>}
                       </div>
                       <div>
-                        <h3 className={`font-bold ${setupMode === 'template' ? 'text-blue-900' : 'text-slate-900'}`}>Build with Template</h3>
+                        <h3 className={`font-bold ${setupMode === 'template' ? 'text-emerald-900' : 'text-slate-900'}`}>Build with Template</h3>
                         <p className="text-sm text-slate-500 mt-1 leading-relaxed">Initializes your dashboard with all standard predefined pages and modules for a {INDUSTRIES[industry]?.name || 'business'}. Recommended for quick starts.</p>
                       </div>
                     </div>
@@ -589,7 +589,7 @@ export default function OnboardingWizard() {
                       {invitedStaff.map((staff, idx) => (
                         <div key={idx} className="flex justify-between items-center p-4 hover:bg-slate-50 transition-colors">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">
+                            <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-700 flex items-center justify-center font-bold text-xs">
                               {staff.name.charAt(0).toUpperCase()}
                             </div>
                             <div>
@@ -633,7 +633,7 @@ export default function OnboardingWizard() {
                   </p>
                 </div>
 
-                <div className="bg-blue-50/50 border border-blue-100 rounded-2xl p-6 space-y-5">
+                <div className="bg-emerald-50/50 border border-emerald-100 rounded-2xl p-6 space-y-5">
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(industry, 'case')} {t("title", "Title")}</label>
                     <Input 
@@ -641,7 +641,7 @@ export default function OnboardingWizard() {
                       value={caseTitle}
                       onChange={(e) => setCaseTitle(e.target.value)}
                       placeholder={`E.g., Initial ${getTerm(industry, 'case')} for setup`}
-                      className="h-12 bg-white border-blue-200 focus:bg-white focus-visible:bg-white focus:border-blue-500 text-slate-900 rounded-xl"
+                      className="h-12 bg-white border-emerald-200 focus:bg-white focus-visible:bg-white focus:border-emerald-500 text-slate-900 rounded-xl"
                     />
                   </div>
 
@@ -653,7 +653,7 @@ export default function OnboardingWizard() {
                         value={clientName}
                         onChange={(e) => setClientName(e.target.value)}
                         placeholder="Adama Mensah"
-                        className="h-12 bg-white border-blue-200 focus:bg-white focus-visible:bg-white focus:border-blue-500 text-slate-900 rounded-xl"
+                        className="h-12 bg-white border-emerald-200 focus:bg-white focus-visible:bg-white focus:border-emerald-500 text-slate-900 rounded-xl"
                       />
                     </div>
                     <div className="space-y-2">
@@ -663,7 +663,7 @@ export default function OnboardingWizard() {
                         value={clientEmail}
                         onChange={(e) => setClientEmail(e.target.value)}
                         placeholder="contact@email.com"
-                        className="h-12 bg-white border-blue-200 focus:bg-white focus-visible:bg-white focus:border-blue-500 text-slate-900 rounded-xl"
+                        className="h-12 bg-white border-emerald-200 focus:bg-white focus-visible:bg-white focus:border-emerald-500 text-slate-900 rounded-xl"
                       />
                     </div>
                   </div>
@@ -705,7 +705,7 @@ export default function OnboardingWizard() {
                 disabled={
                   (step === 2 && setupMode === 'custom' && selectedModules.length === 0)
                 }
-                className="h-12 px-8 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md shadow-blue-600/20 group transition-all"
+                className="h-12 px-8 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md shadow-emerald-600/20 group transition-all"
               >
                 {t("continue_setup", "Continue Setup")}
                 <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
@@ -714,7 +714,7 @@ export default function OnboardingWizard() {
               <Button 
                 onClick={handleCompleteOnboarding}
                 disabled={loading}
-                className="h-12 px-8 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-blue-600/20 flex items-center gap-2 transition-all hover:-translate-y-0.5 active:translate-y-0"
+                className="h-12 px-8 bg-gradient-to-r from-emerald-600 to-indigo-600 hover:from-emerald-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/20 flex items-center gap-2 transition-all hover:-translate-y-0.5 active:translate-y-0"
               >
                 {loading ? (
                   <>
@@ -743,7 +743,7 @@ function Badge({ role, industry }) {
   const label = roleDef ? roleDef.label : role;
   
   return (
-    <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-100">
+    <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-orange-50 text-orange-700 border border-emerald-100">
       {label}
     </span>
   );

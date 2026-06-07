@@ -93,7 +93,7 @@ export default function SHSNotices() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 bg-clip-text text-transparent">
             Notice Board
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -101,7 +101,7 @@ export default function SHSNotices() {
           </p>
         </div>
         
-        <Button onClick={() => setIsModalOpen(true)} className="h-9 gap-2 rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white shadow-md shadow-blue-500/20">
+        <Button onClick={() => setIsModalOpen(true)} className="h-9 gap-2 rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white shadow-md shadow-emerald-500/20">
           <Plus className="w-4 h-4" /> New Announcement
         </Button>
       </div>
@@ -109,7 +109,7 @@ export default function SHSNotices() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-slate-100">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-slate-800 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-slate-800 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
               <Megaphone className="w-6 h-6" />
             </div>
             <div>
@@ -131,7 +131,7 @@ export default function SHSNotices() {
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
               <Input 
                 placeholder="Search announcements..." 
-                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500"
+                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-emerald-600 dark:focus-visible:ring-emerald-500"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -143,8 +143,8 @@ export default function SHSNotices() {
             <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading notices...</div>
           ) : filteredNotices.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
-                <Megaphone className="w-8 h-8 text-blue-500 dark:text-blue-500" />
+              <div className="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                <Megaphone className="w-8 h-8 text-emerald-500 dark:text-emerald-500" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No announcements published</h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Create a new broadcast to share information.</p>
@@ -209,10 +209,10 @@ export default function SHSNotices() {
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="sm:max-w-[550px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
-          <div className="p-6 bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 text-white">
+          <div className="p-6 bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-black">Publish Notice</DialogTitle>
-              <DialogDescription className="text-blue-100 dark:text-blue-900">
+              <DialogDescription className="text-emerald-100 dark:text-emerald-900">
                 Create a new announcement for the digital noticeboard.
               </DialogDescription>
             </DialogHeader>
@@ -233,7 +233,7 @@ export default function SHSNotices() {
               <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Content</label>
               <textarea 
                 placeholder="Write the full announcement here..."
-                className="w-full h-32 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 resize-none text-sm"
+                className="w-full h-32 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500 resize-none text-sm"
                 value={newNotice.content}
                 onChange={e => setNewNotice({...newNotice, content: e.target.value})}
               />
@@ -243,7 +243,7 @@ export default function SHSNotices() {
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Target Audience</label>
                 <select 
-                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
+                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500"
                   value={newNotice.targetAudience}
                   onChange={e => setNewNotice({...newNotice, targetAudience: e.target.value})}
                 >
@@ -257,7 +257,7 @@ export default function SHSNotices() {
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Priority Level</label>
                 <select 
-                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
+                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500"
                   value={newNotice.priority}
                   onChange={e => setNewNotice({...newNotice, priority: e.target.value})}
                 >
@@ -286,7 +286,7 @@ export default function SHSNotices() {
             <Button 
               onClick={handlePublish} 
               disabled={!newNotice.title || !newNotice.content}
-              className="rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold px-6"
+              className="rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white font-bold px-6"
             >
               Publish Now
             </Button>

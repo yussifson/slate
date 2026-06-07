@@ -75,7 +75,7 @@ export default function AdminOverview() {
             <p className="text-3xl font-black text-slate-900">{companies.length}</p>
             <p className="text-xs text-slate-500 mt-2 font-medium">{activeFirmsCount} {t("active", "Active /")} {companies.filter(c => c.subscription_status === 'trial').length} {t("trials", "Trials")}</p>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
             <Building2 className="w-6 h-6" />
           </div>
         </div>

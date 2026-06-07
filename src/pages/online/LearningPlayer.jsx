@@ -56,7 +56,7 @@ export default function LearningPlayer() {
                 <span>{courseTitle}</span>
               </div>
               <div className="w-full h-1.5 bg-white/30 rounded-full overflow-hidden cursor-pointer group/progress">
-                <div className="h-full bg-[var(--color-module-online)] w-0 relative group-hover/progress:bg-blue-400 transition-colors">
+                <div className="h-full bg-[var(--color-module-online)] w-0 relative group-hover/progress:bg-emerald-400 transition-colors">
                   <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow scale-0 group-hover/progress:scale-100 transition-transform" />
                 </div>
               </div>

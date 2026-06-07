@@ -112,7 +112,7 @@ export default function SHSParentComms() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 bg-clip-text text-transparent">
             Parent Communications
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -129,7 +129,7 @@ export default function SHSParentComms() {
           <Button 
             onClick={() => setIsComposeOpen(true)} 
             disabled={selectedStudents.length === 0}
-            className="h-10 gap-2 rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white shadow-md shadow-blue-500/20 px-6 font-bold"
+            className="h-10 gap-2 rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white shadow-md shadow-emerald-500/20 px-6 font-bold"
           >
             <Send className="w-4 h-4" /> Compose Message ({selectedStudents.length})
           </Button>
@@ -144,10 +144,10 @@ export default function SHSParentComms() {
             <div className="flex flex-col md:flex-row gap-4 items-end">
               <div className="space-y-2 flex-1 max-w-xs">
                 <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                  <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" /> Filter by Class
+                  <Users className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> Filter by Class
                 </label>
                 <select 
-                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 font-semibold text-slate-700 dark:text-slate-200"
+                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500 font-semibold text-slate-700 dark:text-slate-200"
                   value={selectedClassId}
                   onChange={(e) => setSelectedClassId(e.target.value)}
                 >
@@ -160,11 +160,11 @@ export default function SHSParentComms() {
               
               <div className="space-y-2 flex-1 max-w-sm">
                 <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                  <Search className="w-4 h-4 text-blue-600 dark:text-blue-400" /> Search Parent or Student
+                  <Search className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> Search Parent or Student
                 </label>
                 <Input 
                   placeholder="Type name..." 
-                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
+                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -188,8 +188,8 @@ export default function SHSParentComms() {
               <div className="p-16 text-center text-slate-400 dark:text-slate-500">Loading directory...</div>
             ) : filteredStudents.length === 0 ? (
               <div className="p-20 text-center">
-                <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
-                  <MessageSquare className="w-8 h-8 text-blue-500 dark:text-blue-500" />
+                <div className="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                  <MessageSquare className="w-8 h-8 text-emerald-500 dark:text-emerald-500" />
                 </div>
                 <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No contacts found</h3>
               </div>
@@ -201,7 +201,7 @@ export default function SHSParentComms() {
                       <th className="px-6 py-4 w-12 text-center">
                         <input 
                           type="checkbox" 
-                          className="w-4 h-4 rounded border-slate-300 text-blue-600 dark:text-blue-400 focus:ring-blue-600 dark:focus:ring-blue-500"
+                          className="w-4 h-4 rounded border-slate-300 text-emerald-600 dark:text-emerald-400 focus:ring-emerald-600 dark:focus:ring-emerald-500"
                           checked={selectedStudents.length === filteredStudents.length && filteredStudents.length > 0}
                           onChange={() => handleSelectAll(filteredStudents)}
                         />
@@ -217,13 +217,13 @@ export default function SHSParentComms() {
                       return (
                         <tr 
                           key={student.id} 
-                          className={`transition-colors cursor-pointer ${isSelected ? 'bg-blue-50/50 dark:bg-slate-800/50' : 'hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50'}`}
+                          className={`transition-colors cursor-pointer ${isSelected ? 'bg-emerald-50/50 dark:bg-slate-800/50' : 'hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50'}`}
                           onClick={() => toggleStudent(student.id)}
                         >
                           <td className="px-6 py-4 text-center">
                             <input 
                               type="checkbox" 
-                              className="w-4 h-4 rounded border-slate-300 text-blue-600 dark:text-blue-400 focus:ring-blue-600 dark:focus:ring-blue-500"
+                              className="w-4 h-4 rounded border-slate-300 text-emerald-600 dark:text-emerald-400 focus:ring-emerald-600 dark:focus:ring-emerald-500"
                               checked={isSelected}
                               onChange={() => {}} // handled by row click
                             />
@@ -255,7 +255,7 @@ export default function SHSParentComms() {
                               )}
                               {student.data?.parentEmail && (
                                 <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">
-                                  <Mail className="w-3.5 h-3.5 text-blue-500" />
+                                  <Mail className="w-3.5 h-3.5 text-emerald-500" />
                                   {student.data.parentEmail}
                                 </div>
                               )}
@@ -275,10 +275,10 @@ export default function SHSParentComms() {
 
       <Dialog open={isComposeOpen} onOpenChange={setIsComposeOpen}>
         <DialogContent className="sm:max-w-[600px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl bg-white dark:bg-slate-900">
-          <div className="p-6 bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 text-white">
+          <div className="p-6 bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-black">Compose Message</DialogTitle>
-              <DialogDescription className="text-blue-100 dark:text-blue-900">
+              <DialogDescription className="text-emerald-100 dark:text-emerald-900">
                 Sending to {selectedStudents.length} selected recipients.
               </DialogDescription>
             </DialogHeader>
@@ -292,7 +292,7 @@ export default function SHSParentComms() {
                 <button
                   onClick={() => setMessage({...message, type: 'SMS'})}
                   className={`p-3 rounded-xl border flex flex-col items-center justify-center gap-2 transition-all ${
-                    message.type === 'SMS' ? 'bg-blue-50 dark:bg-slate-800 border-purple-300 text-blue-600 dark:text-blue-400' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:bg-slate-800'
+                    message.type === 'SMS' ? 'bg-emerald-50 dark:bg-slate-800 border-purple-300 text-emerald-600 dark:text-emerald-400' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:bg-slate-800'
                   }`}
                 >
                   <Smartphone className="w-5 h-5" />
@@ -301,7 +301,7 @@ export default function SHSParentComms() {
                 <button
                   onClick={() => setMessage({...message, type: 'Email'})}
                   className={`p-3 rounded-xl border flex flex-col items-center justify-center gap-2 transition-all ${
-                    message.type === 'Email' ? 'bg-blue-50 dark:bg-slate-800 border-purple-300 text-blue-600 dark:text-blue-400' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:bg-slate-800'
+                    message.type === 'Email' ? 'bg-emerald-50 dark:bg-slate-800 border-purple-300 text-emerald-600 dark:text-emerald-400' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:bg-slate-800'
                   }`}
                 >
                   <Mail className="w-5 h-5" />
@@ -310,7 +310,7 @@ export default function SHSParentComms() {
                 <button
                   onClick={() => setMessage({...message, type: 'App Push'})}
                   className={`p-3 rounded-xl border flex flex-col items-center justify-center gap-2 transition-all ${
-                    message.type === 'App Push' ? 'bg-blue-50 dark:bg-slate-800 border-purple-300 text-blue-600 dark:text-blue-400' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:bg-slate-800'
+                    message.type === 'App Push' ? 'bg-emerald-50 dark:bg-slate-800 border-purple-300 text-emerald-600 dark:text-emerald-400' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:bg-slate-800'
                   }`}
                 >
                   <MessageSquare className="w-5 h-5" />
@@ -341,7 +341,7 @@ export default function SHSParentComms() {
                 )}
               </label>
               <textarea 
-                className="w-full h-32 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 resize-none text-sm"
+                className="w-full h-32 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500 resize-none text-sm"
                 placeholder="Type your message here. Use variables like {ParentName} or {StudentName}..."
                 value={message.body}
                 onChange={e => setMessage({...message, body: e.target.value})}
@@ -357,7 +357,7 @@ export default function SHSParentComms() {
             <Button 
               onClick={handleSendMessage} 
               disabled={!message.body || isSending}
-              className="rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold px-8 shadow-lg shadow-blue-500/20"
+              className="rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white font-bold px-8 shadow-lg shadow-emerald-500/20"
             >
               {isSending ? 'Sending...' : (
                 <><Send className="w-4 h-4 mr-2" /> Send to {selectedStudents.length}</>

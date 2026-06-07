@@ -28,12 +28,12 @@ const DEFAULT_STATUSES = ['Submitted', 'Under Review', 'Approved', 'Rejected'];
 const STATUS_CONFIG = {
   submitted: {
     icon: Send,
-    color: 'text-blue-600',
-    bg: 'bg-blue-50',
-    border: 'border-blue-200',
-    gradient: 'from-blue-500 to-blue-600',
-    badgeCls: 'bg-blue-100 text-blue-700',
-    ring: 'ring-blue-200',
+    color: 'text-emerald-600',
+    bg: 'bg-emerald-50',
+    border: 'border-emerald-200',
+    gradient: 'from-emerald-500 to-emerald-600',
+    badgeCls: 'bg-orange-100 text-orange-700',
+    ring: 'ring-emerald-200',
   },
   'under review': {
     icon: Clock,
@@ -345,8 +345,8 @@ export default function DynamicApprovalView({ data = [], fieldDefinitions = [], 
   if (!data || data.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
-        <div className="p-5 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 mb-5">
-          <Inbox className="w-12 h-12 text-blue-300" />
+        <div className="p-5 rounded-2xl bg-gradient-to-br from-emerald-50 to-indigo-50 border border-emerald-100 mb-5">
+          <Inbox className="w-12 h-12 text-emerald-300" />
         </div>
         <h3 className="text-lg font-semibold text-slate-700 mb-2">No Approval Items</h3>
         <p className="text-sm text-slate-500 max-w-sm">

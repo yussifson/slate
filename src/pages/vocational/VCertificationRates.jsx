@@ -150,7 +150,7 @@ export default function VCertificationRates() {
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <Card className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm rounded-2xl">
                               <CardContent className="p-6 flex flex-col items-center text-center">
-                                <div className="w-12 h-12 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mb-4">
+                                <div className="w-12 h-12 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mb-4">
                                   <BarChart3 className="w-6 h-6" />
                                 </div>
                                 <h4 className="text-slate-500 text-sm font-medium">Total Enrolled</h4>

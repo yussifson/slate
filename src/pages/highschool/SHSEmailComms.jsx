@@ -93,7 +93,7 @@ export default function SHSEmailComms() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 bg-clip-text text-transparent">
             Email Broadcasts
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -101,7 +101,7 @@ export default function SHSEmailComms() {
           </p>
         </div>
         
-        <Button onClick={() => setIsSendModalOpen(true)} className="h-9 gap-2 rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white shadow-md shadow-blue-500/20">
+        <Button onClick={() => setIsSendModalOpen(true)} className="h-9 gap-2 rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white shadow-md shadow-emerald-500/20">
           <Mail className="w-4 h-4" /> Compose Email
         </Button>
       </div>
@@ -111,7 +111,7 @@ export default function SHSEmailComms() {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-                <Mail className="w-5 h-5 text-blue-600 dark:text-blue-400" /> Sent Emails
+                <Mail className="w-5 h-5 text-emerald-600 dark:text-emerald-400" /> Sent Emails
               </CardTitle>
             </div>
             
@@ -119,7 +119,7 @@ export default function SHSEmailComms() {
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
               <Input 
                 placeholder="Search subjects..." 
-                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500"
+                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-emerald-600 dark:focus-visible:ring-emerald-500"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -131,8 +131,8 @@ export default function SHSEmailComms() {
             <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading email logs...</div>
           ) : filteredEmails.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
-                <Mail className="w-8 h-8 text-blue-500 dark:text-blue-500" />
+              <div className="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                <Mail className="w-8 h-8 text-emerald-500 dark:text-emerald-500" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No emails sent</h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Your email broadcasts will appear here.</p>
@@ -157,7 +157,7 @@ export default function SHSEmailComms() {
                       <span className="text-xs text-slate-400 dark:text-slate-500 font-medium block mb-1">
                         {new Date(email.data?.sentDate).toLocaleString()}
                       </span>
-                      <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                      <Badge variant="outline" className="bg-orange-50 text-orange-700 border-emerald-200">
                         {email.data?.openRate}% Open Rate
                       </Badge>
                     </div>
@@ -175,10 +175,10 @@ export default function SHSEmailComms() {
 
       <Dialog open={isSendModalOpen} onOpenChange={setIsSendModalOpen}>
         <DialogContent className="sm:max-w-[600px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
-          <div className="p-6 bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 text-white">
+          <div className="p-6 bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-black">Compose Broadcast</DialogTitle>
-              <DialogDescription className="text-blue-100 dark:text-blue-900">
+              <DialogDescription className="text-emerald-100 dark:text-emerald-900">
                 Send an email newsletter or alert to a target audience.
               </DialogDescription>
             </DialogHeader>
@@ -189,7 +189,7 @@ export default function SHSEmailComms() {
             <div className="space-y-2">
               <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Target Audience</label>
               <select 
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 font-semibold text-slate-700 dark:text-slate-200"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500 font-semibold text-slate-700 dark:text-slate-200"
                 value={newEmail.targetGroup}
                 onChange={e => setNewEmail({...newEmail, targetGroup: e.target.value})}
               >
@@ -213,7 +213,7 @@ export default function SHSEmailComms() {
 
             <div className="space-y-2">
               <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Message Body</label>
-              <div className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-blue-600">
+              <div className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-emerald-600">
                 <div className="bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 p-2 flex gap-2">
                   <div className="h-6 w-6 bg-slate-200 dark:bg-slate-700 rounded flex items-center justify-center text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500">B</div>
                   <div className="h-6 w-6 bg-slate-200 dark:bg-slate-700 rounded flex items-center justify-center text-xs italic text-slate-500 dark:text-slate-400 dark:text-slate-500">I</div>
@@ -237,7 +237,7 @@ export default function SHSEmailComms() {
             <Button 
               onClick={handleSendEmail} 
               disabled={!newEmail.subject || !newEmail.body || isSending}
-              className="rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold px-6"
+              className="rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white font-bold px-6"
             >
               {isSending ? 'Sending Broadcast...' : 'Send Broadcast'}
             </Button>

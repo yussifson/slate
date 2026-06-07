@@ -19,9 +19,9 @@ const PERIODS = [1, 2, 3, 4, 5, 6, 7, 8];
 const SUBJECTS = ['Mathematics', 'Science', 'English', 'History', 'Chemistry', 'Physics', 'Geography', 'ICT', 'P.E.', 'Art'];
 
 const SLOT_COLORS = [
-  'bg-blue-100 text-blue-800 border-emerald-200',
+  'bg-orange-100 text-orange-800 border-emerald-200',
   'bg-green-100 text-green-800 border-green-200',
-  'bg-blue-50 dark:bg-blue-900/30 text-purple-800 border-purple-200',
+  'bg-emerald-50 dark:bg-emerald-900/30 text-purple-800 border-purple-200',
   'bg-amber-100 text-amber-800 border-amber-200',
   'bg-teal-100 text-teal-800 border-teal-200',
   'bg-pink-100 text-pink-800 border-pink-200',
@@ -322,7 +322,7 @@ export default function Timetable() {
                               setFormData({ ...defaultForm, className: selectedClass, day, period: String(period) });
                               setShowModal(true);
                             }}
-                            className="w-full h-full min-h-[56px] rounded-lg border-2 border-dashed border-border text-muted-foreground/40 hover:border-blue-400 hover:text-emerald-500 transition-colors flex items-center justify-center"
+                            className="w-full h-full min-h-[56px] rounded-lg border-2 border-dashed border-border text-muted-foreground/40 hover:border-emerald-400 hover:text-emerald-500 transition-colors flex items-center justify-center"
                           >
                             <Plus className="w-4 h-4" />
                           </button>
@@ -341,7 +341,7 @@ export default function Timetable() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
           <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-              <Plus className="w-5 h-5 text-[#1E3A8A] dark:text-blue-400" /> {editingId ? 'Edit Timetable Slot' : 'Add Timetable Slot'}
+              <Plus className="w-5 h-5 text-[#1E3A8A] dark:text-emerald-400" /> {editingId ? 'Edit Timetable Slot' : 'Add Timetable Slot'}
             </h2>
             <div className="space-y-3">
               <div>

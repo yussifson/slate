@@ -201,7 +201,7 @@ export default function SHSGrades() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 bg-clip-text text-transparent">
             Grade Entry
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -215,10 +215,10 @@ export default function SHSGrades() {
           <div className="flex flex-col md:flex-row gap-6">
             <div className="space-y-2 flex-1">
               <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                <FileText className="w-4 h-4 text-blue-600 dark:text-blue-400" /> Select Exam Cycle
+                <FileText className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> Select Exam Cycle
               </label>
               <select 
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 font-semibold text-slate-700 dark:text-slate-200"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500 font-semibold text-slate-700 dark:text-slate-200"
                 value={selectedExamId}
                 onChange={(e) => setSelectedExamId(e.target.value)}
               >
@@ -315,7 +315,7 @@ export default function SHSGrades() {
                               type="number"
                               min="0"
                               max="30"
-                              className="h-10 text-center font-semibold bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500 focus-visible:bg-white dark:bg-slate-900 transition-colors"
+                              className="h-10 text-center font-semibold bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus-visible:ring-emerald-600 dark:focus-visible:ring-emerald-500 focus-visible:bg-white dark:bg-slate-900 transition-colors"
                               value={grades[student.id]?.classScore}
                               onChange={(e) => handleGradeChange(student.id, 'classScore', e.target.value)}
                             />
@@ -325,7 +325,7 @@ export default function SHSGrades() {
                               type="number"
                               min="0"
                               max="70"
-                              className="h-10 text-center font-semibold bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500 focus-visible:bg-white dark:bg-slate-900 transition-colors"
+                              className="h-10 text-center font-semibold bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus-visible:ring-emerald-600 dark:focus-visible:ring-emerald-500 focus-visible:bg-white dark:bg-slate-900 transition-colors"
                               value={grades[student.id]?.examScore}
                               onChange={(e) => handleGradeChange(student.id, 'examScore', e.target.value)}
                             />
@@ -340,7 +340,7 @@ export default function SHSGrades() {
                               <Badge variant="outline" className={`
                                 border-none font-bold text-sm h-8 w-10 flex items-center justify-center
                                 ${grade === 'A1' ? 'bg-emerald-100 text-emerald-700' : 
-                                  ['B2', 'B3'].includes(grade) ? 'bg-blue-100 text-blue-700' :
+                                  ['B2', 'B3'].includes(grade) ? 'bg-orange-100 text-orange-700' :
                                   ['C4', 'C5', 'C6'].includes(grade) ? 'bg-amber-100 text-amber-700' :
                                   ['D7', 'E8'].includes(grade) ? 'bg-orange-100 text-orange-700' :
                                   'bg-rose-100 text-rose-700'
@@ -375,7 +375,7 @@ export default function SHSGrades() {
                   <Button 
                     onClick={handleSaveGrades}
                     disabled={isSaving}
-                    className="h-12 px-8 rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white shadow-lg shadow-blue-500/20 font-bold"
+                    className="h-12 px-8 rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/20 font-bold"
                   >
                     {isSaving ? 'Saving...' : (
                       <><Save className="w-5 h-5 mr-2" /> Save Grades</>

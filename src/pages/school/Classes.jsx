@@ -153,7 +153,7 @@ export default function Classes() {
         <div className="py-12 text-center text-muted-foreground">{t("loading_classes", "Loading classes...")}</div>
       ) : filtered.length === 0 ? (
         <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-border">
-          <BookOpen className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-[#1E3A8A] dark:text-blue-400" />
+          <BookOpen className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-[#1E3A8A] dark:text-emerald-400" />
           <p className="font-semibold text-lg text-card-foreground">{t("no_classes_registered", "No classes registered")}</p>
           <p className="text-sm mt-1 max-w-md mx-auto">{t(
             "add_a_new_grade_class_subject_",
@@ -188,7 +188,7 @@ export default function Classes() {
         <div className="school-card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-blue-100 dark:border-slate-700">
+              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-emerald-100 dark:border-slate-700">
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Class Name</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Subject</th>
@@ -298,7 +298,7 @@ export default function Classes() {
           {viewDetails && (
             <div className="mt-6 space-y-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-[#F0F4FF] dark:bg-blue-900/20 dark:bg-blue-950/50 flex items-center justify-center text-[#1E3A8A] dark:text-blue-400 dark:text-blue-400">
+                <div className="w-16 h-16 rounded-full bg-[#F0F4FF] dark:bg-emerald-900/20 dark:bg-emerald-950/50 flex items-center justify-center text-[#1E3A8A] dark:text-emerald-400 dark:text-emerald-400">
                   <BookOpen className="w-8 h-8" />
                 </div>
                 <div>
@@ -331,7 +331,7 @@ export default function Classes() {
                   <h4 className="text-sm font-bold text-foreground">{t("assigned_courses", "Assigned Courses")}</h4>
                   <div className="flex flex-wrap gap-2">
                     {viewDetails.courses.split(',').map(course => (
-                      <span key={course} className="px-3 py-1 bg-[#F0F4FF] dark:bg-blue-900/20 text-[#1E3A8A] dark:text-blue-300 font-semibold text-xs rounded-full border border-emerald-200">
+                      <span key={course} className="px-3 py-1 bg-[#F0F4FF] dark:bg-emerald-900/20 text-[#1E3A8A] dark:text-emerald-300 font-semibold text-xs rounded-full border border-emerald-200">
                         {course.trim()}
                       </span>
                     ))}

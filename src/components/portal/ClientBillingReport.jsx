@@ -54,7 +54,7 @@ export default function ClientBillingReport({ invoices = [], expenses = [], curr
       {/* KPIs */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: "Total Billed", value: formatAmt(totalBilled, currency), color: "bg-blue-50 text-blue-700" },
+          { label: "Total Billed", value: formatAmt(totalBilled, currency), color: "bg-orange-50 text-orange-700" },
           { label: "Paid", value: formatAmt(totalPaid, currency), color: "bg-green-50 text-green-700" },
           { label: "Outstanding", value: formatAmt(outstanding, currency), color: outstanding > 0 ? "bg-red-50 text-red-700" : "bg-muted text-muted-foreground" },
         ].map(k => {

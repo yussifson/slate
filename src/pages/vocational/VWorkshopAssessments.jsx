@@ -45,7 +45,7 @@ export default function VWorkshopAssessments() {
     <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300 h-[calc(100vh-100px)] flex flex-col">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-indigo-600 via-blue-600 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-indigo-600 via-emerald-600 to-slate-900 bg-clip-text text-transparent">
             Workshop Assessments
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -105,7 +105,7 @@ export default function VWorkshopAssessments() {
         <Card className="flex-1 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-indigo-100/50 overflow-hidden relative">
           {selectedAssessment ? (
             <>
-              <div className="h-32 bg-gradient-to-r from-indigo-500 to-blue-600 relative shrink-0">
+              <div className="h-32 bg-gradient-to-r from-indigo-500 to-emerald-600 relative shrink-0">
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/diagonal-stripes.png')] opacity-20"></div>
               </div>
               

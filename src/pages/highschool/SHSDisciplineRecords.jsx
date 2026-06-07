@@ -88,7 +88,7 @@ export default function SHSDisciplineRecords() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 bg-clip-text text-transparent">
             Discipline Records
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -96,7 +96,7 @@ export default function SHSDisciplineRecords() {
           </p>
         </div>
         
-        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white shadow-md shadow-blue-500/20">
+        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white shadow-md shadow-emerald-500/20">
           <Plus className="w-4 h-4" /> Log Incident
         </Button>
       </div>
@@ -104,7 +104,7 @@ export default function SHSDisciplineRecords() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-purple-100">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-slate-800 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-slate-800 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
               <ShieldAlert className="w-6 h-6" />
             </div>
             <div>
@@ -154,7 +154,7 @@ export default function SHSDisciplineRecords() {
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
               <Input 
                 placeholder="Search student or infraction..." 
-                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500"
+                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-emerald-600 dark:focus-visible:ring-emerald-500"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -166,8 +166,8 @@ export default function SHSDisciplineRecords() {
             <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading records...</div>
           ) : filteredRecords.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
-                <FileWarning className="w-8 h-8 text-blue-500 dark:text-blue-500" />
+              <div className="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                <FileWarning className="w-8 h-8 text-emerald-500 dark:text-emerald-500" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No discipline records</h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">No incidents match your search, or none have been logged.</p>
@@ -191,7 +191,7 @@ export default function SHSDisciplineRecords() {
                       <td className="px-6 py-4 whitespace-nowrap text-slate-600 dark:text-slate-300 font-medium">
                         {record.data?.date}
                       </td>
-                      <td className="px-6 py-4 font-bold text-blue-600 dark:text-blue-400">
+                      <td className="px-6 py-4 font-bold text-emerald-600 dark:text-emerald-400">
                         {record.data?.studentName}
                       </td>
                       <td className="px-6 py-4 text-slate-700 dark:text-slate-200">
@@ -199,7 +199,7 @@ export default function SHSDisciplineRecords() {
                       </td>
                       <td className="px-6 py-4">
                         <Badge variant="outline" className={
-                          record.data?.severity === 'Minor' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                          record.data?.severity === 'Minor' ? 'bg-orange-50 text-orange-700 border-emerald-200' :
                           record.data?.severity === 'Moderate' ? 'bg-amber-50 text-amber-700 border-amber-200' :
                           'bg-rose-50 text-rose-700 border-rose-200'
                         }>
@@ -223,10 +223,10 @@ export default function SHSDisciplineRecords() {
 
       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
         <DialogContent className="sm:max-w-[500px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
-          <div className="p-6 bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 text-white">
+          <div className="p-6 bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-black">Log Disciplinary Incident</DialogTitle>
-              <DialogDescription className="text-blue-100 dark:text-blue-900">
+              <DialogDescription className="text-emerald-100 dark:text-emerald-900">
                 Record a student infraction and the corresponding disciplinary action.
               </DialogDescription>
             </DialogHeader>
@@ -237,7 +237,7 @@ export default function SHSDisciplineRecords() {
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Student</label>
                 <select 
-                  className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
+                  className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500"
                   value={newRecord.studentId}
                   onChange={e => setNewRecord({...newRecord, studentId: e.target.value})}
                 >
@@ -261,7 +261,7 @@ export default function SHSDisciplineRecords() {
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Severity</label>
                   <select 
-                    className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
+                    className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500"
                     value={newRecord.severity}
                     onChange={e => setNewRecord({...newRecord, severity: e.target.value})}
                   >
@@ -313,7 +313,7 @@ export default function SHSDisciplineRecords() {
             <Button 
               onClick={handleAddRecord} 
               disabled={!newRecord.studentId || !newRecord.infraction}
-              className="rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold"
+              className="rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white font-bold"
             >
               Log Incident
             </Button>

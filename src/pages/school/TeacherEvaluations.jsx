@@ -70,7 +70,7 @@ export default function TeacherEvaluations() {
                 <div className="font-bold text-lg text-slate-900 dark:text-white">{teacher}</div>
                 
                 {done ? (
-                  <div className="flex items-center gap-2 text-[#1E3A8A] dark:text-blue-400 bg-[#F0F4FF] dark:bg-blue-900/20 dark:bg-emerald-900/20 px-4 py-2 rounded-full font-bold text-sm">
+                  <div className="flex items-center gap-2 text-[#1E3A8A] dark:text-emerald-400 bg-[#F0F4FF] dark:bg-emerald-900/20 dark:bg-emerald-900/20 px-4 py-2 rounded-full font-bold text-sm">
                     <CheckCircle className="w-4 h-4" /> Completed
                   </div>
                 ) : (

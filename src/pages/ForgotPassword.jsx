@@ -8,7 +8,7 @@ import { ArrowLeft, Mail, CheckCircle2 } from 'lucide-react';
 
 function Logo({ className }) {
   return (
-    <div className={`rounded-xl bg-blue-600 flex items-center justify-center text-white font-black text-lg ${className}`}>
+    <div className={`rounded-xl bg-emerald-600 flex items-center justify-center text-white font-black text-lg ${className}`}>
       O
     </div>
   );
@@ -68,7 +68,7 @@ export default function ForgotPassword() {
                 {t("we_sent_a_reset_link_to", "We sent a reset link to")} <span className="font-semibold text-slate-900">{email}</span>.
                                 <br />{t("check_your_inbox_and_spam_fold", "Check your inbox (and spam folder).")}
               </p>
-              <a href="/login" className="text-sm font-bold text-blue-600 hover:underline flex items-center gap-1 mt-2">
+              <a href="/login" className="text-sm font-bold text-emerald-600 hover:underline flex items-center gap-1 mt-2">
                 <ArrowLeft className="w-4 h-4" /> {t("back_to_login", "Back to login")}
               </a>
             </div>
@@ -91,7 +91,7 @@ export default function ForgotPassword() {
                     placeholder="name@company.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full h-14 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium pl-11 pr-4 text-slate-900"
+                    className="w-full h-14 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all font-medium pl-11 pr-4 text-slate-900"
                   />
                 </div>
               </div>
@@ -99,7 +99,7 @@ export default function ForgotPassword() {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full h-14 text-base font-bold rounded-xl bg-blue-600 hover:bg-blue-700 text-white transition-all hover:-translate-y-0.5 shadow-lg shadow-blue-600/20"
+                className="w-full h-14 text-base font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white transition-all hover:-translate-y-0.5 shadow-lg shadow-emerald-600/20"
               >
                 {loading ? 'Sending...' : 'Send reset link'}
               </Button>

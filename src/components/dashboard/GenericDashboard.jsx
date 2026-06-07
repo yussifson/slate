@@ -140,7 +140,7 @@ export default function GenericDashboard({ companyId, company, isAdmin, industry
       </div>
       {/* Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard title={`Active ${casesTermPlural}`} value={activeCases.length} icon={Briefcase} iconBg="bg-blue-100" iconColor="text-blue-500" subtitle={`${cases.length} total`} />
+        <MetricCard title={`Active ${casesTermPlural}`} value={activeCases.length} icon={Briefcase} iconBg="bg-emerald-100" iconColor="text-emerald-500" subtitle={`${cases.length} total`} />
         <MetricCard title={`Active ${clientsTermPlural}`} value={activeClients.length} icon={Users} iconBg="bg-purple-100" iconColor="text-purple-500"
           subtitle={clients.length > 0 ? `+${Math.round((activeClients.length / Math.max(clients.length, 1)) * 100)}% this month` : undefined}
           subtitleColor="text-green-600" />

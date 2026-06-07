@@ -7,7 +7,7 @@ import { CheckCircle2, Eye, EyeOff } from 'lucide-react';
 
 function Logo({ className }) {
   return (
-    <div className={`rounded-xl bg-blue-600 flex items-center justify-center text-white font-black text-lg ${className}`}>
+    <div className={`rounded-xl bg-emerald-600 flex items-center justify-center text-white font-black text-lg ${className}`}>
       O
     </div>
   );
@@ -101,7 +101,7 @@ export default function ResetPassword() {
                     placeholder="Min. 6 characters"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full h-14 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium px-4 pr-12 text-slate-900"
+                    className="w-full h-14 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all font-medium px-4 pr-12 text-slate-900"
                   />
                   <button
                     type="button"
@@ -123,14 +123,14 @@ export default function ResetPassword() {
                   placeholder="Repeat password"
                   value={confirm}
                   onChange={(e) => setConfirm(e.target.value)}
-                  className="w-full h-14 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium px-4 text-slate-900"
+                  className="w-full h-14 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all font-medium px-4 text-slate-900"
                 />
               </div>
 
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full h-14 text-base font-bold rounded-xl bg-blue-600 hover:bg-blue-700 text-white transition-all hover:-translate-y-0.5 shadow-lg shadow-blue-600/20"
+                className="w-full h-14 text-base font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white transition-all hover:-translate-y-0.5 shadow-lg shadow-emerald-600/20"
               >
                 {loading ? 'Updating...' : 'Update password'}
               </Button>

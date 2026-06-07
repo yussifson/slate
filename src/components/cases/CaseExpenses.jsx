@@ -20,7 +20,7 @@ const STATUS_COLORS = {
   pending: "bg-amber-100 text-amber-700",
   approved: "bg-green-100 text-green-700",
   rejected: "bg-red-100 text-red-700",
-  billed: "bg-blue-100 text-blue-700",
+  billed: "bg-orange-100 text-orange-700",
 };
 
 export default function CaseExpenses({ caseData, user }) {
@@ -157,7 +157,7 @@ export default function CaseExpenses({ caseData, user }) {
                   <div className="flex items-center gap-2 flex-wrap">
                     <p className="text-sm font-medium">{exp.description}</p>
                     <Badge className={`text-[10px] ${STATUS_COLORS[exp.status]}`}>{exp.status}</Badge>
-                    {exp.billed && <Badge className="text-[10px] bg-blue-100 text-blue-700">{t("billed", "Billed")}</Badge>}
+                    {exp.billed && <Badge className="text-[10px] bg-orange-100 text-orange-700">{t("billed", "Billed")}</Badge>}
                     {!exp.billable && <Badge className="text-[10px] bg-gray-100 text-gray-600">{t("non_billable", "Non-billable")}</Badge>}
                   </div>
                   <div className="flex flex-wrap gap-2 mt-0.5">

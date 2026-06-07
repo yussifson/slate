@@ -110,7 +110,7 @@ export default function IDFormatSettings() {
       </div>
 
       <div className="mt-6 flex justify-end">
-        <Button onClick={() => saveSettings.mutate()} disabled={saveSettings.isPending} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+        <Button onClick={() => saveSettings.mutate()} disabled={saveSettings.isPending} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
           <Save className="w-4 h-4" /> {saveSettings.isPending ? 'Saving...' : 'Save Format Settings'}
         </Button>
       </div>

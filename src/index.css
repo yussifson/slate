@@ -13,7 +13,7 @@
     --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
-    --primary: 221 83% 53%; /* Bright vibrant blue similar to TMetric #2563EB or #1D4ED8 */
+    --primary: 152 76% 41%; /* Vibrant Emerald Green */
     --primary-foreground: 0 0% 100%;
     --secondary: 210 40% 96%;
     --secondary-foreground: 222 47% 11%;
@@ -25,8 +25,8 @@
     --destructive-foreground: 0 0% 98%;
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 221 83% 53%;
-    --chart-1: 221 83% 53%;
+    --ring: 152 76% 41%;
+    --chart-1: 152 76% 41%;
     --chart-2: 160 60% 45%;
     --chart-3: 38 92% 50%;
     --chart-4: 280 65% 60%;
@@ -34,12 +34,12 @@
     --radius: 0.75rem;
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 222 47% 15%;
-    --sidebar-primary: 221 83% 53%;
+    --sidebar-primary: 152 76% 41%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 210 40% 96%;
     --sidebar-accent-foreground: 222 47% 15%;
     --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 221 83% 53%;
+    --sidebar-ring: 152 76% 41%;
   }
 
   .dark {
@@ -55,8 +55,8 @@
     --popover: 222 47% 11%;
     --popover-foreground: 214 32% 91%;
     
-    /* Vivid Primary Blue/Indigo */
-    --primary: 224 76% 55%;
+    /* Vivid Primary Emerald */
+    --primary: 152 76% 50%;
     --primary-foreground: 210 40% 98%;
     
     /* Indigo-tinted secondary/muted elements */
@@ -75,9 +75,9 @@
     /* Soft Indigo-Navy Borders */
     --border: 217 32% 17%;
     --input: 217 32% 17%;
-    --ring: 224 76% 55%;
+    --ring: 152 76% 50%;
     
-    --chart-1: 224 76% 55%;
+    --chart-1: 152 76% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 38 92% 50%;
     --chart-4: 280 65% 60%;
@@ -86,12 +86,12 @@
     /* Sidebar */
     --sidebar-background: 222 47% 8%;
     --sidebar-foreground: 214 32% 91%;
-    --sidebar-primary: 224 76% 55%;
+    --sidebar-primary: 152 76% 50%;
     --sidebar-primary-foreground: 210 40% 98%;
     --sidebar-accent: 217 32% 17%;
     --sidebar-accent-foreground: 214 32% 91%;
     --sidebar-border: 217 32% 17%;
-    --sidebar-ring: 224 76% 55%;
+    --sidebar-ring: 152 76% 50%;
   }
 }
 
@@ -182,8 +182,8 @@
   }
   
   .dark body {
-    background-image: radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.15) 0%, transparent 60%),
-                      radial-gradient(circle at 0% 100%, rgba(139, 92, 246, 0.08) 0%, transparent 60%),
+    background-image: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.15) 0%, transparent 60%),
+                      radial-gradient(circle at 0% 100%, rgba(249, 115, 22, 0.08) 0%, transparent 60%),
                       url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='rgba(255,255,255,0.03)' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     background-attachment: fixed;
   }

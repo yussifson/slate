@@ -31,15 +31,15 @@ import { supabase } from '@/api/supabaseClient';
 import { useToast } from '@/components/ui/use-toast';
 
 const CARD_GRADIENTS = [
-  'from-blue-500 via-blue-600 to-indigo-700',
+  'from-emerald-500 via-emerald-600 to-indigo-700',
   'from-emerald-500 via-teal-600 to-cyan-700',
   'from-violet-500 via-purple-600 to-indigo-700',
   'from-amber-500 via-orange-600 to-red-700',
   'from-rose-500 via-pink-600 to-fuchsia-700',
-  'from-cyan-500 via-blue-600 to-violet-700',
-  'from-fuchsia-500 via-purple-600 to-blue-700',
+  'from-cyan-500 via-emerald-600 to-violet-700',
+  'from-fuchsia-500 via-purple-600 to-emerald-700',
   'from-lime-500 via-emerald-600 to-teal-700',
-  'from-sky-500 via-blue-600 to-indigo-700',
+  'from-sky-500 via-emerald-600 to-indigo-700',
   'from-orange-500 via-red-600 to-rose-700',
 ];
 
@@ -434,7 +434,7 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
                 return (
                   <div key={f.name} className="space-y-1">
                     <label className="text-xs font-semibold text-slate-600 uppercase tracking-wide">{label}</label>
-                    <select value={val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value })} className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <select value={val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value })} className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500">
                       <option value="">Select...</option>
                       {options.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
                     </select>
@@ -451,7 +451,7 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
           </div>
           <DialogFooter className="mt-6 pt-4 border-t border-slate-100">
             <Button variant="outline" onClick={() => setEditRecord(null)}>Cancel</Button>
-            <Button onClick={handleSaveEdit} disabled={isSaving} className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Button onClick={handleSaveEdit} disabled={isSaving} className="bg-emerald-600 hover:bg-emerald-700 text-white">
               {isSaving ? 'Saving...' : 'Save Changes'}
             </Button>
           </DialogFooter>

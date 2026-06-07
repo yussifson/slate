@@ -11,7 +11,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { Link } from 'react-router-dom';
 
 const COLOR_SCHEMES = [
-  { border: 'border-blue-200 dark:border-blue-900', bg: 'bg-blue-50 dark:bg-blue-950/20', text: 'text-blue-500', name: 'Blue' },
+  { border: 'border-emerald-200 dark:border-emerald-900', bg: 'bg-emerald-50 dark:bg-emerald-950/20', text: 'text-emerald-500', name: 'Blue' },
   { border: 'border-pink-200 dark:border-pink-900', bg: 'bg-pink-50 dark:bg-pink-950/20', text: 'text-pink-500', name: 'Pink' },
   { border: 'border-purple-200 dark:border-purple-900', bg: 'bg-purple-50 dark:bg-purple-950/20', text: 'text-purple-500', name: 'Purple' },
   { border: 'border-amber-200 dark:border-amber-900', bg: 'bg-amber-50 dark:bg-amber-950/20', text: 'text-amber-500', name: 'Amber' },
@@ -102,7 +102,7 @@ export default function Ministries() {
 
   const getIcon = (type) => {
     switch (type) {
-      case 0: return <Users className="w-6 h-6 text-blue-500" />;
+      case 0: return <Users className="w-6 h-6 text-emerald-500" />;
       case 1: return <HeartHandshake className="w-6 h-6 text-pink-500" />;
       case 2: return <Music className="w-6 h-6 text-purple-500" />;
       case 3: return <Shield className="w-6 h-6 text-amber-500" />;

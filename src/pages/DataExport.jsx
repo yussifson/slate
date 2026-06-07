@@ -36,7 +36,7 @@ const EXPORT_CONFIGS = [
     key: "cases",
     label: "Case List",
     icon: Briefcase,
-    color: "bg-blue-100 text-blue-600",
+    color: "bg-emerald-100 text-emerald-600",
     description: "All cases with status, client, assigned lawyer, and dates",
     columns: [
       { label: "Case Number", value: r => r.case_number || "" },

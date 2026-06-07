@@ -209,7 +209,7 @@ export default function VPlacementReports() {
                               <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm">
                                 <div className="flex justify-between items-center mb-2">
                                   <p className="font-bold text-slate-800 dark:text-slate-200">Training Relevance</p>
-                                  <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-200 border-none">{selectedReport.data?.trainingRelevanceRating || 'Highly Relevant'}</Badge>
+                                  <Badge className="bg-orange-100 text-orange-700 hover:bg-emerald-200 border-none">{selectedReport.data?.trainingRelevanceRating || 'Highly Relevant'}</Badge>
                                 </div>
                                 <p className="text-sm text-slate-600 dark:text-slate-400">
                                   {selectedReport.data?.traineeComments || 'The skills learned during the vocational program were directly applicable to my daily tasks here.'}

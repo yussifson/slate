@@ -19,7 +19,7 @@ import { MessageSquare, Bell } from "lucide-react";
 
 const STATUS_COLORS = {
   'Pending':     'bg-amber-100 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400',
-  'In Transit':  'bg-blue-100 text-blue-700 dark:bg-blue-950/30 dark:text-blue-400',
+  'In Transit':  'bg-orange-100 text-orange-700 dark:bg-emerald-950/30 dark:text-emerald-400',
   'Delivered':   'bg-green-100 text-green-700 dark:bg-green-950/30 dark:text-green-400',
   'Failed':      'bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400',
 };
@@ -148,7 +148,7 @@ export default function Shipments() {
 
   const stats = [
     { label: 'Total Shipments', value: total, icon: Package, color: 'bg-orange-100 text-orange-600', border: 'border-orange-200' },
-    { label: 'In Transit', value: inTransit, icon: Truck, color: 'bg-blue-100 text-blue-600', border: 'border-blue-200' },
+    { label: 'In Transit', value: inTransit, icon: Truck, color: 'bg-emerald-100 text-emerald-600', border: 'border-emerald-200' },
     { label: 'Delivered', value: delivered, icon: CheckCircle2, color: 'bg-green-100 text-green-600', border: 'border-green-200' },
     { label: 'Pending', value: pending, icon: Clock, color: 'bg-amber-100 text-amber-600', border: 'border-amber-200' },
   ];
@@ -260,7 +260,7 @@ export default function Shipments() {
                         <div className="flex items-center justify-end gap-1.5">
                           {ship.status === 'Pending' && (
                             <Button onClick={() => handleUpdateStatus(ship, 'In Transit')} size="sm"
-                              className="h-7 text-xs bg-blue-600 hover:bg-blue-700 text-white gap-1">
+                              className="h-7 text-xs bg-emerald-600 hover:bg-emerald-700 text-white gap-1">
                               <Truck className="w-3 h-3" /> {t("dispatch", "Dispatch")}
                             </Button>
                           )}

@@ -135,7 +135,7 @@ function NumberAggCard({ fieldName, stats }) {
       </div>
       <div className="grid grid-cols-2 gap-3">
         {[
-          { k: 'Sum', v: stats.sum, icon: TrendingUp, color: 'text-blue-600 bg-blue-50' },
+          { k: 'Sum', v: stats.sum, icon: TrendingUp, color: 'text-emerald-600 bg-emerald-50' },
           { k: 'Average', v: stats.avg, icon: Activity, color: 'text-purple-600 bg-purple-50' },
           { k: 'Min', v: stats.min, icon: ArrowDownRight, color: 'text-amber-600 bg-amber-50' },
           { k: 'Max', v: stats.max, icon: ArrowUpRight, color: 'text-emerald-600 bg-emerald-50' },

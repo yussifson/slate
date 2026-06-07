@@ -380,8 +380,8 @@ export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePi
         </div>
         
         <div className="flex flex-col items-center max-w-md text-center p-8 bg-white dark:bg-slate-900 rounded-3xl border border-border shadow-xl">
-           <div className="w-24 h-24 bg-blue-50 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-6 shadow-sm border border-blue-100 dark:border-blue-800">
-             <VideoIcon className="w-10 h-10 text-blue-600 dark:text-blue-400" />
+           <div className="w-24 h-24 bg-emerald-50 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mb-6 shadow-sm border border-emerald-100 dark:border-emerald-800">
+             <VideoIcon className="w-10 h-10 text-emerald-600 dark:text-emerald-400" />
            </div>
            <h2 className="text-2xl font-bold mb-3 text-slate-800 dark:text-white tracking-tight">Secure Video Meeting</h2>
            <p className="text-slate-500 dark:text-slate-400 mb-8 leading-relaxed text-sm max-w-sm">
@@ -391,7 +391,7 @@ export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePi
            <div className="flex flex-col gap-3 w-full">
              <Button 
                size="lg" 
-               className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold h-12 text-[15px] rounded-xl shadow-md hover:shadow-lg transition-all"
+               className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-12 text-[15px] rounded-xl shadow-md hover:shadow-lg transition-all"
                onClick={() => window.open(roomUrl, '_blank')}
              >
                Launch Meeting
@@ -440,7 +440,7 @@ export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePi
   if (!daily || !roomUrl) {
     return (
       <div className="flex flex-col h-full bg-slate-950 rounded-xl items-center justify-center">
-        <div className="w-12 h-12 rounded-full border-[3px] border-blue-500/30 border-t-blue-500 animate-spin mb-4"></div>
+        <div className="w-12 h-12 rounded-full border-[3px] border-emerald-500/30 border-t-blue-500 animate-spin mb-4"></div>
         <p className="text-slate-400 font-medium">Connecting to secure video server...</p>
       </div>
     );

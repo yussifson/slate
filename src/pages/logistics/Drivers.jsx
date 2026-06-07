@@ -18,7 +18,7 @@ import { useCompanyId } from '@/hooks/useCompanyId';
 
 const STATUS_COLORS = {
   'Active':    'bg-green-100 text-green-700 dark:bg-green-950/30 dark:text-green-400',
-  'On Trip':   'bg-blue-100 text-blue-700 dark:bg-blue-950/30 dark:text-blue-400',
+  'On Trip':   'bg-orange-100 text-orange-700 dark:bg-emerald-950/30 dark:text-emerald-400',
   'Off Duty':  'bg-amber-100 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400',
   'Suspended': 'bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400',
 };
@@ -145,7 +145,7 @@ export default function Drivers() {
   const stats = [
     { label: 'Total Drivers', value: total, icon: User, color: 'bg-indigo-100 text-indigo-600', border: 'border-indigo-200' },
     { label: 'Active', value: active, icon: CheckCircle2, color: 'bg-green-100 text-green-600', border: 'border-green-200' },
-    { label: 'On Trip', value: onTrip, icon: Truck, color: 'bg-blue-100 text-blue-600', border: 'border-blue-200' },
+    { label: 'On Trip', value: onTrip, icon: Truck, color: 'bg-emerald-100 text-emerald-600', border: 'border-emerald-200' },
     { label: 'Suspended', value: suspended, icon: ShieldOff, color: 'bg-red-100 text-red-600', border: 'border-red-200' },
   ];
 
@@ -280,7 +280,7 @@ export default function Drivers() {
                         <div className="flex items-center justify-end gap-1.5">
                           {driver.status === 'Active' && (
                             <Button onClick={() => handleUpdateStatus(driver, 'On Trip')} size="sm"
-                              className="h-7 text-xs bg-blue-600 hover:bg-blue-700 text-white gap-1">
+                              className="h-7 text-xs bg-emerald-600 hover:bg-emerald-700 text-white gap-1">
                               <Truck className="w-3 h-3" /> {t("dispatch", "Dispatch")}
                             </Button>
                           )}

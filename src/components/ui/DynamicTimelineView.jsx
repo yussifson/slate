@@ -24,7 +24,7 @@ import { supabase } from '@/api/supabaseClient';
 import { useToast } from '@/components/ui/use-toast';
 
 const TIMELINE_COLORS = [
-  { dot: 'bg-blue-500', border: 'border-blue-200', gradient: 'from-blue-500 to-blue-600', lightBg: 'bg-blue-50', text: 'text-blue-700' },
+  { dot: 'bg-emerald-500', border: 'border-emerald-200', gradient: 'from-emerald-500 to-emerald-600', lightBg: 'bg-emerald-50', text: 'text-emerald-700' },
   { dot: 'bg-emerald-500', border: 'border-emerald-200', gradient: 'from-emerald-500 to-emerald-600', lightBg: 'bg-emerald-50', text: 'text-emerald-700' },
   { dot: 'bg-violet-500', border: 'border-violet-200', gradient: 'from-violet-500 to-violet-600', lightBg: 'bg-violet-50', text: 'text-violet-700' },
   { dot: 'bg-amber-500', border: 'border-amber-200', gradient: 'from-amber-500 to-amber-600', lightBg: 'bg-amber-50', text: 'text-amber-700' },
@@ -337,7 +337,7 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
                 return (
                   <div key={f.name} className="space-y-1">
                     <label className="text-xs font-semibold text-slate-600 uppercase tracking-wide">{label}</label>
-                    <select value={val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value })} className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <select value={val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value })} className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500">
                       <option value="">Select...</option>
                       {options.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
                     </select>
@@ -354,7 +354,7 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
           </div>
           <DialogFooter className="mt-6 pt-4 border-t border-slate-100">
             <Button variant="outline" onClick={() => setEditRecord(null)}>Cancel</Button>
-            <Button onClick={handleSaveEdit} disabled={isSaving} className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Button onClick={handleSaveEdit} disabled={isSaving} className="bg-emerald-600 hover:bg-emerald-700 text-white">
               {isSaving ? 'Saving...' : 'Save Changes'}
             </Button>
           </DialogFooter>
@@ -411,7 +411,7 @@ function TimelineCard({ record, fieldDefinitions, colorSet, onView, onEdit, onDe
             )}
           </div>
           <div className="flex gap-1 opacity-0 group-hover/card:opacity-100 transition-opacity ml-2 flex-shrink-0">
-            <button onClick={onView} className="p-1.5 rounded-lg bg-slate-100 text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors">
+            <button onClick={onView} className="p-1.5 rounded-lg bg-slate-100 text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
               <Eye className="w-3.5 h-3.5" />
             </button>
             <button onClick={onEdit} className="p-1.5 rounded-lg bg-slate-100 text-slate-500 hover:text-amber-600 hover:bg-amber-50 transition-colors">

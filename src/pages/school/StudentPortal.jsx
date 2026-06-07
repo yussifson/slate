@@ -167,7 +167,7 @@ export default function StudentPortal() {
                   <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center text-white shadow-sm"><GraduationCap className="w-5 h-5" /></div>
                   <h3 className="font-bold text-muted-foreground text-sm">{t("performance", "Performance")}</h3>
                 </div>
-                <p className="text-3xl font-bold text-[#1E3A8A] dark:text-blue-400 dark:text-blue-400 mb-1">{averageGrade}</p>
+                <p className="text-3xl font-bold text-[#1E3A8A] dark:text-emerald-400 dark:text-emerald-400 mb-1">{averageGrade}</p>
                 <p className="text-xs text-muted-foreground">{t("term_report_card", "Term Report Card")}</p>
               </div>
             </div>
@@ -207,7 +207,7 @@ export default function StudentPortal() {
                     </div>
                     {doc.file_url && (
                       <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-[#1E3A8A] dark:text-blue-400"><Download className="w-4 h-4" /></Button>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-[#1E3A8A] dark:text-emerald-400"><Download className="w-4 h-4" /></Button>
                       </a>
                     )}
                   </div>
@@ -234,8 +234,8 @@ export default function StudentPortal() {
             {myRegisteredCourses.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {myRegisteredCourses.map((c, i) => (
-                  <div key={i} className="p-4 rounded-xl border border-emerald-200 bg-[#F0F4FF] dark:bg-blue-900/20 dark:bg-emerald-950/20 flex items-center gap-3">
-                    <BookOpen className="w-5 h-5 text-[#1E3A8A] dark:text-blue-400" />
+                  <div key={i} className="p-4 rounded-xl border border-emerald-200 bg-[#F0F4FF] dark:bg-emerald-900/20 dark:bg-emerald-950/20 flex items-center gap-3">
+                    <BookOpen className="w-5 h-5 text-[#1E3A8A] dark:text-emerald-400" />
                     <span className="font-semibold text-emerald-800 dark:text-emerald-300">{c}</span>
                   </div>
                 ))}
@@ -281,7 +281,7 @@ export default function StudentPortal() {
                       <td className="px-6 py-4 font-medium text-foreground">{g.data?.examName}</td>
                       <td className="px-6 py-4 text-muted-foreground">{g.data?.subject}</td>
                       <td className="px-6 py-4 text-right">
-                        <span className={`font-bold ${pct >= 70 ? 'text-[#1E3A8A] dark:text-blue-400' : pct >= 50 ? 'text-[#1E3A8A] dark:text-blue-400' : 'text-red-600'}`}>
+                        <span className={`font-bold ${pct >= 70 ? 'text-[#1E3A8A] dark:text-emerald-400' : pct >= 50 ? 'text-[#1E3A8A] dark:text-emerald-400' : 'text-red-600'}`}>
                           {score} / {max} ({pct}%)
                         </span>
                       </td>

@@ -59,7 +59,7 @@ export default function DynamicInventoryView({ data = [], fieldDefinitions = [],
       {/* Stats Bar */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-card border rounded-xl p-4 flex items-center gap-4 shadow-sm">
-          <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
+          <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600">
             <Package className="w-6 h-6" />
           </div>
           <div>

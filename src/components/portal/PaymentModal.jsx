@@ -137,7 +137,7 @@ export default function PaymentModal({ open, onClose, invoice, onSuccess }) {
                 <div className="pt-4">
                   <Button
                     type="submit"
-                    className="w-full h-12 text-base font-bold relative overflow-hidden transition-all bg-blue-600 hover:bg-blue-700 text-white"
+                    className="w-full h-12 text-base font-bold relative overflow-hidden transition-all bg-emerald-600 hover:bg-emerald-700 text-white"
                     disabled={loading}
                   >
                     {loading ? (

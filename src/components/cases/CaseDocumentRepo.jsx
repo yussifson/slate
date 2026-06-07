@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils";
 
 const CATEGORIES = [
   { value: "court_filing", label: "Court Filing", color: "bg-red-100 text-red-700" },
-  { value: "pleading", label: "Pleading", color: "bg-blue-100 text-blue-700" },
+  { value: "pleading", label: "Pleading", color: "bg-orange-100 text-orange-700" },
   { value: "court_order", label: "Court Order", color: "bg-amber-100 text-amber-700" },
   { value: "evidence", label: "Evidence", color: "bg-orange-100 text-orange-700" },
   { value: "contract", label: "Contract", color: "bg-purple-100 text-purple-700" },
@@ -43,7 +43,7 @@ function getFileIcon(fileType, name) {
   if (type.includes("pdf") || ext === "pdf")
     return <FileText className="w-4 h-4 text-red-500" />;
   if (["doc", "docx"].includes(ext))
-    return <FileText className="w-4 h-4 text-blue-500" />;
+    return <FileText className="w-4 h-4 text-emerald-500" />;
   return <File className="w-4 h-4 text-muted-foreground" />;
 }
 
@@ -286,7 +286,7 @@ function DocRow({ doc, canManage, onDelete, onToggleShare, onPreview, highlighte
           {doc.file_size && <span className="text-[10px] text-muted-foreground">{fileSize(doc.file_size)}</span>}
           {doc.uploaded_by && <span className="text-[10px] text-muted-foreground">{t("by", "by")} {doc.uploaded_by.split("@")[0]}</span>}
           <span className="text-[10px] text-muted-foreground">{format(new Date(doc.created_date), "MMM d, yyyy")}</span>
-          {doc.shared_with_client && <Badge className="text-[10px] bg-blue-100 text-blue-700 gap-1"><Share2 className="w-2.5 h-2.5" />{t("shared", "Shared")}</Badge>}
+          {doc.shared_with_client && <Badge className="text-[10px] bg-orange-100 text-orange-700 gap-1"><Share2 className="w-2.5 h-2.5" />{t("shared", "Shared")}</Badge>}
         </div>
         {doc.notes && <p className="text-xs text-muted-foreground mt-0.5 truncate">{doc.notes}</p>}
       </div>
@@ -308,7 +308,7 @@ function DocRow({ doc, canManage, onDelete, onToggleShare, onPreview, highlighte
               title={doc.shared_with_client ? "Unshare with client" : "Share with client"}
               onClick={onToggleShare}
             >
-              <Share2 className={`w-3.5 h-3.5 ${doc.shared_with_client ? "text-blue-500" : "text-muted-foreground"}`} />
+              <Share2 className={`w-3.5 h-3.5 ${doc.shared_with_client ? "text-emerald-500" : "text-muted-foreground"}`} />
             </Button>
             <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onDelete} title="Delete">
               <Trash2 className="w-3.5 h-3.5 text-destructive" />

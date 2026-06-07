@@ -94,7 +94,7 @@ export default function SHSEnrollment() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 bg-clip-text text-transparent">
             Student Enrollment
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -111,10 +111,10 @@ export default function SHSEnrollment() {
               Ready to Enroll <Badge className="bg-emerald-100 text-emerald-700">{admittedApplicants.length}</Badge>
             </h3>
             <div className="relative">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-blue-500 dark:text-blue-500" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-emerald-500 dark:text-emerald-500" />
               <Input 
                 placeholder="Search admitted students..." 
-                className="pl-9 h-10 bg-white dark:bg-slate-900 border-blue-100 dark:border-slate-700 rounded-xl focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500"
+                className="pl-9 h-10 bg-white dark:bg-slate-900 border-emerald-100 dark:border-slate-700 rounded-xl focus-visible:ring-emerald-600 dark:focus-visible:ring-emerald-500"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -134,18 +134,18 @@ export default function SHSEnrollment() {
                     onClick={() => setSelectedApplicant(app)}
                     className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
                       selectedApplicant?.id === app.id 
-                        ? 'bg-blue-600 dark:bg-blue-500 text-white shadow-md shadow-blue-500/20' 
-                        : 'hover:bg-blue-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200'
+                        ? 'bg-emerald-600 dark:bg-emerald-500 text-white shadow-md shadow-emerald-500/20' 
+                        : 'hover:bg-emerald-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200'
                     }`}
                   >
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0 ${
-                      selectedApplicant?.id === app.id ? 'bg-white dark:bg-slate-900/20' : 'bg-blue-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400'
+                      selectedApplicant?.id === app.id ? 'bg-white dark:bg-slate-900/20' : 'bg-emerald-100 dark:bg-slate-800 text-emerald-600 dark:text-emerald-400'
                     }`}>
                       <UserCheck className="w-5 h-5" />
                     </div>
                     <div className="overflow-hidden flex-1">
                       <p className="font-bold truncate">{app.title}</p>
-                      <p className={`text-xs truncate ${selectedApplicant?.id === app.id ? 'text-blue-200 dark:text-blue-800' : 'text-slate-500 dark:text-slate-400 dark:text-slate-500'}`}>
+                      <p className={`text-xs truncate ${selectedApplicant?.id === app.id ? 'text-emerald-200 dark:text-emerald-800' : 'text-slate-500 dark:text-slate-400 dark:text-slate-500'}`}>
                         {app.case_number}
                       </p>
                     </div>
@@ -167,12 +167,12 @@ export default function SHSEnrollment() {
           
           {selectedApplicant ? (
             <>
-              <div className="p-8 bg-gradient-to-r from-purple-50 to-white border-b border-blue-100 dark:border-slate-700">
+              <div className="p-8 bg-gradient-to-r from-purple-50 to-white border-b border-emerald-100 dark:border-slate-700">
                 <div className="flex items-start justify-between">
                   <div>
                     <h2 className="text-2xl font-black text-slate-800 dark:text-slate-100">{selectedApplicant.title}</h2>
                     <div className="flex items-center gap-3 mt-2">
-                      <Badge variant="outline" className="border-blue-200 dark:border-slate-600 text-blue-600 dark:text-blue-400 bg-white dark:bg-slate-900">{selectedApplicant.case_number}</Badge>
+                      <Badge variant="outline" className="border-emerald-200 dark:border-slate-600 text-emerald-600 dark:text-emerald-400 bg-white dark:bg-slate-900">{selectedApplicant.case_number}</Badge>
                       <span className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-slate-500">Admitted to: {selectedApplicant.data?.programChoice1}</span>
                     </div>
                   </div>
@@ -189,12 +189,12 @@ export default function SHSEnrollment() {
                     <h3 className="font-bold text-slate-800 dark:text-slate-100 border-b border-slate-100 dark:border-slate-800 pb-2">Assign Student Details</h3>
                     
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider flex items-center gap-2">
+                      <label className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider flex items-center gap-2">
                         <BookOpen className="w-4 h-4" /> Official Index Number
                       </label>
                       <Input 
                         placeholder="e.g. 0010123456"
-                        className="bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500 rounded-xl h-12 text-lg font-medium"
+                        className="bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus-visible:ring-emerald-600 dark:focus-visible:ring-emerald-500 rounded-xl h-12 text-lg font-medium"
                         value={enrollmentData.indexNumber}
                         onChange={(e) => setEnrollmentData({...enrollmentData, indexNumber: e.target.value})}
                       />
@@ -207,7 +207,7 @@ export default function SHSEnrollment() {
                           <Building className="w-4 h-4" /> Boarding House
                         </label>
                         <select 
-                          className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
+                          className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500"
                           value={enrollmentData.house}
                           onChange={(e) => setEnrollmentData({...enrollmentData, house: e.target.value})}
                         >
@@ -225,7 +225,7 @@ export default function SHSEnrollment() {
                         </label>
                         <Input 
                           placeholder="e.g. 1 Sci A"
-                          className="bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500 rounded-xl h-11"
+                          className="bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus-visible:ring-emerald-600 dark:focus-visible:ring-emerald-500 rounded-xl h-11"
                           value={enrollmentData.classRoom}
                           onChange={(e) => setEnrollmentData({...enrollmentData, classRoom: e.target.value})}
                         />
@@ -236,7 +236,7 @@ export default function SHSEnrollment() {
                       <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Date of Enrollment</label>
                       <Input 
                         type="date"
-                        className="bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500 rounded-xl h-11"
+                        className="bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus-visible:ring-emerald-600 dark:focus-visible:ring-emerald-500 rounded-xl h-11"
                         value={enrollmentData.enrollmentDate}
                         onChange={(e) => setEnrollmentData({...enrollmentData, enrollmentDate: e.target.value})}
                       />
@@ -247,7 +247,7 @@ export default function SHSEnrollment() {
                     <Button 
                       onClick={handleEnrollment}
                       disabled={isEnrolling || !enrollmentData.house}
-                      className="rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white px-8 h-12 font-bold shadow-md w-full sm:w-auto"
+                      className="rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white px-8 h-12 font-bold shadow-md w-full sm:w-auto"
                     >
                       {isEnrolling ? 'Processing...' : (
                         <><GraduationCap className="w-5 h-5 mr-2" /> Complete Enrollment</>
@@ -260,7 +260,7 @@ export default function SHSEnrollment() {
             </>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50">
-              <div className="w-20 h-20 rounded-full bg-blue-100 dark:bg-slate-800 flex items-center justify-center mb-6">
+              <div className="w-20 h-20 rounded-full bg-emerald-100 dark:bg-slate-800 flex items-center justify-center mb-6">
                 <GraduationCap className="w-10 h-10 text-purple-300" />
               </div>
               <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200">No Applicant Selected</h3>

@@ -19,7 +19,7 @@ import { isSuperAdmin } from "@/lib/constants";
 
 const LEAVE_TYPES = ["annual", "sick", "maternity", "paternity", "bereavement", "unpaid", "other"];
 const STATUS_COLORS = { pending: "bg-amber-100 text-amber-700", approved: "bg-green-100 text-green-700", rejected: "bg-red-100 text-red-700", cancelled: "bg-gray-100 text-gray-600" };
-const LEAVE_TYPE_COLORS = { annual: "bg-blue-100 text-blue-700", sick: "bg-red-100 text-red-700", maternity: "bg-pink-100 text-pink-700", paternity: "bg-purple-100 text-purple-700", bereavement: "bg-gray-100 text-gray-600", unpaid: "bg-orange-100 text-orange-700", other: "bg-slate-100 text-slate-600" };
+const LEAVE_TYPE_COLORS = { annual: "bg-orange-100 text-orange-700", sick: "bg-red-100 text-red-700", maternity: "bg-pink-100 text-pink-700", paternity: "bg-purple-100 text-purple-700", bereavement: "bg-gray-100 text-gray-600", unpaid: "bg-orange-100 text-orange-700", other: "bg-slate-100 text-slate-600" };
 
 export default function LeaveManagement() {
   const { t } = useTranslation();
@@ -82,7 +82,7 @@ export default function LeaveManagement() {
       {/* My Balance */}
       <div className="grid grid-cols-3 gap-4">
         {[
-          { label: "Total Entitlement", value: myBalance.total, color: "bg-blue-50 text-blue-600" },
+          { label: "Total Entitlement", value: myBalance.total, color: "bg-emerald-50 text-emerald-600" },
           { label: "Days Used", value: myBalance.used, color: "bg-amber-50 text-amber-600" },
           { label: "Days Remaining", value: myBalance.remaining, color: "bg-green-50 text-green-600" },
         ].map(s => {

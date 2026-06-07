@@ -150,7 +150,7 @@ export default function Departments() {
              <p className="text-sm text-muted-foreground mb-1">{t("total_employees", "Total Employees")}</p>
              <h2 className="text-3xl font-bold text-card-foreground">{departments.reduce((sum, d) => sum + d.staffCount, 0)}</h2>
            </div>
-           <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+           <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
              <Users className="w-6 h-6" />
            </div>
         </div>

@@ -20,8 +20,8 @@ const RISK_CONFIG = {
   },
   LOW: {
     label: 'Low Risk',
-    classes: 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-900/50',
-    badgeClasses: 'bg-blue-500 text-white',
+    classes: 'bg-orange-100 text-orange-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-900/50',
+    badgeClasses: 'bg-emerald-500 text-white',
     icon: Info,
   },
 };

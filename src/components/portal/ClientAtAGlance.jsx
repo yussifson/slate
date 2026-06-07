@@ -111,7 +111,7 @@ export default function ClientAtAGlance({ hearings = [], signatureRequests = [],
                     <p className="text-sm font-medium truncate">{sig.document_name}</p>
                     {sig.case_title && <p className="text-xs text-muted-foreground truncate">{sig.case_title}</p>}
                     <div className="flex items-center gap-1.5 mt-1">
-                      <Badge className={cn("text-[10px]", sig.status === "opened" ? "bg-blue-100 text-blue-700" : "bg-amber-100 text-amber-700")}>
+                      <Badge className={cn("text-[10px]", sig.status === "opened" ? "bg-orange-100 text-orange-700" : "bg-amber-100 text-amber-700")}>
                         {sig.status === "opened" ? "Opened" : "Awaiting Signature"}
                       </Badge>
                       {sig.expires_at && (

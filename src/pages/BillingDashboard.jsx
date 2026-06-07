@@ -24,7 +24,7 @@ import { useImpersonation } from "@/lib/ImpersonationContext";
 
 const SUB_STATUS_COLORS = {
   pending: "bg-slate-100 text-slate-600",
-  sent: "bg-blue-100 text-blue-700",
+  sent: "bg-orange-100 text-orange-700",
   paid: "bg-green-100 text-green-700",
   overdue: "bg-red-100 text-red-700",
   cancelled: "bg-gray-100 text-gray-500",
@@ -245,7 +245,7 @@ function CompanyBilling({ companyId }) {
       />
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard icon={DollarSign} label="Collected" value={formatCurrency(totalCollected, currency)} color="bg-green-50 text-green-600" />
-        <MetricCard icon={Clock} label="Pending" value={formatCurrency(totalPending, currency)} color="bg-blue-50 text-blue-600" />
+        <MetricCard icon={Clock} label="Pending" value={formatCurrency(totalPending, currency)} color="bg-emerald-50 text-emerald-600" />
         <MetricCard icon={AlertCircle} label="Overdue" value={overdueCount} color="bg-red-50 text-red-600" />
         <MetricCard icon={Receipt} label="Unbilled Time/Expenses" value={`${unbilledTime.length} / ${unbilledExpenses.length}`} color="bg-amber-50 text-amber-600" />
       </div>
@@ -524,7 +524,7 @@ function SuperAdminBilling() {
       />
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard icon={DollarSign} label="Total Collected" value={`$${totalRevenue.toLocaleString()}`} color="bg-green-50 text-green-600" />
-        <MetricCard icon={Clock} label="Pending" value={`$${totalPending.toLocaleString()}`} color="bg-blue-50 text-blue-600" />
+        <MetricCard icon={Clock} label="Pending" value={`$${totalPending.toLocaleString()}`} color="bg-emerald-50 text-emerald-600" />
         <MetricCard icon={AlertCircle} label="Overdue Invoices" value={overdueCount} color="bg-red-50 text-red-600" />
         <MetricCard icon={CreditCard} label="Total Invoices" value={invoices.length} color="bg-purple-50 text-purple-600" />
       </div>

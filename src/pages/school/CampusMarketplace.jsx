@@ -97,9 +97,9 @@ export default function CampusMarketplace() {
                 <div className="p-6 flex-1 flex flex-col justify-between">
                   <div>
                     <h3 className="font-extrabold text-lg text-slate-900 dark:text-white mb-1 line-clamp-2">{item.title}</h3>
-                    <p className="text-xs font-bold text-[#1E3A8A] dark:text-blue-400 uppercase tracking-wider mb-4">{item.status}</p>
+                    <p className="text-xs font-bold text-[#1E3A8A] dark:text-emerald-400 uppercase tracking-wider mb-4">{item.status}</p>
                   </div>
-                  <Button variant="outline" className="w-full rounded-xl border-slate-200 dark:border-slate-800 font-bold hover:bg-[#F0F4FF] dark:bg-blue-900/20 hover:text-[#1E3A8A] dark:text-blue-400 hover:border-emerald-200 dark:hover:bg-emerald-900/20 dark:hover:border-emerald-800">
+                  <Button variant="outline" className="w-full rounded-xl border-slate-200 dark:border-slate-800 font-bold hover:bg-[#F0F4FF] dark:bg-emerald-900/20 hover:text-[#1E3A8A] dark:text-emerald-400 hover:border-emerald-200 dark:hover:bg-emerald-900/20 dark:hover:border-emerald-800">
                     <MessageCircle className="w-4 h-4 mr-2" /> Contact Seller
                   </Button>
                 </div>

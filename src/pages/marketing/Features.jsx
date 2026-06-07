@@ -203,7 +203,7 @@ export default function Features() {
               >
                 {/* Text content */}
                 <div className="flex-1 space-y-6">
-                  <span className="inline-flex px-4 py-1.5 rounded-full bg-blue-50 text-blue-600 text-xs font-bold uppercase tracking-wider">
+                  <span className="inline-flex px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-600 text-xs font-bold uppercase tracking-wider">
                     {feature.badge}
                   </span>
 
@@ -222,7 +222,7 @@ export default function Features() {
                           key={idx}
                           className="flex items-start gap-3 text-base text-slate-700 font-medium"
                         >
-                          <div className="w-5 h-5 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 mt-0.5 shrink-0">
+                          <div className="w-5 h-5 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 mt-0.5 shrink-0">
                             <Check className="w-3.5 h-3.5" strokeWidth={3} />
                           </div>
                           <span>{bullet}</span>
@@ -269,7 +269,7 @@ export default function Features() {
                   key={index}
                   className="rounded-3xl border border-slate-100 bg-white p-8 space-y-5 shadow-sm hover:shadow-md transition-shadow duration-300"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+                  <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
                     <FeatIcon className="w-6 h-6" />
                   </div>
                   <h3 className="font-bold text-xl text-slate-900">

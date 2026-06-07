@@ -45,11 +45,11 @@ export default function DynamicWorkflow({ record, moduleDef, onStatusChange }) {
               <div className="flex flex-col items-center">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shadow-sm transition-colors
                   ${isCompleted ? 'bg-green-100 text-green-600' : 
-                    isCurrent ? 'bg-blue-600 text-white ring-2 ring-blue-200' : 
+                    isCurrent ? 'bg-emerald-600 text-white ring-2 ring-emerald-200' : 
                     'bg-slate-200 text-slate-400'}`}>
                   {isCompleted ? <CheckCircle2 className="w-5 h-5" /> : (idx + 1)}
                 </div>
-                <span className={`text-[10px] mt-1 font-medium ${isCurrent ? 'text-blue-700' : 'text-slate-500'}`}>
+                <span className={`text-[10px] mt-1 font-medium ${isCurrent ? 'text-emerald-700' : 'text-slate-500'}`}>
                   {step}
                 </span>
               </div>
@@ -66,7 +66,7 @@ export default function DynamicWorkflow({ record, moduleDef, onStatusChange }) {
           <Button 
             size="sm" 
             onClick={() => handleTransition(workflow[currentIndex + 1])}
-            className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
+            className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
           >
             Advance to {workflow[currentIndex + 1]} <ArrowRight className="ml-2 w-3 h-3" />
           </Button>

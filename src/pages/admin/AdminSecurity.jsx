@@ -56,15 +56,15 @@ export default function AdminSecurity() {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-blue-50 to-white border-blue-100 shadow-sm rounded-2xl">
+        <Card className="bg-gradient-to-br from-emerald-50 to-white border-emerald-100 shadow-sm rounded-2xl">
           <CardContent className="p-6">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm font-bold text-blue-600/80 uppercase tracking-wider mb-1">{t("active_impersonations", "Active Impersonations")}</p>
-                <h3 className="text-4xl font-extrabold text-blue-950">1</h3>
+                <p className="text-sm font-bold text-emerald-600/80 uppercase tracking-wider mb-1">{t("active_impersonations", "Active Impersonations")}</p>
+                <h3 className="text-4xl font-extrabold text-emerald-950">1</h3>
               </div>
-              <div className="w-12 h-12 rounded-2xl bg-blue-100 flex items-center justify-center">
-                <Eye className="w-6 h-6 text-blue-600" />
+              <div className="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center">
+                <Eye className="w-6 h-6 text-emerald-600" />
               </div>
             </div>
             <div className="mt-4 flex items-center gap-2 text-sm text-slate-500 font-medium">

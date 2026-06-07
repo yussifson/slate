@@ -28,7 +28,7 @@ export default function NotFound() {
         <div className="flex flex-col gap-3">
           <Button 
             asChild
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-6 font-bold text-lg shadow-lg shadow-blue-600/20"
+            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl py-6 font-bold text-lg shadow-lg shadow-emerald-600/20"
           >
             <Link to="/">
               <ArrowLeft className="w-5 h-5 mr-2" />

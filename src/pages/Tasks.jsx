@@ -21,14 +21,14 @@ import { useToast } from "@/components/ui/use-toast";
 
 const PRIORITY_COLORS = {
   low: "bg-gray-100 text-gray-700",
-  medium: "bg-blue-100 text-blue-700",
+  medium: "bg-orange-100 text-orange-700",
   high: "bg-orange-100 text-orange-700",
   urgent: "bg-red-100 text-red-700",
 };
 
 const STATUS_COLORS = {
   pending: "bg-yellow-100 text-yellow-700",
-  in_progress: "bg-blue-100 text-blue-700",
+  in_progress: "bg-orange-100 text-orange-700",
   completed: "bg-green-100 text-green-700",
   cancelled: "bg-gray-100 text-gray-500",
 };
@@ -334,9 +334,9 @@ export default function Tasks() {
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
-          { label: "Total", value: stats.total, icon: Clock, color: "text-blue-600 bg-blue-50" },
+          { label: "Total", value: stats.total, icon: Clock, color: "text-emerald-600 bg-emerald-50" },
           { label: "Pending", value: stats.pending, icon: AlertCircle, color: "text-yellow-600 bg-yellow-50" },
-          { label: "In Progress", value: stats.in_progress, icon: Clock, color: "text-blue-600 bg-blue-50" },
+          { label: "In Progress", value: stats.in_progress, icon: Clock, color: "text-emerald-600 bg-emerald-50" },
           { label: "Completed", value: stats.completed, icon: CheckCircle2, color: "text-green-600 bg-green-50" },
         ].map(({ label, value, icon: Icon, color }) => {
           return (

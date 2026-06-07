@@ -219,7 +219,7 @@ export default function SignUp() {
 
             <div className="text-center mt-4 pb-12 lg:pb-0">
               <span className="text-xs text-slate-500 font-medium">{t("already_have_an_account", "Already have an account?")} </span>
-              <a href="/login" className="text-xs font-bold text-blue-600 hover:underline">
+              <a href="/login" className="text-xs font-bold text-emerald-600 hover:underline">
                 {t("sign_in", "Sign in")}
               </a>
             </div>
@@ -229,13 +229,13 @@ export default function SignUp() {
       <div className="hidden lg:flex flex-1 relative items-center justify-center bg-slate-50 overflow-hidden">
         {/* Abstract Pattern Background */}
         <div className="absolute inset-0 bg-slate-900/5 mix-blend-overlay"></div>
-        <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-gradient-to-br from-blue-400/20 to-indigo-500/20 blur-[100px] rounded-full pointer-events-none"></div>
-        <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-gradient-to-tr from-cyan-300/20 to-blue-400/20 blur-[100px] rounded-full pointer-events-none"></div>
+        <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-gradient-to-br from-emerald-400/20 to-indigo-500/20 blur-[100px] rounded-full pointer-events-none"></div>
+        <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-gradient-to-tr from-cyan-300/20 to-emerald-400/20 blur-[100px] rounded-full pointer-events-none"></div>
 
         <div className="relative z-10 w-full max-w-2xl bg-white rounded-[2rem] border border-slate-200/60 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] p-12 lg:p-16 flex flex-col justify-between">
           <div>
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-xs font-semibold text-blue-700 mb-8 uppercase tracking-[0.2em]">
-              <span className="flex h-1.5 w-1.5 rounded-full bg-blue-500" />
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 text-xs font-semibold text-emerald-700 mb-8 uppercase tracking-[0.2em]">
+              <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
               {t("universal_os", "Universal Operating System")}
             </div>
             
@@ -255,7 +255,7 @@ export default function SignUp() {
 
           <div className="grid grid-cols-2 gap-8 mt-16 border-t border-slate-100 pt-10">
             <div>
-              <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 mb-5 shadow-sm">
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 mb-5 shadow-sm">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
               </div>
               <h4 className="text-lg font-bold text-slate-900 mb-2 tracking-wide">{t("set_up_in_seconds", "Instant Provisioning")}</h4>

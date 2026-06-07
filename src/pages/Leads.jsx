@@ -16,7 +16,7 @@ import { format } from "date-fns";
 import { useToast } from "@/components/ui/use-toast";
 
 const STATUS_COLORS = {
-  new: "bg-blue-100 text-blue-700",
+  new: "bg-orange-100 text-orange-700",
   contacted: "bg-amber-100 text-amber-700",
   qualified: "bg-purple-100 text-purple-700",
   converted: "bg-green-100 text-green-700",
@@ -25,7 +25,7 @@ const STATUS_COLORS = {
 
 const URGENCY_COLORS = {
   low: "bg-slate-100 text-slate-600",
-  medium: "bg-blue-100 text-blue-600",
+  medium: "bg-emerald-100 text-emerald-600",
   high: "bg-amber-100 text-amber-700",
   urgent: "bg-red-100 text-red-700",
 };
@@ -154,12 +154,12 @@ export default function Leads() {
         }
       />
       {/* Intake Form Link Banner */}
-      <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 flex items-center justify-between gap-4">
+      <div className="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 flex items-center justify-between gap-4">
         <div>
-          <p className="text-sm font-medium text-blue-900">{t("your_public_intake_form_is_liv", "Your public intake form is live")}</p>
-          <p className="text-xs text-blue-700 mt-0.5 break-all">{intakeFormUrl}</p>
+          <p className="text-sm font-medium text-emerald-900">{t("your_public_intake_form_is_liv", "Your public intake form is live")}</p>
+          <p className="text-xs text-emerald-700 mt-0.5 break-all">{intakeFormUrl}</p>
         </div>
-        <Button size="sm" variant="outline" className="shrink-0 text-blue-700 border-blue-300" onClick={() => { navigator.clipboard.writeText(intakeFormUrl); toast({ title: "Link copied!" }); }}>
+        <Button size="sm" variant="outline" className="shrink-0 text-emerald-700 border-emerald-300" onClick={() => { navigator.clipboard.writeText(intakeFormUrl); toast({ title: "Link copied!" }); }}>
           {t("copy_link", "Copy Link")}
         </Button>
       </div>

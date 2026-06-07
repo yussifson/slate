@@ -70,7 +70,7 @@ export default function Gamification() {
       <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-6">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center border border-border shadow-sm">
-            <Trophy className="w-8 h-8 text-[#1E3A8A] dark:text-blue-400" />
+            <Trophy className="w-8 h-8 text-[#1E3A8A] dark:text-emerald-400" />
           </div>
           <div>
             <h1 className="text-2xl school-heading font-extrabold tracking-tight">{user?.full_name || "Student"}</h1>
@@ -93,8 +93,8 @@ export default function Gamification() {
           { title: "Math Wizard", desc: "Win the math olympiad", icon: Zap }
         ].map((badge, i) => (
           <div key={i} className="bg-card rounded-xl p-6 border border-border shadow-sm text-center group cursor-pointer hover:border-emerald-300 transition-colors duration-300">
-            <div className={`w-16 h-16 mx-auto rounded-full bg-[#F0F4FF] dark:bg-blue-900/20 flex items-center justify-center mb-4 shadow-sm`}>
-              <badge.icon className="w-8 h-8 text-[#1E3A8A] dark:text-blue-400" />
+            <div className={`w-16 h-16 mx-auto rounded-full bg-[#F0F4FF] dark:bg-emerald-900/20 flex items-center justify-center mb-4 shadow-sm`}>
+              <badge.icon className="w-8 h-8 text-[#1E3A8A] dark:text-emerald-400" />
             </div>
             <h3 className="font-bold text-lg text-card-foreground mb-1">{badge.title}</h3>
             <p className="text-sm font-medium text-muted-foreground">{badge.desc}</p>
@@ -113,14 +113,14 @@ export default function Gamification() {
             leaderboard.map((student, i) => {
               const isMe = student.clientId === session?.user?.id;
               return (
-                <div key={i} className={`flex items-center justify-between p-4 rounded-lg border ${isMe ? 'bg-[#F0F4FF] dark:bg-blue-900/20 dark:bg-emerald-900/10 border-emerald-200' : 'bg-background border-border'} shadow-sm`}>
+                <div key={i} className={`flex items-center justify-between p-4 rounded-lg border ${isMe ? 'bg-[#F0F4FF] dark:bg-emerald-900/20 dark:bg-emerald-900/10 border-emerald-200' : 'bg-background border-border'} shadow-sm`}>
                   <div className="flex items-center gap-4">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${i === 0 ? 'bg-emerald-100 text-[#1E3A8A] dark:text-blue-400' : i === 1 ? 'bg-muted text-muted-foreground' : i === 2 ? 'bg-muted text-muted-foreground' : 'bg-transparent text-muted-foreground'}`}>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${i === 0 ? 'bg-emerald-100 text-[#1E3A8A] dark:text-emerald-400' : i === 1 ? 'bg-muted text-muted-foreground' : i === 2 ? 'bg-muted text-muted-foreground' : 'bg-transparent text-muted-foreground'}`}>
                       #{i + 1}
                     </div>
                     <div className="font-bold text-foreground">{isMe ? 'You' : student.name}</div>
                   </div>
-                  <div className="font-bold text-[#1E3A8A] dark:text-blue-400 dark:text-emerald-500">{student.total} XP</div>
+                  <div className="font-bold text-[#1E3A8A] dark:text-emerald-400 dark:text-emerald-500">{student.total} XP</div>
                 </div>
               );
             })

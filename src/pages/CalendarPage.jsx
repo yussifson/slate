@@ -187,7 +187,7 @@ export default function CalendarPage() {
                   </p>
                   <div className="flex gap-1 mt-1.5">
                     <Badge variant="outline" className="text-[10px]">{h.case_number || h.case_title || "—"}</Badge>
-                    <Badge className={`text-[10px] ${h.status === "scheduled" ? "bg-blue-100 text-blue-700" : h.status === "completed" ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-600"}`}>
+                    <Badge className={`text-[10px] ${h.status === "scheduled" ? "bg-orange-100 text-orange-700" : h.status === "completed" ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-600"}`}>
                       {h.status}
                     </Badge>
                   </div>

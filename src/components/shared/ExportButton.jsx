@@ -21,7 +21,7 @@ export default function ExportButton({ data, filename, label = "Export" }) {
           {t("export_as_csv", "Export as CSV")}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => exportToJSON(data, filename)} className="gap-2 cursor-pointer">
-          <FileJson className="w-4 h-4 text-blue-600" />
+          <FileJson className="w-4 h-4 text-emerald-600" />
           {t("export_as_json", "Export as JSON")}
         </DropdownMenuItem>
       </DropdownMenuContent>

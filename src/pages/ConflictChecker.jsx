@@ -129,7 +129,7 @@ export default function ConflictChecker() {
                     <p className="text-xs text-muted-foreground">{t("client", "Client:")} {c.client_name} {t("opposing", "· Opposing:")} {c.opposing_party || "—"} {t("counsel", "· Counsel:")} {c.opposing_counsel || "—"}</p>
                     <p className="text-xs text-muted-foreground">{t("lawyer", "Lawyer:")} {c.assigned_lawyer_name || "—"}</p>
                   </div>
-                  <Badge className={cn("text-[10px] capitalize shrink-0", c.status === "open" ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-600")}>{c.status?.replace("_", " ")}</Badge>
+                  <Badge className={cn("text-[10px] capitalize shrink-0", c.status === "open" ? "bg-orange-100 text-orange-700" : "bg-gray-100 text-gray-600")}>{c.status?.replace("_", " ")}</Badge>
                 </div>
               );
             })}

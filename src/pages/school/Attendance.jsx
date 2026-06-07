@@ -193,7 +193,7 @@ export default function Attendance() {
       <div className="school-card overflow-hidden">
         <div className="p-4 border-b border-border bg-muted/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-card-foreground font-semibold">
-            <ClipboardList className="w-5 h-5 text-[#1E3A8A] dark:text-blue-400" />
+            <ClipboardList className="w-5 h-5 text-[#1E3A8A] dark:text-emerald-400" />
             <span>{selectedClass} — {new Date(date + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
           </div>
           <div className="flex items-center gap-2">
@@ -209,7 +209,7 @@ export default function Attendance() {
 
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-blue-100 dark:border-slate-700">
+            <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-emerald-100 dark:border-slate-700">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{t("student", "Student")}</th>
                 <th className="px-4 py-3 text-center text-xs font-bold text-green-600 uppercase tracking-wide">{t("present", "Present")}</th>
@@ -223,7 +223,7 @@ export default function Attendance() {
                   <tr key={student.id} className="hover:bg-muted/40 transition-colors">
                     <td className="px-6 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-[#F0F4FF] dark:bg-blue-900/30 flex items-center justify-center text-[#1E3A8A] dark:text-blue-300 font-bold text-xs shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-[#F0F4FF] dark:bg-emerald-900/30 flex items-center justify-center text-[#1E3A8A] dark:text-emerald-300 font-bold text-xs shrink-0">
                           {student.name.substring(0, 2).toUpperCase()}
                         </div>
                         <div>
@@ -286,7 +286,7 @@ export default function Attendance() {
       <div className="school-card overflow-hidden">
         <div className="p-4 border-b border-border bg-muted/50">
           <h3 className="font-bold text-card-foreground flex items-center gap-2">
-            <CalendarDays className="w-5 h-5 text-[#1E3A8A] dark:text-blue-400" />
+            <CalendarDays className="w-5 h-5 text-[#1E3A8A] dark:text-emerald-400" />
             {t("saved_records", "Saved Records —")} {selectedClass} {t("on", "on")} {date}
           </h3>
         </div>
@@ -304,7 +304,7 @@ export default function Attendance() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-blue-100 dark:border-slate-700">
+              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-emerald-100 dark:border-slate-700">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{t("date", "Date")}</th>
                   <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{t("class", "Class")}</th>
@@ -324,7 +324,7 @@ export default function Attendance() {
                   return (
                     <tr key={rec.id} className="hover:bg-muted/40 transition-colors">
                       <td className="px-6 py-3 text-foreground font-medium">{rec.date}</td>
-                      <td className="px-6 py-3"><Link to="/classes" className="bg-[#F0F4FF] dark:bg-blue-900/20 text-[#1E3A8A] dark:text-blue-300 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{rec.className}</Link></td>
+                      <td className="px-6 py-3"><Link to="/classes" className="bg-[#F0F4FF] dark:bg-emerald-900/20 text-[#1E3A8A] dark:text-emerald-300 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{rec.className}</Link></td>
                       <td className="px-6 py-3 text-muted-foreground">{rec.takenBy || '—'}</td>
                       <td className="px-6 py-3 text-center font-bold text-green-600">{p}</td>
                       <td className="px-6 py-3 text-center font-bold text-red-600">{a}</td>

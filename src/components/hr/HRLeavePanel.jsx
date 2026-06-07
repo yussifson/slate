@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 
 const LEAVE_TYPES = ["annual", "sick", "maternity", "paternity", "bereavement", "unpaid", "other"];
 const STATUS_COLORS = { pending: "bg-amber-100 text-amber-700", approved: "bg-green-100 text-green-700", rejected: "bg-red-100 text-red-700", cancelled: "bg-gray-100 text-gray-600" };
-const LEAVE_COLORS = { annual: "bg-blue-100 text-blue-700", sick: "bg-red-100 text-red-700", maternity: "bg-pink-100 text-pink-700", paternity: "bg-purple-100 text-purple-700", bereavement: "bg-gray-100 text-gray-600", unpaid: "bg-orange-100 text-orange-700", other: "bg-slate-100 text-slate-600" };
+const LEAVE_COLORS = { annual: "bg-orange-100 text-orange-700", sick: "bg-red-100 text-red-700", maternity: "bg-pink-100 text-pink-700", paternity: "bg-purple-100 text-purple-700", bereavement: "bg-gray-100 text-gray-600", unpaid: "bg-orange-100 text-orange-700", other: "bg-slate-100 text-slate-600" };
 
 export default function HRLeavePanel({ companyId, leaves, staff, isAdmin, user }) {
   const { t } = useTranslation();

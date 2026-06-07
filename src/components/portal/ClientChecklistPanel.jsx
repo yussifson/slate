@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 
 const STATUS_CONFIG = {
   pending: { icon: Square, color: "text-muted-foreground", badge: "bg-muted text-muted-foreground" },
-  in_progress: { icon: Clock, color: "text-blue-500", badge: "bg-blue-100 text-blue-700" },
+  in_progress: { icon: Clock, color: "text-emerald-500", badge: "bg-orange-100 text-orange-700" },
   completed: { icon: CheckCircle2, color: "text-green-500", badge: "bg-green-100 text-green-700" },
   waived: { icon: AlertCircle, color: "text-amber-500", badge: "bg-amber-100 text-amber-700" },
 };

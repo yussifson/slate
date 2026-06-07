@@ -143,7 +143,7 @@ export default function SHSTeacherAttendance() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 bg-clip-text text-transparent">
             Staff Attendance
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -158,11 +158,11 @@ export default function SHSTeacherAttendance() {
             <div className="flex-1 flex flex-col sm:flex-row gap-4">
               <div className="space-y-2 flex-1 max-w-xs">
                 <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-blue-600 dark:text-blue-400" /> Select Date
+                  <Calendar className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> Select Date
                 </label>
                 <Input 
                   type="date"
-                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 font-semibold text-slate-700 dark:text-slate-200"
+                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500 font-semibold text-slate-700 dark:text-slate-200"
                   value={selectedDate}
                   onChange={(e) => setSelectedDate(e.target.value)}
                   max={new Date().toISOString().split('T')[0]}
@@ -171,11 +171,11 @@ export default function SHSTeacherAttendance() {
               
               <div className="space-y-2 flex-1 max-w-xs">
                 <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                  <Search className="w-4 h-4 text-blue-600 dark:text-blue-400" /> Search Staff
+                  <Search className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> Search Staff
                 </label>
                 <Input 
                   placeholder="Name or ID..."
-                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
+                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -280,7 +280,7 @@ export default function SHSTeacherAttendance() {
                           onClick={() => handleStatusChange(teacher.id, 'On Leave')}
                           className={`px-3 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
                             status === 'On Leave' 
-                              ? 'bg-white dark:bg-slate-900 text-blue-600 shadow-sm ring-1 ring-blue-200/50' 
+                              ? 'bg-white dark:bg-slate-900 text-emerald-600 shadow-sm ring-1 ring-emerald-200/50' 
                               : 'text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:bg-slate-700'
                           }`}
                         >
@@ -307,7 +307,7 @@ export default function SHSTeacherAttendance() {
                 <Button 
                   onClick={handleSaveAttendance}
                   disabled={isSaving || teachers.length === 0}
-                  className="h-12 px-8 rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white shadow-lg shadow-blue-500/20 font-bold"
+                  className="h-12 px-8 rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/20 font-bold"
                 >
                   {isSaving ? 'Saving...' : (
                     <><Save className="w-5 h-5 mr-2" /> Submit Staff Register</>

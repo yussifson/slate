@@ -100,8 +100,8 @@ export default function VEquipmentReservations() {
     <div className="flex-1 space-y-6 p-8 bg-slate-50/50 dark:bg-slate-900/50 min-h-screen animate-in fade-in duration-300">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 dark:from-blue-400 dark:to-white bg-clip-text text-transparent flex items-center gap-3">
-            <div className="p-2 bg-blue-100 dark:bg-blue-900/50 rounded-xl text-blue-600 dark:text-blue-400">
+          <h2 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 dark:from-emerald-400 dark:to-white bg-clip-text text-transparent flex items-center gap-3">
+            <div className="p-2 bg-emerald-100 dark:bg-emerald-900/50 rounded-xl text-emerald-600 dark:text-emerald-400">
               <Calendar className="w-6 h-6" />
             </div>
             Equipment Reservations
@@ -114,12 +114,12 @@ export default function VEquipmentReservations() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input 
               placeholder="Search reservations..." 
-              className="pl-9 w-[250px] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus-visible:ring-blue-500 rounded-xl"
+              className="pl-9 w-[250px] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus-visible:ring-emerald-500 rounded-xl"
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
             />
           </div>
-          <Button onClick={() => openModal()} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-lg shadow-blue-200 dark:shadow-none transition-all hover:scale-105">
+          <Button onClick={() => openModal()} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-lg shadow-emerald-200 dark:shadow-none transition-all hover:scale-105">
             <Plus className="w-4 h-4" /> New Booking
           </Button>
         </div>
@@ -176,11 +176,11 @@ export default function VEquipmentReservations() {
                 {filtered.map(item => (
                   <div key={item.id} className="flex items-center justify-between p-5 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors group">
                     <div className="flex items-center gap-5">
-                      <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold shrink-0">
+                      <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 font-bold shrink-0">
                         <Calendar className="w-6 h-6" />
                       </div>
                       <div>
-                        <h4 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">{item.title}</h4>
+                        <h4 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 transition-colors">{item.title}</h4>
                         <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
                           <span className="font-medium text-slate-700 dark:text-slate-300">{item.data?.equipment_name || 'No Equipment Specified'}</span>
                           <span>•</span>
@@ -200,7 +200,7 @@ export default function VEquipmentReservations() {
                         {item.status}
                       </Badge>
                       <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button variant="ghost" size="icon" onClick={() => openModal(item)} className="h-8 w-8 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20">
+                        <Button variant="ghost" size="icon" onClick={() => openModal(item)} className="h-8 w-8 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20">
                           <Edit className="w-4 h-4" />
                         </Button>
                         <Button variant="ghost" size="icon" onClick={() => handleDelete(item.id)} className="h-8 w-8 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20">
@@ -262,7 +262,7 @@ export default function VEquipmentReservations() {
           </div>
           <DialogFooter>
             <Button variant="outline" className="rounded-xl" onClick={() => setIsModalOpen(false)}>Cancel</Button>
-            <Button className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white" onClick={handleSave}>Save Reservation</Button>
+            <Button className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleSave}>Save Reservation</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -61,7 +61,7 @@ export default function AdminBilling() {
         title="Revenue & Billing Management" 
         subtitle="Global platform financial controls and invoice management." 
         action={
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+          <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
             <Plus className="w-4 h-4 mr-2" /> {t("create_manual_bill", "Create Manual Bill")}
           </Button>
         }
@@ -128,7 +128,7 @@ export default function AdminBilling() {
               placeholder="Search firm or status..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 pr-4 py-2 w-full border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="pl-9 pr-4 py-2 w-full border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
             />
           </div>
         </CardHeader>

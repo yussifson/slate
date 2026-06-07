@@ -134,7 +134,7 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
           <select
             value={val}
             onChange={e => setEditData({ ...editData, [field.name]: e.target.value })}
-            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
           >
             <option value="">Select...</option>
             {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
@@ -219,7 +219,7 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
                     ))}
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-1">
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-slate-500 hover:text-blue-600" title="View" onClick={() => setSelectedRecord(row.original)}>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-slate-500 hover:text-emerald-600" title="View" onClick={() => setSelectedRecord(row.original)}>
                           <Eye className="h-4 w-4" />
                         </Button>
                         <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-slate-500 hover:text-amber-600" title="Edit" onClick={() => openEdit(row.original)}>
@@ -295,7 +295,7 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
           </div>
           <DialogFooter className="mt-6 pt-4 border-t border-slate-100">
             <Button variant="outline" onClick={() => setEditRecord(null)}>Cancel</Button>
-            <Button onClick={handleSaveEdit} disabled={isSaving} className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Button onClick={handleSaveEdit} disabled={isSaving} className="bg-emerald-600 hover:bg-emerald-700 text-white">
               {isSaving ? 'Saving...' : 'Save Changes'}
             </Button>
           </DialogFooter>

@@ -6,9 +6,9 @@ export default function Integrations() {
   const { t } = useTranslation();
   return (
     <div className="min-h-[70vh] flex flex-col items-center justify-center py-20 px-4 sm:px-6 lg:px-8 text-center bg-slate-50 relative overflow-hidden">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-blue-100/50 rounded-full blur-3xl pointer-events-none opacity-50"></div>
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-emerald-100/50 rounded-full blur-3xl pointer-events-none opacity-50"></div>
       <div className="relative z-10">
-        <div className="w-20 h-20 bg-white border border-slate-200 shadow-xl shadow-blue-900/5 text-blue-600 rounded-3xl flex items-center justify-center mx-auto mb-8">
+        <div className="w-20 h-20 bg-white border border-slate-200 shadow-xl shadow-emerald-900/5 text-emerald-600 rounded-3xl flex items-center justify-center mx-auto mb-8">
           <Puzzle className="w-10 h-10" />
         </div>
         <h1 className="text-5xl md:text-6xl font-extrabold text-slate-900 tracking-tight mb-6">
@@ -36,7 +36,7 @@ export default function Integrations() {
           </div>
         </div>
 
-        <Button className="rounded-full px-8 bg-blue-600 text-white hover:bg-blue-700 h-14 text-lg font-bold shadow-lg shadow-blue-600/20">
+        <Button className="rounded-full px-8 bg-emerald-600 text-white hover:bg-emerald-700 h-14 text-lg font-bold shadow-lg shadow-emerald-600/20">
           {t("request_an_integration", "Request an Integration")} <ArrowRight className="ml-2 w-5 h-5" />
         </Button>
       </div>

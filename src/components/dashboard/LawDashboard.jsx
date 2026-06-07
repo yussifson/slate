@@ -140,7 +140,7 @@ export default function LawDashboard({ companyId, company, isAdmin }) {
       </div>
       {/* Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard title={t('active_cases', { defaultValue: `Active ${casesTermPlural}` })} value={activeCases.length} icon={Briefcase} iconBg="bg-blue-100" iconColor="text-blue-500" subtitle={t('total_cases_count', { count: cases.length, defaultValue: `${cases.length} total` })} />
+        <MetricCard title={t('active_cases', { defaultValue: `Active ${casesTermPlural}` })} value={activeCases.length} icon={Briefcase} iconBg="bg-emerald-100" iconColor="text-emerald-500" subtitle={t('total_cases_count', { count: cases.length, defaultValue: `${cases.length} total` })} />
         <MetricCard title={t('active_clients', { defaultValue: `Active ${clientsTermPlural}` })} value={activeClients.length} icon={Users} iconBg="bg-purple-100" iconColor="text-purple-500"
           subtitle={clients.length > 0 ? t('month_growth', { percent: Math.round((activeClients.length / Math.max(clients.length, 1)) * 100), defaultValue: `+${Math.round((activeClients.length / Math.max(clients.length, 1)) * 100)}% this month` }) : undefined}
           subtitleColor="text-green-600" />
@@ -180,7 +180,7 @@ export default function LawDashboard({ companyId, company, isAdmin }) {
         <div className="bg-card rounded-xl border border-border p-4 space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="text-sm font-semibold text-slate-800">{caseTerm} {t("distribution_by_stage", "Distribution by Stage")}</h3>
-            <span className="text-[10px] bg-blue-50 text-blue-700 py-0.5 px-2 rounded-full font-bold border border-blue-100 uppercase">{t("active_pipelines", "Active Pipelines")}</span>
+            <span className="text-[10px] bg-orange-50 text-orange-700 py-0.5 px-2 rounded-full font-bold border border-emerald-100 uppercase">{t("active_pipelines", "Active Pipelines")}</span>
           </div>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">

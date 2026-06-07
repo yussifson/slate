@@ -85,10 +85,10 @@ export default function SHSAcademicCalendar() {
 
   const getEventColor = (type) => {
     switch(type) {
-      case 'Term Dates': return 'border-blue-600 dark:border-blue-500 bg-blue-50/30 dark:bg-slate-800/30';
+      case 'Term Dates': return 'border-emerald-600 dark:border-emerald-500 bg-emerald-50/30 dark:bg-slate-800/30';
       case 'Holiday': return 'border-emerald-500 bg-emerald-50/30';
       case 'Exam Period': return 'border-rose-500 bg-rose-50/30';
-      default: return 'border-blue-500 bg-blue-50/30';
+      default: return 'border-emerald-500 bg-emerald-50/30';
     }
   };
 
@@ -97,7 +97,7 @@ export default function SHSAcademicCalendar() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 bg-clip-text text-transparent">
             Academic Calendar
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -105,7 +105,7 @@ export default function SHSAcademicCalendar() {
           </p>
         </div>
         
-        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white shadow-md shadow-blue-500/20">
+        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white shadow-md shadow-emerald-500/20">
           <Plus className="w-4 h-4" /> Add Event
         </Button>
       </div>
@@ -121,7 +121,7 @@ export default function SHSAcademicCalendar() {
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
               <Input 
                 placeholder="Search events..." 
-                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500"
+                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-emerald-600 dark:focus-visible:ring-emerald-500"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -133,8 +133,8 @@ export default function SHSAcademicCalendar() {
             <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading calendar...</div>
           ) : filteredEvents.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
-                <CalendarIcon className="w-8 h-8 text-blue-500 dark:text-blue-500" />
+              <div className="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                <CalendarIcon className="w-8 h-8 text-emerald-500 dark:text-emerald-500" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No events scheduled</h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Add key dates to build the academic calendar.</p>
@@ -148,7 +148,7 @@ export default function SHSAcademicCalendar() {
                   
                   return (
                     <div key={evt.id} className="relative pl-8 md:pl-10">
-                      <div className={`absolute -left-[11px] top-1.5 w-5 h-5 rounded-full border-4 border-white ${isPast ? 'bg-slate-300' : 'bg-blue-600 dark:bg-blue-500'} shadow-sm`} />
+                      <div className={`absolute -left-[11px] top-1.5 w-5 h-5 rounded-full border-4 border-white ${isPast ? 'bg-slate-300' : 'bg-emerald-600 dark:bg-emerald-500'} shadow-sm`} />
                       
                       <div className={`p-5 rounded-2xl border-l-4 shadow-sm bg-white dark:bg-slate-900 ${getEventColor(evt.data?.type)} ${isPast ? 'opacity-60' : ''}`}>
                         <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-2">
@@ -184,10 +184,10 @@ export default function SHSAcademicCalendar() {
 
       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
         <DialogContent className="sm:max-w-[450px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
-          <div className="p-6 bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 text-white">
+          <div className="p-6 bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-black">Add Calendar Event</DialogTitle>
-              <DialogDescription className="text-blue-100 dark:text-blue-900">
+              <DialogDescription className="text-emerald-100 dark:text-emerald-900">
                 Schedule a new event or term date.
               </DialogDescription>
             </DialogHeader>
@@ -207,7 +207,7 @@ export default function SHSAcademicCalendar() {
             <div className="space-y-2">
               <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Event Type</label>
               <select 
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500"
                 value={newEvent.type}
                 onChange={e => setNewEvent({...newEvent, type: e.target.value})}
               >
@@ -242,7 +242,7 @@ export default function SHSAcademicCalendar() {
             <div className="space-y-2">
               <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Description</label>
               <textarea 
-                className="w-full h-24 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 resize-none text-sm"
+                className="w-full h-24 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500 resize-none text-sm"
                 placeholder="Optional details..."
                 value={newEvent.description}
                 onChange={e => setNewEvent({...newEvent, description: e.target.value})}
@@ -257,7 +257,7 @@ export default function SHSAcademicCalendar() {
             <Button 
               onClick={handleAddEvent} 
               disabled={!newEvent.title || !newEvent.startDate}
-              className="rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold"
+              className="rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white font-bold"
             >
               Save Event
             </Button>

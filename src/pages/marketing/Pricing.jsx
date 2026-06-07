@@ -111,7 +111,7 @@ export default function Pricing() {
             
             <button 
               onClick={() => setBillingPeriod(billingPeriod === 'monthly' ? 'yearly' : 'monthly')}
-              className="relative inline-flex h-8 w-14 items-center rounded-full bg-blue-600 transition-colors"
+              className="relative inline-flex h-8 w-14 items-center rounded-full bg-emerald-600 transition-colors"
             >
               <span 
                 className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
@@ -139,7 +139,7 @@ export default function Pricing() {
                   key={i}
                   className={`relative flex-1 p-8 lg:p-10 ${
                     p.popular
-                      ? 'lg:scale-[1.03] lg:-my-4 lg:bg-white lg:rounded-[2rem] lg:border-2 lg:border-blue-500 lg:shadow-xl z-10'
+                      ? 'lg:scale-[1.03] lg:-my-4 lg:bg-white lg:rounded-[2rem] lg:border-2 lg:border-emerald-500 lg:shadow-xl z-10'
                       : `border-b lg:border-b-0 lg:border-r border-slate-200 last:border-0 ${i === 0 ? 'lg:rounded-l-[2rem]' : ''} ${i === plans.length - 1 ? 'lg:rounded-r-[2rem]' : ''}`
                   }`}
                 >
@@ -170,8 +170,8 @@ export default function Pricing() {
                         variant={p.popular ? 'default' : 'outline'}
                         className={`w-full py-6 px-6 text-sm font-bold rounded-full transition-all hover:scale-[1.02] ${
                           p.popular 
-                            ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-md' 
-                            : 'border-2 border-blue-600 text-blue-600 hover:bg-blue-50'
+                            ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-md' 
+                            : 'border-2 border-emerald-600 text-emerald-600 hover:bg-emerald-50'
                         }`}
                       >
                         {p.cta}
@@ -241,8 +241,8 @@ export default function Pricing() {
             <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden bg-white border-0 rounded-[2rem] shadow-2xl flex flex-col max-h-[85vh]">
               {/* Header */}
               <div className="bg-slate-50 px-8 py-5 border-b border-slate-100 relative shrink-0">
-                <div className="mx-auto w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mb-3 border border-blue-100 shadow-sm">
-                  <Server className="w-6 h-6 text-blue-600" />
+                <div className="mx-auto w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center mb-3 border border-emerald-100 shadow-sm">
+                  <Server className="w-6 h-6 text-emerald-600" />
                 </div>
                 <div className="text-center">
                   <DialogTitle className="text-2xl font-extrabold text-slate-900 mb-1 tracking-tight">{t("off_cloud_enterprise", "Off-Cloud Enterprise")}</DialogTitle>
@@ -344,7 +344,7 @@ export default function Pricing() {
                   {t("close", "Close")}
                 </Button>
                 <Link to="/enterprise-contact" onClick={() => setShowOffCloudDialog(false)} className="w-full sm:w-auto block">
-                  <Button className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-6 px-8 rounded-full shadow-lg shadow-blue-600/20 transition-all hover:scale-105">
+                  <Button className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-6 px-8 rounded-full shadow-lg shadow-emerald-600/20 transition-all hover:scale-105">
                     {t("build_custom_quote", "Build Custom Quote")}
                   </Button>
                 </Link>
@@ -464,7 +464,7 @@ export default function Pricing() {
               return (
                 <div key={index} className="space-y-3">
                   <h4 className="font-bold text-slate-900 flex items-start gap-3 text-base leading-snug">
-                    <Info className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+                    <Info className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
                     <span>{faq.q}</span>
                   </h4>
                   <p className="text-sm text-slate-600 leading-relaxed font-medium pl-8">

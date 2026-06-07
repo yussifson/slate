@@ -166,10 +166,10 @@ export default function ParentPortal() {
               key={child.id}
               onClick={() => setSelectedChildId(child.id)}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-colors border ${
-                activeStudent?.id === child.id ? 'bg-[#F0F4FF] dark:bg-blue-900/20 border-emerald-200 text-[#1E3A8A] dark:text-blue-400' : 'bg-card border-border text-muted-foreground hover:bg-muted'
+                activeStudent?.id === child.id ? 'bg-[#F0F4FF] dark:bg-emerald-900/20 border-emerald-200 text-[#1E3A8A] dark:text-emerald-400' : 'bg-card border-border text-muted-foreground hover:bg-muted'
               }`}
             >
-              <div className="w-5 h-5 rounded-full bg-blue-100 text-[#1E3A8A] dark:text-blue-400 flex items-center justify-center text-[10px] font-bold">
+              <div className="w-5 h-5 rounded-full bg-emerald-100 text-[#1E3A8A] dark:text-emerald-400 flex items-center justify-center text-[10px] font-bold">
                 {child.name.substring(0,2).toUpperCase()}
               </div>
               {child.name}
@@ -180,7 +180,7 @@ export default function ParentPortal() {
 
       {/* Child Profile Card */}
       <div className="bg-card rounded-2xl border border-border p-6 shadow-sm flex flex-col md:flex-row items-center md:items-start gap-6">
-        <div className="w-24 h-24 rounded-full bg-[#F0F4FF] dark:bg-blue-900/30 flex items-center justify-center text-[#1E3A8A] dark:text-blue-300 text-3xl font-bold shrink-0 shadow-inner uppercase">
+        <div className="w-24 h-24 rounded-full bg-[#F0F4FF] dark:bg-emerald-900/30 flex items-center justify-center text-[#1E3A8A] dark:text-emerald-300 text-3xl font-bold shrink-0 shadow-inner uppercase">
           {activeStudent.name?.substring(0, 2)}
         </div>
         <div className="text-center md:text-left flex-1">
@@ -195,7 +195,7 @@ export default function ParentPortal() {
           <span className="text-xs font-bold text-muted-foreground uppercase tracking-wide">Term Balance</span>
           <div className="text-3xl font-bold text-card-foreground">${balance.toLocaleString()}</div>
           <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-sm border ${
-            feeStatus === 'Paid' ? 'bg-[#F0F4FF] dark:bg-blue-900/20 text-[#1E3A8A] dark:text-blue-300 border-emerald-200' :
+            feeStatus === 'Paid' ? 'bg-[#F0F4FF] dark:bg-emerald-900/20 text-[#1E3A8A] dark:text-emerald-300 border-emerald-200' :
             feeStatus === 'Partial' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-red-50 text-red-700 border-red-200'
           }`}>{feeStatus}</span>
         </div>
@@ -219,7 +219,7 @@ export default function ParentPortal() {
                   <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center text-white shadow-sm"><BookOpen className="w-5 h-5" /></div>
                   <h3 className="font-bold text-muted-foreground text-sm">Performance</h3>
                 </div>
-                <p className="text-3xl font-bold text-[#1E3A8A] dark:text-blue-400 dark:text-blue-400 mb-1">{averageGrade}</p>
+                <p className="text-3xl font-bold text-[#1E3A8A] dark:text-emerald-400 dark:text-emerald-400 mb-1">{averageGrade}</p>
                 <p className="text-xs text-muted-foreground">Term Report Card</p>
               </div>
             </div>
@@ -262,7 +262,7 @@ export default function ParentPortal() {
                     </div>
                     {doc.file_url && (
                       <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-[#1E3A8A] dark:text-blue-400 hover:text-[#1E3A8A] dark:text-blue-400 hover:bg-[#F0F4FF] dark:bg-blue-900/20">
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-[#1E3A8A] dark:text-emerald-400 hover:text-[#1E3A8A] dark:text-emerald-400 hover:bg-[#F0F4FF] dark:bg-emerald-900/20">
                           <Download className="w-4 h-4" />
                         </Button>
                       </a>
@@ -301,7 +301,7 @@ export default function ParentPortal() {
                       <td className="px-6 py-4 font-medium text-foreground">{g.data?.examName}</td>
                       <td className="px-6 py-4 text-muted-foreground">{g.data?.subject}</td>
                       <td className="px-6 py-4 text-right">
-                        <span className={`font-bold ${pct >= 70 ? 'text-[#1E3A8A] dark:text-blue-400' : pct >= 50 ? 'text-[#1E3A8A] dark:text-blue-400' : 'text-red-600'}`}>
+                        <span className={`font-bold ${pct >= 70 ? 'text-[#1E3A8A] dark:text-emerald-400' : pct >= 50 ? 'text-[#1E3A8A] dark:text-emerald-400' : 'text-red-600'}`}>
                           {score} / {max} ({pct}%)
                         </span>
                       </td>

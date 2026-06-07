@@ -61,7 +61,7 @@ export default function SHSHouseMasters() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 bg-clip-text text-transparent">
             House Masters Directory
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -81,7 +81,7 @@ export default function SHSHouseMasters() {
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
               <Input 
                 placeholder="Search master or house..." 
-                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500"
+                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-emerald-600 dark:focus-visible:ring-emerald-500"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -93,8 +93,8 @@ export default function SHSHouseMasters() {
             <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading directory...</div>
           ) : filteredMasters.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
-                <Shield className="w-8 h-8 text-blue-500 dark:text-blue-500" />
+              <div className="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                <Shield className="w-8 h-8 text-emerald-500 dark:text-emerald-500" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No House Masters Assigned</h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Go to Boarding Houses to assign masters to houses.</p>
@@ -136,7 +136,7 @@ export default function SHSHouseMasters() {
                   </div>
                   
                   <div className="mt-6 pt-4 border-t border-slate-50 flex gap-2">
-                    <Button variant="outline" className="flex-1 rounded-xl font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:bg-slate-800 hover:border-blue-200 dark:border-slate-600">
+                    <Button variant="outline" className="flex-1 rounded-xl font-semibold text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:bg-slate-800 hover:border-emerald-200 dark:border-slate-600">
                       Send Message
                     </Button>
                   </div>

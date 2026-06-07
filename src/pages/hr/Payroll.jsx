@@ -160,7 +160,7 @@ export default function Payroll() {
           <Button variant="outline" className="gap-2">
             <Download className="w-4 h-4" /> {t("export", "Export")}
           </Button>
-          <Button onClick={openAdd} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+          <Button onClick={openAdd} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
             <Plus className="w-4 h-4" /> {t("add_payslip", "Add Payslip")}
           </Button>
         </div>
@@ -171,7 +171,7 @@ export default function Payroll() {
              <p className="text-sm text-muted-foreground mb-1">{t("total_payroll", "Total Payroll")}</p>
              <h2 className="text-3xl font-bold text-card-foreground">${totalPayroll.toLocaleString()}</h2>
            </div>
-           <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+           <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
              <DollarSign className="w-6 h-6" />
            </div>
         </div>
@@ -206,7 +206,7 @@ export default function Payroll() {
             <div className="py-12 text-center text-muted-foreground">{t("loading_payroll_data", "Loading payroll data...")}</div>
           ) : filtered.length === 0 ? (
             <div className="py-12 text-center text-muted-foreground">
-              <DollarSign className="w-12 h-12 mx-auto mb-3 opacity-30 text-blue-600" />
+              <DollarSign className="w-12 h-12 mx-auto mb-3 opacity-30 text-emerald-600" />
               <p className="font-semibold text-lg text-card-foreground">{t("no_payroll_records", "No payroll records")}</p>
               <p className="text-xs mt-1">{t("add_a_payslip_to_get_started", "Add a payslip to get started.")}</p>
             </div>
@@ -312,7 +312,7 @@ export default function Payroll() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleCreateOrUpdatePayroll}>{editTargetId ? 'Save Changes' : 'Save Payslip'}</Button>
+              <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleCreateOrUpdatePayroll}>{editTargetId ? 'Save Changes' : 'Save Payslip'}</Button>
             </div>
           </div>
         </div>

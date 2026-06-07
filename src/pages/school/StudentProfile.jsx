@@ -42,12 +42,12 @@ export default function StudentProfile() {
         <div className="space-y-6 md:col-span-1">
           <Card>
             <CardContent className="pt-6 text-center">
-              <div className="w-24 h-24 bg-emerald-100 text-[#1E3A8A] dark:text-blue-400 rounded-full mx-auto flex items-center justify-center text-3xl font-bold mb-4">
+              <div className="w-24 h-24 bg-emerald-100 text-[#1E3A8A] dark:text-emerald-400 rounded-full mx-auto flex items-center justify-center text-3xl font-bold mb-4">
                 {student.avatar || student.name?.substring(0, 2).toUpperCase()}
               </div>
               <h2 className="text-xl font-bold">{student.name}</h2>
               <p className="text-sm text-muted-foreground mb-4">{student.id_number}</p>
-              <div className="inline-flex items-center px-3 py-1 bg-blue-100 text-[#1E3A8A] dark:text-blue-400 rounded-full text-xs font-semibold">
+              <div className="inline-flex items-center px-3 py-1 bg-emerald-100 text-[#1E3A8A] dark:text-emerald-400 rounded-full text-xs font-semibold">
                 {student.status || 'Active'}
               </div>
             </CardContent>

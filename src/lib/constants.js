@@ -14,7 +14,7 @@ export const CURRENCIES = {
 };
 
 export const CASE_STATUS_COLORS = {
-  open: "bg-blue-100 text-blue-700",
+  open: "bg-orange-100 text-orange-700",
   in_progress: "bg-amber-100 text-amber-700",
   pending_hearing: "bg-purple-100 text-purple-700",
   closed: "bg-green-100 text-green-700",
@@ -23,14 +23,14 @@ export const CASE_STATUS_COLORS = {
 
 export const PRIORITY_COLORS = {
   low: "bg-slate-100 text-slate-600",
-  medium: "bg-blue-100 text-blue-600",
+  medium: "bg-emerald-100 text-emerald-600",
   high: "bg-orange-100 text-orange-600",
   urgent: "bg-red-100 text-red-600"
 };
 
 export const INVOICE_STATUS_COLORS = {
   draft: "bg-slate-100 text-slate-600",
-  sent: "bg-blue-100 text-blue-600",
+  sent: "bg-emerald-100 text-emerald-600",
   paid: "bg-green-100 text-green-600",
   overdue: "bg-red-100 text-red-600",
   cancelled: "bg-gray-100 text-gray-500"
@@ -38,7 +38,7 @@ export const INVOICE_STATUS_COLORS = {
 
 export const TASK_STATUS_COLORS = {
   pending: "bg-slate-100 text-slate-600",
-  in_progress: "bg-blue-100 text-blue-600",
+  in_progress: "bg-emerald-100 text-emerald-600",
   completed: "bg-green-100 text-green-600",
   cancelled: "bg-gray-100 text-gray-500"
 };

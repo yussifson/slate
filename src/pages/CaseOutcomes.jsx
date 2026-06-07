@@ -16,7 +16,7 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from "recharts";
 
-const OUTCOME_COLORS = { won: "bg-green-100 text-green-700", lost: "bg-red-100 text-red-700", settled: "bg-blue-100 text-blue-700", dismissed: "bg-purple-100 text-purple-700", withdrawn: "bg-gray-100 text-gray-600", ongoing: "bg-amber-100 text-amber-700" };
+const OUTCOME_COLORS = { won: "bg-green-100 text-green-700", lost: "bg-red-100 text-red-700", settled: "bg-orange-100 text-orange-700", dismissed: "bg-purple-100 text-purple-700", withdrawn: "bg-gray-100 text-gray-600", ongoing: "bg-amber-100 text-amber-700" };
 const PIE_COLORS = ["#22c55e", "#ef4444", "#3b82f6", "#a855f7", "#9ca3af", "#f59e0b"];
 
 export default function CaseOutcomes() {
@@ -55,7 +55,7 @@ export default function CaseOutcomes() {
       />
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
-          { label: "Total Closed", value: outcomes.filter(o => o.outcome !== "ongoing").length, color: "bg-blue-50 text-blue-600" },
+          { label: "Total Closed", value: outcomes.filter(o => o.outcome !== "ongoing").length, color: "bg-emerald-50 text-emerald-600" },
           { label: "Won", value: outcomes.filter(o => o.outcome === "won").length, color: "bg-green-50 text-green-600" },
           { label: "Win Rate", value: `${winRate}%`, color: "bg-primary/10 text-primary" },
           { label: "Settlement Rate", value: `${settleRate}%`, color: "bg-purple-50 text-purple-600" },

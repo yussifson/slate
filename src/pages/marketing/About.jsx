@@ -43,12 +43,12 @@ export default function About() {
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 text-xs font-semibold text-slate-600 mb-8 shadow-sm">
-            <span className="flex h-2 w-2 rounded-full bg-blue-500" />
+            <span className="flex h-2 w-2 rounded-full bg-emerald-500" />
             {t("our_story", "Our Story")}
           </div>
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1] max-w-4xl mx-auto mb-6">
             {t("digitizing_business_operations", "Digitizing business operations")}{' '}
-            <span className="bg-blue-100 text-blue-900 px-4 py-1 rounded-[1.5rem] inline-block mt-2">
+            <span className="bg-emerald-100 text-emerald-900 px-4 py-1 rounded-[1.5rem] inline-block mt-2">
               {t("globally", "globally")}
             </span>
           </h1>
@@ -67,7 +67,7 @@ export default function About() {
             {/* Left — Narrative */}
             <div className="space-y-8">
               <h2 className="text-4xl md:text-5xl font-bold text-slate-900 leading-tight tracking-tight">
-                {t("why_we_built", "Why we built")} <span className="text-blue-600">{t("slate", "Slate")}</span>
+                {t("why_we_built", "Why we built")} <span className="text-emerald-600">{t("slate", "Slate")}</span>
               </h2>
               <div className="space-y-6 text-lg text-slate-600 font-medium leading-relaxed">
                 <p>
@@ -98,7 +98,7 @@ export default function About() {
 
             {/* Right — Visual Collage */}
             <div className="relative">
-              <div className="absolute inset-0 bg-blue-600/5 blur-[100px] rounded-full"></div>
+              <div className="absolute inset-0 bg-emerald-600/5 blur-[100px] rounded-full"></div>
               <div className="relative rounded-[2rem] border border-slate-200/60 bg-white p-2 shadow-2xl overflow-hidden aspect-[4/5] transform lg:rotate-2 hover:rotate-0 transition-transform duration-700">
                 <img src="/images/hero_dashboard_ui.png" alt="Slate Interface" className="w-full h-full object-cover rounded-[1.5rem]" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent flex items-end p-8">
@@ -137,9 +137,9 @@ export default function About() {
               return (
                 <div
                   key={i}
-                  className="bg-white border border-slate-200/60 rounded-[2rem] p-10 shadow-xl shadow-slate-200/20 hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-900/5 transition-all duration-300 group"
+                  className="bg-white border border-slate-200/60 rounded-[2rem] p-10 shadow-xl shadow-slate-200/20 hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-900/5 transition-all duration-300 group"
                 >
-                  <div className="w-16 h-16 rounded-2xl bg-blue-50 group-hover:bg-blue-600 flex items-center justify-center text-blue-600 group-hover:text-white mb-8 transition-colors duration-300">
+                  <div className="w-16 h-16 rounded-2xl bg-emerald-50 group-hover:bg-emerald-600 flex items-center justify-center text-emerald-600 group-hover:text-white mb-8 transition-colors duration-300">
                     <v.icon className="w-8 h-8" strokeWidth={2} />
                   </div>
                   <h3 className="font-bold text-2xl text-slate-900 mb-4">{v.title}</h3>
@@ -163,7 +163,7 @@ export default function About() {
             )}
           </p>
           <Link to="/signup">
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-7 px-12 rounded-full shadow-lg transition-all duration-300 text-lg">
+            <Button className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-7 px-12 rounded-full shadow-lg transition-all duration-300 text-lg">
               {t("start_your_free_trial", "Start Your Free Trial")}
             </Button>
           </Link>

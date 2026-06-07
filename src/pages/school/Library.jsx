@@ -176,7 +176,7 @@ export default function Library() {
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         <div className="stat-card-premium school-card p-5 flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-[#F0F4FF] dark:bg-blue-900/30 flex items-center justify-center text-[#1E3A8A] dark:text-blue-300">
+          <div className="w-10 h-10 rounded-xl bg-[#F0F4FF] dark:bg-emerald-900/30 flex items-center justify-center text-[#1E3A8A] dark:text-emerald-300">
             <Book className="w-5 h-5" />
           </div>
           <div>
@@ -206,7 +206,7 @@ export default function Library() {
       <div className="school-card p-5 flex items-center justify-between flex-wrap gap-4">
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Search catalog title, author or ISBN..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white/80 dark:bg-slate-800/50 border-blue-100 dark:border-slate-700 rounded-xl focus-visible:ring-[#3B82F6]" />
+          <Input placeholder="Search catalog title, author or ISBN..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white/80 dark:bg-slate-800/50 border-emerald-100 dark:border-slate-700 rounded-xl focus-visible:ring-[#3B82F6]" />
         </div>
         <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
       </div>
@@ -215,7 +215,7 @@ export default function Library() {
             <div className="py-12 text-center text-muted-foreground">{t("loading_catalog", "Loading catalog...")}</div>
           ) : filtered.length === 0 ? (
             <div className="py-12 text-center text-muted-foreground bg-card">
-              <Book className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-[#1E3A8A] dark:text-blue-400" />
+              <Book className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-[#1E3A8A] dark:text-emerald-400" />
               <p className="font-semibold text-lg text-card-foreground">{t("library_catalog_is_empty", "Library catalog is empty")}</p>
               <p className="text-xs mt-1 font-medium">{t(
                 "record_textbooks_reference_dic",
@@ -251,7 +251,7 @@ export default function Library() {
         <div className="school-card overflow-hidden mt-4">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-blue-100 dark:border-slate-700">
+              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-emerald-100 dark:border-slate-700">
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("book_title", "Book Title")}</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("author", "Author")}</th>
@@ -321,7 +321,7 @@ export default function Library() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
           <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-              <Plus className="w-5 h-5 text-[#1E3A8A] dark:text-blue-400" /> {editingId ? 'Edit Book' : 'Catalog Textbook'}
+              <Plus className="w-5 h-5 text-[#1E3A8A] dark:text-emerald-400" /> {editingId ? 'Edit Book' : 'Catalog Textbook'}
             </h2>
             <div className="space-y-3">
               <div>
@@ -464,7 +464,7 @@ export default function Library() {
           {viewDetails && (
             <div className="mt-6 space-y-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-20 shrink-0 rounded-md bg-[#F0F4FF] dark:bg-blue-900/20 overflow-hidden flex items-center justify-center text-[#1E3A8A] dark:text-blue-400 font-bold text-xl border border-border">
+                <div className="w-16 h-20 shrink-0 rounded-md bg-[#F0F4FF] dark:bg-emerald-900/20 overflow-hidden flex items-center justify-center text-[#1E3A8A] dark:text-emerald-400 font-bold text-xl border border-border">
                   {viewDetails.cover_url ? (
                     <img src={viewDetails.cover_url} alt="Cover" className="w-full h-full object-cover" />
                   ) : (
@@ -507,7 +507,7 @@ export default function Library() {
               </div>
               {viewDetails.ebook_url && (
                 <div className="pt-2 border-t border-border mt-4">
-                  <a href={viewDetails.ebook_url} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 bg-[#F0F4FF] dark:bg-blue-900/20 text-[#1E3A8A] dark:text-blue-300 hover:bg-blue-100 font-bold py-3 rounded-xl transition-colors">
+                  <a href={viewDetails.ebook_url} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 bg-[#F0F4FF] dark:bg-emerald-900/20 text-[#1E3A8A] dark:text-emerald-300 hover:bg-emerald-100 font-bold py-3 rounded-xl transition-colors">
                     <Book className="w-5 h-5" />
                     {t("read_e_book_now", "Read E-Book Now")}
                   </a>

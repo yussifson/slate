@@ -43,7 +43,7 @@ export default function OrbitDashboard() {
           </div>
 
           <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all group cursor-pointer">
-            <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 mb-6 group-hover:scale-110 transition-transform">
+            <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 mb-6 group-hover:scale-110 transition-transform">
               <Database className="w-6 h-6" />
             </div>
             <h3 className="text-lg font-bold text-slate-900 mb-2">Configure Data</h3>

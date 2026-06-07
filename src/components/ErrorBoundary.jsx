@@ -25,7 +25,7 @@ export class ErrorBoundary extends React.Component {
       // You can render any custom fallback UI
       return (
         <div className="min-h-screen w-full flex flex-col items-center justify-center bg-slate-50 p-6 font-sans">
-          <div className="max-w-md w-full bg-white border border-slate-200 rounded-3xl p-8 text-center shadow-2xl shadow-blue-900/5">
+          <div className="max-w-md w-full bg-white border border-slate-200 rounded-3xl p-8 text-center shadow-2xl shadow-emerald-900/5">
             <div className="w-20 h-20 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-inner">
               <AlertTriangle className="w-10 h-10" />
             </div>
@@ -49,7 +49,7 @@ export class ErrorBoundary extends React.Component {
 
             <Button 
               onClick={() => window.location.reload()}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-6 font-bold text-lg shadow-lg shadow-blue-600/20"
+              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl py-6 font-bold text-lg shadow-lg shadow-emerald-600/20"
             >
               <RefreshCcw className="w-5 h-5 mr-2" />
               {i18n.t("refresh_page", "Refresh Page")}

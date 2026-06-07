@@ -202,9 +202,9 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
                   <div className="space-y-2 pt-1">
                     {result.legislation.map((l, i) => {
                       return (
-                        <div key={i} className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                          <p className="text-sm font-medium text-blue-800">{l.name}{l.section && ` — ${l.section}`}</p>
-                          {l.relevance && <p className="text-xs text-blue-700 mt-0.5">{l.relevance}</p>}
+                        <div key={i} className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+                          <p className="text-sm font-medium text-emerald-800">{l.name}{l.section && ` — ${l.section}`}</p>
+                          {l.relevance && <p className="text-xs text-emerald-700 mt-0.5">{l.relevance}</p>}
                         </div>
                       );
                     })}

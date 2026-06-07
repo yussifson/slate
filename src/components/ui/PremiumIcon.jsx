@@ -93,11 +93,11 @@ export function PremiumIcon({ name, className = "" }) {
 
   const getGradientColors = () => {
     switch (name) {
-      case 'Users': case 'User': return "from-blue-500 to-purple-600";
+      case 'Users': case 'User': return "from-emerald-500 to-purple-600";
       case 'Database': case 'Server': return "from-emerald-400 to-emerald-600";
       case 'Settings': case 'Tool': return "from-slate-500 to-slate-700";
       case 'Activity': case 'BarChart': case 'PieChart': case 'TrendingUp': return "from-amber-400 to-rose-500";
-      case 'Book': case 'FileText': case 'Folder': return "from-cyan-400 to-blue-500";
+      case 'Book': case 'FileText': case 'Folder': return "from-cyan-400 to-emerald-500";
       default: return "from-purple-500 to-pink-500";
     }
   };

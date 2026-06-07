@@ -126,7 +126,7 @@ export default function VTrainingProgress() {
                         <span className="flex items-center gap-1.5"><BookOpen className="w-4 h-4 text-emerald-500" /> Module: {selectedRecord.data?.current_module || 'N/A'}</span>
                         <span>•</span>
                         <span className="flex items-center gap-1.5">
-                          <Badge className={selectedRecord.data?.status === 'Completed' ? 'bg-emerald-500' : 'bg-blue-500'}>
+                          <Badge className={selectedRecord.data?.status === 'Completed' ? 'bg-emerald-500' : 'bg-emerald-500'}>
                             {selectedRecord.data?.status || 'Active'}
                           </Badge>
                         </span>
@@ -145,10 +145,10 @@ export default function VTrainingProgress() {
                           </CardTitle>
                         </CardHeader>
                       </Card>
-                      <Card className="bg-blue-50/50 dark:bg-slate-800/50 border-blue-100 dark:border-slate-700">
+                      <Card className="bg-emerald-50/50 dark:bg-slate-800/50 border-emerald-100 dark:border-slate-700">
                         <CardHeader className="pb-2">
                           <CardDescription>Practical Score</CardDescription>
-                          <CardTitle className="text-2xl text-blue-700 dark:text-blue-400 flex items-center gap-2">
+                          <CardTitle className="text-2xl text-emerald-700 dark:text-emerald-400 flex items-center gap-2">
                             <Zap className="w-5 h-5" />
                             {selectedRecord.data?.practical_score || 'N/A'}
                           </CardTitle>

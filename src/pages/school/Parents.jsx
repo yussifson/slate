@@ -166,7 +166,7 @@ export default function Parents() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-blue-100 dark:border-slate-700">
+              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-emerald-100 dark:border-slate-700">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Parent / Guardian</th>
                   <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">ID / Login ID</th>
@@ -181,14 +181,14 @@ export default function Parents() {
                 <tr key={p.id} className="hover:bg-muted/50 transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-[#F0F4FF] dark:bg-blue-900/30 flex items-center justify-center text-[#1E3A8A] dark:text-blue-300 font-bold text-xs">
+                      <div className="w-9 h-9 rounded-full bg-[#F0F4FF] dark:bg-emerald-900/30 flex items-center justify-center text-[#1E3A8A] dark:text-emerald-300 font-bold text-xs">
                         {p.avatar}
                       </div>
                       <p className="font-semibold text-card-foreground">{p.name}</p>
                     </div>
                   </td>
                   <td className="px-4 py-3 text-muted-foreground font-mono text-xs">{p.parentId}</td>
-                  <td className="px-4 py-3 text-[#1E3A8A] dark:text-blue-400 text-xs font-semibold">
+                  <td className="px-4 py-3 text-[#1E3A8A] dark:text-emerald-400 text-xs font-semibold">
                     {students.find(s => s.id_number === p.linkedStudentId)?.name || 'Unlinked'}
                   </td>
                   <td className="px-4 py-3">
@@ -242,7 +242,7 @@ export default function Parents() {
                     key={tab}
                     onClick={() => setActiveTab(tab)}
                     className={`pb-2 text-sm font-semibold capitalize border-b-2 transition-colors ${
-                      activeTab === tab ? 'border-[#1E3A8A] text-[#1E3A8A] dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-muted-foreground hover:text-foreground'
+                      activeTab === tab ? 'border-[#1E3A8A] text-[#1E3A8A] dark:border-emerald-400 dark:text-emerald-400' : 'border-transparent text-muted-foreground hover:text-foreground'
                     }`}
                   >
                     {tab}

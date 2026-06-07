@@ -20,13 +20,13 @@ const URGENCY_COLORS = {
 
 const IMPORTANCE_COLORS = {
   high: "bg-red-50 border-red-200 text-red-800",
-  medium: "bg-blue-50 border-blue-200 text-blue-800",
+  medium: "bg-emerald-50 border-emerald-200 text-emerald-800",
   low: "bg-gray-50 border-gray-200 text-gray-700",
 };
 
 const DATE_TYPE_COLORS = {
   Hearing: "bg-purple-100 text-purple-700",
-  Signing: "bg-blue-100 text-blue-700",
+  Signing: "bg-orange-100 text-orange-700",
   Effective: "bg-green-100 text-green-700",
   Expiry: "bg-red-100 text-red-700",
   Filing: "bg-orange-100 text-orange-700",

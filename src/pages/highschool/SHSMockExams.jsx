@@ -90,7 +90,7 @@ export default function SHSMockExams() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 bg-clip-text text-transparent">
             Mock Examinations
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -98,7 +98,7 @@ export default function SHSMockExams() {
           </p>
         </div>
         
-        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white shadow-md shadow-blue-500/20">
+        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white shadow-md shadow-emerald-500/20">
           <Plus className="w-4 h-4" /> Schedule Mock
         </Button>
       </div>
@@ -114,7 +114,7 @@ export default function SHSMockExams() {
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
               <Input 
                 placeholder="Search mocks..." 
-                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500"
+                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-emerald-600 dark:focus-visible:ring-emerald-500"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -126,8 +126,8 @@ export default function SHSMockExams() {
             <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading exams...</div>
           ) : filteredExams.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
-                <Award className="w-8 h-8 text-blue-500 dark:text-blue-500" />
+              <div className="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                <Award className="w-8 h-8 text-emerald-500 dark:text-emerald-500" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No mock exams found</h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Schedule a mock exam for candidate preparation.</p>
@@ -166,7 +166,7 @@ export default function SHSMockExams() {
                         <Badge variant="outline" className={
                           exam.status === 'Upcoming' ? 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700' :
                           exam.status === 'Ongoing' ? 'bg-amber-50 text-amber-600 border-amber-200' :
-                          exam.status === 'Completed' ? 'bg-blue-50 text-blue-600 border-blue-200' :
+                          exam.status === 'Completed' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' :
                           'bg-emerald-50 text-emerald-700 border-emerald-200'
                         }>
                           {exam.status}
@@ -180,7 +180,7 @@ export default function SHSMockExams() {
                             </Button>
                           )}
                           {exam.status === 'Ongoing' && (
-                            <Button size="sm" variant="outline" onClick={() => updateExamStatus(exam.id, 'Completed')} className="h-8 text-xs font-semibold text-blue-600 border-blue-200 hover:bg-blue-50">
+                            <Button size="sm" variant="outline" onClick={() => updateExamStatus(exam.id, 'Completed')} className="h-8 text-xs font-semibold text-emerald-600 border-emerald-200 hover:bg-emerald-50">
                               End Mock
                             </Button>
                           )}
@@ -202,10 +202,10 @@ export default function SHSMockExams() {
 
       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
         <DialogContent className="sm:max-w-[450px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
-          <div className="p-6 bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 text-white">
+          <div className="p-6 bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-black">Schedule Mock Exam</DialogTitle>
-              <DialogDescription className="text-blue-100 dark:text-blue-900">
+              <DialogDescription className="text-emerald-100 dark:text-emerald-900">
                 Setup a preparatory mock cycle for candidates.
               </DialogDescription>
             </DialogHeader>
@@ -234,7 +234,7 @@ export default function SHSMockExams() {
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Target Form</label>
                 <select 
-                  className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
+                  className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500"
                   value={newExam.targetForm}
                   onChange={e => setNewExam({...newExam, targetForm: e.target.value})}
                 >
@@ -273,7 +273,7 @@ export default function SHSMockExams() {
             <Button 
               onClick={handleCreateExam} 
               disabled={!newExam.examName || !newExam.startDate || !newExam.endDate}
-              className="rounded-xl bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold"
+              className="rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white font-bold"
             >
               Save Schedule
             </Button>

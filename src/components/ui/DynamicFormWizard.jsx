@@ -82,14 +82,14 @@ export default function DynamicFormWizard({ fieldDefinitions = [], onRefresh, mo
         <div className="flex items-center justify-between mb-2">
           {steps.map((_, idx) => (
             <React.Fragment key={idx}>
-              <div className={`flex flex-col items-center ${idx <= currentStep ? 'text-blue-600' : 'text-muted-foreground'}`}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold mb-1 transition-colors ${idx < currentStep ? 'bg-blue-600 text-white' : idx === currentStep ? 'bg-blue-100 dark:bg-blue-900 border-2 border-blue-600' : 'bg-muted border-2 border-muted-foreground'}`}>
+              <div className={`flex flex-col items-center ${idx <= currentStep ? 'text-emerald-600' : 'text-muted-foreground'}`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold mb-1 transition-colors ${idx < currentStep ? 'bg-emerald-600 text-white' : idx === currentStep ? 'bg-emerald-100 dark:bg-emerald-900 border-2 border-emerald-600' : 'bg-muted border-2 border-muted-foreground'}`}>
                   {idx < currentStep ? <CheckCircle2 className="w-5 h-5" /> : idx + 1}
                 </div>
                 <span className="text-xs font-medium">Step {idx + 1}</span>
               </div>
               {idx < steps.length - 1 && (
-                <div className={`flex-1 h-1 mx-2 rounded-full transition-colors ${idx < currentStep ? 'bg-blue-600' : 'bg-muted'}`} />
+                <div className={`flex-1 h-1 mx-2 rounded-full transition-colors ${idx < currentStep ? 'bg-emerald-600' : 'bg-muted'}`} />
               )}
             </React.Fragment>
           ))}
@@ -120,7 +120,7 @@ export default function DynamicFormWizard({ fieldDefinitions = [], onRefresh, mo
               <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600"
+                  className="h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-600"
                   checked={!!formData[field.name]}
                   onChange={e => handleChange(field.name, e.target.checked)}
                 />
@@ -144,7 +144,7 @@ export default function DynamicFormWizard({ fieldDefinitions = [], onRefresh, mo
           <ChevronLeft className="w-4 h-4 mr-2" /> Previous
         </Button>
         {isLastStep ? (
-          <Button onClick={handleSubmit} disabled={isSubmitting} className="bg-blue-600 hover:bg-blue-700 text-white">
+          <Button onClick={handleSubmit} disabled={isSubmitting} className="bg-emerald-600 hover:bg-emerald-700 text-white">
             {isSubmitting ? 'Saving...' : 'Submit'} <CheckCircle2 className="w-4 h-4 ml-2" />
           </Button>
         ) : (

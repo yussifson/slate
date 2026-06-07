@@ -8,7 +8,7 @@ import { format } from "date-fns";
 import { User, Calendar } from "lucide-react";
 
 const COLUMNS = [
-  { id: "open", label: "Open", color: "bg-blue-500", light: "bg-blue-50 border-blue-200" },
+  { id: "open", label: "Open", color: "bg-emerald-500", light: "bg-emerald-50 border-emerald-200" },
   { id: "in_progress", label: "In Progress", color: "bg-amber-500", light: "bg-amber-50 border-amber-200" },
   { id: "pending_hearing", label: "Pending Hearing", color: "bg-purple-500", light: "bg-purple-50 border-purple-200" },
   { id: "closed", label: "Closed", color: "bg-green-500", light: "bg-green-50 border-green-200" },
