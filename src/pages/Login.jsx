@@ -1,4 +1,4 @@
-﻿import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
@@ -277,37 +277,37 @@ export default function Login() {
           </div>
           
           <div className="mb-8">
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900">{t("sign_in_to", "Sign in to")} {branding.name}</h1>
-            <p className="mt-2 text-sm text-slate-500 font-medium">{branding.tagline}</p>
+            <h1 className="text-2xl font-bold text-foreground">{t("welcome_back", "Welcome back")}</h1>
+            <p className="text-xs text-muted-foreground font-medium mt-1">{t("enter_your_credentials_to_acce", "Enter your credentials to access your workspace")}</p>
           </div>
           
-          <form className="space-y-5" onSubmit={handleLogin}>
-            {error && <div className="rounded-xl bg-red-50 p-4 text-sm text-red-600 border border-red-100 font-medium">{error}</div>}
+          <form className="space-y-4" onSubmit={handleLogin}>
+            {error && <div className="rounded-xl bg-red-50 dark:bg-red-950/30 p-3 text-xs text-red-600 dark:text-red-400 border border-red-100 dark:border-red-900/50 font-medium">{error}</div>}
             
             <div className="space-y-4">
               <div>
-                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">{t("email_address", "Email Address")}</label>
+                <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">{t("email", "Email Address")}</label>
                 <Input
                   type="email"
                   required
-                  placeholder="name@company.com"
+                  placeholder="john@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-14 text-base bg-white text-slate-900 border-slate-200 placeholder:text-slate-400 focus-visible:ring-primary/30 focus-visible:border-primary"
+                  className="w-full h-11 text-sm bg-background border-input focus:bg-background focus:ring-2 focus:ring-primary/20"
                 />
               </div>
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest">{t("password", "Password")}</label>
-                  <a href="/forgot-password" className="text-xs font-bold text-primary hover:text-primary/80 transition-colors">{t("forgot_password", "Forgot password?")}</a>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest">{t("password", "Password")}</label>
+                  <a href="#" className="text-[11px] font-bold text-primary hover:underline">{t("forgot_password", "Forgot password?")}</a>
                 </div>
                 <Input
                   type="password"
                   required
-                  placeholder="••••••••"
+                  placeholder="••••••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full h-14 text-base bg-white text-slate-900 border-slate-200 placeholder:text-slate-400 focus-visible:ring-primary/30 focus-visible:border-primary"
+                  className="w-full h-11 text-sm bg-background border-input focus:bg-background focus:ring-2 focus:ring-primary/20"
                 />
               </div>
             </div>
@@ -316,10 +316,10 @@ export default function Login() {
               {loading ? 'Signing in...' : 'Sign in to workspace'}
             </Button>
 
-            <div className="text-center mt-8 pb-12 lg:pb-0">
-              <span className="text-sm text-slate-500 font-medium">{t("don_t_have_an_account", "Don't have an account?")} </span>
-              <a href="/signup" className="text-sm font-bold text-emerald-600 hover:underline">
-                {t("create_workspace", "Create workspace")}
+            <div className="text-center mt-6">
+              <span className="text-xs text-muted-foreground font-medium">{t("don_t_have_an_account", "Don't have an account?")} </span>
+              <a href="/signup" className="text-xs font-bold text-primary hover:underline">
+                {t("create_workspace", "Create Workspace")}
               </a>
             </div>
           </form>
