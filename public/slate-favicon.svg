@@ -1,4 +1,12 @@
 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="32" height="32" rx="8" fill="#2563EB" fill-opacity="0.1"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M16 8C11.5817 8 8 11.5817 8 16C8 20.4183 11.5817 24 16 24C20.4183 24 24 20.4183 24 16C24 11.5817 20.4183 8 16 8ZM17.6186 12.8252C18.2396 12.8252 18.7431 13.3286 18.7431 13.9497V15.7381C18.7431 17.6946 17.1568 19.2809 15.2003 19.2809H13.5574V19.5621C13.5574 20.1832 13.054 20.6866 12.433 20.6866C11.8119 20.6866 11.3085 20.1832 11.3085 19.5621V17.7738C11.3085 15.8173 12.8948 14.231 14.8513 14.231H16.4942V13.9497C16.4942 13.3286 16.9976 12.8252 17.6186 12.8252Z" fill="#2563EB"/>
+  <defs>
+    <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60A5FA"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(16, 16) rotate(-15) translate(-16, -16)">
+    <rect x="8" y="9" width="12" height="16" rx="3" fill="#1E3A8A" opacity="0.9"/>
+    <rect x="12" y="7" width="12" height="16" rx="3" fill="url(#blueGradient)"/>
+  </g>
 </svg>
