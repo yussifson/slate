@@ -211,7 +211,7 @@ export default function AdminFirms() {
                         <td className="px-5 py-4">
                           <span className={`inline-flex py-1 px-2.5 rounded-full text-[10px] font-bold uppercase ${
                             c.status === 'active' 
-                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' 
+                              ? 'bg-primary/5 text-primary/90 border border-primary/10' 
                               : 'bg-red-50 text-red-700 border border-red-100'
                           }`}>
                             {c.status}
@@ -226,7 +226,7 @@ export default function AdminFirms() {
                               variant="outline" 
                               size="sm" 
                               onClick={() => handleImpersonate(c)}
-                              className="h-8 text-xs gap-1.5 px-3 rounded-lg border-indigo-200 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 hover:text-indigo-800"
+                              className="h-8 text-xs gap-1.5 px-3 rounded-lg border-primary/20 text-primary/90 bg-primary/5 hover:bg-primary/10 hover:text-primary/80"
                             >
                               <UserCheck className="w-3.5 h-3.5" /> {t("impersonate", "Impersonate")}
                             </Button>
@@ -234,7 +234,7 @@ export default function AdminFirms() {
                               variant="outline" 
                               size="sm" 
                               onClick={() => handleOpenMessageDialog(c)}
-                              className="h-8 text-xs gap-1.5 px-3 rounded-lg border-emerald-200 text-orange-700 bg-orange-50 hover:bg-emerald-100 hover:text-emerald-800"
+                              className="h-8 text-xs gap-1.5 px-3 rounded-lg border-primary/20 text-orange-700 bg-orange-50 hover:bg-primary/10 hover:text-primary/80"
                             >
                               <MessageSquare className="w-3.5 h-3.5" /> {t("message", "Message")}
                             </Button>
@@ -278,7 +278,7 @@ export default function AdminFirms() {
         <DialogContent className="max-w-md rounded-2xl border border-slate-100 shadow-xl bg-white p-6 font-sans">
           <DialogHeader>
             <DialogTitle className="text-slate-900 font-extrabold text-base flex items-center gap-1.5">
-              <MessageSquare className="w-4 h-4 text-emerald-600" />
+              <MessageSquare className="w-4 h-4 text-primary" />
               {t("message_firm_admin", "Message Firm Admin:")} {selectedCompany?.name}
             </DialogTitle>
           </DialogHeader>
@@ -290,7 +290,7 @@ export default function AdminFirms() {
                 onChange={(e) => setMessageContent(e.target.value)}
                 rows={4}
                 placeholder="Type your message to the firm administrator here..."
-                className="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-slate-50 text-sm resize-none"
+                className="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:outline-none bg-slate-50 text-sm resize-none"
               />
             </div>
           </div>
@@ -305,7 +305,7 @@ export default function AdminFirms() {
             <Button 
               onClick={handleSendMessage}
               disabled={sendingMessage}
-              className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl h-11"
+              className="flex-1 bg-primary hover:bg-primary/90 text-white font-semibold rounded-xl h-11"
             >
               {sendingMessage ? (
                 <Loader2 className="w-4 h-4 animate-spin" />

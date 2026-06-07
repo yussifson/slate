@@ -149,7 +149,7 @@ export default function PerformanceDashboard() {
                   <p className="text-xs text-muted-foreground">{lawyer.department || "Lawyer"}</p>
                 </div>
                 {lawyer.metrics.winRate !== null && (
-                  <Badge className={cn("text-xs", lawyer.metrics.winRate >= 60 ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700")}>
+                  <Badge className={cn("text-xs", lawyer.metrics.winRate >= 60 ? "bg-primary/10 text-primary/90" : "bg-amber-100 text-amber-700")}>
                     {lawyer.metrics.winRate}{t("win_rate", "% win rate")}
                   </Badge>
                 )}

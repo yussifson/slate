@@ -82,11 +82,11 @@ export default function HRDashboard() {
     <div className="space-y-6">
       <PageHeader title="HR Management" subtitle="Team, payroll, leave, complaints and promotions" />
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-        <MetricCard icon={Users} label="Active Staff" value={activeStaff} color="bg-emerald-50 text-emerald-600" />
-        <MetricCard icon={DollarSign} label={`Monthly Payroll (${currency})`} value={formatCurrency(totalSalary, currency)} color="bg-green-50 text-green-600" />
+        <MetricCard icon={Users} label="Active Staff" value={activeStaff} color="bg-primary/5 text-primary" />
+        <MetricCard icon={DollarSign} label={`Monthly Payroll (${currency})`} value={formatCurrency(totalSalary, currency)} color="bg-primary/5 text-primary" />
         <MetricCard icon={CalendarDays} label="Pending Leave" value={pendingLeaves} color="bg-amber-50 text-amber-600" />
         <MetricCard icon={MessageSquareWarning} label="Open Complaints" value={openComplaints} color="bg-red-50 text-red-600" />
-        <MetricCard icon={ArrowUpCircle} label="Pending Promotions" value={pendingPromotions} color="bg-purple-50 text-purple-600" />
+        <MetricCard icon={ArrowUpCircle} label="Pending Promotions" value={pendingPromotions} color="bg-primary/5 text-primary" />
       </div>
       <Tabs defaultValue="team">
         <TabsList className="flex-wrap h-auto gap-1">
@@ -99,7 +99,7 @@ export default function HRDashboard() {
             {t("complaints", "Complaints")} {openComplaints > 0 && <Badge className="ml-1 bg-red-100 text-red-700 text-[9px] h-4 px-1">{openComplaints}</Badge>}
           </TabsTrigger>
           <TabsTrigger value="promotions">
-            {t("promotions", "Promotions")} {pendingPromotions > 0 && <Badge className="ml-1 bg-purple-100 text-purple-700 text-[9px] h-4 px-1">{pendingPromotions}</Badge>}
+            {t("promotions", "Promotions")} {pendingPromotions > 0 && <Badge className="ml-1 bg-primary/10 text-primary/90 text-[9px] h-4 px-1">{pendingPromotions}</Badge>}
           </TabsTrigger>
           <TabsTrigger value="payroll">{t("payroll", "Payroll")}</TabsTrigger>
         </TabsList>

@@ -105,10 +105,10 @@ export default function Housekeeping() {
            </div>
 
            {/* Column 2: In Progress */}
-           <div className="bg-violet-50/50 dark:bg-violet-950/10 rounded-xl p-4 border border-violet-100 dark:border-violet-900/30 min-h-[500px]">
-              <h3 className="font-bold text-violet-900 dark:text-violet-400 flex items-center justify-between mb-4">
-                 <span className="flex items-center gap-2"><Brush className="w-4 h-4 text-violet-600 dark:text-violet-500"/> {t("in_progress", "In Progress")}</span>
-                 <span className="bg-violet-100 dark:bg-violet-950 text-violet-800 dark:text-violet-300 px-2 py-0.5 rounded-full text-xs">{columns.inProgress.length}</span>
+           <div className="bg-primary/50 dark:bg-primary/10 rounded-xl p-4 border border-primary/10 dark:border-primary/30 min-h-[500px]">
+              <h3 className="font-bold text-primary/70 dark:text-primary/70 flex items-center justify-between mb-4">
+                 <span className="flex items-center gap-2"><Brush className="w-4 h-4 text-primary dark:text-primary"/> {t("in_progress", "In Progress")}</span>
+                 <span className="bg-primary/10 dark:bg-primary/60 text-primary/80 dark:text-primary/30 px-2 py-0.5 rounded-full text-xs">{columns.inProgress.length}</span>
               </h3>
               <div className="space-y-3">
                  {columns.inProgress.map(room => {
@@ -116,7 +116,7 @@ export default function Housekeeping() {
                      <div key={room.id} className="bg-card p-4 rounded-lg shadow-sm border border-border border-l-4 border-l-violet-500">
                        <p className="font-bold text-lg mb-1">{t("room", "Room")} {room.roomNumber}</p>
                        <p className="text-xs text-muted-foreground mb-3 flex items-center gap-1"><User className="w-3.5 h-3.5" /> {t("assigned", "Assigned:")} {room.cleaner}</p>
-                       <Button onClick={() => handleUpdateStatus(room, 'Inspecting')} size="sm" variant="outline" className="w-full text-xs border-violet-200 dark:border-violet-900 text-violet-700 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-950/35">{t("mark_ready_for_inspection", "Mark Ready for Inspection")}</Button>
+                       <Button onClick={() => handleUpdateStatus(room, 'Inspecting')} size="sm" variant="outline" className="w-full text-xs border-primary/20 dark:border-primary/70 text-primary/90 dark:text-primary/70 hover:bg-primary/5 dark:hover:bg-primary/35">{t("mark_ready_for_inspection", "Mark Ready for Inspection")}</Button>
                      </div>
                    );
                  })}
@@ -124,10 +124,10 @@ export default function Housekeeping() {
            </div>
 
            {/* Column 3: Inspecting */}
-           <div className="bg-violet-50/50 dark:bg-violet-950/10 rounded-xl p-4 border border-violet-100 dark:border-violet-900/30 min-h-[500px]">
-              <h3 className="font-bold text-violet-900 dark:text-violet-400 flex items-center justify-between mb-4">
-                 <span className="flex items-center gap-2"><Sparkles className="w-4 h-4 text-violet-600 dark:text-violet-500"/> {t("inspecting", "Inspecting")}</span>
-                 <span className="bg-violet-100 dark:bg-violet-950 text-violet-800 dark:text-violet-300 px-2 py-0.5 rounded-full text-xs">{columns.inspecting.length}</span>
+           <div className="bg-primary/50 dark:bg-primary/10 rounded-xl p-4 border border-primary/10 dark:border-primary/30 min-h-[500px]">
+              <h3 className="font-bold text-primary/70 dark:text-primary/70 flex items-center justify-between mb-4">
+                 <span className="flex items-center gap-2"><Sparkles className="w-4 h-4 text-primary dark:text-primary"/> {t("inspecting", "Inspecting")}</span>
+                 <span className="bg-primary/10 dark:bg-primary/60 text-primary/80 dark:text-primary/30 px-2 py-0.5 rounded-full text-xs">{columns.inspecting.length}</span>
               </h3>
               <div className="space-y-3">
                  {columns.inspecting.map(room => {
@@ -143,17 +143,17 @@ export default function Housekeeping() {
            </div>
 
            {/* Column 4: Clean */}
-           <div className="bg-green-50/50 dark:bg-green-950/10 rounded-xl p-4 border border-green-100 dark:border-green-900/30 min-h-[500px]">
-              <h3 className="font-bold text-green-900 dark:text-green-400 flex items-center justify-between mb-4">
-                 <span className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-600 dark:text-green-500"/> {t("clean_ready", "Clean & Ready")}</span>
-                 <span className="bg-green-100 dark:bg-green-950 text-green-800 dark:text-green-300 px-2 py-0.5 rounded-full text-xs">{columns.clean.length}</span>
+           <div className="bg-primary/50 dark:bg-primary/10 rounded-xl p-4 border border-primary/10 dark:border-primary/30 min-h-[500px]">
+              <h3 className="font-bold text-primary/70 dark:text-primary/70 flex items-center justify-between mb-4">
+                 <span className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-primary dark:text-primary"/> {t("clean_ready", "Clean & Ready")}</span>
+                 <span className="bg-primary/10 dark:bg-primary/60 text-primary/80 dark:text-primary/30 px-2 py-0.5 rounded-full text-xs">{columns.clean.length}</span>
               </h3>
               <div className="space-y-3 opacity-80">
                  {columns.clean.map(room => {
                    return (
-                     <div key={room.id} className="bg-card p-3 rounded-lg border border-green-200 dark:border-green-900 flex justify-between items-center shadow-sm">
-                       <span className="font-bold text-green-800 dark:text-green-400">{t("room", "Room")} {room.roomNumber}</span>
-                       <CheckCircle className="w-4 h-4 text-green-500"/>
+                     <div key={room.id} className="bg-card p-3 rounded-lg border border-primary/20 dark:border-primary/70 flex justify-between items-center shadow-sm">
+                       <span className="font-bold text-primary/80 dark:text-primary/70">{t("room", "Room")} {room.roomNumber}</span>
+                       <CheckCircle className="w-4 h-4 text-primary"/>
                      </div>
                    );
                  })}

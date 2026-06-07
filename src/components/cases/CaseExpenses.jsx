@@ -18,7 +18,7 @@ const CATEGORIES = ["travel", "filing_fees", "court_costs", "postage", "printing
 
 const STATUS_COLORS = {
   pending: "bg-amber-100 text-amber-700",
-  approved: "bg-green-100 text-green-700",
+  approved: "bg-primary/10 text-primary/90",
   rejected: "bg-red-100 text-red-700",
   billed: "bg-orange-100 text-orange-700",
 };
@@ -175,7 +175,7 @@ export default function CaseExpenses({ caseData, user }) {
                   )}
                   {canManage && exp.status === "pending" && (
                     <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => updateMutation.mutate({ id: exp.id, data: { status: "approved" } })}>
-                      <CheckCircle className="w-3.5 h-3.5 text-green-600" />
+                      <CheckCircle className="w-3.5 h-3.5 text-primary" />
                     </Button>
                   )}
                   {canManage && !exp.billed && (

@@ -48,26 +48,26 @@ export default function VCertificationRates() {
     <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300 h-[calc(100vh-100px)] flex flex-col">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-600 via-green-600 to-teal-800 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary via-primary to-primary/80 bg-clip-text text-transparent">
             Certification Rates
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
             Analyze pass rates and certification achievements across programs.
           </p>
         </div>
-        <Button className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-lg shadow-emerald-500/30">
+        <Button className="bg-primary hover:bg-primary/90 text-white rounded-xl shadow-lg shadow-emerald-500/30">
           <TrendingUp className="w-4 h-4 mr-2" /> Export Report
         </Button>
       </div>
 
       <div className="flex-1 flex gap-6 overflow-hidden">
-        <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-emerald-100/50">
-          <div className="p-4 border-b border-emerald-50 dark:border-slate-800">
+        <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50">
+          <div className="p-4 border-b border-primary/5 dark:border-slate-800">
             <div className="relative">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-emerald-500" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
               <Input 
                 placeholder="Search programs..." 
-                className="pl-9 h-10 bg-slate-50 dark:bg-slate-900 border-emerald-100 dark:border-slate-700 rounded-xl focus-visible:ring-emerald-600"
+                className="pl-9 h-10 bg-slate-50 dark:bg-slate-900 border-primary/10 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -75,7 +75,7 @@ export default function VCertificationRates() {
           </div>
           <ScrollArea className="flex-1">
             {loading ? (
-              <div className="p-8 text-center text-emerald-300 text-sm">Loading data...</div>
+              <div className="p-8 text-center text-primary/30 text-sm">Loading data...</div>
             ) : filteredRates.length === 0 ? (
               <div className="p-8 text-center text-slate-400 text-sm">No data found.</div>
             ) : (
@@ -86,18 +86,18 @@ export default function VCertificationRates() {
                     onClick={() => setSelectedRate(rate)}
                     className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
                       selectedRate?.id === rate.id 
-                        ? 'bg-emerald-600 text-white shadow-md shadow-emerald-500/20' 
-                        : 'hover:bg-emerald-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'
+                        ? 'bg-primary text-white shadow-md shadow-emerald-500/20' 
+                        : 'hover:bg-primary/5 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'
                     }`}
                   >
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-                      selectedRate?.id === rate.id ? 'bg-white/20' : 'bg-emerald-100 text-emerald-600'
+                      selectedRate?.id === rate.id ? 'bg-white/20' : 'bg-primary/10 text-primary'
                     }`}>
                       <ShieldCheck className="w-5 h-5" />
                     </div>
                     <div className="overflow-hidden">
                       <p className="font-bold truncate text-sm">{rate.title}</p>
-                      <p className={`text-xs truncate ${selectedRate?.id === rate.id ? 'text-emerald-200' : 'text-slate-500'}`}>
+                      <p className={`text-xs truncate ${selectedRate?.id === rate.id ? 'text-primary/20' : 'text-slate-500'}`}>
                         {rate.data?.period || 'Academic Year'}
                       </p>
                     </div>
@@ -108,10 +108,10 @@ export default function VCertificationRates() {
           </ScrollArea>
         </Card>
 
-        <Card className="flex-1 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-emerald-100/50 overflow-hidden relative">
+        <Card className="flex-1 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative">
           {selectedRate ? (
             <>
-              <div className="h-32 bg-gradient-to-r from-emerald-500 to-teal-500 relative shrink-0">
+              <div className="h-32 bg-gradient-to-r from-primary to-primary relative shrink-0">
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
                 <div className="absolute top-4 right-4">
                   <Badge className="bg-white/20 text-white hover:bg-white/30 backdrop-blur-md border-none flex items-center gap-1">
@@ -124,14 +124,14 @@ export default function VCertificationRates() {
                 <div className="px-8 pb-8">
                   <div className="flex flex-col sm:flex-row gap-6 items-end sm:items-center relative z-10">
                     <div className="w-24 h-24 rounded-3xl bg-white dark:bg-slate-900 p-1 shadow-xl shrink-0">
-                      <div className="w-full h-full rounded-2xl bg-emerald-50 dark:bg-slate-800 flex items-center justify-center text-emerald-600">
+                      <div className="w-full h-full rounded-2xl bg-primary/5 dark:bg-slate-800 flex items-center justify-center text-primary">
                         <FileCheck className="w-10 h-10" />
                       </div>
                     </div>
                     <div className="flex-1 mt-4 sm:mt-12">
                       <h2 className="text-3xl font-black text-slate-800 dark:text-slate-100">{selectedRate.title}</h2>
                       <div className="flex items-center gap-4 mt-2 text-sm text-slate-600 dark:text-slate-300 font-medium">
-                        <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+                        <span className="flex items-center gap-1.5 text-primary dark:text-primary/70">
                           <Percent className="w-4 h-4" /> Pass Rate: {selectedRate.data?.passRate || '0'}%
                         </span>
                       </div>
@@ -140,9 +140,9 @@ export default function VCertificationRates() {
 
                   <div className="mt-8">
                     <Tabs defaultValue="overview" className="w-full">
-                      <TabsList className="bg-emerald-50/50 dark:bg-slate-800/50 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border border-emerald-100 dark:border-slate-700">
-                        <TabsTrigger value="overview" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-emerald-600">Overview Stats</TabsTrigger>
-                        <TabsTrigger value="breakdown" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-emerald-600">Cohort Breakdown</TabsTrigger>
+                      <TabsList className="bg-primary/50 dark:bg-slate-800/50 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border border-primary/10 dark:border-slate-700">
+                        <TabsTrigger value="overview" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-primary">Overview Stats</TabsTrigger>
+                        <TabsTrigger value="breakdown" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-primary">Cohort Breakdown</TabsTrigger>
                       </TabsList>
                       
                       <div className="mt-6">
@@ -150,7 +150,7 @@ export default function VCertificationRates() {
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <Card className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm rounded-2xl">
                               <CardContent className="p-6 flex flex-col items-center text-center">
-                                <div className="w-12 h-12 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mb-4">
+                                <div className="w-12 h-12 bg-primary/5 text-primary rounded-full flex items-center justify-center mb-4">
                                   <BarChart3 className="w-6 h-6" />
                                 </div>
                                 <h4 className="text-slate-500 text-sm font-medium">Total Enrolled</h4>
@@ -159,20 +159,20 @@ export default function VCertificationRates() {
                             </Card>
                             <Card className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm rounded-2xl">
                               <CardContent className="p-6 flex flex-col items-center text-center">
-                                <div className="w-12 h-12 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mb-4">
+                                <div className="w-12 h-12 bg-primary/5 text-primary rounded-full flex items-center justify-center mb-4">
                                   <ShieldCheck className="w-6 h-6" />
                                 </div>
                                 <h4 className="text-slate-500 text-sm font-medium">Total Certified</h4>
                                 <p className="text-3xl font-black text-slate-800 dark:text-slate-100 mt-1">{selectedRate.data?.totalCertified || 0}</p>
                               </CardContent>
                             </Card>
-                            <Card className="bg-white dark:bg-slate-900 border border-emerald-200 dark:border-emerald-800 shadow-sm rounded-2xl ring-1 ring-emerald-500/20">
+                            <Card className="bg-white dark:bg-slate-900 border border-primary/20 dark:border-primary/80 shadow-sm rounded-2xl ring-1 ring-primary/20">
                               <CardContent className="p-6 flex flex-col items-center text-center">
                                 <div className="w-12 h-12 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mb-4">
                                   <TrendingUp className="w-6 h-6" />
                                 </div>
                                 <h4 className="text-slate-500 text-sm font-medium">Vs Industry Standard</h4>
-                                <p className="text-3xl font-black text-emerald-600 mt-1">
+                                <p className="text-3xl font-black text-primary mt-1">
                                   {parseFloat(selectedRate.data?.passRate || 0) >= parseFloat(selectedRate.data?.industryStandard || 0) ? '+' : ''}
                                   {(parseFloat(selectedRate.data?.passRate || 0) - parseFloat(selectedRate.data?.industryStandard || 0)).toFixed(1)}%
                                 </p>
@@ -182,10 +182,10 @@ export default function VCertificationRates() {
                         </TabsContent>
                         
                         <TabsContent value="breakdown" className="outline-none">
-                          <div className="p-8 text-center border-2 border-dashed border-emerald-100 dark:border-slate-700 rounded-2xl">
+                          <div className="p-8 text-center border-2 border-dashed border-primary/10 dark:border-slate-700 rounded-2xl">
                             <h4 className="text-slate-700 dark:text-slate-200 font-bold mb-2">Demographic Breakdown</h4>
                             <p className="text-slate-500 text-sm mb-4">Detailed view of certification rates by demographic groups and cohorts is not available yet.</p>
-                            <Button variant="outline" className="border-emerald-200 text-emerald-600 hover:bg-emerald-50 rounded-xl">
+                            <Button variant="outline" className="border-primary/20 text-primary hover:bg-primary/5 rounded-xl">
                               Generate Breakdown
                             </Button>
                           </div>
@@ -198,8 +198,8 @@ export default function VCertificationRates() {
             </>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-              <div className="w-20 h-20 rounded-full bg-emerald-50 flex items-center justify-center mb-6">
-                <FileCheck className="w-10 h-10 text-emerald-300" />
+              <div className="w-20 h-20 rounded-full bg-primary/5 flex items-center justify-center mb-6">
+                <FileCheck className="w-10 h-10 text-primary/30" />
               </div>
               <h3 className="text-xl font-bold text-slate-700">No Program Selected</h3>
               <p className="text-slate-500 max-w-sm mt-2">

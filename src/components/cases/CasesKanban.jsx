@@ -8,10 +8,10 @@ import { format } from "date-fns";
 import { User, Calendar } from "lucide-react";
 
 const COLUMNS = [
-  { id: "open", label: "Open", color: "bg-emerald-500", light: "bg-emerald-50 border-emerald-200" },
+  { id: "open", label: "Open", color: "bg-primary", light: "bg-primary/5 border-primary/20" },
   { id: "in_progress", label: "In Progress", color: "bg-amber-500", light: "bg-amber-50 border-amber-200" },
-  { id: "pending_hearing", label: "Pending Hearing", color: "bg-purple-500", light: "bg-purple-50 border-purple-200" },
-  { id: "closed", label: "Closed", color: "bg-green-500", light: "bg-green-50 border-green-200" },
+  { id: "pending_hearing", label: "Pending Hearing", color: "bg-primary", light: "bg-primary/5 border-primary/20" },
+  { id: "closed", label: "Closed", color: "bg-primary", light: "bg-primary/5 border-primary/20" },
   { id: "archived", label: "Archived", color: "bg-gray-400", light: "bg-gray-50 border-gray-200" },
 ];
 

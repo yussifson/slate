@@ -151,7 +151,7 @@ export default function DynamicForm({ moduleDef, fieldDefinitions = [], onSucces
         <Button type="button" variant="outline" onClick={onCancel}>
           Cancel
         </Button>
-        <Button type="submit" disabled={isSubmitting} className="bg-emerald-600 hover:bg-emerald-700 text-white">
+        <Button type="submit" disabled={isSubmitting} className="bg-primary hover:bg-primary/90 text-white">
           {isSubmitting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...

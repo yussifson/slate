@@ -94,9 +94,9 @@ export default function Assignments() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map(a => (
             <div key={a.id} className="bg-card/60 backdrop-blur-md rounded-3xl border border-border/60 p-6 shadow-sm  hover:-translate-y-1.5 transition-all duration-300 group relative overflow-hidden flex flex-col">
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/40 via-transparent to-transparent dark:from-emerald-900/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/40 via-transparent to-transparent dark:from-primary/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
               <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity pointer-events-none transform translate-x-1/4 -translate-y-1/4 scale-150 z-0">
-                <FileText className="w-32 h-32 text-[#1E3A8A] dark:text-emerald-400" />
+                <FileText className="w-32 h-32 text-[#1E3A8A] dark:text-primary/70" />
               </div>
               <div className="absolute top-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                 <DropdownMenu>
@@ -117,12 +117,12 @@ export default function Assignments() {
               </div>
               
               <div className="flex items-start gap-4 mb-5 relative z-10">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-100 to-indigo-100 dark:from-emerald-900/40 dark:to-indigo-900/40 border border-white/50 shadow-inner text-[#1E3A8A] dark:text-emerald-400 dark:text-emerald-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/10 dark:from-primary/40 dark:to-primary/40 border border-white/50 shadow-inner text-[#1E3A8A] dark:text-primary/70 dark:text-primary/70 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300">
                   <FileText className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-card-foreground text-lg line-clamp-1 tracking-tight group-hover:text-[#1E3A8A] dark:text-emerald-400 transition-colors">{a.title}</h3>
-                  <p className="text-xs font-bold text-[#1E3A8A] dark:text-emerald-400 dark:text-emerald-400 uppercase tracking-widest mt-1 opacity-90">{a.subject} • {a.class}</p>
+                  <h3 className="font-extrabold text-card-foreground text-lg line-clamp-1 tracking-tight group-hover:text-[#1E3A8A] dark:text-primary/70 transition-colors">{a.title}</h3>
+                  <p className="text-xs font-bold text-[#1E3A8A] dark:text-primary/70 dark:text-primary/70 uppercase tracking-widest mt-1 opacity-90">{a.subject} • {a.class}</p>
                 </div>
               </div>
               
@@ -132,9 +132,9 @@ export default function Assignments() {
               
               <div className="flex items-center justify-between pt-4 border-t border-border/50 mt-auto relative z-10">
                 <span className="text-xs font-bold flex items-center gap-2 text-slate-500 uppercase tracking-wider">
-                  <Calendar className="w-4 h-4 text-emerald-500" /> Due: {a.dueDate ? format(new Date(a.dueDate), 'MMM d, yyyy') : 'No Date'}
+                  <Calendar className="w-4 h-4 text-primary" /> Due: {a.dueDate ? format(new Date(a.dueDate), 'MMM d, yyyy') : 'No Date'}
                 </span>
-                <span className="bg-[#F0F4FF] dark:bg-emerald-900/20 text-[#1E3A8A] dark:text-emerald-300 border border-emerald-200 text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-md shadow-sm">{t("active", "Active")}</span>
+                <span className="bg-[#F0F4FF] dark:bg-primary/20 text-[#1E3A8A] dark:text-primary/30 border border-primary/20 text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-md shadow-sm">{t("active", "Active")}</span>
               </div>
             </div>
           ))}

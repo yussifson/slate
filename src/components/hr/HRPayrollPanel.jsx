@@ -18,7 +18,7 @@ import { Play, FileText, CheckCircle, Banknote, Plus, Trash2, Printer, Eye, Chev
 const STATUS_COLORS = {
   draft: "bg-slate-100 text-slate-600",
   approved: "bg-orange-100 text-orange-700",
-  paid: "bg-green-100 text-green-700",
+  paid: "bg-primary/10 text-primary/90",
 };
 
 // Generate YYYY-MM period string
@@ -140,7 +140,7 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
                           </Button>
           )}
           {isAdmin && approvedCount > 0 && (
-            <Button size="sm" variant="outline" className="text-green-700 border-green-300 hover:bg-green-50" onClick={handleMarkAllPaid}>
+            <Button size="sm" variant="outline" className="text-primary/90 border-primary/30 hover:bg-primary/5" onClick={handleMarkAllPaid}>
               <Banknote className="w-4 h-4 mr-1" /> {t("mark_all_paid", "Mark All Paid (")}{approvedCount})
                           </Button>
           )}
@@ -155,8 +155,8 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
           </div>
           <div className="flex gap-4 text-sm">
             {draftCount > 0 && <span className="text-slate-600">{draftCount} {t("draft", "Draft")}</span>}
-            {approvedCount > 0 && <span className="text-emerald-600">{approvedCount} {t("approved", "Approved")}</span>}
-            {paidCount > 0 && <span className="text-green-600">{paidCount} {t("paid", "Paid")}</span>}
+            {approvedCount > 0 && <span className="text-primary">{approvedCount} {t("approved", "Approved")}</span>}
+            {paidCount > 0 && <span className="text-primary">{paidCount} {t("paid", "Paid")}</span>}
           </div>
         </div>
       )}
@@ -210,7 +210,7 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
                     <div className="col-span-2 text-sm text-red-600">
                       {slip.total_deductions > 0 ? `-${formatCurrency(slip.total_deductions, currency)}` : "—"}
                     </div>
-                    <div className="col-span-2 text-sm font-bold text-green-700">{formatCurrency(slip.net_salary, currency)}</div>
+                    <div className="col-span-2 text-sm font-bold text-primary/90">{formatCurrency(slip.net_salary, currency)}</div>
                     <div className="col-span-2 flex gap-1 justify-center" onClick={e => e.stopPropagation()}>
                       <Button variant="ghost" size="icon" className="h-7 w-7" title="View Slip" onClick={() => setViewSlip(slip)}>
                         <Eye className="w-3.5 h-3.5" />
@@ -221,12 +221,12 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
                         </Button>
                       )}
                       {isAdmin && slip.status === "draft" && (
-                        <Button variant="ghost" size="icon" className="h-7 w-7 text-green-600" title="Approve" onClick={() => updateMutation.mutate({ id: slip.id, data: { status: "approved", approved_by: user.email, approved_at: new Date().toISOString() } })}>
+                        <Button variant="ghost" size="icon" className="h-7 w-7 text-primary" title="Approve" onClick={() => updateMutation.mutate({ id: slip.id, data: { status: "approved", approved_by: user.email, approved_at: new Date().toISOString() } })}>
                           <CheckCircle className="w-3.5 h-3.5" />
                         </Button>
                       )}
                       {isAdmin && slip.status === "approved" && (
-                        <Button variant="ghost" size="icon" className="h-7 w-7 text-green-700" title="Mark Paid" onClick={() => updateMutation.mutate({ id: slip.id, data: { status: "paid", paid_at: new Date().toISOString() } })}>
+                        <Button variant="ghost" size="icon" className="h-7 w-7 text-primary/90" title="Mark Paid" onClick={() => updateMutation.mutate({ id: slip.id, data: { status: "paid", paid_at: new Date().toISOString() } })}>
                           <Banknote className="w-3.5 h-3.5" />
                         </Button>
                       )}
@@ -238,7 +238,7 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
                       <div className="grid grid-cols-3 gap-6 text-sm">
                         {/* Earnings */}
                         <div>
-                          <p className="text-xs font-semibold uppercase text-green-700 mb-2">{t("earnings", "Earnings")}</p>
+                          <p className="text-xs font-semibold uppercase text-primary/90 mb-2">{t("earnings", "Earnings")}</p>
                           <div className="space-y-1.5">
                             <div className="flex justify-between">
                               <span className="text-muted-foreground">{t("basic_salary", "Basic Salary")}</span>
@@ -248,7 +248,7 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
                               return (
                                 <div key={i} className="flex justify-between">
                                   <span className="text-muted-foreground">{a.label || "Allowance"}</span>
-                                  <span className="text-green-700">+{formatCurrency(a.amount, currency)}</span>
+                                  <span className="text-primary/90">+{formatCurrency(a.amount, currency)}</span>
                                 </div>
                               );
                             }) : <p className="text-xs text-muted-foreground italic">{t("no_allowances", "No allowances")}</p>}
@@ -361,11 +361,11 @@ function SalarySlipDialog({ slip, currency, onClose }) {
 
           {/* Earnings */}
           <div>
-            <p className="font-semibold mb-2 text-green-700">{t("earnings", "Earnings")}</p>
+            <p className="font-semibold mb-2 text-primary/90">{t("earnings", "Earnings")}</p>
             <div className="space-y-1">
               <div className="flex justify-between"><span>{t("basic_salary", "Basic Salary")}</span><span className="font-medium">{formatCurrency(slip.basic_salary, currency)}</span></div>
               {(slip.allowances || []).map((a, i) => {
-                return (<div key={i} className="flex justify-between text-green-700"><span>{a.label}</span><span>+{formatCurrency(a.amount, currency)}</span></div>);
+                return (<div key={i} className="flex justify-between text-primary/90"><span>{a.label}</span><span>+{formatCurrency(a.amount, currency)}</span></div>);
               })}
               <div className="flex justify-between font-semibold border-t border-border pt-1 mt-1">
                 <span>{t("gross_salary", "Gross Salary")}</span><span>{formatCurrency(slip.gross_salary, currency)}</span>
@@ -438,7 +438,7 @@ function EditSlipDialog({ slip, currency, onClose, onSubmit }) {
           {/* Allowances */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <Label className="text-green-700">{t("allowances", "Allowances")}</Label>
+              <Label className="text-primary/90">{t("allowances", "Allowances")}</Label>
               <Button type="button" size="sm" variant="outline" className="h-7 text-xs" onClick={() => addRow(setAllowances)}>
                 <Plus className="w-3 h-3 mr-1" /> {t("add", "Add")}
               </Button>

@@ -67,7 +67,7 @@ export default function CompanyFormDialog({ open, onClose, onSubmit, initialData
                 </div>
               </div>
               {!initialData && form.admin_email && (
-                <div className="mt-2 flex items-center gap-2 text-xs text-orange-700 bg-orange-50 border border-emerald-200 rounded-lg px-3 py-2">
+                <div className="mt-2 flex items-center gap-2 text-xs text-orange-700 bg-orange-50 border border-primary/20 rounded-lg px-3 py-2">
                   <Mail className="w-3.5 h-3.5 shrink-0" />
                   {t("a_login_invitation_will_be_sen", "A login invitation will be sent to")} <strong className="ml-1">{form.admin_email}</strong> {t("with_company_admin_access", "with Company Admin access.")}
                 </div>

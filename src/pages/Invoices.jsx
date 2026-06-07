@@ -78,7 +78,7 @@ export default function Invoices() {
   const totalPending = invoices.filter(i => ["sent", "draft"].includes(i.status)).reduce((s, i) => s + (i.total_amount || 0), 0);
 
   const getPaymentStatusIcon = (status) => {
-    if (status === "paid") return <span className="flex items-center gap-1 text-green-700 text-xs font-medium"><CheckCircle2 className="w-3.5 h-3.5" /> {t("paid", "Paid")}</span>;
+    if (status === "paid") return <span className="flex items-center gap-1 text-primary/90 text-xs font-medium"><CheckCircle2 className="w-3.5 h-3.5" /> {t("paid", "Paid")}</span>;
     if (status === "overdue") return <span className="flex items-center gap-1 text-red-600 text-xs font-medium"><AlertCircle className="w-3.5 h-3.5" /> {t("overdue", "Overdue")}</span>;
     return <span className="flex items-center gap-1 text-amber-600 text-xs font-medium"><Clock className="w-3.5 h-3.5" /> {t("pending", "Pending")}</span>;
   };

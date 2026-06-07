@@ -44,7 +44,7 @@ function UsageRow({ label, used, max, suffix = "" }) {
       </div>
       <div className="h-1.5 bg-muted rounded-full overflow-hidden">
         <div
-          className={`h-full rounded-full transition-all ${isHigh ? "bg-amber-500" : "bg-green-500"}`}
+          className={`h-full rounded-full transition-all ${isHigh ? "bg-amber-500" : "bg-primary"}`}
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -140,11 +140,11 @@ export default function LawDashboard({ companyId, company, isAdmin }) {
       </div>
       {/* Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard title={t('active_cases', { defaultValue: `Active ${casesTermPlural}` })} value={activeCases.length} icon={Briefcase} iconBg="bg-emerald-100" iconColor="text-emerald-500" subtitle={t('total_cases_count', { count: cases.length, defaultValue: `${cases.length} total` })} />
-        <MetricCard title={t('active_clients', { defaultValue: `Active ${clientsTermPlural}` })} value={activeClients.length} icon={Users} iconBg="bg-purple-100" iconColor="text-purple-500"
+        <MetricCard title={t('active_cases', { defaultValue: `Active ${casesTermPlural}` })} value={activeCases.length} icon={Briefcase} iconBg="bg-primary/10" iconColor="text-primary" subtitle={t('total_cases_count', { count: cases.length, defaultValue: `${cases.length} total` })} />
+        <MetricCard title={t('active_clients', { defaultValue: `Active ${clientsTermPlural}` })} value={activeClients.length} icon={Users} iconBg="bg-primary/10" iconColor="text-primary"
           subtitle={clients.length > 0 ? t('month_growth', { percent: Math.round((activeClients.length / Math.max(clients.length, 1)) * 100), defaultValue: `+${Math.round((activeClients.length / Math.max(clients.length, 1)) * 100)}% this month` }) : undefined}
-          subtitleColor="text-green-600" />
-        <MetricCard title={t('total_revenue', "Total Revenue")} value={formatCurrency(totalRevenue, currency)} icon={DollarSign} iconBg="bg-green-100" iconColor="text-green-500" subtitle={t('this_year', "This year")} />
+          subtitleColor="text-primary" />
+        <MetricCard title={t('total_revenue', "Total Revenue")} value={formatCurrency(totalRevenue, currency)} icon={DollarSign} iconBg="bg-primary/10" iconColor="text-primary" subtitle={t('this_year', "This year")} />
         <MetricCard title={t('pending_tasks', "Pending Tasks")} value={pendingTasks.length} icon={Clock} iconBg="bg-orange-100" iconColor="text-orange-500"
           subtitle={overdueInvoices > 0 ? t('invoices_overdue', { count: overdueInvoices, defaultValue: `${overdueInvoices} invoices overdue` }) : t('hearings_due', { count: upcomingHearings.length, entity: hearingsTermPlural.toLowerCase(), defaultValue: `${upcomingHearings.length} ${hearingsTermPlural.toLowerCase()} due` })}
           subtitleColor={overdueInvoices > 0 ? "text-red-500" : "text-muted-foreground"} />
@@ -155,7 +155,7 @@ export default function LawDashboard({ companyId, company, isAdmin }) {
         <div className="bg-card rounded-xl border border-border p-4 space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="text-sm font-semibold text-slate-800">{t("revenue_growth_curve", "Revenue Growth Curve (")}{currency})</h3>
-            <span className="text-[10px] bg-emerald-50 text-emerald-700 py-0.5 px-2 rounded-full font-bold border border-emerald-100 uppercase">{t("paid_invoices", "Paid Invoices")}</span>
+            <span className="text-[10px] bg-primary/5 text-primary/90 py-0.5 px-2 rounded-full font-bold border border-primary/10 uppercase">{t("paid_invoices", "Paid Invoices")}</span>
           </div>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -180,7 +180,7 @@ export default function LawDashboard({ companyId, company, isAdmin }) {
         <div className="bg-card rounded-xl border border-border p-4 space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="text-sm font-semibold text-slate-800">{caseTerm} {t("distribution_by_stage", "Distribution by Stage")}</h3>
-            <span className="text-[10px] bg-orange-50 text-orange-700 py-0.5 px-2 rounded-full font-bold border border-emerald-100 uppercase">{t("active_pipelines", "Active Pipelines")}</span>
+            <span className="text-[10px] bg-orange-50 text-orange-700 py-0.5 px-2 rounded-full font-bold border border-primary/10 uppercase">{t("active_pipelines", "Active Pipelines")}</span>
           </div>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">

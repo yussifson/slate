@@ -18,14 +18,14 @@ import { useToast } from "@/components/ui/use-toast";
 const STATUS_COLORS = {
   new: "bg-orange-100 text-orange-700",
   contacted: "bg-amber-100 text-amber-700",
-  qualified: "bg-purple-100 text-purple-700",
-  converted: "bg-green-100 text-green-700",
+  qualified: "bg-primary/10 text-primary/90",
+  converted: "bg-primary/10 text-primary/90",
   lost: "bg-gray-100 text-gray-500",
 };
 
 const URGENCY_COLORS = {
   low: "bg-slate-100 text-slate-600",
-  medium: "bg-emerald-100 text-emerald-600",
+  medium: "bg-primary/10 text-primary",
   high: "bg-amber-100 text-amber-700",
   urgent: "bg-red-100 text-red-700",
 };
@@ -154,12 +154,12 @@ export default function Leads() {
         }
       />
       {/* Intake Form Link Banner */}
-      <div className="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 flex items-center justify-between gap-4">
+      <div className="bg-primary/5 border border-primary/20 rounded-xl px-4 py-3 flex items-center justify-between gap-4">
         <div>
-          <p className="text-sm font-medium text-emerald-900">{t("your_public_intake_form_is_liv", "Your public intake form is live")}</p>
-          <p className="text-xs text-emerald-700 mt-0.5 break-all">{intakeFormUrl}</p>
+          <p className="text-sm font-medium text-primary/70">{t("your_public_intake_form_is_liv", "Your public intake form is live")}</p>
+          <p className="text-xs text-primary/90 mt-0.5 break-all">{intakeFormUrl}</p>
         </div>
-        <Button size="sm" variant="outline" className="shrink-0 text-emerald-700 border-emerald-300" onClick={() => { navigator.clipboard.writeText(intakeFormUrl); toast({ title: "Link copied!" }); }}>
+        <Button size="sm" variant="outline" className="shrink-0 text-primary/90 border-primary/30" onClick={() => { navigator.clipboard.writeText(intakeFormUrl); toast({ title: "Link copied!" }); }}>
           {t("copy_link", "Copy Link")}
         </Button>
       </div>
@@ -249,7 +249,7 @@ function LeadDetailDialog({ lead, onClose, onUpdateStatus, onConvert, onSave, on
                   <Pencil className="w-3.5 h-3.5" />
                 </Button>
               ) : (
-                <Button variant="ghost" size="icon" className="h-7 w-7 text-green-600" onClick={handleSave}>
+                <Button variant="ghost" size="icon" className="h-7 w-7 text-primary" onClick={handleSave}>
                   <Save className="w-3.5 h-3.5" />
                 </Button>
               )}
@@ -358,7 +358,7 @@ function LeadDetailDialog({ lead, onClose, onUpdateStatus, onConvert, onSave, on
           <div className="flex justify-between items-center pt-2 border-t border-border">
             <Button variant="outline" onClick={onClose}>{t("close", "Close")}</Button>
             {lead.status !== "converted" && (
-              <Button onClick={onConvert} disabled={isConverting} className="gap-1.5 bg-green-600 hover:bg-green-700 text-white">
+              <Button onClick={onConvert} disabled={isConverting} className="gap-1.5 bg-primary hover:bg-primary/90 text-white">
                 {isConverting ? "Converting..." : <><CheckCircle className="w-4 h-4" /> {t("convert_to_client", "Convert to Client")}</>}
               </Button>
             )}

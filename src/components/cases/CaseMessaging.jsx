@@ -144,7 +144,7 @@ export default function CaseMessaging({ caseData, user }) {
 
   const getInitials = (name) => name?.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) || "?";
 
-  const AVATAR_COLORS = ["bg-emerald-500", "bg-purple-500", "bg-green-500", "bg-amber-500", "bg-red-500", "bg-indigo-500"];
+  const AVATAR_COLORS = ["bg-primary", "bg-primary", "bg-primary", "bg-amber-500", "bg-red-500", "bg-primary"];
   const getColor = (email) => AVATAR_COLORS[(email?.charCodeAt(0) || 0) % AVATAR_COLORS.length];
 
   return (

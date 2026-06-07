@@ -17,8 +17,8 @@ import { useContracts } from '@/hooks/integrations/useContracts';
 import { useCompanyId } from '@/hooks/useCompanyId';
 
 const STATUS_COLORS = {
-  'Active':    'bg-green-100 text-green-700 dark:bg-green-950/30 dark:text-green-400',
-  'On Trip':   'bg-orange-100 text-orange-700 dark:bg-emerald-950/30 dark:text-emerald-400',
+  'Active':    'bg-primary/10 text-primary/90 dark:bg-primary/30 dark:text-primary/70',
+  'On Trip':   'bg-orange-100 text-orange-700 dark:bg-primary/30 dark:text-primary/70',
   'Off Duty':  'bg-amber-100 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400',
   'Suspended': 'bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400',
 };
@@ -143,9 +143,9 @@ export default function Drivers() {
   const suspended = drivers.filter(d => d.status === 'Suspended').length;
 
   const stats = [
-    { label: 'Total Drivers', value: total, icon: User, color: 'bg-indigo-100 text-indigo-600', border: 'border-indigo-200' },
-    { label: 'Active', value: active, icon: CheckCircle2, color: 'bg-green-100 text-green-600', border: 'border-green-200' },
-    { label: 'On Trip', value: onTrip, icon: Truck, color: 'bg-emerald-100 text-emerald-600', border: 'border-emerald-200' },
+    { label: 'Total Drivers', value: total, icon: User, color: 'bg-primary/10 text-primary', border: 'border-primary/20' },
+    { label: 'Active', value: active, icon: CheckCircle2, color: 'bg-primary/10 text-primary', border: 'border-primary/20' },
+    { label: 'On Trip', value: onTrip, icon: Truck, color: 'bg-primary/10 text-primary', border: 'border-primary/20' },
     { label: 'Suspended', value: suspended, icon: ShieldOff, color: 'bg-red-100 text-red-600', border: 'border-red-200' },
   ];
 
@@ -167,7 +167,7 @@ export default function Drivers() {
             "Manage and monitor all registered drivers"
           )}</p>
         </div>
-        <Button onClick={openAdd} className="gap-2 bg-indigo-600 hover:bg-indigo-700 text-white">
+        <Button onClick={openAdd} className="gap-2 bg-primary hover:bg-primary/90 text-white">
           <Plus className="w-4 h-4" /> {t("add_driver", "Add Driver")}
         </Button>
       </div>
@@ -232,7 +232,7 @@ export default function Drivers() {
                     <tr key={driver.id} className="hover:bg-muted/30 transition-colors">
                       <td className="px-5 py-4 pl-6">
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-full bg-indigo-100 dark:bg-indigo-950/30 flex items-center justify-center text-indigo-600 font-bold text-sm">
+                          <div className="w-9 h-9 rounded-full bg-primary/10 dark:bg-primary/30 flex items-center justify-center text-primary font-bold text-sm">
                             {driver.driverName?.charAt(0)?.toUpperCase() || 'D'}
                           </div>
                           <div>
@@ -243,7 +243,7 @@ export default function Drivers() {
                       </td>
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-1 text-card-foreground text-xs">
-                          <BadgeCheck className="w-3.5 h-3.5 text-indigo-500" />
+                          <BadgeCheck className="w-3.5 h-3.5 text-primary" />
                           {driver.licenseNumber || '—'}
                         </div>
                         <div className="text-xs text-muted-foreground mt-0.5">
@@ -280,13 +280,13 @@ export default function Drivers() {
                         <div className="flex items-center justify-end gap-1.5">
                           {driver.status === 'Active' && (
                             <Button onClick={() => handleUpdateStatus(driver, 'On Trip')} size="sm"
-                              className="h-7 text-xs bg-emerald-600 hover:bg-emerald-700 text-white gap-1">
+                              className="h-7 text-xs bg-primary hover:bg-primary/90 text-white gap-1">
                               <Truck className="w-3 h-3" /> {t("dispatch", "Dispatch")}
                             </Button>
                           )}
                           {driver.status === 'On Trip' && (
                             <Button onClick={() => handleUpdateStatus(driver, 'Active')} size="sm"
-                              className="h-7 text-xs bg-green-600 hover:bg-green-700 text-white gap-1">
+                              className="h-7 text-xs bg-primary hover:bg-primary/90 text-white gap-1">
                               <CheckCircle2 className="w-3 h-3" /> {t("return", "Return")}
                             </Button>
                           )}
@@ -332,7 +332,7 @@ export default function Drivers() {
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-lg p-6 space-y-5 border border-border max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-                <User className="w-5 h-5 text-indigo-600" />
+                <User className="w-5 h-5 text-primary" />
                 {editTarget ? 'Edit Driver' : 'Add Driver'}
               </h2>
               <button onClick={closeModal} className="text-muted-foreground hover:text-foreground p-1 rounded-full hover:bg-muted">
@@ -384,7 +384,7 @@ export default function Drivers() {
               <div className="col-span-2">
                 <label className="text-xs font-semibold text-muted-foreground uppercase">{t("status", "Status")}</label>
                 <select value={formData.status} onChange={e => setFormData({ ...formData, status: e.target.value })}
-                  className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-card-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                  className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary">
                   {STATUSES.map(s => {
                     return <option key={s}>{s}</option>;
                   })}
@@ -395,7 +395,7 @@ export default function Drivers() {
             <div className="flex gap-3 pt-1">
               <Button variant="outline" className="flex-1" onClick={closeModal}>{t("cancel", "Cancel")}</Button>
               <Button onClick={handleSave} disabled={mutateRecord.isPending}
-                className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white">
+                className="flex-1 bg-primary hover:bg-primary/90 text-white">
                 {mutateRecord.isPending ? 'Saving...' : editTarget ? 'Update Driver' : 'Add Driver'}
               </Button>
             </div>

@@ -166,13 +166,13 @@ export default function Employees() {
           <h1 className="text-2xl font-bold text-card-foreground">{t("employees", "Employees")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("manage_staff_profiles_and_dire", "Manage staff profiles and directories")}</p>
         </div>
-        <Button onClick={openAdd} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
+        <Button onClick={openAdd} className="gap-2 bg-primary hover:bg-primary/90 text-white">
           <Plus className="w-4 h-4" /> {t("add_employee", "Add Employee")}
         </Button>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
             <Users className="w-5 h-5" />
           </div>
           <div>
@@ -181,7 +181,7 @@ export default function Employees() {
           </div>
         </div>
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center text-green-600">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
             <Users className="w-5 h-5" />
           </div>
           <div>
@@ -199,7 +199,7 @@ export default function Employees() {
           </div>
         </div>
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center text-purple-600">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
             <Briefcase className="w-5 h-5" />
           </div>
           <div>
@@ -220,7 +220,7 @@ export default function Employees() {
             <div className="py-12 text-center text-muted-foreground">{t("loading_employees", "Loading employees...")}</div>
           ) : filtered.length === 0 ? (
             <div className="py-12 text-center text-muted-foreground">
-              <Users className="w-12 h-12 mx-auto mb-3 opacity-30 text-emerald-600" />
+              <Users className="w-12 h-12 mx-auto mb-3 opacity-30 text-primary" />
               <p className="font-semibold text-lg text-card-foreground">{t("no_employees_found", "No employees found")}</p>
               <p className="text-xs mt-1">{t(
                 "add_your_first_employee_to_get",
@@ -358,7 +358,7 @@ export default function Employees() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleCreateOrUpdateEmployee}>{t("save", "Save")}</Button>
+              <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleCreateOrUpdateEmployee}>{t("save", "Save")}</Button>
             </div>
           </div>
         </div>

@@ -45,7 +45,7 @@ export default function VWorkshopAssessments() {
     <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300 h-[calc(100vh-100px)] flex flex-col">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-indigo-600 via-emerald-600 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary via-primary to-slate-900 bg-clip-text text-transparent">
             Workshop Assessments
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -55,13 +55,13 @@ export default function VWorkshopAssessments() {
       </div>
 
       <div className="flex-1 flex gap-6 overflow-hidden">
-        <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-indigo-100/50">
-          <div className="p-4 border-b border-indigo-50 dark:border-slate-800">
+        <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50">
+          <div className="p-4 border-b border-primary/5 dark:border-slate-800">
             <div className="relative">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-indigo-500" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
               <Input 
                 placeholder="Search assessments..." 
-                className="pl-9 h-10 bg-white dark:bg-slate-900 border-indigo-100 dark:border-slate-700 rounded-xl focus-visible:ring-indigo-600"
+                className="pl-9 h-10 bg-white dark:bg-slate-900 border-primary/10 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -69,7 +69,7 @@ export default function VWorkshopAssessments() {
           </div>
           <ScrollArea className="flex-1">
             {loading ? (
-              <div className="p-8 text-center text-indigo-500/50 text-sm">Loading assessments...</div>
+              <div className="p-8 text-center text-primary/50 text-sm">Loading assessments...</div>
             ) : filteredAssessments.length === 0 ? (
               <div className="p-8 text-center text-slate-400 dark:text-slate-500 text-sm">No assessments found.</div>
             ) : (
@@ -80,18 +80,18 @@ export default function VWorkshopAssessments() {
                     onClick={() => setSelectedAssessment(assessment)}
                     className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
                       selectedAssessment?.id === assessment.id 
-                        ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20' 
-                        : 'hover:bg-indigo-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'
+                        ? 'bg-primary text-white shadow-md shadow-indigo-500/20' 
+                        : 'hover:bg-primary/5 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'
                     }`}
                   >
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0 ${
-                      selectedAssessment?.id === assessment.id ? 'bg-white/20' : 'bg-indigo-100 dark:bg-slate-800 text-indigo-600'
+                      selectedAssessment?.id === assessment.id ? 'bg-white/20' : 'bg-primary/10 dark:bg-slate-800 text-primary'
                     }`}>
                       <ClipboardCheck className="w-5 h-5" />
                     </div>
                     <div className="overflow-hidden">
                       <p className="font-bold truncate">{assessment.title}</p>
-                      <p className={`text-xs truncate ${selectedAssessment?.id === assessment.id ? 'text-indigo-100' : 'text-slate-500'}`}>
+                      <p className={`text-xs truncate ${selectedAssessment?.id === assessment.id ? 'text-primary/10' : 'text-slate-500'}`}>
                         {assessment.data?.workshop_name || 'General Workshop'} • {new Date(assessment.created_date).toLocaleDateString()}
                       </p>
                     </div>
@@ -102,10 +102,10 @@ export default function VWorkshopAssessments() {
           </ScrollArea>
         </Card>
 
-        <Card className="flex-1 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-indigo-100/50 overflow-hidden relative">
+        <Card className="flex-1 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative">
           {selectedAssessment ? (
             <>
-              <div className="h-32 bg-gradient-to-r from-indigo-500 to-emerald-600 relative shrink-0">
+              <div className="h-32 bg-gradient-to-r from-primary to-primary relative shrink-0">
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/diagonal-stripes.png')] opacity-20"></div>
               </div>
               
@@ -113,14 +113,14 @@ export default function VWorkshopAssessments() {
                 <div className="px-8 pb-8">
                   <div className="flex flex-col sm:flex-row gap-6 items-end sm:items-center relative z-10">
                     <div className="w-24 h-24 rounded-3xl bg-white dark:bg-slate-900 p-1 shadow-xl shrink-0">
-                      <div className="w-full h-full rounded-2xl bg-indigo-50 dark:bg-slate-800 flex items-center justify-center text-indigo-600">
+                      <div className="w-full h-full rounded-2xl bg-primary/5 dark:bg-slate-800 flex items-center justify-center text-primary">
                         <Wrench className="w-12 h-12" />
                       </div>
                     </div>
                     <div className="flex-1 mt-4 sm:mt-12">
                       <h2 className="text-3xl font-black text-slate-800 dark:text-slate-100">{selectedAssessment.title}</h2>
                       <div className="flex items-center gap-3 mt-2 text-sm text-slate-600 dark:text-slate-300 font-medium">
-                        <span className="flex items-center gap-1.5"><Badge variant="outline" className="border-indigo-200 dark:border-slate-600 bg-indigo-50 dark:bg-slate-800 text-indigo-600">{selectedAssessment.data?.workshop_name}</Badge></span>
+                        <span className="flex items-center gap-1.5"><Badge variant="outline" className="border-primary/20 dark:border-slate-600 bg-primary/5 dark:bg-slate-800 text-primary">{selectedAssessment.data?.workshop_name}</Badge></span>
                         <span>•</span>
                         <span className="flex items-center gap-1.5">Inspector: {selectedAssessment.data?.inspector || 'N/A'}</span>
                       </div>
@@ -129,13 +129,13 @@ export default function VWorkshopAssessments() {
 
                   <div className="mt-8 space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <Card className="bg-white dark:bg-slate-900 border-indigo-100 dark:border-slate-700 shadow-sm">
+                      <Card className="bg-white dark:bg-slate-900 border-primary/10 dark:border-slate-700 shadow-sm">
                         <CardHeader className="pb-2 flex flex-row items-center justify-between">
                           <div>
                             <CardTitle className="text-lg">Safety Score</CardTitle>
                             <CardDescription>Overall safety compliance</CardDescription>
                           </div>
-                          <ShieldCheck className="w-8 h-8 text-emerald-500" />
+                          <ShieldCheck className="w-8 h-8 text-primary" />
                         </CardHeader>
                         <CardContent>
                           <div className="text-3xl font-bold text-slate-800 dark:text-slate-100">
@@ -144,7 +144,7 @@ export default function VWorkshopAssessments() {
                         </CardContent>
                       </Card>
 
-                      <Card className="bg-white dark:bg-slate-900 border-indigo-100 dark:border-slate-700 shadow-sm">
+                      <Card className="bg-white dark:bg-slate-900 border-primary/10 dark:border-slate-700 shadow-sm">
                         <CardHeader className="pb-2 flex flex-row items-center justify-between">
                           <div>
                             <CardTitle className="text-lg">Issues Found</CardTitle>
@@ -160,13 +160,13 @@ export default function VWorkshopAssessments() {
                       </Card>
                     </div>
 
-                    <div className="p-5 rounded-2xl bg-indigo-50/30 dark:bg-slate-800/30 border border-indigo-100 dark:border-slate-700 space-y-4">
-                      <h3 className="text-sm font-bold text-indigo-600 uppercase tracking-wider">Assessment Details</h3>
+                    <div className="p-5 rounded-2xl bg-primary/30 dark:bg-slate-800/30 border border-primary/10 dark:border-slate-700 space-y-4">
+                      <h3 className="text-sm font-bold text-primary uppercase tracking-wider">Assessment Details</h3>
                       <div className="grid grid-cols-1 gap-4">
                         <div>
                           <p className="text-xs text-slate-500 mb-1">Equipment Condition</p>
                           <p className="font-medium text-slate-800 dark:text-slate-100 flex items-center gap-2">
-                            <CheckCircle2 className="w-4 h-4 text-emerald-500" /> {selectedAssessment.data?.equipment_condition || 'Good'}
+                            <CheckCircle2 className="w-4 h-4 text-primary" /> {selectedAssessment.data?.equipment_condition || 'Good'}
                           </p>
                         </div>
                         <div>
@@ -183,8 +183,8 @@ export default function VWorkshopAssessments() {
             </>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-              <div className="w-20 h-20 rounded-full bg-indigo-50 dark:bg-slate-800 flex items-center justify-center mb-6">
-                <ClipboardCheck className="w-10 h-10 text-indigo-300" />
+              <div className="w-20 h-20 rounded-full bg-primary/5 dark:bg-slate-800 flex items-center justify-center mb-6">
+                <ClipboardCheck className="w-10 h-10 text-primary/30" />
               </div>
               <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200">No Assessment Selected</h3>
               <p className="text-slate-500 max-w-sm mt-2">

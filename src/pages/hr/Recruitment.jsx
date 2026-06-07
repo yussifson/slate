@@ -169,7 +169,7 @@ export default function Recruitment() {
           <h1 className="text-2xl font-bold text-card-foreground">{t("recruitment", "Recruitment")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("manage_job_postings_and_candid", "Manage job postings and candidates")}</p>
         </div>
-        <Button onClick={openAdd} className="gap-2 bg-violet-600 hover:bg-violet-700 text-white">
+        <Button onClick={openAdd} className="gap-2 bg-primary hover:bg-primary/90 text-white">
           <Briefcase className="w-4 h-4" /> {t("add_candidate", "Add Candidate")}
         </Button>
       </div>
@@ -203,7 +203,7 @@ export default function Recruitment() {
             <div className="py-12 text-center text-muted-foreground">{t("loading_pipeline", "Loading pipeline...")}</div>
           ) : filtered.length === 0 ? (
             <div className="py-12 text-center text-muted-foreground">
-              <Briefcase className="w-12 h-12 mx-auto mb-3 opacity-30 text-violet-600" />
+              <Briefcase className="w-12 h-12 mx-auto mb-3 opacity-30 text-primary" />
               <p className="font-semibold text-lg text-card-foreground">{t("pipeline_is_empty", "Pipeline is empty")}</p>
               <p className="text-xs mt-1">{t("add_a_candidate_to_get_started", "Add a candidate to get started.")}</p>
             </div>
@@ -211,7 +211,7 @@ export default function Recruitment() {
             return (
               <div key={cand.id} className="border border-border rounded-lg p-4 flex items-center justify-between hover:shadow-md transition-shadow bg-background group">
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-violet-100 flex items-center justify-center text-violet-600 font-bold">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
                     {cand.name.charAt(0)}
                   </div>
                   <div>
@@ -225,8 +225,8 @@ export default function Recruitment() {
                     value={cand.stage}
                     onChange={e => handleUpdateStage(cand, e.target.value)}
                     className={`text-xs font-bold px-2 py-1 rounded-full border border-input ${
-                      cand.stage === 'Offer' ? 'bg-green-100 text-green-700' :
-                      cand.stage === 'Hired' ? 'bg-violet-100 text-violet-700' :
+                      cand.stage === 'Offer' ? 'bg-primary/10 text-primary/90' :
+                      cand.stage === 'Hired' ? 'bg-primary/10 text-primary/90' :
                       cand.stage === 'Interview' ? 'bg-orange-100 text-orange-700' : 
                       cand.stage === 'Rejected' ? 'bg-red-100 text-red-700' : 'bg-muted text-foreground'
                     }`}
@@ -240,7 +240,7 @@ export default function Recruitment() {
                   </select>
                 </div>
                 <div className="flex gap-2">
-                  <Button onClick={() => handleUpdateStage(cand, 'Hired')} size="sm" variant="outline" className="text-green-600 border-green-200 hover:bg-green-50 px-2"><CheckCircle2 className="w-4 h-4"/></Button>
+                  <Button onClick={() => handleUpdateStage(cand, 'Hired')} size="sm" variant="outline" className="text-primary border-primary/20 hover:bg-primary/5 px-2"><CheckCircle2 className="w-4 h-4"/></Button>
                   <Button onClick={() => handleUpdateStage(cand, 'Rejected')} size="sm" variant="outline" className="text-red-600 border-red-200 hover:bg-red-50 px-2"><XCircle className="w-4 h-4"/></Button>
                   <Button onClick={() => setDeleteTargetId(cand.id)} size="sm" variant="ghost" className="text-red-500 hover:text-red-700 hover:bg-red-50 px-2 opacity-0 group-hover:opacity-100"><Trash2 className="w-4 h-4"/></Button>
                 </div>
@@ -287,7 +287,7 @@ export default function Recruitment() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-violet-600 hover:bg-violet-700 text-white" onClick={handleCreateOrUpdateCandidate}>{editTargetId ? 'Save Changes' : 'Add Candidate'}</Button>
+              <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleCreateOrUpdateCandidate}>{editTargetId ? 'Save Changes' : 'Add Candidate'}</Button>
             </div>
           </div>
         </div>

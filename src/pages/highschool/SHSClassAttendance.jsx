@@ -181,7 +181,7 @@ export default function SHSClassAttendance() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent">
             Daily Attendance
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -196,10 +196,10 @@ export default function SHSClassAttendance() {
             <div className="flex-1 flex flex-col sm:flex-row gap-4">
               <div className="space-y-2 flex-1 max-w-xs">
                 <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                  <Users className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> Target Class
+                  <Users className="w-4 h-4 text-primary dark:text-primary/70" /> Target Class
                 </label>
                 <select 
-                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500 font-semibold text-slate-700 dark:text-slate-200"
+                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-200"
                   value={selectedClassId}
                   onChange={(e) => setSelectedClassId(e.target.value)}
                   disabled={loadingClasses}
@@ -213,11 +213,11 @@ export default function SHSClassAttendance() {
 
               <div className="space-y-2 flex-1 max-w-xs">
                 <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> Register Date
+                  <Calendar className="w-4 h-4 text-primary dark:text-primary/70" /> Register Date
                 </label>
                 <Input 
                   type="date"
-                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500 font-semibold text-slate-700 dark:text-slate-200"
+                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-200"
                   value={selectedDate}
                   onChange={(e) => setSelectedDate(e.target.value)}
                   max={new Date().toISOString().split('T')[0]} // Prevent future dates
@@ -233,8 +233,8 @@ export default function SHSClassAttendance() {
                 </div>
                 <div className="w-px bg-slate-100 dark:bg-slate-800"></div>
                 <div className="text-center">
-                  <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-wider">Present</p>
-                  <p className="text-xl font-black text-emerald-600">{presentCount}</p>
+                  <p className="text-[10px] font-bold text-primary uppercase tracking-wider">Present</p>
+                  <p className="text-xl font-black text-primary">{presentCount}</p>
                 </div>
                 <div className="w-px bg-slate-100 dark:bg-slate-800"></div>
                 <div className="text-center">
@@ -264,7 +264,7 @@ export default function SHSClassAttendance() {
               <div className="bg-slate-50 dark:bg-slate-800/80 p-3 flex justify-between items-center border-b border-slate-100 dark:border-slate-800">
                 <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-500 pl-3">Mark entire class as:</p>
                 <div className="flex gap-2 pr-3">
-                  <Button variant="outline" size="sm" onClick={() => handleMarkAll('Present')} className="h-8 text-xs font-semibold text-emerald-600 border-emerald-200 hover:bg-emerald-50">
+                  <Button variant="outline" size="sm" onClick={() => handleMarkAll('Present')} className="h-8 text-xs font-semibold text-primary border-primary/20 hover:bg-primary/5">
                     All Present
                   </Button>
                   <Button variant="outline" size="sm" onClick={() => handleMarkAll('Absent')} className="h-8 text-xs font-semibold text-rose-600 border-rose-200 hover:bg-rose-50">
@@ -282,7 +282,7 @@ export default function SHSClassAttendance() {
                         <div className="w-8 text-center text-xs font-bold text-slate-400 dark:text-slate-500">
                           {index + 1}
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-100 to-slate-100 flex items-center justify-center font-bold text-emerald-600 dark:text-emerald-400">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/10 to-slate-100 flex items-center justify-center font-bold text-primary dark:text-primary/70">
                           {student.title.charAt(0)}
                         </div>
                         <div>
@@ -296,7 +296,7 @@ export default function SHSClassAttendance() {
                           onClick={() => handleStatusChange(student.id, 'Present')}
                           className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 ${
                             status === 'Present' 
-                              ? 'bg-white dark:bg-slate-900 text-emerald-600 shadow-sm ring-1 ring-emerald-200/50' 
+                              ? 'bg-white dark:bg-slate-900 text-primary shadow-sm ring-1 ring-primary/50' 
                               : 'text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:bg-slate-700'
                           }`}
                         >
@@ -331,7 +331,7 @@ export default function SHSClassAttendance() {
               <div className="p-6 bg-slate-50 dark:bg-slate-800 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
                 <div>
                   {saveSuccess && (
-                    <Badge className="bg-emerald-100 text-emerald-700 border-none px-3 py-1 text-sm font-semibold flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2">
+                    <Badge className="bg-primary/10 text-primary/90 border-none px-3 py-1 text-sm font-semibold flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2">
                       <CheckCircle2 className="w-4 h-4" /> Register Saved Successfully
                     </Badge>
                   )}
@@ -344,7 +344,7 @@ export default function SHSClassAttendance() {
                   <Button 
                     onClick={handleSaveAttendance}
                     disabled={isSaving || students.length === 0}
-                    className="h-12 px-8 rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/20 font-bold"
+                    className="h-12 px-8 rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white shadow-lg shadow-emerald-500/20 font-bold"
                   >
                     {isSaving ? 'Saving...' : (
                       <><Save className="w-5 h-5 mr-2" /> Save Register</>

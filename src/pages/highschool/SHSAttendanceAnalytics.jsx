@@ -75,7 +75,7 @@ export default function SHSAttendanceAnalytics() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent">
             Attendance Trends
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -91,18 +91,18 @@ export default function SHSAttendanceAnalytics() {
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="rounded-3xl border-none shadow-sm bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 text-white">
+            <Card className="rounded-3xl border-none shadow-sm bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 text-white">
               <CardContent className="p-6">
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-12 h-12 rounded-xl bg-white dark:bg-slate-900/20 flex items-center justify-center text-white">
                     <CalendarCheck className="w-6 h-6" />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-emerald-200 dark:text-emerald-800 uppercase tracking-wider">Average Presence</p>
+                    <p className="text-sm font-bold text-primary/20 dark:text-primary/80 uppercase tracking-wider">Average Presence</p>
                   </div>
                 </div>
                 <h3 className="text-4xl font-black text-white">{presentRate.toFixed(1)}%</h3>
-                <p className="text-xs text-emerald-200 dark:text-emerald-800 mt-2 font-medium">Of total recorded sessions</p>
+                <p className="text-xs text-primary/20 dark:text-primary/80 mt-2 font-medium">Of total recorded sessions</p>
               </CardContent>
             </Card>
 
@@ -160,13 +160,13 @@ export default function SHSAttendanceAnalytics() {
             <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
               <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
                 <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-                  <LineChart className="w-5 h-5 text-emerald-600 dark:text-emerald-400" /> Attendance Over Time
+                  <LineChart className="w-5 h-5 text-primary dark:text-primary/70" /> Attendance Over Time
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-16 flex items-center justify-center min-h-[300px]">
                 <div className="text-center space-y-4">
                   <div className="w-20 h-20 rounded-3xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center border border-slate-100 dark:border-slate-800">
-                    <TrendingUp className="w-10 h-10 text-emerald-600 dark:text-emerald-400" />
+                    <TrendingUp className="w-10 h-10 text-primary dark:text-primary/70" />
                   </div>
                   <p className="text-slate-500 dark:text-slate-400 dark:text-slate-500 font-medium">Connect a charting library to view interactive time-series.</p>
                   
@@ -178,7 +178,7 @@ export default function SHSAttendanceAnalytics() {
                     </svg>
                   </div>
                   <div className="flex justify-center gap-6 mt-4 text-xs font-bold">
-                    <span className="flex items-center gap-2"><span className="w-3 h-1 bg-emerald-600 dark:bg-emerald-500"></span> Present</span>
+                    <span className="flex items-center gap-2"><span className="w-3 h-1 bg-primary dark:bg-primary"></span> Present</span>
                     <span className="flex items-center gap-2"><span className="w-3 h-1 bg-rose-500 border-t border-b border-dashed"></span> Absent</span>
                   </div>
 
@@ -189,7 +189,7 @@ export default function SHSAttendanceAnalytics() {
             <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
               <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
                 <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-                  <BarChart className="w-5 h-5 text-emerald-600 dark:text-emerald-400" /> Highest Truancy by Form
+                  <BarChart className="w-5 h-5 text-primary dark:text-primary/70" /> Highest Truancy by Form
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6">
@@ -198,10 +198,10 @@ export default function SHSAttendanceAnalytics() {
                     <div key={idx}>
                       <div className="flex justify-between items-center mb-2">
                         <span className="font-bold text-slate-700 dark:text-slate-200">{f.form}</span>
-                        <span className={`font-bold ${f.rate > 5 ? 'text-rose-600' : f.rate > 2 ? 'text-rose-400' : 'text-emerald-500'}`}>{f.rate.toFixed(1)}% Absent</span>
+                        <span className={`font-bold ${f.rate > 5 ? 'text-rose-600' : f.rate > 2 ? 'text-rose-400' : 'text-primary'}`}>{f.rate.toFixed(1)}% Absent</span>
                       </div>
                       <div className="w-full bg-slate-100 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">
-                        <div className={`h-full ${f.rate > 5 ? 'bg-rose-500' : f.rate > 2 ? 'bg-rose-400' : 'bg-emerald-500'} transition-all duration-500`} style={{ width: `${Math.min(100, f.rate)}%` }}></div>
+                        <div className={`h-full ${f.rate > 5 ? 'bg-rose-500' : f.rate > 2 ? 'bg-rose-400' : 'bg-primary'} transition-all duration-500`} style={{ width: `${Math.min(100, f.rate)}%` }}></div>
                       </div>
                     </div>
                   ))}

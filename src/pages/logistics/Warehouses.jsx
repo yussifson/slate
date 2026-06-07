@@ -15,7 +15,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sh
 import { MoreVertical, Eye } from 'lucide-react';
 
 const STATUS_COLORS = {
-  'Active':   'bg-green-100 text-green-700 dark:bg-green-950/30 dark:text-green-400',
+  'Active':   'bg-primary/10 text-primary/90 dark:bg-primary/30 dark:text-primary/70',
   'Inactive': 'bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400',
 };
 
@@ -38,13 +38,13 @@ function generateCode() {
 function getCapacityColor(pct) {
   if (pct >= 90) return 'bg-red-500';
   if (pct >= 70) return 'bg-amber-500';
-  return 'bg-green-500';
+  return 'bg-primary';
 }
 
 function getCapacityLabelColor(pct) {
   if (pct >= 90) return 'text-red-600';
   if (pct >= 70) return 'text-amber-600';
-  return 'text-green-600';
+  return 'text-primary';
 }
 
 export default function Warehouses() {
@@ -137,10 +137,10 @@ export default function Warehouses() {
   const usedPct = totalCap > 0 ? Math.round((usedCap / totalCap) * 100) : 0;
 
   const stats = [
-    { label: 'Total Warehouses', value: total, icon: Warehouse, color: 'bg-teal-100 text-teal-600', border: 'border-teal-200' },
-    { label: 'Total Capacity', value: `${totalCap.toLocaleString()} units`, icon: Package, color: 'bg-green-100 text-green-600', border: 'border-green-200' },
-    { label: 'Used Capacity', value: `${usedPct}%`, icon: BarChart3, color: usedPct >= 90 ? 'bg-red-100 text-red-600' : usedPct >= 70 ? 'bg-amber-100 text-amber-600' : 'bg-teal-100 text-teal-600', border: usedPct >= 90 ? 'border-red-200' : usedPct >= 70 ? 'border-amber-200' : 'border-teal-200' },
-    { label: 'Active', value: activeCount, icon: CheckCircle2, color: 'bg-green-100 text-green-600', border: 'border-green-200' },
+    { label: 'Total Warehouses', value: total, icon: Warehouse, color: 'bg-primary/10 text-primary', border: 'border-primary/20' },
+    { label: 'Total Capacity', value: `${totalCap.toLocaleString()} units`, icon: Package, color: 'bg-primary/10 text-primary', border: 'border-primary/20' },
+    { label: 'Used Capacity', value: `${usedPct}%`, icon: BarChart3, color: usedPct >= 90 ? 'bg-red-100 text-red-600' : usedPct >= 70 ? 'bg-amber-100 text-amber-600' : 'bg-primary/10 text-primary', border: usedPct >= 90 ? 'border-red-200' : usedPct >= 70 ? 'border-amber-200' : 'border-primary/20' },
+    { label: 'Active', value: activeCount, icon: CheckCircle2, color: 'bg-primary/10 text-primary', border: 'border-primary/20' },
   ];
 
   return (
@@ -154,7 +154,7 @@ export default function Warehouses() {
             "Monitor capacity and manage warehouse locations"
           )}</p>
         </div>
-        <Button onClick={openAdd} className="gap-2 bg-teal-600 hover:bg-teal-700 text-white">
+        <Button onClick={openAdd} className="gap-2 bg-primary hover:bg-primary/90 text-white">
           <Plus className="w-4 h-4" /> {t("add_warehouse", "Add Warehouse")}
         </Button>
       </div>
@@ -195,7 +195,7 @@ export default function Warehouses() {
             "click_add_warehouse_to_registe",
             "Click \"Add Warehouse\" to register your first warehouse."
           )}</p>
-          <Button onClick={openAdd} className="mt-4 gap-2 bg-teal-600 hover:bg-teal-700 text-white" size="sm">
+          <Button onClick={openAdd} className="mt-4 gap-2 bg-primary hover:bg-primary/90 text-white" size="sm">
             <Plus className="w-3.5 h-3.5" /> {t("add_warehouse", "Add Warehouse")}
           </Button>
         </div>
@@ -212,12 +212,12 @@ export default function Warehouses() {
                 {/* Card Header */}
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-teal-100 dark:bg-teal-950/30 flex items-center justify-center text-teal-600">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 dark:bg-primary/30 flex items-center justify-center text-primary">
                       <Warehouse className="w-5 h-5" />
                     </div>
                     <div>
                       <h3 className="font-bold text-card-foreground text-sm leading-tight">{wh.warehouseName}</h3>
-                      <span className="font-mono text-xs text-teal-600 font-semibold">{wh.code}</span>
+                      <span className="font-mono text-xs text-primary font-semibold">{wh.code}</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-1.5">
@@ -246,11 +246,11 @@ export default function Warehouses() {
                 {/* Info Grid */}
                 <div className="grid grid-cols-1 gap-1.5 text-xs text-muted-foreground">
                   <div className="flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 shrink-0 text-teal-500" />
+                    <MapPin className="w-3.5 h-3.5 shrink-0 text-primary" />
                     <span className="truncate">{wh.location || '—'}</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <User className="w-3.5 h-3.5 shrink-0 text-teal-500" />
+                    <User className="w-3.5 h-3.5 shrink-0 text-primary" />
                     <span>
                       {wh.manager ? (
                         <Link to="/team" className="text-primary hover:underline">
@@ -262,7 +262,7 @@ export default function Warehouses() {
                     </span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <Phone className="w-3.5 h-3.5 shrink-0 text-teal-500" />
+                    <Phone className="w-3.5 h-3.5 shrink-0 text-primary" />
                     <span>{wh.phone || '—'}</span>
                   </div>
                 </div>
@@ -271,7 +271,7 @@ export default function Warehouses() {
                   <div className="flex flex-wrap gap-1.5">
                     {cats.map(cat => {
                       return (
-                        <span key={cat} className="inline-flex items-center gap-1 text-[10px] bg-teal-50 dark:bg-teal-950/20 text-teal-700 dark:text-teal-400 px-2 py-0.5 rounded-full font-medium border border-teal-200 dark:border-teal-800">
+                        <span key={cat} className="inline-flex items-center gap-1 text-[10px] bg-primary/5 dark:bg-primary/20 text-primary/90 dark:text-primary/70 px-2 py-0.5 rounded-full font-medium border border-primary/20 dark:border-primary/80">
                           <Tag className="w-2.5 h-2.5" /> {cat}
                         </span>
                       );
@@ -310,7 +310,7 @@ export default function Warehouses() {
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-lg p-6 space-y-5 border border-border max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-                <Warehouse className="w-5 h-5 text-teal-600" />
+                <Warehouse className="w-5 h-5 text-primary" />
                 {editTarget ? 'Edit Warehouse' : 'Add Warehouse'}
               </h2>
               <button onClick={closeModal} className="text-muted-foreground hover:text-foreground p-1 rounded-full hover:bg-muted">
@@ -366,7 +366,7 @@ export default function Warehouses() {
               <div className="col-span-2">
                 <label className="text-xs font-semibold text-muted-foreground uppercase">{t("status", "Status")}</label>
                 <select value={formData.status} onChange={e => setFormData({ ...formData, status: e.target.value })}
-                  className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-card-foreground focus:outline-none focus:ring-2 focus:ring-teal-500">
+                  className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary">
                   <option>{t("active", "Active")}</option>
                   <option>{t("inactive", "Inactive")}</option>
                 </select>
@@ -376,7 +376,7 @@ export default function Warehouses() {
             <div className="flex gap-3 pt-1">
               <Button variant="outline" className="flex-1" onClick={closeModal}>{t("cancel", "Cancel")}</Button>
               <Button onClick={handleSave} disabled={mutateRecord.isPending}
-                className="flex-1 bg-teal-600 hover:bg-teal-700 text-white">
+                className="flex-1 bg-primary hover:bg-primary/90 text-white">
                 {mutateRecord.isPending ? 'Saving...' : editTarget ? 'Update Warehouse' : 'Add Warehouse'}
               </Button>
             </div>
@@ -404,7 +404,7 @@ export default function Warehouses() {
                 </div>
                 <div>
                   <div className="text-xs text-muted-foreground">{t("code", "Code")}</div>
-                  <div className="font-mono text-teal-600 font-semibold">{viewTarget.code}</div>
+                  <div className="font-mono text-primary font-semibold">{viewTarget.code}</div>
                 </div>
                 <div>
                   <div className="text-xs text-muted-foreground">{t("status", "Status")}</div>

@@ -20,7 +20,7 @@ export default function StatCard({ title, value, subtitle, icon: Icon, trend, tr
       </div>
       {trend && (
         <div className="mt-3 flex items-center gap-1">
-          <span className={cn("text-xs font-medium", trendUp ? "text-green-600" : "text-red-500")}>
+          <span className={cn("text-xs font-medium", trendUp ? "text-primary" : "text-red-500")}>
             {trendUp ? "↑" : "↓"} {trend}
           </span>
           <span className="text-xs text-muted-foreground">{t("vs_last_month", "vs last month")}</span>

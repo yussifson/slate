@@ -16,7 +16,7 @@ import { generateText } from "@/lib/cloudflareAI";
 
 const JURISDICTIONS = ["Ghana", "Nigeria", "Sierra Leone", "West Africa (General)", "International"];
 const CASE_TYPES = ["civil", "criminal", "corporate", "family", "property", "labor", "tax", "other"];
-const CONFIDENCE_COLORS = { high: "bg-green-100 text-green-700", medium: "bg-yellow-100 text-yellow-700", low: "bg-red-100 text-red-700" };
+const CONFIDENCE_COLORS = { high: "bg-primary/10 text-primary/90", medium: "bg-yellow-100 text-yellow-700", low: "bg-red-100 text-red-700" };
 
 function Section({ icon: Icon, title, children, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -202,9 +202,9 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
                   <div className="space-y-2 pt-1">
                     {result.legislation.map((l, i) => {
                       return (
-                        <div key={i} className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
-                          <p className="text-sm font-medium text-emerald-800">{l.name}{l.section && ` — ${l.section}`}</p>
-                          {l.relevance && <p className="text-xs text-emerald-700 mt-0.5">{l.relevance}</p>}
+                        <div key={i} className="p-3 bg-primary/5 border border-primary/20 rounded-lg">
+                          <p className="text-sm font-medium text-primary/80">{l.name}{l.section && ` — ${l.section}`}</p>
+                          {l.relevance && <p className="text-xs text-primary/90 mt-0.5">{l.relevance}</p>}
                         </div>
                       );
                     })}
@@ -218,9 +218,9 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
                   <div className="space-y-2 pt-1">
                     {result.case_law.map((c, i) => {
                       return (
-                        <div key={i} className="p-3 bg-purple-50 border border-purple-200 rounded-lg">
-                          <p className="text-sm font-medium text-purple-800">{c.case_name}{c.year && ` (${c.year})`}</p>
-                          {c.principle && <p className="text-xs text-purple-700 mt-0.5">{c.principle}</p>}
+                        <div key={i} className="p-3 bg-primary/5 border border-primary/20 rounded-lg">
+                          <p className="text-sm font-medium text-primary/80">{c.case_name}{c.year && ` (${c.year})`}</p>
+                          {c.principle && <p className="text-xs text-primary/90 mt-0.5">{c.principle}</p>}
                         </div>
                       );
                     })}

@@ -15,19 +15,19 @@ const URGENCY_COLORS = {
   critical: "bg-red-100 text-red-700 border-red-200",
   high: "bg-orange-100 text-orange-700 border-orange-200",
   medium: "bg-yellow-100 text-yellow-700 border-yellow-200",
-  low: "bg-green-100 text-green-700 border-green-200",
+  low: "bg-primary/10 text-primary/90 border-primary/20",
 };
 
 const IMPORTANCE_COLORS = {
   high: "bg-red-50 border-red-200 text-red-800",
-  medium: "bg-emerald-50 border-emerald-200 text-emerald-800",
+  medium: "bg-primary/5 border-primary/20 text-primary/80",
   low: "bg-gray-50 border-gray-200 text-gray-700",
 };
 
 const DATE_TYPE_COLORS = {
-  Hearing: "bg-purple-100 text-purple-700",
+  Hearing: "bg-primary/10 text-primary/90",
   Signing: "bg-orange-100 text-orange-700",
-  Effective: "bg-green-100 text-green-700",
+  Effective: "bg-primary/10 text-primary/90",
   Expiry: "bg-red-100 text-red-700",
   Filing: "bg-orange-100 text-orange-700",
   Payment: "bg-yellow-100 text-yellow-700",

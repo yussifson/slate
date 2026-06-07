@@ -83,7 +83,7 @@ export default function SHSAttendanceReports() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent">
             Attendance Reports
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -100,27 +100,27 @@ export default function SHSAttendanceReports() {
           <div className="flex flex-col sm:flex-row gap-6 items-end">
             <div className="space-y-2 flex-1">
               <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                <CalendarIcon className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> Start Date
+                <CalendarIcon className="w-4 h-4 text-primary dark:text-primary/70" /> Start Date
               </label>
               <Input 
                 type="date"
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500 font-semibold text-slate-700 dark:text-slate-200"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-200"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
               />
             </div>
             <div className="space-y-2 flex-1">
               <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                <CalendarIcon className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> End Date
+                <CalendarIcon className="w-4 h-4 text-primary dark:text-primary/70" /> End Date
               </label>
               <Input 
                 type="date"
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500 font-semibold text-slate-700 dark:text-slate-200"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-200"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
               />
             </div>
-            <Button className="h-11 px-6 rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white shadow-md font-bold">
+            <Button className="h-11 px-6 rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white shadow-md font-bold">
               <TrendingUp className="w-4 h-4 mr-2" /> Generate
             </Button>
           </div>
@@ -135,7 +135,7 @@ export default function SHSAttendanceReports() {
               {/* Student Stats */}
               <div className="space-y-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-slate-800 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                  <div className="w-12 h-12 rounded-2xl bg-primary/5 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70">
                     <Users className="w-6 h-6" />
                   </div>
                   <div>
@@ -147,13 +147,13 @@ export default function SHSAttendanceReports() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-800 flex flex-col justify-center items-center text-center">
                     <p className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Average Rate</p>
-                    <p className={`text-3xl font-black ${sPresentRate >= 90 ? 'text-emerald-500' : sPresentRate >= 75 ? 'text-amber-500' : 'text-rose-500'}`}>
+                    <p className={`text-3xl font-black ${sPresentRate >= 90 ? 'text-primary' : sPresentRate >= 75 ? 'text-amber-500' : 'text-rose-500'}`}>
                       {sPresentRate}%
                     </p>
                   </div>
-                  <div className="p-5 rounded-2xl bg-emerald-50 border border-emerald-100 flex flex-col justify-center items-center text-center">
-                    <p className="text-xs font-bold text-emerald-600/70 uppercase tracking-wider mb-1">Total Present</p>
-                    <p className="text-3xl font-black text-emerald-600">{studentStats.present}</p>
+                  <div className="p-5 rounded-2xl bg-primary/5 border border-primary/10 flex flex-col justify-center items-center text-center">
+                    <p className="text-xs font-bold text-primary/70 uppercase tracking-wider mb-1">Total Present</p>
+                    <p className="text-3xl font-black text-primary">{studentStats.present}</p>
                   </div>
                   <div className="p-5 rounded-2xl bg-amber-50 border border-amber-100 flex flex-col justify-center items-center text-center">
                     <p className="text-xs font-bold text-amber-600/70 uppercase tracking-wider mb-1">Total Late</p>
@@ -169,7 +169,7 @@ export default function SHSAttendanceReports() {
               {/* Teacher Stats */}
               <div className="space-y-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+                  <div className="w-12 h-12 rounded-2xl bg-primary/5 flex items-center justify-center text-primary">
                     <Briefcase className="w-6 h-6" />
                   </div>
                   <div>
@@ -181,13 +181,13 @@ export default function SHSAttendanceReports() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-800 flex flex-col justify-center items-center text-center">
                     <p className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Average Rate</p>
-                    <p className={`text-3xl font-black ${tPresentRate >= 95 ? 'text-emerald-500' : tPresentRate >= 85 ? 'text-amber-500' : 'text-rose-500'}`}>
+                    <p className={`text-3xl font-black ${tPresentRate >= 95 ? 'text-primary' : tPresentRate >= 85 ? 'text-amber-500' : 'text-rose-500'}`}>
                       {tPresentRate}%
                     </p>
                   </div>
-                  <div className="p-5 rounded-2xl bg-emerald-50 border border-emerald-100 flex flex-col justify-center items-center text-center">
-                    <p className="text-xs font-bold text-emerald-600/70 uppercase tracking-wider mb-1">Total Present</p>
-                    <p className="text-3xl font-black text-emerald-600">{teacherStats.present}</p>
+                  <div className="p-5 rounded-2xl bg-primary/5 border border-primary/10 flex flex-col justify-center items-center text-center">
+                    <p className="text-xs font-bold text-primary/70 uppercase tracking-wider mb-1">Total Present</p>
+                    <p className="text-3xl font-black text-primary">{teacherStats.present}</p>
                   </div>
                   <div className="p-5 rounded-2xl bg-orange-50 border border-orange-100 flex flex-col justify-center items-center text-center">
                     <p className="text-xs font-bold text-orange-600/70 uppercase tracking-wider mb-1">Total Late</p>

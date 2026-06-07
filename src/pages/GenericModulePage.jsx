@@ -339,8 +339,8 @@ export default function GenericModulePage({ title: propTitle, description: propD
             <p className="text-xs text-muted-foreground mb-1">Module Status</p>
             <p className="text-2xl font-bold text-foreground">Active</p>
           </div>
-          <div className="w-11 h-11 rounded-full bg-emerald-500/10 flex items-center justify-center">
-            <ShieldCheck className="w-5 h-5 text-emerald-600" />
+          <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center">
+            <ShieldCheck className="w-5 h-5 text-primary" />
           </div>
         </div>
 

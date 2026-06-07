@@ -27,19 +27,19 @@ const getRoomStatus = (roomNumber, reservations, today) => {
 };
 
 const statusColors = {
-  Available:  'bg-green-50 border-green-300 text-green-800 hover:bg-green-100',
+  Available:  'bg-primary/5 border-primary/30 text-primary/80 hover:bg-primary/10',
   Occupied:   'bg-red-50 border-red-300 text-red-800 hover:bg-red-100',
-  Arriving:   'bg-violet-50 border-violet-300 text-violet-800 hover:bg-violet-100',
-  Reserved:   'bg-violet-50 border-violet-300 text-violet-800 hover:bg-violet-100',
+  Arriving:   'bg-primary/5 border-primary/30 text-primary/80 hover:bg-primary/10',
+  Reserved:   'bg-primary/5 border-primary/30 text-primary/80 hover:bg-primary/10',
   Cleaning:   'bg-yellow-50 border-yellow-300 text-yellow-800 hover:bg-yellow-100',
   Maintenance:'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200',
 };
 
 const statusIcons = {
-  Available:   <CheckCircle2 className="w-4 h-4 text-green-500" />,
+  Available:   <CheckCircle2 className="w-4 h-4 text-primary" />,
   Occupied:    <Moon className="w-4 h-4 text-red-500" />,
-  Arriving:    <LogIn className="w-4 h-4 text-violet-500" />,
-  Reserved:    <Calendar className="w-4 h-4 text-violet-500" />,
+  Arriving:    <LogIn className="w-4 h-4 text-primary" />,
+  Reserved:    <Calendar className="w-4 h-4 text-primary" />,
   Cleaning:    <Brush className="w-4 h-4 text-yellow-500" />,
   Maintenance: <Settings className="w-4 h-4 text-slate-500" />,
 };
@@ -129,23 +129,23 @@ export default function FrontDesk() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-card rounded-xl border border-border p-4 shadow-sm border-l-4 border-l-violet-500">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-violet-100 flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-violet-600" />
+            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+              <TrendingUp className="w-5 h-5 text-primary" />
             </div>
             <div>
               <p className="text-xs font-bold text-muted-foreground uppercase">{t("occupancy", "Occupancy")}</p>
-              <p className="text-2xl font-bold text-violet-600">{occupancyRate}%</p>
+              <p className="text-2xl font-bold text-primary">{occupancyRate}%</p>
             </div>
           </div>
         </div>
         <div className="bg-card rounded-xl border border-border p-4 shadow-sm border-l-4 border-l-green-500">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-              <LogIn className="w-5 h-5 text-green-600" />
+            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+              <LogIn className="w-5 h-5 text-primary" />
             </div>
             <div>
               <p className="text-xs font-bold text-muted-foreground uppercase">{t("arrivals_today", "Arrivals Today")}</p>
-              <p className="text-2xl font-bold text-green-600">{todayArrivals.length}</p>
+              <p className="text-2xl font-bold text-primary">{todayArrivals.length}</p>
             </div>
           </div>
         </div>
@@ -162,12 +162,12 @@ export default function FrontDesk() {
         </div>
         <div className="bg-card rounded-xl border border-border p-4 shadow-sm border-l-4 border-l-violet-500">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-violet-100 flex items-center justify-center">
-              <Users className="w-5 h-5 text-violet-600" />
+            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+              <Users className="w-5 h-5 text-primary" />
             </div>
             <div>
               <p className="text-xs font-bold text-muted-foreground uppercase">{t("guests_in_house", "Guests In-House")}</p>
-              <p className="text-2xl font-bold text-violet-600">{checkedIn.length}</p>
+              <p className="text-2xl font-bold text-primary">{checkedIn.length}</p>
             </div>
           </div>
         </div>
@@ -176,20 +176,20 @@ export default function FrontDesk() {
       {(todayArrivals.length > 0 || todayDepartures.length > 0) && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {todayArrivals.length > 0 && (
-            <div className="bg-green-50 border border-green-200 rounded-xl p-4">
-              <h3 className="font-bold text-green-800 flex items-center gap-2 mb-3">
+            <div className="bg-primary/5 border border-primary/20 rounded-xl p-4">
+              <h3 className="font-bold text-primary/80 flex items-center gap-2 mb-3">
                 <LogIn className="w-4 h-4" /> {t("today_s_arrivals", "Today's Arrivals (")}{todayArrivals.length})
                               </h3>
               <div className="space-y-2">
                 {todayArrivals.slice(0, 4).map(r => {
                   return (
                     <div key={r.id} className="flex items-center justify-between text-sm">
-                      <span className="font-semibold text-green-900">{r.guestName}</span>
-                      <span className="text-green-700 font-mono text-xs">{t("room", "Room")} {r.roomNumber}</span>
+                      <span className="font-semibold text-primary/70">{r.guestName}</span>
+                      <span className="text-primary/90 font-mono text-xs">{t("room", "Room")} {r.roomNumber}</span>
                     </div>
                   );
                 })}
-                {todayArrivals.length > 4 && <p className="text-xs text-green-700 font-medium">+{todayArrivals.length - 4} {t("more", "more")}</p>}
+                {todayArrivals.length > 4 && <p className="text-xs text-primary/90 font-medium">+{todayArrivals.length - 4} {t("more", "more")}</p>}
               </div>
             </div>
           )}
@@ -237,7 +237,7 @@ export default function FrontDesk() {
                 return (
                   <div key={floor}>
                     <p className="text-xs font-bold text-muted-foreground uppercase mb-3 flex items-center gap-2">
-                      <span className="w-6 h-6 rounded bg-violet-100 text-violet-700 flex items-center justify-center font-bold text-[10px]">{floor}</span>
+                      <span className="w-6 h-6 rounded bg-primary/10 text-primary/90 flex items-center justify-center font-bold text-[10px]">{floor}</span>
                       {t("floor", "Floor")} {floor}
                     </p>
                     <div className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-2">
@@ -248,7 +248,7 @@ export default function FrontDesk() {
                           <button
                             key={roomNum}
                             onClick={() => setSelectedRoom(isSelected ? null : roomNum)}
-                            className={`aspect-square rounded-lg border-2 flex flex-col items-center justify-center p-1 cursor-pointer transition-all duration-150 text-center ${statusColors[info.status]} ${isSelected ? 'ring-4 ring-violet-400 scale-110 shadow-lg z-10 relative' : ''}`}
+                            className={`aspect-square rounded-lg border-2 flex flex-col items-center justify-center p-1 cursor-pointer transition-all duration-150 text-center ${statusColors[info.status]} ${isSelected ? 'ring-4 ring-primary/70 scale-110 shadow-lg z-10 relative' : ''}`}
                           >
                             {statusIcons[info.status]}
                             <span className="text-[10px] font-bold mt-0.5 leading-tight">{roomNum}</span>
@@ -302,7 +302,7 @@ export default function FrontDesk() {
                     </div>
                     <div>
                       <span className="text-muted-foreground block">{t("total", "Total")}</span>
-                      <span className="font-bold text-violet-600">${selectedRoomInfo.reservation.totalAmount}</span>
+                      <span className="font-bold text-primary">${selectedRoomInfo.reservation.totalAmount}</span>
                     </div>
                   </div>
                 </div>
@@ -331,7 +331,7 @@ export default function FrontDesk() {
                         onError: (err) => toast.error(err.message)
                       });
                     }}
-                    className="w-full bg-green-600 hover:bg-green-700 text-white gap-2"
+                    className="w-full bg-primary hover:bg-primary/90 text-white gap-2"
                   >
                     <UserCheck className="w-4 h-4" /> {t("confirm_check_in", "Confirm Check-In")}
                   </Button>
@@ -363,7 +363,7 @@ export default function FrontDesk() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-              <Key className="w-5 h-5 text-violet-600" /> {t("walk_in_check_in_room", "Walk-in Check-In — Room")} {selectedRoom}
+              <Key className="w-5 h-5 text-primary" /> {t("walk_in_check_in_room", "Walk-in Check-In — Room")} {selectedRoom}
             </h2>
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-2">

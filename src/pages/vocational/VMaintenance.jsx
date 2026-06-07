@@ -102,8 +102,8 @@ export default function VMaintenance() {
     <div className="flex-1 space-y-6 p-8 bg-slate-50/50 dark:bg-slate-900/50 min-h-screen animate-in fade-in duration-300">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-purple-700 via-purple-800 to-slate-900 dark:from-purple-400 dark:to-white bg-clip-text text-transparent flex items-center gap-3">
-            <div className="p-2 bg-purple-100 dark:bg-purple-900/50 rounded-xl text-purple-600 dark:text-purple-400">
+          <h2 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 dark:from-primary/70 dark:to-white bg-clip-text text-transparent flex items-center gap-3">
+            <div className="p-2 bg-primary/10 dark:bg-primary/50 rounded-xl text-primary dark:text-primary/70">
               <Wrench className="w-6 h-6" />
             </div>
             Equipment Maintenance
@@ -116,12 +116,12 @@ export default function VMaintenance() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input 
               placeholder="Search tasks..." 
-              className="pl-9 w-[250px] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus-visible:ring-purple-500 rounded-xl"
+              className="pl-9 w-[250px] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus-visible:ring-primary rounded-xl"
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
             />
           </div>
-          <Button onClick={() => openModal()} className="gap-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl shadow-lg shadow-purple-200 dark:shadow-none transition-all hover:scale-105">
+          <Button onClick={() => openModal()} className="gap-2 bg-primary hover:bg-primary/90 text-white rounded-xl shadow-lg shadow-purple-200 dark:shadow-none transition-all hover:scale-105">
             <Plus className="w-4 h-4" /> New Task
           </Button>
         </div>
@@ -170,7 +170,7 @@ export default function VMaintenance() {
         <Card className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl border-none shadow-sm rounded-3xl ring-1 ring-slate-200/50 dark:ring-slate-800">
           <CardContent className="p-6 flex flex-col justify-center">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+              <div className="w-12 h-12 rounded-2xl bg-primary/5 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
               <div>
@@ -197,11 +197,11 @@ export default function VMaintenance() {
                 {filtered.map(item => (
                   <div key={item.id} className="flex items-center justify-between p-5 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors group">
                     <div className="flex items-center gap-5">
-                      <div className="w-12 h-12 rounded-2xl bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center text-purple-600 dark:text-purple-400 font-bold shrink-0">
+                      <div className="w-12 h-12 rounded-2xl bg-primary/5 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70 font-bold shrink-0">
                         <Wrench className="w-6 h-6" />
                       </div>
                       <div>
-                        <h4 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-purple-600 transition-colors">{item.title}</h4>
+                        <h4 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">{item.title}</h4>
                         <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
                           <span className="font-medium text-slate-700 dark:text-slate-300">Eq: {item.data?.equipment_name || 'Unspecified'}</span>
                           <span>•</span>
@@ -214,13 +214,13 @@ export default function VMaintenance() {
                     <div className="flex items-center gap-6">
                       {item.data?.cost && (
                         <div className="hidden md:flex items-center text-sm font-semibold text-slate-600 dark:text-slate-300">
-                          <DollarSign className="w-4 h-4 text-emerald-500 mr-1" />
+                          <DollarSign className="w-4 h-4 text-primary mr-1" />
                           {item.data.cost}
                         </div>
                       )}
                       <Badge className={
-                        item.status === 'Completed' ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-400' :
-                        item.status === 'In Progress' ? 'bg-orange-100 text-orange-700 hover:bg-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                        item.status === 'Completed' ? 'bg-primary/10 text-primary/90 hover:bg-primary/20 dark:bg-primary/20 dark:text-primary/70' :
+                        item.status === 'In Progress' ? 'bg-orange-100 text-orange-700 hover:bg-primary/20 dark:bg-primary/20 dark:text-primary/70' :
                         item.status === 'Scheduled' ? 'bg-amber-100 text-amber-700 hover:bg-amber-200 dark:bg-amber-500/20 dark:text-amber-400' :
                         item.status === 'Overdue' ? 'bg-rose-100 text-rose-700 hover:bg-rose-200 dark:bg-rose-500/20 dark:text-rose-400' :
                         'bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400'
@@ -228,7 +228,7 @@ export default function VMaintenance() {
                         {item.status}
                       </Badge>
                       <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button variant="ghost" size="icon" onClick={() => openModal(item)} className="h-8 w-8 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20">
+                        <Button variant="ghost" size="icon" onClick={() => openModal(item)} className="h-8 w-8 text-primary hover:bg-primary/5 dark:hover:bg-primary/20">
                           <Edit className="w-4 h-4" />
                         </Button>
                         <Button variant="ghost" size="icon" onClick={() => handleDelete(item.id)} className="h-8 w-8 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20">
@@ -298,7 +298,7 @@ export default function VMaintenance() {
           </div>
           <DialogFooter>
             <Button variant="outline" className="rounded-xl" onClick={() => setIsModalOpen(false)}>Cancel</Button>
-            <Button className="rounded-xl bg-purple-600 hover:bg-purple-700 text-white" onClick={handleSave}>Save Task</Button>
+            <Button className="rounded-xl bg-primary hover:bg-primary/90 text-white" onClick={handleSave}>Save Task</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -99,7 +99,7 @@ export default function CSVImportModal({ isOpen, onClose, recordType, onComplete
         <div className="p-6">
           {step === 1 && (
             <div className="border-2 border-dashed border-border rounded-xl p-12 text-center hover:bg-muted/30 transition-colors">
-              <UploadCloud className="w-12 h-12 mx-auto text-indigo-500 mb-4" />
+              <UploadCloud className="w-12 h-12 mx-auto text-primary mb-4" />
               <h3 className="text-lg font-bold mb-2">{t("drag_and_drop_your_csv_here", "Drag and drop your CSV here")}</h3>
               <p className="text-sm text-muted-foreground mb-6">{t("or_click_to_browse_your_files", "Or click to browse your files")}</p>
               <label className="bg-primary text-white px-4 py-2 rounded-md cursor-pointer hover:bg-primary/90 transition-colors">
@@ -111,7 +111,7 @@ export default function CSVImportModal({ isOpen, onClose, recordType, onComplete
 
           {step === 2 && (
             <div className="space-y-6">
-              <div className="flex items-center gap-3 bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-400 p-3 rounded-lg border border-green-200 dark:border-green-900/50">
+              <div className="flex items-center gap-3 bg-primary/5 dark:bg-primary/30 text-primary/90 dark:text-primary/70 p-3 rounded-lg border border-primary/20 dark:border-primary/50">
                 <CheckCircle className="w-5 h-5" />
                 <span className="text-sm font-medium">{t("successfully_loaded", "Successfully loaded")} <strong>{data.length}</strong> {t("rows_map_the_columns_below", "rows. Map the columns below.")}</span>
               </div>
@@ -149,7 +149,7 @@ export default function CSVImportModal({ isOpen, onClose, recordType, onComplete
 
               <div className="flex justify-end gap-3">
                 <Button variant="outline" onClick={() => setStep(1)}>{t("back", "Back")}</Button>
-                <Button onClick={handleImport} disabled={isImporting} className="bg-indigo-600 hover:bg-indigo-700 text-white min-w-[120px]">
+                <Button onClick={handleImport} disabled={isImporting} className="bg-primary hover:bg-primary/90 text-white min-w-[120px]">
                   {isImporting ? 'Importing...' : `Import ${data.length} Records`}
                 </Button>
               </div>

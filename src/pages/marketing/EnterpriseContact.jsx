@@ -52,12 +52,12 @@ export default function EnterpriseContact() {
   return (
     <div className="min-h-screen bg-slate-50 relative overflow-hidden flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8">
       {/* Background gradients */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-emerald-400/20 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-indigo-400/20 blur-[120px] pointer-events-none" />
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary/20 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-primary/20 blur-[120px] pointer-events-none" />
       <div className="w-full max-w-7xl relative z-10 flex flex-col lg:flex-row shadow-2xl rounded-[2.5rem] overflow-hidden border border-white/40 bg-white/40 backdrop-blur-3xl">
         
         {/* Left Side: Premium Info Panel */}
-        <div className="w-full lg:w-[45%] bg-emerald-600 text-white p-10 md:p-16 flex flex-col justify-between relative overflow-hidden">
+        <div className="w-full lg:w-[45%] bg-primary text-white p-10 md:p-16 flex flex-col justify-between relative overflow-hidden">
           <div className="absolute inset-0 bg-white/5 pointer-events-none" />
           <div className="absolute top-0 right-0 w-[200%] h-[200%] bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.1)_0%,transparent_50%)] pointer-events-none" />
           
@@ -78,7 +78,7 @@ export default function EnterpriseContact() {
             <ul className="space-y-8">
               <li className="flex gap-4 items-start">
                 <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center shrink-0 border border-white/5 shadow-inner">
-                  <Shield className="w-6 h-6 text-emerald-400" />
+                  <Shield className="w-6 h-6 text-primary/70" />
                 </div>
                 <div>
                   <p className="font-bold text-base text-white">{t("data_sovereignty", "Data Sovereignty")}</p>
@@ -90,7 +90,7 @@ export default function EnterpriseContact() {
               </li>
               <li className="flex gap-4 items-start">
                 <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center shrink-0 border border-white/5 shadow-inner">
-                  <Database className="w-6 h-6 text-purple-400" />
+                  <Database className="w-6 h-6 text-primary/70" />
                 </div>
                 <div>
                   <p className="font-bold text-base text-white">{t("unlimited_api_limits", "Unlimited API Limits")}</p>
@@ -102,7 +102,7 @@ export default function EnterpriseContact() {
               </li>
               <li className="flex gap-4 items-start">
                 <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center shrink-0 border border-white/5 shadow-inner">
-                  <Users className="w-6 h-6 text-green-400" />
+                  <Users className="w-6 h-6 text-primary/70" />
                 </div>
                 <div>
                   <p className="font-bold text-base text-white">{t("sla_guarantees", "SLA Guarantees")}</p>
@@ -118,7 +118,7 @@ export default function EnterpriseContact() {
           <div className="mt-16 pt-8 border-t border-white/10 relative z-10 flex items-center justify-between">
             <div>
               <p className="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">{t("need_immediate_assistance", "Need immediate assistance?")}</p>
-              <a href="tel:+18005550199" className="inline-flex items-center gap-2 font-bold text-xl text-white hover:text-emerald-400 transition-colors">
+              <a href="tel:+18005550199" className="inline-flex items-center gap-2 font-bold text-xl text-white hover:text-primary/70 transition-colors">
                 <Headphones className="w-5 h-5" /> {t("1_800_optal_hq", "1-800-OPTAL-HQ")}
               </a>
             </div>
@@ -130,7 +130,7 @@ export default function EnterpriseContact() {
           {/* Progress Bar */}
           {step < 3 && (
             <div className="absolute top-0 left-0 right-0 h-1.5 bg-slate-100/50">
-              <div className="h-full bg-emerald-600 transition-all duration-500 ease-out" style={{ width: step === 1 ? '50%' : '100%' }}></div>
+              <div className="h-full bg-primary transition-all duration-500 ease-out" style={{ width: step === 1 ? '50%' : '100%' }}></div>
             </div>
           )}
 
@@ -150,12 +150,12 @@ export default function EnterpriseContact() {
                           onClick={() => handleChange('deployment', type)}
                           className={`cursor-pointer rounded-2xl border-2 p-5 flex flex-col items-center justify-center text-center transition-all bg-white/60 backdrop-blur-md ${
                             formData.deployment === type 
-                              ? 'border-emerald-600 shadow-md shadow-emerald-600/10' 
-                              : 'border-white hover:border-emerald-200 shadow-sm'
+                              ? 'border-primary shadow-md shadow-emerald-600/10' 
+                              : 'border-white hover:border-primary/20 shadow-sm'
                           }`}
                         >
-                          <Server className={`w-6 h-6 mb-3 ${formData.deployment === type ? 'text-emerald-600' : 'text-slate-400'}`} />
-                          <span className={`text-sm font-bold ${formData.deployment === type ? 'text-emerald-900' : 'text-slate-600'}`}>
+                          <Server className={`w-6 h-6 mb-3 ${formData.deployment === type ? 'text-primary' : 'text-slate-400'}`} />
+                          <span className={`text-sm font-bold ${formData.deployment === type ? 'text-primary/70' : 'text-slate-600'}`}>
                             {type === 'aws' ? 'Private AWS' : type === 'azure' ? 'Private Azure' : 'Bare Metal'}
                           </span>
                         </div>
@@ -168,14 +168,14 @@ export default function EnterpriseContact() {
                 <div>
                   <Label className="text-sm font-bold text-slate-900 mb-3 block">{t("estimated_active_users", "Estimated Active Users")}</Label>
                   <Select value={formData.userCount} onValueChange={(val) => handleChange('userCount', val)}>
-                    <SelectTrigger className="h-14 rounded-2xl border-white bg-white/60 backdrop-blur-md shadow-sm focus:ring-4 focus:ring-emerald-600/10 focus:border-emerald-500 transition-all">
+                    <SelectTrigger className="h-14 rounded-2xl border-white bg-white/60 backdrop-blur-md shadow-sm focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all">
                       <SelectValue placeholder="Select user count" />
                     </SelectTrigger>
                     <SelectContent className="rounded-2xl shadow-xl border-slate-100">
-                      <SelectItem value="10-50" className="rounded-xl focus:bg-emerald-50">{t("10_50_users", "10 - 50 Users")}</SelectItem>
-                      <SelectItem value="50-100" className="rounded-xl focus:bg-emerald-50">{t("50_100_users", "50 - 100 Users")}</SelectItem>
-                      <SelectItem value="100-500" className="rounded-xl focus:bg-emerald-50">{t("100_500_users", "100 - 500 Users")}</SelectItem>
-                      <SelectItem value="500+" className="rounded-xl focus:bg-emerald-50">{t("500_users", "500+ Users")}</SelectItem>
+                      <SelectItem value="10-50" className="rounded-xl focus:bg-primary/5">{t("10_50_users", "10 - 50 Users")}</SelectItem>
+                      <SelectItem value="50-100" className="rounded-xl focus:bg-primary/5">{t("50_100_users", "50 - 100 Users")}</SelectItem>
+                      <SelectItem value="100-500" className="rounded-xl focus:bg-primary/5">{t("100_500_users", "100 - 500 Users")}</SelectItem>
+                      <SelectItem value="500+" className="rounded-xl focus:bg-primary/5">{t("500_users", "500+ Users")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -184,7 +184,7 @@ export default function EnterpriseContact() {
                 <div>
                   <Label className="text-sm font-bold text-slate-900 mb-4 block">{t("enterprise_add_ons", "Enterprise Add-ons")}</Label>
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between p-5 rounded-2xl border border-white bg-white/60 backdrop-blur-md shadow-sm hover:border-emerald-100 transition-colors">
+                    <div className="flex items-center justify-between p-5 rounded-2xl border border-white bg-white/60 backdrop-blur-md shadow-sm hover:border-primary/10 transition-colors">
                       <div className="space-y-1">
                         <Label className="text-base font-bold text-slate-900 cursor-pointer" onClick={() => handleChange('needsMigration', !formData.needsMigration)}>{t("legacy_data_migration", "Legacy Data Migration")}</Label>
                         <p className="text-xs text-slate-500 font-medium">{t(
@@ -195,7 +195,7 @@ export default function EnterpriseContact() {
                       <Switch checked={formData.needsMigration} onCheckedChange={(c) => handleChange('needsMigration', c)} />
                     </div>
                     
-                    <div className="flex items-center justify-between p-5 rounded-2xl border border-white bg-white/60 backdrop-blur-md shadow-sm hover:border-emerald-100 transition-colors">
+                    <div className="flex items-center justify-between p-5 rounded-2xl border border-white bg-white/60 backdrop-blur-md shadow-sm hover:border-primary/10 transition-colors">
                       <div className="space-y-1">
                         <Label className="text-base font-bold text-slate-900 cursor-pointer" onClick={() => handleChange('needsWhitelabel', !formData.needsWhitelabel)}>{t("full_white_labeling", "Full White-Labeling")}</Label>
                         <p className="text-xs text-slate-500 font-medium">{t(
@@ -206,7 +206,7 @@ export default function EnterpriseContact() {
                       <Switch checked={formData.needsWhitelabel} onCheckedChange={(c) => handleChange('needsWhitelabel', c)} />
                     </div>
 
-                    <div className="flex items-center justify-between p-5 rounded-2xl border border-white bg-white/60 backdrop-blur-md shadow-sm hover:border-emerald-100 transition-colors">
+                    <div className="flex items-center justify-between p-5 rounded-2xl border border-white bg-white/60 backdrop-blur-md shadow-sm hover:border-primary/10 transition-colors">
                       <div className="space-y-1">
                         <Label className="text-base font-bold text-slate-900 cursor-pointer" onClick={() => handleChange('needsCompliance', !formData.needsCompliance)}>{t("compliance_audit_package", "Compliance Audit Package")}</Label>
                         <p className="text-xs text-slate-500 font-medium">{t(
@@ -221,7 +221,7 @@ export default function EnterpriseContact() {
               </div>
 
               <div className="mt-10 flex justify-end">
-                <Button onClick={handleNext} className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-6 px-10 rounded-2xl w-full sm:w-auto text-base gap-2 shadow-lg shadow-emerald-600/20 hover:shadow-emerald-600/40 hover:-translate-y-0.5 transition-all">
+                <Button onClick={handleNext} className="bg-primary hover:bg-primary/90 text-white font-bold py-6 px-10 rounded-2xl w-full sm:w-auto text-base gap-2 shadow-lg shadow-emerald-600/20 hover:shadow-emerald-600/40 hover:-translate-y-0.5 transition-all">
                   {t("continue_to_details", "Continue to Details")} <ArrowRight className="w-5 h-5" />
                 </Button>
               </div>
@@ -236,37 +236,37 @@ export default function EnterpriseContact() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-bold text-slate-900">{t("first_name", "First Name")}</Label>
-                    <Input required className="h-14 rounded-2xl border-white bg-white/60 backdrop-blur-md shadow-sm focus:bg-white focus:ring-4 focus:ring-emerald-600/10 focus:border-emerald-500 transition-all font-medium" placeholder="Jane" value={formData.firstName} onChange={(e) => handleChange('firstName', e.target.value)} />
+                    <Input required className="h-14 rounded-2xl border-white bg-white/60 backdrop-blur-md shadow-sm focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-medium" placeholder="Jane" value={formData.firstName} onChange={(e) => handleChange('firstName', e.target.value)} />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-bold text-slate-900">{t("last_name", "Last Name")}</Label>
-                    <Input required className="h-14 rounded-2xl border-white bg-white/60 backdrop-blur-md shadow-sm focus:bg-white focus:ring-4 focus:ring-emerald-600/10 focus:border-emerald-500 transition-all font-medium" placeholder="Doe" value={formData.lastName} onChange={(e) => handleChange('lastName', e.target.value)} />
+                    <Input required className="h-14 rounded-2xl border-white bg-white/60 backdrop-blur-md shadow-sm focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-medium" placeholder="Doe" value={formData.lastName} onChange={(e) => handleChange('lastName', e.target.value)} />
                   </div>
                 </div>
 
                 <div className="space-y-6 mb-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-bold text-slate-900">{t("work_email", "Work Email")}</Label>
-                    <Input required type="email" className="h-14 rounded-2xl border-white bg-white/60 backdrop-blur-md shadow-sm focus:bg-white focus:ring-4 focus:ring-emerald-600/10 focus:border-emerald-500 transition-all font-medium" placeholder="jane@company.com" value={formData.workEmail} onChange={(e) => handleChange('workEmail', e.target.value)} />
+                    <Input required type="email" className="h-14 rounded-2xl border-white bg-white/60 backdrop-blur-md shadow-sm focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-medium" placeholder="jane@company.com" value={formData.workEmail} onChange={(e) => handleChange('workEmail', e.target.value)} />
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <Label className="text-sm font-bold text-slate-900">{t("company_name", "Company Name")}</Label>
-                      <Input required className="h-14 rounded-2xl border-white bg-white/60 backdrop-blur-md shadow-sm focus:bg-white focus:ring-4 focus:ring-emerald-600/10 focus:border-emerald-500 transition-all font-medium" placeholder="Acme Corp" value={formData.companyName} onChange={(e) => handleChange('companyName', e.target.value)} />
+                      <Input required className="h-14 rounded-2xl border-white bg-white/60 backdrop-blur-md shadow-sm focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-medium" placeholder="Acme Corp" value={formData.companyName} onChange={(e) => handleChange('companyName', e.target.value)} />
                     </div>
                     <div className="space-y-2">
                       <Label className="text-sm font-bold text-slate-900">{t("industry", "Industry")}</Label>
                       <Select value={formData.industry} onValueChange={(val) => handleChange('industry', val)} required>
-                        <SelectTrigger className="h-14 rounded-2xl border-white bg-white/60 backdrop-blur-md shadow-sm focus:ring-4 focus:ring-emerald-600/10 focus:border-emerald-500 transition-all font-medium">
+                        <SelectTrigger className="h-14 rounded-2xl border-white bg-white/60 backdrop-blur-md shadow-sm focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-medium">
                           <SelectValue placeholder="Select industry" />
                         </SelectTrigger>
                         <SelectContent className="rounded-2xl shadow-xl border-slate-100">
-                          <SelectItem value="law" className="rounded-xl focus:bg-emerald-50">{t("law_firm", "Law Firm")}</SelectItem>
-                          <SelectItem value="healthcare" className="rounded-xl focus:bg-emerald-50">{t("healthcare_hospital", "Healthcare / Hospital")}</SelectItem>
-                          <SelectItem value="education" className="rounded-xl focus:bg-emerald-50">{t("education", "Education")}</SelectItem>
-                          <SelectItem value="finance" className="rounded-xl focus:bg-emerald-50">{t("finance_insurance", "Finance / Insurance")}</SelectItem>
-                          <SelectItem value="other" className="rounded-xl focus:bg-emerald-50">{t("other", "Other")}</SelectItem>
+                          <SelectItem value="law" className="rounded-xl focus:bg-primary/5">{t("law_firm", "Law Firm")}</SelectItem>
+                          <SelectItem value="healthcare" className="rounded-xl focus:bg-primary/5">{t("healthcare_hospital", "Healthcare / Hospital")}</SelectItem>
+                          <SelectItem value="education" className="rounded-xl focus:bg-primary/5">{t("education", "Education")}</SelectItem>
+                          <SelectItem value="finance" className="rounded-xl focus:bg-primary/5">{t("finance_insurance", "Finance / Insurance")}</SelectItem>
+                          <SelectItem value="other" className="rounded-xl focus:bg-primary/5">{t("other", "Other")}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -275,7 +275,7 @@ export default function EnterpriseContact() {
                   <div className="space-y-2">
                     <Label className="text-sm font-bold text-slate-900">{t("any_specific_requirements_opti", "Any specific requirements? (Optional)")}</Label>
                     <Textarea 
-                      className="min-h-[120px] rounded-2xl border-white bg-white/60 backdrop-blur-md shadow-sm focus:bg-white focus:ring-4 focus:ring-emerald-600/10 focus:border-emerald-500 transition-all resize-none font-medium p-4" 
+                      className="min-h-[120px] rounded-2xl border-white bg-white/60 backdrop-blur-md shadow-sm focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all resize-none font-medium p-4" 
                       placeholder="Tell us about your current infrastructure..."
                       value={formData.message}
                       onChange={(e) => handleChange('message', e.target.value)}
@@ -297,8 +297,8 @@ export default function EnterpriseContact() {
 
           {step === 3 && (
             <div className="text-center py-12 animate-in fade-in zoom-in-95 duration-500 h-full flex flex-col items-center justify-center">
-              <div className="w-24 h-24 bg-green-50 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-inner border border-green-100">
-                <Check className="w-12 h-12 text-green-500" strokeWidth={3} />
+              <div className="w-24 h-24 bg-primary/5 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-inner border border-primary/10">
+                <Check className="w-12 h-12 text-primary" strokeWidth={3} />
               </div>
               <h3 className="text-3xl font-extrabold text-slate-900 mb-4">{t("request_sent_successfully", "Request Sent Successfully!")}</h3>
               <p className="text-slate-600 text-lg max-w-md mx-auto leading-relaxed mb-10">

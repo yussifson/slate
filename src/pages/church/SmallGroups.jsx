@@ -106,7 +106,7 @@ export default function SmallGroups() {
             "Cell groups and home fellowship directory"
           )}</p>
         </div>
-        <Button onClick={() => setShowModal(true)} className="gap-2 bg-purple-600 hover:bg-purple-700 text-white">
+        <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
           <Plus className="w-4 h-4" /> {t("add_group", "Add Group")}
         </Button>
       </div>
@@ -120,7 +120,7 @@ export default function SmallGroups() {
         <div className="py-12 text-center text-muted-foreground">{t("loading_groups", "Loading groups...")}</div>
       ) : filtered.length === 0 ? (
         <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-border">
-          <Users className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-purple-600" />
+          <Users className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary" />
           <p className="font-semibold text-lg text-card-foreground">{t("no_cell_groups_configured", "No cell groups configured")}</p>
           <p className="text-sm mt-1 max-w-md mx-auto">{t(
             "register_localized_neighborhoo",
@@ -131,9 +131,9 @@ export default function SmallGroups() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map(group => {
             return (
-              <div key={group.id} className="bg-card rounded-xl border border-border p-6 shadow-sm hover:border-purple-200 transition-colors relative group">
+              <div key={group.id} className="bg-card rounded-xl border border-border p-6 shadow-sm hover:border-primary/20 transition-colors relative group">
                 <div className="flex justify-between items-start mb-4">
-                  <div className="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-950/50 flex items-center justify-center text-purple-600 dark:text-purple-400">
+                  <div className="w-12 h-12 rounded-full bg-primary/10 dark:bg-primary/50 flex items-center justify-center text-primary dark:text-primary/70">
                     <Users className="w-6 h-6" />
                   </div>
                   <div className="flex items-center gap-2">
@@ -162,11 +162,11 @@ export default function SmallGroups() {
                 <p className="text-sm text-muted-foreground mb-4">{t("leader", "Leader:")} <Link to="/church/members" className="font-bold text-primary hover:underline">{group.leader}</Link></p>
                 <div className="space-y-3 text-sm text-muted-foreground bg-muted dark:bg-muted/30 p-4 rounded-lg border border-border">
                   <div className="flex items-center gap-3">
-                    <MapPin className="w-4 h-4 text-purple-500" />
+                    <MapPin className="w-4 h-4 text-primary" />
                     <span>{group.location}</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <Clock className="w-4 h-4 text-purple-500" />
+                    <Clock className="w-4 h-4 text-primary" />
                     <span>{group.time}</span>
                   </div>
                 </div>
@@ -179,7 +179,7 @@ export default function SmallGroups() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-border">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-              <Users className="w-5 h-5 text-purple-600" /> {t("configure_cell_group", "Configure Cell Group")}
+              <Users className="w-5 h-5 text-primary" /> {t("configure_cell_group", "Configure Cell Group")}
             </h2>
             <div className="space-y-3">
               <div>
@@ -233,7 +233,7 @@ export default function SmallGroups() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditRecord(null); }}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-purple-600 hover:bg-purple-700 text-white" onClick={handleCreateGroup}>{editRecord ? 'Update' : 'Save Cell'}</Button>
+              <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleCreateGroup}>{editRecord ? 'Update' : 'Save Cell'}</Button>
             </div>
           </div>
         </div>

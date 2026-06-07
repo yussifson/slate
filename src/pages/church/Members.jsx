@@ -125,13 +125,13 @@ export default function Members() {
           <h1 className="text-2xl font-bold text-card-foreground">{t("member_directory", "Member Directory")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("manage_church_congregants_and_", "Manage church congregants and visitors")}</p>
         </div>
-        <Button onClick={() => setShowModal(true)} className="gap-2 bg-purple-600 hover:bg-purple-700 text-white">
+        <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
           <UserPlus className="w-4 h-4" /> {t("add_member", "Add Member")}
         </Button>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-950/50 flex items-center justify-center text-purple-600 dark:text-purple-400">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 dark:bg-primary/50 flex items-center justify-center text-primary dark:text-primary/70">
             <Users className="w-5 h-5" />
           </div>
           <div>
@@ -161,7 +161,7 @@ export default function Members() {
             <div className="py-12 text-center text-muted-foreground">{t("loading_directory", "Loading directory...")}</div>
           ) : filtered.length === 0 ? (
             <div className="py-12 text-center text-muted-foreground">
-              <Users className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-purple-600" />
+              <Users className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary" />
               <p className="font-semibold text-lg text-card-foreground">{t("no_member_profiles_found", "No member profiles found")}</p>
               <p className="text-xs mt-1">{t(
                 "configure_congregants_using_th",
@@ -281,7 +281,7 @@ export default function Members() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditRecord(null); }}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-purple-600 hover:bg-purple-700 text-white" onClick={handleCreateMember}>{editRecord ? 'Update' : 'Save Member'}</Button>
+              <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleCreateMember}>{editRecord ? 'Update' : 'Save Member'}</Button>
             </div>
           </div>
         </div>

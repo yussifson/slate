@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 
 const CATEGORIES = ["workplace_conduct", "harassment", "discrimination", "salary", "workload", "management", "safety", "other"];
 const CATEGORY_LABELS = { workplace_conduct: "Workplace Conduct", harassment: "Harassment", discrimination: "Discrimination", salary: "Salary", workload: "Workload", management: "Management", safety: "Safety", other: "Other" };
-const STATUS_COLORS = { open: "bg-red-100 text-red-700", under_review: "bg-amber-100 text-amber-700", resolved: "bg-green-100 text-green-700", dismissed: "bg-slate-100 text-slate-600" };
+const STATUS_COLORS = { open: "bg-red-100 text-red-700", under_review: "bg-amber-100 text-amber-700", resolved: "bg-primary/10 text-primary/90", dismissed: "bg-slate-100 text-slate-600" };
 const PRIORITY_COLORS = { low: "bg-slate-100 text-slate-600", medium: "bg-amber-100 text-amber-700", high: "bg-red-100 text-red-700" };
 
 export default function HRComplaintsPanel({ companyId, complaints, staff, isAdmin, user }) {
@@ -159,7 +159,7 @@ function ComplaintViewDialog({ complaint, onClose, isAdmin, onUpdate, reviewerEm
               <Textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} />
               <div className="flex gap-2 flex-wrap">
                 <Button size="sm" className="bg-amber-600 hover:bg-amber-700 text-white" onClick={() => onUpdate({ status: "under_review" })}>{t("under_review", "Under Review")}</Button>
-                <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white" onClick={() => onUpdate({ status: "resolved", resolution_notes: notes, resolved_by: reviewerEmail, resolved_at: new Date().toISOString() })}>{t("resolve", "Resolve")}</Button>
+                <Button size="sm" className="bg-primary hover:bg-primary/90 text-white" onClick={() => onUpdate({ status: "resolved", resolution_notes: notes, resolved_by: reviewerEmail, resolved_at: new Date().toISOString() })}>{t("resolve", "Resolve")}</Button>
                 <Button size="sm" variant="outline" onClick={() => onUpdate({ status: "dismissed", resolution_notes: notes })}>{t("dismiss", "Dismiss")}</Button>
               </div>
             </div>

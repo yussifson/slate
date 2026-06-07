@@ -417,7 +417,7 @@ export default function OrbitBoltPagesWorkspace({ onClose, onApplySchema }) {
                   <div className="flex gap-1.5">
                     <div className="w-3 h-3 rounded-full bg-red-500/80" />
                     <div className="w-3 h-3 rounded-full bg-amber-500/80" />
-                    <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
+                    <div className="w-3 h-3 rounded-full bg-primary/80" />
                   </div>
                   <div className="flex-1 max-w-md mx-auto h-7 rounded-md bg-background/50 border border-border flex items-center justify-center px-3">
                     <span className="text-[11px] text-muted-foreground truncate font-medium">

@@ -136,7 +136,7 @@ export default function FeeManagement() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-card rounded-xl border border-border p-5 shadow-sm">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-950/50 flex items-center justify-center text-green-600 dark:text-green-400">
+            <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/50 flex items-center justify-center text-primary dark:text-primary/70">
               <DollarSign className="w-4 h-4" />
             </div>
             <h3 className="font-semibold text-foreground text-sm">{t("total_collected", "Total Collected")}</h3>
@@ -154,7 +154,7 @@ export default function FeeManagement() {
         </div>
         <div className="bg-card rounded-xl border border-border p-5 shadow-sm">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-950/50 flex items-center justify-center text-[#1E3A8A] dark:text-emerald-400 dark:text-emerald-400">
+            <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/50 flex items-center justify-center text-[#1E3A8A] dark:text-primary/70 dark:text-primary/70">
               <CheckCircle className="w-4 h-4" />
             </div>
             <h3 className="font-semibold text-foreground text-sm">{t("fully_paid_students", "Fully Paid Students")}</h3>
@@ -166,7 +166,7 @@ export default function FeeManagement() {
         <div className="p-4 border-b border-border bg-muted/50">
           <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input placeholder="Search student tuition listings..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white/80 dark:bg-slate-800/50 border-emerald-100 dark:border-slate-700 rounded-xl focus-visible:ring-[#3B82F6]" />
+            <Input placeholder="Search student tuition listings..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white/80 dark:bg-slate-800/50 border-primary/10 dark:border-slate-700 rounded-xl focus-visible:ring-[#3B82F6]" />
           </div>
         </div>
         <div className="overflow-x-auto">
@@ -183,7 +183,7 @@ export default function FeeManagement() {
             </div>
           ) : (
             <table className="w-full text-sm">
-              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-emerald-100 dark:border-slate-700">
+              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-primary/10 dark:border-slate-700">
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{t("student", "Student")}</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{t("class", "Class")}</th>
@@ -202,13 +202,13 @@ export default function FeeManagement() {
                         <Link to={`/students`} className="font-semibold text-primary hover:underline">{f.student}</Link>
                         <p className="text-xs text-muted-foreground font-mono mt-0.5">{f.studentId}</p>
                       </td>
-                      <td className="px-6 py-4 text-muted-foreground"><Link to="/classes" className="hover:underline text-[#1E3A8A] dark:text-emerald-400">{f.class}</Link></td>
+                      <td className="px-6 py-4 text-muted-foreground"><Link to="/classes" className="hover:underline text-[#1E3A8A] dark:text-primary/70">{f.class}</Link></td>
                       <td className="px-6 py-4 text-right font-medium text-foreground">${f.totalDue}</td>
-                      <td className="px-6 py-4 text-right font-medium text-green-600">${f.paid}</td>
+                      <td className="px-6 py-4 text-right font-medium text-primary">${f.paid}</td>
                       <td className="px-6 py-4 text-right font-bold text-red-600">${f.balance}</td>
                       <td className="px-6 py-4 text-center">
                         <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${
-                          f.status === 'Paid' ? 'bg-green-100 dark:bg-green-950/30 text-green-700 dark:text-green-400' :
+                          f.status === 'Paid' ? 'bg-primary/10 dark:bg-primary/30 text-primary/90 dark:text-primary/70' :
                           f.status === 'Owing' ? 'bg-red-100 dark:bg-red-950/30 text-red-700 dark:text-red-400' : 'bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400'
                         }`}>
                           {f.status}
@@ -242,7 +242,7 @@ export default function FeeManagement() {
       {showPaymentModal && selectedStudent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
           <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
-            <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><CreditCard className="w-5 h-5 text-[#1E3A8A] dark:text-emerald-400" /> {t("record_payment", "Record Payment")}</h2>
+            <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><CreditCard className="w-5 h-5 text-[#1E3A8A] dark:text-primary/70" /> {t("record_payment", "Record Payment")}</h2>
             <div className="bg-muted dark:bg-muted/30 p-3 rounded-lg border border-border text-sm mb-4">
               <p className="text-muted-foreground">{t("student", "Student:")} <strong className="text-card-foreground">{selectedStudent.student}</strong></p>
               <p className="text-muted-foreground">{t("current_balance", "Current Balance:")} <strong className="text-red-600">${selectedStudent.balance}</strong></p>
@@ -277,7 +277,7 @@ export default function FeeManagement() {
       {showEnrollModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
           <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
-            <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><Plus className="w-5 h-5 text-[#1E3A8A] dark:text-emerald-400" /> {t("quick_enroll", "Quick Enroll Student")}</h2>
+            <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><Plus className="w-5 h-5 text-[#1E3A8A] dark:text-primary/70" /> {t("quick_enroll", "Quick Enroll Student")}</h2>
             <p className="text-sm text-muted-foreground">{t("quickly_register_a_student_to_", "Quickly register a student to generate their tuition billing profile.")}</p>
             <div className="space-y-3">
               <div>
@@ -327,7 +327,7 @@ export default function FeeManagement() {
           {viewDetails && (
             <div className="mt-6 space-y-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-[#F0F4FF] dark:bg-emerald-900/20 flex items-center justify-center text-[#1E3A8A] dark:text-emerald-400 font-bold text-xl">
+                <div className="w-16 h-16 rounded-full bg-[#F0F4FF] dark:bg-primary/20 flex items-center justify-center text-[#1E3A8A] dark:text-primary/70 font-bold text-xl">
                   {viewDetails.student.substring(0, 2).toUpperCase()}
                 </div>
                 <div>
@@ -346,7 +346,7 @@ export default function FeeManagement() {
                 <div className="bg-muted/50 p-3 rounded-lg">
                   <p className="text-xs text-muted-foreground uppercase font-semibold">{t("status", "Status")}</p>
                   <span className={`inline-block mt-1 text-xs font-bold px-2.5 py-0.5 rounded-full ${
-                    viewDetails.status === 'Paid' ? 'bg-green-100 text-green-700' :
+                    viewDetails.status === 'Paid' ? 'bg-primary/10 text-primary/90' :
                     viewDetails.status === 'Owing' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'
                   }`}>
                     {viewDetails.status}
@@ -358,7 +358,7 @@ export default function FeeManagement() {
                 </div>
                 <div className="bg-muted/50 p-3 rounded-lg">
                   <p className="text-xs text-muted-foreground uppercase font-semibold">{t("paid", "Paid")}</p>
-                  <p className="font-medium text-green-600">${viewDetails.paid}</p>
+                  <p className="font-medium text-primary">${viewDetails.paid}</p>
                 </div>
                 <div className="bg-muted/50 p-3 rounded-lg col-span-2">
                   <p className="text-xs text-muted-foreground uppercase font-semibold">{t("outstanding_balance", "Outstanding Balance")}</p>

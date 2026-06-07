@@ -10,13 +10,13 @@ import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } 
 import { toast } from 'react-hot-toast';
 
 const statusColors = {
-  Completed: 'bg-green-100 text-green-700',
+  Completed: 'bg-primary/10 text-primary/90',
   Abnormal: 'bg-red-100 text-red-700 font-bold',
   Pending: 'bg-amber-100 text-amber-700'
 };
 
 const statusIcons = {
-  Completed: <CheckCircle2 className="w-4 h-4 text-green-600" />,
+  Completed: <CheckCircle2 className="w-4 h-4 text-primary" />,
   Abnormal: <AlertTriangle className="w-4 h-4 text-red-600" />,
   Pending: <FlaskConical className="w-4 h-4 text-amber-600 animate-pulse" />
 };
@@ -131,7 +131,7 @@ export default function LabResults() {
           )}</p>
         </div>
         <div className="flex gap-3">
-          <Button onClick={() => setShowModal(true)} className="gap-2 bg-teal-600 hover:bg-teal-700 text-white">
+          <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
             <Upload className="w-4 h-4" /> {t("upload_results", "Upload Results")}
           </Button>
         </div>
@@ -143,7 +143,7 @@ export default function LabResults() {
         </div>
         <div className="bg-card rounded-xl border border-border p-5 shadow-sm border-l-4 border-l-green-500">
           <h3 className="font-semibold text-foreground">{t("completed", "Completed")}</h3>
-          <p className="text-3xl font-bold text-green-600 mt-1">{labResults.filter(r => r.status === 'Completed').length}</p>
+          <p className="text-3xl font-bold text-primary mt-1">{labResults.filter(r => r.status === 'Completed').length}</p>
         </div>
         <div className="bg-card rounded-xl border border-border p-5 shadow-sm border-l-4 border-l-red-500">
           <h3 className="font-semibold text-foreground">{t("critical_abnormal", "Critical / Abnormal")}</h3>
@@ -175,16 +175,16 @@ export default function LabResults() {
                   <tr key={res.id} className="hover:bg-muted/50 transition-colors">
                     <td className="px-6 py-4 font-mono text-xs font-bold text-muted-foreground">{res.resultId}</td>
                     <td className="px-6 py-4 font-semibold text-card-foreground">
-                      <Link to="/hospital/patients" className="text-teal-600 hover:underline">{res.patient}</Link>
+                      <Link to="/hospital/patients" className="text-primary hover:underline">{res.patient}</Link>
                     </td>
-                    <td className="px-6 py-4 text-teal-600 font-medium">{res.testType}</td>
+                    <td className="px-6 py-4 text-primary font-medium">{res.testType}</td>
                     <td className="px-6 py-4">
                       <p className={`font-semibold ${res.status === 'Abnormal' ? 'text-red-600' : 'text-card-foreground'}`}>{res.result}</p>
                       <p className="text-xs text-muted-foreground">{res.range}</p>
                     </td>
                     <td className="px-6 py-4">
                        <div className="flex justify-center items-center">
-                          <span className={`flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full ${statusColors[res.status] || 'bg-teal-100 text-teal-700'}`}>
+                          <span className={`flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full ${statusColors[res.status] || 'bg-primary/10 text-primary/90'}`}>
                              {statusIcons[res.status]} {res.status}
                           </span>
                        </div>
@@ -228,7 +228,7 @@ export default function LabResults() {
       {showModal && (
        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4">
-           <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><Upload className="w-5 h-5 text-teal-600"/> {t("upload_lab_result", "Upload Lab Result")}</h2>
+           <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><Upload className="w-5 h-5 text-primary"/> {t("upload_lab_result", "Upload Lab Result")}</h2>
            <div className="space-y-3">
               <div>
                 <label className="text-xs font-bold text-muted-foreground uppercase">{t("patient", "Patient")}</label>
@@ -263,7 +263,7 @@ export default function LabResults() {
            </div>
            <div className="flex gap-3 pt-4">
              <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditingResult(null); }}>{t("cancel", "Cancel")}</Button>
-             <Button className="flex-1 bg-teal-600 hover:bg-teal-700 text-white" onClick={handleSaveToDb}>{t("save_results", "Save Results")}</Button>
+             <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleSaveToDb}>{t("save_results", "Save Results")}</Button>
            </div>
          </div>
        </div>
@@ -285,7 +285,7 @@ export default function LabResults() {
               </div>
               <div>
                 <h3 className="text-sm font-medium text-muted-foreground">{t("patient", "Patient")}</h3>
-                <Link to="/hospital/patients" className="text-base font-semibold text-teal-600 hover:underline">{viewResult.patient}</Link>
+                <Link to="/hospital/patients" className="text-base font-semibold text-primary hover:underline">{viewResult.patient}</Link>
               </div>
               <div>
                 <h3 className="text-sm font-medium text-muted-foreground">{t("test_type", "Test Type")}</h3>

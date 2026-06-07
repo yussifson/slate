@@ -42,8 +42,8 @@ export default function PaymentModal({ open, onClose, invoice, onSuccess }) {
       <DialogContent className="max-w-md p-0 overflow-hidden bg-white">
         {success ? (
           <div className="flex flex-col items-center justify-center p-12 text-center">
-            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6 animate-in zoom-in duration-300">
-              <CheckCircle className="w-10 h-10 text-green-600" />
+            <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-6 animate-in zoom-in duration-300">
+              <CheckCircle className="w-10 h-10 text-primary" />
             </div>
             <h2 className="text-2xl font-bold text-slate-900 mb-2">{t("payment_successful", "Payment Successful")}</h2>
             <p className="text-slate-500 mb-6">{t("invoice_marked_paid", "Your invoice has been marked as paid. Thank you!")}</p>
@@ -137,7 +137,7 @@ export default function PaymentModal({ open, onClose, invoice, onSuccess }) {
                 <div className="pt-4">
                   <Button
                     type="submit"
-                    className="w-full h-12 text-base font-bold relative overflow-hidden transition-all bg-emerald-600 hover:bg-emerald-700 text-white"
+                    className="w-full h-12 text-base font-bold relative overflow-hidden transition-all bg-primary hover:bg-primary/90 text-white"
                     disabled={loading}
                   >
                     {loading ? (

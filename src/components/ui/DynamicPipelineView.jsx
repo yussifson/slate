@@ -22,11 +22,11 @@ import {
 
 const STAGE_COLORS = [
   { bg: 'from-slate-500 to-slate-600', light: 'bg-slate-50', border: 'border-slate-200', text: 'text-slate-700', badge: 'bg-slate-100 text-slate-600' },
-  { bg: 'from-emerald-500 to-emerald-600', light: 'bg-emerald-50', border: 'border-emerald-200', text: 'text-emerald-700', badge: 'bg-emerald-100 text-emerald-600' },
-  { bg: 'from-indigo-500 to-indigo-600', light: 'bg-indigo-50', border: 'border-indigo-200', text: 'text-indigo-700', badge: 'bg-indigo-100 text-indigo-600' },
-  { bg: 'from-violet-500 to-violet-600', light: 'bg-violet-50', border: 'border-violet-200', text: 'text-violet-700', badge: 'bg-violet-100 text-violet-600' },
-  { bg: 'from-purple-500 to-purple-600', light: 'bg-purple-50', border: 'border-purple-200', text: 'text-purple-700', badge: 'bg-purple-100 text-purple-600' },
-  { bg: 'from-emerald-500 to-emerald-600', light: 'bg-emerald-50', border: 'border-emerald-200', text: 'text-emerald-700', badge: 'bg-emerald-100 text-emerald-600' },
+  { bg: 'from-primary to-primary', light: 'bg-primary/5', border: 'border-primary/20', text: 'text-primary/90', badge: 'bg-primary/10 text-primary' },
+  { bg: 'from-primary to-primary', light: 'bg-primary/5', border: 'border-primary/20', text: 'text-primary/90', badge: 'bg-primary/10 text-primary' },
+  { bg: 'from-primary to-primary', light: 'bg-primary/5', border: 'border-primary/20', text: 'text-primary/90', badge: 'bg-primary/10 text-primary' },
+  { bg: 'from-primary to-primary', light: 'bg-primary/5', border: 'border-primary/20', text: 'text-primary/90', badge: 'bg-primary/10 text-primary' },
+  { bg: 'from-primary to-primary', light: 'bg-primary/5', border: 'border-primary/20', text: 'text-primary/90', badge: 'bg-primary/10 text-primary' },
   { bg: 'from-amber-500 to-amber-600', light: 'bg-amber-50', border: 'border-amber-200', text: 'text-amber-700', badge: 'bg-amber-100 text-amber-600' },
   { bg: 'from-rose-500 to-rose-600', light: 'bg-rose-50', border: 'border-rose-200', text: 'text-rose-700', badge: 'bg-rose-100 text-rose-600' },
 ];
@@ -200,8 +200,8 @@ export default function DynamicPipelineView({ data = [], fieldDefinitions = [], 
   if (!stageField && fieldDefinitions.length > 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
-        <div className="p-5 rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100 mb-5">
-          <Layers className="w-12 h-12 text-indigo-300" />
+        <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/5 border border-primary/10 mb-5">
+          <Layers className="w-12 h-12 text-primary/30" />
         </div>
         <h3 className="text-lg font-semibold text-slate-700 mb-2">No Pipeline Field Found</h3>
         <p className="text-sm text-slate-500 max-w-sm">
@@ -214,8 +214,8 @@ export default function DynamicPipelineView({ data = [], fieldDefinitions = [], 
   if (!data || data.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
-        <div className="p-5 rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100 mb-5">
-          <Sparkles className="w-12 h-12 text-indigo-300" />
+        <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/5 border border-primary/10 mb-5">
+          <Sparkles className="w-12 h-12 text-primary/30" />
         </div>
         <h3 className="text-lg font-semibold text-slate-700 mb-2">Empty Pipeline</h3>
         <p className="text-sm text-slate-500 max-w-sm">
@@ -230,7 +230,7 @@ export default function DynamicPipelineView({ data = [], fieldDefinitions = [], 
       {/* Pipeline Header Stats */}
       <div className="mb-5 flex items-center gap-4 flex-wrap">
         <div className="flex items-center gap-2">
-          <div className="p-2 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-200">
+          <div className="p-2 rounded-xl bg-gradient-to-br from-primary to-primary shadow-lg shadow-indigo-200">
             <TrendingUp className="w-4 h-4 text-white" />
           </div>
           <div>
@@ -242,7 +242,7 @@ export default function DynamicPipelineView({ data = [], fieldDefinitions = [], 
           const total = data.reduce((s, r) => s + (parseFloat(r.data?.[nf.name]) || 0), 0);
           return (
             <div key={nf.name} className="flex items-center gap-2 ml-4">
-              <div className="p-2 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg shadow-emerald-200">
+              <div className="p-2 rounded-xl bg-gradient-to-br from-primary to-primary shadow-lg shadow-emerald-200">
                 <DollarSign className="w-4 h-4 text-white" />
               </div>
               <div>
@@ -266,7 +266,7 @@ export default function DynamicPipelineView({ data = [], fieldDefinitions = [], 
               key={stage}
               className={`w-[300px] flex-shrink-0 rounded-2xl flex flex-col max-h-[700px] border transition-all duration-200 ${
                 isDragOver
-                  ? `${color.border} shadow-lg ring-2 ring-offset-2 ring-indigo-300`
+                  ? `${color.border} shadow-lg ring-2 ring-offset-2 ring-primary/30`
                   : 'border-slate-200/80 shadow-sm'
               }`}
               style={{ backgroundColor: isDragOver ? '#f0f4ff' : '#fafbfc' }}

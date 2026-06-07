@@ -114,7 +114,7 @@ export default function SHSTimetable() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent">
             Class Timetable
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -127,7 +127,7 @@ export default function SHSTimetable() {
         <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-slate-800 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70">
                 <CalendarIcon className="w-5 h-5" />
               </div>
               <div>
@@ -138,7 +138,7 @@ export default function SHSTimetable() {
             
             <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
               <select 
-                className="h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500 w-full sm:w-48 font-semibold text-slate-700 dark:text-slate-200"
+                className="h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary w-full sm:w-48 font-semibold text-slate-700 dark:text-slate-200"
                 value={selectedClassId}
                 onChange={(e) => setSelectedClassId(e.target.value)}
               >
@@ -149,7 +149,7 @@ export default function SHSTimetable() {
               <Button 
                 onClick={() => setIsAddModalOpen(true)}
                 disabled={!selectedClassId}
-                className="h-10 rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white shadow-md w-full sm:w-auto"
+                className="h-10 rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white shadow-md w-full sm:w-auto"
               >
                 <Plus className="w-4 h-4 mr-2" /> Schedule Class
               </Button>
@@ -201,14 +201,14 @@ export default function SHSTimetable() {
                         return (
                           <div key={`${day}-${slot}`} className="p-2 border-r border-slate-100 dark:border-slate-800 min-h-[100px] relative group">
                             {entry ? (
-                              <div className="h-full rounded-xl bg-emerald-50 dark:bg-slate-800 border border-emerald-100 dark:border-slate-700 p-3 flex flex-col gap-1 transition-all hover:shadow-md hover:border-purple-300">
-                                <h4 className="font-bold text-xs text-emerald-600 dark:text-emerald-400 leading-tight">{entry.data?.subjectName}</h4>
+                              <div className="h-full rounded-xl bg-primary/5 dark:bg-slate-800 border border-primary/10 dark:border-slate-700 p-3 flex flex-col gap-1 transition-all hover:shadow-md hover:border-primary/30">
+                                <h4 className="font-bold text-xs text-primary dark:text-primary/70 leading-tight">{entry.data?.subjectName}</h4>
                                 <div className="mt-auto space-y-1">
                                   <p className="text-[10px] text-slate-500 dark:text-slate-400 dark:text-slate-500 flex items-center gap-1 truncate">
                                     <BookOpen className="w-3 h-3 shrink-0" /> {entry.data?.teacherName || 'TBA'}
                                   </p>
                                   {entry.data?.room && (
-                                    <p className="text-[10px] font-semibold text-emerald-600 flex items-center gap-1">
+                                    <p className="text-[10px] font-semibold text-primary flex items-center gap-1">
                                       <MapPin className="w-3 h-3 shrink-0" /> {entry.data.room}
                                     </p>
                                   )}
@@ -224,7 +224,7 @@ export default function SHSTimetable() {
                                   setNewEntry(prev => ({ ...prev, day, timeSlot: slot }));
                                   setIsAddModalOpen(true);
                                 }}
-                                className="w-full h-full rounded-xl border-2 border-dashed border-transparent hover:border-emerald-200 dark:border-slate-600 hover:bg-emerald-50/50 dark:bg-slate-800/50 text-transparent hover:text-purple-300 flex items-center justify-center transition-all"
+                                className="w-full h-full rounded-xl border-2 border-dashed border-transparent hover:border-primary/20 dark:border-slate-600 hover:bg-primary/50 dark:bg-slate-800/50 text-transparent hover:text-primary/30 flex items-center justify-center transition-all"
                               >
                                 <Plus className="w-5 h-5" />
                               </button>
@@ -243,10 +243,10 @@ export default function SHSTimetable() {
 
       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
         <DialogContent className="sm:max-w-[450px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
-          <div className="p-6 bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 text-white">
+          <div className="p-6 bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-black">Schedule Class</DialogTitle>
-              <DialogDescription className="text-emerald-100 dark:text-emerald-900">
+              <DialogDescription className="text-primary/10 dark:text-primary/70">
                 Assign a subject to a time slot for {selectedClass?.title}.
               </DialogDescription>
             </DialogHeader>
@@ -259,7 +259,7 @@ export default function SHSTimetable() {
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Day</label>
                   <select 
-                    className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500"
+                    className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
                     value={newEntry.day}
                     onChange={e => setNewEntry({...newEntry, day: e.target.value})}
                   >
@@ -269,7 +269,7 @@ export default function SHSTimetable() {
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Time Slot</label>
                   <select 
-                    className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500"
+                    className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
                     value={newEntry.timeSlot}
                     onChange={e => setNewEntry({...newEntry, timeSlot: e.target.value})}
                   >
@@ -283,7 +283,7 @@ export default function SHSTimetable() {
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Course / Subject</label>
                 <select 
-                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500"
+                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
                   value={newEntry.courseId}
                   onChange={e => setNewEntry({...newEntry, courseId: e.target.value})}
                 >
@@ -318,7 +318,7 @@ export default function SHSTimetable() {
             <Button 
               onClick={handleAddEntry} 
               disabled={!newEntry.courseId}
-              className="rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white font-bold"
+              className="rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white font-bold"
             >
               Add to Schedule
             </Button>

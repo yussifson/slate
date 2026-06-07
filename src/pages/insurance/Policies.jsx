@@ -168,7 +168,7 @@ export default function Policies() {
           </div>
         </div>
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center text-green-600">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
             <CheckCircle className="w-5 h-5" />
           </div>
           <div>
@@ -244,7 +244,7 @@ export default function Policies() {
                           value={policy.status}
                           onChange={e => handleUpdateStatus(policy, e.target.value)}
                           className={`rounded-md border border-input px-2 py-1 text-xs font-bold ${
-                            policy.status === 'Active' ? 'bg-green-100 text-green-700' : 
+                            policy.status === 'Active' ? 'bg-primary/10 text-primary/90' : 
                             policy.status === 'Lapsed' ? 'bg-red-100 text-red-700' : 
                             policy.status === 'Cancelled' ? 'bg-muted text-muted-foreground' : 'bg-amber-100 text-amber-700'
                           }`}

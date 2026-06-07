@@ -127,7 +127,7 @@ export default function Tithes() {
           <p className="text-sm text-muted-foreground mt-0.5">{t("manage_church_financial_contri", "Manage church financial contributions")}</p>
         </div>
         <div className="flex gap-3">
-          <Button onClick={() => setShowModal(true)} className="gap-2 bg-purple-600 hover:bg-purple-700 text-white">
+          <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
             <Plus className="w-4 h-4" /> {t("record_giving", "Record Giving")}
           </Button>
         </div>
@@ -135,7 +135,7 @@ export default function Tithes() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-card rounded-xl border border-border p-5 shadow-sm">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-950/50 flex items-center justify-center text-purple-600 dark:text-purple-400">
+            <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/50 flex items-center justify-center text-primary dark:text-primary/70">
               <DollarSign className="w-4 h-4" />
             </div>
             <h3 className="font-semibold text-foreground text-sm">{t("total_tithes_logged", "Total Tithes logged")}</h3>
@@ -144,7 +144,7 @@ export default function Tithes() {
         </div>
         <div className="bg-card rounded-xl border border-border p-5 shadow-sm">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-950/50 flex items-center justify-center text-green-600 dark:text-green-400">
+            <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/50 flex items-center justify-center text-primary dark:text-primary/70">
               <DollarSign className="w-4 h-4" />
             </div>
             <h3 className="font-semibold text-foreground text-sm">{t("total_offerings", "Total Offerings")}</h3>
@@ -153,7 +153,7 @@ export default function Tithes() {
         </div>
         <div className="bg-card rounded-xl border border-border p-5 shadow-sm">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-950/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+            <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/50 flex items-center justify-center text-primary dark:text-primary/70">
               <DollarSign className="w-4 h-4" />
             </div>
             <h3 className="font-semibold text-foreground text-sm">{t("special_building_funds", "Special/Building Funds")}</h3>
@@ -173,7 +173,7 @@ export default function Tithes() {
             <div className="py-12 text-center text-muted-foreground">{t("loading_financial_logs", "Loading financial logs...")}</div>
           ) : filtered.length === 0 ? (
             <div className="py-12 text-center text-muted-foreground bg-card">
-              <DollarSign className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-purple-600" />
+              <DollarSign className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary" />
               <p className="font-semibold text-lg text-card-foreground">{t("no_financial_ledger_entries", "No financial ledger entries")}</p>
               <p className="text-xs mt-1">{t(
                 "record_a_new_tithe_weekly_offe",
@@ -202,7 +202,7 @@ export default function Tithes() {
                         <Link to="/church/members" className="text-primary hover:underline">{item.member}</Link>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="bg-purple-100 dark:bg-purple-950/50 text-purple-700 dark:text-purple-400 px-2.5 py-1 rounded-full text-xs font-bold">
+                        <span className="bg-primary/10 dark:bg-primary/50 text-primary/90 dark:text-primary/70 px-2.5 py-1 rounded-full text-xs font-bold">
                           {item.type}
                         </span>
                       </td>
@@ -243,7 +243,7 @@ export default function Tithes() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-border">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-              <DollarSign className="w-5 h-5 text-purple-600" /> {t("record_financial_giving", "Record Financial Giving")}
+              <DollarSign className="w-5 h-5 text-primary" /> {t("record_financial_giving", "Record Financial Giving")}
             </h2>
             <div className="space-y-3">
               <div>
@@ -297,7 +297,7 @@ export default function Tithes() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditRecord(null); }}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-purple-600 hover:bg-purple-700 text-white" onClick={handleCreateTithe}>{editRecord ? 'Update' : 'Submit Ledger'}</Button>
+              <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleCreateTithe}>{editRecord ? 'Update' : 'Submit Ledger'}</Button>
             </div>
           </div>
         </div>

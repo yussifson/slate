@@ -191,7 +191,7 @@ export default function PurchaseOrders() {
 
   const getStatusBadge = (status) => {
     switch (status) {
-      case 'received': return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">Received</span>;
+      case 'received': return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary/10 text-primary/90">Received</span>;
       case 'sent': return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-100 text-orange-700">Sent</span>;
       default: return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">Draft</span>;
     }
@@ -395,7 +395,7 @@ export default function PurchaseOrders() {
               <div className="pt-6 border-t flex justify-end">
                 <Button 
                   onClick={() => handleReceiveOrder(selectedPO)}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                  className="bg-primary hover:bg-primary/90 text-white"
                 >
                   <Check className="w-4 h-4 mr-2" /> {t("mark_received", "Mark as Received")}
                 </Button>

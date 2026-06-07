@@ -59,7 +59,7 @@ export default function DynamicInventoryView({ data = [], fieldDefinitions = [],
       {/* Stats Bar */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-card border rounded-xl p-4 flex items-center gap-4 shadow-sm">
-          <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600">
+          <div className="w-12 h-12 rounded-full bg-primary/10 dark:bg-primary/30 flex items-center justify-center text-primary">
             <Package className="w-6 h-6" />
           </div>
           <div>
@@ -103,8 +103,8 @@ export default function DynamicInventoryView({ data = [], fieldDefinitions = [],
               const q = quantities[item.id] || 0;
               const name = nameField ? item.data[nameField.name] : 'Unnamed Item';
               
-              let statusColor = 'bg-green-500';
-              let statusBg = 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400';
+              let statusColor = 'bg-primary';
+              let statusBg = 'bg-primary/10 dark:bg-primary/30 text-primary/90 dark:text-primary/70';
               let statusLabel = 'In Stock';
               
               if (q === 0) {

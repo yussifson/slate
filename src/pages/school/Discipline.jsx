@@ -91,7 +91,7 @@ export default function Discipline() {
         <div className="school-card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-emerald-100 dark:border-slate-700">
+              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-primary/10 dark:border-slate-700">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Student Name</th>
                   <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Type</th>
@@ -106,7 +106,7 @@ export default function Discipline() {
                 <tr key={l.id} className="hover:bg-muted/50 transition-colors">
                   <td className="px-4 py-3 font-semibold text-card-foreground">{l.studentName}</td>
                   <td className="px-4 py-3">
-                    <span className={`px-2 py-1 rounded-md text-xs font-bold ${l.type === 'Merit' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                    <span className={`px-2 py-1 rounded-md text-xs font-bold ${l.type === 'Merit' ? 'bg-primary/10 text-primary/90' : 'bg-red-100 text-red-700'}`}>
                       {l.type}
                     </span>
                   </td>

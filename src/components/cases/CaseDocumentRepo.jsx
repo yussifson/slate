@@ -22,11 +22,11 @@ const CATEGORIES = [
   { value: "pleading", label: "Pleading", color: "bg-orange-100 text-orange-700" },
   { value: "court_order", label: "Court Order", color: "bg-amber-100 text-amber-700" },
   { value: "evidence", label: "Evidence", color: "bg-orange-100 text-orange-700" },
-  { value: "contract", label: "Contract", color: "bg-purple-100 text-purple-700" },
+  { value: "contract", label: "Contract", color: "bg-primary/10 text-primary/90" },
   { value: "correspondence", label: "Correspondence", color: "bg-slate-100 text-slate-600" },
-  { value: "scanned_document", label: "Scanned Document", color: "bg-teal-100 text-teal-700" },
-  { value: "id_document", label: "ID Document", color: "bg-indigo-100 text-indigo-700" },
-  { value: "invoice", label: "Invoice", color: "bg-green-100 text-green-700" },
+  { value: "scanned_document", label: "Scanned Document", color: "bg-primary/10 text-primary/90" },
+  { value: "id_document", label: "ID Document", color: "bg-primary/10 text-primary/90" },
+  { value: "invoice", label: "Invoice", color: "bg-primary/10 text-primary/90" },
   { value: "other", label: "Other", color: "bg-gray-100 text-gray-600" },
 ];
 
@@ -39,11 +39,11 @@ function getFileIcon(fileType, name) {
   const type = fileType?.toLowerCase() || "";
   const ext = name?.split(".").pop()?.toLowerCase() || "";
   if (type.includes("image") || ["jpg", "jpeg", "png", "gif", "webp"].includes(ext))
-    return <FileImage className="w-4 h-4 text-emerald-500" />;
+    return <FileImage className="w-4 h-4 text-primary" />;
   if (type.includes("pdf") || ext === "pdf")
     return <FileText className="w-4 h-4 text-red-500" />;
   if (["doc", "docx"].includes(ext))
-    return <FileText className="w-4 h-4 text-emerald-500" />;
+    return <FileText className="w-4 h-4 text-primary" />;
   return <File className="w-4 h-4 text-muted-foreground" />;
 }
 
@@ -308,7 +308,7 @@ function DocRow({ doc, canManage, onDelete, onToggleShare, onPreview, highlighte
               title={doc.shared_with_client ? "Unshare with client" : "Share with client"}
               onClick={onToggleShare}
             >
-              <Share2 className={`w-3.5 h-3.5 ${doc.shared_with_client ? "text-emerald-500" : "text-muted-foreground"}`} />
+              <Share2 className={`w-3.5 h-3.5 ${doc.shared_with_client ? "text-primary" : "text-muted-foreground"}`} />
             </Button>
             <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onDelete} title="Delete">
               <Trash2 className="w-3.5 h-3.5 text-destructive" />

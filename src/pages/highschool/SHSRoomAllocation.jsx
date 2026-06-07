@@ -119,7 +119,7 @@ export default function SHSRoomAllocation() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent">
             Room Allocation
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -133,10 +133,10 @@ export default function SHSRoomAllocation() {
           <div className="flex flex-col md:flex-row gap-6 items-end">
             <div className="space-y-2 flex-1">
               <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                <Home className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> Select Boarding House
+                <Home className="w-4 h-4 text-primary dark:text-primary/70" /> Select Boarding House
               </label>
               <select 
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500 font-semibold text-slate-700 dark:text-slate-200"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-200"
                 value={selectedHouseId}
                 onChange={(e) => setSelectedHouseId(e.target.value)}
               >
@@ -148,11 +148,11 @@ export default function SHSRoomAllocation() {
             
             <div className="space-y-2 flex-1">
               <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                <Search className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> Search Students
+                <Search className="w-4 h-4 text-primary dark:text-primary/70" /> Search Students
               </label>
               <Input 
                 placeholder="Name or Index No..."
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -201,7 +201,7 @@ export default function SHSRoomAllocation() {
                           {index + 1}
                         </td>
                         <td className="px-6 py-4 flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-100 to-slate-100 flex items-center justify-center font-bold text-emerald-600 dark:text-emerald-400 shrink-0">
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/10 to-slate-100 flex items-center justify-center font-bold text-primary dark:text-primary/70 shrink-0">
                             {student.title.charAt(0)}
                           </div>
                           <div>
@@ -213,14 +213,14 @@ export default function SHSRoomAllocation() {
                           {student.data?.classRoom || 'N/A'}
                         </td>
                         <td className="px-6 py-4 text-center">
-                          <Badge variant="outline" className={student.data?.houseId === selectedHouseId ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 dark:text-slate-500"}>
+                          <Badge variant="outline" className={student.data?.houseId === selectedHouseId ? "bg-primary/5 text-primary/90 border-primary/20" : "bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 dark:text-slate-500"}>
                             {student.data?.houseName || 'Unassigned'}
                           </Badge>
                         </td>
                         <td className="px-6 py-4 text-center">
                           <Input 
                             placeholder="e.g. Room 12B"
-                            className="h-10 text-center font-bold bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 focus-visible:ring-emerald-600 dark:focus-visible:ring-emerald-500"
+                            className="h-10 text-center font-bold bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 focus-visible:ring-primary dark:focus-visible:ring-primary"
                             value={allocations[student.id] || ''}
                             onChange={(e) => handleRoomChange(student.id, e.target.value)}
                           />
@@ -234,7 +234,7 @@ export default function SHSRoomAllocation() {
               <div className="p-6 bg-slate-50 dark:bg-slate-800 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
                 <div>
                   {saveSuccess && (
-                    <Badge className="bg-emerald-100 text-emerald-700 border-none px-3 py-1 text-sm font-semibold flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2">
+                    <Badge className="bg-primary/10 text-primary/90 border-none px-3 py-1 text-sm font-semibold flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2">
                       <CheckCircle2 className="w-4 h-4" /> Allocations Saved
                     </Badge>
                   )}
@@ -243,7 +243,7 @@ export default function SHSRoomAllocation() {
                 <Button 
                   onClick={handleSaveAllocations}
                   disabled={isSaving}
-                  className="h-12 px-8 rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/20 font-bold"
+                  className="h-12 px-8 rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white shadow-lg shadow-emerald-500/20 font-bold"
                 >
                   {isSaving ? 'Saving...' : (
                     <><Save className="w-5 h-5 mr-2" /> Save Room Allocations</>

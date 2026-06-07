@@ -171,7 +171,7 @@ export default function VPlacementReports() {
                               <h3 className="text-sm font-bold text-amber-600 uppercase tracking-wider">Compensation</h3>
                               <div className="flex flex-col h-full justify-center pb-6">
                                 <div className="flex items-center gap-3 mb-2">
-                                  <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+                                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                                     <DollarSign className="w-6 h-6" />
                                   </div>
                                   <div>
@@ -192,7 +192,7 @@ export default function VPlacementReports() {
                               <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm">
                                 <div className="flex justify-between items-center mb-2">
                                   <p className="font-bold text-slate-800 dark:text-slate-200">Overall Performance</p>
-                                  <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 border-none">{selectedReport.data?.employerRating || 'Excellent'}</Badge>
+                                  <Badge className="bg-primary/10 text-primary/90 hover:bg-primary/20 border-none">{selectedReport.data?.employerRating || 'Excellent'}</Badge>
                                 </div>
                                 <p className="text-sm text-slate-600 dark:text-slate-400">
                                   {selectedReport.data?.employerComments || 'The trainee has adapted well to the workplace environment and demonstrates strong foundational skills.'}
@@ -209,7 +209,7 @@ export default function VPlacementReports() {
                               <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm">
                                 <div className="flex justify-between items-center mb-2">
                                   <p className="font-bold text-slate-800 dark:text-slate-200">Training Relevance</p>
-                                  <Badge className="bg-orange-100 text-orange-700 hover:bg-emerald-200 border-none">{selectedReport.data?.trainingRelevanceRating || 'Highly Relevant'}</Badge>
+                                  <Badge className="bg-orange-100 text-orange-700 hover:bg-primary/20 border-none">{selectedReport.data?.trainingRelevanceRating || 'Highly Relevant'}</Badge>
                                 </div>
                                 <p className="text-sm text-slate-600 dark:text-slate-400">
                                   {selectedReport.data?.traineeComments || 'The skills learned during the vocational program were directly applicable to my daily tasks here.'}

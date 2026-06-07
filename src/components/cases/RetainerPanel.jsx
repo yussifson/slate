@@ -13,7 +13,7 @@ import { formatCurrency } from "@/lib/constants";
 import { format } from "date-fns";
 
 const RETAINER_STATUS_COLORS = {
-  active: "bg-green-100 text-green-700",
+  active: "bg-primary/10 text-primary/90",
   depleted: "bg-red-100 text-red-700",
   closed: "bg-gray-100 text-gray-500",
 };

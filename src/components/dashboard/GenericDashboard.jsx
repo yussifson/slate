@@ -44,7 +44,7 @@ function UsageRow({ label, used, max, suffix = "" }) {
       </div>
       <div className="h-1.5 bg-muted rounded-full overflow-hidden">
         <div
-          className={`h-full rounded-full transition-all ${isHigh ? "bg-amber-500" : "bg-green-500"}`}
+          className={`h-full rounded-full transition-all ${isHigh ? "bg-amber-500" : "bg-primary"}`}
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -140,11 +140,11 @@ export default function GenericDashboard({ companyId, company, isAdmin, industry
       </div>
       {/* Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard title={`Active ${casesTermPlural}`} value={activeCases.length} icon={Briefcase} iconBg="bg-emerald-100" iconColor="text-emerald-500" subtitle={`${cases.length} total`} />
-        <MetricCard title={`Active ${clientsTermPlural}`} value={activeClients.length} icon={Users} iconBg="bg-purple-100" iconColor="text-purple-500"
+        <MetricCard title={`Active ${casesTermPlural}`} value={activeCases.length} icon={Briefcase} iconBg="bg-primary/10" iconColor="text-primary" subtitle={`${cases.length} total`} />
+        <MetricCard title={`Active ${clientsTermPlural}`} value={activeClients.length} icon={Users} iconBg="bg-primary/10" iconColor="text-primary"
           subtitle={clients.length > 0 ? `+${Math.round((activeClients.length / Math.max(clients.length, 1)) * 100)}% this month` : undefined}
-          subtitleColor="text-green-600" />
-        <MetricCard title="Total Revenue" value={formatCurrency(totalRevenue, currency)} icon={DollarSign} iconBg="bg-green-100" iconColor="text-green-500" subtitle="This year" />
+          subtitleColor="text-primary" />
+        <MetricCard title="Total Revenue" value={formatCurrency(totalRevenue, currency)} icon={DollarSign} iconBg="bg-primary/10" iconColor="text-primary" subtitle="This year" />
         <MetricCard title="Pending Tasks" value={pendingTasks.length} icon={Clock} iconBg="bg-orange-100" iconColor="text-orange-500"
           subtitle={overdueInvoices > 0 ? `${overdueInvoices} invoices overdue` : `${upcomingHearings.length} ${hearingsTermPlural.toLowerCase()} due`}
           subtitleColor={overdueInvoices > 0 ? "text-red-500" : "text-muted-foreground"} />

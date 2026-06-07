@@ -153,7 +153,7 @@ export default function Attendance() {
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="stat-card-premium school-card p-5 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
             <Users className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -162,11 +162,11 @@ export default function Attendance() {
           </div>
         </div>
         <div className="stat-card-premium bg-card rounded-xl border border-border border-l-4 border-l-green-500 p-4 shadow-sm flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center">
-            <CheckCircle2 className="w-5 h-5 text-green-600" />
+          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+            <CheckCircle2 className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-green-600">{presentCount}</p>
+            <p className="text-2xl font-bold text-primary">{presentCount}</p>
             <p className="text-xs text-muted-foreground">{t("present", "Present (")}{presentPct}%)</p>
           </div>
         </div>
@@ -193,7 +193,7 @@ export default function Attendance() {
       <div className="school-card overflow-hidden">
         <div className="p-4 border-b border-border bg-muted/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-card-foreground font-semibold">
-            <ClipboardList className="w-5 h-5 text-[#1E3A8A] dark:text-emerald-400" />
+            <ClipboardList className="w-5 h-5 text-[#1E3A8A] dark:text-primary/70" />
             <span>{selectedClass} — {new Date(date + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
           </div>
           <div className="flex items-center gap-2">
@@ -209,10 +209,10 @@ export default function Attendance() {
 
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-emerald-100 dark:border-slate-700">
+            <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-primary/10 dark:border-slate-700">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{t("student", "Student")}</th>
-                <th className="px-4 py-3 text-center text-xs font-bold text-green-600 uppercase tracking-wide">{t("present", "Present")}</th>
+                <th className="px-4 py-3 text-center text-xs font-bold text-primary uppercase tracking-wide">{t("present", "Present")}</th>
                 <th className="px-4 py-3 text-center text-xs font-bold text-red-600 uppercase tracking-wide">{t("absent", "Absent")}</th>
                 <th className="px-4 py-3 text-center text-xs font-bold text-amber-600 uppercase tracking-wide">{t("late", "Late")}</th>
               </tr>
@@ -223,7 +223,7 @@ export default function Attendance() {
                   <tr key={student.id} className="hover:bg-muted/40 transition-colors">
                     <td className="px-6 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-[#F0F4FF] dark:bg-emerald-900/30 flex items-center justify-center text-[#1E3A8A] dark:text-emerald-300 font-bold text-xs shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-[#F0F4FF] dark:bg-primary/30 flex items-center justify-center text-[#1E3A8A] dark:text-primary/30 font-bold text-xs shrink-0">
                           {student.name.substring(0, 2).toUpperCase()}
                         </div>
                         <div>
@@ -242,7 +242,7 @@ export default function Attendance() {
                               checked={statusMap[student.id] === status}
                               onChange={() => handleStatusChange(student.id, status)}
                               className={`w-5 h-5 cursor-pointer ${
-                                status === 'Present' ? 'accent-green-600' :
+                                status === 'Present' ? 'accent-primary' :
                                 status === 'Absent' ? 'accent-red-600' : 'accent-amber-500'
                               }`}
                             />
@@ -286,7 +286,7 @@ export default function Attendance() {
       <div className="school-card overflow-hidden">
         <div className="p-4 border-b border-border bg-muted/50">
           <h3 className="font-bold text-card-foreground flex items-center gap-2">
-            <CalendarDays className="w-5 h-5 text-[#1E3A8A] dark:text-emerald-400" />
+            <CalendarDays className="w-5 h-5 text-[#1E3A8A] dark:text-primary/70" />
             {t("saved_records", "Saved Records —")} {selectedClass} {t("on", "on")} {date}
           </h3>
         </div>
@@ -295,7 +295,7 @@ export default function Attendance() {
           <div className="py-10 text-center text-muted-foreground">{t("loading_records", "Loading records...")}</div>
         ) : filteredSaved.length === 0 ? (
           <div className="py-10 text-center text-muted-foreground">
-            <ClipboardList className="w-10 h-10 mx-auto mb-2 opacity-30 text-emerald-500" />
+            <ClipboardList className="w-10 h-10 mx-auto mb-2 opacity-30 text-primary" />
             <p>{t(
               "no_attendance_saved_for_this_d",
               "No attendance saved for this date and class yet."
@@ -304,7 +304,7 @@ export default function Attendance() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-emerald-100 dark:border-slate-700">
+              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-primary/10 dark:border-slate-700">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{t("date", "Date")}</th>
                   <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{t("class", "Class")}</th>
@@ -324,9 +324,9 @@ export default function Attendance() {
                   return (
                     <tr key={rec.id} className="hover:bg-muted/40 transition-colors">
                       <td className="px-6 py-3 text-foreground font-medium">{rec.date}</td>
-                      <td className="px-6 py-3"><Link to="/classes" className="bg-[#F0F4FF] dark:bg-emerald-900/20 text-[#1E3A8A] dark:text-emerald-300 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{rec.className}</Link></td>
+                      <td className="px-6 py-3"><Link to="/classes" className="bg-[#F0F4FF] dark:bg-primary/20 text-[#1E3A8A] dark:text-primary/30 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{rec.className}</Link></td>
                       <td className="px-6 py-3 text-muted-foreground">{rec.takenBy || '—'}</td>
-                      <td className="px-6 py-3 text-center font-bold text-green-600">{p}</td>
+                      <td className="px-6 py-3 text-center font-bold text-primary">{p}</td>
                       <td className="px-6 py-3 text-center font-bold text-red-600">{a}</td>
                       <td className="px-6 py-3 text-center font-bold text-amber-600">{l}</td>
                       <td className="px-4 py-3 text-right">
@@ -392,7 +392,7 @@ export default function Attendance() {
                       <div key={i} className="flex items-center justify-between p-2 rounded-md border border-border bg-card">
                         <span className="text-sm font-medium">{r.studentName}</span>
                         <span className={`text-xs font-semibold px-2 py-1 rounded-full ${
-                          r.status === 'Present' ? 'bg-green-100 text-green-700' :
+                          r.status === 'Present' ? 'bg-primary/10 text-primary/90' :
                           r.status === 'Absent' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'
                         }`}>
                           {r.status}

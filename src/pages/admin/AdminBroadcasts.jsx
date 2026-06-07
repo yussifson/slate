@@ -53,7 +53,7 @@ export default function AdminBroadcasts() {
       />
       <div className="bg-card border border-border rounded-2xl p-8 space-y-6 shadow-sm">
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-2xl bg-primary/5 text-primary flex items-center justify-center">
             <Bell className="w-6 h-6" />
           </div>
           <div>

@@ -21,11 +21,11 @@ const ROLES = [
 ];
 
 const ROLE_COLORS = {
-  company_admin: "bg-purple-100 text-purple-700",
+  company_admin: "bg-primary/10 text-primary/90",
   lawyer: "bg-orange-100 text-orange-700",
-  paralegal: "bg-indigo-100 text-indigo-700",
+  paralegal: "bg-primary/10 text-primary/90",
   hr: "bg-amber-100 text-amber-700",
-  finance: "bg-green-100 text-green-700",
+  finance: "bg-primary/10 text-primary/90",
   support: "bg-slate-100 text-slate-600",
 };
 
@@ -210,7 +210,7 @@ export default function FirmStaffManager({ firm, onClose }) {
                   onClick={() => toggleStatusMutation.mutate({ id: staff.id, status: staff.status === "active" ? "inactive" : "active" })}
                   title="Toggle active/inactive"
                 >
-                  <Badge className={`text-[10px] cursor-pointer shrink-0 ${staff.status === "active" ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500"}`}>
+                  <Badge className={`text-[10px] cursor-pointer shrink-0 ${staff.status === "active" ? "bg-primary/10 text-primary/90" : "bg-slate-100 text-slate-500"}`}>
                     {staff.status === "active" ? "Active" : "Inactive"}
                   </Badge>
                 </button>

@@ -422,14 +422,14 @@ export default function CasePDFGenerator({ caseData, user }) {
   return (
     <div className="space-y-5">
       {/* Client Report Quick Download */}
-      <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-start gap-3">
-          <div className="w-9 h-9 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
-            <BarChart2 className="w-4 h-4 text-emerald-600" />
+          <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+            <BarChart2 className="w-4 h-4 text-primary" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-emerald-900">{t("client_billing_hearing_report", "Client Billing & Hearing Report")}</p>
-            <p className="text-xs text-emerald-700 mt-0.5">{t(
+            <p className="text-sm font-semibold text-primary/70">{t("client_billing_hearing_report", "Client Billing & Hearing Report")}</p>
+            <p className="text-xs text-primary/90 mt-0.5">{t(
               "download_a_full_summary_of_inv",
               "Download a full summary of invoices, billable hours, and hearing history for this client."
             )}</p>
@@ -438,7 +438,7 @@ export default function CasePDFGenerator({ caseData, user }) {
         <Button
           onClick={handleDownloadClientReport}
           disabled={generatingReport}
-          className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white shrink-0"
+          className="gap-2 bg-primary hover:bg-primary/90 text-white shrink-0"
         >
           {generatingReport ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
           {generatingReport ? "Generating..." : "Download Report"}

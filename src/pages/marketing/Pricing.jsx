@@ -102,7 +102,7 @@ export default function Pricing() {
             {t("choose_the_right_plan_for_your", "Choose the Right Plan for Your Team")}
           </h1>
           <p className="text-xl text-slate-800 font-medium mb-10 flex items-center justify-center gap-2">
-            {t("start_with_a", "Start with a")} <span className="bg-green-100 text-green-800 px-3 py-0.5 rounded-md">{t("14_day_free_trial", "14-day free trial.")}</span>
+            {t("start_with_a", "Start with a")} <span className="bg-primary/10 text-primary/80 px-3 py-0.5 rounded-md">{t("14_day_free_trial", "14-day free trial.")}</span>
           </p>
 
           {/* Billing toggle */}
@@ -111,7 +111,7 @@ export default function Pricing() {
             
             <button 
               onClick={() => setBillingPeriod(billingPeriod === 'monthly' ? 'yearly' : 'monthly')}
-              className="relative inline-flex h-8 w-14 items-center rounded-full bg-emerald-600 transition-colors"
+              className="relative inline-flex h-8 w-14 items-center rounded-full bg-primary transition-colors"
             >
               <span 
                 className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
@@ -122,7 +122,7 @@ export default function Pricing() {
 
             <span className="flex items-center gap-2">
               {t("annually", "Annually")}
-              <span className="text-[11px] font-bold bg-cyan-400 text-white px-2 py-0.5 rounded-full">
+              <span className="text-[11px] font-bold bg-primary/70 text-white px-2 py-0.5 rounded-full">
                 {t("save_up_to_20", "Save up to 20%")}
               </span>
             </span>
@@ -139,7 +139,7 @@ export default function Pricing() {
                   key={i}
                   className={`relative flex-1 p-8 lg:p-10 ${
                     p.popular
-                      ? 'lg:scale-[1.03] lg:-my-4 lg:bg-white lg:rounded-[2rem] lg:border-2 lg:border-emerald-500 lg:shadow-xl z-10'
+                      ? 'lg:scale-[1.03] lg:-my-4 lg:bg-white lg:rounded-[2rem] lg:border-2 lg:border-primary lg:shadow-xl z-10'
                       : `border-b lg:border-b-0 lg:border-r border-slate-200 last:border-0 ${i === 0 ? 'lg:rounded-l-[2rem]' : ''} ${i === plans.length - 1 ? 'lg:rounded-r-[2rem]' : ''}`
                   }`}
                 >
@@ -147,7 +147,7 @@ export default function Pricing() {
                     <div className="flex items-center gap-3 mb-3">
                       <h3 className="font-medium text-2xl text-slate-900">{p.name}</h3>
                       {p.popular && (
-                        <span className="bg-cyan-400 text-white text-[11px] font-bold px-2 py-0.5 rounded-full">
+                        <span className="bg-primary/70 text-white text-[11px] font-bold px-2 py-0.5 rounded-full">
                           {t("most_popular", "Most popular")}
                         </span>
                       )}
@@ -170,8 +170,8 @@ export default function Pricing() {
                         variant={p.popular ? 'default' : 'outline'}
                         className={`w-full py-6 px-6 text-sm font-bold rounded-full transition-all hover:scale-[1.02] ${
                           p.popular 
-                            ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-md' 
-                            : 'border-2 border-emerald-600 text-emerald-600 hover:bg-emerald-50'
+                            ? 'bg-primary hover:bg-primary/90 text-white shadow-md' 
+                            : 'border-2 border-primary text-primary hover:bg-primary/5'
                         }`}
                       >
                         {p.cta}
@@ -183,8 +183,8 @@ export default function Pricing() {
                     {p.features.map((feature, idx) => {
                       return (
                         <li key={idx} className="flex items-start gap-3 text-sm text-slate-700 font-medium leading-snug">
-                          <div className="mt-0.5 shrink-0 rounded-full border border-green-500 flex items-center justify-center p-[2px]">
-                            <Check className="w-3 h-3 text-green-500" strokeWidth={3} />
+                          <div className="mt-0.5 shrink-0 rounded-full border border-primary flex items-center justify-center p-[2px]">
+                            <Check className="w-3 h-3 text-primary" strokeWidth={3} />
                           </div>
                           <span>{feature}</span>
                         </li>
@@ -215,8 +215,8 @@ export default function Pricing() {
                 ].map((feat, fIdx) => {
                   return (
                     <div key={fIdx} className="flex items-center gap-2.5 text-sm text-slate-700 font-medium">
-                      <div className="shrink-0 rounded-full border border-green-500 flex items-center justify-center p-[2px]">
-                        <Check className="w-3 h-3 text-green-500" strokeWidth={3} />
+                      <div className="shrink-0 rounded-full border border-primary flex items-center justify-center p-[2px]">
+                        <Check className="w-3 h-3 text-primary" strokeWidth={3} />
                       </div>
                       <span>{feat}</span>
                     </div>
@@ -241,8 +241,8 @@ export default function Pricing() {
             <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden bg-white border-0 rounded-[2rem] shadow-2xl flex flex-col max-h-[85vh]">
               {/* Header */}
               <div className="bg-slate-50 px-8 py-5 border-b border-slate-100 relative shrink-0">
-                <div className="mx-auto w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center mb-3 border border-emerald-100 shadow-sm">
-                  <Server className="w-6 h-6 text-emerald-600" />
+                <div className="mx-auto w-12 h-12 bg-primary/5 rounded-xl flex items-center justify-center mb-3 border border-primary/10 shadow-sm">
+                  <Server className="w-6 h-6 text-primary" />
                 </div>
                 <div className="text-center">
                   <DialogTitle className="text-2xl font-extrabold text-slate-900 mb-1 tracking-tight">{t("off_cloud_enterprise", "Off-Cloud Enterprise")}</DialogTitle>
@@ -344,7 +344,7 @@ export default function Pricing() {
                   {t("close", "Close")}
                 </Button>
                 <Link to="/enterprise-contact" onClick={() => setShowOffCloudDialog(false)} className="w-full sm:w-auto block">
-                  <Button className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-6 px-8 rounded-full shadow-lg shadow-emerald-600/20 transition-all hover:scale-105">
+                  <Button className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-bold py-6 px-8 rounded-full shadow-lg shadow-emerald-600/20 transition-all hover:scale-105">
                     {t("build_custom_quote", "Build Custom Quote")}
                   </Button>
                 </Link>
@@ -355,7 +355,7 @@ export default function Pricing() {
           <div className="mt-24">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-slate-900 flex items-center justify-center gap-3">
-                {t("full_plan", "Full Plan")} <span className="bg-green-100 text-green-900 px-4 py-1 rounded-full">{t("comparison", "Comparison")}</span>
+                {t("full_plan", "Full Plan")} <span className="bg-primary/10 text-primary/70 px-4 py-1 rounded-full">{t("comparison", "Comparison")}</span>
               </h2>
             </div>
             
@@ -378,21 +378,21 @@ export default function Pricing() {
                   </tr>
                   <tr className="hover:bg-slate-50/50 transition-colors">
                     <td className="py-4 px-6 text-sm font-medium text-slate-700">{t("unlimited_time_tracking", "Unlimited time tracking")}</td>
-                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
-                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
-                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
                   </tr>
                   <tr className="hover:bg-slate-50/50 transition-colors">
                     <td className="py-4 px-6 text-sm font-medium text-slate-700">{t("timer_button_in_50_web_apps", "Timer button in 50+ web apps")}</td>
-                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
-                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
-                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
                   </tr>
                   <tr className="hover:bg-slate-50/50 transition-colors">
                     <td className="py-4 px-6 text-sm font-medium text-slate-700">{t("time_rounding", "Time rounding")}</td>
                     <td className="py-4 px-6 text-center text-slate-300 font-bold">—</td>
-                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
-                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
                   </tr>
 
                   {/* Category 2 */}
@@ -403,21 +403,21 @@ export default function Pricing() {
                   </tr>
                   <tr className="hover:bg-slate-50/50 transition-colors">
                     <td className="py-4 px-6 text-sm font-medium text-slate-700">{t("unlimited_clients_projects", "Unlimited clients & projects")}</td>
-                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
-                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
-                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
                   </tr>
                   <tr className="hover:bg-slate-50/50 transition-colors">
                     <td className="py-4 px-6 text-sm font-medium text-slate-700">{t("task_management", "Task management")}</td>
                     <td className="py-4 px-6 text-center text-slate-300 font-bold">—</td>
-                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
-                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
                   </tr>
                   <tr className="hover:bg-slate-50/50 transition-colors">
                     <td className="py-4 px-6 text-sm font-medium text-slate-700">{t("project_budgets_alerts", "Project budgets & alerts")}</td>
                     <td className="py-4 px-6 text-center text-slate-300 font-bold">—</td>
-                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
-                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
                   </tr>
 
                   {/* Category 3 */}
@@ -428,21 +428,21 @@ export default function Pricing() {
                   </tr>
                   <tr className="hover:bg-slate-50/50 transition-colors">
                     <td className="py-4 px-6 text-sm font-medium text-slate-700">{t("api_access", "API Access")}</td>
-                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
-                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
-                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
                   </tr>
                   <tr className="hover:bg-slate-50/50 transition-colors">
                     <td className="py-4 px-6 text-sm font-medium text-slate-700">{t("time_off_module", "Time Off Module")}</td>
                     <td className="py-4 px-6 text-center text-slate-300 font-bold">—</td>
                     <td className="py-4 px-6 text-center text-slate-300 font-bold">—</td>
-                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
                   </tr>
                   <tr className="hover:bg-slate-50/50 transition-colors">
                     <td className="py-4 px-6 text-sm font-medium text-slate-700">{t("screenshot_capturing", "Screenshot capturing")}</td>
                     <td className="py-4 px-6 text-center text-slate-300 font-bold">—</td>
                     <td className="py-4 px-6 text-center text-slate-300 font-bold">—</td>
-                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
                   </tr>
                 </tbody>
               </table>
@@ -464,7 +464,7 @@ export default function Pricing() {
               return (
                 <div key={index} className="space-y-3">
                   <h4 className="font-bold text-slate-900 flex items-start gap-3 text-base leading-snug">
-                    <Info className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+                    <Info className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                     <span>{faq.q}</span>
                   </h4>
                   <p className="text-sm text-slate-600 leading-relaxed font-medium pl-8">

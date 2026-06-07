@@ -161,16 +161,16 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
           size="icon"
           className={`relative overflow-hidden sm:w-auto sm:px-3 sm:py-1.5 text-xs font-bold rounded-lg border transition-all duration-300 ${
             isAIOpen
-              ? "bg-gradient-to-r from-emerald-600 to-indigo-600 text-white border-emerald-500 shadow-[0_0_15px_rgba(59,130,246,0.5)] scale-95"
-              : "bg-card text-foreground border-border hover:border-emerald-500/50 hover:bg-gradient-to-r hover:from-emerald-50/50 hover:to-indigo-50/50 hover:text-emerald-600 hover:shadow-[0_0_10px_rgba(59,130,246,0.15)]"
+              ? "bg-gradient-to-r from-primary to-primary text-white border-primary shadow-[0_0_15px_rgba(59,130,246,0.5)] scale-95"
+              : "bg-card text-foreground border-border hover:border-primary/50 hover:bg-gradient-to-r hover:from-primary/50 hover:to-primary/50 hover:text-primary hover:shadow-[0_0_10px_rgba(59,130,246,0.15)]"
           }`}
         >
-          <span className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-indigo-500/10 opacity-0 hover:opacity-100 transition-opacity duration-300" />
-          <Sparkles className={`w-4 h-4 sm:w-3.5 sm:h-3.5 ${isAIOpen ? "animate-spin text-white" : "text-emerald-500"} sm:mr-1.5`} style={{ animationDuration: '3s' }} />
+          <span className="absolute inset-0 bg-gradient-to-r from-primary/10 to-primary/10 opacity-0 hover:opacity-100 transition-opacity duration-300" />
+          <Sparkles className={`w-4 h-4 sm:w-3.5 sm:h-3.5 ${isAIOpen ? "animate-spin text-white" : "text-primary"} sm:mr-1.5`} style={{ animationDuration: '3s' }} />
           <span className="hidden sm:inline">{t("orbit_ai", "Orbit AI")}</span>
           <span className="flex h-1.5 w-1.5 relative absolute sm:static right-1 top-1 sm:right-auto sm:top-auto">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary/70 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary"></span>
           </span>
         </Button>
 
@@ -181,12 +181,12 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
           size="icon"
           className={`relative overflow-hidden sm:w-auto sm:px-3 sm:py-1.5 text-xs font-bold rounded-lg border transition-all duration-300 ${
             isChatOpen
-              ? "bg-emerald-600 text-white border-emerald-500 shadow-[0_0_15px_rgba(59,130,246,0.5)] scale-95"
-              : "bg-card text-foreground border-border hover:border-emerald-500/50 hover:bg-emerald-50 hover:text-emerald-600 dark:hover:bg-emerald-500/10 hover:shadow-[0_0_10px_rgba(59,130,246,0.15)]"
+              ? "bg-primary text-white border-primary shadow-[0_0_15px_rgba(59,130,246,0.5)] scale-95"
+              : "bg-card text-foreground border-border hover:border-primary/50 hover:bg-primary/5 hover:text-primary dark:hover:bg-primary/10 hover:shadow-[0_0_10px_rgba(59,130,246,0.15)]"
           }`}
         >
-          <span className="absolute inset-0 bg-emerald-500/10 opacity-0 hover:opacity-100 transition-opacity duration-300" />
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 sm:w-3.5 sm:h-3.5 ${isChatOpen ? "text-white" : "text-emerald-500"} sm:mr-1.5`}><path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z"/></svg>
+          <span className="absolute inset-0 bg-primary/10 opacity-0 hover:opacity-100 transition-opacity duration-300" />
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 sm:w-3.5 sm:h-3.5 ${isChatOpen ? "text-white" : "text-primary"} sm:mr-1.5`}><path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z"/></svg>
           <span className="hidden sm:inline">Chat</span>
         </Button>
 

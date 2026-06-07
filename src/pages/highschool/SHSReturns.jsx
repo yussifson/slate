@@ -105,7 +105,7 @@ export default function SHSReturns() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent">
             Book Returns
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -165,10 +165,10 @@ export default function SHSReturns() {
         </Card>
 
         {/* Recently Returned History */}
-        <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-emerald-100 overflow-hidden">
-          <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-emerald-50/50 pb-4">
+        <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/10 overflow-hidden">
+          <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-primary/50 pb-4">
             <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-              <History className="w-5 h-5 text-emerald-600" /> Recently Returned
+              <History className="w-5 h-5 text-primary" /> Recently Returned
             </CardTitle>
           </CardHeader>
           <CardContent className="p-0">
@@ -188,7 +188,7 @@ export default function SHSReturns() {
                       <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">On: {record.data?.returnDate}</p>
                     </div>
                     <Badge variant="outline" className={`
-                      ${record.data?.returnCondition === 'Good' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : ''}
+                      ${record.data?.returnCondition === 'Good' ? 'bg-primary/5 text-primary/90 border-primary/20' : ''}
                       ${record.data?.returnCondition === 'Damaged' ? 'bg-amber-50 text-amber-700 border-amber-200' : ''}
                       ${record.data?.returnCondition === 'Lost' ? 'bg-rose-50 text-rose-700 border-rose-200' : ''}
                     `}>

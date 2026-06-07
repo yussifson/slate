@@ -36,7 +36,7 @@ const EXPORT_CONFIGS = [
     key: "cases",
     label: "Case List",
     icon: Briefcase,
-    color: "bg-emerald-100 text-emerald-600",
+    color: "bg-primary/10 text-primary",
     description: "All cases with status, client, assigned lawyer, and dates",
     columns: [
       { label: "Case Number", value: r => r.case_number || "" },
@@ -56,7 +56,7 @@ const EXPORT_CONFIGS = [
     key: "clients",
     label: "Client Data",
     icon: Users,
-    color: "bg-purple-100 text-purple-600",
+    color: "bg-primary/10 text-primary",
     description: "Client names, contact details, type, and status",
     columns: [
       { label: "Name", value: r => r.name },
@@ -75,7 +75,7 @@ const EXPORT_CONFIGS = [
     key: "invoices",
     label: "Billing Report",
     icon: Receipt,
-    color: "bg-green-100 text-green-600",
+    color: "bg-primary/10 text-primary",
     description: "All invoices with amounts, status, and payment info",
     columns: [
       { label: "Invoice #", value: r => r.invoice_number || "" },
@@ -114,7 +114,7 @@ const EXPORT_CONFIGS = [
     key: "tasks",
     label: "Task List",
     icon: CheckSquare,
-    color: "bg-cyan-100 text-cyan-600",
+    color: "bg-primary/10 text-primary",
     description: "All tasks with assignee, case, priority, and status",
     columns: [
       { label: "Title", value: r => r.title },

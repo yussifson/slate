@@ -40,7 +40,7 @@ export default function SHSRoutes() {
             <Filter className="w-4 h-4" />
           </Button>
         </div>
-        <Button className="bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white">
+        <Button className="bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white">
           <Plus className="w-4 h-4 mr-2" /> Add New
         </Button>
       </div>
@@ -50,11 +50,11 @@ export default function SHSRoutes() {
           <Card key={item.id} className="group hover:shadow-lg transition-all duration-300 border-border/50 bg-card/50 backdrop-blur-sm">
             <CardContent className="p-6">
               <div className="flex justify-between items-start mb-4">
-                <div className="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <div className="w-12 h-12 rounded-xl bg-primary/5 dark:bg-slate-800 text-primary dark:text-primary/70 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Map className="w-6 h-6" />
                 </div>
                 <span className={`text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
-                  item.status === 'Active' ? 'bg-emerald-100 dark:bg-slate-800 text-emerald-800 dark:text-emerald-200' :
+                  item.status === 'Active' ? 'bg-primary/10 dark:bg-slate-800 text-primary/80 dark:text-primary/20' :
                   item.status === 'Completed' ? 'bg-orange-100 text-orange-700' :
                   'bg-amber-100 text-amber-700'
                 }`}>

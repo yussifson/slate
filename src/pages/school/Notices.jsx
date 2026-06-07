@@ -120,7 +120,7 @@ export default function Notices() {
                 <span className="text-xs font-medium flex items-center gap-1 text-muted-foreground">
                   <Calendar className="w-3.5 h-3.5" /> {n.datePublished ? format(new Date(n.datePublished), 'MMM d, yyyy') : 'No Date'}
                 </span>
-                <span className="bg-green-50 text-green-700 text-xs font-bold px-2 py-1 rounded-md">{n.status}</span>
+                <span className="bg-primary/5 text-primary/90 text-xs font-bold px-2 py-1 rounded-md">{n.status}</span>
               </div>
             </div>
           ))}

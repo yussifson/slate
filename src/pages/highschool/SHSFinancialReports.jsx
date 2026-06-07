@@ -71,7 +71,7 @@ export default function SHSFinancialReports() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent">
             Financial Reports
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -79,7 +79,7 @@ export default function SHSFinancialReports() {
           </p>
         </div>
         <Button className="h-9 gap-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 shadow-sm hover:bg-slate-50 dark:bg-slate-800">
-          <FileSpreadsheet className="w-4 h-4 text-emerald-600" /> Export CSV
+          <FileSpreadsheet className="w-4 h-4 text-primary" /> Export CSV
         </Button>
       </div>
 
@@ -88,27 +88,27 @@ export default function SHSFinancialReports() {
           <div className="flex flex-col sm:flex-row gap-6 items-end">
             <div className="space-y-2 flex-1 max-w-xs">
               <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                <CalendarIcon className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> Start Date
+                <CalendarIcon className="w-4 h-4 text-primary dark:text-primary/70" /> Start Date
               </label>
               <Input 
                 type="date"
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500 font-semibold text-slate-700 dark:text-slate-200"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-200"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
               />
             </div>
             <div className="space-y-2 flex-1 max-w-xs">
               <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                <CalendarIcon className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> End Date
+                <CalendarIcon className="w-4 h-4 text-primary dark:text-primary/70" /> End Date
               </label>
               <Input 
                 type="date"
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500 font-semibold text-slate-700 dark:text-slate-200"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-200"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
               />
             </div>
-            <Button className="h-11 px-6 rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white shadow-md font-bold">
+            <Button className="h-11 px-6 rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white shadow-md font-bold">
               <Filter className="w-4 h-4 mr-2" /> Apply Filter
             </Button>
           </div>
@@ -121,13 +121,13 @@ export default function SHSFinancialReports() {
             <div className="space-y-8">
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="p-6 rounded-3xl bg-emerald-50 border border-emerald-100 flex flex-col justify-center text-left">
-                  <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 mb-4">
+                <div className="p-6 rounded-3xl bg-primary/5 border border-primary/10 flex flex-col justify-center text-left">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-4">
                     <TrendingUp className="w-6 h-6" />
                   </div>
-                  <p className="text-sm font-bold text-emerald-600/70 uppercase tracking-wider mb-1">Total Collected</p>
-                  <p className="text-4xl font-black text-emerald-700">${totalCollected.toFixed(2)}</p>
-                  <p className="text-xs text-emerald-600/80 mt-2 font-medium">Within selected date range</p>
+                  <p className="text-sm font-bold text-primary/70 uppercase tracking-wider mb-1">Total Collected</p>
+                  <p className="text-4xl font-black text-primary/90">${totalCollected.toFixed(2)}</p>
+                  <p className="text-xs text-primary/80 mt-2 font-medium">Within selected date range</p>
                 </div>
                 
                 <div className="p-6 rounded-3xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex flex-col justify-center text-left">
@@ -160,7 +160,7 @@ export default function SHSFinancialReports() {
                     </div>
                   ) : (
                     Object.entries(methodStats).map(([method, amount]) => (
-                      <div key={method} className="p-5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-emerald-600 dark:border-emerald-500/30 transition-colors">
+                      <div key={method} className="p-5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-primary dark:border-primary/30 transition-colors">
                         <p className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">{method}</p>
                         <p className="text-2xl font-black text-slate-700 dark:text-slate-200">${amount.toFixed(2)}</p>
                       </div>

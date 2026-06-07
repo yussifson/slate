@@ -71,22 +71,22 @@ export default function SHSParentAttendance() {
 
   const getStatusIcon = (status) => {
     switch(status) {
-      case 'Present': return <CheckCircle2 className="w-5 h-5 text-emerald-500" />;
+      case 'Present': return <CheckCircle2 className="w-5 h-5 text-primary" />;
       case 'Absent': return <XCircle className="w-5 h-5 text-rose-500" />;
       case 'Late': return <Clock className="w-5 h-5 text-amber-500" />;
-      case 'Excused': return <AlertTriangle className="w-5 h-5 text-emerald-500" />;
-      case 'Exeat': return <AlertTriangle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />;
+      case 'Excused': return <AlertTriangle className="w-5 h-5 text-primary" />;
+      case 'Exeat': return <AlertTriangle className="w-5 h-5 text-primary dark:text-primary/70" />;
       default: return null;
     }
   };
 
   const getStatusColor = (status) => {
     switch(status) {
-      case 'Present': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+      case 'Present': return 'bg-primary/5 text-primary/90 border-primary/20';
       case 'Absent': return 'bg-rose-50 text-rose-700 border-rose-200';
       case 'Late': return 'bg-amber-50 text-amber-700 border-amber-200';
-      case 'Excused': return 'bg-orange-50 text-orange-700 border-emerald-200';
-      case 'Exeat': return 'bg-emerald-50 dark:bg-slate-800 text-emerald-800 dark:text-emerald-200 border-emerald-200 dark:border-slate-600';
+      case 'Excused': return 'bg-orange-50 text-orange-700 border-primary/20';
+      case 'Exeat': return 'bg-primary/5 dark:bg-slate-800 text-primary/80 dark:text-primary/20 border-primary/20 dark:border-slate-600';
       default: return 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700';
     }
   };
@@ -96,7 +96,7 @@ export default function SHSParentAttendance() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent">
             Attendance Records
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -112,8 +112,8 @@ export default function SHSParentAttendance() {
       ) : wards.length === 0 ? (
         <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
           <CardContent className="p-20 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
-              <User className="w-8 h-8 text-emerald-500 dark:text-emerald-500" />
+            <div className="w-16 h-16 rounded-2xl bg-primary/5 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+              <User className="w-8 h-8 text-primary dark:text-primary" />
             </div>
             <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No Wards Linked</h3>
             <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Contact the school administration to link your child's account.</p>
@@ -130,18 +130,18 @@ export default function SHSParentAttendance() {
                 onClick={() => setSelectedWardId(ward.id)}
                 className={`w-full p-4 rounded-2xl border text-left transition-all duration-300 flex items-center gap-4 ${
                   selectedWardId === ward.id 
-                    ? 'bg-emerald-600 dark:bg-emerald-500 border-emerald-600 dark:border-emerald-500 text-white shadow-lg shadow-emerald-500/20 scale-100' 
-                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-emerald-600 dark:border-emerald-500/50 scale-95'
+                    ? 'bg-primary dark:bg-primary border-primary dark:border-primary text-white shadow-lg shadow-emerald-500/20 scale-100' 
+                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-primary dark:border-primary/50 scale-95'
                 }`}
               >
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg shrink-0 ${
-                  selectedWardId === ward.id ? 'bg-white dark:bg-slate-900/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-emerald-600 dark:text-emerald-400'
+                  selectedWardId === ward.id ? 'bg-white dark:bg-slate-900/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70'
                 }`}>
                   {ward.title.charAt(0)}
                 </div>
                 <div>
                   <h4 className="font-bold">{ward.title}</h4>
-                  <p className={`text-xs ${selectedWardId === ward.id ? 'text-emerald-200 dark:text-emerald-800' : 'text-slate-500 dark:text-slate-400 dark:text-slate-500'}`}>
+                  <p className={`text-xs ${selectedWardId === ward.id ? 'text-primary/20 dark:text-primary/80' : 'text-slate-500 dark:text-slate-400 dark:text-slate-500'}`}>
                     {ward.data?.classRoom || 'Form 1'}
                   </p>
                 </div>
@@ -153,7 +153,7 @@ export default function SHSParentAttendance() {
             <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100">
               <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50">
                 <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-                  <CalendarIcon className="w-5 h-5 text-emerald-600 dark:text-emerald-400" /> Recent Attendance Log
+                  <CalendarIcon className="w-5 h-5 text-primary dark:text-primary/70" /> Recent Attendance Log
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0">

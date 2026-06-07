@@ -15,8 +15,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sh
 import { MoreVertical, Eye } from 'lucide-react';
 
 const STATUS_COLORS = {
-  'Available':      'bg-green-100 text-green-700 dark:bg-green-950/30 dark:text-green-400',
-  'On Route':       'bg-orange-100 text-orange-700 dark:bg-emerald-950/30 dark:text-emerald-400',
+  'Available':      'bg-primary/10 text-primary/90 dark:bg-primary/30 dark:text-primary/70',
+  'On Route':       'bg-orange-100 text-orange-700 dark:bg-primary/30 dark:text-primary/70',
   'Maintenance':    'bg-amber-100 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400',
   'Decommissioned': 'bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400',
 };
@@ -141,8 +141,8 @@ export default function Fleet() {
 
   const stats = [
     { label: 'Total Vehicles', value: total, icon: Truck, color: 'bg-slate-100 text-slate-600', border: 'border-slate-200' },
-    { label: 'Available', value: available, icon: CheckCircle2, color: 'bg-green-100 text-green-600', border: 'border-green-200' },
-    { label: 'On Route', value: onRoute, icon: Car, color: 'bg-emerald-100 text-emerald-600', border: 'border-emerald-200' },
+    { label: 'Available', value: available, icon: CheckCircle2, color: 'bg-primary/10 text-primary', border: 'border-primary/20' },
+    { label: 'On Route', value: onRoute, icon: Car, color: 'bg-primary/10 text-primary', border: 'border-primary/20' },
     { label: 'In Maintenance', value: maintenance, icon: Wrench, color: 'bg-amber-100 text-amber-600', border: 'border-amber-200' },
   ];
 
@@ -156,7 +156,7 @@ export default function Fleet() {
           <h1 className="text-2xl font-bold text-card-foreground">{t("fleet_management", "Fleet Management")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("track_and_manage_your_vehicle_", "Track and manage your vehicle fleet")}</p>
         </div>
-        <Button onClick={openAdd} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
+        <Button onClick={openAdd} className="gap-2 bg-primary hover:bg-primary/90 text-white">
           <Plus className="w-4 h-4" /> {t("add_vehicle", "Add Vehicle")}
         </Button>
       </div>
@@ -223,7 +223,7 @@ export default function Fleet() {
                         <div className="flex items-center gap-2">
                           <span className="text-lg">{typeIcons[v.vehicleType] || '🚗'}</span>
                           <div>
-                            <div className="font-mono font-bold text-emerald-600">{v.plateNumber}</div>
+                            <div className="font-mono font-bold text-primary">{v.plateNumber}</div>
                             <div className="text-xs text-muted-foreground">{v.vehicleType}</div>
                           </div>
                         </div>
@@ -256,13 +256,13 @@ export default function Fleet() {
                         <div className="flex items-center justify-end gap-1.5">
                           {v.status === 'Available' && (
                             <Button onClick={() => handleUpdateStatus(v, 'On Route')} size="sm"
-                              className="h-7 text-xs bg-emerald-600 hover:bg-emerald-700 text-white gap-1">
+                              className="h-7 text-xs bg-primary hover:bg-primary/90 text-white gap-1">
                               <Truck className="w-3 h-3" /> {t("dispatch", "Dispatch")}
                             </Button>
                           )}
                           {v.status === 'On Route' && (
                             <Button onClick={() => handleUpdateStatus(v, 'Available')} size="sm"
-                              className="h-7 text-xs bg-green-600 hover:bg-green-700 text-white gap-1">
+                              className="h-7 text-xs bg-primary hover:bg-primary/90 text-white gap-1">
                               <CheckCircle2 className="w-3 h-3" /> {t("return", "Return")}
                             </Button>
                           )}
@@ -300,7 +300,7 @@ export default function Fleet() {
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-lg p-6 space-y-5 border border-border max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-                <Truck className="w-5 h-5 text-emerald-600" />
+                <Truck className="w-5 h-5 text-primary" />
                 {editTarget ? 'Edit Vehicle' : 'Add Vehicle'}
               </h2>
               <button onClick={closeModal} className="text-muted-foreground hover:text-foreground p-1 rounded-full hover:bg-muted">
@@ -317,7 +317,7 @@ export default function Fleet() {
               <div>
                 <label className="text-xs font-semibold text-muted-foreground uppercase">{t("vehicle_type", "Vehicle Type")}</label>
                 <select value={formData.vehicleType} onChange={e => setFormData({ ...formData, vehicleType: e.target.value })}
-                  className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-card-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                  className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary">
                   {VEHICLE_TYPES.map(item => {
                     return <option key={item}>{item}</option>;
                   })}
@@ -346,7 +346,7 @@ export default function Fleet() {
               <div>
                 <label className="text-xs font-semibold text-muted-foreground uppercase">{t("fuel_type", "Fuel Type")}</label>
                 <select value={formData.fuelType} onChange={e => setFormData({ ...formData, fuelType: e.target.value })}
-                  className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-card-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                  className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary">
                   {FUEL_TYPES.map(f => {
                     return <option key={f}>{f}</option>;
                   })}
@@ -365,7 +365,7 @@ export default function Fleet() {
               <div>
                 <label className="text-xs font-semibold text-muted-foreground uppercase">{t("status", "Status")}</label>
                 <select value={formData.status} onChange={e => setFormData({ ...formData, status: e.target.value })}
-                  className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-card-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                  className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary">
                   {STATUSES.map(s => {
                     return <option key={s}>{s}</option>;
                   })}
@@ -376,7 +376,7 @@ export default function Fleet() {
             <div className="flex gap-3 pt-1">
               <Button variant="outline" className="flex-1" onClick={closeModal}>{t("cancel", "Cancel")}</Button>
               <Button onClick={handleSave} disabled={mutateRecord.isPending}
-                className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white">
+                className="flex-1 bg-primary hover:bg-primary/90 text-white">
                 {mutateRecord.isPending ? 'Saving...' : editTarget ? 'Update Vehicle' : 'Add Vehicle'}
               </Button>
             </div>
@@ -400,7 +400,7 @@ export default function Fleet() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <div className="text-xs text-muted-foreground">{t("plate_number", "Plate Number")}</div>
-                  <div className="font-mono text-foreground font-bold text-emerald-600">{viewTarget.plateNumber}</div>
+                  <div className="font-mono text-foreground font-bold text-primary">{viewTarget.plateNumber}</div>
                 </div>
                 <div>
                   <div className="text-xs text-muted-foreground">{t("vehicle_type", "Vehicle Type")}</div>

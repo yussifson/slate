@@ -19,14 +19,14 @@ export default function OnlineInstructor() {
         <Card className="border-0 shadow-sm rounded-xl">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-emerald-50 text-[#0056D2] rounded-lg">
+              <div className="p-3 bg-primary/5 text-[#0056D2] rounded-lg">
                 <Users className="h-6 w-6" />
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500">Total Students</p>
                 <div className="flex items-end gap-2">
                   <h3 className="text-2xl font-bold text-gray-900">4,250</h3>
-                  <span className="text-sm font-medium text-green-600 mb-1">+12%</span>
+                  <span className="text-sm font-medium text-primary mb-1">+12%</span>
                 </div>
               </div>
             </div>
@@ -36,14 +36,14 @@ export default function OnlineInstructor() {
         <Card className="border-0 shadow-sm rounded-xl">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-green-50 text-green-600 rounded-lg">
+              <div className="p-3 bg-primary/5 text-primary rounded-lg">
                 <DollarSign className="h-6 w-6" />
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500">Total Revenue</p>
                 <div className="flex items-end gap-2">
                   <h3 className="text-2xl font-bold text-gray-900">$84,520</h3>
-                  <span className="text-sm font-medium text-green-600 mb-1">+5.4%</span>
+                  <span className="text-sm font-medium text-primary mb-1">+5.4%</span>
                 </div>
               </div>
             </div>

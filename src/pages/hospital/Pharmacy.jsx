@@ -124,13 +124,13 @@ export default function Pharmacy() {
             "Manage drug stock, pricing, and reorder levels"
           )}</p>
         </div>
-        <Button onClick={() => setShowModal(true)} className="gap-2 bg-teal-600 hover:bg-teal-700 text-white">
+        <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
           <Plus className="w-4 h-4" /> {t("add_medication", "Add Medication")}
         </Button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-card rounded-xl border border-border p-5 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-teal-100 flex items-center justify-center text-teal-600"><Pill className="w-6 h-6" /></div>
+          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary"><Pill className="w-6 h-6" /></div>
           <div><p className="text-3xl font-bold text-card-foreground">{inventory.length}</p><p className="text-sm font-medium text-muted-foreground">{t("total_unique_drugs", "Total Unique Drugs")}</p></div>
         </div>
         <div className="bg-card rounded-xl border border-border p-5 shadow-sm flex items-center gap-4">
@@ -138,7 +138,7 @@ export default function Pharmacy() {
           <div><p className="text-3xl font-bold text-red-600">{lowStockCount}</p><p className="text-sm font-medium text-muted-foreground">{t("low_stock_alerts", "Low Stock Alerts")}</p></div>
         </div>
         <div className="bg-card rounded-xl border border-border p-5 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-green-600"><ShoppingBag className="w-6 h-6" /></div>
+          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary"><ShoppingBag className="w-6 h-6" /></div>
           <div><p className="text-3xl font-bold text-card-foreground">{inventory.filter(d => d.stock > d.reorder).length}</p><p className="text-sm font-medium text-muted-foreground">{t("well_stocked_drugs", "Well Stocked Drugs")}</p></div>
         </div>
       </div>
@@ -148,7 +148,7 @@ export default function Pharmacy() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input placeholder="Search medication or category..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
           </div>
-          <Button onClick={() => setSortByStock(!sortByStock)} variant="outline" className={`gap-2 bg-card text-foreground shrink-0 ${sortByStock ? 'border-teal-500 text-teal-600' : ''}`}>
+          <Button onClick={() => setSortByStock(!sortByStock)} variant="outline" className={`gap-2 bg-card text-foreground shrink-0 ${sortByStock ? 'border-primary text-primary' : ''}`}>
             <ArrowDownUp className="w-4 h-4"/> {t("sort_by_stock_level", "Sort by Stock Level")}
           </Button>
         </div>
@@ -221,7 +221,7 @@ export default function Pharmacy() {
       {showModal && (
        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4">
-           <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><Pill className="w-5 h-5 text-teal-600"/> {t("add_new_medication", "Add New Medication")}</h2>
+           <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><Pill className="w-5 h-5 text-primary"/> {t("add_new_medication", "Add New Medication")}</h2>
            <div className="grid grid-cols-2 gap-3">
               <div className="col-span-2">
                 <label className="text-xs font-bold text-muted-foreground uppercase">{t("drug_name_strength", "Drug Name & Strength")}</label>
@@ -256,7 +256,7 @@ export default function Pharmacy() {
            </div>
            <div className="flex gap-3 pt-4">
              <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditingDrug(null); }}>{t("cancel", "Cancel")}</Button>
-             <Button className="flex-1 bg-teal-600 hover:bg-teal-700 text-white" onClick={handleSaveToDb}>{t("save_medication", "Save Medication")}</Button>
+             <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleSaveToDb}>{t("save_medication", "Save Medication")}</Button>
            </div>
          </div>
        </div>

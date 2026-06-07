@@ -67,7 +67,7 @@ export default function CampusMarketplace() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         <div className="lg:col-span-1">
           <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 p-8 shadow-sm sticky top-6">
-            <h3 className="text-xl font-extrabold mb-6 flex items-center gap-2"><Tag className="w-5 h-5 text-emerald-500" /> Sell an Item</h3>
+            <h3 className="text-xl font-extrabold mb-6 flex items-center gap-2"><Tag className="w-5 h-5 text-primary" /> Sell an Item</h3>
             <div className="space-y-4">
               <div>
                 <label className="text-xs font-bold text-slate-500 uppercase">Item Name</label>
@@ -90,16 +90,16 @@ export default function CampusMarketplace() {
               <div key={item.id} className="bg-white/60 dark:bg-card/60 backdrop-blur-md rounded-3xl border border-white/20 overflow-hidden shadow-sm hover:shadow-sm hover:-translate-y-1 transition-all group flex flex-col">
                 <div className="h-40 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center relative">
                   <ShoppingBag className="w-12 h-12 text-slate-300 dark:text-slate-700" />
-                  <div className="absolute top-4 right-4 bg-emerald-500 text-white text-xs font-black px-3 py-1 rounded-full shadow-sm">
+                  <div className="absolute top-4 right-4 bg-primary text-white text-xs font-black px-3 py-1 rounded-full shadow-sm">
                     ${item.data?.price?.toFixed(2) || '0.00'}
                   </div>
                 </div>
                 <div className="p-6 flex-1 flex flex-col justify-between">
                   <div>
                     <h3 className="font-extrabold text-lg text-slate-900 dark:text-white mb-1 line-clamp-2">{item.title}</h3>
-                    <p className="text-xs font-bold text-[#1E3A8A] dark:text-emerald-400 uppercase tracking-wider mb-4">{item.status}</p>
+                    <p className="text-xs font-bold text-[#1E3A8A] dark:text-primary/70 uppercase tracking-wider mb-4">{item.status}</p>
                   </div>
-                  <Button variant="outline" className="w-full rounded-xl border-slate-200 dark:border-slate-800 font-bold hover:bg-[#F0F4FF] dark:bg-emerald-900/20 hover:text-[#1E3A8A] dark:text-emerald-400 hover:border-emerald-200 dark:hover:bg-emerald-900/20 dark:hover:border-emerald-800">
+                  <Button variant="outline" className="w-full rounded-xl border-slate-200 dark:border-slate-800 font-bold hover:bg-[#F0F4FF] dark:bg-primary/20 hover:text-[#1E3A8A] dark:text-primary/70 hover:border-primary/20 dark:hover:bg-primary/20 dark:hover:border-primary/80">
                     <MessageCircle className="w-4 h-4 mr-2" /> Contact Seller
                   </Button>
                 </div>

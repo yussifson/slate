@@ -257,8 +257,8 @@ export default function Chat() {
             >
               <div className="relative flex-shrink-0">
                 {room.room_type === "group" ? (
-                  <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                    <Users className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                  <div className="w-12 h-12 rounded-full bg-primary/10 dark:bg-primary/30 flex items-center justify-center">
+                    <Users className="w-6 h-6 text-primary dark:text-primary/70" />
                   </div>
                 ) : (
                   <div className="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
@@ -294,8 +294,8 @@ export default function Chat() {
             <div className="px-4 py-3 border-b border-border flex items-center justify-between bg-[#f0f2f5] dark:bg-[#202c33] z-10 shadow-sm">
               <div className="flex items-center gap-3">
                 {activeRoom.room_type === "group" ? (
-                  <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                    <Users className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                  <div className="w-10 h-10 rounded-full bg-primary/10 dark:bg-primary/30 flex items-center justify-center">
+                    <Users className="w-5 h-5 text-primary dark:text-primary/70" />
                   </div>
                 ) : (
                   <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
@@ -355,7 +355,7 @@ export default function Chat() {
                       )}
                       
                       {!isMe && showTail && activeRoom?.name !== null && (
-                         <div className="text-[11px] font-bold text-emerald-500 mb-0.5">{senderName}</div>
+                         <div className="text-[11px] font-bold text-primary mb-0.5">{senderName}</div>
                       )}
 
                       {showTail && (
@@ -374,9 +374,9 @@ export default function Chat() {
                                 <video src={msg.content.split('|')[2]} controls className="max-w-[250px] rounded" />
                               ) : (
                                 <a href={msg.content.split('|')[2]} target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-md p-1 transition-colors">
-                                  <FileText className="w-8 h-8 text-emerald-500 shrink-0" />
+                                  <FileText className="w-8 h-8 text-primary shrink-0" />
                                   <div className="flex flex-col min-w-0">
-                                    <span className="text-sm font-semibold truncate max-w-[150px] text-emerald-600 hover:underline">{msg.content.split('|')[1]}</span>
+                                    <span className="text-sm font-semibold truncate max-w-[150px] text-primary hover:underline">{msg.content.split('|')[1]}</span>
                                     <span className="text-xs text-muted-foreground uppercase">{msg.content.split('|')[1]?.split('.').pop() || 'DOCUMENT'}</span>
                                   </div>
                                 </a>
@@ -393,7 +393,7 @@ export default function Chat() {
                         {isMe && (() => {
                           const otherParticipants = activeRoom?.chat_participants?.filter(p => p.user_id !== user.id) || [];
                           const isReadByAny = otherParticipants.some(p => p.last_read_at && new Date(p.last_read_at) >= new Date(msg.created_at));
-                          if (isReadByAny) return <CheckCheck className="w-3.5 h-3.5 text-emerald-500" />;
+                          if (isReadByAny) return <CheckCheck className="w-3.5 h-3.5 text-primary" />;
                           return <CheckCheck className="w-3.5 h-3.5 text-muted-foreground" />;
                         })()}
                       </div>
@@ -481,16 +481,16 @@ export default function Chat() {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent side="top" align="start" className="w-48 p-2 mb-2 rounded-2xl flex flex-col gap-1 shadow-xl">
-                   <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-emerald-50 hover:text-emerald-600" onClick={() => document.getElementById('chat-doc-upload')?.click()}>
-                     <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600"><FileText className="w-4 h-4"/></div>
+                   <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-primary/5 hover:text-primary" onClick={() => document.getElementById('chat-doc-upload')?.click()}>
+                     <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary"><FileText className="w-4 h-4"/></div>
                      Document
                    </Button>
                    <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-rose-50 hover:text-rose-600" onClick={() => document.getElementById('chat-image-upload')?.click()}>
                      <div className="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center text-rose-600"><ImageIcon className="w-4 h-4"/></div>
                      Photos & Videos
                    </Button>
-                   <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-violet-50 hover:text-violet-600" onClick={() => fileInputRef.current?.click()}>
-                     <div className="w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center text-violet-600"><File className="w-4 h-4"/></div>
+                   <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-primary/5 hover:text-primary" onClick={() => fileInputRef.current?.click()}>
+                     <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary"><File className="w-4 h-4"/></div>
                      File
                    </Button>
                 </PopoverContent>
@@ -505,7 +505,7 @@ export default function Chat() {
                   placeholder="Type a message"
                   className="w-full bg-transparent border-none px-4 py-2.5 text-sm focus:ring-0 focus:outline-none"
                 />
-                <button onClick={handleAiAssist} className="absolute right-3 p-1 text-emerald-500 hover:bg-emerald-500/10 rounded-full transition-colors" title="AI Magic Rewrite">
+                <button onClick={handleAiAssist} className="absolute right-3 p-1 text-primary hover:bg-primary/10 rounded-full transition-colors" title="AI Magic Rewrite">
                   <Sparkles className="w-4 h-4" />
                 </button>
               </div>

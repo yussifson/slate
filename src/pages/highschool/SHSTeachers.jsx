@@ -80,7 +80,7 @@ export default function SHSTeachers() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent">
             Teaching Staff
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -88,15 +88,15 @@ export default function SHSTeachers() {
           </p>
         </div>
         
-        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white shadow-md shadow-emerald-500/20">
+        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white shadow-md shadow-emerald-500/20">
           <Plus className="w-4 h-4" /> Add Teacher
         </Button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-purple-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-slate-800 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-primary/10 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
               <Users className="w-6 h-6" />
             </div>
             <div>
@@ -106,9 +106,9 @@ export default function SHSTeachers() {
           </CardContent>
         </Card>
         
-        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-emerald-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
               <User className="w-6 h-6" />
             </div>
             <div>
@@ -146,7 +146,7 @@ export default function SHSTeachers() {
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
               <Input 
                 placeholder="Search name or specialization..." 
-                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-emerald-600 dark:focus-visible:ring-emerald-500"
+                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -158,8 +158,8 @@ export default function SHSTeachers() {
             <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading staff...</div>
           ) : filteredTeachers.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
-                <Users className="w-8 h-8 text-emerald-500 dark:text-emerald-500" />
+              <div className="w-16 h-16 rounded-2xl bg-primary/5 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                <Users className="w-8 h-8 text-primary dark:text-primary" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No teachers found</h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Register a new teacher to populate the directory.</p>
@@ -167,19 +167,19 @@ export default function SHSTeachers() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
               {filteredTeachers.map(teacher => (
-                <div key={teacher.id} className="group p-5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-emerald-600 dark:border-emerald-500/30 hover:shadow-lg hover:shadow-purple-500/5 transition-all duration-300">
+                <div key={teacher.id} className="group p-5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-primary dark:border-primary/30 hover:shadow-lg hover:shadow-purple-500/5 transition-all duration-300">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-100 to-white border border-emerald-100 dark:border-slate-700 flex items-center justify-center text-xl font-black text-emerald-600 dark:text-emerald-400">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/10 to-white border border-primary/10 dark:border-slate-700 flex items-center justify-center text-xl font-black text-primary dark:text-primary/70">
                         {teacher.title.charAt(0)}
                       </div>
                       <div>
-                        <h4 className="font-bold text-slate-800 dark:text-slate-100 group-hover:text-emerald-600 dark:text-emerald-400 transition-colors">{teacher.title}</h4>
+                        <h4 className="font-bold text-slate-800 dark:text-slate-100 group-hover:text-primary dark:text-primary/70 transition-colors">{teacher.title}</h4>
                         <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">{teacher.case_number}</p>
                       </div>
                     </div>
                     <Badge variant="outline" className={
-                      teacher.status === 'Active' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                      teacher.status === 'Active' ? 'bg-primary/5 text-primary/90 border-primary/20' :
                       'bg-amber-50 text-amber-700 border-amber-200'
                     }>
                       {teacher.status}
@@ -202,10 +202,10 @@ export default function SHSTeachers() {
                   </div>
                   
                   <div className="mt-5 pt-4 border-t border-slate-50 flex justify-between gap-2">
-                    <Button variant="outline" size="sm" className="flex-1 rounded-xl border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:bg-slate-800">
+                    <Button variant="outline" size="sm" className="flex-1 rounded-xl border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-primary dark:text-primary/70 hover:bg-primary/5 dark:bg-slate-800">
                       Profile
                     </Button>
-                    <Button variant="outline" size="sm" className="flex-1 rounded-xl border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:bg-slate-800">
+                    <Button variant="outline" size="sm" className="flex-1 rounded-xl border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-primary dark:text-primary/70 hover:bg-primary/5 dark:bg-slate-800">
                       Subjects
                     </Button>
                   </div>
@@ -218,10 +218,10 @@ export default function SHSTeachers() {
 
       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
         <DialogContent className="sm:max-w-[500px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
-          <div className="p-6 bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 text-white">
+          <div className="p-6 bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-black">Register Teacher</DialogTitle>
-              <DialogDescription className="text-emerald-100 dark:text-emerald-900">
+              <DialogDescription className="text-primary/10 dark:text-primary/70">
                 Add a new staff member to the teaching directory.
               </DialogDescription>
             </DialogHeader>
@@ -293,7 +293,7 @@ export default function SHSTeachers() {
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Status</label>
                   <select 
-                    className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500"
+                    className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
                     value={newTeacher.status}
                     onChange={e => setNewTeacher({...newTeacher, status: e.target.value})}
                   >
@@ -313,7 +313,7 @@ export default function SHSTeachers() {
             <Button 
               onClick={handleAddTeacher} 
               disabled={!newTeacher.firstName || !newTeacher.lastName}
-              className="rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white font-bold"
+              className="rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white font-bold"
             >
               Save Teacher
             </Button>

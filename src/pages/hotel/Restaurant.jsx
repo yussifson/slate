@@ -166,7 +166,7 @@ export default function Restaurant() {
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                  {filtered.map(item => {
                    return (
-                     <div key={item.id} className="group bg-card p-4 rounded-xl border border-border shadow-sm hover:shadow-md hover:border-violet-200 cursor-pointer transition-all flex flex-col justify-between h-32 relative">
+                     <div key={item.id} className="group bg-card p-4 rounded-xl border border-border shadow-sm hover:shadow-md hover:border-primary/20 cursor-pointer transition-all flex flex-col justify-between h-32 relative">
                        <button 
                          onClick={(e) => { e.stopPropagation(); handleDeleteMenu(item.id); }} 
                          className="absolute top-2 right-2 p-1 text-muted-foreground hover:text-red-500 rounded opacity-0 group-hover:opacity-100 transition-opacity"
@@ -178,8 +178,8 @@ export default function Restaurant() {
                           <p className="text-xs text-muted-foreground">{item.category}</p>
                        </div>
                        <div onClick={() => addToOrder(item)} className="flex justify-between items-center mt-4">
-                          <span className="font-bold text-violet-600">${item.price.toFixed(2)}</span>
-                          <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-muted-foreground group-hover:bg-violet-100 group-hover:text-violet-600"><Plus className="w-4 h-4"/></div>
+                          <span className="font-bold text-primary">${item.price.toFixed(2)}</span>
+                          <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary"><Plus className="w-4 h-4"/></div>
                        </div>
                      </div>
                    );
@@ -228,11 +228,11 @@ export default function Restaurant() {
                </div>
                <div className="flex justify-between items-center text-lg pt-2 border-t border-border">
                   <span className="font-bold text-card-foreground">{t("total", "Total")}</span>
-                  <span className="font-bold text-violet-600">${(total * 1.1).toFixed(2)}</span>
+                  <span className="font-bold text-primary">${(total * 1.1).toFixed(2)}</span>
                </div>
                <div className="grid grid-cols-2 gap-2 pt-2">
                   <Button onClick={() => handlePlaceOrder('Room')} variant="outline" className="w-full">{t("charge_room", "Charge Room")}</Button>
-                  <Button onClick={() => handlePlaceOrder('Cash')} className="w-full bg-green-600 hover:bg-green-700 text-white gap-2"><Receipt className="w-4 h-4"/> {t("pay_now", "Pay Now")}</Button>
+                  <Button onClick={() => handlePlaceOrder('Cash')} className="w-full bg-primary hover:bg-primary/90 text-white gap-2"><Receipt className="w-4 h-4"/> {t("pay_now", "Pay Now")}</Button>
                </div>
             </div>
          </div>
@@ -240,7 +240,7 @@ export default function Restaurant() {
       {showAddMenuModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-sm p-6 space-y-4">
-            <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><Utensils className="w-5 h-5 text-violet-600"/> {t("add_menu_item", "Add Menu Item")}</h2>
+            <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><Utensils className="w-5 h-5 text-primary"/> {t("add_menu_item", "Add Menu Item")}</h2>
             <div className="space-y-3">
                <div>
                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("item_name", "Item Name")}</label>

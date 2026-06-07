@@ -212,7 +212,7 @@ export default function Suppliers() {
                          </div>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${sup.status === 'Active' ? 'bg-green-100 dark:bg-green-950/20 text-green-700 dark:text-green-400' : 'bg-muted text-muted-foreground'}`}>
+                        <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${sup.status === 'Active' ? 'bg-primary/10 dark:bg-primary/20 text-primary/90 dark:text-primary/70' : 'bg-muted text-muted-foreground'}`}>
                            {sup.status}
                         </span>
                       </td>
@@ -295,7 +295,7 @@ export default function Suppliers() {
               <div className="grid grid-cols-3 gap-4">
                 <div className="col-span-1 font-semibold text-muted-foreground">{t("status", "Status")}</div>
                 <div className="col-span-2">
-                  <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${selectedRecord.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-muted text-muted-foreground'}`}>
+                  <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${selectedRecord.status === 'Active' ? 'bg-primary/10 text-primary/90' : 'bg-muted text-muted-foreground'}`}>
                      {selectedRecord.status}
                   </span>
                 </div>

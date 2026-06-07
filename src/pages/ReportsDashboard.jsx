@@ -39,8 +39,8 @@ import { RETAIL_BRAND } from "@/components/retail/RetailViewKit";
 
 // Use professional enterprise colors instead of potentially playful brand colors
 const CHART_COLORS = ["#1e3a8a", "#2563eb", "#3b82f6", "#60a5fa", "#0f172a", "#334155"];
-const THEME_BLUE = "text-emerald-700 dark:text-emerald-400";
-const BG_BLUE_LIGHT = "bg-emerald-50 dark:bg-emerald-900/20";
+const THEME_BLUE = "text-primary/90 dark:text-primary/70";
+const BG_BLUE_LIGHT = "bg-primary/5 dark:bg-primary/20";
 
 function ReportMetricCard({ title, value, sub, icon: Icon, trend }) {
   return (
@@ -53,7 +53,7 @@ function ReportMetricCard({ title, value, sub, icon: Icon, trend }) {
             {trend !== undefined && (
               <span
                 className={`text-xs font-semibold px-2 py-0.5 rounded-md ${
-                  trend >= 0 ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400" : "bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                  trend >= 0 ? "bg-primary/5 text-primary/90 dark:bg-primary/30 dark:text-primary/70" : "bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400"
                 }`}
               >
                 {trend > 0 ? "+" : ""}

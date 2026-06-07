@@ -166,9 +166,9 @@ export default function ClientPortal() {
       </div>
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <StatCard icon={Briefcase} label={`My ${getTerm(user?.company_industry, 'cases')}`} value={cases.length} color="bg-emerald-50 text-emerald-600" />
-        <StatCard icon={Calendar} label="Upcoming Appointments" value={upcomingHearings.length} color="bg-purple-50 text-purple-600" />
-        <StatCard icon={Receipt} label="Invoices Paid" value={invoices.filter(i => i.status === "paid").length} color="bg-green-50 text-green-600" />
+        <StatCard icon={Briefcase} label={`My ${getTerm(user?.company_industry, 'cases')}`} value={cases.length} color="bg-primary/5 text-primary" />
+        <StatCard icon={Calendar} label="Upcoming Appointments" value={upcomingHearings.length} color="bg-primary/5 text-primary" />
+        <StatCard icon={Receipt} label="Invoices Paid" value={invoices.filter(i => i.status === "paid").length} color="bg-primary/5 text-primary" />
         <StatCard icon={FolderOpen} label="Documents" value={sharedDocs.length} color="bg-amber-50 text-amber-600" />
       </div>
       {/* At a Glance */}
@@ -303,7 +303,7 @@ export default function ClientPortal() {
                     <span className="text-sm font-bold">{inv.currency === "NGN" ? "₦" : inv.currency === "USD" ? "$" : "GH₵"}{(inv.total_amount || 0).toLocaleString()}</span>
                     <Badge className={cn("text-[10px]", INVOICE_STATUS_COLORS[inv.status])}>{inv.status}</Badge>
                     {inv.status !== "paid" && (
-                       <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 h-7 text-xs px-3" onClick={() => setPayingInvoice(inv)}>
+                       <Button size="sm" className="bg-primary hover:bg-primary/90 h-7 text-xs px-3" onClick={() => setPayingInvoice(inv)}>
                          {t("pay_now", "Pay Now")}
                        </Button>
                     )}

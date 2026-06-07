@@ -29,14 +29,14 @@ import { supabase } from '@/api/supabaseClient';
 import { useToast } from '@/components/ui/use-toast';
 
 const AVATAR_GRADIENTS = [
-  'from-emerald-500 to-indigo-600',
-  'from-emerald-500 to-teal-600',
-  'from-violet-500 to-purple-600',
+  'from-primary to-primary',
+  'from-primary to-primary',
+  'from-primary to-primary',
   'from-amber-500 to-orange-600',
-  'from-rose-500 to-pink-600',
-  'from-cyan-500 to-emerald-600',
-  'from-fuchsia-500 to-pink-600',
-  'from-lime-500 to-green-600',
+  'from-rose-500 to-primary',
+  'from-primary to-primary',
+  'from-primary to-primary',
+  'from-lime-500 to-primary',
 ];
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
@@ -177,8 +177,8 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
 
   if (!data || data.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-emerald-50/30 rounded-2xl border border-slate-200/60">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center mb-4 shadow-lg shadow-emerald-500/20">
+      <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-2xl border border-slate-200/60">
+        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary flex items-center justify-center mb-4 shadow-lg shadow-emerald-500/20">
           <Users className="w-8 h-8 text-white" />
         </div>
         <h3 className="text-lg font-semibold text-slate-800 mb-1">No Contacts Yet</h3>
@@ -195,7 +195,7 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
       <div className="mb-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-md shadow-emerald-500/20">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary flex items-center justify-center shadow-md shadow-emerald-500/20">
               <Users className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -235,7 +235,7 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
                 disabled={!hasRecords}
                 className={`w-8 h-8 rounded-lg text-xs font-semibold transition-all ${
                   activeLetter === letter
-                    ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/20'
+                    ? 'bg-primary text-white shadow-md shadow-emerald-500/20'
                     : hasRecords
                     ? 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                     : 'text-slate-300 cursor-not-allowed'
@@ -265,7 +265,7 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
               <div
                 key={record.id}
                 onClick={() => setSelectedRecord(record)}
-                className="bg-white rounded-xl border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-emerald-200/60 transition-all duration-300 cursor-pointer group overflow-hidden"
+                className="bg-white rounded-xl border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-primary/60 transition-all duration-300 cursor-pointer group overflow-hidden"
               >
                 {/* Card top gradient */}
                 <div className={`h-16 bg-gradient-to-r ${gradient} relative`}>
@@ -294,7 +294,7 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
                   </div>
 
                   {/* Name & Role */}
-                  <h3 className="font-semibold text-slate-800 text-sm truncate group-hover:text-emerald-700 transition-colors">
+                  <h3 className="font-semibold text-slate-800 text-sm truncate group-hover:text-primary/90 transition-colors">
                     {name}
                   </h3>
                   {role && (
@@ -373,7 +373,7 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
                 </div>
                 <DialogFooter className="mt-4">
                   <Button variant="outline" onClick={() => setSelectedRecord(null)}>Close</Button>
-                  <Button onClick={() => { openEdit(selectedRecord); setSelectedRecord(null); }} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
+                  <Button onClick={() => { openEdit(selectedRecord); setSelectedRecord(null); }} className="gap-2 bg-primary hover:bg-primary/90 text-white">
                     <Pencil className="h-4 w-4" /> Edit
                   </Button>
                 </DialogFooter>
@@ -408,7 +408,7 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
                 return (
                   <div key={f.name} className="space-y-1">
                     <label className="text-xs font-semibold text-slate-600 uppercase tracking-wide">{label}</label>
-                    <select value={val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value })} className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <select value={val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value })} className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary">
                       <option value="">Select...</option>
                       {options.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
                     </select>
@@ -425,7 +425,7 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
           </div>
           <DialogFooter className="mt-6 pt-4 border-t border-slate-100">
             <Button variant="outline" onClick={() => setEditRecord(null)}>Cancel</Button>
-            <Button onClick={handleSaveEdit} disabled={isSaving} className="bg-emerald-600 hover:bg-emerald-700 text-white">
+            <Button onClick={handleSaveEdit} disabled={isSaving} className="bg-primary hover:bg-primary/90 text-white">
               {isSaving ? 'Saving...' : 'Save Changes'}
             </Button>
           </DialogFooter>

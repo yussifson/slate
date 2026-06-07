@@ -278,10 +278,10 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false }
               onClick={() => setIsBoltOpen(!isBoltOpen)}
               className={`gap-2 font-bold shadow-md transition-all ${
                 isBoltOpen
-                  ? 'bg-gradient-to-r from-emerald-700 to-indigo-700 text-white'
+                  ? 'bg-gradient-to-r from-primary/90 to-primary/90 text-white'
                   : isEditing
-                  ? 'bg-gradient-to-r from-emerald-600 to-indigo-600 text-white hover:from-emerald-700 hover:to-indigo-700'
-                  : 'bg-gradient-to-r from-emerald-600 to-indigo-600 text-white hover:from-emerald-700 hover:to-indigo-700'
+                  ? 'bg-gradient-to-r from-primary to-primary text-white hover:from-primary/90 hover:to-primary/90'
+                  : 'bg-gradient-to-r from-primary to-primary text-white hover:from-primary/90 hover:to-primary/90'
               }`}
             >
               {isBoltOpen ? 'Close OrbitBolt' : 'Build with OrbitBolt'}
@@ -554,11 +554,11 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false }
                   </div>
                 ) : (
                   <div className="h-full flex flex-col items-center justify-center text-muted-foreground">
-                    <Zap className="w-12 h-12 mb-4 opacity-20 text-purple-500" />
+                    <Zap className="w-12 h-12 mb-4 opacity-20 text-primary" />
                     <p className="font-medium">Add fields or use OrbitBolt to generate your module</p>
                     <button
                       onClick={() => setIsBoltOpen(true)}
-                      className="mt-4 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-indigo-600 text-white text-sm font-bold hover:from-emerald-700 hover:to-indigo-700 transition-all shadow-lg hover:shadow-emerald-500/30"
+                      className="mt-4 px-5 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary text-white text-sm font-bold hover:from-primary/90 hover:to-primary/90 transition-all shadow-lg hover:shadow-emerald-500/30"
                     >
                       ⚡ Launch OrbitBolt
                     </button>

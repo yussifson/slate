@@ -166,7 +166,7 @@ export default function Paywall() {
       {/* Top Bar */}
       <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center text-white">
+          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center text-white">
             <Scale className="w-4.5 h-4.5" />
           </div>
           <span className="font-bold text-lg text-slate-900 tracking-tight">{t("slate", "Slate")}</span>
@@ -293,8 +293,8 @@ export default function Paywall() {
           <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden bg-white border-0 rounded-[2rem] shadow-2xl flex flex-col max-h-[85vh]">
             {/* Header */}
             <div className="bg-slate-50 px-8 py-5 border-b border-slate-100 relative shrink-0">
-              <div className="mx-auto w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center mb-3 border border-emerald-100 shadow-sm">
-                <Server className="w-6 h-6 text-emerald-600" />
+              <div className="mx-auto w-12 h-12 bg-primary/5 rounded-xl flex items-center justify-center mb-3 border border-primary/10 shadow-sm">
+                <Server className="w-6 h-6 text-primary" />
               </div>
               <div className="text-center">
                 <DialogTitle className="text-2xl font-extrabold text-slate-900 mb-1 tracking-tight">{t("off_cloud_enterprise", "Off-Cloud Enterprise")}</DialogTitle>
@@ -396,7 +396,7 @@ export default function Paywall() {
                 {t("close", "Close")}
               </Button>
               <a href={`${getMainAppUrl()}/enterprise-contact`} className="w-full sm:w-auto block">
-                <Button className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-6 px-8 rounded-full shadow-lg shadow-emerald-600/20 transition-all hover:scale-105">
+                <Button className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-bold py-6 px-8 rounded-full shadow-lg shadow-emerald-600/20 transition-all hover:scale-105">
                   {t("build_custom_quote", "Build Custom Quote")}
                 </Button>
               </a>

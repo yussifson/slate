@@ -124,7 +124,7 @@ export default function NotificationBell({ user }) {
                   <div className="flex flex-col gap-1 shrink-0">
                     {!n.is_read && (
                       <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-foreground" onClick={() => markReadMutation.mutate(n.id)}>
-                        <Check className="w-3.5 h-3.5 text-green-600" />
+                        <Check className="w-3.5 h-3.5 text-primary" />
                       </Button>
                     )}
                     <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-destructive" onClick={() => deleteMutation.mutate(n.id)}>

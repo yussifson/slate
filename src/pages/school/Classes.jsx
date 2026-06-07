@@ -153,7 +153,7 @@ export default function Classes() {
         <div className="py-12 text-center text-muted-foreground">{t("loading_classes", "Loading classes...")}</div>
       ) : filtered.length === 0 ? (
         <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-border">
-          <BookOpen className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-[#1E3A8A] dark:text-emerald-400" />
+          <BookOpen className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-[#1E3A8A] dark:text-primary/70" />
           <p className="font-semibold text-lg text-card-foreground">{t("no_classes_registered", "No classes registered")}</p>
           <p className="text-sm mt-1 max-w-md mx-auto">{t(
             "add_a_new_grade_class_subject_",
@@ -188,7 +188,7 @@ export default function Classes() {
         <div className="school-card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-emerald-100 dark:border-slate-700">
+              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-primary/10 dark:border-slate-700">
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Class Name</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Subject</th>
@@ -268,7 +268,7 @@ export default function Classes() {
                 <p className="text-[10px] text-muted-foreground mt-1">Comma-separated list of courses available for this class.</p>
               </div>
               <div className="flex items-center gap-2 mt-2">
-                <input type="checkbox" id="allowSelfReg" checked={formData.allowSelfRegistration} onChange={e => setFormData({...formData, allowSelfRegistration: e.target.checked})} className="w-4 h-4 accent-blue-600 rounded" />
+                <input type="checkbox" id="allowSelfReg" checked={formData.allowSelfRegistration} onChange={e => setFormData({...formData, allowSelfRegistration: e.target.checked})} className="w-4 h-4 accent-primary rounded" />
                 <label htmlFor="allowSelfReg" className="text-sm font-semibold text-foreground cursor-pointer">Allow Students to Self-Register Courses</label>
               </div>
             </div>
@@ -298,7 +298,7 @@ export default function Classes() {
           {viewDetails && (
             <div className="mt-6 space-y-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-[#F0F4FF] dark:bg-emerald-900/20 dark:bg-emerald-950/50 flex items-center justify-center text-[#1E3A8A] dark:text-emerald-400 dark:text-emerald-400">
+                <div className="w-16 h-16 rounded-full bg-[#F0F4FF] dark:bg-primary/20 dark:bg-primary/50 flex items-center justify-center text-[#1E3A8A] dark:text-primary/70 dark:text-primary/70">
                   <BookOpen className="w-8 h-8" />
                 </div>
                 <div>
@@ -331,13 +331,13 @@ export default function Classes() {
                   <h4 className="text-sm font-bold text-foreground">{t("assigned_courses", "Assigned Courses")}</h4>
                   <div className="flex flex-wrap gap-2">
                     {viewDetails.courses.split(',').map(course => (
-                      <span key={course} className="px-3 py-1 bg-[#F0F4FF] dark:bg-emerald-900/20 text-[#1E3A8A] dark:text-emerald-300 font-semibold text-xs rounded-full border border-emerald-200">
+                      <span key={course} className="px-3 py-1 bg-[#F0F4FF] dark:bg-primary/20 text-[#1E3A8A] dark:text-primary/30 font-semibold text-xs rounded-full border border-primary/20">
                         {course.trim()}
                       </span>
                     ))}
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">
-                    Self-Registration: <strong className={viewDetails.allowSelfRegistration ? 'text-green-600' : 'text-red-600'}>{viewDetails.allowSelfRegistration ? 'Allowed' : 'Disabled'}</strong>
+                    Self-Registration: <strong className={viewDetails.allowSelfRegistration ? 'text-primary' : 'text-red-600'}>{viewDetails.allowSelfRegistration ? 'Allowed' : 'Disabled'}</strong>
                   </p>
                 </div>
               )}

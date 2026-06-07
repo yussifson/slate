@@ -104,7 +104,7 @@ export default function Sermons() {
           <h1 className="text-2xl font-bold text-card-foreground">{t("sermon_library", "Sermon Library")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("manage_audio_and_video_sermon_", "Manage audio and video sermon archives")}</p>
         </div>
-        <Button onClick={() => setShowModal(true)} className="gap-2 bg-purple-600 hover:bg-purple-700 text-white">
+        <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
           <Upload className="w-4 h-4" /> {t("upload_sermon", "Upload Sermon")}
         </Button>
       </div>
@@ -118,7 +118,7 @@ export default function Sermons() {
         <div className="py-12 text-center text-muted-foreground">{t("loading_archives", "Loading archives...")}</div>
       ) : filtered.length === 0 ? (
         <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-border">
-          <PlayCircle className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-purple-600" />
+          <PlayCircle className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary" />
           <p className="font-semibold text-lg text-card-foreground">{t("no_sermons_in_library", "No sermons in library")}</p>
           <p className="text-sm mt-1 max-w-md mx-auto">{t(
             "upload_weekly_gospel_records_s",
@@ -131,8 +131,8 @@ export default function Sermons() {
             return (
               <div key={sermon.id} className="bg-card rounded-xl border border-border overflow-hidden shadow-sm hover:shadow-md transition-all group relative flex flex-col justify-between">
                 <div>
-                  <div className="h-40 bg-muted dark:bg-muted/50 relative flex items-center justify-center group-hover:bg-purple-100 dark:group-hover:bg-purple-950/20 transition-colors cursor-pointer">
-                    <PlayCircle className="w-16 h-16 text-purple-600 dark:text-purple-400 opacity-80 group-hover:scale-110 transition-transform" />
+                  <div className="h-40 bg-muted dark:bg-muted/50 relative flex items-center justify-center group-hover:bg-primary/10 dark:group-hover:bg-primary/20 transition-colors cursor-pointer">
+                    <PlayCircle className="w-16 h-16 text-primary dark:text-primary/70 opacity-80 group-hover:scale-110 transition-transform" />
                     <span className="absolute bottom-2 right-2 bg-black/60 text-white text-xs font-bold px-2 py-1 rounded">{sermon.duration || '45:00'}</span>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -154,7 +154,7 @@ export default function Sermons() {
                     </DropdownMenu>
                   </div>
                   <div className="p-5">
-                    <span className="text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400 mb-2 inline-block">{sermon.series}</span>
+                    <span className="text-xs font-bold uppercase tracking-wider text-primary dark:text-primary/70 mb-2 inline-block">{sermon.series}</span>
                     <h3 className="text-lg font-bold text-card-foreground mb-1 leading-tight">{sermon.title}</h3>
                     <p className="text-sm text-muted-foreground mb-4"><Link to="/church/members" className="hover:underline text-primary">{sermon.preacher}</Link> • {sermon.date}</p>
 
@@ -177,7 +177,7 @@ export default function Sermons() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-border">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-              <Upload className="w-5 h-5 text-purple-600" /> {t("log_sermon_media", "Log Sermon Media")}
+              <Upload className="w-5 h-5 text-primary" /> {t("log_sermon_media", "Log Sermon Media")}
             </h2>
             <div className="space-y-3">
               <div>
@@ -230,7 +230,7 @@ export default function Sermons() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditRecord(null); }}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-purple-600 hover:bg-purple-700 text-white" onClick={handleCreateSermon}>{editRecord ? 'Update' : 'Log Sermon'}</Button>
+              <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleCreateSermon}>{editRecord ? 'Update' : 'Log Sermon'}</Button>
             </div>
           </div>
         </div>

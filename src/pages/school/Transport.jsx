@@ -114,14 +114,14 @@ export default function Transport() {
                   <Map className="w-6 h-6" />
                 </div>
                 <h3 className="font-bold text-card-foreground text-lg line-clamp-1" title={r.route}>{r.route}</h3>
-                <p className="text-xs font-semibold text-[#1E3A8A] dark:text-emerald-400 uppercase tracking-wide mb-3">{r.vehicle}</p>
+                <p className="text-xs font-semibold text-[#1E3A8A] dark:text-primary/70 uppercase tracking-wide mb-3">{r.vehicle}</p>
                 
                 <div className="w-full space-y-2 mt-2">
                   <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 p-2 rounded-lg">
-                    <Users className="w-3.5 h-3.5 text-emerald-500" /> <span className="truncate">Driver: {r.driver || 'Unassigned'}</span>
+                    <Users className="w-3.5 h-3.5 text-primary" /> <span className="truncate">Driver: {r.driver || 'Unassigned'}</span>
                   </div>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 p-2 rounded-lg">
-                    <Bus className="w-3.5 h-3.5 text-emerald-500" /> <span className="truncate">Cap: {r.capacity || '0'} students</span>
+                    <Bus className="w-3.5 h-3.5 text-primary" /> <span className="truncate">Cap: {r.capacity || '0'} students</span>
                   </div>
                 </div>
               </div>

@@ -31,15 +31,15 @@ import { supabase } from '@/api/supabaseClient';
 import { useToast } from '@/components/ui/use-toast';
 
 const CARD_GRADIENTS = [
-  'from-emerald-500 via-emerald-600 to-indigo-700',
-  'from-emerald-500 via-teal-600 to-cyan-700',
-  'from-violet-500 via-purple-600 to-indigo-700',
+  'from-primary via-primary to-primary/90',
+  'from-primary via-primary to-primary/90',
+  'from-primary via-primary to-primary/90',
   'from-amber-500 via-orange-600 to-red-700',
-  'from-rose-500 via-pink-600 to-fuchsia-700',
-  'from-cyan-500 via-emerald-600 to-violet-700',
-  'from-fuchsia-500 via-purple-600 to-emerald-700',
-  'from-lime-500 via-emerald-600 to-teal-700',
-  'from-sky-500 via-emerald-600 to-indigo-700',
+  'from-rose-500 via-primary to-primary/90',
+  'from-primary via-primary to-primary/90',
+  'from-primary via-primary to-primary/90',
+  'from-lime-500 via-primary to-primary/90',
+  'from-primary via-primary to-primary/90',
   'from-orange-500 via-red-600 to-rose-700',
 ];
 
@@ -169,8 +169,8 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
 
   if (!data || data.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-fuchsia-50/30 rounded-2xl border border-slate-200/60">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-fuchsia-500 to-purple-600 flex items-center justify-center mb-4 shadow-lg shadow-fuchsia-500/20">
+      <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-2xl border border-slate-200/60">
+        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary flex items-center justify-center mb-4 shadow-lg shadow-fuchsia-500/20">
           <Image className="w-8 h-8 text-white" />
         </div>
         <h3 className="text-lg font-semibold text-slate-800 mb-1">No Items Yet</h3>
@@ -187,7 +187,7 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
       <div className="mb-6 space-y-3">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-fuchsia-500 to-purple-600 flex items-center justify-center shadow-md shadow-fuchsia-500/20">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary flex items-center justify-center shadow-md shadow-fuchsia-500/20">
               <Sparkles className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -247,7 +247,7 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
                     }
                     className={`text-xs px-2.5 py-1 rounded-full transition-all font-medium ${
                       activeFilter?.field === sf.name && activeFilter?.value === val
-                        ? 'bg-fuchsia-500 text-white shadow-sm shadow-fuchsia-500/20'
+                        ? 'bg-primary text-white shadow-sm shadow-fuchsia-500/20'
                         : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                     }`}
                   >
@@ -343,7 +343,7 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
                           </span>
                           <span className="font-medium text-slate-700 truncate max-w-[50%] text-right">
                             {f.field_type === 'boolean' ? (
-                              <span className={`px-2 py-0.5 rounded-full text-[10px] ${val ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'}`}>
+                              <span className={`px-2 py-0.5 rounded-full text-[10px] ${val ? 'bg-primary/10 text-primary/90' : 'bg-slate-100 text-slate-500'}`}>
                                 {val ? 'Yes' : 'No'}
                               </span>
                             ) : f.field_type === 'select' ? (
@@ -434,7 +434,7 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
                 return (
                   <div key={f.name} className="space-y-1">
                     <label className="text-xs font-semibold text-slate-600 uppercase tracking-wide">{label}</label>
-                    <select value={val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value })} className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <select value={val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value })} className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary">
                       <option value="">Select...</option>
                       {options.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
                     </select>
@@ -451,7 +451,7 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
           </div>
           <DialogFooter className="mt-6 pt-4 border-t border-slate-100">
             <Button variant="outline" onClick={() => setEditRecord(null)}>Cancel</Button>
-            <Button onClick={handleSaveEdit} disabled={isSaving} className="bg-emerald-600 hover:bg-emerald-700 text-white">
+            <Button onClick={handleSaveEdit} disabled={isSaving} className="bg-primary hover:bg-primary/90 text-white">
               {isSaving ? 'Saving...' : 'Save Changes'}
             </Button>
           </DialogFooter>

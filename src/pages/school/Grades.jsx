@@ -27,8 +27,8 @@ function calcGrade(score, maxScore) {
 }
 
 const GRADE_COLORS = {
-  A: 'bg-green-100 text-green-700',
-  B: 'bg-emerald-50 text-[#1E3A8A] dark:bg-emerald-900/30 dark:text-emerald-300',
+  A: 'bg-primary/10 text-primary/90',
+  B: 'bg-primary/5 text-[#1E3A8A] dark:bg-primary/30 dark:text-primary/30',
   C: 'bg-amber-100 text-amber-700',
   D: 'bg-orange-100 text-orange-700',
   F: 'bg-red-100 text-red-700',
@@ -181,7 +181,7 @@ export default function Grades() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="stat-card-premium school-card p-5 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
             <BarChart3 className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -190,11 +190,11 @@ export default function Grades() {
           </div>
         </div>
         <div className="stat-card-premium school-card p-5 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-green-500 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
             <TrendingUp className="w-5 h-5 text-white" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-green-600">{highScore}%</p>
+            <p className="text-2xl font-bold text-primary">{highScore}%</p>
             <p className="text-xs text-muted-foreground">{t("highest_score", "Highest Score")}</p>
           </div>
         </div>
@@ -208,11 +208,11 @@ export default function Grades() {
           </div>
         </div>
         <div className="stat-card-premium school-card p-5 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-teal-500 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
             <CheckCircle className="w-5 h-5 text-white" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-teal-600">{passRate}%</p>
+            <p className="text-2xl font-bold text-primary">{passRate}%</p>
             <p className="text-xs text-muted-foreground">{t("pass_rate", "Pass Rate")}</p>
           </div>
         </div>
@@ -235,7 +235,7 @@ export default function Grades() {
                 key={c}
                 onClick={() => setFilterClass(c)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
-                  filterClass === c ? 'bg-green-600 text-white' : 'bg-muted text-muted-foreground hover:bg-slate-200'
+                  filterClass === c ? 'bg-primary text-white' : 'bg-muted text-muted-foreground hover:bg-slate-200'
                 }`}
               >
                 {c}
@@ -251,7 +251,7 @@ export default function Grades() {
             <div className="py-12 text-center text-muted-foreground">{t("loading_grade_records", "Loading grade records...")}</div>
           ) : filtered.length === 0 ? (
             <div className="py-12 text-center text-muted-foreground">
-              <Award className="w-12 h-12 mx-auto mb-3 opacity-30 text-green-600" />
+              <Award className="w-12 h-12 mx-auto mb-3 opacity-30 text-primary" />
               <p className="font-semibold text-lg text-card-foreground">{t("no_grade_entries_found", "No grade entries found")}</p>
               <p className="text-sm mt-1">{t(
                 "add_a_grade_entry_using_the_bu",
@@ -260,7 +260,7 @@ export default function Grades() {
             </div>
           ) : (
             <table className="w-full text-sm">
-              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-emerald-100 dark:border-slate-700">
+              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-primary/10 dark:border-slate-700">
                 <tr>
                   {['Student', 'Class', 'Subject', 'Exam', 'Date', 'Score', 'Grade', ''].map(h => {
                     return (<th key={h} className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{h}</th>);
@@ -273,14 +273,14 @@ export default function Grades() {
                     <tr key={g.id} className="hover:bg-muted/40 transition-colors">
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold text-xs shrink-0">
+                          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary/90 font-bold text-xs shrink-0">
                             {g.studentName?.substring(0, 2).toUpperCase()}
                           </div>
                           <Link to="/students" className="font-semibold text-primary hover:underline">{g.studentName}</Link>
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <Link to="/classes" className="bg-[#F0F4FF] dark:bg-emerald-900/20 text-[#1E3A8A] dark:text-emerald-300 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{g.className}</Link>
+                        <Link to="/classes" className="bg-[#F0F4FF] dark:bg-primary/20 text-[#1E3A8A] dark:text-primary/30 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{g.className}</Link>
                       </td>
                       <td className="px-4 py-3 text-muted-foreground">{g.subject}</td>
                       <td className="px-4 py-3 text-foreground font-medium">{g.examName}</td>
@@ -332,7 +332,7 @@ export default function Grades() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
           <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-              <Plus className="w-5 h-5 text-green-600" /> {editingId ? 'Edit Grade Entry' : 'Add Grade Entry'}
+              <Plus className="w-5 h-5 text-primary" /> {editingId ? 'Edit Grade Entry' : 'Add Grade Entry'}
             </h2>
             <div className="space-y-3">
               <div>
@@ -480,7 +480,7 @@ export default function Grades() {
           {viewDetails && (
             <div className="mt-6 space-y-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold text-xl">
+                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary/90 font-bold text-xl">
                   {viewDetails.studentName?.substring(0, 2).toUpperCase()}
                 </div>
                 <div>

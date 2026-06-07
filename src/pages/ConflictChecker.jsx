@@ -70,15 +70,15 @@ export default function ConflictChecker() {
       </div>
       {/* Result Banner */}
       {checked && (
-        <div className={cn("rounded-xl p-5 flex items-start gap-4 border", hasConflict ? "bg-red-50 border-red-200" : "bg-green-50 border-green-200")}>
-          <div className={cn("w-10 h-10 rounded-full flex items-center justify-center shrink-0", hasConflict ? "bg-red-100" : "bg-green-100")}>
-            {hasConflict ? <AlertTriangle className="w-5 h-5 text-red-600" /> : <CheckCircle className="w-5 h-5 text-green-600" />}
+        <div className={cn("rounded-xl p-5 flex items-start gap-4 border", hasConflict ? "bg-red-50 border-red-200" : "bg-primary/5 border-primary/20")}>
+          <div className={cn("w-10 h-10 rounded-full flex items-center justify-center shrink-0", hasConflict ? "bg-red-100" : "bg-primary/10")}>
+            {hasConflict ? <AlertTriangle className="w-5 h-5 text-red-600" /> : <CheckCircle className="w-5 h-5 text-primary" />}
           </div>
           <div>
-            <h3 className={cn("font-bold text-base", hasConflict ? "text-red-700" : "text-green-700")}>
+            <h3 className={cn("font-bold text-base", hasConflict ? "text-red-700" : "text-primary/90")}>
               {hasConflict ? "⚠️ Potential Conflict Detected" : "✓ No Conflicts Found"}
             </h3>
-            <p className={cn("text-sm mt-0.5", hasConflict ? "text-red-600" : "text-green-600")}>
+            <p className={cn("text-sm mt-0.5", hasConflict ? "text-red-600" : "text-primary")}>
               {hasConflict
                 ? `Found ${matchingClients.length + matchingCases.length} matching record(s) for "${query}". Review carefully before accepting this matter.`
                 : `No existing clients, cases, or opposing parties match "${query}". You may proceed with this matter.`}
@@ -104,7 +104,7 @@ export default function ConflictChecker() {
                     <p className="text-sm font-semibold">{c.name}</p>
                     <p className="text-xs text-muted-foreground">{c.email}{c.id_number ? ` · ID: ${c.id_number}` : ""}{c.city ? ` · ${c.city}` : ""}</p>
                   </div>
-                  <Badge className={cn("text-[10px] capitalize", c.status === "active" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600")}>{c.status} {t("client", "client")}</Badge>
+                  <Badge className={cn("text-[10px] capitalize", c.status === "active" ? "bg-primary/10 text-primary/90" : "bg-gray-100 text-gray-600")}>{c.status} {t("client", "client")}</Badge>
                 </div>
               );
             })}

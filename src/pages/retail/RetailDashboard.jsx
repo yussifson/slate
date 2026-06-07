@@ -73,11 +73,11 @@ export default function RetailDashboard() {
           <Card className="shadow-sm border-border/50">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">{t("today_revenue", "Today's Revenue")}</CardTitle>
-              <DollarSign className="w-4 h-4 text-emerald-500" />
+              <DollarSign className="w-4 h-4 text-primary" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-slate-900">${todayRevenue.toFixed(2)}</div>
-              <p className="text-xs text-emerald-600 flex items-center mt-1">
+              <p className="text-xs text-primary flex items-center mt-1">
                 <TrendingUp className="w-3 h-3 mr-1" />
                 {todaysOrders.length} transactions
               </p>

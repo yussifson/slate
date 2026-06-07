@@ -70,7 +70,7 @@ export default function VPracticalModules() {
     <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300 h-[calc(100vh-100px)] flex flex-col">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-rose-600 via-pink-600 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-rose-600 via-primary to-slate-900 bg-clip-text text-transparent">
             Practical Modules
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -165,7 +165,7 @@ export default function VPracticalModules() {
         <Card className="flex-1 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-rose-100/50 overflow-hidden relative">
           {selectedModule ? (
             <>
-              <div className="h-32 bg-gradient-to-r from-rose-500 to-pink-600 relative shrink-0 flex items-center px-8">
+              <div className="h-32 bg-gradient-to-r from-rose-500 to-primary relative shrink-0 flex items-center px-8">
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
                 <div className="relative z-10 flex items-center gap-6 translate-y-10">
                   <div className="w-24 h-24 rounded-2xl bg-white dark:bg-slate-900 p-2 shadow-xl shrink-0">
@@ -207,17 +207,17 @@ export default function VPracticalModules() {
                       </CardContent>
                     </Card>
 
-                    <Card className="bg-pink-50/30 dark:bg-slate-800/30 border-pink-100 dark:border-slate-700 shadow-none">
+                    <Card className="bg-primary/30 dark:bg-slate-800/30 border-primary/10 dark:border-slate-700 shadow-none">
                       <CardHeader className="pb-2">
                         <CardTitle className="text-lg flex items-center gap-2">
-                          <CheckSquare className="w-5 h-5 text-pink-500" /> Assessment Criteria
+                          <CheckSquare className="w-5 h-5 text-primary" /> Assessment Criteria
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
                         <ul className="text-sm text-slate-600 dark:text-slate-300 space-y-2">
-                          <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-pink-400"></div> Safety Compliance (30%)</li>
-                          <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-pink-400"></div> Technique & Execution (40%)</li>
-                          <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-pink-400"></div> Final Output Quality (30%)</li>
+                          <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary/70"></div> Safety Compliance (30%)</li>
+                          <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary/70"></div> Technique & Execution (40%)</li>
+                          <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary/70"></div> Final Output Quality (30%)</li>
                         </ul>
                       </CardContent>
                     </Card>

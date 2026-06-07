@@ -54,7 +54,7 @@ export default function GuestPortal() {
   if (!activeRes) {
     return (
       <div className="py-12 text-center max-w-md mx-auto bg-card rounded-xl border border-border p-6 shadow-sm" style={{ background: "linear-gradient(135deg, rgba(68,49,153,0.08) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh" }}>
-        <Key className="w-12 h-12 mx-auto mb-3 opacity-30 text-violet-600 animate-pulse" />
+        <Key className="w-12 h-12 mx-auto mb-3 opacity-30 text-primary animate-pulse" />
         <p className="font-semibold text-lg text-card-foreground">{t("no_active_reservations", "No Active Reservations")}</p>
         <p className="text-sm text-muted-foreground mt-1">{t(
           "we_couldn_t_find_any_upcoming_",
@@ -70,7 +70,7 @@ export default function GuestPortal() {
       <div className="bg-gradient-to-r from-[#443199] to-orange-700 rounded-2xl p-6 md:p-8 text-white shadow-md relative overflow-hidden">
         <div className="relative z-10">
           <h1 className="text-2xl md:text-3xl font-bold mb-2">{t("welcome_back", "Welcome back,")} {activeRes.guest}</h1>
-          <p className="text-violet-100 max-w-xl">{t(
+          <p className="text-primary/10 max-w-xl">{t(
             "manage_your_stay_order_room_se",
             "Manage your stay, order room service, and request housekeeping all from your device."
           )}</p>
@@ -85,7 +85,7 @@ export default function GuestPortal() {
           <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
             <div className="p-4 md:p-5 border-b border-border bg-muted/50 flex justify-between items-center">
               <h3 className="font-bold text-card-foreground flex items-center gap-2"><Calendar className="w-5 h-5 text-muted-foreground" /> {t("your_stay_details", "Your Stay Details")}</h3>
-              <Badge variant="outline" className={`${activeRes.status === 'Checked-in' ? 'bg-violet-100 text-violet-700 border-violet-200' : 'bg-violet-100 text-violet-700 border-violet-200'}`}>{activeRes.status}</Badge>
+              <Badge variant="outline" className={`${activeRes.status === 'Checked-in' ? 'bg-primary/10 text-primary/90 border-primary/20' : 'bg-primary/10 text-primary/90 border-primary/20'}`}>{activeRes.status}</Badge>
             </div>
             <div className="p-5 grid grid-cols-2 md:grid-cols-4 gap-6">
               <div>
@@ -126,7 +126,7 @@ export default function GuestPortal() {
             </div>
 
             <div onClick={() => { setRequestData({ ...requestData, type: 'Housekeeping' }); setShowRequestModal(true); }} className="bg-card hover:bg-muted/50 cursor-pointer transition-colors rounded-xl border border-border p-5 shadow-sm flex items-center gap-4">
-               <div className="w-12 h-12 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center shrink-0">
+               <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
                  <Bell className="w-6 h-6" />
                </div>
                <div>
@@ -154,7 +154,7 @@ export default function GuestPortal() {
               </div>
               <div className="border-t border-border pt-3 mt-3 flex justify-between items-center">
                 <span className="font-bold">{t("total_estimated", "Total Estimated")}</span>
-                <span className="text-xl font-bold text-violet-600">${(activeRes.total * 1.1).toFixed(2)}</span>
+                <span className="text-xl font-bold text-primary">${(activeRes.total * 1.1).toFixed(2)}</span>
               </div>
               <Button className="w-full mt-4 bg-[#443199] hover:bg-[#362878] text-white">{t("view_full_folio", "View Full Folio")}</Button>
             </div>
@@ -165,7 +165,7 @@ export default function GuestPortal() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-sm p-6 space-y-4">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-              <Bell className="w-5 h-5 text-violet-600"/> {t("request", "Request")} {requestData.type}
+              <Bell className="w-5 h-5 text-primary"/> {t("request", "Request")} {requestData.type}
             </h2>
             <div className="space-y-3">
                <div>

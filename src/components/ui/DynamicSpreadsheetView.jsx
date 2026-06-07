@@ -236,8 +236,8 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
 
   if (!data || data.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-green-50/30 rounded-2xl border border-slate-200/60">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center mb-4 shadow-lg shadow-green-500/20">
+      <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-2xl border border-slate-200/60">
+        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary flex items-center justify-center mb-4 shadow-lg shadow-green-500/20">
           <Table2 className="w-8 h-8 text-white" />
         </div>
         <h3 className="text-lg font-semibold text-slate-800 mb-1">No Data Yet</h3>
@@ -253,7 +253,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
       {/* Toolbar */}
       <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-md shadow-green-500/20">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary flex items-center justify-center shadow-md shadow-green-500/20">
             <Table2 className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -261,7 +261,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
             <p className="text-xs text-slate-500">
               {sortedData.length} row{sortedData.length !== 1 ? 's' : ''} · {fieldDefinitions.length} column{fieldDefinitions.length !== 1 ? 's' : ''}
               {selectedRows.size > 0 && (
-                <span className="ml-2 text-emerald-600 font-medium">
+                <span className="ml-2 text-primary font-medium">
                   · {selectedRows.size} selected
                 </span>
               )}
@@ -302,9 +302,9 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
                     className="text-slate-400 hover:text-slate-600 transition-colors"
                   >
                     {allSelected ? (
-                      <CheckSquare className="w-4 h-4 text-emerald-600" />
+                      <CheckSquare className="w-4 h-4 text-primary" />
                     ) : someSelected ? (
-                      <Minus className="w-4 h-4 text-emerald-500" />
+                      <Minus className="w-4 h-4 text-primary" />
                     ) : (
                       <Square className="w-4 h-4" />
                     )}
@@ -328,9 +328,9 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
                       <span className="flex-shrink-0">
                         {sortField === field.name ? (
                           sortDir === 'asc' ? (
-                            <ArrowUp className="w-3 h-3 text-emerald-600" />
+                            <ArrowUp className="w-3 h-3 text-primary" />
                           ) : (
-                            <ArrowDown className="w-3 h-3 text-emerald-600" />
+                            <ArrowDown className="w-3 h-3 text-primary" />
                           )
                         ) : (
                           <ArrowUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-400" />
@@ -358,17 +358,17 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
                     key={record.id}
                     className={`border-b border-slate-100 transition-colors ${
                       isSelected
-                        ? 'bg-emerald-50/50'
+                        ? 'bg-primary/50'
                         : rowIdx % 2 === 0
                         ? 'bg-white'
                         : 'bg-slate-50/30'
-                    } hover:bg-emerald-50/40`}
+                    } hover:bg-primary/40`}
                   >
                     {/* Checkbox */}
                     <td className="px-3 py-2 text-center border-r border-slate-100/60 sticky left-0 bg-inherit z-10">
                       <button onClick={() => toggleSelect(record.id)} className="text-slate-400 hover:text-slate-600">
                         {isSelected ? (
-                          <CheckSquare className="w-4 h-4 text-emerald-600" />
+                          <CheckSquare className="w-4 h-4 text-primary" />
                         ) : (
                           <Square className="w-4 h-4" />
                         )}
@@ -387,7 +387,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
                         <td
                           key={field.name}
                           className={`px-1 py-1 border-r border-slate-100/60 last:border-r-0 ${
-                            isEditing ? 'bg-emerald-50 ring-2 ring-inset ring-emerald-400' : ''
+                            isEditing ? 'bg-primary/5 ring-2 ring-inset ring-primary/70' : ''
                           }`}
                         >
                           {/* Boolean - toggle immediately */}
@@ -398,7 +398,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
                                 className="transition-colors"
                               >
                                 {val ? (
-                                  <CheckSquare className="w-4 h-4 text-emerald-600" />
+                                  <CheckSquare className="w-4 h-4 text-primary" />
                                 ) : (
                                   <Square className="w-4 h-4 text-slate-300 hover:text-slate-400" />
                                 )}
@@ -436,7 +436,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
                                     onKeyDown={handleKeyDown}
                                     onBlur={saveCell}
                                     autoFocus
-                                    className="w-full bg-white border border-emerald-300 rounded px-2 py-1 text-sm text-slate-800 focus:outline-none focus:ring-1 focus:ring-emerald-400"
+                                    className="w-full bg-white border border-primary/30 rounded px-2 py-1 text-sm text-slate-800 focus:outline-none focus:ring-1 focus:ring-primary/70"
                                   />
                                 </div>
                               ) : (
@@ -477,7 +477,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
           </div>
           <div className="flex items-center gap-3 text-xs text-slate-400">
             <span className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-emerald-500" /> Sorted by: {sortField ? getColumnLabel(sortField) : 'Default'}
+              <span className="w-2 h-2 rounded-full bg-primary" /> Sorted by: {sortField ? getColumnLabel(sortField) : 'Default'}
             </span>
           </div>
         </div>

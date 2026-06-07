@@ -31,12 +31,12 @@ export default function SHSDashboard() {
   const pendingApps = applicants.filter(a => a.status !== 'Admitted' && a.status !== 'Rejected').length;
 
   const stats = [
-    { title: "Total Students", value: students.length, icon: Users, color: "text-emerald-600", bg: "bg-emerald-100" },
-    { title: "Staff Overview", value: "142", icon: UserPlus, color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-100 dark:bg-slate-800" },
-    { title: "Attendance Rate", value: "94%", icon: ClipboardCheck, color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-100 dark:bg-slate-800" },
+    { title: "Total Students", value: students.length, icon: Users, color: "text-primary", bg: "bg-primary/10" },
+    { title: "Staff Overview", value: "142", icon: UserPlus, color: "text-primary dark:text-primary/70", bg: "bg-primary/10 dark:bg-slate-800" },
+    { title: "Attendance Rate", value: "94%", icon: ClipboardCheck, color: "text-primary dark:text-primary/70", bg: "bg-primary/10 dark:bg-slate-800" },
     { title: "Pending Applications", value: pendingApps, icon: ClipboardCheck, color: "text-amber-600", bg: "bg-amber-100" },
     { title: "Outstanding Fees", value: `$${uncollectedFees.toLocaleString()}`, icon: Banknote, color: "text-red-600", bg: "bg-red-100" },
-    { title: "Grades Recorded", value: grades.length, icon: GraduationCap, color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-100 dark:bg-slate-800" },
+    { title: "Grades Recorded", value: grades.length, icon: GraduationCap, color: "text-primary dark:text-primary/70", bg: "bg-primary/10 dark:bg-slate-800" },
   ];
 
   // Dynamically calculate from grades if available, else use default
@@ -79,7 +79,7 @@ export default function SHSDashboard() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                <Activity className="w-5 h-5 text-emerald-500" /> Academic Performance Trends
+                <Activity className="w-5 h-5 text-primary" /> Academic Performance Trends
               </h3>
             </div>
             <div className="h-[300px] w-full">
@@ -105,8 +105,8 @@ export default function SHSDashboard() {
             </h3>
             <div className="space-y-4">
               <div className="flex gap-3">
-                <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-slate-800 flex items-center justify-center shrink-0">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-slate-800 flex items-center justify-center shrink-0">
+                  <CheckCircle2 className="w-4 h-4 text-primary dark:text-primary/70" />
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-slate-900">Term 3 Results Published</p>
@@ -114,8 +114,8 @@ export default function SHSDashboard() {
                 </div>
               </div>
               <div className="flex gap-3">
-                <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
-                  <UserPlus className="w-4 h-4 text-emerald-600" />
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <UserPlus className="w-4 h-4 text-primary" />
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-slate-900">5 New CSSPS Placements</p>

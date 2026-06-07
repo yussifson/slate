@@ -319,12 +319,12 @@ export default function POS() {
             
             {/* Promo Input / Display */}
             {appliedPromo ? (
-              <div className="flex justify-between items-center text-sm bg-emerald-50 p-2 rounded-md border border-emerald-100">
+              <div className="flex justify-between items-center text-sm bg-primary/5 p-2 rounded-md border border-primary/10">
                 <div className="flex items-center gap-2">
-                  <span className="text-emerald-700 font-bold text-xs uppercase bg-emerald-200 px-1.5 py-0.5 rounded">{appliedPromo.code}</span>
-                  <button onClick={removePromo} className="text-emerald-600 hover:text-emerald-800"><X className="w-3 h-3" /></button>
+                  <span className="text-primary/90 font-bold text-xs uppercase bg-primary/20 px-1.5 py-0.5 rounded">{appliedPromo.code}</span>
+                  <button onClick={removePromo} className="text-primary hover:text-primary/80"><X className="w-3 h-3" /></button>
                 </div>
-                <span className="font-bold text-emerald-600">-${discount.toFixed(2)}</span>
+                <span className="font-bold text-primary">-${discount.toFixed(2)}</span>
               </div>
             ) : (
               <div className="flex gap-2">
@@ -349,7 +349,7 @@ export default function POS() {
             
             <div className="grid grid-cols-2 gap-3 pt-4">
                <Button onClick={() => handleCheckout('Save')} variant="outline" className="h-14 font-bold text-foreground bg-muted" disabled={cart.length === 0}><Receipt className="w-5 h-5 mr-2 text-muted-foreground"/> {t("save", "Save")}</Button>
-               <Button onClick={() => handleCheckout('Card')} className="h-14 font-bold text-lg bg-green-600 hover:bg-green-700 text-white" disabled={cart.length === 0}><CreditCard className="w-5 h-5 mr-2"/> {t("pay", "Pay")}</Button>
+               <Button onClick={() => handleCheckout('Card')} className="h-14 font-bold text-lg bg-primary hover:bg-primary/90 text-white" disabled={cart.length === 0}><CreditCard className="w-5 h-5 mr-2"/> {t("pay", "Pay")}</Button>
             </div>
          </div>
       </div>

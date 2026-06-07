@@ -24,10 +24,10 @@ import { useNotifications } from "@/hooks/useNotifications";
 import { getIndustryRoles } from "@/config/industries";
 
 const roleColors = {
-  company_admin: "bg-purple-100 text-purple-700",
+  company_admin: "bg-primary/10 text-primary/90",
   lawyer: "bg-orange-100 text-orange-700",
-  paralegal: "bg-cyan-100 text-cyan-700",
-  hr: "bg-green-100 text-green-700",
+  paralegal: "bg-primary/10 text-primary/90",
+  hr: "bg-primary/10 text-primary/90",
   finance: "bg-amber-100 text-amber-700",
   support: "bg-slate-100 text-slate-600",
 };
@@ -106,7 +106,7 @@ export default function Team() {
       header: "Status",
       render: row => {
         return (
-          <Badge className={`text-[10px] ${row.status === "active" ? "bg-green-100 text-green-700" : row.status === "on_leave" ? "bg-amber-100 text-amber-700" : "bg-slate-100 text-slate-600"}`}>
+          <Badge className={`text-[10px] ${row.status === "active" ? "bg-primary/10 text-primary/90" : row.status === "on_leave" ? "bg-amber-100 text-amber-700" : "bg-slate-100 text-slate-600"}`}>
             {row.status?.replace("_", " ")}
           </Badge>
         );

@@ -107,7 +107,7 @@ export default function CustomPageViewer() {
         <Sparkles className="w-16 h-16 text-muted-foreground opacity-30 mb-4" />
         <h2 className="text-xl font-bold text-card-foreground">Page Not Found</h2>
         <p className="text-muted-foreground mt-2 max-w-md">The custom page "{pageId}" does not exist. Use Orbit Bolt to generate it.</p>
-        <Button onClick={() => setIsOrbitBoltOpen(true)} className="mt-6 gap-2 bg-indigo-600 hover:bg-indigo-700 text-white">
+        <Button onClick={() => setIsOrbitBoltOpen(true)} className="mt-6 gap-2 bg-primary hover:bg-primary/90 text-white">
           <Sparkles className="w-4 h-4" /> Generate with OrbitBolt
         </Button>
         {isOrbitBoltOpen && (
@@ -146,7 +146,7 @@ export default function CustomPageViewer() {
         <div className="flex justify-between items-center">
           <PageHeader title={schema.pageTitle} subtitle={`Dynamic Route: /pages/${pageId}`} />
           <div className="flex gap-2">
-            <Button onClick={() => setIsOrbitBoltOpen(true)} className="gap-2 bg-indigo-600 hover:bg-indigo-700 text-white shadow-[0_0_15px_rgba(79,70,229,0.4)]">
+            <Button onClick={() => setIsOrbitBoltOpen(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white shadow-[0_0_15px_rgba(79,70,229,0.4)]">
               <Sparkles className="w-4 h-4" /> OrbitBolt AI
             </Button>
             {!isEditMode ? (
@@ -158,7 +158,7 @@ export default function CustomPageViewer() {
                 <Button onClick={() => { setIsEditMode(false); setSelectedBlockId(null); }} variant="outline">
                   Cancel
                 </Button>
-                <Button onClick={savePage} className="gap-2 bg-green-600 hover:bg-green-700 text-white">
+                <Button onClick={savePage} className="gap-2 bg-primary hover:bg-primary/90 text-white">
                   <Save className="w-4 h-4" /> Save Page
                 </Button>
               </>
@@ -234,7 +234,7 @@ export default function CustomPageViewer() {
 
               <div className="space-y-4 border-t border-border pt-4">
                 <h4 className="font-semibold text-sm">Data Binding (Read Only)</h4>
-                <div className="text-xs bg-slate-900 text-green-400 p-3 rounded-lg font-mono overflow-x-auto whitespace-pre-wrap break-all">
+                <div className="text-xs bg-slate-900 text-primary/70 p-3 rounded-lg font-mono overflow-x-auto whitespace-pre-wrap break-all">
                   {JSON.stringify(selectedBlock?.dataConfig, null, 2)}
                 </div>
                 <p className="text-[10px] text-muted-foreground">To change data binding, ask Orbit Bolt AI.</p>

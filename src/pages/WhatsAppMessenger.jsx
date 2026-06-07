@@ -158,7 +158,7 @@ export default function WhatsAppMessenger() {
         {/* Right: Message composer */}
         <div className="bg-card border border-border rounded-xl p-5 space-y-4">
           <h3 className="text-sm font-semibold flex items-center gap-2">
-            <MessageCircle className="w-4 h-4 text-green-600" /> {t("compose_message", "Compose Message")}
+            <MessageCircle className="w-4 h-4 text-primary" /> {t("compose_message", "Compose Message")}
           </h3>
 
           <div className="space-y-1.5">
@@ -220,10 +220,10 @@ export default function WhatsAppMessenger() {
                   href={`https://wa.me/${formatPhone(c.phone).replace("+", "")}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 p-2.5 rounded-lg border border-border hover:border-green-400 hover:bg-green-50 transition-colors group"
+                  className="flex items-center gap-2 p-2.5 rounded-lg border border-border hover:border-primary/70 hover:bg-primary/5 transition-colors group"
                 >
-                  <div className="w-7 h-7 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                    <span className="text-[10px] font-bold text-green-700">{c.name?.[0]?.toUpperCase()}</span>
+                  <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <span className="text-[10px] font-bold text-primary/90">{c.name?.[0]?.toUpperCase()}</span>
                   </div>
                   <div className="min-w-0">
                     <p className="text-xs font-medium truncate">{c.name}</p>

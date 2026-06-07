@@ -168,7 +168,7 @@ export default function Teachers() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filtered.map(teacher => (
             <div key={teacher.id} className="bg-card/60 backdrop-blur-md rounded-3xl border border-border/60 p-6 shadow-sm  hover:-translate-y-1.5 transition-all duration-300 group relative overflow-hidden flex flex-col items-center text-center">
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/40 via-transparent to-transparent dark:from-emerald-900/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/40 via-transparent to-transparent dark:from-primary/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
               <div className="absolute top-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -189,19 +189,19 @@ export default function Teachers() {
                 </DropdownMenu>
               </div>
               
-              <div className="w-20 h-20 rounded-[1.25rem] bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/40 dark:to-teal-900/40 border border-white/50 shadow-inner flex items-center justify-center text-[#1E3A8A] dark:text-emerald-400 dark:text-emerald-400 font-black text-2xl mb-4 group-hover:scale-105 transition-transform duration-300 relative z-10">
+              <div className="w-20 h-20 rounded-[1.25rem] bg-gradient-to-br from-primary/10 to-primary/10 dark:from-primary/40 dark:to-primary/40 border border-white/50 shadow-inner flex items-center justify-center text-[#1E3A8A] dark:text-primary/70 dark:text-primary/70 font-black text-2xl mb-4 group-hover:scale-105 transition-transform duration-300 relative z-10">
                 {teacher.avatar}
               </div>
-              <h3 className="font-extrabold text-card-foreground text-xl tracking-tight group-hover:text-[#1E3A8A] dark:text-emerald-400 transition-colors relative z-10">{teacher.name}</h3>
-              <p className="text-xs font-bold text-[#1E3A8A] dark:text-emerald-400 dark:text-emerald-400 uppercase tracking-widest mb-4 opacity-90 relative z-10">{teacher.position}</p>
+              <h3 className="font-extrabold text-card-foreground text-xl tracking-tight group-hover:text-[#1E3A8A] dark:text-primary/70 transition-colors relative z-10">{teacher.name}</h3>
+              <p className="text-xs font-bold text-[#1E3A8A] dark:text-primary/70 dark:text-primary/70 uppercase tracking-widest mb-4 opacity-90 relative z-10">{teacher.position}</p>
               
               <div className="w-full space-y-2 mt-auto relative z-10">
                 <div className="flex items-center gap-3 text-xs text-muted-foreground bg-slate-50/50 dark:bg-slate-900/50 border border-border/50 p-2.5 rounded-xl shadow-sm">
-                  <div className="w-6 h-6 rounded-md bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm shrink-0"><GraduationCap className="w-3.5 h-3.5 text-emerald-500" /></div>
+                  <div className="w-6 h-6 rounded-md bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm shrink-0"><GraduationCap className="w-3.5 h-3.5 text-primary" /></div>
                   <span className="truncate font-medium">{teacher.qualifications}</span>
                 </div>
                 <div className="flex items-center gap-3 text-xs text-muted-foreground bg-slate-50/50 dark:bg-slate-900/50 border border-border/50 p-2.5 rounded-xl shadow-sm">
-                  <div className="w-6 h-6 rounded-md bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm shrink-0"><Briefcase className="w-3.5 h-3.5 text-emerald-500" /></div>
+                  <div className="w-6 h-6 rounded-md bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm shrink-0"><Briefcase className="w-3.5 h-3.5 text-primary" /></div>
                   <span className="truncate font-medium">{teacher.subjects}</span>
                 </div>
               </div>
@@ -212,7 +212,7 @@ export default function Teachers() {
         <div className="school-card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-emerald-100 dark:border-slate-700">
+              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-primary/10 dark:border-slate-700">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Name</th>
                   <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Subjects</th>
@@ -225,7 +225,7 @@ export default function Teachers() {
                 <tr key={p.id} className="hover:bg-muted/50 transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-[#F0F4FF] dark:bg-emerald-900/30 flex items-center justify-center text-[#1E3A8A] dark:text-emerald-300 font-bold text-xs">
+                      <div className="w-9 h-9 rounded-full bg-[#F0F4FF] dark:bg-primary/30 flex items-center justify-center text-[#1E3A8A] dark:text-primary/30 font-bold text-xs">
                         {p.avatar}
                       </div>
                       <div>

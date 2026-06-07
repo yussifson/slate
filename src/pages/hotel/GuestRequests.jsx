@@ -8,8 +8,8 @@ import { toast } from 'react-hot-toast';
 
 const statusColors = {
   'Pending': 'bg-red-100 dark:bg-red-950/20 text-red-700 dark:text-red-400 animate-pulse',
-  'In Progress': 'bg-violet-100 dark:bg-violet-950/20 text-violet-700 dark:text-violet-400',
-  'Completed': 'bg-green-100 dark:bg-green-950/20 text-green-700 dark:text-green-400'
+  'In Progress': 'bg-primary/10 dark:bg-primary/20 text-primary/90 dark:text-primary/70',
+  'Completed': 'bg-primary/10 dark:bg-primary/20 text-primary/90 dark:text-primary/70'
 };
 
 const requestIcons = {
@@ -139,7 +139,7 @@ export default function GuestRequests() {
                return (
                  <div key={req.id} className="p-4 sm:p-6 hover:bg-muted/40 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4 group">
                    <div className="flex gap-4 items-start">
-                      <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 bg-violet-50 dark:bg-violet-950/20 text-violet-600 dark:text-violet-400`}>
+                      <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 bg-primary/5 dark:bg-primary/20 text-primary dark:text-primary/70`}>
                          {requestIcons[req.type] || <Bell className="w-5 h-5" />}
                       </div>
                       <div>
@@ -156,7 +156,7 @@ export default function GuestRequests() {
                         <Button onClick={() => handleUpdateStatus(req, 'In Progress')} size="sm" className="w-full sm:w-auto bg-[#443199] hover:bg-[#362878] text-white">{t("accept_task", "Accept Task")}</Button>
                       )}
                       {req.status === 'In Progress' && (
-                        <Button onClick={() => handleUpdateStatus(req, 'Completed')} size="sm" className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white gap-2"><CheckCircle className="w-4 h-4"/> {t("mark_complete", "Mark Complete")}</Button>
+                        <Button onClick={() => handleUpdateStatus(req, 'Completed')} size="sm" className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white gap-2"><CheckCircle className="w-4 h-4"/> {t("mark_complete", "Mark Complete")}</Button>
                       )}
                       {req.status === 'Completed' && (
                         <span className="text-xs font-bold text-muted-foreground bg-muted px-3 py-1 rounded">{t("fulfilled", "Fulfilled")}</span>
@@ -174,7 +174,7 @@ export default function GuestRequests() {
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-sm p-6 space-y-4">
-            <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><Bell className="w-5 h-5 text-violet-600"/> {t("log_guest_request", "Log Guest Request")}</h2>
+            <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><Bell className="w-5 h-5 text-primary"/> {t("log_guest_request", "Log Guest Request")}</h2>
             <div className="space-y-3">
                <div>
                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("room_number", "Room Number")}</label>

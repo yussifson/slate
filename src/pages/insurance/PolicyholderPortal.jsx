@@ -93,7 +93,7 @@ export default function PolicyholderPortal() {
                             <div>
                               <div className="flex items-center gap-2 mb-1">
                                 <h4 className="font-bold text-lg text-foreground">{policy.policyType} {t("insurance", "Insurance")}</h4>
-                                <Badge variant="outline" className={`${policy.status === 'Active' ? 'bg-green-100 text-green-700 border-green-200' : 'bg-red-100 text-red-700 border-red-200'}`}>{policy.status}</Badge>
+                                <Badge variant="outline" className={`${policy.status === 'Active' ? 'bg-primary/10 text-primary/90 border-primary/20' : 'bg-red-100 text-red-700 border-red-200'}`}>{policy.status}</Badge>
                               </div>
                               <p className="text-xs text-muted-foreground font-mono">{policy.policyNumber}</p>
                             </div>
@@ -147,7 +147,7 @@ export default function PolicyholderPortal() {
                            </div>
                            <div className="text-right">
                              <p className="font-bold text-xs">${Number(claim.claimAmount).toLocaleString()}</p>
-                             <span className={`text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full mt-1 inline-block ${claim.status === 'Paid' || claim.status === 'Approved' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+                             <span className={`text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full mt-1 inline-block ${claim.status === 'Paid' || claim.status === 'Approved' ? 'bg-primary/10 text-primary/90' : 'bg-amber-100 text-amber-700'}`}>
                                {claim.status}
                              </span>
                            </div>

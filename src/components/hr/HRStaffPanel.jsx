@@ -14,10 +14,10 @@ import { useFirmSettings } from "@/hooks/useFirmSettings";
 import AddOptionInline from "@/components/shared/AddOptionInline";
 
 const roleColors = {
-  company_admin: "bg-purple-100 text-purple-700",
+  company_admin: "bg-primary/10 text-primary/90",
   lawyer: "bg-orange-100 text-orange-700",
-  paralegal: "bg-cyan-100 text-cyan-700",
-  hr: "bg-green-100 text-green-700",
+  paralegal: "bg-primary/10 text-primary/90",
+  hr: "bg-primary/10 text-primary/90",
   finance: "bg-amber-100 text-amber-700",
   support: "bg-slate-100 text-slate-600",
 };
@@ -74,7 +74,7 @@ export default function HRStaffPanel({ companyId, staff, currency, isAdmin }) {
                     <p className="text-xs text-muted-foreground">{s.user_email} {s.department ? `· ${s.department}` : ""}</p>
                   </div>
                   <Badge className={`${roleColors[s.role] || "bg-slate-100 text-slate-600"} text-[10px] capitalize`}>{s.role?.replace(/_/g, " ")}</Badge>
-                  <Badge className={`text-[10px] ${s.status === "active" ? "bg-green-100 text-green-700" : s.status === "on_leave" ? "bg-amber-100 text-amber-700" : "bg-slate-100 text-slate-600"}`}>
+                  <Badge className={`text-[10px] ${s.status === "active" ? "bg-primary/10 text-primary/90" : s.status === "on_leave" ? "bg-amber-100 text-amber-700" : "bg-slate-100 text-slate-600"}`}>
                     {s.status?.replace("_", " ")}
                   </Badge>
                   <span className="text-xs text-muted-foreground shrink-0">{s.hire_date ? format(new Date(s.hire_date), "MMM d, yyyy") : "—"}</span>

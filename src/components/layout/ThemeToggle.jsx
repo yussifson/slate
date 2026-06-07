@@ -21,7 +21,7 @@ export default function ThemeToggle() {
 
   const themeOptions = [
     { value: "light", label: "Light", icon: Sun, color: "text-amber-500" },
-    { value: "dark", label: "Dark", icon: Moon, color: "text-indigo-400" },
+    { value: "dark", label: "Dark", icon: Moon, color: "text-primary/70" },
     { value: "system", label: "System", icon: Laptop, color: "text-slate-400" },
   ];
 

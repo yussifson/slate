@@ -201,7 +201,7 @@ export default function SHSGrades() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent">
             Grade Entry
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -215,10 +215,10 @@ export default function SHSGrades() {
           <div className="flex flex-col md:flex-row gap-6">
             <div className="space-y-2 flex-1">
               <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                <FileText className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> Select Exam Cycle
+                <FileText className="w-4 h-4 text-primary dark:text-primary/70" /> Select Exam Cycle
               </label>
               <select 
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500 font-semibold text-slate-700 dark:text-slate-200"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-200"
                 value={selectedExamId}
                 onChange={(e) => setSelectedExamId(e.target.value)}
               >
@@ -231,10 +231,10 @@ export default function SHSGrades() {
 
             <div className="space-y-2 flex-1">
               <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                <GraduationCap className="w-4 h-4 text-emerald-600" /> Class
+                <GraduationCap className="w-4 h-4 text-primary" /> Class
               </label>
               <select 
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-semibold text-slate-700 dark:text-slate-200"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary font-semibold text-slate-700 dark:text-slate-200"
                 value={selectedClassId}
                 onChange={(e) => setSelectedClassId(e.target.value)}
                 disabled={!selectedExamId}
@@ -315,7 +315,7 @@ export default function SHSGrades() {
                               type="number"
                               min="0"
                               max="30"
-                              className="h-10 text-center font-semibold bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus-visible:ring-emerald-600 dark:focus-visible:ring-emerald-500 focus-visible:bg-white dark:bg-slate-900 transition-colors"
+                              className="h-10 text-center font-semibold bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus-visible:ring-primary dark:focus-visible:ring-primary focus-visible:bg-white dark:bg-slate-900 transition-colors"
                               value={grades[student.id]?.classScore}
                               onChange={(e) => handleGradeChange(student.id, 'classScore', e.target.value)}
                             />
@@ -325,7 +325,7 @@ export default function SHSGrades() {
                               type="number"
                               min="0"
                               max="70"
-                              className="h-10 text-center font-semibold bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus-visible:ring-emerald-600 dark:focus-visible:ring-emerald-500 focus-visible:bg-white dark:bg-slate-900 transition-colors"
+                              className="h-10 text-center font-semibold bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus-visible:ring-primary dark:focus-visible:ring-primary focus-visible:bg-white dark:bg-slate-900 transition-colors"
                               value={grades[student.id]?.examScore}
                               onChange={(e) => handleGradeChange(student.id, 'examScore', e.target.value)}
                             />
@@ -339,7 +339,7 @@ export default function SHSGrades() {
                             {total > 0 ? (
                               <Badge variant="outline" className={`
                                 border-none font-bold text-sm h-8 w-10 flex items-center justify-center
-                                ${grade === 'A1' ? 'bg-emerald-100 text-emerald-700' : 
+                                ${grade === 'A1' ? 'bg-primary/10 text-primary/90' : 
                                   ['B2', 'B3'].includes(grade) ? 'bg-orange-100 text-orange-700' :
                                   ['C4', 'C5', 'C6'].includes(grade) ? 'bg-amber-100 text-amber-700' :
                                   ['D7', 'E8'].includes(grade) ? 'bg-orange-100 text-orange-700' :
@@ -362,7 +362,7 @@ export default function SHSGrades() {
               <div className="p-6 bg-slate-50 dark:bg-slate-800 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
                 <div>
                   {saveSuccess && (
-                    <Badge className="bg-emerald-100 text-emerald-700 border-none px-3 py-1 text-sm font-semibold flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2">
+                    <Badge className="bg-primary/10 text-primary/90 border-none px-3 py-1 text-sm font-semibold flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2">
                       <CheckCircle2 className="w-4 h-4" /> Grades Saved Successfully
                     </Badge>
                   )}
@@ -375,7 +375,7 @@ export default function SHSGrades() {
                   <Button 
                     onClick={handleSaveGrades}
                     disabled={isSaving}
-                    className="h-12 px-8 rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/20 font-bold"
+                    className="h-12 px-8 rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white shadow-lg shadow-emerald-500/20 font-bold"
                   >
                     {isSaving ? 'Saving...' : (
                       <><Save className="w-5 h-5 mr-2" /> Save Grades</>

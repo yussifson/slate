@@ -258,7 +258,7 @@ export default function Clients() {
                       <TableCell><span className="text-sm">{row.phone || "—"}</span></TableCell>
                       <TableCell><Badge variant="outline" className="text-[10px] capitalize">{row.type}</Badge></TableCell>
                       <TableCell>
-                        <Badge className={`text-[10px] ${row.status === "active" ? "bg-green-100 text-green-700" : row.status === "lead" ? "bg-amber-100 text-amber-700" : "bg-slate-100 text-slate-600"}`}>
+                        <Badge className={`text-[10px] ${row.status === "active" ? "bg-primary/10 text-primary/90" : row.status === "lead" ? "bg-amber-100 text-amber-700" : "bg-slate-100 text-slate-600"}`}>
                           {row.status}
                         </Badge>
                       </TableCell>

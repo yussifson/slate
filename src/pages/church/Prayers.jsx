@@ -138,7 +138,7 @@ export default function Prayers() {
             "Submit and manage congregational prayer needs"
           )}</p>
         </div>
-        <Button onClick={() => setShowModal(true)} className="gap-2 bg-purple-600 hover:bg-purple-700 text-white">
+        <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
           <HandHeart className="w-4 h-4" /> {t("submit_request", "Submit Request")}
         </Button>
       </div>
@@ -152,7 +152,7 @@ export default function Prayers() {
         <div className="py-12 text-center text-muted-foreground">{t("loading_prayer_board", "Loading prayer board...")}</div>
       ) : filtered.length === 0 ? (
         <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-border">
-          <HandHeart className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-purple-600" />
+          <HandHeart className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary" />
           <p className="font-semibold text-lg text-card-foreground">{t("no_prayer_requests_listed", "No prayer requests listed")}</p>
           <p className="text-xs mt-1">{t(
             "be_the_first_to_list_a_family_",
@@ -165,7 +165,7 @@ export default function Prayers() {
             return (
               <div key={prayer.id} className="bg-card rounded-xl border border-border p-6 shadow-sm flex flex-col sm:flex-row gap-6 relative overflow-hidden group">
                 {prayer.status === 'Answered' && (
-                  <div className="absolute top-0 right-0 bg-green-500 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-bl-lg">
+                  <div className="absolute top-0 right-0 bg-primary text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-bl-lg">
                     {t("answered", "Answered")}
                   </div>
                 )}
@@ -187,21 +187,21 @@ export default function Prayers() {
                       <Button
                         variant="outline"
                         onClick={() => handleIncrementPrayers(prayer)}
-                        className="gap-2 border-purple-200 text-purple-700 hover:bg-purple-50"
+                        className="gap-2 border-primary/20 text-primary/90 hover:bg-primary/5"
                       >
                         <Heart className="w-4 h-4" /> {t("praying", "Praying (")}{prayer.prayersCount || 0})
                                             </Button>
                       <Button
                         variant="outline"
                         onClick={() => handleMarkAnswered(prayer)}
-                        className="gap-2 text-muted-foreground hover:text-green-600 hover:border-green-200 hover:bg-green-50"
+                        className="gap-2 text-muted-foreground hover:text-primary hover:border-primary/20 hover:bg-primary/5"
                       >
                         <CheckCircle className="w-4 h-4" /> {t("mark_answered", "Mark Answered")}
                       </Button>
                     </>
                   ) : (
-                    <div className="flex flex-col items-center justify-center text-green-600 h-full py-2">
-                      <Heart className="w-8 h-8 mb-1 fill-green-600 text-green-600" />
+                    <div className="flex flex-col items-center justify-center text-primary h-full py-2">
+                      <Heart className="w-8 h-8 mb-1 fill-primary text-primary" />
                       <span className="text-xs font-bold uppercase tracking-widest">{t("praise_report", "Praise Report")}</span>
                     </div>
                   )}
@@ -233,7 +233,7 @@ export default function Prayers() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-border">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-              <HandHeart className="w-5 h-5 text-purple-600" /> {t("submit_prayer_petition", "Submit Prayer Petition")}
+              <HandHeart className="w-5 h-5 text-primary" /> {t("submit_prayer_petition", "Submit Prayer Petition")}
             </h2>
             <div className="space-y-3">
               <div>
@@ -251,14 +251,14 @@ export default function Prayers() {
                   value={formData.request}
                   onChange={e => setFormData({ ...formData, request: e.target.value })}
                   rows={4}
-                  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-purple-600"
+                  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="e.g. Please pray for fast healing, professional wisdom, family breakthroughs..."
                 />
               </div>
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditRecord(null); }}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-purple-600 hover:bg-purple-700 text-white" onClick={handleCreatePrayer}>{editRecord ? 'Update' : 'Submit Petition'}</Button>
+              <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleCreatePrayer}>{editRecord ? 'Update' : 'Submit Petition'}</Button>
             </div>
           </div>
         </div>

@@ -748,7 +748,7 @@ RULES FOR MULTI-STEP REASONING:
           <div className="px-3 py-2.5 border-b border-border flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{t("chat_history", "Chat History")}</span>
             <div className="flex items-center gap-1">
-              <button onClick={startNewChat} className="p-1 hover:bg-muted rounded text-muted-foreground hover:text-emerald-600 transition-colors" title="New chat">
+              <button onClick={startNewChat} className="p-1 hover:bg-muted rounded text-muted-foreground hover:text-primary transition-colors" title="New chat">
                 <Plus className="w-3.5 h-3.5" />
               </button>
               <button onClick={() => setShowHistory(false)} className="p-1 hover:bg-muted rounded text-muted-foreground transition-colors" title="Close history">
@@ -764,7 +764,7 @@ RULES FOR MULTI-STEP REASONING:
                   onClick={() => { setActiveId(s.id); setShowHistory(false); }}
                   className={`group relative flex items-start gap-2 p-2 rounded-lg cursor-pointer text-left transition-colors ${
                     s.id === activeId
-                      ? 'bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/50'
+                      ? 'bg-primary/5 dark:bg-primary/30 border border-primary/20 dark:border-primary/50'
                       : 'hover:bg-muted/70'
                   }`}
                 >
@@ -791,16 +791,16 @@ RULES FOR MULTI-STEP REASONING:
       <div className="flex-1 flex flex-col min-w-0">
 
         {/* Header */}
-        <div className="flex items-center gap-2 px-3 py-2.5 border-b border-border bg-gradient-to-r from-emerald-500/8 to-indigo-500/5 shrink-0">
+        <div className="flex items-center gap-2 px-3 py-2.5 border-b border-border bg-gradient-to-r from-primary/8 to-primary/5 shrink-0">
           <button
             onClick={() => setShowHistory(prev => !prev)}
-            className={`p-1.5 rounded-md transition-colors shrink-0 ${showHistory ? 'bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
+            className={`p-1.5 rounded-md transition-colors shrink-0 ${showHistory ? 'bg-primary/10 dark:bg-primary/40 text-primary dark:text-primary/70' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
             title="Chat history"
           >
             <Clock className="w-4 h-4" />
           </button>
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-5 h-5 rounded flex items-center justify-center bg-emerald-600/20 text-emerald-600 shrink-0">
+            <div className="w-5 h-5 rounded flex items-center justify-center bg-primary/20 text-primary shrink-0">
               <OrbitIcon className="w-3.5 h-3.5" />
             </div>
             <div className="flex items-center gap-1.5 flex-1">
@@ -821,9 +821,9 @@ RULES FOR MULTI-STEP REASONING:
         </div>
 
         {/* Page Context Bar */}
-        <div className="px-3 py-1.5 flex items-center gap-1.5 bg-emerald-50/60 dark:bg-emerald-950/10 border-b border-emerald-100 dark:border-emerald-900/20 shrink-0">
-          <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></div>
-          <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold truncate">
+        <div className="px-3 py-1.5 flex items-center gap-1.5 bg-primary/60 dark:bg-primary/10 border-b border-primary/10 dark:border-primary/20 shrink-0">
+          <div className="w-1.5 h-1.5 rounded-full bg-primary shrink-0"></div>
+          <span className="text-[10px] text-primary dark:text-primary/70 font-semibold truncate">
             {ctx ? `${ctx.suite}  ${ctx.title}` : location.pathname}  {t("ai_has_full_context", "AI has full context")}
           </span>
         </div>
@@ -838,13 +838,13 @@ RULES FOR MULTI-STEP REASONING:
                   <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-0.5 shadow-sm ${
                     msg.role === 'user'
                       ? 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
-                      : 'bg-gradient-to-br from-emerald-500 to-indigo-600 text-white'
+                      : 'bg-gradient-to-br from-primary to-primary text-white'
                   }`}>
                     {msg.role === 'user' ? <User className="w-3.5 h-3.5" /> : <Sparkles className="w-3.5 h-3.5" />}
                   </div>
                   <div className={`px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed shadow-sm max-w-[88%] ${
                     msg.role === 'user'
-                      ? 'bg-emerald-600 text-white rounded-tr-sm'
+                      ? 'bg-primary text-white rounded-tr-sm'
                       : 'bg-card border border-border rounded-tl-sm text-foreground'
                   }`}>
                     <FormatMessage content={msg.content} />
@@ -853,7 +853,7 @@ RULES FOR MULTI-STEP REASONING:
                       <div className="mt-3 flex gap-2 pt-3 border-t border-border">
                         <button 
                           onClick={() => confirmPendingAction(msg.pendingAction, i)}
-                          className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shadow-sm flex items-center gap-1.5"
+                          className="bg-primary hover:bg-primary/90 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shadow-sm flex items-center gap-1.5"
                         >
                           <Sparkles className="w-3 h-3" /> {t("continue_action", "Continue Action")}
                         </button>
@@ -871,14 +871,14 @@ RULES FOR MULTI-STEP REASONING:
             })}
             {isLoading && (
               <div className="flex gap-2.5">
-                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-500 to-indigo-600 flex items-center justify-center shrink-0 shadow-sm">
+                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-primary flex items-center justify-center shrink-0 shadow-sm">
                   <Sparkles className="w-3.5 h-3.5 text-white animate-spin" />
                 </div>
                 <div className="px-4 py-3 bg-card border border-border rounded-2xl rounded-tl-sm shadow-sm">
                   <div className="flex gap-1.5 items-center">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '300ms' }} />
+                    <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '300ms' }} />
                   </div>
                   <p className="text-[10px] text-muted-foreground mt-1.5 italic">{t("orbit_is_thinking", "OrbitFlow is thinking...")}</p>
                 </div>
@@ -896,7 +896,7 @@ RULES FOR MULTI-STEP REASONING:
                 <button
                   key={i}
                   onClick={() => handleSend(s)}
-                  className="text-[10px] font-medium px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors truncate max-w-[180px]"
+                  className="text-[10px] font-medium px-2.5 py-1 rounded-full bg-primary/5 dark:bg-primary/30 text-primary/90 dark:text-primary/70 border border-primary/10 dark:border-primary/40 hover:bg-primary/10 dark:hover:bg-primary/40 transition-colors truncate max-w-[180px]"
                 >
                   {s}
                 </button>
@@ -907,11 +907,11 @@ RULES FOR MULTI-STEP REASONING:
 
         {/* Attached File Preview */}
         {uploadedFile && (
-          <div className="mx-3 mb-2 px-3 py-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/40 flex items-center gap-2 shrink-0">
+          <div className="mx-3 mb-2 px-3 py-2 rounded-lg bg-primary/5 dark:bg-primary/20 border border-primary/20 dark:border-primary/40 flex items-center gap-2 shrink-0">
             {uploadedFile.type === 'image'
-              ? <Image className="w-4 h-4 text-emerald-500 shrink-0" />
-              : <FileText className="w-4 h-4 text-emerald-500 shrink-0" />}
-            <span className="text-xs font-medium text-emerald-700 dark:text-emerald-400 flex-1 truncate">{uploadedFile.name}</span>
+              ? <Image className="w-4 h-4 text-primary shrink-0" />
+              : <FileText className="w-4 h-4 text-primary shrink-0" />}
+            <span className="text-xs font-medium text-primary/90 dark:text-primary/70 flex-1 truncate">{uploadedFile.name}</span>
             <button onClick={() => setUploadedFile(null)} className="text-muted-foreground hover:text-red-500 transition-colors shrink-0">
               <X className="w-3.5 h-3.5" />
             </button>
@@ -920,7 +920,7 @@ RULES FOR MULTI-STEP REASONING:
 
         {/* Input */}
         <div className="p-3 border-t border-border bg-card/80 backdrop-blur-sm shrink-0">
-          <div className="border border-border focus-within:border-emerald-400 focus-within:ring-2 focus-within:ring-emerald-500/15 rounded-xl bg-background transition-all overflow-hidden shadow-sm">
+          <div className="border border-border focus-within:border-primary/70 focus-within:ring-2 focus-within:ring-primary/15 rounded-xl bg-background transition-all overflow-hidden shadow-sm">
             <textarea
               value={input}
               onChange={e => setInput(e.target.value)}
@@ -938,7 +938,7 @@ RULES FOR MULTI-STEP REASONING:
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="p-1.5 text-muted-foreground hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 rounded-md transition-colors"
+                  className="p-1.5 text-muted-foreground hover:text-primary hover:bg-primary/5 dark:hover:bg-primary/30 rounded-md transition-colors"
                   title="Attach file or image"
                 >
                   <Paperclip className="w-4 h-4" />
@@ -949,7 +949,7 @@ RULES FOR MULTI-STEP REASONING:
                   className={`p-1.5 rounded-md transition-colors ${
                     isRecording
                       ? 'text-red-500 bg-red-50 dark:bg-red-950/30 animate-pulse'
-                      : 'text-muted-foreground hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30'
+                      : 'text-muted-foreground hover:text-primary hover:bg-primary/5 dark:hover:bg-primary/30'
                   }`}
                   title={isRecording ? 'Stop recording' : 'Voice input'}
                 >
@@ -962,7 +962,7 @@ RULES FOR MULTI-STEP REASONING:
                   type="button"
                   disabled={(!input.trim() && !uploadedFile) || isLoading}
                   onClick={() => handleSend()}
-                  className="h-8 w-8 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-lg flex items-center justify-center transition-colors shadow-sm"
+                  className="h-8 w-8 bg-primary hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-lg flex items-center justify-center transition-colors shadow-sm"
                 >
                   <Send className="w-3.5 h-3.5" />
                 </button>

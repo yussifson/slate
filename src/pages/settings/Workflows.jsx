@@ -29,7 +29,7 @@ export default function Workflows() {
             "Build Zapier-style triggers and actions for your app."
           )}</p>
         </div>
-        <Button className="gap-2 bg-indigo-600 hover:bg-indigo-700 text-white">
+        <Button className="gap-2 bg-primary hover:bg-primary/90 text-white">
           <Plus className="w-4 h-4" /> {t("new_workflow", "New Workflow")}
         </Button>
       </div>
@@ -40,13 +40,13 @@ export default function Workflows() {
               {/* Header */}
               <div className="flex justify-between items-center border-b border-border pb-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                     <Zap className="w-4 h-4" />
                   </div>
                   <h3 className="font-bold text-foreground">{t("rule", "Rule #")}{rule.id}</h3>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold text-green-600 bg-green-100 px-2 py-1 rounded-full">{t("active", "Active")}</span>
+                  <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-1 rounded-full">{t("active", "Active")}</span>
                   <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-600"><Trash2 className="w-4 h-4"/></Button>
                 </div>
               </div>
@@ -105,8 +105,8 @@ export default function Workflows() {
                 </div>
               </div>
               {/* Action Setup */}
-              <div className="p-4 bg-indigo-50 dark:bg-indigo-950/20 rounded-lg border border-indigo-100 dark:border-indigo-900/30">
-                <h4 className="text-xs font-bold uppercase text-indigo-600 dark:text-indigo-400 mb-3">{t("3_then_do_this", "3. Then do this...")}</h4>
+              <div className="p-4 bg-primary/5 dark:bg-primary/20 rounded-lg border border-primary/10 dark:border-primary/30">
+                <h4 className="text-xs font-bold uppercase text-primary dark:text-primary/70 mb-3">{t("3_then_do_this", "3. Then do this...")}</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                   <div>
                     <label className="text-xs text-muted-foreground">{t("action_type", "Action Type")}</label>

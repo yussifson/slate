@@ -15,8 +15,8 @@ import { useNotifications } from "@/hooks/integrations/useNotifications";
 import { MessageSquare } from "lucide-react";
 
 const statusColors = {
-  'Checked-in': 'bg-violet-100 text-violet-700',
-  'Confirmed': 'bg-violet-100 text-violet-700',
+  'Checked-in': 'bg-primary/10 text-primary/90',
+  'Confirmed': 'bg-primary/10 text-primary/90',
   'Checked-out': 'bg-muted text-foreground',
   'Cancelled': 'bg-red-100 text-red-700'
 };
@@ -185,7 +185,7 @@ export default function Reservations() {
               {filtered.map(res => {
                 return (
                   <tr key={res.id} className="hover:bg-muted/50 transition-colors">
-                    <td className="px-6 py-4 font-mono text-xs font-bold text-violet-600">{res.resId}</td>
+                    <td className="px-6 py-4 font-mono text-xs font-bold text-primary">{res.resId}</td>
                     <td className="px-6 py-4 font-bold text-card-foreground">
                       <Link to={`/clients`} className="text-primary hover:underline">{res.guest}</Link>
                     </td>
@@ -195,7 +195,7 @@ export default function Reservations() {
                     </td>
                     <td className="px-6 py-4 text-muted-foreground font-medium">{res.roomType}</td>
                     <td className="px-6 py-4 text-center">
-                      <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${statusColors[res.status] || 'bg-violet-100 text-violet-700'}`}>{res.status}</span>
+                      <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${statusColors[res.status] || 'bg-primary/10 text-primary/90'}`}>{res.status}</span>
                     </td>
                     <td className="px-6 py-4 text-center font-bold text-card-foreground">${res.total}</td>
                     <td className="px-6 py-4 text-right flex justify-end gap-2">
@@ -203,7 +203,7 @@ export default function Reservations() {
                         <Button onClick={() => handleStatusChange(res, 'Checked-in')} size="sm" className="h-8 bg-[#443199] hover:bg-[#362878] text-white">{t("check_in", "Check In")}</Button>
                       )}
                       {res.status === 'Checked-in' && (
-                        <Button onClick={() => handleStatusChange(res, 'Checked-out')} size="sm" className="h-8 bg-green-600 hover:bg-green-700 text-white">{t("check_out", "Check Out")}</Button>
+                        <Button onClick={() => handleStatusChange(res, 'Checked-out')} size="sm" className="h-8 bg-primary hover:bg-primary/90 text-white">{t("check_out", "Check Out")}</Button>
                       )}
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -252,7 +252,7 @@ export default function Reservations() {
        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-lg p-6 space-y-4">
            <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-             {editTargetId ? <Edit className="w-5 h-5 text-violet-600"/> : <Calendar className="w-5 h-5 text-violet-600"/>}
+             {editTargetId ? <Edit className="w-5 h-5 text-primary"/> : <Calendar className="w-5 h-5 text-primary"/>}
              {editTargetId ? 'Edit Reservation' : 'New Reservation'}
            </h2>
            <div className="grid grid-cols-2 gap-4">
@@ -300,7 +300,7 @@ export default function Reservations() {
               <>
                 <SheetHeader className="mb-6">
                   <SheetTitle className="text-2xl flex items-center gap-2">
-                    <Calendar className="w-6 h-6 text-violet-600" />
+                    <Calendar className="w-6 h-6 text-primary" />
                     {t("reservation", "Reservation")} {res.resId}
                   </SheetTitle>
                   <SheetDescription>
@@ -339,7 +339,7 @@ export default function Reservations() {
                       </div>
                       <div className="bg-muted/50 p-3 rounded-lg">
                         <p className="text-xs text-muted-foreground mb-1">{t("status", "Status")}</p>
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-bold ${res.status === 'Confirmed' ? 'bg-violet-100 text-violet-700' : res.status === 'Checked-in' ? 'bg-violet-100 text-violet-700' : 'bg-green-100 text-green-700'}`}>
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-bold ${res.status === 'Confirmed' ? 'bg-primary/10 text-primary/90' : res.status === 'Checked-in' ? 'bg-primary/10 text-primary/90' : 'bg-primary/10 text-primary/90'}`}>
                           <Activity className="w-3 h-3 mr-1" /> {res.status}
                         </span>
                       </div>
@@ -350,7 +350,7 @@ export default function Reservations() {
                       <p className="text-sm text-muted-foreground">{t("total_amount", "Total Amount")}</p>
                       <p className="text-xs text-muted-foreground">{res.nights} {t("nights", "Nights")}</p>
                     </div>
-                    <p className="text-2xl font-bold text-violet-600">${res.total}</p>
+                    <p className="text-2xl font-bold text-primary">${res.total}</p>
                   </div>
                   <div className="pt-4 flex gap-2">
                     <Button onClick={() => { setViewDetailsId(null); handleEdit(res); }} className="flex-1 bg-[#443199] hover:bg-[#362878] text-white">

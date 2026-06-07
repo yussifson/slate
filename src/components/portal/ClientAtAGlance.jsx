@@ -34,13 +34,13 @@ export default function ClientAtAGlance({ hearings = [], signatureRequests = [],
 
   if (allClear) {
     return (
-      <div className="bg-green-50 border border-green-200 rounded-xl p-6 flex items-center gap-4">
-        <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center shrink-0">
-          <CheckCircle2 className="w-6 h-6 text-green-600" />
+      <div className="bg-primary/5 border border-primary/20 rounded-xl p-6 flex items-center gap-4">
+        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+          <CheckCircle2 className="w-6 h-6 text-primary" />
         </div>
         <div>
-          <p className="text-sm font-semibold text-green-800">{t("you_re_all_caught_up", "You're all caught up!")}</p>
-          <p className="text-xs text-green-700 mt-0.5">{t(
+          <p className="text-sm font-semibold text-primary/80">{t("you_re_all_caught_up", "You're all caught up!")}</p>
+          <p className="text-xs text-primary/90 mt-0.5">{t(
             "no_upcoming_hearings_pending_s",
             "No upcoming hearings, pending signatures, or outstanding invoices."
           )}</p>
@@ -53,10 +53,10 @@ export default function ClientAtAGlance({ hearings = [], signatureRequests = [],
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
       {/* Upcoming Hearings */}
       <div className="bg-card border border-border rounded-xl overflow-hidden">
-        <SectionHeader icon={Calendar} label={`Upcoming Hearings (${upcomingHearings.length})`} color="bg-purple-50/60 text-purple-700" />
+        <SectionHeader icon={Calendar} label={`Upcoming Hearings (${upcomingHearings.length})`} color="bg-primary/60 text-primary/90" />
         {upcomingHearings.length === 0 ? (
           <div className="px-4 py-5 text-center">
-            <CheckCircle2 className="w-6 h-6 text-green-400 mx-auto mb-1" />
+            <CheckCircle2 className="w-6 h-6 text-primary/70 mx-auto mb-1" />
             <p className="text-xs text-muted-foreground">{t("no_upcoming_hearings", "No upcoming hearings")}</p>
           </div>
         ) : (
@@ -96,7 +96,7 @@ export default function ClientAtAGlance({ hearings = [], signatureRequests = [],
         <SectionHeader icon={PenTool} label={`Pending Signatures (${pendingSignatures.length})`} color="bg-amber-50/60 text-amber-700" />
         {pendingSignatures.length === 0 ? (
           <div className="px-4 py-5 text-center">
-            <CheckCircle2 className="w-6 h-6 text-green-400 mx-auto mb-1" />
+            <CheckCircle2 className="w-6 h-6 text-primary/70 mx-auto mb-1" />
             <p className="text-xs text-muted-foreground">{t("no_pending_signatures", "No pending signatures")}</p>
           </div>
         ) : (
@@ -132,7 +132,7 @@ export default function ClientAtAGlance({ hearings = [], signatureRequests = [],
         <SectionHeader icon={Receipt} label={`Outstanding Invoices (${outstandingInvoices.length})`} color="bg-red-50/60 text-red-700" />
         {outstandingInvoices.length === 0 ? (
           <div className="px-4 py-5 text-center">
-            <CheckCircle2 className="w-6 h-6 text-green-400 mx-auto mb-1" />
+            <CheckCircle2 className="w-6 h-6 text-primary/70 mx-auto mb-1" />
             <p className="text-xs text-muted-foreground">{t("no_outstanding_invoices", "No outstanding invoices")}</p>
           </div>
         ) : (

@@ -75,7 +75,7 @@ export default function SHSSubjects() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent">
             Curriculum Subjects
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -83,15 +83,15 @@ export default function SHSSubjects() {
           </p>
         </div>
         
-        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white shadow-md shadow-emerald-500/20">
+        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white shadow-md shadow-emerald-500/20">
           <Plus className="w-4 h-4" /> Add Subject
         </Button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-purple-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-slate-800 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-primary/10 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
               <Book className="w-6 h-6" />
             </div>
             <div>
@@ -101,9 +101,9 @@ export default function SHSSubjects() {
           </CardContent>
         </Card>
         
-        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-emerald-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
               <Target className="w-6 h-6" />
             </div>
             <div>
@@ -141,7 +141,7 @@ export default function SHSSubjects() {
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
               <Input 
                 placeholder="Search subject or code..." 
-                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-emerald-600 dark:focus-visible:ring-emerald-500"
+                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -153,8 +153,8 @@ export default function SHSSubjects() {
             <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading subjects...</div>
           ) : filteredSubjects.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
-                <Book className="w-8 h-8 text-emerald-500 dark:text-emerald-500" />
+              <div className="w-16 h-16 rounded-2xl bg-primary/5 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                <Book className="w-8 h-8 text-primary dark:text-primary" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No subjects defined</h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Create a new subject to populate the curriculum.</p>
@@ -162,14 +162,14 @@ export default function SHSSubjects() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
               {filteredSubjects.map(subject => (
-                <div key={subject.id} className="group p-5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-emerald-600 dark:border-emerald-500/30 hover:shadow-lg hover:shadow-purple-500/5 transition-all duration-300">
+                <div key={subject.id} className="group p-5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-primary dark:border-primary/30 hover:shadow-lg hover:shadow-purple-500/5 transition-all duration-300">
                   <div className="flex items-start justify-between mb-2">
                     <div>
-                      <h4 className="font-bold text-slate-800 dark:text-slate-100 group-hover:text-emerald-600 dark:text-emerald-400 transition-colors">{subject.title}</h4>
+                      <h4 className="font-bold text-slate-800 dark:text-slate-100 group-hover:text-primary dark:text-primary/70 transition-colors">{subject.title}</h4>
                       <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">{subject.case_number}</p>
                     </div>
                     <Badge variant="outline" className={
-                      subject.data?.type === 'Core' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                      subject.data?.type === 'Core' ? 'bg-primary/5 text-primary/90 border-primary/20' :
                       'bg-amber-50 text-amber-700 border-amber-200'
                     }>
                       {subject.data?.type}
@@ -178,7 +178,7 @@ export default function SHSSubjects() {
                   
                   <div className="mt-4 pt-4 border-t border-slate-50 flex justify-between items-center text-sm">
                     <span className="text-slate-500 dark:text-slate-400 dark:text-slate-500">Dept: <strong className="text-slate-700 dark:text-slate-200">{subject.data?.department || 'General'}</strong></span>
-                    <span className="text-slate-500 dark:text-slate-400 dark:text-slate-500">Credits: <strong className="text-emerald-600 dark:text-emerald-400">{subject.data?.credits || 3}</strong></span>
+                    <span className="text-slate-500 dark:text-slate-400 dark:text-slate-500">Credits: <strong className="text-primary dark:text-primary/70">{subject.data?.credits || 3}</strong></span>
                   </div>
                 </div>
               ))}
@@ -189,10 +189,10 @@ export default function SHSSubjects() {
 
       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
         <DialogContent className="sm:max-w-[450px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
-          <div className="p-6 bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 text-white">
+          <div className="p-6 bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-black">Add Subject</DialogTitle>
-              <DialogDescription className="text-emerald-100 dark:text-emerald-900">
+              <DialogDescription className="text-primary/10 dark:text-primary/70">
                 Register a new subject for the academic curriculum.
               </DialogDescription>
             </DialogHeader>
@@ -223,7 +223,7 @@ export default function SHSSubjects() {
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Type</label>
                   <select 
-                    className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500"
+                    className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
                     value={newSubject.type}
                     onChange={e => setNewSubject({...newSubject, type: e.target.value})}
                   >
@@ -265,7 +265,7 @@ export default function SHSSubjects() {
             <Button 
               onClick={handleAddSubject} 
               disabled={!newSubject.name}
-              className="rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white font-bold"
+              className="rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white font-bold"
             >
               Save Subject
             </Button>

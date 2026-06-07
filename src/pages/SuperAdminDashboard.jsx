@@ -88,16 +88,16 @@ export default function SuperAdminDashboard() {
 
   return (
     <div className="space-y-6 max-w-2xl">
-      <div className="relative overflow-hidden bg-gradient-to-br from-indigo-700 to-violet-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-white/10">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-400/20 blur-[100px] rounded-full pointer-events-none"></div>
+      <div className="relative overflow-hidden bg-gradient-to-br from-primary/90 to-primary/70 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-white/10">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 blur-[100px] rounded-full pointer-events-none"></div>
         <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="text-center md:text-left">
             <h1 className="text-3xl md:text-4xl font-black tracking-tight mb-2">Welcome back, {user?.user_metadata?.full_name || 'Admin'}</h1>
-            <p className="text-indigo-100 font-medium text-lg">System Configuration & {getTerm(activeIndustry, "venue") || "Firm"} Setup</p>
+            <p className="text-primary/10 font-medium text-lg">System Configuration & {getTerm(activeIndustry, "venue") || "Firm"} Setup</p>
           </div>
           {!company && (
             <div className="flex items-center bg-white/10 p-2 rounded-2xl backdrop-blur-md border border-white/20 shadow-inner">
-              <Button onClick={() => setShowForm(true)} size="sm" className="gap-1.5 text-sm font-bold bg-white text-indigo-900 hover:bg-white/90 rounded-xl">
+              <Button onClick={() => setShowForm(true)} size="sm" className="gap-1.5 text-sm font-bold bg-white text-primary/70 hover:bg-white/90 rounded-xl">
                 <Plus className="w-4 h-4" /> {t("setup_firm", "Setup " + (getTerm(activeIndustry, "venue") || "Firm"))}
               </Button>
             </div>
@@ -114,7 +114,7 @@ export default function SuperAdminDashboard() {
               <h2 className="text-base font-semibold">{company.name}</h2>
               <p className="text-sm text-muted-foreground">{company.email}</p>
               <div className="flex items-center gap-2 mt-1">
-                <Badge className="text-[10px] bg-green-100 text-green-700">{company.status}</Badge>
+                <Badge className="text-[10px] bg-primary/10 text-primary/90">{company.status}</Badge>
                 <span className="text-xs text-muted-foreground">{company.country} · {company.city}</span>
               </div>
             </div>

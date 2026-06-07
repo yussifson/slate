@@ -11,11 +11,11 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { Link } from 'react-router-dom';
 
 const COLOR_SCHEMES = [
-  { border: 'border-emerald-200 dark:border-emerald-900', bg: 'bg-emerald-50 dark:bg-emerald-950/20', text: 'text-emerald-500', name: 'Blue' },
-  { border: 'border-pink-200 dark:border-pink-900', bg: 'bg-pink-50 dark:bg-pink-950/20', text: 'text-pink-500', name: 'Pink' },
-  { border: 'border-purple-200 dark:border-purple-900', bg: 'bg-purple-50 dark:bg-purple-950/20', text: 'text-purple-500', name: 'Purple' },
+  { border: 'border-primary/20 dark:border-primary/70', bg: 'bg-primary/5 dark:bg-primary/20', text: 'text-primary', name: 'Blue' },
+  { border: 'border-primary/20 dark:border-primary/70', bg: 'bg-primary/5 dark:bg-primary/20', text: 'text-primary', name: 'Pink' },
+  { border: 'border-primary/20 dark:border-primary/70', bg: 'bg-primary/5 dark:bg-primary/20', text: 'text-primary', name: 'Purple' },
   { border: 'border-amber-200 dark:border-amber-900', bg: 'bg-amber-50 dark:bg-amber-950/20', text: 'text-amber-500', name: 'Amber' },
-  { border: 'border-emerald-200 dark:border-emerald-900', bg: 'bg-emerald-50 dark:bg-emerald-950/20', text: 'text-emerald-500', name: 'Emerald' }
+  { border: 'border-primary/20 dark:border-primary/70', bg: 'bg-primary/5 dark:bg-primary/20', text: 'text-primary', name: 'Emerald' }
 ];
 
 export default function Ministries() {
@@ -102,11 +102,11 @@ export default function Ministries() {
 
   const getIcon = (type) => {
     switch (type) {
-      case 0: return <Users className="w-6 h-6 text-emerald-500" />;
-      case 1: return <HeartHandshake className="w-6 h-6 text-pink-500" />;
-      case 2: return <Music className="w-6 h-6 text-purple-500" />;
+      case 0: return <Users className="w-6 h-6 text-primary" />;
+      case 1: return <HeartHandshake className="w-6 h-6 text-primary" />;
+      case 2: return <Music className="w-6 h-6 text-primary" />;
       case 3: return <Shield className="w-6 h-6 text-amber-500" />;
-      default: return <Users className="w-6 h-6 text-emerald-500" />;
+      default: return <Users className="w-6 h-6 text-primary" />;
     }
   };
 
@@ -122,7 +122,7 @@ export default function Ministries() {
           <h1 className="text-2xl font-bold text-card-foreground">{t("ministries", "Ministries")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("manage_church_departments_and_", "Manage church departments and groups")}</p>
         </div>
-        <Button onClick={() => setShowModal(true)} className="gap-2 bg-purple-600 hover:bg-purple-700 text-white">
+        <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
           <Plus className="w-4 h-4" /> {t("add_ministry", "Add Ministry")}
         </Button>
       </div>
@@ -136,7 +136,7 @@ export default function Ministries() {
         <div className="py-12 text-center text-muted-foreground">{t("loading_departments", "Loading departments...")}</div>
       ) : filtered.length === 0 ? (
         <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-border">
-          <HeartHandshake className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-purple-600" />
+          <HeartHandshake className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary" />
           <p className="font-semibold text-lg text-card-foreground">{t("no_ministries_configured", "No ministries configured")}</p>
           <p className="text-sm mt-1 max-w-md mx-auto">{t(
             "establish_departments_choir_le",
@@ -192,7 +192,7 @@ export default function Ministries() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-border">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-              <HeartHandshake className="w-5 h-5 text-purple-600" /> {t("create_ministry_dept", "Create Ministry Dept")}
+              <HeartHandshake className="w-5 h-5 text-primary" /> {t("create_ministry_dept", "Create Ministry Dept")}
             </h2>
             <div className="space-y-3">
               <div>
@@ -249,7 +249,7 @@ export default function Ministries() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditRecord(null); }}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-purple-600 hover:bg-purple-700 text-white" onClick={handleCreateMinistry}>{editRecord ? 'Update' : 'Save Dept'}</Button>
+              <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleCreateMinistry}>{editRecord ? 'Update' : 'Save Dept'}</Button>
             </div>
           </div>
         </div>

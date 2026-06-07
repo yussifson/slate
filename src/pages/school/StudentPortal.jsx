@@ -155,7 +155,7 @@ export default function StudentPortal() {
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-card rounded-xl border border-border p-4 flex flex-col justify-center shadow-sm">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center text-white shadow-sm"><CheckCircle className="w-5 h-5" /></div>
+                  <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-sm"><CheckCircle className="w-5 h-5" /></div>
                   <h3 className="font-bold text-muted-foreground text-sm">{t("attendance", "Attendance")}</h3>
                 </div>
                 <p className="text-3xl font-bold text-card-foreground mb-1">{attendancePct}%</p>
@@ -164,10 +164,10 @@ export default function StudentPortal() {
               
               <div className="bg-card rounded-xl border border-border p-4 flex flex-col justify-center shadow-sm">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center text-white shadow-sm"><GraduationCap className="w-5 h-5" /></div>
+                  <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-sm"><GraduationCap className="w-5 h-5" /></div>
                   <h3 className="font-bold text-muted-foreground text-sm">{t("performance", "Performance")}</h3>
                 </div>
-                <p className="text-3xl font-bold text-[#1E3A8A] dark:text-emerald-400 dark:text-emerald-400 mb-1">{averageGrade}</p>
+                <p className="text-3xl font-bold text-[#1E3A8A] dark:text-primary/70 dark:text-primary/70 mb-1">{averageGrade}</p>
                 <p className="text-xs text-muted-foreground">{t("term_report_card", "Term Report Card")}</p>
               </div>
             </div>
@@ -207,7 +207,7 @@ export default function StudentPortal() {
                     </div>
                     {doc.file_url && (
                       <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-[#1E3A8A] dark:text-emerald-400"><Download className="w-4 h-4" /></Button>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-[#1E3A8A] dark:text-primary/70"><Download className="w-4 h-4" /></Button>
                       </a>
                     )}
                   </div>
@@ -234,9 +234,9 @@ export default function StudentPortal() {
             {myRegisteredCourses.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {myRegisteredCourses.map((c, i) => (
-                  <div key={i} className="p-4 rounded-xl border border-emerald-200 bg-[#F0F4FF] dark:bg-emerald-900/20 dark:bg-emerald-950/20 flex items-center gap-3">
-                    <BookOpen className="w-5 h-5 text-[#1E3A8A] dark:text-emerald-400" />
-                    <span className="font-semibold text-emerald-800 dark:text-emerald-300">{c}</span>
+                  <div key={i} className="p-4 rounded-xl border border-primary/20 bg-[#F0F4FF] dark:bg-primary/20 dark:bg-primary/20 flex items-center gap-3">
+                    <BookOpen className="w-5 h-5 text-[#1E3A8A] dark:text-primary/70" />
+                    <span className="font-semibold text-primary/80 dark:text-primary/30">{c}</span>
                   </div>
                 ))}
               </div>
@@ -281,7 +281,7 @@ export default function StudentPortal() {
                       <td className="px-6 py-4 font-medium text-foreground">{g.data?.examName}</td>
                       <td className="px-6 py-4 text-muted-foreground">{g.data?.subject}</td>
                       <td className="px-6 py-4 text-right">
-                        <span className={`font-bold ${pct >= 70 ? 'text-[#1E3A8A] dark:text-emerald-400' : pct >= 50 ? 'text-[#1E3A8A] dark:text-emerald-400' : 'text-red-600'}`}>
+                        <span className={`font-bold ${pct >= 70 ? 'text-[#1E3A8A] dark:text-primary/70' : pct >= 50 ? 'text-[#1E3A8A] dark:text-primary/70' : 'text-red-600'}`}>
                           {score} / {max} ({pct}%)
                         </span>
                       </td>

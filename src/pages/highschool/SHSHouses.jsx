@@ -84,7 +84,7 @@ export default function SHSHouses() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent">
             Boarding Houses
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -92,7 +92,7 @@ export default function SHSHouses() {
           </p>
         </div>
         
-        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white shadow-md shadow-emerald-500/20">
+        <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white shadow-md shadow-emerald-500/20">
           <Plus className="w-4 h-4" /> Add House
         </Button>
       </div>
@@ -102,15 +102,15 @@ export default function SHSHouses() {
           <div className="col-span-full p-12 text-center text-slate-400 dark:text-slate-500">Loading houses...</div>
         ) : filteredHouses.length === 0 ? (
           <div className="col-span-full p-16 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
-              <Home className="w-8 h-8 text-emerald-500 dark:text-emerald-500" />
+            <div className="w-16 h-16 rounded-2xl bg-primary/5 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+              <Home className="w-8 h-8 text-primary dark:text-primary" />
             </div>
             <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No houses defined</h3>
             <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Create boarding houses to allocate students.</p>
           </div>
         ) : (
           filteredHouses.map(house => (
-            <Card key={house.id} className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-md hover:ring-emerald-600/30 dark:hover:ring-emerald-500/30 transition-all group overflow-hidden relative">
+            <Card key={house.id} className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-md hover:ring-primary/30 dark:hover:ring-primary/30 transition-all group overflow-hidden relative">
               <div 
                 className="absolute top-0 left-0 w-2 h-full" 
                 style={{ backgroundColor: house.data?.color || '#6F00FF' }}
@@ -124,9 +124,9 @@ export default function SHSHouses() {
                     <Home className="w-6 h-6" />
                   </div>
                   <Badge variant="outline" className={
-                    house.data?.gender === 'Boys' ? 'bg-orange-50 text-orange-700 border-emerald-200' :
-                    house.data?.gender === 'Girls' ? 'bg-pink-50 text-pink-700 border-pink-200' :
-                    'bg-emerald-50 text-emerald-700 border-emerald-200'
+                    house.data?.gender === 'Boys' ? 'bg-orange-50 text-orange-700 border-primary/20' :
+                    house.data?.gender === 'Girls' ? 'bg-primary/5 text-primary/90 border-primary/20' :
+                    'bg-primary/5 text-primary/90 border-primary/20'
                   }>
                     {house.data?.gender || 'Mixed'}
                   </Badge>
@@ -137,7 +137,7 @@ export default function SHSHouses() {
                 
                 <div className="space-y-3 mt-4 text-sm">
                   <div className="flex items-center gap-3 text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 p-2 rounded-xl border border-slate-100 dark:border-slate-800">
-                    <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
                       <UserCheck className="w-4 h-4" />
                     </div>
                     <div className="flex-1 overflow-hidden">
@@ -153,7 +153,7 @@ export default function SHSHouses() {
                 </div>
                 
                 <div className="mt-5 pt-4 border-t border-slate-50 flex justify-end gap-2">
-                  <Button variant="ghost" size="sm" className="w-full rounded-xl text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:bg-slate-800 font-semibold">
+                  <Button variant="ghost" size="sm" className="w-full rounded-xl text-primary dark:text-primary/70 hover:bg-primary/5 dark:bg-slate-800 font-semibold">
                     Manage Residents <Users className="w-4 h-4 ml-2" />
                   </Button>
                 </div>
@@ -165,10 +165,10 @@ export default function SHSHouses() {
 
       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
         <DialogContent className="sm:max-w-[450px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
-          <div className="p-6 bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 text-white">
+          <div className="p-6 bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-black">Add Boarding House</DialogTitle>
-              <DialogDescription className="text-emerald-100 dark:text-emerald-900">
+              <DialogDescription className="text-primary/10 dark:text-primary/70">
                 Register a new residential hall for students.
               </DialogDescription>
             </DialogHeader>
@@ -205,7 +205,7 @@ export default function SHSHouses() {
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Gender</label>
                 <select 
-                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500"
+                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
                   value={newHouse.gender}
                   onChange={e => setNewHouse({...newHouse, gender: e.target.value})}
                 >
@@ -219,7 +219,7 @@ export default function SHSHouses() {
             <div className="space-y-2">
               <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">House Master/Mistress</label>
               <select 
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
                 value={newHouse.houseMasterId}
                 onChange={e => setNewHouse({...newHouse, houseMasterId: e.target.value})}
               >
@@ -249,7 +249,7 @@ export default function SHSHouses() {
             <Button 
               onClick={handleAddHouse} 
               disabled={!newHouse.name}
-              className="rounded-xl bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white font-bold"
+              className="rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white font-bold"
             >
               Save House
             </Button>

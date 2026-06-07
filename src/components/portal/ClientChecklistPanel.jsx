@@ -10,8 +10,8 @@ import { cn } from "@/lib/utils";
 
 const STATUS_CONFIG = {
   pending: { icon: Square, color: "text-muted-foreground", badge: "bg-muted text-muted-foreground" },
-  in_progress: { icon: Clock, color: "text-emerald-500", badge: "bg-orange-100 text-orange-700" },
-  completed: { icon: CheckCircle2, color: "text-green-500", badge: "bg-green-100 text-green-700" },
+  in_progress: { icon: Clock, color: "text-primary", badge: "bg-orange-100 text-orange-700" },
+  completed: { icon: CheckCircle2, color: "text-primary", badge: "bg-primary/10 text-primary/90" },
   waived: { icon: AlertCircle, color: "text-amber-500", badge: "bg-amber-100 text-amber-700" },
 };
 
@@ -57,7 +57,7 @@ export default function ClientChecklistPanel({ clientId }) {
         </div>
         <div className="w-full bg-muted rounded-full h-2">
           <div
-            className="bg-green-500 h-2 rounded-full transition-all"
+            className="bg-primary h-2 rounded-full transition-all"
             style={{ width: `${items.length ? (done.length / items.length) * 100 : 0}%` }}
           />
         </div>
@@ -113,7 +113,7 @@ export default function ClientChecklistPanel({ clientId }) {
             {done.map(item => {
               return (
                 <div key={item.id} className="px-4 py-3 flex items-center gap-3">
-                  <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm line-through text-muted-foreground">{item.title}</p>
                     {item.completed_at && (

@@ -24,12 +24,12 @@ import { supabase } from '@/api/supabaseClient';
 import { useToast } from '@/components/ui/use-toast';
 
 const TIMELINE_COLORS = [
-  { dot: 'bg-emerald-500', border: 'border-emerald-200', gradient: 'from-emerald-500 to-emerald-600', lightBg: 'bg-emerald-50', text: 'text-emerald-700' },
-  { dot: 'bg-emerald-500', border: 'border-emerald-200', gradient: 'from-emerald-500 to-emerald-600', lightBg: 'bg-emerald-50', text: 'text-emerald-700' },
-  { dot: 'bg-violet-500', border: 'border-violet-200', gradient: 'from-violet-500 to-violet-600', lightBg: 'bg-violet-50', text: 'text-violet-700' },
+  { dot: 'bg-primary', border: 'border-primary/20', gradient: 'from-primary to-primary', lightBg: 'bg-primary/5', text: 'text-primary/90' },
+  { dot: 'bg-primary', border: 'border-primary/20', gradient: 'from-primary to-primary', lightBg: 'bg-primary/5', text: 'text-primary/90' },
+  { dot: 'bg-primary', border: 'border-primary/20', gradient: 'from-primary to-primary', lightBg: 'bg-primary/5', text: 'text-primary/90' },
   { dot: 'bg-amber-500', border: 'border-amber-200', gradient: 'from-amber-500 to-amber-600', lightBg: 'bg-amber-50', text: 'text-amber-700' },
   { dot: 'bg-rose-500', border: 'border-rose-200', gradient: 'from-rose-500 to-rose-600', lightBg: 'bg-rose-50', text: 'text-rose-700' },
-  { dot: 'bg-cyan-500', border: 'border-cyan-200', gradient: 'from-cyan-500 to-cyan-600', lightBg: 'bg-cyan-50', text: 'text-cyan-700' },
+  { dot: 'bg-primary', border: 'border-primary/20', gradient: 'from-primary to-primary', lightBg: 'bg-primary/5', text: 'text-primary/90' },
 ];
 
 function getRecordTitle(record, fieldDefinitions) {
@@ -122,8 +122,8 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
 
   if (!data || data.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-violet-50/30 rounded-2xl border border-slate-200/60">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center mb-4 shadow-lg shadow-violet-500/20">
+      <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-2xl border border-slate-200/60">
+        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary flex items-center justify-center mb-4 shadow-lg shadow-violet-500/20">
           <Activity className="w-8 h-8 text-white" />
         </div>
         <h3 className="text-lg font-semibold text-slate-800 mb-1">No Activity Yet</h3>
@@ -141,7 +141,7 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-md shadow-violet-500/20">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary flex items-center justify-center shadow-md shadow-violet-500/20">
             <Activity className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -337,7 +337,7 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
                 return (
                   <div key={f.name} className="space-y-1">
                     <label className="text-xs font-semibold text-slate-600 uppercase tracking-wide">{label}</label>
-                    <select value={val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value })} className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <select value={val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value })} className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary">
                       <option value="">Select...</option>
                       {options.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
                     </select>
@@ -354,7 +354,7 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
           </div>
           <DialogFooter className="mt-6 pt-4 border-t border-slate-100">
             <Button variant="outline" onClick={() => setEditRecord(null)}>Cancel</Button>
-            <Button onClick={handleSaveEdit} disabled={isSaving} className="bg-emerald-600 hover:bg-emerald-700 text-white">
+            <Button onClick={handleSaveEdit} disabled={isSaving} className="bg-primary hover:bg-primary/90 text-white">
               {isSaving ? 'Saving...' : 'Save Changes'}
             </Button>
           </DialogFooter>
@@ -411,7 +411,7 @@ function TimelineCard({ record, fieldDefinitions, colorSet, onView, onEdit, onDe
             )}
           </div>
           <div className="flex gap-1 opacity-0 group-hover/card:opacity-100 transition-opacity ml-2 flex-shrink-0">
-            <button onClick={onView} className="p-1.5 rounded-lg bg-slate-100 text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
+            <button onClick={onView} className="p-1.5 rounded-lg bg-slate-100 text-slate-500 hover:text-primary hover:bg-primary/5 transition-colors">
               <Eye className="w-3.5 h-3.5" />
             </button>
             <button onClick={onEdit} className="p-1.5 rounded-lg bg-slate-100 text-slate-500 hover:text-amber-600 hover:bg-amber-50 transition-colors">

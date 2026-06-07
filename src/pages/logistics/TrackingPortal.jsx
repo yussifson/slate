@@ -29,11 +29,11 @@ export default function TrackingPortal() {
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
       {/* Header Profile */}
-      <div className="bg-gradient-to-r from-emerald-800 to-indigo-900 rounded-2xl p-8 md:p-12 text-white shadow-md relative overflow-hidden text-center">
+      <div className="bg-gradient-to-r from-primary/80 to-primary/70 rounded-2xl p-8 md:p-12 text-white shadow-md relative overflow-hidden text-center">
         <div className="relative z-10 max-w-2xl mx-auto">
-          <Truck className="w-12 h-12 mx-auto mb-4 text-emerald-200" />
+          <Truck className="w-12 h-12 mx-auto mb-4 text-primary/20" />
           <h1 className="text-3xl md:text-4xl font-bold mb-3">{t("track_your_shipment", "Track Your Shipment")}</h1>
-          <p className="text-emerald-100 text-sm mb-8">{t(
+          <p className="text-primary/10 text-sm mb-8">{t(
             "enter_your_tracking_number_to_",
             "Enter your tracking number to get real-time updates on your freight."
           )}</p>
@@ -48,7 +48,7 @@ export default function TrackingPortal() {
                 className="pl-12 h-14 bg-white/10 backdrop-blur-md border-white/20 text-white placeholder:text-white/60 focus-visible:ring-white/30 text-lg rounded-xl"
               />
             </div>
-            <Button type="submit" className="h-14 px-8 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-lg font-bold shadow-lg transition-all active:scale-95">
+            <Button type="submit" className="h-14 px-8 bg-primary hover:bg-primary text-white rounded-xl text-lg font-bold shadow-lg transition-all active:scale-95">
               {t("track", "Track")}
             </Button>
           </form>
@@ -61,7 +61,7 @@ export default function TrackingPortal() {
         <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
           {isLoading ? (
              <div className="p-16 text-center text-muted-foreground flex flex-col items-center">
-               <Truck className="w-10 h-10 animate-bounce mb-4 text-emerald-500" />
+               <Truck className="w-10 h-10 animate-bounce mb-4 text-primary" />
                <p>{t("locating_shipment", "Locating shipment...")}</p>
              </div>
           ) : !shipment ? (
@@ -80,16 +80,16 @@ export default function TrackingPortal() {
                  <div className="flex flex-col md:flex-row justify-between md:items-start gap-4">
                    <div>
                      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">{t("tracking_number", "Tracking Number")}</p>
-                     <h2 className="text-2xl font-black text-emerald-600 font-mono">{shipment.data.trackingNumber}</h2>
+                     <h2 className="text-2xl font-black text-primary font-mono">{shipment.data.trackingNumber}</h2>
                      <p className="text-sm text-muted-foreground mt-2 flex items-center gap-2">
                        <MapPin className="w-4 h-4" /> {shipment.data.origin} <ArrowRight className="w-3 h-3" /> {shipment.data.destination}
                      </p>
                    </div>
                    <div className="text-left md:text-right">
                      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">{t("current_status", "Current Status")}</p>
-                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900">
-                        {shipment.status === 'Delivered' ? <CheckCircle2 className="w-5 h-5 text-green-500" /> : 
-                         shipment.status === 'In Transit' ? <Truck className="w-5 h-5 text-emerald-500" /> :
+                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/5 dark:bg-primary/30 border border-primary/10 dark:border-primary/70">
+                        {shipment.status === 'Delivered' ? <CheckCircle2 className="w-5 h-5 text-primary" /> : 
+                         shipment.status === 'In Transit' ? <Truck className="w-5 h-5 text-primary" /> :
                          <Clock className="w-5 h-5 text-amber-500" />}
                         <span className="font-bold text-lg text-foreground uppercase tracking-wide">{shipment.status || 'Pending'}</span>
                      </div>
@@ -111,7 +111,7 @@ export default function TrackingPortal() {
                        </div>
                        <div>
                          <p className="text-xs text-muted-foreground mb-1">{t("estimated_delivery", "Estimated Delivery")}</p>
-                         <p className="font-medium text-emerald-600 font-semibold">{shipment.data.estimatedDelivery || 'Pending Dispatch'}</p>
+                         <p className="font-medium text-primary font-semibold">{shipment.data.estimatedDelivery || 'Pending Dispatch'}</p>
                        </div>
                        <div>
                          <p className="text-xs text-muted-foreground mb-1">{t("customer_ref", "Customer Ref")}</p>
@@ -125,7 +125,7 @@ export default function TrackingPortal() {
                     <div className="relative border-l-2 border-muted pl-4 space-y-6 ml-2">
                        {shipment.status === 'Delivered' && (
                          <div className="relative">
-                           <div className="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-green-500 ring-4 ring-card"></div>
+                           <div className="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-card"></div>
                            <p className="font-bold text-sm">{t("delivered_successfully", "Delivered Successfully")}</p>
                            <p className="text-xs text-muted-foreground">{t(
                              "shipment_has_reached_its_final",
@@ -135,8 +135,8 @@ export default function TrackingPortal() {
                        )}
                        {(shipment.status === 'In Transit' || shipment.status === 'Delivered') && (
                          <div className="relative">
-                           <div className={`absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full ${shipment.status === 'In Transit' ? 'bg-emerald-500 ring-4 ring-emerald-100' : 'bg-muted'} ring-4 ring-card`}></div>
-                           <p className={`font-bold text-sm ${shipment.status === 'In Transit' ? 'text-emerald-600' : ''}`}>{t("in_transit_to", "In Transit to")} {shipment.data.destination}</p>
+                           <div className={`absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full ${shipment.status === 'In Transit' ? 'bg-primary ring-4 ring-primary/10' : 'bg-muted'} ring-4 ring-card`}></div>
+                           <p className={`font-bold text-sm ${shipment.status === 'In Transit' ? 'text-primary' : ''}`}>{t("in_transit_to", "In Transit to")} {shipment.data.destination}</p>
                            <p className="text-xs text-muted-foreground">{t(
                              "shipment_is_moving_through_the",
                              "Shipment is moving through the logistics network."

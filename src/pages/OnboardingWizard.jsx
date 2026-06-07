@@ -238,8 +238,8 @@ export default function OnboardingWizard() {
     <div className="min-h-[100dvh] bg-[#f8fafc] flex flex-col justify-center items-center sm:py-12 sm:px-6 relative overflow-hidden font-sans">
       
       {/* Background Decorative Elements */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-100 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-indigo-100 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-primary/10 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
       {/* Main Container */}
       <div className="w-full h-[100dvh] sm:h-auto sm:max-w-3xl bg-white sm:rounded-3xl sm:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] sm:border border-slate-100 relative z-10 flex flex-col sm:my-10">
@@ -257,7 +257,7 @@ export default function OnboardingWizard() {
           <div className="relative">
             <div className="absolute top-1/2 left-0 w-full h-1 bg-slate-100 -translate-y-1/2 rounded-full"></div>
             <div 
-              className="absolute top-1/2 left-0 h-1 bg-emerald-600 -translate-y-1/2 rounded-full transition-all duration-500 ease-in-out"
+              className="absolute top-1/2 left-0 h-1 bg-primary -translate-y-1/2 rounded-full transition-all duration-500 ease-in-out"
               style={{ width: `${((step - 1) / (steps.length - 1)) * 100}%` }}
             ></div>
             
@@ -269,13 +269,13 @@ export default function OnboardingWizard() {
                   <div key={s.num} className="flex flex-col items-center">
                     <div 
                       className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ring-4 ring-white
-                        ${isCompleted ? 'bg-emerald-600 text-white shadow-md' : 
-                          isCurrent ? 'bg-white border-2 border-emerald-600 text-emerald-600 shadow-md' : 
+                        ${isCompleted ? 'bg-primary text-white shadow-md' : 
+                          isCurrent ? 'bg-white border-2 border-primary text-primary shadow-md' : 
                           'bg-slate-100 text-slate-400 border-2 border-slate-100'}`}
                     >
                       {isCompleted ? <Check className="w-4 h-4" /> : s.num}
                     </div>
-                    <span className={`text-xs mt-2 font-medium transition-colors duration-300 ${isCurrent ? 'text-emerald-600' : isCompleted ? 'text-slate-700' : 'text-slate-400'}`}>
+                    <span className={`text-xs mt-2 font-medium transition-colors duration-300 ${isCurrent ? 'text-primary' : isCompleted ? 'text-slate-700' : 'text-slate-400'}`}>
                       {s.title}
                     </span>
                   </div>
@@ -333,7 +333,7 @@ export default function OnboardingWizard() {
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("industry", "Workspace Selection")}</label>
                     <Select value={industry} onValueChange={setIndustry}>
-                      <SelectTrigger className="h-12 bg-white border-slate-200 rounded-xl text-slate-900 focus:ring-emerald-500">
+                      <SelectTrigger className="h-12 bg-white border-slate-200 rounded-xl text-slate-900 focus:ring-primary">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-white text-slate-900 border-slate-200">
@@ -354,7 +354,7 @@ export default function OnboardingWizard() {
                     <div className="space-y-2">
                       <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Education Level</label>
                       <Select value={educationLevel} onValueChange={setEducationLevel}>
-                        <SelectTrigger className="w-full h-12 bg-emerald-50/50 border-emerald-200 rounded-xl text-slate-900 focus:ring-emerald-500">
+                        <SelectTrigger className="w-full h-12 bg-primary/50 border-primary/20 rounded-xl text-slate-900 focus:ring-primary">
                           <SelectValue placeholder="Select level" />
                         </SelectTrigger>
                         <SelectContent className="bg-white text-slate-900 border-slate-200">
@@ -375,7 +375,7 @@ export default function OnboardingWizard() {
                       <Select value={country} onValueChange={(v) => {
                         setCountry(v);
                       }}>
-                        <SelectTrigger className="h-12 bg-white border-slate-200 rounded-xl text-slate-900 focus:ring-emerald-500">
+                        <SelectTrigger className="h-12 bg-white border-slate-200 rounded-xl text-slate-900 focus:ring-primary">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="bg-white text-slate-900 border-slate-200">
@@ -389,7 +389,7 @@ export default function OnboardingWizard() {
                     <div className="space-y-2">
                       <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("currency", "Currency")}</label>
                       <Select value={currency} onValueChange={setCurrency}>
-                        <SelectTrigger className="h-12 bg-white border-slate-200 rounded-xl text-slate-900 focus:ring-emerald-500">
+                        <SelectTrigger className="h-12 bg-white border-slate-200 rounded-xl text-slate-900 focus:ring-primary">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="bg-white text-slate-900 border-slate-200">
@@ -418,7 +418,7 @@ export default function OnboardingWizard() {
 
                 <div className="space-y-4">
                   {/* Template Option */}
-                  <label className={`block relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${setupMode === 'template' ? 'border-emerald-600 bg-emerald-50/50 shadow-sm' : 'border-slate-200 hover:border-emerald-300 bg-white'}`}>
+                  <label className={`block relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${setupMode === 'template' ? 'border-primary bg-primary/50 shadow-sm' : 'border-slate-200 hover:border-primary/30 bg-white'}`}>
                     <input 
                       type="radio" 
                       name="setupMode" 
@@ -428,18 +428,18 @@ export default function OnboardingWizard() {
                       className="sr-only" 
                     />
                     <div className="flex items-start gap-4">
-                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center mt-0.5 shrink-0 transition-colors ${setupMode === 'template' ? 'border-emerald-600 bg-emerald-600' : 'border-slate-300'}`}>
+                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center mt-0.5 shrink-0 transition-colors ${setupMode === 'template' ? 'border-primary bg-primary' : 'border-slate-300'}`}>
                         {setupMode === 'template' && <div className="w-2 h-2 rounded-full bg-white"></div>}
                       </div>
                       <div>
-                        <h3 className={`font-bold ${setupMode === 'template' ? 'text-emerald-900' : 'text-slate-900'}`}>Build with Template</h3>
+                        <h3 className={`font-bold ${setupMode === 'template' ? 'text-primary/70' : 'text-slate-900'}`}>Build with Template</h3>
                         <p className="text-sm text-slate-500 mt-1 leading-relaxed">Initializes your dashboard with all standard predefined pages and modules for a {INDUSTRIES[industry]?.name || 'business'}. Recommended for quick starts.</p>
                       </div>
                     </div>
                   </label>
                   
                   {/* Orbit Option */}
-                  <label className={`block relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${setupMode === 'orbit' ? 'border-indigo-600 bg-indigo-50/50 shadow-sm' : 'border-slate-200 hover:border-indigo-300 bg-white'}`}>
+                  <label className={`block relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${setupMode === 'orbit' ? 'border-primary bg-primary/50 shadow-sm' : 'border-slate-200 hover:border-primary/30 bg-white'}`}>
                     <input 
                       type="radio" 
                       name="setupMode" 
@@ -449,13 +449,13 @@ export default function OnboardingWizard() {
                       className="sr-only" 
                     />
                     <div className="flex items-start gap-4">
-                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center mt-0.5 shrink-0 transition-colors ${setupMode === 'orbit' ? 'border-indigo-600 bg-indigo-600' : 'border-slate-300'}`}>
+                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center mt-0.5 shrink-0 transition-colors ${setupMode === 'orbit' ? 'border-primary bg-primary' : 'border-slate-300'}`}>
                         {setupMode === 'orbit' && <div className="w-2 h-2 rounded-full bg-white"></div>}
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <h3 className={`font-bold ${setupMode === 'orbit' ? 'text-indigo-900' : 'text-slate-900'}`}>Build with Orbit</h3>
-                          <span className="px-2 py-0.5 rounded-md bg-indigo-100 text-indigo-700 text-[10px] font-bold uppercase tracking-wider">AI Powered</span>
+                          <h3 className={`font-bold ${setupMode === 'orbit' ? 'text-primary/70' : 'text-slate-900'}`}>Build with Orbit</h3>
+                          <span className="px-2 py-0.5 rounded-md bg-primary/10 text-primary/90 text-[10px] font-bold uppercase tracking-wider">AI Powered</span>
                         </div>
                         <p className="text-sm text-slate-500 mt-1 leading-relaxed">Start fresh with a blank slate. Use Orbit AI to dynamically generate custom pages and databases exactly how you want them.</p>
                       </div>
@@ -633,7 +633,7 @@ export default function OnboardingWizard() {
                   </p>
                 </div>
 
-                <div className="bg-emerald-50/50 border border-emerald-100 rounded-2xl p-6 space-y-5">
+                <div className="bg-primary/50 border border-primary/10 rounded-2xl p-6 space-y-5">
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(industry, 'case')} {t("title", "Title")}</label>
                     <Input 
@@ -641,7 +641,7 @@ export default function OnboardingWizard() {
                       value={caseTitle}
                       onChange={(e) => setCaseTitle(e.target.value)}
                       placeholder={`E.g., Initial ${getTerm(industry, 'case')} for setup`}
-                      className="h-12 bg-white border-emerald-200 focus:bg-white focus-visible:bg-white focus:border-emerald-500 text-slate-900 rounded-xl"
+                      className="h-12 bg-white border-primary/20 focus:bg-white focus-visible:bg-white focus:border-primary text-slate-900 rounded-xl"
                     />
                   </div>
 
@@ -653,7 +653,7 @@ export default function OnboardingWizard() {
                         value={clientName}
                         onChange={(e) => setClientName(e.target.value)}
                         placeholder="Adama Mensah"
-                        className="h-12 bg-white border-emerald-200 focus:bg-white focus-visible:bg-white focus:border-emerald-500 text-slate-900 rounded-xl"
+                        className="h-12 bg-white border-primary/20 focus:bg-white focus-visible:bg-white focus:border-primary text-slate-900 rounded-xl"
                       />
                     </div>
                     <div className="space-y-2">
@@ -663,7 +663,7 @@ export default function OnboardingWizard() {
                         value={clientEmail}
                         onChange={(e) => setClientEmail(e.target.value)}
                         placeholder="contact@email.com"
-                        className="h-12 bg-white border-emerald-200 focus:bg-white focus-visible:bg-white focus:border-emerald-500 text-slate-900 rounded-xl"
+                        className="h-12 bg-white border-primary/20 focus:bg-white focus-visible:bg-white focus:border-primary text-slate-900 rounded-xl"
                       />
                     </div>
                   </div>
@@ -705,7 +705,7 @@ export default function OnboardingWizard() {
                 disabled={
                   (step === 2 && setupMode === 'custom' && selectedModules.length === 0)
                 }
-                className="h-12 px-8 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md shadow-emerald-600/20 group transition-all"
+                className="h-12 px-8 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl shadow-md shadow-emerald-600/20 group transition-all"
               >
                 {t("continue_setup", "Continue Setup")}
                 <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
@@ -714,7 +714,7 @@ export default function OnboardingWizard() {
               <Button 
                 onClick={handleCompleteOnboarding}
                 disabled={loading}
-                className="h-12 px-8 bg-gradient-to-r from-emerald-600 to-indigo-600 hover:from-emerald-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/20 flex items-center gap-2 transition-all hover:-translate-y-0.5 active:translate-y-0"
+                className="h-12 px-8 bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/20 flex items-center gap-2 transition-all hover:-translate-y-0.5 active:translate-y-0"
               >
                 {loading ? (
                   <>
@@ -743,7 +743,7 @@ function Badge({ role, industry }) {
   const label = roleDef ? roleDef.label : role;
   
   return (
-    <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-orange-50 text-orange-700 border border-emerald-100">
+    <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-orange-50 text-orange-700 border border-primary/10">
       {label}
     </span>
   );

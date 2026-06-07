@@ -54,7 +54,7 @@ export default function SHSAdmissionDecisions() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent">
             Admission Decisions
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -64,9 +64,9 @@ export default function SHSAdmissionDecisions() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-purple-100 cursor-pointer transition-all hover:bg-emerald-50 dark:bg-slate-800" onClick={() => setFilterType('All')}>
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10 cursor-pointer transition-all hover:bg-primary/5 dark:bg-slate-800" onClick={() => setFilterType('All')}>
           <CardContent className="p-5 flex items-center gap-4">
-            <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${filterType === 'All' ? 'bg-emerald-600 dark:bg-emerald-500 text-white' : 'bg-emerald-100 dark:bg-slate-800 text-emerald-600 dark:text-emerald-400'}`}>
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${filterType === 'All' ? 'bg-primary dark:bg-primary text-white' : 'bg-primary/10 dark:bg-slate-800 text-primary dark:text-primary/70'}`}>
               <Mail className="w-6 h-6" />
             </div>
             <div>
@@ -76,9 +76,9 @@ export default function SHSAdmissionDecisions() {
           </CardContent>
         </Card>
         
-        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-emerald-100 cursor-pointer transition-all hover:bg-emerald-50" onClick={() => setFilterType('Admitted')}>
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10 cursor-pointer transition-all hover:bg-primary/5" onClick={() => setFilterType('Admitted')}>
           <CardContent className="p-5 flex items-center gap-4">
-            <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${filterType === 'Admitted' ? 'bg-emerald-500 text-white' : 'bg-emerald-100 text-emerald-600'}`}>
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${filterType === 'Admitted' ? 'bg-primary text-white' : 'bg-primary/10 text-primary'}`}>
               <FileCheck className="w-6 h-6" />
             </div>
             <div>
@@ -118,7 +118,7 @@ export default function SHSAdmissionDecisions() {
                 <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
                 <Input 
                   placeholder="Search applicant name..." 
-                  className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-emerald-600 dark:focus-visible:ring-emerald-500"
+                  className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -134,8 +134,8 @@ export default function SHSAdmissionDecisions() {
             <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading decisions...</div>
           ) : filteredDecisions.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
-                <Mail className="w-8 h-8 text-emerald-500 dark:text-emerald-500" />
+              <div className="w-16 h-16 rounded-2xl bg-primary/5 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                <Mail className="w-8 h-8 text-primary dark:text-primary" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No decisions found</h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">There are no finalized decisions in this category.</p>
@@ -163,7 +163,7 @@ export default function SHSAdmissionDecisions() {
                       </td>
                       <td className="px-6 py-4">
                         {decision.status === 'Admitted' ? (
-                          <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 border-none px-3 py-1 gap-1">
+                          <Badge className="bg-primary/10 text-primary/90 hover:bg-primary/20 border-none px-3 py-1 gap-1">
                             <CheckCircle className="w-3 h-3" /> Admitted
                           </Badge>
                         ) : (
@@ -180,7 +180,7 @@ export default function SHSAdmissionDecisions() {
                           variant="ghost" 
                           size="sm" 
                           onClick={() => generateLetter(decision)}
-                          className="text-emerald-600 dark:text-emerald-400 hover:text-[#5200c2] hover:bg-emerald-50 dark:bg-slate-800 rounded-lg gap-2 font-semibold"
+                          className="text-primary dark:text-primary/70 hover:text-[#5200c2] hover:bg-primary/5 dark:bg-slate-800 rounded-lg gap-2 font-semibold"
                         >
                           <Printer className="w-4 h-4" /> Letter
                         </Button>

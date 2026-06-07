@@ -20,8 +20,8 @@ const RISK_CONFIG = {
   },
   LOW: {
     label: 'Low Risk',
-    classes: 'bg-orange-100 text-orange-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-900/50',
-    badgeClasses: 'bg-emerald-500 text-white',
+    classes: 'bg-orange-100 text-orange-700 border-primary/20 dark:bg-primary/30 dark:text-primary/70 dark:border-primary/50',
+    badgeClasses: 'bg-primary text-white',
     icon: Info,
   },
 };
@@ -129,7 +129,7 @@ export default function AIRiskAnalyzer({ records = [], recordType = 'record', on
             <>
               {findings.length === 0 ? (
                 <div className="text-center py-10">
-                  <CheckCircle className="w-14 h-14 mx-auto text-emerald-500 mb-4" />
+                  <CheckCircle className="w-14 h-14 mx-auto text-primary mb-4" />
                   <h3 className="text-base font-bold text-card-foreground">{t("no_anomalies_detected", "No Anomalies Detected")}</h3>
                   <p className="text-sm text-muted-foreground mt-1">{t("all", "All")} {records.length} {t("records_look_healthy", "records look healthy.")}</p>
                   <Button onClick={handleAnalyze} variant="outline" className="mt-4 gap-2" size="sm">

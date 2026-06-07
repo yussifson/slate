@@ -91,7 +91,7 @@ export default function AIEmailDrafter({ recordData, defaultContext = "Write a p
                   onClick={handleCopy}
                   className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
                 >
-                  {copied ? <CheckCircle className="w-3 h-3 text-green-500" /> : <Copy className="w-3 h-3" />}
+                  {copied ? <CheckCircle className="w-3 h-3 text-primary" /> : <Copy className="w-3 h-3" />}
                   {copied ? 'Copied!' : 'Copy'}
                 </button>
               </div>

@@ -10,7 +10,7 @@ import PageHeader from "@/components/shared/PageHeader";
 import { TASK_STATUS_COLORS, PRIORITY_COLORS, formatCurrency } from "@/lib/constants";
 import { format, isAfter, isBefore, addDays, startOfMonth, endOfMonth } from "date-fns";
 
-function StatCard({ icon: IconComp, label, value, sub, color = "bg-emerald-50 text-emerald-600" }) {
+function StatCard({ icon: IconComp, label, value, sub, color = "bg-primary/5 text-primary" }) {
   return (
     <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4">
       <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${color}`}>
@@ -99,10 +99,10 @@ export default function StaffDashboard() {
       />
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon={Briefcase} label="Active Cases" value={activeCases.length} color="bg-emerald-50 text-emerald-600" />
+        <StatCard icon={Briefcase} label="Active Cases" value={activeCases.length} color="bg-primary/5 text-primary" />
         <StatCard icon={CheckSquare} label="Pending Tasks" value={pendingTasks.length} sub={overdueTasks.length > 0 ? `${overdueTasks.length} overdue` : undefined} color="bg-amber-50 text-amber-600" />
-        <StatCard icon={Clock} label="Hours This Month" value={totalHours.toFixed(1)} sub={`${billedHours.toFixed(1)}h billed`} color="bg-purple-50 text-purple-600" />
-        <StatCard icon={TrendingUp} label="Billed Amount" value={formatCurrency(billedAmount, staffRecord?.currency || "GHS")} sub="This month" color="bg-green-50 text-green-600" />
+        <StatCard icon={Clock} label="Hours This Month" value={totalHours.toFixed(1)} sub={`${billedHours.toFixed(1)}h billed`} color="bg-primary/5 text-primary" />
+        <StatCard icon={TrendingUp} label="Billed Amount" value={formatCurrency(billedAmount, staffRecord?.currency || "GHS")} sub="This month" color="bg-primary/5 text-primary" />
       </div>
       {/* Hours vs Target */}
       <div className="bg-card rounded-xl border border-border p-5">
@@ -171,7 +171,7 @@ export default function StaffDashboard() {
               const isDueSoon = !isOverdue && task.due_date && isBefore(new Date(task.due_date), addDays(today, 7));
               return (
                 <div key={task.id} className="px-4 py-3 flex items-start gap-3">
-                  <div className={`w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0 ${isOverdue ? "bg-red-500" : isDueSoon ? "bg-amber-500" : "bg-emerald-400"}`} />
+                  <div className={`w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0 ${isOverdue ? "bg-red-500" : isDueSoon ? "bg-amber-500" : "bg-primary/70"}`} />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium">{task.title}</p>
                     <div className="flex flex-wrap gap-1.5 mt-1">
@@ -242,7 +242,7 @@ export default function StaffDashboard() {
                       {t("hearing", "Hearing:")} {format(new Date(c.next_hearing_date), "MMM d")}
                     </span>
                   )}
-                  <Badge className={`text-[10px] capitalize ${c.status === "open" ? "bg-orange-100 text-orange-700" : c.status === "in_progress" ? "bg-amber-100 text-amber-700" : "bg-purple-100 text-purple-700"}`}>
+                  <Badge className={`text-[10px] capitalize ${c.status === "open" ? "bg-orange-100 text-orange-700" : c.status === "in_progress" ? "bg-amber-100 text-amber-700" : "bg-primary/10 text-primary/90"}`}>
                     {c.status?.replace("_", " ")}
                   </Badge>
                 </div>

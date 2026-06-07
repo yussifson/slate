@@ -130,7 +130,7 @@ export default function Departments() {
           <h1 className="text-2xl font-bold text-card-foreground">{t("departments", "Departments")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("manage_organizational_structur", "Manage organizational structure and teams")}</p>
         </div>
-        <Button onClick={openAdd} className="gap-2 bg-purple-600 hover:bg-purple-700 text-white">
+        <Button onClick={openAdd} className="gap-2 bg-primary hover:bg-primary/90 text-white">
           <Plus className="w-4 h-4" /> {t("new_department", "New Department")}
         </Button>
       </div>
@@ -141,7 +141,7 @@ export default function Departments() {
              <p className="text-sm text-muted-foreground mb-1">{t("total_departments", "Total Departments")}</p>
              <h2 className="text-3xl font-bold text-card-foreground">{departments.length}</h2>
            </div>
-           <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center text-purple-600">
+           <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
              <Building2 className="w-6 h-6" />
            </div>
         </div>
@@ -150,7 +150,7 @@ export default function Departments() {
              <p className="text-sm text-muted-foreground mb-1">{t("total_employees", "Total Employees")}</p>
              <h2 className="text-3xl font-bold text-card-foreground">{departments.reduce((sum, d) => sum + d.staffCount, 0)}</h2>
            </div>
-           <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+           <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
              <Users className="w-6 h-6" />
            </div>
         </div>
@@ -159,7 +159,7 @@ export default function Departments() {
              <p className="text-sm text-muted-foreground mb-1">{t("total_budget", "Total Budget")}</p>
              <h2 className="text-3xl font-bold text-card-foreground">${departments.reduce((sum, d) => sum + d.budget, 0).toLocaleString()}</h2>
            </div>
-           <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+           <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
              <DollarSign className="w-6 h-6" />
            </div>
         </div>
@@ -177,7 +177,7 @@ export default function Departments() {
             <div className="py-12 text-center text-muted-foreground">{t("loading_departments", "Loading departments...")}</div>
           ) : filtered.length === 0 ? (
             <div className="py-12 text-center text-muted-foreground">
-              <Building2 className="w-12 h-12 mx-auto mb-3 opacity-30 text-purple-600" />
+              <Building2 className="w-12 h-12 mx-auto mb-3 opacity-30 text-primary" />
               <p className="font-semibold text-lg text-card-foreground">{t("no_departments_found", "No departments found")}</p>
               <p className="text-xs mt-1">{t("add_your_first_department_to_g", "Add your first department to get started.")}</p>
             </div>
@@ -210,7 +210,7 @@ export default function Departments() {
                         </div>
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <p className="font-bold text-green-600 dark:text-green-400">${dept.budget.toLocaleString()}</p>
+                        <p className="font-bold text-primary dark:text-primary/70">${dept.budget.toLocaleString()}</p>
                       </td>
                       <td className="px-6 py-4 text-right">
                         <DropdownMenu>
@@ -277,7 +277,7 @@ export default function Departments() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-purple-600 hover:bg-purple-700 text-white" onClick={handleCreateOrUpdate}>{t("save", "Save")}</Button>
+              <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleCreateOrUpdate}>{t("save", "Save")}</Button>
             </div>
           </div>
         </div>
@@ -299,7 +299,7 @@ export default function Departments() {
                     <div><span className="font-semibold text-muted-foreground">{t("name", "Name:")}</span> <p className="font-bold text-lg">{dept.name}</p></div>
                     <div><span className="font-semibold text-muted-foreground">{t("manager", "Manager:")}</span> <p className="font-medium text-primary"><Link to="/employees" className="hover:underline">{dept.managerName}</Link></p></div>
                     <div><span className="font-semibold text-muted-foreground">{t("staff_count", "Staff Count:")}</span> <p className="font-medium">{dept.staffCount} employees</p></div>
-                    <div><span className="font-semibold text-muted-foreground">{t("salary_budget", "Salary Budget:")}</span> <p className="font-medium text-green-600 font-bold">${dept.budget.toLocaleString()} / mo</p></div>
+                    <div><span className="font-semibold text-muted-foreground">{t("salary_budget", "Salary Budget:")}</span> <p className="font-medium text-primary font-bold">${dept.budget.toLocaleString()} / mo</p></div>
                     <div><span className="font-semibold text-muted-foreground">{t("description", "Description:")}</span> <p className="font-medium bg-muted p-3 rounded-lg border border-border mt-1">{dept.description || 'No description provided.'}</p></div>
                   </div>
                 );

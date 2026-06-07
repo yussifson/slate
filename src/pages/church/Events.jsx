@@ -134,7 +134,7 @@ export default function Events() {
             "Church calendar and upcoming gatherings"
           )}</p>
         </div>
-        <Button onClick={() => setShowModal(true)} className="gap-2 bg-purple-600 hover:bg-purple-700 text-white">
+        <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
           <Plus className="w-4 h-4" /> {t("create_event", "Create Event")}
         </Button>
       </div>
@@ -148,7 +148,7 @@ export default function Events() {
         <div className="py-12 text-center text-muted-foreground">{t("loading_calendar", "Loading calendar...")}</div>
       ) : filtered.length === 0 ? (
         <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-border">
-          <Calendar className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-purple-600" />
+          <Calendar className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary" />
           <p className="font-semibold text-lg text-card-foreground">{t("no_upcoming_gatherings", "No upcoming gatherings")}</p>
           <p className="text-sm mt-1 max-w-md mx-auto">{t(
             "schedule_sunday_services_midwe",
@@ -160,13 +160,13 @@ export default function Events() {
           {filtered.map(event => {
             return (
               <div key={event.id} className="bg-card rounded-xl border border-border p-5 shadow-sm flex flex-col sm:flex-row gap-5 relative group hover:shadow-md transition-all">
-                <div className="flex flex-col items-center justify-center bg-purple-50 dark:bg-purple-950/20 text-purple-700 dark:text-purple-400 rounded-lg p-4 min-w-[100px] shrink-0 border border-purple-100 dark:border-purple-900/50">
+                <div className="flex flex-col items-center justify-center bg-primary/5 dark:bg-primary/20 text-primary/90 dark:text-primary/70 rounded-lg p-4 min-w-[100px] shrink-0 border border-primary/10 dark:border-primary/50">
                   <span className="text-xs font-bold uppercase tracking-widest">{event.date?.split(' ')[0] || 'Upcoming'}</span>
                   <span className="text-2xl font-black">{event.date?.includes(' ') ? event.date.split(' ')[1]?.replace(',', '') : 'Soon'}</span>
                 </div>
                 <div className="flex-1">
                   <div className="flex justify-between items-start">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-950/50 px-2 py-0.5 rounded-full mb-2 inline-block">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-primary dark:text-primary/70 bg-primary/10 dark:bg-primary/50 px-2 py-0.5 rounded-full mb-2 inline-block">
                       {event.type}
                     </span>
                     <DropdownMenu>
@@ -204,7 +204,7 @@ export default function Events() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-border">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-purple-600" /> {t("schedule_event_service", "Schedule Event / Service")}
+              <Calendar className="w-5 h-5 text-primary" /> {t("schedule_event_service", "Schedule Event / Service")}
             </h2>
             <div className="space-y-3">
               <div>
@@ -283,7 +283,7 @@ export default function Events() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditRecord(null); }}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-purple-600 hover:bg-purple-700 text-white" disabled={isGenerating || isAdding} onClick={handleCreateEvent}>{editRecord ? 'Update' : 'Schedule'}</Button>
+              <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" disabled={isGenerating || isAdding} onClick={handleCreateEvent}>{editRecord ? 'Update' : 'Schedule'}</Button>
             </div>
           </div>
         </div>

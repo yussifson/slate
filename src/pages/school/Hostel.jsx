@@ -110,19 +110,19 @@ export default function Hostel() {
                 </DropdownMenu>
               </div>
               <div className="flex flex-col">
-                <div className="w-12 h-12 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center mb-4">
+                <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary/90 flex items-center justify-center mb-4">
                   <Home className="w-6 h-6" />
                 </div>
                 <h3 className="font-bold text-card-foreground text-lg line-clamp-1" title={h.name}>{h.name}</h3>
-                <p className="text-xs font-semibold text-indigo-600 uppercase tracking-wide mb-3">{h.type} Hostel</p>
+                <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-3">{h.type} Hostel</p>
                 
                 <div className="w-full space-y-2 mt-2">
                   <div className="flex items-center justify-between text-xs text-muted-foreground bg-muted/50 p-2 rounded-lg">
-                    <span className="flex items-center gap-2"><Users className="w-3.5 h-3.5 text-emerald-500" /> Cap:</span>
+                    <span className="flex items-center gap-2"><Users className="w-3.5 h-3.5 text-primary" /> Cap:</span>
                     <span className="font-semibold text-foreground">{h.capacity} beds</span>
                   </div>
                   <div className="flex items-center justify-between text-xs text-muted-foreground bg-muted/50 p-2 rounded-lg">
-                    <span className="flex items-center gap-2"><BedDouble className="w-3.5 h-3.5 text-emerald-500" /> Rooms:</span>
+                    <span className="flex items-center gap-2"><BedDouble className="w-3.5 h-3.5 text-primary" /> Rooms:</span>
                     <span className="font-semibold text-foreground">{h.rooms || 'N/A'}</span>
                   </div>
                   <div className="pt-2 border-t border-border mt-2">

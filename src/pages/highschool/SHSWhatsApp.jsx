@@ -96,7 +96,7 @@ export default function SHSWhatsapp() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent">
             WhatsApp Integration
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -118,13 +118,13 @@ export default function SHSWhatsapp() {
         <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-slate-100">
           <CardContent className="p-5 flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center text-[#25D366] shrink-0">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-[#25D366] shrink-0">
                 <Smartphone className="w-6 h-6" />
               </div>
               <div>
                 <p className="text-sm font-semibold text-muted-foreground">API Connection</p>
                 <div className="flex items-center gap-2 mt-0.5">
-                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                  <div className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></div>
                   <h3 className="text-xl font-black text-slate-800 dark:text-slate-100">{apiStatus}</h3>
                 </div>
               </div>
@@ -146,7 +146,7 @@ export default function SHSWhatsapp() {
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
               <Input 
                 placeholder="Search campaigns..." 
-                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-emerald-600 dark:focus-visible:ring-emerald-500"
+                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -158,7 +158,7 @@ export default function SHSWhatsapp() {
             <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading WhatsApp campaigns...</div>
           ) : filteredCampaigns.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-green-50 mx-auto flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-primary/5 mx-auto flex items-center justify-center mb-4">
                 <MessageCircle className="w-8 h-8 text-[#25D366]" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No campaigns launched</h3>
@@ -202,7 +202,7 @@ export default function SHSWhatsapp() {
           <div className="p-6 bg-gradient-to-br from-[#128C7E] to-[#075E54] text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-black">Launch WhatsApp Broadcast</DialogTitle>
-              <DialogDescription className="text-green-100">
+              <DialogDescription className="text-primary/10">
                 Send rich-text messages via the official WhatsApp Business API.
               </DialogDescription>
             </DialogHeader>

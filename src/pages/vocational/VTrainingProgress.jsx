@@ -46,7 +46,7 @@ export default function VTrainingProgress() {
     <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300 h-[calc(100vh-100px)] flex flex-col">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-600 via-teal-600 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary via-primary to-slate-900 bg-clip-text text-transparent">
             Training Progress
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -56,13 +56,13 @@ export default function VTrainingProgress() {
       </div>
 
       <div className="flex-1 flex gap-6 overflow-hidden">
-        <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-emerald-100/50">
-          <div className="p-4 border-b border-emerald-50 dark:border-slate-800">
+        <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50">
+          <div className="p-4 border-b border-primary/5 dark:border-slate-800">
             <div className="relative">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-emerald-500" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
               <Input 
                 placeholder="Search progress records..." 
-                className="pl-9 h-10 bg-white dark:bg-slate-900 border-emerald-100 dark:border-slate-700 rounded-xl focus-visible:ring-emerald-600"
+                className="pl-9 h-10 bg-white dark:bg-slate-900 border-primary/10 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -70,7 +70,7 @@ export default function VTrainingProgress() {
           </div>
           <ScrollArea className="flex-1">
             {loading ? (
-              <div className="p-8 text-center text-emerald-500/50 text-sm">Loading progress...</div>
+              <div className="p-8 text-center text-primary/50 text-sm">Loading progress...</div>
             ) : filteredRecords.length === 0 ? (
               <div className="p-8 text-center text-slate-400 dark:text-slate-500 text-sm">No records found.</div>
             ) : (
@@ -81,18 +81,18 @@ export default function VTrainingProgress() {
                     onClick={() => setSelectedRecord(record)}
                     className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
                       selectedRecord?.id === record.id 
-                        ? 'bg-emerald-600 text-white shadow-md shadow-emerald-500/20' 
-                        : 'hover:bg-emerald-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'
+                        ? 'bg-primary text-white shadow-md shadow-emerald-500/20' 
+                        : 'hover:bg-primary/5 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'
                     }`}
                   >
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0 ${
-                      selectedRecord?.id === record.id ? 'bg-white/20' : 'bg-emerald-100 dark:bg-slate-800 text-emerald-600'
+                      selectedRecord?.id === record.id ? 'bg-white/20' : 'bg-primary/10 dark:bg-slate-800 text-primary'
                     }`}>
                       <Activity className="w-5 h-5" />
                     </div>
                     <div className="overflow-hidden">
                       <p className="font-bold truncate">{record.title}</p>
-                      <p className={`text-xs truncate ${selectedRecord?.id === record.id ? 'text-emerald-100' : 'text-slate-500'}`}>
+                      <p className={`text-xs truncate ${selectedRecord?.id === record.id ? 'text-primary/10' : 'text-slate-500'}`}>
                         {record.data?.trainee_name || 'Unknown Trainee'} • {record.data?.status || 'In Progress'}
                       </p>
                     </div>
@@ -103,10 +103,10 @@ export default function VTrainingProgress() {
           </ScrollArea>
         </Card>
 
-        <Card className="flex-1 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-emerald-100/50 overflow-hidden relative">
+        <Card className="flex-1 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative">
           {selectedRecord ? (
             <>
-              <div className="h-32 bg-gradient-to-r from-emerald-500 to-teal-600 relative shrink-0">
+              <div className="h-32 bg-gradient-to-r from-primary to-primary relative shrink-0">
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/connected.png')] opacity-20"></div>
               </div>
               
@@ -114,19 +114,19 @@ export default function VTrainingProgress() {
                 <div className="px-8 pb-8">
                   <div className="flex flex-col sm:flex-row gap-6 items-end sm:items-center relative z-10">
                     <div className="w-24 h-24 rounded-3xl bg-white dark:bg-slate-900 p-1 shadow-xl shrink-0">
-                      <div className="w-full h-full rounded-2xl bg-emerald-50 dark:bg-slate-800 flex items-center justify-center text-emerald-600">
+                      <div className="w-full h-full rounded-2xl bg-primary/5 dark:bg-slate-800 flex items-center justify-center text-primary">
                         <Target className="w-12 h-12" />
                       </div>
                     </div>
                     <div className="flex-1 mt-4 sm:mt-12">
                       <h2 className="text-3xl font-black text-slate-800 dark:text-slate-100">{selectedRecord.title}</h2>
                       <div className="flex items-center gap-3 mt-2 text-sm text-slate-600 dark:text-slate-300 font-medium">
-                        <span className="flex items-center gap-1.5"><Badge variant="outline" className="border-emerald-200 dark:border-slate-600 bg-emerald-50 dark:bg-slate-800 text-emerald-600">{selectedRecord.data?.trainee_name}</Badge></span>
+                        <span className="flex items-center gap-1.5"><Badge variant="outline" className="border-primary/20 dark:border-slate-600 bg-primary/5 dark:bg-slate-800 text-primary">{selectedRecord.data?.trainee_name}</Badge></span>
                         <span>•</span>
-                        <span className="flex items-center gap-1.5"><BookOpen className="w-4 h-4 text-emerald-500" /> Module: {selectedRecord.data?.current_module || 'N/A'}</span>
+                        <span className="flex items-center gap-1.5"><BookOpen className="w-4 h-4 text-primary" /> Module: {selectedRecord.data?.current_module || 'N/A'}</span>
                         <span>•</span>
                         <span className="flex items-center gap-1.5">
-                          <Badge className={selectedRecord.data?.status === 'Completed' ? 'bg-emerald-500' : 'bg-emerald-500'}>
+                          <Badge className={selectedRecord.data?.status === 'Completed' ? 'bg-primary' : 'bg-primary'}>
                             {selectedRecord.data?.status || 'Active'}
                           </Badge>
                         </span>
@@ -136,28 +136,28 @@ export default function VTrainingProgress() {
 
                   <div className="mt-8">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                      <Card className="bg-emerald-50/50 dark:bg-slate-800/50 border-emerald-100 dark:border-slate-700">
+                      <Card className="bg-primary/50 dark:bg-slate-800/50 border-primary/10 dark:border-slate-700">
                         <CardHeader className="pb-2">
                           <CardDescription>Hours Completed</CardDescription>
-                          <CardTitle className="text-2xl text-emerald-700 dark:text-emerald-400 flex items-center gap-2">
+                          <CardTitle className="text-2xl text-primary/90 dark:text-primary/70 flex items-center gap-2">
                             <Clock className="w-5 h-5" />
                             {selectedRecord.data?.hours_completed || 0} / {selectedRecord.data?.total_hours || 0}
                           </CardTitle>
                         </CardHeader>
                       </Card>
-                      <Card className="bg-emerald-50/50 dark:bg-slate-800/50 border-emerald-100 dark:border-slate-700">
+                      <Card className="bg-primary/50 dark:bg-slate-800/50 border-primary/10 dark:border-slate-700">
                         <CardHeader className="pb-2">
                           <CardDescription>Practical Score</CardDescription>
-                          <CardTitle className="text-2xl text-emerald-700 dark:text-emerald-400 flex items-center gap-2">
+                          <CardTitle className="text-2xl text-primary/90 dark:text-primary/70 flex items-center gap-2">
                             <Zap className="w-5 h-5" />
                             {selectedRecord.data?.practical_score || 'N/A'}
                           </CardTitle>
                         </CardHeader>
                       </Card>
-                      <Card className="bg-purple-50/50 dark:bg-slate-800/50 border-purple-100 dark:border-slate-700">
+                      <Card className="bg-primary/50 dark:bg-slate-800/50 border-primary/10 dark:border-slate-700">
                         <CardHeader className="pb-2">
                           <CardDescription>Tasks Finished</CardDescription>
-                          <CardTitle className="text-2xl text-purple-700 dark:text-purple-400 flex items-center gap-2">
+                          <CardTitle className="text-2xl text-primary/90 dark:text-primary/70 flex items-center gap-2">
                             <FileCheck className="w-5 h-5" />
                             {selectedRecord.data?.tasks_finished || 0}
                           </CardTitle>
@@ -171,7 +171,7 @@ export default function VTrainingProgress() {
                         {selectedRecord.data?.notes || 'No instructor notes available for this progress record.'}
                       </p>
                       <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end">
-                        <Button variant="outline" className="text-emerald-600 border-emerald-200 hover:bg-emerald-50">
+                        <Button variant="outline" className="text-primary border-primary/20 hover:bg-primary/5">
                           Update Progress
                         </Button>
                       </div>
@@ -182,8 +182,8 @@ export default function VTrainingProgress() {
             </>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-              <div className="w-20 h-20 rounded-full bg-emerald-50 dark:bg-slate-800 flex items-center justify-center mb-6">
-                <Activity className="w-10 h-10 text-emerald-300" />
+              <div className="w-20 h-20 rounded-full bg-primary/5 dark:bg-slate-800 flex items-center justify-center mb-6">
+                <Activity className="w-10 h-10 text-primary/30" />
               </div>
               <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200">No Record Selected</h3>
               <p className="text-slate-500 max-w-sm mt-2">

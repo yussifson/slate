@@ -22,14 +22,14 @@ export default function OnlineAnalytics() {
         <Card className="border-0 shadow-sm rounded-xl">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-emerald-50 text-[#0056D2] rounded-lg">
+              <div className="p-3 bg-primary/5 text-[#0056D2] rounded-lg">
                 <Eye className="h-6 w-6" />
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500">Page Views</p>
                 <div className="flex items-end gap-2">
                   <h3 className="text-2xl font-bold text-gray-900">125k</h3>
-                  <span className="text-sm font-medium text-green-600 mb-1">+24%</span>
+                  <span className="text-sm font-medium text-primary mb-1">+24%</span>
                 </div>
               </div>
             </div>
@@ -39,14 +39,14 @@ export default function OnlineAnalytics() {
         <Card className="border-0 shadow-sm rounded-xl">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-indigo-50 text-indigo-600 rounded-lg">
+              <div className="p-3 bg-primary/5 text-primary rounded-lg">
                 <BarChart className="h-6 w-6" />
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500">Conversion Rate</p>
                 <div className="flex items-end gap-2">
                   <h3 className="text-2xl font-bold text-gray-900">4.2%</h3>
-                  <span className="text-sm font-medium text-green-600 mb-1">+1.1%</span>
+                  <span className="text-sm font-medium text-primary mb-1">+1.1%</span>
                 </div>
               </div>
             </div>
@@ -56,7 +56,7 @@ export default function OnlineAnalytics() {
         <Card className="border-0 shadow-sm rounded-xl">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-green-50 text-green-600 rounded-lg">
+              <div className="p-3 bg-primary/5 text-primary rounded-lg">
                 <Activity className="h-6 w-6" />
               </div>
               <div>
@@ -73,14 +73,14 @@ export default function OnlineAnalytics() {
         <Card className="border-0 shadow-sm rounded-xl">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-purple-50 text-purple-600 rounded-lg">
+              <div className="p-3 bg-primary/5 text-primary rounded-lg">
                 <TrendingUp className="h-6 w-6" />
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500">ARR (Est)</p>
                 <div className="flex items-end gap-2">
                   <h3 className="text-2xl font-bold text-gray-900">$1.2M</h3>
-                  <span className="text-sm font-medium text-green-600 mb-1">+15%</span>
+                  <span className="text-sm font-medium text-primary mb-1">+15%</span>
                 </div>
               </div>
             </div>

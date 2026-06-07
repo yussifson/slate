@@ -167,7 +167,7 @@ export default function AgentPerformance() {
           <p className="text-2xl font-bold text-card-foreground">{avgPolicies}</p>
         </div>
         <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
-          <div className="flex items-center gap-2 mb-2 text-green-600"><DollarSign className="w-4 h-4"/> {t("total_commission", "Total Commission")}</div>
+          <div className="flex items-center gap-2 mb-2 text-primary"><DollarSign className="w-4 h-4"/> {t("total_commission", "Total Commission")}</div>
           <p className="text-2xl font-bold text-card-foreground">${totalCommission.toLocaleString()}</p>
         </div>
         <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
@@ -227,14 +227,14 @@ export default function AgentPerformance() {
                         ${Number(agent.premiumCollected).toLocaleString()}
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <p className="font-bold text-green-600">${Number(agent.commissionEarned).toLocaleString()}</p>
+                        <p className="font-bold text-primary">${Number(agent.commissionEarned).toLocaleString()}</p>
                       </td>
                       <td className="px-6 py-4 text-center">
                         <select
                           value={agent.status}
                           onChange={e => handleUpdateStatus(agent, e.target.value)}
                           className={`rounded-md border border-input px-2 py-1 text-xs font-bold ${
-                            agent.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-muted text-muted-foreground'
+                            agent.status === 'Active' ? 'bg-primary/10 text-primary/90' : 'bg-muted text-muted-foreground'
                           }`}
                         >
                           <option value="Active">{t("active", "Active")}</option>

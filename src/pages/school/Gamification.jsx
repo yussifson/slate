@@ -70,12 +70,12 @@ export default function Gamification() {
       <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-6">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center border border-border shadow-sm">
-            <Trophy className="w-8 h-8 text-[#1E3A8A] dark:text-emerald-400" />
+            <Trophy className="w-8 h-8 text-[#1E3A8A] dark:text-primary/70" />
           </div>
           <div>
             <h1 className="text-2xl school-heading font-extrabold tracking-tight">{user?.full_name || "Student"}</h1>
             <p className="text-sm text-muted-foreground flex items-center gap-2">
-              <Star className="w-4 h-4 text-emerald-500 fill-emerald-500" /> {xpData.total} Total XP • LVL {xpData.level}
+              <Star className="w-4 h-4 text-primary fill-primary" /> {xpData.total} Total XP • LVL {xpData.level}
             </p>
           </div>
         </div>
@@ -92,9 +92,9 @@ export default function Gamification() {
           { title: "Helping Hand", desc: "Tutor 5 students", icon: Gift },
           { title: "Math Wizard", desc: "Win the math olympiad", icon: Zap }
         ].map((badge, i) => (
-          <div key={i} className="bg-card rounded-xl p-6 border border-border shadow-sm text-center group cursor-pointer hover:border-emerald-300 transition-colors duration-300">
-            <div className={`w-16 h-16 mx-auto rounded-full bg-[#F0F4FF] dark:bg-emerald-900/20 flex items-center justify-center mb-4 shadow-sm`}>
-              <badge.icon className="w-8 h-8 text-[#1E3A8A] dark:text-emerald-400" />
+          <div key={i} className="bg-card rounded-xl p-6 border border-border shadow-sm text-center group cursor-pointer hover:border-primary/30 transition-colors duration-300">
+            <div className={`w-16 h-16 mx-auto rounded-full bg-[#F0F4FF] dark:bg-primary/20 flex items-center justify-center mb-4 shadow-sm`}>
+              <badge.icon className="w-8 h-8 text-[#1E3A8A] dark:text-primary/70" />
             </div>
             <h3 className="font-bold text-lg text-card-foreground mb-1">{badge.title}</h3>
             <p className="text-sm font-medium text-muted-foreground">{badge.desc}</p>
@@ -104,7 +104,7 @@ export default function Gamification() {
 
       <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
         <h3 className="text-xl font-bold mb-6 text-card-foreground flex items-center gap-2">
-          <Medal className="text-emerald-500 w-5 h-5" /> Leaderboard
+          <Medal className="text-primary w-5 h-5" /> Leaderboard
         </h3>
         <div className="space-y-3">
           {leaderboard.length === 0 ? (
@@ -113,14 +113,14 @@ export default function Gamification() {
             leaderboard.map((student, i) => {
               const isMe = student.clientId === session?.user?.id;
               return (
-                <div key={i} className={`flex items-center justify-between p-4 rounded-lg border ${isMe ? 'bg-[#F0F4FF] dark:bg-emerald-900/20 dark:bg-emerald-900/10 border-emerald-200' : 'bg-background border-border'} shadow-sm`}>
+                <div key={i} className={`flex items-center justify-between p-4 rounded-lg border ${isMe ? 'bg-[#F0F4FF] dark:bg-primary/20 dark:bg-primary/10 border-primary/20' : 'bg-background border-border'} shadow-sm`}>
                   <div className="flex items-center gap-4">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${i === 0 ? 'bg-emerald-100 text-[#1E3A8A] dark:text-emerald-400' : i === 1 ? 'bg-muted text-muted-foreground' : i === 2 ? 'bg-muted text-muted-foreground' : 'bg-transparent text-muted-foreground'}`}>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${i === 0 ? 'bg-primary/10 text-[#1E3A8A] dark:text-primary/70' : i === 1 ? 'bg-muted text-muted-foreground' : i === 2 ? 'bg-muted text-muted-foreground' : 'bg-transparent text-muted-foreground'}`}>
                       #{i + 1}
                     </div>
                     <div className="font-bold text-foreground">{isMe ? 'You' : student.name}</div>
                   </div>
-                  <div className="font-bold text-[#1E3A8A] dark:text-emerald-400 dark:text-emerald-500">{student.total} XP</div>
+                  <div className="font-bold text-[#1E3A8A] dark:text-primary/70 dark:text-primary">{student.total} XP</div>
                 </div>
               );
             })

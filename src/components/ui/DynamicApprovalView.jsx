@@ -28,12 +28,12 @@ const DEFAULT_STATUSES = ['Submitted', 'Under Review', 'Approved', 'Rejected'];
 const STATUS_CONFIG = {
   submitted: {
     icon: Send,
-    color: 'text-emerald-600',
-    bg: 'bg-emerald-50',
-    border: 'border-emerald-200',
-    gradient: 'from-emerald-500 to-emerald-600',
+    color: 'text-primary',
+    bg: 'bg-primary/5',
+    border: 'border-primary/20',
+    gradient: 'from-primary to-primary',
     badgeCls: 'bg-orange-100 text-orange-700',
-    ring: 'ring-emerald-200',
+    ring: 'ring-primary/20',
   },
   'under review': {
     icon: Clock,
@@ -46,12 +46,12 @@ const STATUS_CONFIG = {
   },
   approved: {
     icon: CheckCircle2,
-    color: 'text-emerald-600',
-    bg: 'bg-emerald-50',
-    border: 'border-emerald-200',
-    gradient: 'from-emerald-500 to-green-500',
-    badgeCls: 'bg-emerald-100 text-emerald-700',
-    ring: 'ring-emerald-200',
+    color: 'text-primary',
+    bg: 'bg-primary/5',
+    border: 'border-primary/20',
+    gradient: 'from-primary to-primary',
+    badgeCls: 'bg-primary/10 text-primary/90',
+    ring: 'ring-primary/20',
   },
   rejected: {
     icon: XCircle,
@@ -120,7 +120,7 @@ function ProgressionBar({ currentStatus, statuses }) {
             {idx < statuses.length - 1 && (
               <div
                 className={`flex-1 h-0.5 rounded-full transition-all duration-300 mt-[-12px] ${
-                  isPast ? 'bg-gradient-to-r from-emerald-400 to-emerald-300' : 'bg-slate-200'
+                  isPast ? 'bg-gradient-to-r from-primary/70 to-primary/30' : 'bg-slate-200'
                 }`}
               />
             )}
@@ -207,7 +207,7 @@ function ApprovalCard({ record, fieldDefinitions, statusFieldName, statuses, onA
             <Button
               size="sm"
               onClick={() => onAction(record, 'Approved')}
-              className="flex-1 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white shadow-sm shadow-emerald-200 text-xs h-8 gap-1.5"
+              className="flex-1 bg-gradient-to-r from-primary to-primary hover:from-primary hover:to-primary text-white shadow-sm shadow-emerald-200 text-xs h-8 gap-1.5"
             >
               <CheckCircle2 className="w-3.5 h-3.5" />
               Approve
@@ -345,8 +345,8 @@ export default function DynamicApprovalView({ data = [], fieldDefinitions = [], 
   if (!data || data.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
-        <div className="p-5 rounded-2xl bg-gradient-to-br from-emerald-50 to-indigo-50 border border-emerald-100 mb-5">
-          <Inbox className="w-12 h-12 text-emerald-300" />
+        <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/5 border border-primary/10 mb-5">
+          <Inbox className="w-12 h-12 text-primary/30" />
         </div>
         <h3 className="text-lg font-semibold text-slate-700 mb-2">No Approval Items</h3>
         <p className="text-sm text-slate-500 max-w-sm">
@@ -365,7 +365,7 @@ export default function DynamicApprovalView({ data = [], fieldDefinitions = [], 
       {/* Header Stats */}
       <div className="flex items-center gap-6 mb-6 flex-wrap">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-200">
+          <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary to-primary shadow-lg shadow-indigo-200">
             <Shield className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -462,7 +462,7 @@ export default function DynamicApprovalView({ data = [], fieldDefinitions = [], 
             <Button
               onClick={handleAction}
               disabled={isUpdating}
-              className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white"
+              className="bg-gradient-to-r from-primary to-primary hover:from-primary hover:to-primary/90 text-white"
             >
               {isUpdating ? 'Updating...' : 'Confirm'}
             </Button>

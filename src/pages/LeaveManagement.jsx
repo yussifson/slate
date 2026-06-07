@@ -18,8 +18,8 @@ import { cn } from "@/lib/utils";
 import { isSuperAdmin } from "@/lib/constants";
 
 const LEAVE_TYPES = ["annual", "sick", "maternity", "paternity", "bereavement", "unpaid", "other"];
-const STATUS_COLORS = { pending: "bg-amber-100 text-amber-700", approved: "bg-green-100 text-green-700", rejected: "bg-red-100 text-red-700", cancelled: "bg-gray-100 text-gray-600" };
-const LEAVE_TYPE_COLORS = { annual: "bg-orange-100 text-orange-700", sick: "bg-red-100 text-red-700", maternity: "bg-pink-100 text-pink-700", paternity: "bg-purple-100 text-purple-700", bereavement: "bg-gray-100 text-gray-600", unpaid: "bg-orange-100 text-orange-700", other: "bg-slate-100 text-slate-600" };
+const STATUS_COLORS = { pending: "bg-amber-100 text-amber-700", approved: "bg-primary/10 text-primary/90", rejected: "bg-red-100 text-red-700", cancelled: "bg-gray-100 text-gray-600" };
+const LEAVE_TYPE_COLORS = { annual: "bg-orange-100 text-orange-700", sick: "bg-red-100 text-red-700", maternity: "bg-primary/10 text-primary/90", paternity: "bg-primary/10 text-primary/90", bereavement: "bg-gray-100 text-gray-600", unpaid: "bg-orange-100 text-orange-700", other: "bg-slate-100 text-slate-600" };
 
 export default function LeaveManagement() {
   const { t } = useTranslation();
@@ -82,9 +82,9 @@ export default function LeaveManagement() {
       {/* My Balance */}
       <div className="grid grid-cols-3 gap-4">
         {[
-          { label: "Total Entitlement", value: myBalance.total, color: "bg-emerald-50 text-emerald-600" },
+          { label: "Total Entitlement", value: myBalance.total, color: "bg-primary/5 text-primary" },
           { label: "Days Used", value: myBalance.used, color: "bg-amber-50 text-amber-600" },
-          { label: "Days Remaining", value: myBalance.remaining, color: "bg-green-50 text-green-600" },
+          { label: "Days Remaining", value: myBalance.remaining, color: "bg-primary/5 text-primary" },
         ].map(s => {
           return (
             <div key={s.label} className="bg-card border border-border rounded-xl p-4 flex items-center gap-3">
@@ -127,7 +127,7 @@ export default function LeaveManagement() {
                         <span className="text-xs text-muted-foreground shrink-0">{bal.used}/{bal.total} {t("days_used", "days used")}</span>
                       </div>
                     </div>
-                    <Badge className={cn("text-[10px]", bal.remaining < 5 ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700")}>
+                    <Badge className={cn("text-[10px]", bal.remaining < 5 ? "bg-red-100 text-red-700" : "bg-primary/10 text-primary/90")}>
                       {bal.remaining} {t("days_left", "days left")}
                     </Badge>
                   </div>
@@ -175,7 +175,7 @@ function LeaveList({ leaves, isAdmin, onApprove, onReject }) {
             </div>
             {isAdmin && leave.status === "pending" && (
               <div className="flex items-center gap-1.5 shrink-0">
-                <Button size="sm" className="h-7 text-xs gap-1 bg-green-600 hover:bg-green-700" onClick={() => onApprove(leave)}>
+                <Button size="sm" className="h-7 text-xs gap-1 bg-primary hover:bg-primary/90" onClick={() => onApprove(leave)}>
                   <CheckCircle className="w-3 h-3" />{t("approve", "Approve")}
                 </Button>
                 <Button size="sm" variant="outline" className="h-7 text-xs gap-1 text-red-600 border-red-200 hover:bg-red-50" onClick={() => onReject(leave)}>

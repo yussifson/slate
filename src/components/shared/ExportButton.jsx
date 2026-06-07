@@ -17,11 +17,11 @@ export default function ExportButton({ data, filename, label = "Export" }) {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => exportToCSV(data, filename)} className="gap-2 cursor-pointer">
-          <FileText className="w-4 h-4 text-green-600" />
+          <FileText className="w-4 h-4 text-primary" />
           {t("export_as_csv", "Export as CSV")}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => exportToJSON(data, filename)} className="gap-2 cursor-pointer">
-          <FileJson className="w-4 h-4 text-emerald-600" />
+          <FileJson className="w-4 h-4 text-primary" />
           {t("export_as_json", "Export as JSON")}
         </DropdownMenuItem>
       </DropdownMenuContent>

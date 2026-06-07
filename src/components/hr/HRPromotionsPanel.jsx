@@ -14,7 +14,7 @@ import { format } from "date-fns";
 import { formatCurrency } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
-const STATUS_COLORS = { pending: "bg-amber-100 text-amber-700", approved: "bg-green-100 text-green-700", rejected: "bg-red-100 text-red-700" };
+const STATUS_COLORS = { pending: "bg-amber-100 text-amber-700", approved: "bg-primary/10 text-primary/90", rejected: "bg-red-100 text-red-700" };
 
 export default function HRPromotionsPanel({ companyId, promotions, staff, currency, isAdmin, user }) {
   const { t } = useTranslation();
@@ -69,7 +69,7 @@ export default function HRPromotionsPanel({ companyId, promotions, staff, curren
                 </div>
                 {isAdmin && p.status === "pending" && (
                   <div className="flex gap-1.5 shrink-0">
-                    <Button size="sm" className="h-7 text-xs bg-green-600 hover:bg-green-700 gap-1" onClick={() => handleApprove(p)}><CheckCircle className="w-3 h-3" />{t("approve", "Approve")}</Button>
+                    <Button size="sm" className="h-7 text-xs bg-primary hover:bg-primary/90 gap-1" onClick={() => handleApprove(p)}><CheckCircle className="w-3 h-3" />{t("approve", "Approve")}</Button>
                     <Button size="sm" variant="outline" className="h-7 text-xs gap-1 text-red-600 border-red-200" onClick={() => handleReject(p)}><XCircle className="w-3 h-3" />{t("reject", "Reject")}</Button>
                   </div>
                 )}

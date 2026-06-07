@@ -57,10 +57,10 @@ export default function MemberPortal() {
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-indigo-700 rounded-2xl p-6 md:p-8 text-white shadow-md relative overflow-hidden">
+      <div className="bg-gradient-to-r from-primary to-primary/90 rounded-2xl p-6 md:p-8 text-white shadow-md relative overflow-hidden">
         <div className="relative z-10">
           <h1 className="text-2xl md:text-3xl font-bold mb-2">{t("welcome_to_your_church_portal", "Welcome to Your Church Portal")}</h1>
-          <p className="text-purple-100 max-w-xl">{t(
+          <p className="text-primary/10 max-w-xl">{t(
             "stay_connected_with_your_churc",
             "Stay connected with your church family. View upcoming events, track your giving, and submit prayer requests."
           )}</p>
@@ -74,7 +74,7 @@ export default function MemberPortal() {
         <div className="col-span-1 lg:col-span-2 space-y-6">
           <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
             <div className="p-4 md:p-5 border-b border-border bg-muted/50 flex justify-between items-center">
-              <h3 className="font-bold text-card-foreground flex items-center gap-2"><Calendar className="w-5 h-5 text-purple-600" /> {t("upcoming_gatherings", "Upcoming Gatherings")}</h3>
+              <h3 className="font-bold text-card-foreground flex items-center gap-2"><Calendar className="w-5 h-5 text-primary" /> {t("upcoming_gatherings", "Upcoming Gatherings")}</h3>
             </div>
             <div className="p-0">
                {events.length === 0 ? (
@@ -84,7 +84,7 @@ export default function MemberPortal() {
                    {events.slice(0, 3).map(event => {
                      return (
                        <div key={event.id} className="p-4 flex gap-4 hover:bg-muted/30 transition-colors">
-                         <div className="flex flex-col items-center justify-center bg-purple-50 dark:bg-purple-950/20 text-purple-700 dark:text-purple-400 rounded-lg p-3 min-w-[70px] shrink-0">
+                         <div className="flex flex-col items-center justify-center bg-primary/5 dark:bg-primary/20 text-primary/90 dark:text-primary/70 rounded-lg p-3 min-w-[70px] shrink-0">
                            <span className="text-[10px] font-bold uppercase">{event.date?.split(' ')[0] || 'Upcoming'}</span>
                            <span className="text-xl font-black">{event.date?.includes(' ') ? event.date.split(' ')[1]?.replace(',', '') : ''}</span>
                          </div>
@@ -101,7 +101,7 @@ export default function MemberPortal() {
             </div>
             {events.length > 3 && (
                <div className="p-3 border-t border-border text-center">
-                  <Button variant="ghost" className="w-full text-purple-600">{t("view_all_events", "View All Events")}</Button>
+                  <Button variant="ghost" className="w-full text-primary">{t("view_all_events", "View All Events")}</Button>
                </div>
             )}
           </div>
@@ -121,11 +121,11 @@ export default function MemberPortal() {
         <div className="space-y-6">
           <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
             <div className="p-4 border-b border-border bg-muted/50">
-              <h3 className="font-bold text-card-foreground flex items-center gap-2"><DollarSign className="w-5 h-5 text-green-600" /> {t("my_giving", "My Giving")}</h3>
+              <h3 className="font-bold text-card-foreground flex items-center gap-2"><DollarSign className="w-5 h-5 text-primary" /> {t("my_giving", "My Giving")}</h3>
             </div>
             <div className="p-5 flex flex-col items-center border-b border-border">
                <p className="text-sm text-muted-foreground mb-1">{t("total_contributions", "Total Contributions")}</p>
-               <p className="text-3xl font-black text-green-600">${totalGiven.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+               <p className="text-3xl font-black text-primary">${totalGiven.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
             </div>
             <div className="p-4 space-y-3">
                <h4 className="font-semibold text-sm mb-2">{t("recent_giving", "Recent Giving")}</h4>
@@ -144,7 +144,7 @@ export default function MemberPortal() {
                    );
                  })
                )}
-              <Button className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white">{t("give_now", "Give Now")}</Button>
+              <Button className="w-full mt-4 bg-primary hover:bg-primary/90 text-white">{t("give_now", "Give Now")}</Button>
             </div>
           </div>
         </div>

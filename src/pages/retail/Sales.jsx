@@ -123,7 +123,7 @@ export default function Sales() {
            <div className="relative z-10">
                <p className="text-sm font-bold text-orange-200 uppercase tracking-wider mb-2">{t("today_s_sales", "Today's Sales")}</p>
                <h2 className="text-4xl font-black mb-1">${stats.totalSales.toFixed(2)}</h2>
-               <p className="text-sm text-orange-100 flex items-center gap-1"><ArrowUpRight className="w-4 h-4 text-green-300"/> {t("real_time_production_transacti", "Real-time production transactions")}</p>
+               <p className="text-sm text-orange-100 flex items-center gap-1"><ArrowUpRight className="w-4 h-4 text-primary/30"/> {t("real_time_production_transacti", "Real-time production transactions")}</p>
            </div>
            <TrendingUp className="absolute right-[-20px] bottom-[-20px] w-48 h-48 opacity-10 text-white" />
         </div>
@@ -181,7 +181,7 @@ export default function Sales() {
                       <td className="px-6 py-4 font-medium text-card-foreground">{sale.cashier}</td>
                       <td className="px-6 py-4 text-muted-foreground">{sale.method}</td>
                       <td className="px-6 py-4 text-center">
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider ${sale.status === 'Refunded' ? 'bg-red-100 dark:bg-red-950/20 text-red-700 dark:text-red-400' : 'bg-green-100 dark:bg-green-950/20 text-green-700 dark:text-green-400'}`}>
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider ${sale.status === 'Refunded' ? 'bg-red-100 dark:bg-red-950/20 text-red-700 dark:text-red-400' : 'bg-primary/10 dark:bg-primary/20 text-primary/90 dark:text-primary/70'}`}>
                           {sale.status}
                         </span>
                       </td>
@@ -246,7 +246,7 @@ export default function Sales() {
               <div className="grid grid-cols-2 gap-4 border-b pb-4">
                 <div className="font-semibold text-muted-foreground">{t("status", "Status")}</div>
                 <div className="text-right">
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider ${selectedRecord.status === 'Refunded' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider ${selectedRecord.status === 'Refunded' ? 'bg-red-100 text-red-700' : 'bg-primary/10 text-primary/90'}`}>
                     {selectedRecord.status}
                   </span>
                 </div>

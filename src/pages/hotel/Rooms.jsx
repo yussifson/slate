@@ -145,7 +145,7 @@ export default function Rooms() {
                 return (
                   <tr key={room.id} className="hover:bg-muted/50 transition-colors">
                     <td className="px-6 py-4 font-bold text-card-foreground text-lg flex items-center gap-2">
-                       <Bed className={`w-5 h-5 ${room.status === 'Maintenance' ? 'text-red-500' : 'text-violet-500'}`}/> 
+                       <Bed className={`w-5 h-5 ${room.status === 'Maintenance' ? 'text-red-500' : 'text-primary'}`}/> 
                        {room.roomNumber}
                     </td>
                     <td className="px-6 py-4">
@@ -159,7 +159,7 @@ export default function Rooms() {
                            <Activity className="w-3 h-3 mr-1" /> {t("maintenance_alert", "Maintenance Alert")}
                          </span>
                       ) : (
-                         <span className={`inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${room.status === 'Available' ? 'bg-green-100 text-green-700' : 'bg-violet-100 text-violet-700'}`}>
+                         <span className={`inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${room.status === 'Available' ? 'bg-primary/10 text-primary/90' : 'bg-primary/10 text-primary/90'}`}>
                            {room.status}
                          </span>
                       )}
@@ -216,7 +216,7 @@ export default function Rooms() {
        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4">
            <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-             {editTargetId ? <Edit className="w-5 h-5 text-violet-600"/> : <Plus className="w-5 h-5 text-violet-600"/>}
+             {editTargetId ? <Edit className="w-5 h-5 text-primary"/> : <Plus className="w-5 h-5 text-primary"/>}
              {editTargetId ? 'Edit Room Configuration' : 'Configure New Room'}
            </h2>
            <div className="space-y-3">
@@ -273,7 +273,7 @@ export default function Rooms() {
               <>
                 <SheetHeader className="mb-6">
                   <SheetTitle className="text-2xl flex items-center gap-2">
-                    <Bed className="w-6 h-6 text-violet-600" />
+                    <Bed className="w-6 h-6 text-primary" />
                     {t("room", "Room")} {room.roomNumber} {t("details", "Details")}
                   </SheetTitle>
                   <SheetDescription>
@@ -294,11 +294,11 @@ export default function Rooms() {
                       </div>
                       <div className="bg-muted/50 p-3 rounded-lg">
                         <p className="text-xs text-muted-foreground mb-1">{t("rate_per_night", "Rate per Night")}</p>
-                        <p className="font-semibold text-violet-600">${room.rate}</p>
+                        <p className="font-semibold text-primary">${room.rate}</p>
                       </div>
                       <div className="bg-muted/50 p-3 rounded-lg">
                         <p className="text-xs text-muted-foreground mb-1">{t("status", "Status")}</p>
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-bold bg-primary/10 text-primary/90">
                           <Activity className="w-3 h-3 mr-1" /> {room.status}
                         </span>
                       </div>
@@ -308,7 +308,7 @@ export default function Rooms() {
                     <h3 className="text-sm font-semibold text-muted-foreground mb-2">{t("amenities", "Amenities")}</h3>
                     <div className="flex flex-wrap gap-2">
                       {room.amenities?.map(a => {
-                        return (<span key={a} className="bg-violet-100 text-violet-800 px-3 py-1 rounded-md text-xs font-bold uppercase">{a}</span>);
+                        return (<span key={a} className="bg-primary/10 text-primary/80 px-3 py-1 rounded-md text-xs font-bold uppercase">{a}</span>);
                       })}
                       {(!room.amenities || room.amenities.length === 0) && (
                         <p className="text-sm text-muted-foreground">{t("no_amenities_listed", "No amenities listed.")}</p>

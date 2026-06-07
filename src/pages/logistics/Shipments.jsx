@@ -19,8 +19,8 @@ import { MessageSquare, Bell } from "lucide-react";
 
 const STATUS_COLORS = {
   'Pending':     'bg-amber-100 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400',
-  'In Transit':  'bg-orange-100 text-orange-700 dark:bg-emerald-950/30 dark:text-emerald-400',
-  'Delivered':   'bg-green-100 text-green-700 dark:bg-green-950/30 dark:text-green-400',
+  'In Transit':  'bg-orange-100 text-orange-700 dark:bg-primary/30 dark:text-primary/70',
+  'Delivered':   'bg-primary/10 text-primary/90 dark:bg-primary/30 dark:text-primary/70',
   'Failed':      'bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400',
 };
 
@@ -148,8 +148,8 @@ export default function Shipments() {
 
   const stats = [
     { label: 'Total Shipments', value: total, icon: Package, color: 'bg-orange-100 text-orange-600', border: 'border-orange-200' },
-    { label: 'In Transit', value: inTransit, icon: Truck, color: 'bg-emerald-100 text-emerald-600', border: 'border-emerald-200' },
-    { label: 'Delivered', value: delivered, icon: CheckCircle2, color: 'bg-green-100 text-green-600', border: 'border-green-200' },
+    { label: 'In Transit', value: inTransit, icon: Truck, color: 'bg-primary/10 text-primary', border: 'border-primary/20' },
+    { label: 'Delivered', value: delivered, icon: CheckCircle2, color: 'bg-primary/10 text-primary', border: 'border-primary/20' },
     { label: 'Pending', value: pending, icon: Clock, color: 'bg-amber-100 text-amber-600', border: 'border-amber-200' },
   ];
 
@@ -260,13 +260,13 @@ export default function Shipments() {
                         <div className="flex items-center justify-end gap-1.5">
                           {ship.status === 'Pending' && (
                             <Button onClick={() => handleUpdateStatus(ship, 'In Transit')} size="sm"
-                              className="h-7 text-xs bg-emerald-600 hover:bg-emerald-700 text-white gap-1">
+                              className="h-7 text-xs bg-primary hover:bg-primary/90 text-white gap-1">
                               <Truck className="w-3 h-3" /> {t("dispatch", "Dispatch")}
                             </Button>
                           )}
                           {ship.status === 'In Transit' && (
                             <Button onClick={() => handleUpdateStatus(ship, 'Delivered')} size="sm"
-                              className="h-7 text-xs bg-green-600 hover:bg-green-700 text-white gap-1">
+                              className="h-7 text-xs bg-primary hover:bg-primary/90 text-white gap-1">
                               <CheckCircle2 className="w-3 h-3" /> {t("deliver", "Deliver")}
                             </Button>
                           )}

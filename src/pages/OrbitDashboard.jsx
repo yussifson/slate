@@ -13,7 +13,7 @@ export default function OrbitDashboard() {
       <div className="max-w-5xl mx-auto space-y-12">
         {/* Header Section */}
         <div className="text-center space-y-4 pt-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-100 text-indigo-600 mb-4 shadow-inner">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 text-primary mb-4 shadow-inner">
             <Sparkles className="w-8 h-8" />
           </div>
           <h1 className="text-4xl font-black text-slate-900 tracking-tight">
@@ -29,21 +29,21 @@ export default function OrbitDashboard() {
 
         {/* Call to Action Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-6">
-          <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md hover:border-indigo-200 transition-all group cursor-pointer">
-            <div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 mb-6 group-hover:scale-110 transition-transform">
+          <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md hover:border-primary/20 transition-all group cursor-pointer">
+            <div className="w-12 h-12 rounded-xl bg-primary/5 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
               <Plus className="w-6 h-6" />
             </div>
             <h3 className="text-lg font-bold text-slate-900 mb-2">Build New Module</h3>
             <p className="text-sm text-slate-500 mb-6 leading-relaxed">
               Describe what you need (e.g., "A ticketing system for IT support") and let Orbit construct the UI and database.
             </p>
-            <Button className="w-full bg-indigo-50 text-indigo-700 hover:bg-indigo-100 shadow-none border-none group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+            <Button className="w-full bg-primary/5 text-primary/90 hover:bg-primary/10 shadow-none border-none group-hover:bg-primary group-hover:text-white transition-colors">
               Start Building <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </div>
 
           <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all group cursor-pointer">
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 mb-6 group-hover:scale-110 transition-transform">
+            <div className="w-12 h-12 rounded-xl bg-primary/5 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
               <Database className="w-6 h-6" />
             </div>
             <h3 className="text-lg font-bold text-slate-900 mb-2">Configure Data</h3>
@@ -56,7 +56,7 @@ export default function OrbitDashboard() {
           </div>
 
           <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all group cursor-pointer">
-            <div className="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 mb-6 group-hover:scale-110 transition-transform">
+            <div className="w-12 h-12 rounded-xl bg-primary/5 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
               <Zap className="w-6 h-6" />
             </div>
             <h3 className="text-lg font-bold text-slate-900 mb-2">Automations</h3>
@@ -71,7 +71,7 @@ export default function OrbitDashboard() {
 
         {/* Info Banner */}
         <div className="bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl p-8 flex flex-col md:flex-row items-center gap-6 shadow-xl shadow-slate-900/10">
-          <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center text-indigo-300 shrink-0 border border-white/5">
+          <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center text-primary/30 shrink-0 border border-white/5">
             <Layers className="w-8 h-8" />
           </div>
           <div className="flex-1 text-center md:text-left">

@@ -109,7 +109,7 @@ export default function SHSReportCards() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-700 via-emerald-800 to-slate-900 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent">
             Report Cards
           </h1>
           <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -123,10 +123,10 @@ export default function SHSReportCards() {
           <div className="flex flex-col md:flex-row gap-6 items-end">
             <div className="space-y-2 flex-1">
               <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                <FileText className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> Select Exam Cycle
+                <FileText className="w-4 h-4 text-primary dark:text-primary/70" /> Select Exam Cycle
               </label>
               <select 
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500 font-semibold text-slate-700 dark:text-slate-200"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-200"
                 value={selectedExamId}
                 onChange={(e) => setSelectedExamId(e.target.value)}
               >
@@ -139,10 +139,10 @@ export default function SHSReportCards() {
 
             <div className="space-y-2 flex-1">
               <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                <Search className="w-4 h-4 text-emerald-600" /> Target Class
+                <Search className="w-4 h-4 text-primary" /> Target Class
               </label>
               <select 
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-semibold text-slate-700 dark:text-slate-200"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary font-semibold text-slate-700 dark:text-slate-200"
                 value={selectedClassId}
                 onChange={(e) => setSelectedClassId(e.target.value)}
                 disabled={!selectedExamId}
@@ -186,7 +186,7 @@ export default function SHSReportCards() {
                   <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
                   <Input 
                     placeholder="Search student..." 
-                    className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-emerald-600 dark:focus-visible:ring-emerald-500"
+                    className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
@@ -214,7 +214,7 @@ export default function SHSReportCards() {
                           {index + 1}
                         </td>
                         <td className="px-6 py-4 flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-100 to-slate-100 flex items-center justify-center font-bold text-emerald-600 dark:text-emerald-400 shrink-0">
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/10 to-slate-100 flex items-center justify-center font-bold text-primary dark:text-primary/70 shrink-0">
                             {student.title.charAt(0)}
                           </div>
                           <div>
@@ -229,7 +229,7 @@ export default function SHSReportCards() {
                         </td>
                         <td className="px-6 py-4 text-center">
                           <span className={`font-black text-lg ${
-                            student.average >= 75 ? 'text-emerald-600' :
+                            student.average >= 75 ? 'text-primary' :
                             student.average >= 50 ? 'text-amber-500' :
                             student.average > 0 ? 'text-rose-500' : 'text-slate-300'
                           }`}>
@@ -243,7 +243,7 @@ export default function SHSReportCards() {
                               variant="ghost" 
                               onClick={() => setPreviewStudent(student)}
                               disabled={student.subjectCount === 0}
-                              className="text-emerald-600 dark:text-emerald-400 hover:text-[#5200c2] hover:bg-emerald-50 dark:bg-slate-800 font-semibold"
+                              className="text-primary dark:text-primary/70 hover:text-[#5200c2] hover:bg-primary/5 dark:bg-slate-800 font-semibold"
                             >
                               <Eye className="w-4 h-4 mr-2" /> View Report
                             </Button>
@@ -272,7 +272,7 @@ export default function SHSReportCards() {
               <Button size="sm" variant="outline" className="h-8 border-slate-600 text-slate-300 hover:text-white hover:bg-slate-700">
                 <Download className="w-4 h-4 mr-2" /> PDF
               </Button>
-              <Button size="sm" className="h-8 bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white border-none">
+              <Button size="sm" className="h-8 bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white border-none">
                 <Printer className="w-4 h-4 mr-2" /> Print
               </Button>
             </div>
@@ -308,7 +308,7 @@ export default function SHSReportCards() {
                   </div>
                   <div className="flex border-b border-slate-100 dark:border-slate-800 pb-2">
                     <span className="w-32 font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500">Overall Average:</span>
-                    <span className="font-black text-emerald-600 dark:text-emerald-400">{previewStudent.average}%</span>
+                    <span className="font-black text-primary dark:text-primary/70">{previewStudent.average}%</span>
                   </div>
                 </div>
 

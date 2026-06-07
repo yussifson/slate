@@ -106,7 +106,7 @@ export default function Volunteers() {
             "Manage church service volunteers and schedules"
           )}</p>
         </div>
-        <Button onClick={() => setShowModal(true)} className="gap-2 bg-purple-600 hover:bg-purple-700 text-white">
+        <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
           <Plus className="w-4 h-4" /> {t("schedule_volunteer", "Schedule Volunteer")}
         </Button>
       </div>
@@ -122,7 +122,7 @@ export default function Volunteers() {
             <div className="py-12 text-center text-muted-foreground">{t("loading_roster", "Loading roster...")}</div>
           ) : filtered.length === 0 ? (
             <div className="py-12 text-center text-muted-foreground">
-              <ClipboardCheck className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-purple-600" />
+              <ClipboardCheck className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary" />
               <p className="font-semibold text-lg text-card-foreground">{t("no_volunteers_scheduled", "No volunteers scheduled")}</p>
               <p className="text-xs mt-1">{t(
                 "add_church_members_to_ushers_t",
@@ -148,13 +148,13 @@ export default function Volunteers() {
                         <Users className="w-4 h-4 text-muted-foreground" /> <Link to="/church/members" className="text-primary hover:underline">{v.name}</Link>
                       </td>
                       <td className="px-6 py-4">
-                        <Link to="/church/ministries" className="font-semibold text-purple-700 dark:text-purple-400 hover:underline block">{v.ministry}</Link>
+                        <Link to="/church/ministries" className="font-semibold text-primary/90 dark:text-primary/70 hover:underline block">{v.ministry}</Link>
                         <p className="text-xs text-muted-foreground">{v.role}</p>
                       </td>
                       <td className="px-6 py-4 text-muted-foreground font-medium">{v.availability}</td>
                       <td className="px-6 py-4 text-card-foreground font-bold">
                         <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4 text-purple-500" /> {v.nextService}
+                          <Calendar className="w-4 h-4 text-primary" /> {v.nextService}
                         </div>
                       </td>
                       <td className="px-6 py-4 text-right">
@@ -189,7 +189,7 @@ export default function Volunteers() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-border">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-              <ClipboardCheck className="w-5 h-5 text-purple-600" /> {t("schedule_church_volunteer", "Schedule Church Volunteer")}
+              <ClipboardCheck className="w-5 h-5 text-primary" /> {t("schedule_church_volunteer", "Schedule Church Volunteer")}
             </h2>
             <div className="space-y-3">
               <div>
@@ -249,7 +249,7 @@ export default function Volunteers() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditRecord(null); }}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-purple-600 hover:bg-purple-700 text-white" onClick={handleCreateVolunteer}>{editRecord ? 'Update' : 'Schedule'}</Button>
+              <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleCreateVolunteer}>{editRecord ? 'Update' : 'Schedule'}</Button>
             </div>
           </div>
         </div>

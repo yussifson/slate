@@ -73,7 +73,7 @@ export function StudentGridCard({ student, onEdit, onDelete, onView }) {
   const statusStyles = {
     Active: "bg-primary/10 text-primary border-primary/20 dark:bg-primary/20 dark:text-primary dark:border-primary/30",
     Suspended: "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700",
-    Graduated: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800"
+    Graduated: "bg-primary/5 text-primary/90 border-primary/20 dark:bg-primary/30 dark:text-primary/30 dark:border-primary/80"
   };
 
   return (
@@ -211,7 +211,7 @@ export function ExamGridCard({ exam, onEdit, onDelete, onView, onStatusChange })
   const statusStyles = {
     Upcoming: 'bg-primary/10 text-primary border-primary/20 dark:bg-primary/20 dark:text-primary dark:border-primary/30',
     Ongoing: 'bg-amber-50 text-amber-700 border-amber-200 animate-pulse dark:bg-amber-900/30 dark:text-amber-300',
-    Completed: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300'
+    Completed: 'bg-primary/5 text-primary/90 border-primary/20 dark:bg-primary/30 dark:text-primary/30'
   };
 
   return (

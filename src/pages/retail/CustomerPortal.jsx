@@ -34,21 +34,21 @@ export default function CustomerPortal() {
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       {/* Header Profile */}
-      <div className="bg-gradient-to-r from-emerald-600 to-teal-700 rounded-2xl p-6 md:p-8 text-white shadow-md relative overflow-hidden">
+      <div className="bg-gradient-to-r from-primary to-primary/90 rounded-2xl p-6 md:p-8 text-white shadow-md relative overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row justify-between md:items-center gap-4">
           <div>
             <h1 className="text-2xl md:text-3xl font-bold mb-1">{t("welcome_back", "Welcome back,")} {user?.name || 'Shopper'}</h1>
-            <p className="text-emerald-100 max-w-xl text-sm">{t(
+            <p className="text-primary/10 max-w-xl text-sm">{t(
               "view_your_purchase_history_tra",
               "View your purchase history, track active orders, and check your loyalty rewards."
             )}</p>
           </div>
           <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 text-center min-w-[150px]">
-             <p className="text-xs uppercase font-bold tracking-wider text-emerald-100 mb-1">{t("loyalty_points", "Loyalty Points")}</p>
+             <p className="text-xs uppercase font-bold tracking-wider text-primary/10 mb-1">{t("loyalty_points", "Loyalty Points")}</p>
              <p className="text-3xl font-black flex items-center justify-center gap-2">
                <Star className="w-5 h-5 text-yellow-300 fill-yellow-300" /> {loyaltyPoints}
              </p>
-             <p className="text-[10px] text-emerald-200 mt-1">{t("10_pts_1_spent", "10 pts / $1 spent")}</p>
+             <p className="text-[10px] text-primary/20 mt-1">{t("10_pts_1_spent", "10 pts / $1 spent")}</p>
           </div>
         </div>
         <div className="absolute left-[-20px] top-[-20px] opacity-10 pointer-events-none">
@@ -59,13 +59,13 @@ export default function CustomerPortal() {
         <div className="col-span-1 md:col-span-2 space-y-6">
           <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
             <div className="p-4 md:p-5 border-b border-border bg-muted/50 flex justify-between items-center">
-              <h3 className="font-bold text-card-foreground flex items-center gap-2"><ShoppingBag className="w-5 h-5 text-teal-600" /> {t("recent_purchases", "Recent Purchases")}</h3>
+              <h3 className="font-bold text-card-foreground flex items-center gap-2"><ShoppingBag className="w-5 h-5 text-primary" /> {t("recent_purchases", "Recent Purchases")}</h3>
               <Button variant="ghost" size="sm" className="text-xs text-primary">{t("view_all", "View All")}</Button>
             </div>
             <div className="p-0">
                {myOrders.length === 0 ? (
                  <div className="py-12 text-center text-muted-foreground">
-                    <Package className="w-10 h-10 mx-auto mb-3 opacity-30 text-teal-600" />
+                    <Package className="w-10 h-10 mx-auto mb-3 opacity-30 text-primary" />
                     <p className="font-semibold text-card-foreground">{t("no_purchase_history_found", "No purchase history found.")}</p>
                  </div>
                ) : (
@@ -77,7 +77,7 @@ export default function CustomerPortal() {
                             <div>
                               <div className="flex items-center gap-2 mb-1">
                                 <h4 className="font-bold text-base text-foreground">{t("order", "Order")} {order.saleId || `SAL-${order.id.slice(0,4)}`}</h4>
-                                <Badge variant="outline" className={`${order.status === 'Completed' ? 'bg-green-100 text-green-700 border-green-200' : 'bg-muted text-muted-foreground'}`}>{order.status || 'Completed'}</Badge>
+                                <Badge variant="outline" className={`${order.status === 'Completed' ? 'bg-primary/10 text-primary/90 border-primary/20' : 'bg-muted text-muted-foreground'}`}>{order.status || 'Completed'}</Badge>
                               </div>
                               <p className="text-xs text-muted-foreground">{order.timestamp ? new Date(order.timestamp).toLocaleString() : 'Recent'}</p>
                             </div>
@@ -125,13 +125,13 @@ export default function CustomerPortal() {
           </div>
 
           <div className="bg-card rounded-xl border border-border p-5 shadow-sm text-center">
-             <MapPin className="w-8 h-8 text-teal-600 mx-auto mb-2" />
+             <MapPin className="w-8 h-8 text-primary mx-auto mb-2" />
              <h4 className="font-bold text-sm">{t("find_a_store", "Find a Store")}</h4>
              <p className="text-xs text-muted-foreground mt-1 mb-3">{t(
                "looking_for_something_specific",
                "Looking for something specific? Check local availability."
              )}</p>
-             <Button variant="outline" className="w-full text-teal-700 border-teal-200 hover:bg-teal-50 dark:hover:bg-teal-950">{t("store_locator", "Store Locator")}</Button>
+             <Button variant="outline" className="w-full text-primary/90 border-primary/20 hover:bg-primary/5 dark:hover:bg-primary/60">{t("store_locator", "Store Locator")}</Button>
           </div>
         </div>
       </div>

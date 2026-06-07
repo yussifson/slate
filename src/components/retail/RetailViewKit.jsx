@@ -214,10 +214,10 @@ export function CustomerGridCard({ customer, onEdit, onDelete, onView, segmentCo
 
 export function OrderGridCard({ order, onEdit, onDelete }) {
   const statusStyles = {
-    Completed: "bg-emerald-500/10 text-emerald-700",
+    Completed: "bg-primary/10 text-primary/90",
     Pending: "bg-amber-500/10 text-amber-700",
     Cancelled: "bg-red-500/10 text-red-600",
-    Processing: "bg-emerald-500/10 text-emerald-700",
+    Processing: "bg-primary/10 text-primary/90",
   };
   return (
     <article className="group relative bg-card border border-border rounded-xl p-0 hover:shadow-xl transition-all flex flex-col min-h-[220px] overflow-hidden">
@@ -313,7 +313,7 @@ export function LoyaltyGridCard({ member, onEdit, onDelete }) {
     Bronze: "bg-amber-700/10 text-amber-800",
     Silver: "bg-slate-500/10 text-slate-700",
     Gold: "bg-primary/10 text-primary",
-    Platinum: "bg-emerald-900/10 text-emerald-900",
+    Platinum: "bg-primary/10 text-primary/70",
   };
   return (
     <article className="group relative bg-card border border-border rounded-2xl p-6 hover:shadow-lg hover:border-primary/30 transition-all min-h-[180px] flex flex-col">

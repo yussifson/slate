@@ -56,7 +56,7 @@ function SectionCard({ title, subtitle, onSave, saving, children }) {
           {subtitle && <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{subtitle}</p>}
         </div>
         {onSave && (
-          <Button onClick={onSave} disabled={saving} size="sm" className="gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-md font-semibold transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 shrink-0">
+          <Button onClick={onSave} disabled={saving} size="sm" className="gap-2 bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-white shadow-md font-semibold transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 shrink-0">
             {saving ? (
               <Loader2 className="w-3.5 h-3.5 animate-spin" />
             ) : (
@@ -273,7 +273,7 @@ function BrandSettings({ activeIndustry, company, onSave, saving }) {
             <AlertDialogAction onClick={() => {
               setShowSubdomainAlert(false);
               onSave(form);
-            }} className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl">{t("continue_relocate", "Continue & Relocate")}</AlertDialogAction>
+            }} className="bg-primary hover:bg-primary/90 text-white rounded-xl">{t("continue_relocate", "Continue & Relocate")}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -460,7 +460,7 @@ function EmailSettings({ activeIndustry, company, onSave, saving }) {
             </Select>
           </Field>
           <div className="sm:col-span-2 pt-4 flex justify-end">
-            <Button onClick={() => onSave(smtpForm)} disabled={saving} className="gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-md font-semibold transition-all duration-200">
+            <Button onClick={() => onSave(smtpForm)} disabled={saving} className="gap-2 bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-white shadow-md font-semibold transition-all duration-200">
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               {t("save_smtp_configuration", "Save SMTP Configuration")}
             </Button>
@@ -504,7 +504,7 @@ function EmailSettings({ activeIndustry, company, onSave, saving }) {
                     placeholder="e.g. smithandassociates.com"
                   />
                   {company?.custom_email_verified && (
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-600 flex items-center gap-1 text-xs font-bold bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full border border-emerald-200/50">
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-primary flex items-center gap-1 text-xs font-bold bg-primary/5 dark:bg-primary/40 px-2 py-0.5 rounded-full border border-primary/50">
                       <CheckCircle className="w-3.5 h-3.5" /> {t("verified", "Verified")}
                     </span>
                   )}
@@ -525,7 +525,7 @@ function EmailSettings({ activeIndustry, company, onSave, saving }) {
                   <h4 className="text-xs font-extrabold text-foreground/80 uppercase tracking-widest flex items-center gap-1.5">
                     <Info className="w-3.5 h-3.5 text-primary" /> {t("required_dns_records", "Required DNS Records")}
                   </h4>
-                  <Button onClick={handleVerifyDomain} disabled={verifyingDomain} className="gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow font-bold text-xs h-9">
+                  <Button onClick={handleVerifyDomain} disabled={verifyingDomain} className="gap-2 bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-white shadow font-bold text-xs h-9">
                     {verifyingDomain ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
                     {t("verify_dns_records", "Verify DNS Records")}
                   </Button>
@@ -991,7 +991,7 @@ function BillingSettings({ company, activeIndustry }) {
                 {currentPlan} {t("model", "Model")}
                 <span className={`text-[10px] font-extrabold uppercase py-0.5 px-2.5 rounded-full border tracking-wider ${
                   currentStatus === 'active' 
-                    ? 'bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border-emerald-200/50' 
+                    ? 'bg-primary/5 dark:bg-primary/20 text-primary/90 dark:text-primary/70 border-primary/50' 
                     : 'bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 border-amber-200/50 animate-pulse'
                 }`}>
                   {currentStatus}
@@ -1080,7 +1080,7 @@ function BillingSettings({ company, activeIndustry }) {
                       <td className="px-5 py-3.5 font-extrabold text-foreground">${inv.amount}</td>
                       <td className="px-5 py-3.5 font-mono text-xs text-muted-foreground/80">{inv.paystack_ref}</td>
                       <td className="px-5 py-3.5">
-                        <span className="inline-flex py-0.5 px-2.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border border-emerald-100/50 uppercase select-none">
+                        <span className="inline-flex py-0.5 px-2.5 rounded-full text-[10px] font-bold bg-primary/5 dark:bg-primary/20 text-primary/90 dark:text-primary/70 border border-primary/50 uppercase select-none">
                           {inv.status}
                         </span>
                       </td>

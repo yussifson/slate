@@ -130,7 +130,7 @@ export default function VIndustrialAttachments() {
                         <span className="flex items-center gap-1.5"><Factory className="w-4 h-4 text-amber-500" /> {selectedAttachment.data?.host_org || 'TBD'}</span>
                         <span>•</span>
                         <span className="flex items-center gap-1.5">
-                          <Badge className={selectedAttachment.status === 'Active' ? 'bg-emerald-500' : 'bg-slate-500'}>
+                          <Badge className={selectedAttachment.status === 'Active' ? 'bg-primary' : 'bg-slate-500'}>
                             {selectedAttachment.status || 'Pending'}
                           </Badge>
                         </span>

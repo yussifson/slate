@@ -160,7 +160,7 @@ export default function Underwriting() {
           <p className="text-2xl font-bold text-card-foreground">{applications.filter(a => a.decision === 'Pending Review').length}</p>
         </div>
         <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
-          <div className="flex items-center gap-2 mb-2 text-green-600"><CheckCircle2 className="w-4 h-4"/> {t("approved", "Approved")}</div>
+          <div className="flex items-center gap-2 mb-2 text-primary"><CheckCircle2 className="w-4 h-4"/> {t("approved", "Approved")}</div>
           <p className="text-2xl font-bold text-card-foreground">{applications.filter(a => a.decision === 'Approved' || a.decision === 'Conditionally Approved').length}</p>
         </div>
         <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
@@ -213,7 +213,7 @@ export default function Underwriting() {
                       </td>
                       <td className="px-6 py-4 text-center">
                         <span className={`text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wide ${
-                          app.riskLevel === 'Low' ? 'bg-green-100 text-green-700' : 
+                          app.riskLevel === 'Low' ? 'bg-primary/10 text-primary/90' : 
                           app.riskLevel === 'Medium' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'
                         }`}>
                           {app.riskLevel}
@@ -228,7 +228,7 @@ export default function Underwriting() {
                           value={app.decision}
                           onChange={e => handleUpdateDecision(app, e.target.value)}
                           className={`rounded-md border border-input px-2 py-1 text-xs font-bold ${
-                            app.decision === 'Approved' ? 'bg-green-100 text-green-700' : 
+                            app.decision === 'Approved' ? 'bg-primary/10 text-primary/90' : 
                             app.decision === 'Conditionally Approved' ? 'bg-insurance-100 text-insurance-700' : 
                             app.decision === 'Rejected' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'
                           }`}
@@ -367,7 +367,7 @@ export default function Underwriting() {
               <div>
                 <h4 className="text-sm font-medium text-muted-foreground">{t("risk_level", "Risk Level")}</h4>
                 <span className={`text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wide inline-block mt-1 ${
-                  viewRecord.riskLevel === 'Low' ? 'bg-green-100 text-green-700' : 
+                  viewRecord.riskLevel === 'Low' ? 'bg-primary/10 text-primary/90' : 
                   viewRecord.riskLevel === 'Medium' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'
                 }`}>
                   {viewRecord.riskLevel}
