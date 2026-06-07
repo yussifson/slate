@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
@@ -204,7 +204,7 @@ export default function Tasks() {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
 
-  const industry = sessionStorage.getItem("optalflow_industry_override") || company?.industry_type || user?.company_industry || "law";
+  const industry = sessionStorage.getItem("slate_industry_override") || company?.industry_type || user?.company_industry || "law";
   const caseTerm = getTerm(industry, "case");
 
   const { data: tasks = [], isLoading } = useQuery({

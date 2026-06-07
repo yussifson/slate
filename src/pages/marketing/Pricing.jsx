@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
@@ -77,7 +77,7 @@ export default function Pricing() {
     },
     {
       q: "How does the 14-day free trial work?",
-      a: "You get full, unrestricted access to Optalflow for 14 days under your selected plan. No credit card is required to sign up. Before the trial ends, we will notify you to add your payment details via Paystack to keep using the workspace."
+      a: "You get full, unrestricted access to Slate for 14 days under your selected plan. No credit card is required to sign up. Before the trial ends, we will notify you to add your payment details via Paystack to keep using the workspace."
     },
     {
       q: "Is client data stored securely?",
@@ -92,8 +92,8 @@ export default function Pricing() {
   return (
     <div className="overflow-x-hidden bg-slate-50 min-h-screen">
       <Helmet>
-        <title>Pricing | Optalflow AI Unified Workspace</title>
-        <meta name="description" content="Transparent pricing for Optalflow. Scale your business with our unified workspace platform. Choose the plan that fits your team." />
+        <title>Pricing | Slate AI Work made effortless.</title>
+        <meta name="description" content="Transparent pricing for Slate. Scale your business with our unified workspace platform. Choose the plan that fits your team." />
       </Helmet>
       {/* Pricing Header */}
       <section className="pt-10 pb-12 md:pt-14 md:pb-16 bg-slate-50">
@@ -203,7 +203,7 @@ export default function Pricing() {
               <p className="text-sm text-slate-500 leading-relaxed mb-6 max-w-xl">
                 {t(
                   "for_organizations_with_strict_",
-                  "For organizations with strict data sovereignty requirements. Deploy Optalflow entirely on your own private servers."
+                  "For organizations with strict data sovereignty requirements. Deploy Slate entirely on your own private servers."
                 )}
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6">
@@ -248,8 +248,8 @@ export default function Pricing() {
                   <DialogTitle className="text-2xl font-extrabold text-slate-900 mb-1 tracking-tight">{t("off_cloud_enterprise", "Off-Cloud Enterprise")}</DialogTitle>
                   <DialogDescription className="text-slate-500 text-xs max-w-sm mx-auto leading-relaxed font-medium">
                     {t(
-                      "deploy_optalflow_securely_on_y",
-                      "Deploy Optalflow securely on your own private infrastructure."
+                      "deploy_slate_securely_on_y",
+                      "Deploy Slate securely on your own private infrastructure."
                     )}
                   </DialogDescription>
                 </div>
@@ -280,8 +280,8 @@ export default function Pricing() {
                         <div>
                           <p className="text-sm font-bold text-slate-900">{t("air_gapped_operation", "Air-Gapped Operation")}</p>
                           <p className="text-xs text-slate-500 mt-1 leading-relaxed">{t(
-                            "optalflow_can_operate_fully_of",
-                            "Optalflow can operate fully offline without external API dependencies, ensuring total data isolation for sensitive sectors."
+                            "slate_can_operate_fully_of",
+                            "Slate can operate fully offline without external API dependencies, ensuring total data isolation for sensitive sectors."
                           )}</p>
                         </div>
                       </div>
@@ -298,8 +298,8 @@ export default function Pricing() {
                         <div>
                           <p className="text-sm font-bold text-slate-900">{t("custom_db_integration", "Custom DB Integration")}</p>
                           <p className="text-xs text-slate-500 mt-1 leading-relaxed">{t(
-                            "map_optalflow_to_your_existing",
-                            "Map Optalflow to your existing legacy databases. We support PostgreSQL, SQL Server, and custom on-prem storage pipelines."
+                            "map_slate_to_your_existing",
+                            "Map Slate to your existing legacy databases. We support PostgreSQL, SQL Server, and custom on-prem storage pipelines."
                           )}</p>
                         </div>
                       </div>

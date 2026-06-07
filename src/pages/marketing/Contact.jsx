@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Mail, Phone, MapPin, CheckCircle, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -32,19 +32,19 @@ export default function Contact() {
       city: "Lagos, Nigeria",
       address: "14 Kingsway Road, Ikoyi, Lagos",
       phone: "+234 1 293 8472",
-      email: "lagos@optalflow.oatstack.com"
+      email: "lagos@slate.oatstack.com"
     },
     {
       city: "Accra, Ghana",
       address: "8 Senchi Street, Airport Residential, Accra",
       phone: "+233 30 293 8472",
-      email: "accra@optalflow.oatstack.com"
+      email: "accra@slate.oatstack.com"
     },
     {
       city: "Freetown, Sierra Leone",
       address: "42 Siaka Stevens Street, Central, Freetown",
       phone: "+232 76 293 842",
-      email: "freetown@optalflow.oatstack.com"
+      email: "freetown@slate.oatstack.com"
     }
   ];
 

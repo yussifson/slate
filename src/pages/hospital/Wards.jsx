@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BedDouble, CheckCircle2, AlertTriangle, Settings, ArrowRightLeft, Plus } from 'lucide-react';
@@ -118,7 +118,7 @@ export default function Wards() {
             title: `Bed Assigned: ${targetWard.name}`,
             message: `Bed ${selectedBed.bed.id} has been assigned to patient ${formData.patient}.`,
             type: "WARD_UPDATE",
-            data: { actionUrl: "https://optalflow.com/hospital/wards" }
+            data: { actionUrl: "https://slate.com/hospital/wards" }
           });
         }
         toast.success('Bed status updated successfully!');

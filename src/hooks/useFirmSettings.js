@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+﻿import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { useCompanyId, useCompany } from "@/hooks/useCompanyId";
 import { useAuth } from "@/lib/AuthContext";
@@ -17,7 +17,7 @@ export function useFirmSettings() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  const override = typeof window !== 'undefined' ? sessionStorage.getItem('optalflow_industry_override') : null;
+  const override = typeof window !== 'undefined' ? sessionStorage.getItem('slate_industry_override') : null;
   const industry = override || company?.industry_type || user?.company_industry || 'law';
   const isRetail = industry === 'retail_sale' || industry === 'retail';
 

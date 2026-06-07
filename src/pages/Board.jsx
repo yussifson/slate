@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Video, Plus, Calendar, Clock, Users, Copy, Sparkles, LayoutGrid, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,7 @@ export default function Board() {
   const [isCreating, setIsCreating] = useState(false);
   
   // Generate a unique, secure Jitsi Meet room URL for the company using a public instance without embed limits
-  const getRoomUrl = (id) => `https://meet.ffmuc.net/optalflow-${companyId}-${id.slice(0,8)}`;
+  const getRoomUrl = (id) => `https://meet.ffmuc.net/slate-${companyId}-${id.slice(0,8)}`;
 
   useEffect(() => {
     if (!companyId) return;

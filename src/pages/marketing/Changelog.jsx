@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import { GitCommit, Star, Zap } from 'lucide-react';
 
 export default function Changelog() {
@@ -45,7 +45,7 @@ export default function Changelog() {
         <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-4">{t("changelog", "Changelog")}</h1>
         <p className="text-xl text-slate-600">{t(
           "new_updates_and_improvements_t",
-          "New updates and improvements to Optalflow."
+          "New updates and improvements to Slate."
         )}</p>
       </div>
       <div className="space-y-12 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 before:to-transparent">

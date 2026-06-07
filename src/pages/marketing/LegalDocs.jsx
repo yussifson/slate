@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Shield, FileText, Lock, Cookie } from 'lucide-react';
@@ -28,7 +28,7 @@ export default function LegalDocs() {
         <div className="space-y-4 text-slate-600 leading-relaxed">
           <p>{t(
             "these_terms_of_service_terms_g",
-            "These Terms of Service (\"Terms\") govern your access to and use of the Optalflow services, including our various websites, SMS, APIs, email notifications, applications, buttons, and widgets (the \"Services\")."
+            "These Terms of Service (\"Terms\") govern your access to and use of the Slate services, including our various websites, SMS, APIs, email notifications, applications, buttons, and widgets (the \"Services\")."
           )}</p>
           <h4 className="font-bold text-slate-900 mt-6 mb-2">{t("1_your_acceptance", "1. Your Acceptance")}</h4>
           <p>{t(
@@ -51,8 +51,8 @@ export default function LegalDocs() {
       content: (
         <div className="space-y-4 text-slate-600 leading-relaxed">
           <p>{t(
-            "optalflow_we_our_or_us_is_comm",
-            "Optalflow (\"we\", \"our\", or \"us\") is committed to protecting your privacy. This Privacy Policy explains how your personal information is collected, used, and disclosed by Optalflow."
+            "slate_we_our_or_us_is_comm",
+            "Slate (\"we\", \"our\", or \"us\") is committed to protecting your privacy. This Privacy Policy explains how your personal information is collected, used, and disclosed by Slate."
           )}</p>
           <h4 className="font-bold text-slate-900 mt-6 mb-2">{t("information_we_collect", "Information We Collect")}</h4>
           <p>{t(
@@ -76,7 +76,7 @@ export default function LegalDocs() {
         <div className="space-y-4 text-slate-600 leading-relaxed">
           <p>{t(
             "security_is_a_core_principle_a",
-            "Security is a core principle at Optalflow. We implement industry-leading standards to protect your data."
+            "Security is a core principle at Slate. We implement industry-leading standards to protect your data."
           )}</p>
           <ul className="list-disc pl-5 space-y-2 mt-4">
             <li><strong>{t("data_encryption", "Data Encryption:")}</strong> {t(
@@ -104,7 +104,7 @@ export default function LegalDocs() {
         <div className="space-y-4 text-slate-600 leading-relaxed">
           <p>{t(
             "this_cookie_policy_explains_ho",
-            "This Cookie Policy explains how Optalflow uses cookies and similar technologies to recognize you when you visit our websites."
+            "This Cookie Policy explains how Slate uses cookies and similar technologies to recognize you when you visit our websites."
           )}</p>
           <p>{t(
             "cookies_are_small_data_files_t",

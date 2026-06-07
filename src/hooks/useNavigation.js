@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { supabase } from "@/api/supabaseClient";
 import { INDUSTRIES, getIndustryNav, clientNav } from "@/config/industries";
 
@@ -6,7 +6,7 @@ export function useNavigation(user, impersonatedCompany) {
   const [dynamicModules, setDynamicModules] = useState([]);
   
   const isAdmin = ["super_admin", "admin", "company_admin", "managing_partner"].includes(user?.role);
-  const activeIndustry = sessionStorage.getItem('optalflow_industry_override') || impersonatedCompany?.industry_type || user?.company_industry || 'law';
+  const activeIndustry = sessionStorage.getItem('slate_industry_override') || impersonatedCompany?.industry_type || user?.company_industry || 'law';
 
   useEffect(() => {
     const fetchDynamicNav = async () => {

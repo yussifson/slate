@@ -1,4 +1,4 @@
-import { PowerSyncDatabase } from '@powersync/web';
+﻿import { PowerSyncDatabase } from '@powersync/web';
 import { supabase } from './supabaseClient';
 import { AppSchema } from './AppSchema';
 
@@ -68,7 +68,7 @@ class SupabaseConnector {
 }
 
 export const powerSync = new PowerSyncDatabase({
-  database: { dbFilename: 'optalflow.db' },
+  database: { dbFilename: 'slate.db' },
   schema: AppSchema
 });
 

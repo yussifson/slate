@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Target, Shield, Users, Globe, Clock, Headphones } from 'lucide-react';
@@ -34,8 +34,8 @@ export default function About() {
   return (
     <div className="overflow-x-hidden bg-white min-h-screen">
       <Helmet>
-        <title>About Us | Optalflow AI Unified Workspace</title>
-        <meta name="description" content="Learn more about Optalflow. We are a team of engineers building the ultimate AI Unified Workspace for modern businesses." />
+        <title>About Us | Slate AI Work made effortless.</title>
+        <meta name="description" content="Learn more about Slate. We are a team of engineers building the ultimate AI Work made effortless. for modern businesses." />
       </Helmet>
       {/* Hero Section */}
       <section className="relative py-10 md:py-14 lg:py-16">
@@ -55,7 +55,7 @@ export default function About() {
           <p className="text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed font-medium mb-10">
             {t(
               "founded_by_a_team_of_industry_",
-              "Founded by a team of industry practitioners and engineers, Optalflow is the first dedicated SaaS business management platform custom-built for regional and global operational excellence."
+              "Founded by a team of industry practitioners and engineers, Slate is the first dedicated SaaS business management platform custom-built for regional and global operational excellence."
             )}
           </p>
         </div>
@@ -67,7 +67,7 @@ export default function About() {
             {/* Left — Narrative */}
             <div className="space-y-8">
               <h2 className="text-4xl md:text-5xl font-bold text-slate-900 leading-tight tracking-tight">
-                {t("why_we_built", "Why we built")} <span className="text-blue-600">{t("optalflow", "Optalflow")}</span>
+                {t("why_we_built", "Why we built")} <span className="text-blue-600">{t("slate", "Slate")}</span>
               </h2>
               <div className="space-y-6 text-lg text-slate-600 font-medium leading-relaxed">
                 <p>
@@ -78,8 +78,8 @@ export default function About() {
                 </p>
                 <p>
                   {t(
-                    "we_created_optalflow_to_provid",
-                    "We created Optalflow to provide a single, premium, cohesive ecosystem. An OS where an organization can check pipelines, message a client, sync calendars, track consulting hours, and receive secure payments in one click."
+                    "we_created_slate_to_provid",
+                    "We created Slate to provide a single, premium, cohesive ecosystem. An OS where an organization can check pipelines, message a client, sync calendars, track consulting hours, and receive secure payments in one click."
                   )}
                 </p>
               </div>
@@ -100,7 +100,7 @@ export default function About() {
             <div className="relative">
               <div className="absolute inset-0 bg-blue-600/5 blur-[100px] rounded-full"></div>
               <div className="relative rounded-[2rem] border border-slate-200/60 bg-white p-2 shadow-2xl overflow-hidden aspect-[4/5] transform lg:rotate-2 hover:rotate-0 transition-transform duration-700">
-                <img src="/images/hero_dashboard_ui.png" alt="Optalflow Interface" className="w-full h-full object-cover rounded-[1.5rem]" />
+                <img src="/images/hero_dashboard_ui.png" alt="Slate Interface" className="w-full h-full object-cover rounded-[1.5rem]" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent flex items-end p-8">
                   <div className="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-2xl w-full">
                     <p className="text-white font-medium italic">{t(

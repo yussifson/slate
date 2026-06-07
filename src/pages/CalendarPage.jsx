@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -28,7 +28,7 @@ export default function CalendarPage() {
   const [showAdminCalendar, setShowAdminCalendar] = useState(true);
   const [showStaffCalendar, setShowStaffCalendar] = useState(true);
 
-  const activeIndustry = sessionStorage.getItem("optalflow_industry_override") || user?.company_industry || "law";
+  const activeIndustry = sessionStorage.getItem("slate_industry_override") || user?.company_industry || "law";
 
   const { data: hearings = [] } = useQuery({
     queryKey: ["hearings", companyId],

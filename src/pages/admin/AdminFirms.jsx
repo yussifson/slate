@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
@@ -198,7 +198,7 @@ export default function AdminFirms() {
                         <td className="px-5 py-4">
                           <div>
                             <p className="font-bold text-slate-900">{c.name}</p>
-                            <p className="font-mono text-[11px] text-primary mt-0.5">{c.subdomain}{t("optalflow_com", ".optalflow.com")}</p>
+                            <p className="font-mono text-[11px] text-primary mt-0.5">{c.subdomain}{t("slate_com", ".slate.com")}</p>
                             <p className="text-[11px] text-slate-500 mt-1">{c.email}· {activeUsers} {t("users", "users ·")} {activeCases} {t("cases", "cases")}</p>
                           </div>
                         </td>

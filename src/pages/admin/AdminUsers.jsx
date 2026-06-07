@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
@@ -72,7 +72,7 @@ export default function AdminUsers() {
     <div className="p-6 space-y-6 max-w-7xl mx-auto">
       <PageHeader 
         title="Global User Management" 
-        subtitle="Monitor and control all authenticated identities across the Optalflow ecosystem." 
+        subtitle="Monitor and control all authenticated identities across the Slate ecosystem." 
         action={
           <div className="relative w-full sm:w-72">
             <Search className="w-4 h-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2" />

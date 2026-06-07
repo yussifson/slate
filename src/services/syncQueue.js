@@ -1,8 +1,8 @@
-import { get, set } from 'idb-keyval';
+﻿import { get, set } from 'idb-keyval';
 
 class SyncQueue {
   constructor() {
-    this.queueKey = 'optalflow_sync_queue';
+    this.queueKey = 'slate_sync_queue';
     this.isSyncing = false;
   }
 

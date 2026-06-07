@@ -1,4 +1,4 @@
-// Central industry configuration — single source of truth for the entire platform
+﻿// Central industry configuration — single source of truth for the entire platform
 
 export const INDUSTRIES = {
   law: {
@@ -589,8 +589,8 @@ export const INDUSTRIES = {
     ],
   },
 
-  optalflow: {
-    name: 'Optalflow Admin',
+  slate: {
+    name: 'Slate Admin',
     icon: '⚙️',
     terms: {
       client: 'Firm', clients: 'Firms',

@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
@@ -17,7 +17,7 @@ export default function Login() {
   const [workspace, setWorkspace] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [branding, setBranding] = useState({ name: 'Optalflow', logo_url: null, tagline: 'Enter your credentials to access your account' });
+  const [branding, setBranding] = useState({ name: 'Slate', logo_url: null, tagline: 'Enter your credentials to access your account' });
 
   const { currentSubdomain, baseDomain } = getSubdomainAndBase();
 
@@ -36,7 +36,7 @@ export default function Login() {
              // Fallback to table query if RPC is not created yet (for development)
              const { data: tableData, error: tableError } = await supabase.from('companies').select('name, logo_url').eq('subdomain', currentSubdomain).single();
              if (tableData) {
-               setBranding({ name: tableData.name || 'Optalflow', logo_url: tableData.logo_url, tagline: `Sign in to ${tableData.name || 'your workspace'}` });
+               setBranding({ name: tableData.name || 'Slate', logo_url: tableData.logo_url, tagline: `Sign in to ${tableData.name || 'your workspace'}` });
              } else if (tableError) {
                console.error("Table fallback error:", tableError);
                setInvalidSubdomain(true);
@@ -46,7 +46,7 @@ export default function Login() {
             const brandData = Array.isArray(data) ? data[0] : data;
             if (brandData && brandData.name) {
               setBranding({
-                name: brandData.name || 'Optalflow',
+                name: brandData.name || 'Slate',
                 logo_url: brandData.logo_url,
                 tagline: `Sign in to ${brandData.name || 'your workspace'}`
               });
@@ -344,8 +344,8 @@ export default function Login() {
             
             <p className="text-slate-800 font-medium text-2xl md:text-3xl mb-12 relative z-10 leading-relaxed tracking-tight">
               {t(
-                "optalflow_completely_transform",
-                "\"Optalflow completely transformed how our firm operates. We reduced administrative time by 40% in the very first month, allowing us to focus entirely on our clients.\""
+                "slate_completely_transform",
+                "\"Slate completely transformed how our firm operates. We reduced administrative time by 40% in the very first month, allowing us to focus entirely on our clients.\""
               )}
             </p>
             

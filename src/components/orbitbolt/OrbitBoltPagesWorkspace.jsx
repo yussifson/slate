@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+﻿import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
@@ -39,7 +39,7 @@ const generateDummyData = (fields) => {
   return records;
 };
 
-const SYSTEM_PROMPT = `You are OrbitBolt, an AI System Architect for Optalflow. 
+const SYSTEM_PROMPT = `You are OrbitBolt, an AI System Architect for Slate. 
 You can converse naturally with the user, answer questions, and help them refine their ideas.
 
 CRITICAL: If the user is just saying "Hi", asking a question, or chatting normally WITHOUT asking you to build, create, or update a page/dashboard, you MUST NOT output a <SCHEMA> tag. Just reply conversationally.

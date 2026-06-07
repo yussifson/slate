@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
@@ -248,7 +248,7 @@ export default function OnboardingWizard() {
         <div className="px-5 sm:px-8 pt-6 sm:pt-8 pb-6 border-b border-slate-100 shrink-0">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
-              <img src="/optalflow-logo.svg" alt="Optalflow" className="h-10" />
+              <img src="/slate-logo.svg" alt="Slate" className="h-10" />
               <h1 className="text-xl font-bold text-slate-900 tracking-tight">{t("workspace_setup_wizard", "Workspace Setup")}</h1>
             </div>
           </div>
@@ -300,7 +300,7 @@ export default function OnboardingWizard() {
                       <Input 
                         value={workspaceName}
                         onChange={(e) => setWorkspaceName(e.target.value)}
-                        placeholder="E.g. Optalflow Inc."
+                        placeholder="E.g. Slate Inc."
                         className="mt-1 h-12 bg-white"
                       />
                     </div>

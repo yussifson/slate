@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -8,9 +8,9 @@ import PageHeader from '@/components/shared/PageHeader';
 export default function AdminSecurity() {
   const { t } = useTranslation();
   const auditLogs = [
-    { type: 'Impersonation', user: 'super_admin@optalflow.com', target: 'Apex Legal Partners', time: '10 mins ago', status: 'Success' },
+    { type: 'Impersonation', user: 'super_admin@slate.com', target: 'Apex Legal Partners', time: '10 mins ago', status: 'Success' },
     { type: 'Failed Login', user: 'unknown_ip@192.168.1.1', target: 'System', time: '15 mins ago', status: 'Blocked' },
-    { type: 'Settings Changed', user: 'super_admin@optalflow.com', target: 'Global Configuration', time: '1 hour ago', status: 'Success' },
+    { type: 'Settings Changed', user: 'super_admin@slate.com', target: 'Global Configuration', time: '1 hour ago', status: 'Success' },
     { type: 'Firm Suspended', user: 'admin_dashboard', target: 'Test Corp 1', time: '2 hours ago', status: 'Success' },
     { type: 'Quota Exceeded', user: 'Global Logistics Co', target: 'Active Users', time: '5 hours ago', status: 'Warning' },
   ];

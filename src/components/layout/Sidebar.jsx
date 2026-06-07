@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ProfileAvatarDialog from "@/components/shared/ProfileAvatarDialog";
@@ -68,7 +68,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   const [deleteData, setDeleteData] = useState(null);
   const [showAvatarDialog, setShowAvatarDialog] = useState(false);
   const isAdmin = ["super_admin", "admin", "company_admin", "managing_partner"].includes(user?.role);
-  const activeIndustry = sessionStorage.getItem('optalflow_industry_override') || impersonatedCompany?.industry_type || user?.company_industry || 'law';
+  const activeIndustry = sessionStorage.getItem('slate_industry_override') || impersonatedCompany?.industry_type || user?.company_industry || 'law';
   
   useEffect(() => {
     const fetchDynamicNav = async () => {
@@ -116,7 +116,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   });
 
   const activeCompanyLogo = impersonatedCompany?.logo_url || impersonatedCompany?.logo_light_url || user?.company_logo_url;
-  const activeCompanyName = impersonatedCompany?.name || user?.company_name || "Optalflow";
+  const activeCompanyName = impersonatedCompany?.name || user?.company_name || "Slate";
   const activeEducationLevel = impersonatedCompany?.education_level || companyData?.education_level || 'primary';
 
   const industryData = INDUSTRIES[activeIndustry] || INDUSTRIES.law;

@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+﻿import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/api/supabaseClient";
 import { useAuth } from "@/lib/AuthContext";
 import { get, set } from 'idb-keyval';
@@ -11,7 +11,7 @@ export function useCompanyId() {
 export function useCompany() {
   const { user } = useAuth();
   const companyId = user?.company_id;
-  const cacheKey = `optalflow_company_${companyId}`;
+  const cacheKey = `slate_company_${companyId}`;
 
   const { data: company = null, isLoading } = useQuery({
     queryKey: ["company", companyId],
@@ -42,7 +42,7 @@ export function useCompany() {
     staleTime: 5 * 60 * 1000,
   });
 
-  const override = typeof window !== 'undefined' ? sessionStorage.getItem('optalflow_industry_override') : null;
+  const override = typeof window !== 'undefined' ? sessionStorage.getItem('slate_industry_override') : null;
 
   let finalCompany = company;
   if (user?.role === 'super_admin') {

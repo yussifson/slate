@@ -1,6 +1,6 @@
-{
-  "name": "Optalflow",
-  "short_name": "Optalflow",
+﻿{
+  "name": "Slate",
+  "short_name": "Slate",
   "description": "Multi-industry Operational OS",
   "start_url": "/",
   "display": "standalone",
@@ -8,12 +8,12 @@
   "theme_color": "#ffffff",
   "icons": [
     {
-      "src": "/optalflow-favicon.svg",
+      "src": "/slate-favicon.svg",
       "sizes": "192x192",
       "type": "image/svg+xml"
     },
     {
-      "src": "/optalflow-favicon.svg",
+      "src": "/slate-favicon.svg",
       "sizes": "512x512",
       "type": "image/svg+xml"
     }

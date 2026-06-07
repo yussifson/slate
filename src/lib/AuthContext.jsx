@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect, useRef, useCallback, useMemo } from 'react';
+﻿import React, { createContext, useState, useContext, useEffect, useRef, useCallback, useMemo } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { getSubdomainAndBase } from './domainUtils';
 
@@ -240,7 +240,7 @@ export const AuthProvider = ({ children }) => {
         ...profile, 
         role: staffRecord?.role || profile?.role || 'lawyer',
         company_logo_url: companyData?.logo_url || null,
-        company_name: companyData?.name || profile?.company_name || sessionUser.user_metadata?.company_name || "Optalflow",
+        company_name: companyData?.name || profile?.company_name || sessionUser.user_metadata?.company_name || "Slate",
         company_industry: companyData?.industry_type || 'law',
         email: sessionUser.email, 
         full_name: staffRecord?.full_name || profile?.full_name || sessionUser.user_metadata?.full_name || "Admin",
@@ -270,7 +270,7 @@ export const AuthProvider = ({ children }) => {
       
       // Cache the fully constructed user profile for offline fallback
       try {
-        localStorage.setItem('optalflow_cached_user', JSON.stringify(newUser));
+        localStorage.setItem('slate_cached_user', JSON.stringify(newUser));
       } catch (e) {}
 
       setIsAuthenticated(true);
@@ -296,7 +296,7 @@ export const AuthProvider = ({ children }) => {
         
       if (isNetworkError) {
         try {
-          const cachedUserRaw = localStorage.getItem('optalflow_cached_user');
+          const cachedUserRaw = localStorage.getItem('slate_cached_user');
           if (cachedUserRaw) {
             console.warn("Offline mode active: Auth fetch failed. Using cached user profile.");
             const cachedUser = JSON.parse(cachedUserRaw);
@@ -356,7 +356,7 @@ export const AuthProvider = ({ children }) => {
         setIsLoadingAuth(false);
         setAuthChecked(true);
         // Clear cached user on explicit sign out
-        try { localStorage.removeItem('optalflow_cached_user'); } catch(e) {}
+        try { localStorage.removeItem('slate_cached_user'); } catch(e) {}
         return;
       }
 

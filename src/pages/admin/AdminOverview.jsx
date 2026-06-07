@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { Scale, Users, Building2, DollarSign, Loader2 } from 'lucide-react';
@@ -55,7 +55,7 @@ export default function AdminOverview() {
     <div className="p-6 space-y-6 max-w-7xl mx-auto">
       <PageHeader 
         title="Platform Overview" 
-        subtitle="Global metrics and MRR across the Optalflow ecosystem." 
+        subtitle="Global metrics and MRR across the Slate ecosystem." 
       />
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="bg-card border border-border p-6 rounded-2xl flex items-center justify-between shadow-sm">

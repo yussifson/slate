@@ -1,4 +1,4 @@
-import { supabase } from '@/api/supabaseClient';
+﻿import { supabase } from '@/api/supabaseClient';
 import { base44 } from '@/api/base44Client';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';
@@ -29,7 +29,7 @@ export function useNotifications() {
           message,
           type,
           data,
-          senderName: currentUser?.full_name || 'Optalflow System'
+          senderName: currentUser?.full_name || 'Slate System'
         }
       });
       

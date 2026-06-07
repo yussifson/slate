@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import PageHeader from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
@@ -63,7 +63,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false }
 
   const [isBoltOpen, setIsBoltOpen] = useState(initialBoltOpen || location.pathname === '/modules/BOLT');
   const { impersonatedCompany } = useImpersonation();
-  const activeIndustry = sessionStorage.getItem('optalflow_industry_override') || impersonatedCompany?.industry_type || user?.company_industry || 'law';
+  const activeIndustry = sessionStorage.getItem('slate_industry_override') || impersonatedCompany?.industry_type || user?.company_industry || 'law';
 
   const initialState = {
     name: "",

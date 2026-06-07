@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { 
@@ -66,7 +66,7 @@ export default function UniLayout({ children }) {
             <div className="w-6 h-6 rounded bg-[var(--color-accent-primary)] flex items-center justify-center">
               <Building className="w-4 h-4 text-white" />
             </div>
-            <span className="font-display font-semibold text-sm tracking-tight hidden md:inline">OptalFlow</span>
+            <span className="font-display font-semibold text-sm tracking-tight hidden md:inline">Slate</span>
           </div>
           <div className="h-4 w-px bg-[var(--color-border-strong)] mx-1" />
           <div className="flex items-center text-xs text-[var(--color-text-secondary)]">

@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import React, { useState } from 'react';
 import { Server, Shield, Database, Headphones, Check, ArrowRight, Building2, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -63,7 +63,7 @@ export default function EnterpriseContact() {
           
           <div className="relative z-10">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 border border-white/30 text-white text-xs font-bold uppercase tracking-wider mb-8 shadow-sm">
-              <Building2 className="w-4 h-4" /> {t("optalflow_enterprise", "Optalflow Enterprise")}
+              <Building2 className="w-4 h-4" /> {t("slate_enterprise", "Slate Enterprise")}
             </div>
             <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-6 text-white leading-tight">
               {t("build_your_custom_deployment", "Build your custom deployment")}
@@ -189,7 +189,7 @@ export default function EnterpriseContact() {
                         <Label className="text-base font-bold text-slate-900 cursor-pointer" onClick={() => handleChange('needsMigration', !formData.needsMigration)}>{t("legacy_data_migration", "Legacy Data Migration")}</Label>
                         <p className="text-xs text-slate-500 font-medium">{t(
                           "securely_port_existing_databas",
-                          "Securely port existing databases into Optalflow."
+                          "Securely port existing databases into Slate."
                         )}</p>
                       </div>
                       <Switch checked={formData.needsMigration} onCheckedChange={(c) => handleChange('needsMigration', c)} />

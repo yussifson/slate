@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -37,7 +37,7 @@ export default function Documents() {
   const [previewDoc, setPreviewDoc] = useState(null);
 
   const isAdmin = ["super_admin", "company_admin", "managing_partner"].includes(user?.role);
-  const industry = sessionStorage.getItem("optalflow_industry_override") || user?.company_industry || "law";
+  const industry = sessionStorage.getItem("slate_industry_override") || user?.company_industry || "law";
   const caseTerm = getTerm(industry, "case");
 
   const { data: documents = [], isLoading, isError } = useQuery({

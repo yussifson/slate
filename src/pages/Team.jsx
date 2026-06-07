@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { supabase } from "@/api/supabaseClient";
@@ -189,7 +189,7 @@ export default function Team() {
 
           notify({
             recipientEmail: data.user_email,
-            title: "Welcome to Optalflow!",
+            title: "Welcome to Slate!",
             message: `Your account has been created by ${user?.full_name || "an Admin"}. Log in with this email and the temporary password you were given.`,
             type: "WELCOME",
           }).catch(() => {});

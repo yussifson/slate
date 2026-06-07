@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import { Handshake, ArrowRight, ShieldCheck, Globe, Rocket } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -11,7 +11,7 @@ export default function Partners() {
           <Handshake className="w-10 h-10" />
         </div>
         <h1 className="text-5xl md:text-6xl font-extrabold text-slate-900 tracking-tight mb-6">
-          {t("optalflow_partner_network", "Optalflow Partner Network")}
+          {t("slate_partner_network", "Slate Partner Network")}
         </h1>
         <p className="text-xl text-slate-600 leading-relaxed mb-10">
           {t(
@@ -50,7 +50,7 @@ export default function Partners() {
           <p className="text-slate-600 leading-relaxed">
             {t(
               "consult_implement_and_manage_o",
-              "Consult, implement, and manage Optalflow deployments for enterprise clients with complex requirements."
+              "Consult, implement, and manage Slate deployments for enterprise clients with complex requirements."
             )}
           </p>
         </div>
@@ -62,8 +62,8 @@ export default function Partners() {
           <h3 className="text-xl font-bold text-slate-900 mb-4">{t("referral_partners", "Referral Partners")}</h3>
           <p className="text-slate-600 leading-relaxed">
             {t(
-              "recommend_optalflow_to_your_ne",
-              "Recommend Optalflow to your network and earn recurring commissions for every successful enterprise contract."
+              "recommend_slate_to_your_ne",
+              "Recommend Slate to your network and earn recurring commissions for every successful enterprise contract."
             )}
           </p>
         </div>

@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Calendar, Bell, FileText, CheckCircle, Clock, BookOpen, User, CreditCard, Download, LayoutDashboard, GraduationCap } from 'lucide-react';
 import { useIndustryRecords } from '@/hooks/useIndustryData';
@@ -46,7 +46,7 @@ export default function ParentPortal() {
   });
 
   const { user } = useAuth();
-  const proxyParentEmail = user?.email; // PAR-2024-001@school.optalflow.com
+  const proxyParentEmail = user?.email; // PAR-2024-001@school.slate.com
 
   // Find all children linked to this parent's email. Fallback to all if super_admin/previewing
   const myChildren = mappedStudents.filter(s => s.parentEmail === proxyParentEmail || proxyParentEmail?.includes('admin'));

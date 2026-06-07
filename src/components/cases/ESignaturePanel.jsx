@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import React, { useState, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -61,7 +61,7 @@ export default function ESignaturePanel({ caseData, user }) {
 
       await base44.integrations.Core.SendEmail({
         to: data.client_email,
-        from_name: user?.full_name || "Optalflow",
+        from_name: user?.full_name || "Slate",
         subject: `Signature Required: ${data.document_name}`,
         body: `Dear ${data.client_name},
 
@@ -77,7 +77,7 @@ This link will expire in 7 days.
 
 Best regards,
 ${user?.full_name}
-Optalflow Law Management`,
+Slate Law Management`,
       });
 
       return req;
@@ -95,7 +95,7 @@ Optalflow Law Management`,
       await base44.integrations.Core.SendEmail({
         to: req.client_email,
         subject: `[Reminder] Signature Required: ${req.document_name}`,
-        body: `Dear ${req.client_name},\n\nThis is a reminder to sign the document: ${req.document_name}\n\nSigning link: ${signingUrl}\n\n— Optalflow`,
+        body: `Dear ${req.client_name},\n\nThis is a reminder to sign the document: ${req.document_name}\n\nSigning link: ${signingUrl}\n\n— Slate`,
       });
       toast({ title: "Reminder sent" });
     },

@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import { Puzzle, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -16,8 +16,8 @@ export default function Integrations() {
         </h1>
         <p className="text-xl text-slate-600 max-w-2xl mx-auto mb-10 leading-relaxed">
           {t(
-            "optalflow_seamlessly_integrate",
-            "Optalflow seamlessly integrates with your existing tech stack. We're currently expanding our integration directory to support over 100+ native connections."
+            "slate_seamlessly_integrate",
+            "Slate seamlessly integrates with your existing tech stack. We're currently expanding our integration directory to support over 100+ native connections."
           )}
         </p>
         

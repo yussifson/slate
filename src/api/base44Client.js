@@ -1,4 +1,4 @@
-import { supabase } from './supabaseClient';
+﻿import { supabase } from './supabaseClient';
 import { SCHEMA_COLUMNS } from './schemaColumns';
 import { encryptText, decryptText } from '../lib/encryption';
 import { powerSync } from './PowerSyncConnector';
@@ -41,7 +41,7 @@ const getValidCols = (tableName) => {
 const SENSITIVE_FIELDS = ['notes', 'description', 'details', 'outcome_summary', 'content', 'resolution_notes'];
 
 const getPassphrase = () => {
-    return localStorage.getItem('optalflow_e2ee_passphrase') || null;
+    return localStorage.getItem('slate_e2ee_passphrase') || null;
 };
 
 const securePayload = async (payload) => {

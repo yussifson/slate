@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { useAuth } from '@/lib/AuthContext';
 import { supabase } from '@/api/supabaseClient';
@@ -68,7 +68,7 @@ export default function Paywall() {
       name: "off_cloud",
       displayName: "Off-Cloud",
       price: "Custom",
-      description: "Complete ownership. Self-host Optalflow on your own servers.",
+      description: "Complete ownership. Self-host Slate on your own servers.",
       features: [
         "Full Source Code Access",
         "On-Premise Deployment",
@@ -86,7 +86,7 @@ export default function Paywall() {
     if (!user || !user.company_id) return;
     
     if (plan.isSales) {
-      window.location.href = "mailto:sales@optalflow.com?subject=Enterprise Off-Cloud Inquiry";
+      window.location.href = "mailto:sales@slate.com?subject=Enterprise Off-Cloud Inquiry";
       return;
     }
 
@@ -169,7 +169,7 @@ export default function Paywall() {
           <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center text-white">
             <Scale className="w-4.5 h-4.5" />
           </div>
-          <span className="font-bold text-lg text-slate-900 tracking-tight">{t("optalflow", "Optalflow")}</span>
+          <span className="font-bold text-lg text-slate-900 tracking-tight">{t("slate", "Slate")}</span>
         </div>
         <Button 
           variant="ghost" 
@@ -300,8 +300,8 @@ export default function Paywall() {
                 <DialogTitle className="text-2xl font-extrabold text-slate-900 mb-1 tracking-tight">{t("off_cloud_enterprise", "Off-Cloud Enterprise")}</DialogTitle>
                 <DialogDescription className="text-slate-500 text-xs max-w-sm mx-auto leading-relaxed font-medium">
                   {t(
-                    "deploy_optalflow_securely_on_y",
-                    "Deploy Optalflow securely on your own private infrastructure."
+                    "deploy_slate_securely_on_y",
+                    "Deploy Slate securely on your own private infrastructure."
                   )}
                 </DialogDescription>
               </div>
@@ -332,8 +332,8 @@ export default function Paywall() {
                       <div>
                         <p className="text-sm font-bold text-slate-900">{t("air_gapped_operation", "Air-Gapped Operation")}</p>
                         <p className="text-xs text-slate-500 mt-1 leading-relaxed">{t(
-                          "optalflow_can_operate_fully_of",
-                          "Optalflow can operate fully offline without external API dependencies, ensuring total data isolation for sensitive sectors."
+                          "slate_can_operate_fully_of",
+                          "Slate can operate fully offline without external API dependencies, ensuring total data isolation for sensitive sectors."
                         )}</p>
                       </div>
                     </div>
@@ -350,8 +350,8 @@ export default function Paywall() {
                       <div>
                         <p className="text-sm font-bold text-slate-900">{t("custom_db_integration", "Custom DB Integration")}</p>
                         <p className="text-xs text-slate-500 mt-1 leading-relaxed">{t(
-                          "map_optalflow_to_your_existing",
-                          "Map Optalflow to your existing legacy databases. We support PostgreSQL, SQL Server, and custom on-prem storage pipelines."
+                          "map_slate_to_your_existing",
+                          "Map Slate to your existing legacy databases. We support PostgreSQL, SQL Server, and custom on-prem storage pipelines."
                         )}</p>
                       </div>
                     </div>
@@ -406,8 +406,8 @@ export default function Paywall() {
       </div>
       {/* Bottom Bar */}
       <div className="max-w-7xl mx-auto w-full text-center text-xs text-slate-400">© {new Date().getFullYear()} {t(
-          "optalflow_transactions_are_ful",
-          "Optalflow. Transactions are fully secured and processed locally via Paystack."
+          "slate_transactions_are_ful",
+          "Slate. Transactions are fully secured and processed locally via Paystack."
         )}
       </div>
     </div>

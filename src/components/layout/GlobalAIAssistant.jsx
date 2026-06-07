@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Sparkles, MessageSquare, X, Send, Bot, User, Maximize2, Minimize2, Plus, Clock, Mic, MicOff, Paperclip, Trash2, FileText, Image, Square } from 'lucide-react';
@@ -437,11 +437,11 @@ export default function GlobalAIAssistant({ onClose }) {
       let responseText;
 
       if (fileSnap?.type === 'image') {
-        const promptText = `You are an AI agent embedded in Optalflow enterprise SaaS. ${getPageContext()}\n\nUser says: ${text || 'Please analyze this image.'}\n\nDescribe the image and provide relevant business insights.`;
+        const promptText = `You are an AI agent embedded in Slate enterprise SaaS. ${getPageContext()}\n\nUser says: ${text || 'Please analyze this image.'}\n\nDescribe the image and provide relevant business insights.`;
         responseText = await analyzeImage(fileSnap.bytes, promptText);
       } else {
         const ctx = PAGE_CONTEXT[location.pathname] || { title: 'Unknown', suite: 'Unknown' };
-        const systemPrompt = `You are OrbitFlow — an intelligent, proactive enterprise assistant embedded in Optalflow SaaS.
+        const systemPrompt = `You are OrbitFlow — an intelligent, proactive enterprise assistant embedded in Slate SaaS.
 Your current context is the ${ctx.suite} suite, specifically the '${ctx.title}' page.
 
 CRITICAL INSTRUCTIONS:

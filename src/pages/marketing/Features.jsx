@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Briefcase, Users, CreditCard, Mail, Shield, Clock, Check, ArrowRight, Globe, Sparkles } from 'lucide-react';
@@ -71,7 +71,7 @@ export default function Features() {
       badge: "Ecosystem Integrations",
       title: "Connect all your favorite tools",
       description:
-        "Optalflow acts as your central hub. Connect communication channels, calendar apps, and payment gateways seamlessly without leaving the platform.",
+        "Slate acts as your central hub. Connect communication channels, calendar apps, and payment gateways seamlessly without leaving the platform.",
       bullets: [
         "Slack & Microsoft Teams instant notifications",
         "Google & Outlook Calendar bidirectional sync",
@@ -131,7 +131,7 @@ export default function Features() {
       badge: "AI Workspace Generation",
       title: "Build complex modules using natural language",
       description:
-        "Describe your custom industry requirement or pipeline in natural language, and OptalFlow instantly builds the forms, data structures, workflows, and navigation routes for you—no coding required.",
+        "Describe your custom industry requirement or pipeline in natural language, and Slate instantly builds the forms, data structures, workflows, and navigation routes for you—no coding required.",
       bullets: [
         "Zero-code layout rendering for instantaneous deployment",
         "Intelligent data structure optimization tailored to your industry",

@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useEffect, useRef, useState } from 'react';
@@ -115,7 +115,7 @@ const features = [
 const testimonials = [
   {
     quote:
-      'Optalflow completely transformed our practice. We moved from paper files to a digital pipeline and reduced document turnaround by 60%.',
+      'Slate completely transformed our practice. We moved from paper files to a digital pipeline and reduced document turnaround by 60%.',
     author: 'Adama Mensah',
     role: 'Managing Partner',
     firm: 'Mensah & Partners',
@@ -525,9 +525,9 @@ export default function Home() {
   return (
     <div className="overflow-x-hidden">
       <Helmet>
-        <title>Optalflow - The Ultimate AI Unified Workspace</title>
-        <meta name="description" content="Optalflow is an AI-powered Unified Workspace replacing multiple tools with one cohesive ecosystem. Simplify communication, scheduling, cases, and payments." />
-        <meta property="og:title" content="Optalflow - The Ultimate AI Unified Workspace" />
+        <title>Slate - The Ultimate AI Work made effortless.</title>
+        <meta name="description" content="Slate is an AI-powered Work made effortless. replacing multiple tools with one cohesive ecosystem. Simplify communication, scheduling, cases, and payments." />
+        <meta property="og:title" content="Slate - The Ultimate AI Work made effortless." />
         <meta property="og:description" content="Replace fragmented tools with an intelligent, cohesive workspace built for maximum operational excellence." />
       </Helmet>
 
@@ -551,7 +551,7 @@ export default function Home() {
           <FadeIn delay="delay-100">
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1] max-w-4xl mx-auto mb-6">
               {t(
-                "the_unified_workspace_that_tur",
+                "the_work_made_effortless_that_tur",
                 "The unified workspace that turns hours into"
               )}{' '}
               <span className="bg-green-100 text-slate-900 px-4 py-1 rounded-[1.5rem] inline-block mt-2">
@@ -586,7 +586,7 @@ export default function Home() {
           {/* Dashboard mockup */}
           <FadeIn delay="delay-500">
             <div className="relative w-full max-w-6xl mx-auto h-[400px] md:h-[550px] rounded-2xl border border-slate-200/80 bg-slate-50 shadow-2xl overflow-hidden flex items-center justify-center">
-              <img src="/images/hero_dashboard_ui.png" alt="Optalflow Dashboard Mockup" className="w-full h-full object-cover object-top" />
+              <img src="/images/hero_dashboard_ui.png" alt="Slate Dashboard Mockup" className="w-full h-full object-cover object-top" />
             </div>
           </FadeIn>
         </div>
@@ -614,7 +614,7 @@ export default function Home() {
                 <p className="text-lg text-slate-600 mb-8 leading-relaxed font-medium">
                   {t(
                     "orbit_isn_t_just_a_chatbot_it_",
-                    "Orbit isn't just a chatbot. It's an intelligent agent embedded directly into your workflow. \n                  Ask it to analyze data, schedule appointments, or draft emails — it executes actions automatically across the entire Optalflow suite."
+                    "Orbit isn't just a chatbot. It's an intelligent agent embedded directly into your workflow. \n                  Ask it to analyze data, schedule appointments, or draft emails — it executes actions automatically across the entire Slate suite."
                   )}
                 </p>
                 <ul className="space-y-4 mb-10 text-slate-700 font-medium">
@@ -632,7 +632,7 @@ export default function Home() {
               <div className="relative rounded-2xl border border-slate-200/60 bg-white shadow-2xl overflow-hidden transform rotate-1 hover:rotate-0 transition-transform duration-500 group">
                 <img 
                   src="/images/orbit_dashboard_mockup.png" 
-                  alt="Optalflow Dashboard featuring Orbit AI Panel" 
+                  alt="Slate Dashboard featuring Orbit AI Panel" 
                   className="w-full h-auto block" 
                 />
               </div>
@@ -657,7 +657,7 @@ export default function Home() {
               {t("workflow", "Workflow")}
             </span>
             <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-slate-900 mb-6">
-              {t("how_optalflow_works", "How Optalflow works")}
+              {t("how_slate_works", "How Slate works")}
             </h2>
             <p className="text-lg text-slate-600 leading-relaxed font-medium">
               {t(

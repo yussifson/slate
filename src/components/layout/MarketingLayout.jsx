@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Menu, X, Scale, ArrowRight, Building, Home, Layers, CreditCard, Info, Mail, Shield, Clock, Globe } from 'lucide-react';
@@ -50,7 +50,7 @@ export default function MarketingLayout({ children }) {
   // First-time location country language detection
   useEffect(() => {
     const checkLocationAndLanguage = async () => {
-      const storedPref = localStorage.getItem('optalflow_lang_pref');
+      const storedPref = localStorage.getItem('slate_lang_pref');
       if (storedPref) {
         i18n.changeLanguage(storedPref);
         return;
@@ -66,7 +66,7 @@ export default function MarketingLayout({ children }) {
         
         const englishCountries = ['US', 'GB', 'CA', 'AU', 'NZ', 'IE', 'ZA', 'SG', 'JM', 'BS', 'GH', 'KE', 'NG', 'IN'];
         if (englishCountries.includes(countryCode)) {
-          localStorage.setItem('optalflow_lang_pref', 'en');
+          localStorage.setItem('slate_lang_pref', 'en');
           i18n.changeLanguage('en');
           return;
         }
@@ -100,7 +100,7 @@ export default function MarketingLayout({ children }) {
             langName: langNames[targetLangCode]
           });
         } else {
-          localStorage.setItem('optalflow_lang_pref', 'en');
+          localStorage.setItem('slate_lang_pref', 'en');
           i18n.changeLanguage('en');
         }
       } catch (err) {
@@ -113,7 +113,7 @@ export default function MarketingLayout({ children }) {
 
   const handleLanguageChange = (code) => {
     i18n.changeLanguage(code);
-    localStorage.setItem('optalflow_lang_pref', code);
+    localStorage.setItem('slate_lang_pref', code);
     setLangDropdownOpen(false);
   };
 
@@ -136,10 +136,10 @@ export default function MarketingLayout({ children }) {
             <Logo className="w-10 h-10 md:w-11 md:h-11 transition-transform group-hover:scale-105" />
             <div className="flex flex-col">
               <span className="font-extrabold text-base md:text-lg tracking-tight text-foreground leading-none">
-                {t("optalflow", "Optalflow")}
+                {t("slate", "Slate")}
               </span>
               <span className="text-[9px] text-muted-foreground font-bold tracking-[0.2em] uppercase leading-none mt-0.5">
-                {t("unified_workspace", "Unified Workspace")}
+                {t("work_made_effortless", "Work made effortless.")}
               </span>
             </div>
           </Link>
@@ -347,7 +347,7 @@ export default function MarketingLayout({ children }) {
             <div className="col-span-2 md:col-span-5 lg:col-span-4 flex flex-col gap-6 pr-0 md:pr-10">
               <Link to="/" className="flex items-center gap-2.5 group w-fit">
                 <Logo className="w-10 h-10 text-primary" />
-                <span className="font-extrabold text-xl text-slate-900 tracking-tight">{t("optalflow", "Optalflow")}</span>
+                <span className="font-extrabold text-xl text-slate-900 tracking-tight">{t("slate", "Slate")}</span>
               </Link>
               <p className="text-sm leading-relaxed text-slate-600 font-medium">
                 {t(
@@ -434,8 +434,8 @@ export default function MarketingLayout({ children }) {
           </div>
           
           <div className="mt-8 text-center md:text-left text-xs text-slate-500 font-medium">© {new Date().getFullYear()} {t(
-              "optalflow_technologies_inc_all",
-              "Optalflow Technologies Inc. All rights reserved."
+              "slate_technologies_inc_all",
+              "Slate Technologies Inc. All rights reserved."
             )}
           </div>
         </div>
@@ -454,14 +454,14 @@ export default function MarketingLayout({ children }) {
             </h3>
             
             <p className="text-slate-500 font-semibold text-sm leading-relaxed mb-8">
-              We noticed you are visiting from <span className="font-bold text-slate-800">{geoPopup.country}</span>. Would you like to view Optalflow in your local language or continue in English?
+              We noticed you are visiting from <span className="font-bold text-slate-800">{geoPopup.country}</span>. Would you like to view Slate in your local language or continue in English?
             </p>
             
             <div className="flex flex-col w-full gap-3">
               <Button 
                 onClick={() => {
                   i18n.changeLanguage(geoPopup.langCode);
-                  localStorage.setItem('optalflow_lang_pref', geoPopup.langCode);
+                  localStorage.setItem('slate_lang_pref', geoPopup.langCode);
                   setGeoPopup(null);
                 }}
                 className="bg-primary hover:bg-primary/90 text-white font-bold py-6 rounded-xl shadow-lg shadow-primary/20 transition-all w-full"
@@ -472,7 +472,7 @@ export default function MarketingLayout({ children }) {
               <Button 
                 onClick={() => {
                   i18n.changeLanguage('en');
-                  localStorage.setItem('optalflow_lang_pref', 'en');
+                  localStorage.setItem('slate_lang_pref', 'en');
                   setGeoPopup(null);
                 }}
                 variant="outline"

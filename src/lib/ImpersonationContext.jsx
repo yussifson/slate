@@ -1,8 +1,8 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+﻿import React, { createContext, useContext, useState, useEffect } from "react";
 
 const ImpersonationContext = createContext();
 
-const STORAGE_KEY = "optalflow_impersonating";
+const STORAGE_KEY = "slate_impersonating";
 
 export function ImpersonationProvider({ children }) {
   const [impersonatedCompany, setImpersonatedCompany] = useState(() => {

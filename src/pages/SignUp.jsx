@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import React, { useState } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
@@ -247,8 +247,8 @@ export default function SignUp() {
             </h3>
             <p className="text-lg text-slate-600 font-light max-w-lg leading-relaxed">
               {t(
-                "optalflow_unifies_your_team_s_",
-                "Optalflow unifies your entire organization's workflow, operations, and billing into one beautifully orchestrated platform."
+                "slate_unifies_your_team_s_",
+                "Slate unifies your entire organization's workflow, operations, and billing into one beautifully orchestrated platform."
               )}
             </p>
           </div>

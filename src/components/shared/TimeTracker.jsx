@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import React, { useState, useEffect, useRef } from "react";
 import { Play, Square, Clock, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -31,7 +31,7 @@ export default function TimeTracker() {
   });
 
   useEffect(() => {
-    const savedState = localStorage.getItem("optalflow_timer_state");
+    const savedState = localStorage.getItem("slate_timer_state");
     if (savedState) {
       try {
         const { isRunning, startTime, description, selectedCase, accumulated } = JSON.parse(savedState);
@@ -73,9 +73,9 @@ export default function TimeTracker() {
         selectedCase,
         accumulated: isRunning ? seconds : seconds
       };
-      localStorage.setItem("optalflow_timer_state", JSON.stringify(state));
+      localStorage.setItem("slate_timer_state", JSON.stringify(state));
     } else {
-      localStorage.removeItem("optalflow_timer_state");
+      localStorage.removeItem("slate_timer_state");
     }
   }, [isRunning, seconds, description, selectedCase]);
 
@@ -118,7 +118,7 @@ export default function TimeTracker() {
     setSeconds(0);
     setDescription("");
     setSelectedCase("general");
-    localStorage.removeItem("optalflow_timer_state");
+    localStorage.removeItem("slate_timer_state");
   };
 
   const formatTime = (totalSeconds) => {

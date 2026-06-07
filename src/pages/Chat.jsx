@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+﻿import React, { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Search, Plus, MessageSquare, MoreVertical, Send, Sparkles, Hash, Users, UserCircle, Phone, Video, Loader2, CheckCheck, Check, Smile, Paperclip, ImageIcon, FileText, File, X } from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
@@ -317,7 +317,7 @@ export default function Chat() {
             <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-2 z-10">
               <div className="text-center my-2 flex justify-center">
                 <span className="text-xs text-muted-foreground bg-[#ffeecd] dark:bg-[#182229] px-3 py-1.5 rounded-lg shadow-sm border border-[#ffebc6] dark:border-[#202c33]">
-                  Messages and calls are end-to-end encrypted. No one outside of this chat, not even Optalflow, can read or listen to them.
+                  Messages and calls are end-to-end encrypted. No one outside of this chat, not even Slate, can read or listen to them.
                 </span>
               </div>
 
@@ -525,10 +525,10 @@ export default function Chat() {
             <div className="w-32 h-32 bg-background/50 rounded-full flex items-center justify-center mb-8 shadow-sm">
               <MessageSquare className="w-12 h-12 text-muted-foreground/30" />
             </div>
-            <h2 className="text-3xl font-light text-[#41525d] dark:text-[#e9edef] mb-4">Optalflow Web</h2>
+            <h2 className="text-3xl font-light text-[#41525d] dark:text-[#e9edef] mb-4">Slate Web</h2>
             <p className="text-sm text-[#8696a0] max-w-md leading-relaxed mb-8">
               Send and receive messages seamlessly without keeping your phone online.<br/>
-              Use Optalflow Web on up to 4 linked devices and 1 phone at the same time.
+              Use Slate Web on up to 4 linked devices and 1 phone at the same time.
             </p>
             <div className="flex items-center gap-2 text-[13px] text-[#8696a0]">
               <span className="w-3 h-3 bg-[#d9fdd3] rounded flex items-center justify-center"><Check className="w-2 h-2 text-[#005c4b]" /></span>

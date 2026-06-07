@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -359,7 +359,7 @@ export default function Marketplace() {
             <DialogTitle className="text-2xl font-bold text-slate-900 dark:text-white text-center">Installation Successful!</DialogTitle>
           </DialogHeader>
           <div className="text-slate-500 mt-2 text-[15px] leading-relaxed">
-            <strong>{installSuccessModal?.name}</strong> has been successfully installed and added to your Optalflow sidebar. You can now start using it immediately.
+            <strong>{installSuccessModal?.name}</strong> has been successfully installed and added to your Slate sidebar. You can now start using it immediately.
           </div>
           <div className="mt-8 w-full">
             <Button className="w-full h-11 text-base font-bold bg-blue-600 hover:bg-blue-700" onClick={() => setInstallSuccessModal(null)}>

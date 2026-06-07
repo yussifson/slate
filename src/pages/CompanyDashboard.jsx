@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { useAuth } from "@/lib/AuthContext";
 import { useImpersonation } from "@/lib/ImpersonationContext";
 import { useCompanyId } from "@/hooks/useCompanyId";
@@ -25,7 +25,7 @@ export default function CompanyDashboard() {
   });
 
   const isAdmin = ["company_admin", "super_admin", "admin"].includes(user?.role);
-  const industry = sessionStorage.getItem('optalflow_industry_override') || company?.industry_type || user?.company_industry || "law";
+  const industry = sessionStorage.getItem('slate_industry_override') || company?.industry_type || user?.company_industry || "law";
 
   if (industry === 'law') {
     return <LawDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;

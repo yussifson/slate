@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
@@ -166,7 +166,7 @@ export default function DataExport() {
     setExporting(config.key);
     const rows = dataMap[config.key] || [];
     const csv = toCSV(rows, config.columns);
-    const filename = `optalflow_${config.key}_${format(new Date(), "yyyy-MM-dd")}.csv`;
+    const filename = `slate_${config.key}_${format(new Date(), "yyyy-MM-dd")}.csv`;
     downloadCSV(filename, csv);
     setTimeout(() => setExporting(null), 800);
   };

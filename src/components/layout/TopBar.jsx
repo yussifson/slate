@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { LayoutDashboard, RefreshCw, Globe, PanelLeft, Sparkles, Layers } from "lucide-react";
@@ -74,7 +74,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
       });
       return;
     }
-    sessionStorage.setItem('optalflow_industry_override', newIndustry);
+    sessionStorage.setItem('slate_industry_override', newIndustry);
     queryClient.clear();
     toast({
       title: t('industry_switched', "Industry Switched"),
@@ -94,7 +94,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
   const initials = nameStr.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
   const displayName = isSuperAdmin(user) ? t('super_admin', "Super Admin") : nameStr;
 
-  const currentIndustry = sessionStorage.getItem('optalflow_industry_override') || company?.industry_type || 'law';
+  const currentIndustry = sessionStorage.getItem('slate_industry_override') || company?.industry_type || 'law';
 
   const currentLang = LANGUAGES[i18n.language?.split('-')[0]] || LANGUAGES.en;
 

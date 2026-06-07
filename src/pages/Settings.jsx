@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import { getTerm } from "@/config/industries";
 import React, { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -1104,7 +1104,7 @@ export default function Settings() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const companyId = user?.company_id || null;
-  const activeIndustry = sessionStorage.getItem("optalflow_industry_override") || user?.company_industry || "law";
+  const activeIndustry = sessionStorage.getItem("slate_industry_override") || user?.company_industry || "law";
   const [activeSection, setActiveSection] = useState("system");
   const [saving, setSaving] = useState(false);
 

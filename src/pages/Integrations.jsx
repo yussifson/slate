@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/AuthContext';
 import { getTerm } from "@/config/industries";
@@ -366,7 +366,7 @@ export default function Integrations() {
           companyId,
           provider: app.provider,
           eventDetails: {
-            title: "Optalflow Test Sync Event",
+            title: "Slate Test Sync Event",
             description: "This is an automated test event to verify the two-way calendar sync.",
             start: new Date(Date.now() + 3600000).toISOString(), // 1 hour from now
             end: new Date(Date.now() + 7200000).toISOString(),   // 2 hours from now
@@ -414,25 +414,25 @@ export default function Integrations() {
 
       if (app.provider === 'zoom') {
         endpoint = 'generate-meeting';
-        payload.topic = "Optalflow Test Meeting";
+        payload.topic = "Slate Test Meeting";
         payload.duration = 30;
       } else if (app.provider === 'slack' || app.provider === 'twilio') {
         endpoint = 'notify-team';
-        payload.message = `Hello from Optalflow! This is an automated test notification at ${new Date().toLocaleTimeString()}`;
+        payload.message = `Hello from Slate! This is an automated test notification at ${new Date().toLocaleTimeString()}`;
         if (app.provider === 'twilio') payload.recipientPhone = "+1234567890";
         if (app.provider === 'slack') payload.channel = "#general";
       } else if (app.provider === 'stripe' || app.provider === 'paystack') {
         endpoint = 'process-payment';
         payload.amount = 100.00;
         payload.currency = app.provider === 'stripe' ? 'usd' : 'NGN';
-        payload.customerEmail = "test@optalflow.com";
+        payload.customerEmail = "test@slate.com";
       } else if (app.provider === 'quickbooks') {
         endpoint = 'sync-invoice';
         payload.invoiceDetails = { amount: 500.00 };
       } else if (app.provider === 'docusign') {
         endpoint = 'send-contract';
-        payload.documentName = "Optalflow Demo Contract";
-        payload.signerEmail = "test@optalflow.com";
+        payload.documentName = "Slate Demo Contract";
+        payload.signerEmail = "test@slate.com";
       }
 
       const res = await fetch(`${supabaseUrl}/functions/v1/${endpoint}`, {
@@ -480,7 +480,7 @@ export default function Integrations() {
       <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
         <PageHeader 
           title="App Marketplace" 
-          subtitle="Connect Optalflow with the tools your team already uses." 
+          subtitle="Connect Slate with the tools your team already uses." 
         />
         <div className="flex items-center gap-3">
           <Badge variant="outline" className="h-8 gap-1.5 bg-emerald-50 text-emerald-700 border-emerald-200">
