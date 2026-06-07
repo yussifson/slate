@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, Suspense, lazy } from "react";
+import React, { useState, useEffect, Suspense, lazy } from "react";
 import PageHeader from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Plus, RefreshCw, BarChart2, ShieldCheck, FileText } from "lucide-react";
@@ -181,7 +181,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
   };
 
   const layoutConfig = moduleDef?.config?.layout || 'table';
-  const themeConfig = moduleDef?.config?.theme || 'primary';
+  const themeConfig = 'primary'; // Enforce unified Optavel theme across all suites
   const pageType = moduleDef?.config?.page_type || 'data_module';
 
   const renderModuleContent = () => {

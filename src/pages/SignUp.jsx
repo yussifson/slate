@@ -110,7 +110,7 @@ export default function SignUp() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row">
+    <div className="min-h-screen flex flex-col lg:flex-row bg-white">
       {/* Left Side: Form */}
       <div className="flex-1 flex flex-col justify-center px-8 lg:px-16 py-12">
         <div className="max-w-md w-full mx-auto">
@@ -119,8 +119,8 @@ export default function SignUp() {
           </div>
           
           <div className="mb-8">
-            <h1 className="text-2xl font-bold text-foreground">{t("create_an_account", "Create your account")}</h1>
-            <p className="text-xs text-muted-foreground font-medium mt-1">{t(
+            <h1 className="text-2xl font-bold text-slate-900">{t("create_an_account", "Create your account")}</h1>
+            <p className="text-xs text-slate-500 font-medium mt-1">{t(
               "create_an_account_to_start_man",
               "Create an account to start managing your business"
             )}</p>
@@ -132,31 +132,31 @@ export default function SignUp() {
             
             <div className="space-y-4">
               <div>
-                <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">{t("username", "Your Name")}</label>
+                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">{t("username", "Your Name")}</label>
                 <Input
                   required
                   placeholder="John Doe"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="w-full h-11 text-sm bg-background border-input focus:bg-background focus:ring-2 focus:ring-primary/20"
+                  className="w-full h-11 text-sm bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">{t("email", "Email Address")}</label>
+                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">{t("email", "Email Address")}</label>
                 <Input
                   type="email"
                   required
                   placeholder="john@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-11 text-sm bg-background border-input focus:bg-background focus:ring-2 focus:ring-primary/20"
+                  className="w-full h-11 text-sm bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">
+                  <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">
                     {t("organization_name", "Organization")}
                   </label>
                   <Input
@@ -164,12 +164,12 @@ export default function SignUp() {
                     placeholder="Acme Corp"
                     value={companyName}
                     onChange={(e) => setCompanyName(e.target.value)}
-                    className="w-full h-11 text-sm bg-background border-input focus:bg-background focus:ring-2 focus:ring-primary/20"
+                    className="w-full h-11 text-sm bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">
+                  <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">
                     {t("subdomain", "Subdomain")}
                   </label>
                   <Input
@@ -177,32 +177,32 @@ export default function SignUp() {
                     placeholder="acmecorp"
                     value={subdomain}
                     onChange={(e) => setSubdomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
-                    className="w-full h-11 text-sm bg-background border-input focus:bg-background focus:ring-2 focus:ring-primary/20"
+                    className="w-full h-11 text-sm bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">{t("password", "Password")}</label>
+                  <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">{t("password", "Password")}</label>
                   <Input
                     type="password"
                     required
                     placeholder="••••••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full h-11 text-sm bg-background border-input focus:bg-background focus:ring-2 focus:ring-primary/20"
+                    className="w-full h-11 text-sm bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">{t("confirm_password", "Confirm Password")}</label>
+                  <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">{t("confirm_password", "Confirm Password")}</label>
                   <Input
                     type="password"
                     required
                     placeholder="••••••••••••"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full h-11 text-sm bg-background border-input focus:bg-background focus:ring-2 focus:ring-primary/20"
+                    className="w-full h-11 text-sm bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
               </div>
@@ -218,7 +218,7 @@ export default function SignUp() {
           </form>
 
             <div className="text-center mt-4 pb-12 lg:pb-0">
-              <span className="text-xs text-muted-foreground font-medium">{t("already_have_an_account", "Already have an account?")} </span>
+              <span className="text-xs text-slate-500 font-medium">{t("already_have_an_account", "Already have an account?")} </span>
               <a href="/login" className="text-xs font-bold text-primary hover:underline">
                 {t("sign_in", "Sign in")}
               </a>

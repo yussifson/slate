@@ -268,7 +268,7 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-background">
+    <div className="min-h-screen flex flex-col lg:flex-row bg-white">
       {/* Left Side: Form */}
       <div className="flex-1 flex flex-col justify-center px-8 lg:px-16 py-12">
         <div className="max-w-md w-full mx-auto">
@@ -277,8 +277,8 @@ export default function Login() {
           </div>
           
           <div className="mb-8">
-            <h1 className="text-2xl font-bold text-foreground">{t("welcome_back", "Welcome back")}</h1>
-            <p className="text-xs text-muted-foreground font-medium mt-1">{t("enter_your_credentials_to_acce", "Enter your credentials to access your workspace")}</p>
+            <h1 className="text-2xl font-bold text-slate-900">{t("welcome_back", "Welcome back")}</h1>
+            <p className="text-xs text-slate-500 font-medium mt-1">{t("enter_your_credentials_to_acce", "Enter your credentials to access your workspace")}</p>
           </div>
           
           <form className="space-y-4" onSubmit={handleLogin}>
@@ -286,19 +286,19 @@ export default function Login() {
             
             <div className="space-y-4">
               <div>
-                <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">{t("email", "Email Address")}</label>
+                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">{t("email", "Email Address")}</label>
                 <Input
                   type="email"
                   required
                   placeholder="john@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-11 text-sm bg-background border-input focus:bg-background focus:ring-2 focus:ring-primary/20"
+                  className="w-full h-11 text-sm bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
                 />
               </div>
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest">{t("password", "Password")}</label>
+                  <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest">{t("password", "Password")}</label>
                   <a href="#" className="text-[11px] font-bold text-primary hover:underline">{t("forgot_password", "Forgot password?")}</a>
                 </div>
                 <Input
@@ -307,7 +307,7 @@ export default function Login() {
                   placeholder="••••••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full h-11 text-sm bg-background border-input focus:bg-background focus:ring-2 focus:ring-primary/20"
+                  className="w-full h-11 text-sm bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
                 />
               </div>
             </div>
@@ -317,7 +317,7 @@ export default function Login() {
             </Button>
 
             <div className="text-center mt-6">
-              <span className="text-xs text-muted-foreground font-medium">{t("don_t_have_an_account", "Don't have an account?")} </span>
+              <span className="text-xs text-slate-500 font-medium">{t("don_t_have_an_account", "Don't have an account?")} </span>
               <a href="/signup" className="text-xs font-bold text-primary hover:underline">
                 {t("create_workspace", "Create Workspace")}
               </a>
