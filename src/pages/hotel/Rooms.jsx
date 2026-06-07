@@ -117,7 +117,7 @@ export default function Rooms() {
             "Configure rooms, pricing, and amenities"
           )}</p>
         </div>
-        <Button onClick={() => { setEditTargetId(null); setShowModal(true); setFormData({ roomNumber: '', type: 'Standard', rate: 150, floor: '1st Floor', amenities: 'Wifi, Tv' }); }} className="gap-2 bg-[#443199] hover:bg-[#362878] text-white">
+        <Button onClick={() => { setEditTargetId(null); setShowModal(true); setFormData({ roomNumber: '', type: 'Standard', rate: 150, floor: '1st Floor', amenities: 'Wifi, Tv' }); }} className="gap-2 bg-primary hover:bg-primary/90 text-white">
           <Plus className="w-4 h-4" /> {t("add_room", "Add Room")}
         </Button>
       </div>
@@ -251,7 +251,7 @@ export default function Rooms() {
            </div>
            <div className="flex gap-3 pt-4">
              <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-             <Button className="flex-1 bg-[#443199] hover:bg-[#362878] text-white" onClick={handleSaveToDb}>{t("save_room", "Save Room")}</Button>
+             <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleSaveToDb}>{t("save_room", "Save Room")}</Button>
            </div>
          </div>
        </div>
@@ -316,7 +316,7 @@ export default function Rooms() {
                     </div>
                   </div>
                   <div className="pt-4 flex gap-2">
-                    <Button onClick={() => { setViewDetailsId(null); handleEdit(room); }} className="flex-1 bg-[#443199] hover:bg-[#362878] text-white">
+                    <Button onClick={() => { setViewDetailsId(null); handleEdit(room); }} className="flex-1 bg-primary hover:bg-primary/90 text-white">
                       <Edit className="w-4 h-4 mr-2" /> {t("edit_room", "Edit Room")}
                     </Button>
                   </div>

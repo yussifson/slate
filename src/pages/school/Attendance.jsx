@@ -193,7 +193,7 @@ export default function Attendance() {
       <div className="school-card overflow-hidden">
         <div className="p-4 border-b border-border bg-muted/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-card-foreground font-semibold">
-            <ClipboardList className="w-5 h-5 text-[#1E3A8A] dark:text-primary/70" />
+            <ClipboardList className="w-5 h-5 text-primary dark:text-primary/70" />
             <span>{selectedClass} — {new Date(date + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
           </div>
           <div className="flex items-center gap-2">
@@ -209,7 +209,7 @@ export default function Attendance() {
 
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-primary/10 dark:border-slate-700">
+            <thead className="bg-primary/5/60 dark:bg-slate-800/40 border-b border-primary/10 dark:border-slate-700">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{t("student", "Student")}</th>
                 <th className="px-4 py-3 text-center text-xs font-bold text-primary uppercase tracking-wide">{t("present", "Present")}</th>
@@ -223,7 +223,7 @@ export default function Attendance() {
                   <tr key={student.id} className="hover:bg-muted/40 transition-colors">
                     <td className="px-6 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-[#F0F4FF] dark:bg-primary/30 flex items-center justify-center text-[#1E3A8A] dark:text-primary/30 font-bold text-xs shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-primary/5 dark:bg-primary/30 flex items-center justify-center text-primary dark:text-primary/30 font-bold text-xs shrink-0">
                           {student.name.substring(0, 2).toUpperCase()}
                         </div>
                         <div>
@@ -256,7 +256,7 @@ export default function Attendance() {
               {classStudents.length === 0 && (
                 <tr>
                   <td colSpan={4} className="text-center py-12 text-muted-foreground">
-                    <Users className="w-10 h-10 mx-auto mb-3 opacity-20 text-[#1E3A8A]" />
+                    <Users className="w-10 h-10 mx-auto mb-3 opacity-20 text-primary" />
                     <p className="font-medium">{t("no_students_enrolled_in", "No students enrolled in")} {selectedClass}</p>
                     <p className="text-xs mt-1">{t(
                       "enroll_students_in_the_student",
@@ -274,7 +274,7 @@ export default function Attendance() {
             <Button
               onClick={handleSubmit}
               disabled={mutateRecord.isPending || Object.keys(statusMap).length === 0}
-              className="bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold gap-2"
+              className="bg-primary hover:bg-primary text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold gap-2"
             >
               <Plus className="w-4 h-4" />
               {mutateRecord.isPending ? 'Submitting...' : `Submit Attendance (${markedCount}/${classStudents.length})`}
@@ -286,7 +286,7 @@ export default function Attendance() {
       <div className="school-card overflow-hidden">
         <div className="p-4 border-b border-border bg-muted/50">
           <h3 className="font-bold text-card-foreground flex items-center gap-2">
-            <CalendarDays className="w-5 h-5 text-[#1E3A8A] dark:text-primary/70" />
+            <CalendarDays className="w-5 h-5 text-primary dark:text-primary/70" />
             {t("saved_records", "Saved Records —")} {selectedClass} {t("on", "on")} {date}
           </h3>
         </div>
@@ -304,7 +304,7 @@ export default function Attendance() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-primary/10 dark:border-slate-700">
+              <thead className="bg-primary/5/60 dark:bg-slate-800/40 border-b border-primary/10 dark:border-slate-700">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{t("date", "Date")}</th>
                   <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{t("class", "Class")}</th>
@@ -324,7 +324,7 @@ export default function Attendance() {
                   return (
                     <tr key={rec.id} className="hover:bg-muted/40 transition-colors">
                       <td className="px-6 py-3 text-foreground font-medium">{rec.date}</td>
-                      <td className="px-6 py-3"><Link to="/classes" className="bg-[#F0F4FF] dark:bg-primary/20 text-[#1E3A8A] dark:text-primary/30 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{rec.className}</Link></td>
+                      <td className="px-6 py-3"><Link to="/classes" className="bg-primary/5 dark:bg-primary/20 text-primary dark:text-primary/30 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{rec.className}</Link></td>
                       <td className="px-6 py-3 text-muted-foreground">{rec.takenBy || '—'}</td>
                       <td className="px-6 py-3 text-center font-bold text-primary">{p}</td>
                       <td className="px-6 py-3 text-center font-bold text-red-600">{a}</td>

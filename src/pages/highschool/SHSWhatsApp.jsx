@@ -108,7 +108,7 @@ export default function SHSWhatsapp() {
           <Button variant="outline" className="h-9 gap-2 rounded-xl text-slate-700 dark:text-slate-200">
             <Settings2 className="w-4 h-4" /> API Settings
           </Button>
-          <Button onClick={() => setIsSendModalOpen(true)} className="h-9 gap-2 rounded-xl bg-[#25D366] hover:bg-[#128C7E] text-white shadow-md shadow-green-500/20 border-none">
+          <Button onClick={() => setIsSendModalOpen(true)} className="h-9 gap-2 rounded-xl bg-primary hover:bg-primary text-white shadow-md shadow-green-500/20 border-none">
             <Send className="w-4 h-4" /> Launch Broadcast
           </Button>
         </div>
@@ -118,7 +118,7 @@ export default function SHSWhatsapp() {
         <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-slate-100">
           <CardContent className="p-5 flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-[#25D366] shrink-0">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
                 <Smartphone className="w-6 h-6" />
               </div>
               <div>
@@ -138,7 +138,7 @@ export default function SHSWhatsapp() {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-                <MessageCircle className="w-5 h-5 text-[#25D366]" /> Campaign History
+                <MessageCircle className="w-5 h-5 text-primary" /> Campaign History
               </CardTitle>
             </div>
             
@@ -159,7 +159,7 @@ export default function SHSWhatsapp() {
           ) : filteredCampaigns.length === 0 ? (
             <div className="p-16 text-center">
               <div className="w-16 h-16 rounded-2xl bg-primary/5 mx-auto flex items-center justify-center mb-4">
-                <MessageCircle className="w-8 h-8 text-[#25D366]" />
+                <MessageCircle className="w-8 h-8 text-primary" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No campaigns launched</h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Launch a WhatsApp broadcast to see it here.</p>
@@ -185,9 +185,9 @@ export default function SHSWhatsapp() {
                     </span>
                   </div>
                   
-                  <div className="bg-[#E7FFDB]/50 p-4 rounded-xl border border-[#25D366]/20 text-sm text-slate-700 dark:text-slate-200 whitespace-pre-wrap relative mt-3">
+                  <div className="bg-primary/10/50 p-4 rounded-xl border border-primary/20 text-sm text-slate-700 dark:text-slate-200 whitespace-pre-wrap relative mt-3">
                     {/* Simulated WA message bubble tail */}
-                    <div className="absolute -top-2 left-4 w-4 h-4 bg-[#E7FFDB]/50 border-t border-l border-[#25D366]/20 rotate-45"></div>
+                    <div className="absolute -top-2 left-4 w-4 h-4 bg-primary/10/50 border-t border-l border-primary/20 rotate-45"></div>
                     <p className="relative z-10">{camp.data?.messageText || `[Template used: ${camp.data?.templateId}]`}</p>
                   </div>
                 </div>
@@ -199,7 +199,7 @@ export default function SHSWhatsapp() {
 
       <Dialog open={isSendModalOpen} onOpenChange={setIsSendModalOpen}>
         <DialogContent className="sm:max-w-[500px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
-          <div className="p-6 bg-gradient-to-br from-[#128C7E] to-[#075E54] text-white">
+          <div className="p-6 bg-gradient-to-br from-primary to-primary text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-black">Launch WhatsApp Broadcast</DialogTitle>
               <DialogDescription className="text-primary/10">
@@ -224,7 +224,7 @@ export default function SHSWhatsapp() {
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Target Audience</label>
                 <select 
-                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-[#128C7E] font-semibold text-slate-700 dark:text-slate-200"
+                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary font-semibold text-slate-700 dark:text-slate-200"
                   value={newCampaign.targetGroup}
                   onChange={e => setNewCampaign({...newCampaign, targetGroup: e.target.value})}
                 >
@@ -238,7 +238,7 @@ export default function SHSWhatsapp() {
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Approved WA Template</label>
                 <select 
-                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-[#128C7E]"
+                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary"
                   value={newCampaign.templateId}
                   onChange={e => setNewCampaign({...newCampaign, templateId: e.target.value})}
                 >
@@ -253,7 +253,7 @@ export default function SHSWhatsapp() {
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Message Content (Variables)</label>
                 <textarea 
                   placeholder="Hello {{1}}, this is to inform you that..."
-                  className="w-full h-32 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-[#128C7E] resize-none text-sm"
+                  className="w-full h-32 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-primary resize-none text-sm"
                   value={newCampaign.customMessage}
                   onChange={e => setNewCampaign({...newCampaign, customMessage: e.target.value})}
                 />
@@ -269,7 +269,7 @@ export default function SHSWhatsapp() {
             <Button 
               onClick={handleLaunchCampaign} 
               disabled={!newCampaign.campaignName || !newCampaign.customMessage || isSending}
-              className="rounded-xl bg-[#25D366] hover:bg-[#128C7E] text-white font-bold px-6"
+              className="rounded-xl bg-primary hover:bg-primary text-white font-bold px-6"
             >
               {isSending ? 'Sending...' : 'Launch Broadcast'}
             </Button>

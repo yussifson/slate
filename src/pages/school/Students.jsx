@@ -18,7 +18,7 @@ import { MessageSquare, Settings } from "lucide-react";
 import IDFormatSettings from '@/components/school/IDFormatSettings';
 
 const feeColors = { Paid: 'bg-primary/10 text-primary/90', Owing: 'bg-red-100 text-red-700', Partial: 'bg-amber-100 text-amber-700' };
-const statusColors = { Active: 'bg-primary/5 text-[#1E3A8A] dark:bg-primary/30 dark:text-primary/30', Suspended: 'bg-red-100 text-red-700', Graduated: 'bg-primary/5 dark:bg-primary/30 text-[#1E3A8A] dark:text-primary/30' };
+const statusColors = { Active: 'bg-primary/5 text-primary dark:bg-primary/30 dark:text-primary/30', Suspended: 'bg-red-100 text-red-700', Graduated: 'bg-primary/5 dark:bg-primary/30 text-primary dark:text-primary/30' };
 
 export default function Students() {
   const { t } = useTranslation();
@@ -256,7 +256,7 @@ export default function Students() {
             ))}
           </div>
           <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
-          <Button onClick={() => setShowModal(true)} className="gap-2 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">
+          <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">
             <Plus className="w-4 h-4" /> {t("add_student", "Add Student")}
           </Button>
         </div>
@@ -304,7 +304,7 @@ export default function Students() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-primary/10 dark:border-slate-700">
+              <thead className="bg-primary/5/60 dark:bg-slate-800/40 border-b border-primary/10 dark:border-slate-700">
                 <tr>
                   {['Student', 'ID', 'Class', 'Age', 'Parent / Guardian', 'Fee Status', 'Status', 'Actions'].map(h => {
                     return (<th key={h} className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{h}</th>);
@@ -317,7 +317,7 @@ export default function Students() {
                   <tr key={s.id} className="hover:bg-muted/50 transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-[#F0F4FF] dark:bg-primary/30 flex items-center justify-center text-[#1E3A8A] dark:text-primary/30 font-bold text-xs flex-shrink-0">
+                        <div className="w-9 h-9 rounded-full bg-primary/5 dark:bg-primary/30 flex items-center justify-center text-primary dark:text-primary/30 font-bold text-xs flex-shrink-0">
                           {s.avatar}
                         </div>
                         <div>
@@ -327,7 +327,7 @@ export default function Students() {
                       </div>
                     </td>
                     <td className="px-4 py-3 text-muted-foreground font-mono text-xs">{s.studentId}</td>
-                    <td className="px-4 py-3"><Link to={`/classes`} className="bg-[#F0F4FF] dark:bg-primary/20 text-[#1E3A8A] dark:text-primary/30 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{s.class}</Link></td>
+                    <td className="px-4 py-3"><Link to={`/classes`} className="bg-primary/5 dark:bg-primary/20 text-primary dark:text-primary/30 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{s.class}</Link></td>
                     <td className="px-4 py-3 text-foreground">{s.age} {t("yrs", "yrs")}</td>
                     <td className="px-4 py-3">
                       <div>
@@ -336,7 +336,7 @@ export default function Students() {
                       </div>
                     </td>
                     <td className="px-4 py-3"><span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${feeColors[s.feeStatus] || 'bg-gray-100 text-gray-700'}`}>{s.feeStatus}</span></td>
-                    <td className="px-4 py-3"><span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${statusColors[s.status] || 'bg-primary/5 text-[#1E3A8A] dark:bg-primary/30 dark:text-primary/30'}`}>{s.status}</span></td>
+                    <td className="px-4 py-3"><span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${statusColors[s.status] || 'bg-primary/5 text-primary dark:bg-primary/30 dark:text-primary/30'}`}>{s.status}</span></td>
                     <td className="px-4 py-3">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -393,7 +393,7 @@ export default function Students() {
                     key={tab}
                     onClick={() => setActiveTab(tab)}
                     className={`pb-2 text-sm font-semibold capitalize border-b-2 transition-colors ${
-                      activeTab === tab ? 'border-[#1E3A8A] text-[#1E3A8A] dark:border-primary/70 dark:text-primary/70' : 'border-transparent text-muted-foreground hover:text-foreground'
+                      activeTab === tab ? 'border-primary text-primary dark:border-primary/70 dark:text-primary/70' : 'border-transparent text-muted-foreground hover:text-foreground'
                     }`}
                   >
                     {tab}
@@ -405,12 +405,12 @@ export default function Students() {
             <div className="p-6 overflow-y-auto space-y-4">
               {activeTab === 'personal' && (
                 <div className="space-y-4 animate-in fade-in zoom-in duration-200">
-                  <div className="bg-[#F0F4FF]/50 dark:bg-primary/10 p-3 rounded-xl border border-primary/10 dark:border-primary/80">
-                    <label className="text-[10px] font-bold text-[#1E3A8A] dark:text-primary/70 uppercase tracking-widest">{t("student_id", "Student ID")}</label>
+                  <div className="bg-primary/5/50 dark:bg-primary/10 p-3 rounded-xl border border-primary/10 dark:border-primary/80">
+                    <label className="text-[10px] font-bold text-primary dark:text-primary/70 uppercase tracking-widest">{t("student_id", "Student ID")}</label>
                     <Input 
                       value={formData.studentId || "Auto-generated on save"} 
                       readOnly 
-                      className="mt-1 bg-transparent border-0 shadow-none font-mono font-bold text-[#1E3A8A] dark:text-primary/70 px-0 h-6 focus-visible:ring-0" 
+                      className="mt-1 bg-transparent border-0 shadow-none font-mono font-bold text-primary dark:text-primary/70 px-0 h-6 focus-visible:ring-0" 
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
@@ -477,12 +477,12 @@ export default function Students() {
 
               {activeTab === 'parent' && (
                 <div className="space-y-4 animate-in fade-in zoom-in duration-200">
-                  <div className="bg-[#F0F4FF] dark:bg-primary/20/50 dark:bg-primary/10 p-3 rounded-xl border border-primary/10 dark:border-primary/30">
-                    <label className="text-[10px] font-bold text-[#1E3A8A] dark:text-primary/70 uppercase tracking-widest">{t("parent_id", "Parent ID")}</label>
+                  <div className="bg-primary/5 dark:bg-primary/20/50 dark:bg-primary/10 p-3 rounded-xl border border-primary/10 dark:border-primary/30">
+                    <label className="text-[10px] font-bold text-primary dark:text-primary/70 uppercase tracking-widest">{t("parent_id", "Parent ID")}</label>
                     <Input 
                       value={formData.parentId || "Auto-generated on save"} 
                       readOnly 
-                      className="mt-1 bg-transparent border-0 shadow-none font-mono font-bold text-[#1E3A8A] dark:text-primary/30 px-0 h-6 focus-visible:ring-0" 
+                      className="mt-1 bg-transparent border-0 shadow-none font-mono font-bold text-primary dark:text-primary/30 px-0 h-6 focus-visible:ring-0" 
                     />
                   </div>
                   <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("parent_name", "Parent/Guardian Name")}</label><Input value={formData.parentName} onChange={e => setFormData({...formData, parentName: e.target.value})} className="mt-1" /></div>
@@ -506,9 +506,9 @@ export default function Students() {
             <div className="p-6 border-t border-border bg-muted/30 flex gap-3">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setActiveTab('personal'); }} disabled={isEnrolling}>{t("cancel", "Cancel")}</Button>
               {activeTab !== 'parent' ? (
-                <Button className="flex-1 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={() => setActiveTab(activeTab === 'personal' ? 'academic' : 'parent')}>{t("next", "Next")}</Button>
+                <Button className="flex-1 bg-primary hover:bg-primary text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={() => setActiveTab(activeTab === 'personal' ? 'academic' : 'parent')}>{t("next", "Next")}</Button>
               ) : (
-                <Button className="flex-1 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleEnroll} disabled={isEnrolling}>
+                <Button className="flex-1 bg-primary hover:bg-primary text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleEnroll} disabled={isEnrolling}>
                   {isEnrolling ? 'Saving...' : 'Save Student & Parent'}
                 </Button>
               )}
@@ -526,13 +526,13 @@ export default function Students() {
           {viewDetails && (
             <div className="mt-6 space-y-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-[#F0F4FF] dark:bg-primary/30 flex items-center justify-center text-[#1E3A8A] dark:text-primary/30 font-bold text-xl">
+                <div className="w-16 h-16 rounded-full bg-primary/5 dark:bg-primary/30 flex items-center justify-center text-primary dark:text-primary/30 font-bold text-xl">
                   {viewDetails.avatar}
                 </div>
                 <div>
                   <h3 className="text-xl school-heading font-bold tracking-tight">{viewDetails.name}</h3>
                   <p className="text-sm text-muted-foreground">{viewDetails.studentId}</p>
-                  <span className={`inline-block mt-1 text-xs font-semibold px-2.5 py-0.5 rounded-full ${statusColors[viewDetails.status] || 'bg-primary/5 text-[#1E3A8A] dark:bg-primary/30 dark:text-primary/30'}`}>
+                  <span className={`inline-block mt-1 text-xs font-semibold px-2.5 py-0.5 rounded-full ${statusColors[viewDetails.status] || 'bg-primary/5 text-primary dark:bg-primary/30 dark:text-primary/30'}`}>
                     {viewDetails.status}
                   </span>
                 </div>

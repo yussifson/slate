@@ -97,7 +97,7 @@ export default function Housekeeping() {
                      <div key={room.id} className="bg-card p-4 rounded-lg shadow-sm border border-border border-l-4 border-l-red-500">
                        <p className="font-bold text-lg mb-1">{t("room", "Room")} {room.roomNumber}</p>
                        <p className="text-xs text-muted-foreground mb-3">{room.type} {t("needs_clean", "• Needs Clean")}</p>
-                       <Button onClick={() => handleUpdateStatus(room, 'Cleaning', 'Housekeeper A')} size="sm" className="w-full text-xs bg-[#443199] hover:bg-[#362878] text-white">{t("start_cleaning", "Start Cleaning")}</Button>
+                       <Button onClick={() => handleUpdateStatus(room, 'Cleaning', 'Housekeeper A')} size="sm" className="w-full text-xs bg-primary hover:bg-primary/90 text-white">{t("start_cleaning", "Start Cleaning")}</Button>
                      </div>
                    );
                  })}
@@ -135,7 +135,7 @@ export default function Housekeeping() {
                      <div key={room.id} className="bg-card p-4 rounded-lg shadow-sm border border-border border-l-4 border-l-violet-500">
                        <p className="font-bold text-lg mb-1">{t("room", "Room")} {room.roomNumber}</p>
                        <p className="text-xs text-muted-foreground mb-3">{t("waiting_approval", "Waiting Approval")}</p>
-                       <Button onClick={() => handleUpdateStatus(room, 'Available', null)} size="sm" className="w-full text-xs bg-[#443199] hover:bg-[#362878] text-white">{t("approve_as_clean", "Approve as Clean")}</Button>
+                       <Button onClick={() => handleUpdateStatus(room, 'Available', null)} size="sm" className="w-full text-xs bg-primary hover:bg-primary/90 text-white">{t("approve_as_clean", "Approve as Clean")}</Button>
                      </div>
                    );
                  })}

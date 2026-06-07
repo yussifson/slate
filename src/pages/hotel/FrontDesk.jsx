@@ -312,7 +312,7 @@ export default function FrontDesk() {
                 {selectedRoomInfo.status === 'Available' && (
                   <Button
                     onClick={() => setShowCheckInModal(true)}
-                    className="w-full bg-[#443199] hover:bg-[#362878] text-white gap-2"
+                    className="w-full bg-primary hover:bg-primary/90 text-white gap-2"
                   >
                     <Key className="w-4 h-4" /> {t("check_in_guest", "Check In Guest")}
                   </Button>
@@ -391,7 +391,7 @@ export default function FrontDesk() {
             </div>
             <div className="flex gap-3 pt-2">
               <Button variant="outline" className="flex-1" onClick={() => { setShowCheckInModal(false); setCheckInForm({ guestName: '', guestPhone: '', roomType: 'Standard', checkOut: '' }); }}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-[#443199] hover:bg-[#362878] text-white" onClick={handleCheckIn}>{t("confirm_check_in", "Confirm Check-In")}</Button>
+              <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleCheckIn}>{t("confirm_check_in", "Confirm Check-In")}</Button>
             </div>
           </div>
         </div>

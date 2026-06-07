@@ -66,7 +66,7 @@ export default function Notices() {
           <h1 className="text-2xl school-heading font-extrabold tracking-tight">{t("noticeboard", "Noticeboard")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("manage_announcements", "Manage school announcements and communications")}</p>
         </div>
-        <Button onClick={() => { setFormData({title: '', audience: 'All', content: ''}); setShowModal(true); }} className="gap-2 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">
+        <Button onClick={() => { setFormData({title: '', audience: 'All', content: ''}); setShowModal(true); }} className="gap-2 bg-primary hover:bg-primary text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">
           <Plus className="w-4 h-4" /> {t("new_notice", "New Notice")}
         </Button>
       </div>
@@ -82,7 +82,7 @@ export default function Notices() {
         <div className="py-12 text-center text-muted-foreground">{t("loading", "Loading...")}</div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-12 school-card">
-          <Megaphone className="w-12 h-12 mx-auto mb-3 opacity-20 text-[#1E3A8A]" />
+          <Megaphone className="w-12 h-12 mx-auto mb-3 opacity-20 text-primary" />
           <p className="font-semibold text-lg text-card-foreground">{t("no_notices", "No notices published")}</p>
         </div>
       ) : (
@@ -149,7 +149,7 @@ export default function Notices() {
             </div>
             <div className="flex gap-3 pt-2">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleSave}>
+              <Button className="flex-1 bg-primary hover:bg-primary text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleSave}>
                 {mutateRecord.isPending ? 'Publishing...' : 'Publish'}
               </Button>
             </div>

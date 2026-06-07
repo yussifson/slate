@@ -197,7 +197,7 @@ export default function Timetable() {
           </select>
           <Button
             onClick={() => { setFormData({ ...defaultForm, className: selectedClass }); setShowModal(true); }}
-            className="gap-2 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold"
+            className="gap-2 bg-primary hover:bg-primary text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold"
           >
             <Plus className="w-4 h-4" /> {t("add_slot", "Add Slot")}
           </Button>
@@ -341,7 +341,7 @@ export default function Timetable() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
           <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-              <Plus className="w-5 h-5 text-[#1E3A8A] dark:text-primary/70" /> {editingId ? 'Edit Timetable Slot' : 'Add Timetable Slot'}
+              <Plus className="w-5 h-5 text-primary dark:text-primary/70" /> {editingId ? 'Edit Timetable Slot' : 'Add Timetable Slot'}
             </h2>
             <div className="space-y-3">
               <div>
@@ -456,7 +456,7 @@ export default function Timetable() {
                 {t("cancel", "Cancel")}
               </Button>
               <Button
-                className="flex-1 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold"
+                className="flex-1 bg-primary hover:bg-primary text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold"
                 onClick={handleAddSlot}
                 disabled={mutateRecord.isPending}
               >

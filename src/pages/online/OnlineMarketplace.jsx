@@ -56,16 +56,16 @@ export default function OnlineMarketplace() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center space-x-8">
-              <span className="text-2xl font-bold text-[#0056D2]">Learn<span className="text-gray-800">Sphere</span></span>
+              <span className="text-2xl font-bold text-primary">Learn<span className="text-gray-800">Sphere</span></span>
               <div className="hidden md:flex space-x-6 text-sm font-medium text-gray-600">
-                <a href="#" className="hover:text-[#0056D2]">Explore</a>
-                <a href="#" className="hover:text-[#0056D2]">Degrees</a>
-                <a href="#" className="hover:text-[#0056D2]">Certificates</a>
+                <a href="#" className="hover:text-primary">Explore</a>
+                <a href="#" className="hover:text-primary">Degrees</a>
+                <a href="#" className="hover:text-primary">Certificates</a>
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <Button variant="ghost" onClick={() => navigate('/login')} className="text-[#0056D2] hover:bg-primary/5 font-semibold">Log In</Button>
-              <Button onClick={() => navigate('/signup')} className="bg-[#0056D2] hover:bg-[#004bb5] text-white font-semibold">Join for Free</Button>
+              <Button variant="ghost" onClick={() => navigate('/login')} className="text-primary hover:bg-primary/5 font-semibold">Log In</Button>
+              <Button onClick={() => navigate('/signup')} className="bg-primary hover:bg-primary/90 text-white font-semibold">Join for Free</Button>
             </div>
           </div>
         </div>
@@ -78,8 +78,8 @@ export default function OnlineMarketplace() {
             <h1 className="text-5xl font-bold text-gray-900 leading-tight">Learn without limits</h1>
             <p className="text-xl text-gray-600">Start, switch, or advance your career with more than 5,000 courses, Professional Certificates, and degrees from world-class universities and companies.</p>
             <div className="flex space-x-4 pt-4">
-              <Button onClick={() => navigate('/signup')} className="bg-[#0056D2] hover:bg-[#004bb5] text-white px-8 py-6 text-lg rounded-md">Join for Free</Button>
-              <Button variant="outline" className="text-[#0056D2] border-[#0056D2] hover:bg-primary/5 px-8 py-6 text-lg rounded-md">Try Coursera for Business</Button>
+              <Button onClick={() => navigate('/signup')} className="bg-primary hover:bg-primary/90 text-white px-8 py-6 text-lg rounded-md">Join for Free</Button>
+              <Button variant="outline" className="text-primary border-primary hover:bg-primary/5 px-8 py-6 text-lg rounded-md">Try Coursera for Business</Button>
             </div>
           </div>
           <div className="md:w-1/2">
@@ -95,7 +95,7 @@ export default function OnlineMarketplace() {
             <Search className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
             <Input 
               placeholder="What do you want to learn?" 
-              className="pl-12 py-6 text-lg rounded-full border-2 border-gray-300 focus-visible:ring-[#0056D2] w-full"
+              className="pl-12 py-6 text-lg rounded-full border-2 border-gray-300 focus-visible:ring-primary w-full"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -112,13 +112,13 @@ export default function OnlineMarketplace() {
             <Card key={course.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 border-gray-200 cursor-pointer group rounded-xl">
               <div className="relative h-48 overflow-hidden">
                 <img src={course.image} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                <Badge className="absolute top-4 left-4 bg-white/90 text-[#0056D2] hover:bg-white">{course.tag}</Badge>
+                <Badge className="absolute top-4 left-4 bg-white/90 text-primary hover:bg-white">{course.tag}</Badge>
               </div>
               <CardContent className="p-6">
                 <div className="flex items-center gap-2 text-sm text-gray-600 mb-3">
                   <span className="font-semibold text-gray-800">{course.instructor}</span>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-[#0056D2] transition-colors">{course.title}</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-primary transition-colors">{course.title}</h3>
                 <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
                   <div className="flex items-center gap-1 text-yellow-500 font-semibold">
                     <Star className="h-4 w-4 fill-current" />
@@ -142,21 +142,21 @@ export default function OnlineMarketplace() {
           <h2 className="text-3xl font-bold text-gray-900 mb-12">World-class learning for anyone, anywhere</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="p-6 bg-white rounded-xl shadow-sm border border-gray-100">
-              <div className="w-16 h-16 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-6 text-[#0056D2]">
+              <div className="w-16 h-16 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-6 text-primary">
                 <BookOpen className="h-8 w-8" />
               </div>
               <h3 className="text-xl font-bold mb-3">Learn anything</h3>
               <p className="text-gray-600">Explore any interest or trending topic, take prerequisites, and advance your skills.</p>
             </div>
             <div className="p-6 bg-white rounded-xl shadow-sm border border-gray-100">
-              <div className="w-16 h-16 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-6 text-[#0056D2]">
+              <div className="w-16 h-16 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-6 text-primary">
                 <Star className="h-8 w-8" />
               </div>
               <h3 className="text-xl font-bold mb-3">Save money</h3>
               <p className="text-gray-600">Spend less money on your learning if you plan to take multiple courses this year.</p>
             </div>
             <div className="p-6 bg-white rounded-xl shadow-sm border border-gray-100">
-              <div className="w-16 h-16 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-6 text-[#0056D2]">
+              <div className="w-16 h-16 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-6 text-primary">
                 <Clock className="h-8 w-8" />
               </div>
               <h3 className="text-xl font-bold mb-3">Flexible learning</h3>

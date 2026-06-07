@@ -12,14 +12,14 @@ export default function OnlineInstructor() {
           <h1 className="text-3xl font-bold text-gray-900">Instructor Portal</h1>
           <p className="text-gray-500 mt-1">Manage your courses, view student analytics, and track revenue.</p>
         </div>
-        <Button className="bg-[#0056D2] hover:bg-[#004bb5] text-white">Create New Course</Button>
+        <Button className="bg-primary hover:bg-primary/90 text-white">Create New Course</Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="border-0 shadow-sm rounded-xl">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-primary/5 text-[#0056D2] rounded-lg">
+              <div className="p-3 bg-primary/5 text-primary rounded-lg">
                 <Users className="h-6 w-6" />
               </div>
               <div>
@@ -102,7 +102,7 @@ export default function OnlineInstructor() {
                       <p className="text-sm text-gray-500">Revenue</p>
                       <p className="font-bold text-gray-900">{c.rev}</p>
                     </div>
-                    <Button variant="outline" size="sm" className="text-[#0056D2] border-[#0056D2]">Manage</Button>
+                    <Button variant="outline" size="sm" className="text-primary border-primary">Manage</Button>
                   </div>
                 </div>
               ))}
@@ -139,7 +139,7 @@ export default function OnlineInstructor() {
                 <Progress value={90} className="h-2" />
               </div>
             </div>
-            <Button variant="ghost" className="w-full mt-6 text-[#0056D2]">View Full Analytics</Button>
+            <Button variant="ghost" className="w-full mt-6 text-primary">View Full Analytics</Button>
           </CardContent>
         </Card>
       </div>

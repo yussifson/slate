@@ -67,7 +67,7 @@ export default function Transport() {
           <h1 className="text-2xl school-heading font-extrabold tracking-tight">{t("transport_fleet", "Transport & Fleet")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("manage_school_buses", "Manage school bus routes, drivers, and capacity")}</p>
         </div>
-        <Button onClick={() => { setFormData({route: '', vehicle: '', driver: '', capacity: '', schedule: ''}); setShowModal(true); }} className="gap-2 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">
+        <Button onClick={() => { setFormData({route: '', vehicle: '', driver: '', capacity: '', schedule: ''}); setShowModal(true); }} className="gap-2 bg-primary hover:bg-primary text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">
           <Plus className="w-4 h-4" /> {t("add_route", "Add Route")}
         </Button>
       </div>
@@ -83,7 +83,7 @@ export default function Transport() {
         <div className="py-12 text-center text-muted-foreground">{t("loading", "Loading...")}</div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-12 school-card">
-          <Bus className="w-12 h-12 mx-auto mb-3 opacity-20 text-[#1E3A8A]" />
+          <Bus className="w-12 h-12 mx-auto mb-3 opacity-20 text-primary" />
           <p className="font-semibold text-lg text-card-foreground">{t("no_routes", "No transport routes found")}</p>
         </div>
       ) : (
@@ -114,7 +114,7 @@ export default function Transport() {
                   <Map className="w-6 h-6" />
                 </div>
                 <h3 className="font-bold text-card-foreground text-lg line-clamp-1" title={r.route}>{r.route}</h3>
-                <p className="text-xs font-semibold text-[#1E3A8A] dark:text-primary/70 uppercase tracking-wide mb-3">{r.vehicle}</p>
+                <p className="text-xs font-semibold text-primary dark:text-primary/70 uppercase tracking-wide mb-3">{r.vehicle}</p>
                 
                 <div className="w-full space-y-2 mt-2">
                   <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 p-2 rounded-lg">
@@ -145,7 +145,7 @@ export default function Transport() {
             </div>
             <div className="flex gap-3 pt-2">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleSave}>
+              <Button className="flex-1 bg-primary hover:bg-primary text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleSave}>
                 {mutateRecord.isPending ? 'Saving...' : 'Save Route'}
               </Button>
             </div>

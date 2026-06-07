@@ -67,7 +67,7 @@ export default function Hostel() {
           <h1 className="text-2xl school-heading font-extrabold tracking-tight">{t("hostel_dormitory", "Hostel & Dormitory")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("manage_dormitories", "Manage boarding houses, capacity, and wardens")}</p>
         </div>
-        <Button onClick={() => { setFormData({name: '', type: 'Boys', warden: '', capacity: '', rooms: ''}); setShowModal(true); }} className="gap-2 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">
+        <Button onClick={() => { setFormData({name: '', type: 'Boys', warden: '', capacity: '', rooms: ''}); setShowModal(true); }} className="gap-2 bg-primary hover:bg-primary text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">
           <Plus className="w-4 h-4" /> {t("add_hostel", "Add Hostel")}
         </Button>
       </div>
@@ -83,7 +83,7 @@ export default function Hostel() {
         <div className="py-12 text-center text-muted-foreground">{t("loading", "Loading...")}</div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-12 school-card">
-          <BedDouble className="w-12 h-12 mx-auto mb-3 opacity-20 text-[#1E3A8A]" />
+          <BedDouble className="w-12 h-12 mx-auto mb-3 opacity-20 text-primary" />
           <p className="font-semibold text-lg text-card-foreground">{t("no_hostels", "No hostels found")}</p>
         </div>
       ) : (
@@ -160,7 +160,7 @@ export default function Hostel() {
             </div>
             <div className="flex gap-3 pt-2">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleSave}>
+              <Button className="flex-1 bg-primary hover:bg-primary text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleSave}>
                 {mutateRecord.isPending ? 'Saving...' : 'Save Hostel'}
               </Button>
             </div>

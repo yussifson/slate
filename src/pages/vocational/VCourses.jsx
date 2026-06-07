@@ -204,7 +204,7 @@ export default function VCourses() {
               ))}
               <div className="mt-3 space-y-1 px-2">
                 <button className="w-full py-2 text-[10px] font-semibold uppercase tracking-wider border border-dashed border-[#30363D] text-[#484F58] hover:border-[#F6C90E] hover:text-[#F6C90E] transition-colors" style={{ fontFamily: F.label }}>+ Add Phase</button>
-                <button className="w-full py-2 text-[10px] font-semibold uppercase tracking-wider border border-dashed border-[#30363D] text-[#484F58] hover:border-[#4493F8] hover:text-[#4493F8] transition-colors" style={{ fontFamily: F.label }}>+ Add Module</button>
+                <button className="w-full py-2 text-[10px] font-semibold uppercase tracking-wider border border-dashed border-[#30363D] text-[#484F58] hover:border-primary hover:text-primary transition-colors" style={{ fontFamily: F.label }}>+ Add Module</button>
               </div>
             </div>
 
@@ -229,7 +229,7 @@ export default function VCourses() {
                       <X className="w-3 h-3 text-[#484F58] cursor-pointer hover:text-[#FF6B2C]" />
                     </div>
                   ))}
-                  <button className="text-[11px] text-[#4493F8] hover:text-[#F0F6FC] flex items-center gap-1 mt-1" style={{ fontFamily: F.label }}><Plus className="w-3 h-3" /> Add outcome</button>
+                  <button className="text-[11px] text-primary hover:text-[#F0F6FC] flex items-center gap-1 mt-1" style={{ fontFamily: F.label }}><Plus className="w-3 h-3" /> Add outcome</button>
                 </div>
                 <div>
                   <label className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#484F58] mb-2 block" style={{ fontFamily: F.label }}>Competencies Mapped</label>
@@ -239,7 +239,7 @@ export default function VCourses() {
                         [{c.code}] {c.name} <X className="w-3 h-3 cursor-pointer hover:text-[#FF6B2C]" />
                       </span>
                     ))}
-                    <button className="px-2.5 py-1 text-[10px] font-semibold border border-dashed border-[#30363D] text-[#484F58] hover:border-[#4493F8] hover:text-[#4493F8] transition-colors" style={{ fontFamily: F.label }}>+ Map</button>
+                    <button className="px-2.5 py-1 text-[10px] font-semibold border border-dashed border-[#30363D] text-[#484F58] hover:border-primary hover:text-primary transition-colors" style={{ fontFamily: F.label }}>+ Map</button>
                   </div>
                 </div>
                 <div>

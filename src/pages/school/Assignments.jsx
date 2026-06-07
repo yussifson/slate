@@ -70,7 +70,7 @@ export default function Assignments() {
           <h1 className="text-2xl school-heading font-extrabold tracking-tight">{t("assignments", "Assignments & Homework")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("manage_class_assignments", "Manage class assignments and homework tracks")}</p>
         </div>
-        <Button onClick={() => { setFormData({title: '', class: 'Grade 10', subject: '', dueDate: '', description: ''}); setShowModal(true); }} className="gap-2 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">
+        <Button onClick={() => { setFormData({title: '', class: 'Grade 10', subject: '', dueDate: '', description: ''}); setShowModal(true); }} className="gap-2 bg-primary hover:bg-primary text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">
           <Plus className="w-4 h-4" /> {t("create_assignment", "Create Assignment")}
         </Button>
       </div>
@@ -87,7 +87,7 @@ export default function Assignments() {
         <div className="py-12 text-center text-muted-foreground">{t("loading", "Loading...")}</div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-12 school-card">
-          <BookOpen className="w-12 h-12 mx-auto mb-3 opacity-20 text-[#1E3A8A]" />
+          <BookOpen className="w-12 h-12 mx-auto mb-3 opacity-20 text-primary" />
           <p className="font-semibold text-lg text-card-foreground">{t("no_assignments", "No assignments found")}</p>
         </div>
       ) : (
@@ -96,7 +96,7 @@ export default function Assignments() {
             <div key={a.id} className="bg-card/60 backdrop-blur-md rounded-3xl border border-border/60 p-6 shadow-sm  hover:-translate-y-1.5 transition-all duration-300 group relative overflow-hidden flex flex-col">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/40 via-transparent to-transparent dark:from-primary/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
               <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity pointer-events-none transform translate-x-1/4 -translate-y-1/4 scale-150 z-0">
-                <FileText className="w-32 h-32 text-[#1E3A8A] dark:text-primary/70" />
+                <FileText className="w-32 h-32 text-primary dark:text-primary/70" />
               </div>
               <div className="absolute top-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                 <DropdownMenu>
@@ -117,12 +117,12 @@ export default function Assignments() {
               </div>
               
               <div className="flex items-start gap-4 mb-5 relative z-10">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/10 dark:from-primary/40 dark:to-primary/40 border border-white/50 shadow-inner text-[#1E3A8A] dark:text-primary/70 dark:text-primary/70 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/10 dark:from-primary/40 dark:to-primary/40 border border-white/50 shadow-inner text-primary dark:text-primary/70 dark:text-primary/70 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300">
                   <FileText className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-card-foreground text-lg line-clamp-1 tracking-tight group-hover:text-[#1E3A8A] dark:text-primary/70 transition-colors">{a.title}</h3>
-                  <p className="text-xs font-bold text-[#1E3A8A] dark:text-primary/70 dark:text-primary/70 uppercase tracking-widest mt-1 opacity-90">{a.subject} • {a.class}</p>
+                  <h3 className="font-extrabold text-card-foreground text-lg line-clamp-1 tracking-tight group-hover:text-primary dark:text-primary/70 transition-colors">{a.title}</h3>
+                  <p className="text-xs font-bold text-primary dark:text-primary/70 dark:text-primary/70 uppercase tracking-widest mt-1 opacity-90">{a.subject} • {a.class}</p>
                 </div>
               </div>
               
@@ -134,7 +134,7 @@ export default function Assignments() {
                 <span className="text-xs font-bold flex items-center gap-2 text-slate-500 uppercase tracking-wider">
                   <Calendar className="w-4 h-4 text-primary" /> Due: {a.dueDate ? format(new Date(a.dueDate), 'MMM d, yyyy') : 'No Date'}
                 </span>
-                <span className="bg-[#F0F4FF] dark:bg-primary/20 text-[#1E3A8A] dark:text-primary/30 border border-primary/20 text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-md shadow-sm">{t("active", "Active")}</span>
+                <span className="bg-primary/5 dark:bg-primary/20 text-primary dark:text-primary/30 border border-primary/20 text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-md shadow-sm">{t("active", "Active")}</span>
               </div>
             </div>
           ))}
@@ -159,7 +159,7 @@ export default function Assignments() {
             </div>
             <div className="flex gap-3 pt-2">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleSave}>
+              <Button className="flex-1 bg-primary hover:bg-primary text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleSave}>
                 {mutateRecord.isPending ? 'Saving...' : 'Save Assignment'}
               </Button>
             </div>

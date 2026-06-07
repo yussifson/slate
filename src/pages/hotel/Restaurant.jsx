@@ -126,7 +126,7 @@ export default function Restaurant() {
           <h1 className="text-2xl font-bold text-card-foreground">{t("restaurant_room_service", "Restaurant & Room Service")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("manage_food_orders_and_pos", "Manage food orders and POS")}</p>
         </div>
-        <Button onClick={() => setShowAddMenuModal(true)} className="gap-2 bg-[#443199] hover:bg-[#362878] text-white">
+        <Button onClick={() => setShowAddMenuModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
           <Plus className="w-4 h-4" /> {t("add_menu_item", "Add Menu Item")}
         </Button>
       </div>
@@ -190,9 +190,9 @@ export default function Restaurant() {
 
          {/* Right: Current Order */}
          <div className="w-full lg:w-96 bg-card rounded-xl shadow-md border border-border flex flex-col h-[600px] overflow-hidden">
-            <div className="p-4 bg-[#443199] text-white shadow-md flex items-center justify-between">
+            <div className="p-4 bg-primary text-white shadow-md flex items-center justify-between">
                <h3 className="font-bold flex items-center gap-2"><ShoppingCart className="w-5 h-5"/> {t("current_order", "Current Order")}</h3>
-               <Input value={roomNumber} onChange={e => setRoomNumber(e.target.value)} className="w-24 h-8 bg-[#362878] border-none text-white text-xs font-bold text-center" />
+               <Input value={roomNumber} onChange={e => setRoomNumber(e.target.value)} className="w-24 h-8 bg-primary/90 border-none text-white text-xs font-bold text-center" />
             </div>
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
                {order.length === 0 ? (
@@ -262,7 +262,7 @@ export default function Restaurant() {
             </div>
             <div className="flex gap-3 pt-2">
               <Button variant="outline" className="flex-1" onClick={() => setShowAddMenuModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-[#443199] hover:bg-[#362878] text-white" onClick={handleAddMenuItem}>{t("add_item", "Add Item")}</Button>
+              <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleAddMenuItem}>{t("add_item", "Add Item")}</Button>
             </div>
           </div>
         </div>

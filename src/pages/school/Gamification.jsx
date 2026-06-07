@@ -70,7 +70,7 @@ export default function Gamification() {
       <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-6">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center border border-border shadow-sm">
-            <Trophy className="w-8 h-8 text-[#1E3A8A] dark:text-primary/70" />
+            <Trophy className="w-8 h-8 text-primary dark:text-primary/70" />
           </div>
           <div>
             <h1 className="text-2xl school-heading font-extrabold tracking-tight">{user?.full_name || "Student"}</h1>
@@ -80,7 +80,7 @@ export default function Gamification() {
           </div>
         </div>
         
-        <Button onClick={() => claimDailyXP.mutate()} className="bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold font-bold rounded-xl shadow-sm transition-all">
+        <Button onClick={() => claimDailyXP.mutate()} className="bg-primary hover:bg-primary text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold font-bold rounded-xl shadow-sm transition-all">
           <Zap className="w-4 h-4 mr-2" /> Claim Daily 50 XP
         </Button>
       </div>
@@ -93,8 +93,8 @@ export default function Gamification() {
           { title: "Math Wizard", desc: "Win the math olympiad", icon: Zap }
         ].map((badge, i) => (
           <div key={i} className="bg-card rounded-xl p-6 border border-border shadow-sm text-center group cursor-pointer hover:border-primary/30 transition-colors duration-300">
-            <div className={`w-16 h-16 mx-auto rounded-full bg-[#F0F4FF] dark:bg-primary/20 flex items-center justify-center mb-4 shadow-sm`}>
-              <badge.icon className="w-8 h-8 text-[#1E3A8A] dark:text-primary/70" />
+            <div className={`w-16 h-16 mx-auto rounded-full bg-primary/5 dark:bg-primary/20 flex items-center justify-center mb-4 shadow-sm`}>
+              <badge.icon className="w-8 h-8 text-primary dark:text-primary/70" />
             </div>
             <h3 className="font-bold text-lg text-card-foreground mb-1">{badge.title}</h3>
             <p className="text-sm font-medium text-muted-foreground">{badge.desc}</p>
@@ -113,14 +113,14 @@ export default function Gamification() {
             leaderboard.map((student, i) => {
               const isMe = student.clientId === session?.user?.id;
               return (
-                <div key={i} className={`flex items-center justify-between p-4 rounded-lg border ${isMe ? 'bg-[#F0F4FF] dark:bg-primary/20 dark:bg-primary/10 border-primary/20' : 'bg-background border-border'} shadow-sm`}>
+                <div key={i} className={`flex items-center justify-between p-4 rounded-lg border ${isMe ? 'bg-primary/5 dark:bg-primary/20 dark:bg-primary/10 border-primary/20' : 'bg-background border-border'} shadow-sm`}>
                   <div className="flex items-center gap-4">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${i === 0 ? 'bg-primary/10 text-[#1E3A8A] dark:text-primary/70' : i === 1 ? 'bg-muted text-muted-foreground' : i === 2 ? 'bg-muted text-muted-foreground' : 'bg-transparent text-muted-foreground'}`}>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${i === 0 ? 'bg-primary/10 text-primary dark:text-primary/70' : i === 1 ? 'bg-muted text-muted-foreground' : i === 2 ? 'bg-muted text-muted-foreground' : 'bg-transparent text-muted-foreground'}`}>
                       #{i + 1}
                     </div>
                     <div className="font-bold text-foreground">{isMe ? 'You' : student.name}</div>
                   </div>
-                  <div className="font-bold text-[#1E3A8A] dark:text-primary/70 dark:text-primary">{student.total} XP</div>
+                  <div className="font-bold text-primary dark:text-primary/70 dark:text-primary">{student.total} XP</div>
                 </div>
               );
             })

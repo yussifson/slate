@@ -232,9 +232,9 @@ export default function VTraineeProfiles() {
 
             {/* Orbit AI Summary */}
             <div className="bg-[#161B22] border border-[#30363D] p-4 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-[#BF8FFF]/5 rounded-full blur-3xl" />
+              <div className="absolute top-0 right-0 w-24 h-24 bg-primary/20/5 rounded-full blur-3xl" />
               <div className="flex items-center gap-2 mb-3">
-                <div className="w-5 h-5 rounded-full bg-gradient-to-br from-[#BF8FFF] to-[#4493F8] flex items-center justify-center"><BarChart3 className="w-3 h-3 text-white" /></div>
+                <div className="w-5 h-5 rounded-full bg-gradient-to-br from-primary/20 to-primary flex items-center justify-center"><BarChart3 className="w-3 h-3 text-white" /></div>
                 <h3 className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#F0F6FC]" style={{ fontFamily: F.label }}>Orbit AI Summary</h3>
               </div>
               <p className="text-[12px] text-[#C9D1D9] leading-relaxed relative z-10">"{selected.title} is performing above cohort average in structural skills but shows a gap in safety documentation. Recommend targeting OSH Module 3 before the Level 3 assessment."</p>

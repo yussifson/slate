@@ -68,7 +68,7 @@ export default function Discipline() {
           <h1 className="text-2xl school-heading font-extrabold tracking-tight">{t("discipline", "Discipline & Behavior")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("manage_discipline", "Track student conduct, merits, and infractions")}</p>
         </div>
-        <Button onClick={() => { setFormData({studentName: '', type: 'Infraction', date: '', description: '', actionTaken: ''}); setShowModal(true); }} className="gap-2 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">
+        <Button onClick={() => { setFormData({studentName: '', type: 'Infraction', date: '', description: '', actionTaken: ''}); setShowModal(true); }} className="gap-2 bg-primary hover:bg-primary text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">
           <Plus className="w-4 h-4" /> {t("add_record", "Add Record")}
         </Button>
       </div>
@@ -84,14 +84,14 @@ export default function Discipline() {
         <div className="py-12 text-center text-muted-foreground">{t("loading", "Loading...")}</div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-12 school-card">
-          <Scale className="w-12 h-12 mx-auto mb-3 opacity-20 text-[#1E3A8A]" />
+          <Scale className="w-12 h-12 mx-auto mb-3 opacity-20 text-primary" />
           <p className="font-semibold text-lg text-card-foreground">{t("no_records", "No disciplinary records found")}</p>
         </div>
       ) : (
         <div className="school-card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-primary/10 dark:border-slate-700">
+              <thead className="bg-primary/5/60 dark:bg-slate-800/40 border-b border-primary/10 dark:border-slate-700">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Student Name</th>
                   <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Type</th>
@@ -165,7 +165,7 @@ export default function Discipline() {
             </div>
             <div className="flex gap-3 pt-2">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleSave}>
+              <Button className="flex-1 bg-primary hover:bg-primary text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleSave}>
                 {mutateRecord.isPending ? 'Saving...' : 'Save Record'}
               </Button>
             </div>

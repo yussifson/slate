@@ -14,7 +14,7 @@ export default function OnlineAnalytics() {
         </div>
         <div className="flex gap-4">
           <Button variant="outline" className="bg-white"><Calendar className="h-4 w-4 mr-2" /> Last 30 Days</Button>
-          <Button className="bg-[#0056D2] hover:bg-[#004bb5] text-white"><Download className="h-4 w-4 mr-2" /> Export Report</Button>
+          <Button className="bg-primary hover:bg-primary/90 text-white"><Download className="h-4 w-4 mr-2" /> Export Report</Button>
         </div>
       </div>
 
@@ -22,7 +22,7 @@ export default function OnlineAnalytics() {
         <Card className="border-0 shadow-sm rounded-xl">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-primary/5 text-[#0056D2] rounded-lg">
+              <div className="p-3 bg-primary/5 text-primary rounded-lg">
                 <Eye className="h-6 w-6" />
               </div>
               <div>

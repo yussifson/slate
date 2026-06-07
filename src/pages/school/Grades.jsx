@@ -28,7 +28,7 @@ function calcGrade(score, maxScore) {
 
 const GRADE_COLORS = {
   A: 'bg-primary/10 text-primary/90',
-  B: 'bg-primary/5 text-[#1E3A8A] dark:bg-primary/30 dark:text-primary/30',
+  B: 'bg-primary/5 text-primary dark:bg-primary/30 dark:text-primary/30',
   C: 'bg-amber-100 text-amber-700',
   D: 'bg-orange-100 text-orange-700',
   F: 'bg-red-100 text-red-700',
@@ -174,7 +174,7 @@ export default function Grades() {
           <h1 className="text-2xl school-heading font-extrabold tracking-tight">{t("grades_results", "Grades & Results")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t("record_and_manage_student_exam", "Record and manage student exam scores")}</p>
         </div>
-        <Button onClick={() => setShowModal(true)} className="gap-2 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">
+        <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">
           <Plus className="w-4 h-4" /> {t("add_grade_entry", "Add Grade Entry")}
         </Button>
       </div>
@@ -260,7 +260,7 @@ export default function Grades() {
             </div>
           ) : (
             <table className="w-full text-sm">
-              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-primary/10 dark:border-slate-700">
+              <thead className="bg-primary/5/60 dark:bg-slate-800/40 border-b border-primary/10 dark:border-slate-700">
                 <tr>
                   {['Student', 'Class', 'Subject', 'Exam', 'Date', 'Score', 'Grade', ''].map(h => {
                     return (<th key={h} className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{h}</th>);
@@ -280,7 +280,7 @@ export default function Grades() {
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <Link to="/classes" className="bg-[#F0F4FF] dark:bg-primary/20 text-[#1E3A8A] dark:text-primary/30 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{g.className}</Link>
+                        <Link to="/classes" className="bg-primary/5 dark:bg-primary/20 text-primary dark:text-primary/30 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{g.className}</Link>
                       </td>
                       <td className="px-4 py-3 text-muted-foreground">{g.subject}</td>
                       <td className="px-4 py-3 text-foreground font-medium">{g.examName}</td>
@@ -454,7 +454,7 @@ export default function Grades() {
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditingId(null); setFormData(defaultForm); }} disabled={mutateRecord.isPending}>
                 {t("cancel", "Cancel")}
               </Button>
-              <Button className="flex-1 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleAdd} disabled={mutateRecord.isPending}>
+              <Button className="flex-1 bg-primary hover:bg-primary text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleAdd} disabled={mutateRecord.isPending}>
                 {mutateRecord.isPending ? 'Saving...' : (editingId ? 'Save Changes' : 'Save Grade')}
               </Button>
             </div>

@@ -143,7 +143,7 @@ export default function Classes() {
         </div>
         <div className="flex items-center gap-3 w-full md:w-auto">
           <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
-          <Button onClick={() => setShowModal(true)} className="gap-2 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">
+          <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">
             <Plus className="w-4 h-4" /> {t("add_class", "Add Class")}
           </Button>
         </div>
@@ -153,7 +153,7 @@ export default function Classes() {
         <div className="py-12 text-center text-muted-foreground">{t("loading_classes", "Loading classes...")}</div>
       ) : filtered.length === 0 ? (
         <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-border">
-          <BookOpen className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-[#1E3A8A] dark:text-primary/70" />
+          <BookOpen className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary dark:text-primary/70" />
           <p className="font-semibold text-lg text-card-foreground">{t("no_classes_registered", "No classes registered")}</p>
           <p className="text-sm mt-1 max-w-md mx-auto">{t(
             "add_a_new_grade_class_subject_",
@@ -188,7 +188,7 @@ export default function Classes() {
         <div className="school-card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-primary/10 dark:border-slate-700">
+              <thead className="bg-primary/5/60 dark:bg-slate-800/40 border-b border-primary/10 dark:border-slate-700">
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Class Name</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Subject</th>
@@ -274,7 +274,7 @@ export default function Classes() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleCreateClass}>{editingId ? 'Save Changes' : 'Save Class'}</Button>
+              <Button className="flex-1 bg-primary hover:bg-primary text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleCreateClass}>{editingId ? 'Save Changes' : 'Save Class'}</Button>
             </div>
           </div>
         </div>
@@ -298,7 +298,7 @@ export default function Classes() {
           {viewDetails && (
             <div className="mt-6 space-y-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-[#F0F4FF] dark:bg-primary/20 dark:bg-primary/50 flex items-center justify-center text-[#1E3A8A] dark:text-primary/70 dark:text-primary/70">
+                <div className="w-16 h-16 rounded-full bg-primary/5 dark:bg-primary/20 dark:bg-primary/50 flex items-center justify-center text-primary dark:text-primary/70 dark:text-primary/70">
                   <BookOpen className="w-8 h-8" />
                 </div>
                 <div>
@@ -331,7 +331,7 @@ export default function Classes() {
                   <h4 className="text-sm font-bold text-foreground">{t("assigned_courses", "Assigned Courses")}</h4>
                   <div className="flex flex-wrap gap-2">
                     {viewDetails.courses.split(',').map(course => (
-                      <span key={course} className="px-3 py-1 bg-[#F0F4FF] dark:bg-primary/20 text-[#1E3A8A] dark:text-primary/30 font-semibold text-xs rounded-full border border-primary/20">
+                      <span key={course} className="px-3 py-1 bg-primary/5 dark:bg-primary/20 text-primary dark:text-primary/30 font-semibold text-xs rounded-full border border-primary/20">
                         {course.trim()}
                       </span>
                     ))}

@@ -166,7 +166,7 @@ export default function Parents() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-[#F0F4FF]/60 dark:bg-slate-800/40 border-b border-primary/10 dark:border-slate-700">
+              <thead className="bg-primary/5/60 dark:bg-slate-800/40 border-b border-primary/10 dark:border-slate-700">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Parent / Guardian</th>
                   <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">ID / Login ID</th>
@@ -181,14 +181,14 @@ export default function Parents() {
                 <tr key={p.id} className="hover:bg-muted/50 transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-[#F0F4FF] dark:bg-primary/30 flex items-center justify-center text-[#1E3A8A] dark:text-primary/30 font-bold text-xs">
+                      <div className="w-9 h-9 rounded-full bg-primary/5 dark:bg-primary/30 flex items-center justify-center text-primary dark:text-primary/30 font-bold text-xs">
                         {p.avatar}
                       </div>
                       <p className="font-semibold text-card-foreground">{p.name}</p>
                     </div>
                   </td>
                   <td className="px-4 py-3 text-muted-foreground font-mono text-xs">{p.parentId}</td>
-                  <td className="px-4 py-3 text-[#1E3A8A] dark:text-primary/70 text-xs font-semibold">
+                  <td className="px-4 py-3 text-primary dark:text-primary/70 text-xs font-semibold">
                     {students.find(s => s.id_number === p.linkedStudentId)?.name || 'Unlinked'}
                   </td>
                   <td className="px-4 py-3">
@@ -242,7 +242,7 @@ export default function Parents() {
                     key={tab}
                     onClick={() => setActiveTab(tab)}
                     className={`pb-2 text-sm font-semibold capitalize border-b-2 transition-colors ${
-                      activeTab === tab ? 'border-[#1E3A8A] text-[#1E3A8A] dark:border-primary/70 dark:text-primary/70' : 'border-transparent text-muted-foreground hover:text-foreground'
+                      activeTab === tab ? 'border-primary text-primary dark:border-primary/70 dark:text-primary/70' : 'border-transparent text-muted-foreground hover:text-foreground'
                     }`}
                   >
                     {tab}
@@ -290,9 +290,9 @@ export default function Parents() {
             <div className="p-6 border-t border-border bg-muted/30 flex gap-3">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setActiveTab('personal'); }} disabled={mutateParent.isPending}>{t("cancel", "Cancel")}</Button>
               {activeTab !== 'linking' ? (
-                <Button className="flex-1 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={() => setActiveTab('linking')}>{t("next", "Next")}</Button>
+                <Button className="flex-1 bg-primary hover:bg-primary text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={() => setActiveTab('linking')}>{t("next", "Next")}</Button>
               ) : (
-                <Button className="flex-1 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleEnroll} disabled={mutateParent.isPending}>
+                <Button className="flex-1 bg-primary hover:bg-primary text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleEnroll} disabled={mutateParent.isPending}>
                   {mutateParent.isPending ? 'Saving...' : 'Save Changes'}
                 </Button>
               )}

@@ -111,7 +111,7 @@ export default function GuestRequests() {
             "Track and fulfill guest service requests"
           )}</p>
         </div>
-        <Button onClick={() => setShowModal(true)} className="gap-2 bg-[#443199] hover:bg-[#362878] text-white">
+        <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
           <Plus className="w-4 h-4" /> {t("new_request", "New Request")}
         </Button>
       </div>
@@ -153,7 +153,7 @@ export default function GuestRequests() {
                    </div>
                    <div className="flex gap-2 w-full sm:w-auto items-center justify-end">
                       {req.status === 'Pending' && (
-                        <Button onClick={() => handleUpdateStatus(req, 'In Progress')} size="sm" className="w-full sm:w-auto bg-[#443199] hover:bg-[#362878] text-white">{t("accept_task", "Accept Task")}</Button>
+                        <Button onClick={() => handleUpdateStatus(req, 'In Progress')} size="sm" className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white">{t("accept_task", "Accept Task")}</Button>
                       )}
                       {req.status === 'In Progress' && (
                         <Button onClick={() => handleUpdateStatus(req, 'Completed')} size="sm" className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white gap-2"><CheckCircle className="w-4 h-4"/> {t("mark_complete", "Mark Complete")}</Button>
@@ -196,7 +196,7 @@ export default function GuestRequests() {
             </div>
             <div className="flex gap-3 pt-2">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-[#443199] hover:bg-[#362878] text-white" onClick={handleCreateRequest}>{t("log_request", "Log Request")}</Button>
+              <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleCreateRequest}>{t("log_request", "Log Request")}</Button>
             </div>
           </div>
         </div>

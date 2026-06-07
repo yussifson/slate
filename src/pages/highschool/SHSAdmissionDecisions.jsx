@@ -180,7 +180,7 @@ export default function SHSAdmissionDecisions() {
                           variant="ghost" 
                           size="sm" 
                           onClick={() => generateLetter(decision)}
-                          className="text-primary dark:text-primary/70 hover:text-[#5200c2] hover:bg-primary/5 dark:bg-slate-800 rounded-lg gap-2 font-semibold"
+                          className="text-primary dark:text-primary/70 hover:text-primary hover:bg-primary/5 dark:bg-slate-800 rounded-lg gap-2 font-semibold"
                         >
                           <Printer className="w-4 h-4" /> Letter
                         </Button>

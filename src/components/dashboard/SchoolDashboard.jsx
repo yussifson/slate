@@ -126,10 +126,10 @@ export default function SchoolDashboard({ companyId, company, isAdmin }) {
       {/* 24h Hearing Reminders */}
       <HearingReminders hearings={hearings} userEmail={user?.email} isAdmin={isAdmin} />
       {/* Hero Banner Area */}
-      <div className="bg-[#6F00FF] rounded-3xl p-6 relative overflow-hidden">
+      <div className="bg-primary rounded-3xl p-6 relative overflow-hidden">
         {/* Abstract Background Shapes */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-primary rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/3 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#5200c2] rounded-full blur-3xl opacity-50 translate-y-1/3 -translate-x-1/4 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary rounded-full blur-3xl opacity-50 translate-y-1/3 -translate-x-1/4 pointer-events-none" />
         
         <div className="relative z-10 flex flex-col md:flex-row md:items-start justify-between gap-6 mb-6">
           <div>
@@ -144,7 +144,7 @@ export default function SchoolDashboard({ companyId, company, isAdmin }) {
             </p>
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            <Button variant="outline" size="sm" className="gap-1.5 text-sm font-bold rounded-xl border-primary/70 text-primary/5 hover:bg-primary hover:text-white bg-[#6F00FF]/50 backdrop-blur-md border-0">
+            <Button variant="outline" size="sm" className="gap-1.5 text-sm font-bold rounded-xl border-primary/70 text-primary/5 hover:bg-primary hover:text-white bg-primary/50 backdrop-blur-md border-0">
               <BarChart2 className="w-4 h-4" /> {t("analytics", "Analytics")}
             </Button>
             <Button onClick={handleRefresh} disabled={isRefreshing} size="sm" className="gap-1.5 text-sm font-bold bg-white/20 text-white hover:bg-white/30 rounded-xl border-0 shadow-sm backdrop-blur-md">
@@ -167,7 +167,7 @@ export default function SchoolDashboard({ companyId, company, isAdmin }) {
         <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 shadow-sm p-6 space-y-6">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-black text-slate-900 dark:text-white">{t("revenue_growth_curve", "Revenue Growth Curve (")}{currency})</h3>
-            <span className="text-[10px] bg-[#6F00FF]/10 text-[#6F00FF] py-1 px-3 rounded-full font-black border border-[#6F00FF]/20 uppercase tracking-wider">{t("paid_invoices", "Paid Invoices")}</span>
+            <span className="text-[10px] bg-primary/10 text-primary py-1 px-3 rounded-full font-black border border-primary/20 uppercase tracking-wider">{t("paid_invoices", "Paid Invoices")}</span>
           </div>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -192,7 +192,7 @@ export default function SchoolDashboard({ companyId, company, isAdmin }) {
         <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 shadow-sm p-6 space-y-6">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-black text-slate-900 dark:text-white">{caseTerm} {t("distribution_by_stage", "Distribution by Stage")}</h3>
-            <span className="text-[10px] bg-[#6F00FF]/10 text-[#6F00FF] py-1 px-3 rounded-full font-black border border-[#6F00FF]/20 uppercase tracking-wider">{t("active_pipelines", "Active Pipelines")}</span>
+            <span className="text-[10px] bg-primary/10 text-primary py-1 px-3 rounded-full font-black border border-primary/20 uppercase tracking-wider">{t("active_pipelines", "Active Pipelines")}</span>
           </div>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">

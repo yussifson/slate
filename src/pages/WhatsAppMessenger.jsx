@@ -193,7 +193,7 @@ export default function WhatsAppMessenger() {
           <Button
             onClick={handleSend}
             disabled={!canSend}
-            className="w-full gap-2 bg-[#25D366] hover:bg-[#20b857] text-white"
+            className="w-full gap-2 bg-primary hover:bg-primary/90 text-white"
           >
             <Send className="w-4 h-4" />
             {t("open_in_whatsapp", "Open in WhatsApp")}

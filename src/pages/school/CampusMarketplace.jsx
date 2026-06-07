@@ -77,7 +77,7 @@ export default function CampusMarketplace() {
                 <label className="text-xs font-bold text-slate-500 uppercase">Price ($)</label>
                 <Input type="number" value={newItemPrice} onChange={e => setNewItemPrice(e.target.value)} placeholder="0.00" className="mt-1 bg-white/50 dark:bg-background/50 border-slate-200 dark:border-slate-800 rounded-xl" />
               </div>
-              <Button onClick={() => listItem.mutate()} disabled={listItem.isPending} className="w-full h-12 rounded-xl bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold font-bold shadow-sm shadow-emerald-600/20 mt-4">
+              <Button onClick={() => listItem.mutate()} disabled={listItem.isPending} className="w-full h-12 rounded-xl bg-primary hover:bg-primary text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold font-bold shadow-sm shadow-emerald-600/20 mt-4">
                 <Plus className="w-4 h-4 mr-2" /> List Item
               </Button>
             </div>
@@ -97,9 +97,9 @@ export default function CampusMarketplace() {
                 <div className="p-6 flex-1 flex flex-col justify-between">
                   <div>
                     <h3 className="font-extrabold text-lg text-slate-900 dark:text-white mb-1 line-clamp-2">{item.title}</h3>
-                    <p className="text-xs font-bold text-[#1E3A8A] dark:text-primary/70 uppercase tracking-wider mb-4">{item.status}</p>
+                    <p className="text-xs font-bold text-primary dark:text-primary/70 uppercase tracking-wider mb-4">{item.status}</p>
                   </div>
-                  <Button variant="outline" className="w-full rounded-xl border-slate-200 dark:border-slate-800 font-bold hover:bg-[#F0F4FF] dark:bg-primary/20 hover:text-[#1E3A8A] dark:text-primary/70 hover:border-primary/20 dark:hover:bg-primary/20 dark:hover:border-primary/80">
+                  <Button variant="outline" className="w-full rounded-xl border-slate-200 dark:border-slate-800 font-bold hover:bg-primary/5 dark:bg-primary/20 hover:text-primary dark:text-primary/70 hover:border-primary/20 dark:hover:bg-primary/20 dark:hover:border-primary/80">
                     <MessageCircle className="w-4 h-4 mr-2" /> Contact Seller
                   </Button>
                 </div>

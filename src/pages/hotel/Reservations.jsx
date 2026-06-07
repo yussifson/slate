@@ -157,7 +157,7 @@ export default function Reservations() {
             "Manage room bookings and guest arrivals"
           )}</p>
         </div>
-        <Button onClick={() => { setEditTargetId(null); setShowModal(true); setFormData({ guest: '', checkIn: new Date().toISOString().split('T')[0], checkOut: new Date(Date.now() + 86400000).toISOString().split('T')[0], roomType: 'Standard Room', guestsCount: 1 }); }} className="gap-2 bg-[#443199] hover:bg-[#362878] text-white">
+        <Button onClick={() => { setEditTargetId(null); setShowModal(true); setFormData({ guest: '', checkIn: new Date().toISOString().split('T')[0], checkOut: new Date(Date.now() + 86400000).toISOString().split('T')[0], roomType: 'Standard Room', guestsCount: 1 }); }} className="gap-2 bg-primary hover:bg-primary/90 text-white">
           <Plus className="w-4 h-4" /> {t("new_booking", "New Booking")}
         </Button>
       </div>
@@ -200,7 +200,7 @@ export default function Reservations() {
                     <td className="px-6 py-4 text-center font-bold text-card-foreground">${res.total}</td>
                     <td className="px-6 py-4 text-right flex justify-end gap-2">
                       {res.status === 'Confirmed' && (
-                        <Button onClick={() => handleStatusChange(res, 'Checked-in')} size="sm" className="h-8 bg-[#443199] hover:bg-[#362878] text-white">{t("check_in", "Check In")}</Button>
+                        <Button onClick={() => handleStatusChange(res, 'Checked-in')} size="sm" className="h-8 bg-primary hover:bg-primary/90 text-white">{t("check_in", "Check In")}</Button>
                       )}
                       {res.status === 'Checked-in' && (
                         <Button onClick={() => handleStatusChange(res, 'Checked-out')} size="sm" className="h-8 bg-primary hover:bg-primary/90 text-white">{t("check_out", "Check Out")}</Button>
@@ -283,7 +283,7 @@ export default function Reservations() {
            </div>
            <div className="flex gap-3 pt-4">
              <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-             <Button className="flex-1 bg-[#443199] hover:bg-[#362878] text-white" onClick={handleSaveToDb}>
+             <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleSaveToDb}>
                {editTargetId ? 'Save Changes' : 'Confirm Booking'}
              </Button>
            </div>
@@ -353,7 +353,7 @@ export default function Reservations() {
                     <p className="text-2xl font-bold text-primary">${res.total}</p>
                   </div>
                   <div className="pt-4 flex gap-2">
-                    <Button onClick={() => { setViewDetailsId(null); handleEdit(res); }} className="flex-1 bg-[#443199] hover:bg-[#362878] text-white">
+                    <Button onClick={() => { setViewDetailsId(null); handleEdit(res); }} className="flex-1 bg-primary hover:bg-primary/90 text-white">
                       <Edit className="w-4 h-4 mr-2" /> {t("edit_booking", "Edit Booking")}
                     </Button>
                   </div>

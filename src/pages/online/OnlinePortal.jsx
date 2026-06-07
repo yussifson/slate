@@ -17,7 +17,7 @@ export default function OnlinePortal() {
         <Card className="border-0 shadow-sm rounded-xl overflow-hidden hover:shadow-md transition-shadow">
           <img src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Course" className="h-40 w-full object-cover" />
           <CardContent className="p-5">
-            <p className="text-xs font-semibold text-[#0056D2] mb-1">COURSE</p>
+            <p className="text-xs font-semibold text-primary mb-1">COURSE</p>
             <h3 className="font-bold text-lg mb-2">Machine Learning Specialization</h3>
             <p className="text-sm text-gray-500 mb-4">Module 3: Neural Networks and Deep Learning</p>
             <div className="space-y-2">
@@ -27,14 +27,14 @@ export default function OnlinePortal() {
               </div>
               <Progress value={45} className="h-2 bg-gray-200" />
             </div>
-            <Button className="w-full mt-6 bg-[#0056D2] hover:bg-[#004bb5] text-white">Resume Course</Button>
+            <Button className="w-full mt-6 bg-primary hover:bg-primary/90 text-white">Resume Course</Button>
           </CardContent>
         </Card>
 
         <Card className="border-0 shadow-sm rounded-xl overflow-hidden hover:shadow-md transition-shadow">
           <img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Course" className="h-40 w-full object-cover" />
           <CardContent className="p-5">
-            <p className="text-xs font-semibold text-[#0056D2] mb-1">PROFESSIONAL CERTIFICATE</p>
+            <p className="text-xs font-semibold text-primary mb-1">PROFESSIONAL CERTIFICATE</p>
             <h3 className="font-bold text-lg mb-2">React Web Development</h3>
             <p className="text-sm text-gray-500 mb-4">Module 1: React Basics</p>
             <div className="space-y-2">
@@ -44,7 +44,7 @@ export default function OnlinePortal() {
               </div>
               <Progress value={10} className="h-2 bg-gray-200" />
             </div>
-            <Button className="w-full mt-6 bg-[#0056D2] hover:bg-[#004bb5] text-white">Resume Course</Button>
+            <Button className="w-full mt-6 bg-primary hover:bg-primary/90 text-white">Resume Course</Button>
           </CardContent>
         </Card>
       </div>
@@ -54,11 +54,11 @@ export default function OnlinePortal() {
           <h2 className="text-xl font-bold text-gray-900">Up Next for You</h2>
           <Card className="border-0 shadow-sm rounded-xl p-0 overflow-hidden">
             <div className="flex flex-col sm:flex-row items-center p-4 group hover:bg-gray-50 transition-colors border-b last:border-0 cursor-pointer">
-              <div className="bg-primary/10 p-3 rounded-full text-[#0056D2] mr-4">
+              <div className="bg-primary/10 p-3 rounded-full text-primary mr-4">
                 <PlayCircle className="h-6 w-6" />
               </div>
               <div className="flex-1">
-                <h4 className="font-bold text-gray-900 group-hover:text-[#0056D2] transition-colors">Video: Introduction to Neural Networks</h4>
+                <h4 className="font-bold text-gray-900 group-hover:text-primary transition-colors">Video: Introduction to Neural Networks</h4>
                 <p className="text-sm text-gray-500">Machine Learning Specialization</p>
               </div>
               <span className="text-sm font-medium text-gray-400 mt-2 sm:mt-0">15 min</span>
@@ -68,7 +68,7 @@ export default function OnlinePortal() {
                 <FileText className="h-6 w-6" />
               </div>
               <div className="flex-1">
-                <h4 className="font-bold text-gray-900 group-hover:text-[#0056D2] transition-colors">Reading: Setting up your environment</h4>
+                <h4 className="font-bold text-gray-900 group-hover:text-primary transition-colors">Reading: Setting up your environment</h4>
                 <p className="text-sm text-gray-500">React Web Development</p>
               </div>
               <span className="text-sm font-medium text-gray-400 mt-2 sm:mt-0">10 min</span>
@@ -78,10 +78,10 @@ export default function OnlinePortal() {
                 <Award className="h-6 w-6" />
               </div>
               <div className="flex-1">
-                <h4 className="font-bold text-gray-900 group-hover:text-[#0056D2] transition-colors">Quiz: Python Basics Review</h4>
+                <h4 className="font-bold text-gray-900 group-hover:text-primary transition-colors">Quiz: Python Basics Review</h4>
                 <p className="text-sm text-gray-500">Data Science Fundamentals</p>
               </div>
-              <span className="text-sm font-medium text-[#0056D2] mt-2 sm:mt-0">Due Today</span>
+              <span className="text-sm font-medium text-primary mt-2 sm:mt-0">Due Today</span>
             </div>
           </Card>
         </div>
@@ -111,7 +111,7 @@ export default function OnlinePortal() {
                 <p className="text-sm text-gray-500">React Web Dev</p>
               </div>
             </div>
-            <Button variant="outline" className="w-full mt-6 text-[#0056D2] border-[#0056D2] hover:bg-primary/5">View Calendar</Button>
+            <Button variant="outline" className="w-full mt-6 text-primary border-primary hover:bg-primary/5">View Calendar</Button>
           </Card>
         </div>
       </div>

@@ -67,7 +67,7 @@ export default function GuestPortal() {
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#443199] to-orange-700 rounded-2xl p-6 md:p-8 text-white shadow-md relative overflow-hidden">
+      <div className="bg-gradient-to-r from-primary to-orange-700 rounded-2xl p-6 md:p-8 text-white shadow-md relative overflow-hidden">
         <div className="relative z-10">
           <h1 className="text-2xl md:text-3xl font-bold mb-2">{t("welcome_back", "Welcome back,")} {activeRes.guest}</h1>
           <p className="text-primary/10 max-w-xl">{t(
@@ -156,7 +156,7 @@ export default function GuestPortal() {
                 <span className="font-bold">{t("total_estimated", "Total Estimated")}</span>
                 <span className="text-xl font-bold text-primary">${(activeRes.total * 1.1).toFixed(2)}</span>
               </div>
-              <Button className="w-full mt-4 bg-[#443199] hover:bg-[#362878] text-white">{t("view_full_folio", "View Full Folio")}</Button>
+              <Button className="w-full mt-4 bg-primary hover:bg-primary/90 text-white">{t("view_full_folio", "View Full Folio")}</Button>
             </div>
           </div>
         </div>
@@ -175,7 +175,7 @@ export default function GuestPortal() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => setShowRequestModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-[#443199] hover:bg-[#362878] text-white" onClick={handleCreateRequest}>{t("submit", "Submit")}</Button>
+              <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleCreateRequest}>{t("submit", "Submit")}</Button>
             </div>
           </div>
         </div>
