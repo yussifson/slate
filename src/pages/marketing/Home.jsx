@@ -782,8 +782,8 @@ export default function Home() {
                 <FadeIn key={i} delay={`delay-[${i * 80}ms]`} className={isWide ? "lg:col-span-2" : "col-span-1"}>
                   <div className="group relative bg-white rounded-[2.5rem] border border-primary/60 shadow-[0_8px_30px_-12px_rgba(37,99,235,0.08)] hover:shadow-2xl hover:shadow-emerald-900/15 transition-all duration-500 overflow-hidden h-full flex flex-col p-10 md:p-12 z-0">
                     
-                    {/* Vibrant Background Gradient (Always Partially Visible) */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-white to-primary/50 opacity-100 group-hover:from-primary/60 group-hover:to-primary/40 transition-colors duration-700 -z-10"></div>
+                    {/* Subtle Background Gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-white via-white to-primary/5 opacity-100 group-hover:from-primary/5 group-hover:via-white group-hover:to-primary/10 transition-colors duration-700 -z-10"></div>
                     
                     {/* Abstract Decorative Icon Watermark (Always Visible) */}
                     <div className="absolute -bottom-12 -right-12 text-primary opacity-[0.03] group-hover:opacity-[0.06] transition-all duration-700 -z-10 transform scale-100 group-hover:scale-110 group-hover:-rotate-12 ease-out">
@@ -796,8 +796,8 @@ export default function Home() {
                         <feature.icon className="w-8 h-8 text-primary group-hover:text-white transition-colors duration-500" strokeWidth={1.5} />
                       </div>
                       
-                      {/* Premium Typography (Blue theme) */}
-                      <h4 className="text-[28px] leading-[1.2] font-black text-primary/60 tracking-tight mb-5 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-primary/90 group-hover:to-primary/90 transition-all duration-300">
+                      {/* Premium Typography */}
+                      <h4 className="text-[28px] leading-[1.2] font-black text-slate-900 tracking-tight mb-5 group-hover:text-primary transition-all duration-300">
                         {feature.title}
                       </h4>
                       <p className="text-slate-600 leading-[1.7] font-medium text-lg">
