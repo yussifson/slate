@@ -232,78 +232,78 @@ body.theme-school .school-card {
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(30, 58, 138, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.08);
   border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(30, 58, 138, 0.06), 0 1px 3px rgba(0,0,0,0.04);
+  box-shadow: 0 4px 24px rgba(16, 185, 129, 0.06), 0 1px 3px rgba(0,0,0,0.04);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 body.theme-school .school-card:hover {
-  box-shadow: 0 12px 40px rgba(30, 58, 138, 0.12), 0 2px 6px rgba(0,0,0,0.06);
+  box-shadow: 0 12px 40px rgba(16, 185, 129, 0.12), 0 2px 6px rgba(0,0,0,0.06);
   transform: translateY(-2px);
 }
 .dark body.theme-school .school-card {
   background: rgba(15, 23, 42, 0.8);
-  border-color: rgba(59, 130, 246, 0.15);
+  border-color: rgba(16, 185, 129, 0.15);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
 }
 .dark body.theme-school .school-card:hover {
-  border-color: rgba(59, 130, 246, 0.3);
+  border-color: rgba(16, 185, 129, 0.3);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
 }
 
 /* School Suite KPI stat cards */
 body.theme-school .school-stat {
-  background: linear-gradient(135deg, #F0F4FF 0%, #E8EEFF 100%);
-  border: 1px solid rgba(30, 58, 138, 0.1);
+  background: linear-gradient(135deg, #F6FFF9 0%, #E6F8F0 100%);
+  border: 1px solid rgba(16, 185, 129, 0.1);
   border-radius: 16px;
   transition: all 0.3s ease;
 }
 body.theme-school .school-stat:hover {
   transform: translateY(-3px);
-  box-shadow: 0 12px 32px rgba(30, 58, 138, 0.12);
+  box-shadow: 0 12px 32px rgba(16, 185, 129, 0.12);
 }
 .dark body.theme-school .school-stat {
-  background: linear-gradient(135deg, rgba(30, 58, 138, 0.2) 0%, rgba(59, 130, 246, 0.1) 100%);
-  border-color: rgba(59, 130, 246, 0.2);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);
+  border-color: rgba(16, 185, 129, 0.2);
 }
 
 /* School Suite premium button */
 body.theme-school .school-btn-primary {
-  background: #1E3A8A;
+  background: #10B981;
   color: white;
   border-radius: 10px;
   padding: 10px 20px;
   font-weight: 600;
   font-family: 'DM Sans', system-ui, sans-serif;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(30, 58, 138, 0.25);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
 }
 body.theme-school .school-btn-primary:hover {
-  background: #1e3070;
+  background: #059669;
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(30, 58, 138, 0.35);
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
 }
 
 /* School Suite inputs */
 body.theme-school input:focus,
 body.theme-school select:focus,
 body.theme-school textarea:focus {
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3) !important;
-  border-color: #3B82F6 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3) !important;
+  border-color: #10B981 !important;
 }
 
 /* School Suite table enhancements */
 body.theme-school thead {
-  background: linear-gradient(180deg, #F0F4FF 0%, #E8EEFF 100%);
+  background: linear-gradient(180deg, #F6FFF9 0%, #E6F8F0 100%);
 }
 body.theme-school tbody tr:nth-child(even) {
-  background-color: rgba(240, 244, 255, 0.4);
+  background-color: rgba(246, 255, 249, 0.4);
 }
 .dark body.theme-school thead {
-  background: linear-gradient(180deg, rgba(30, 58, 138, 0.15) 0%, rgba(30, 58, 138, 0.08) 100%);
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.08) 100%);
 }
 .dark body.theme-school tbody tr:nth-child(even) {
-  background-color: rgba(30, 58, 138, 0.08);
+  background-color: rgba(16, 185, 129, 0.08);
 }
 
 /* School heading font override */
@@ -324,9 +324,9 @@ body.theme-university {
   --font-body: 'Outfit', sans-serif;
   --font-display: 'Outfit', sans-serif;
 
-  --color-border-subtle: hsl(158 68% 38% / 0.15);
-  --color-border-default: hsl(158 68% 38% / 0.25);
-  --color-border-strong: hsl(158 68% 38% / 0.4);
+  --color-border-subtle: hsl(152 76% 41% / 0.15);
+  --color-border-default: hsl(152 76% 41% / 0.25);
+  --color-border-strong: hsl(152 76% 41% / 0.4);
   --border: 158 68% 38%;
   
   --color-text-primary: hsl(158 68% 25%);
@@ -339,23 +339,23 @@ body.theme-university {
   --color-surface-3: #E6F8F0;
   --color-surface-4: #D1F0E1;
 
-  --color-module-orbit: hsl(158 68% 38%);
-  --color-module-academic: hsl(158 68% 38%);
-  --color-module-admissions: hsl(158 68% 38%);
-  --color-module-courses: hsl(158 68% 38%);
-  --color-module-students: hsl(158 68% 38%);
-  --color-module-exams: hsl(158 68% 38%);
-  --color-module-faculty: hsl(158 68% 38%);
-  --color-module-research: hsl(158 68% 38%);
-  --color-module-library: hsl(158 68% 38%);
-  --color-module-hostel: hsl(158 68% 38%);
-  --color-module-finance: hsl(158 68% 38%);
-  --color-module-career: hsl(158 68% 38%);
-  --color-module-lms: hsl(158 68% 38%);
-  --color-accent-primary: hsl(158 68% 38%);
-  --color-accent-subtle: hsl(158 68% 38% / 0.1);
+  --color-module-orbit: hsl(152 76% 41%);
+  --color-module-academic: hsl(152 76% 41%);
+  --color-module-admissions: hsl(152 76% 41%);
+  --color-module-courses: hsl(152 76% 41%);
+  --color-module-students: hsl(152 76% 41%);
+  --color-module-exams: hsl(152 76% 41%);
+  --color-module-faculty: hsl(152 76% 41%);
+  --color-module-research: hsl(152 76% 41%);
+  --color-module-library: hsl(152 76% 41%);
+  --color-module-hostel: hsl(152 76% 41%);
+  --color-module-finance: hsl(152 76% 41%);
+  --color-module-career: hsl(152 76% 41%);
+  --color-module-lms: hsl(152 76% 41%);
+  --color-accent-primary: hsl(25 95% 53%);
+  --color-accent-subtle: hsl(25 95% 53% / 0.1);
 
-  --chart-1: 158 68% 38%;
+  --chart-1: 152 76% 41%;
   --chart-2: 158 68% 48%;
   --chart-3: 158 68% 58%;
   --chart-4: 158 68% 68%;
@@ -363,10 +363,10 @@ body.theme-university {
 }
 
 .dark body.theme-university {
-  --color-border-subtle: hsl(158 68% 38% / 0.25);
-  --color-border-default: hsl(158 68% 38% / 0.4);
-  --color-border-strong: hsl(158 68% 38% / 0.6);
-  --border: 158 68% 38%;
+  --color-border-subtle: hsl(152 76% 50% / 0.25);
+  --color-border-default: hsl(152 76% 50% / 0.4);
+  --color-border-strong: hsl(152 76% 50% / 0.6);
+  --border: 152 76% 50%;
 
   --color-text-primary: #FFFFFF;
   --color-text-secondary: hsl(158 68% 85%);
@@ -378,23 +378,23 @@ body.theme-university {
   --color-surface-3: rgba(255, 255, 255, 0.08);
   --color-surface-4: rgba(255, 255, 255, 0.12);
 
-  --color-module-orbit: hsl(158 68% 38%);
-  --color-module-academic: hsl(158 68% 38%);
-  --color-module-admissions: hsl(158 68% 38%);
-  --color-module-courses: hsl(158 68% 38%);
-  --color-module-students: hsl(158 68% 38%);
-  --color-module-exams: hsl(158 68% 38%);
-  --color-module-faculty: hsl(158 68% 38%);
-  --color-module-research: hsl(158 68% 38%);
-  --color-module-library: hsl(158 68% 38%);
-  --color-module-hostel: hsl(158 68% 38%);
-  --color-module-finance: hsl(158 68% 38%);
-  --color-module-career: hsl(158 68% 38%);
-  --color-module-lms: hsl(158 68% 38%);
-  --color-accent-primary: hsl(158 68% 38%);
-  --color-accent-subtle: hsl(158 68% 38% / 0.2);
+  --color-module-orbit: hsl(152 76% 50%);
+  --color-module-academic: hsl(152 76% 50%);
+  --color-module-admissions: hsl(152 76% 50%);
+  --color-module-courses: hsl(152 76% 50%);
+  --color-module-students: hsl(152 76% 50%);
+  --color-module-exams: hsl(152 76% 50%);
+  --color-module-faculty: hsl(152 76% 50%);
+  --color-module-research: hsl(152 76% 50%);
+  --color-module-library: hsl(152 76% 50%);
+  --color-module-hostel: hsl(152 76% 50%);
+  --color-module-finance: hsl(152 76% 50%);
+  --color-module-career: hsl(152 76% 50%);
+  --color-module-lms: hsl(152 76% 50%);
+  --color-accent-primary: hsl(25 95% 53%);
+  --color-accent-subtle: hsl(25 95% 53% / 0.2);
 
-  --chart-1: 158 68% 38%;
+  --chart-1: 152 76% 50%;
   --chart-2: 158 68% 48%;
   --chart-3: 158 68% 58%;
   --chart-4: 158 68% 68%;
@@ -409,9 +409,9 @@ body.theme-online {
   --font-body: 'Outfit', sans-serif;
   --font-display: 'Outfit', sans-serif;
 
-  --color-border-subtle: hsl(213 89% 50% / 0.15);
-  --color-border-default: hsl(213 89% 50% / 0.25);
-  --color-border-strong: hsl(213 89% 50% / 0.4);
+  --color-border-subtle: hsl(152 76% 41% / 0.15);
+  --color-border-default: hsl(152 76% 41% / 0.25);
+  --color-border-strong: hsl(152 76% 41% / 0.4);
   --border: 213 89% 50%;
   
   --color-text-primary: hsl(213 89% 25%);
@@ -420,13 +420,13 @@ body.theme-online {
   
   --color-surface-0: #FFFFFF;
   --color-surface-1: #FFFFFF;
-  --color-surface-2: #F0F4FF;
-  --color-surface-3: #E8EEFF;
-  --color-surface-4: #DBEAFE;
+  --color-surface-2: #F6FFF9;
+  --color-surface-3: #E6F8F0;
+  --color-surface-4: #D1F0E1;
 
-  --color-module-online: hsl(213 89% 50%);
-  --color-accent-primary: hsl(213 89% 50%);
-  --color-accent-subtle: hsl(213 89% 50% / 0.1);
+  --color-module-online: hsl(152 76% 41%);
+  --color-accent-primary: hsl(25 95% 53%);
+  --color-accent-subtle: hsl(25 95% 53% / 0.1);
 
   --chart-1: 213 89% 50%;
   --chart-2: 213 89% 40%;
@@ -436,10 +436,10 @@ body.theme-online {
 }
 
 .dark body.theme-online {
-  --color-border-subtle: hsl(213 89% 50% / 0.25);
-  --color-border-default: hsl(213 89% 50% / 0.4);
-  --color-border-strong: hsl(213 89% 50% / 0.6);
-  --border: 213 89% 50%;
+  --color-border-subtle: hsl(152 76% 50% / 0.25);
+  --color-border-default: hsl(152 76% 50% / 0.4);
+  --color-border-strong: hsl(152 76% 50% / 0.6);
+  --border: 152 76% 50%;
 
   --color-text-primary: #FFFFFF;
   --color-text-secondary: hsl(213 89% 85%);
@@ -451,11 +451,11 @@ body.theme-online {
   --color-surface-3: rgba(255, 255, 255, 0.08);
   --color-surface-4: rgba(255, 255, 255, 0.12);
 
-  --color-module-online: hsl(213 89% 50%);
-  --color-accent-primary: hsl(213 89% 50%);
-  --color-accent-subtle: hsl(213 89% 50% / 0.2);
+  --color-module-online: hsl(152 76% 50%);
+  --color-accent-primary: hsl(25 95% 53%);
+  --color-accent-subtle: hsl(25 95% 53% / 0.2);
 
-  --chart-1: 213 89% 50%;
+  --chart-1: 152 76% 50%;
   --chart-2: 213 89% 40%;
   --chart-3: 213 89% 30%;
   --chart-4: 213 89% 60%;
