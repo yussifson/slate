@@ -60,45 +60,11 @@ export default function AppLayout() {
     fetchPrefs();
   }, [user, isPrefsLoaded]);
 
-  // Dynamic Industry Theming
+  // Dynamic Industry Theming - Removed to enforce unified Optavel theme across all suites
   useEffect(() => {
-    const activeIndustry = impersonatedCompany?.industry_type || user?.company_industry;
-    if (activeIndustry) {
-      const industry = activeIndustry.toLowerCase();
-      let primaryColor = '221 83% 53%'; // Default Blue (Law/Core)
-      if (industry === 'university') {
-        primaryColor = '158 68% 38%'; // Emerald Green
-        document.body.classList.add('theme-university');
-        document.body.classList.remove('theme-school');
-      } else if (industry === 'school' || industry === 'highschool') {
-        primaryColor = '213 89% 50%'; // Google Blue (#1A73E8)
-        document.body.classList.add('theme-school');
-        document.body.classList.remove('theme-university', 'theme-online');
-      } else if (industry === 'online') {
-        primaryColor = '213 89% 50%'; // Google Blue (#1A73E8)
-        document.body.classList.add('theme-online');
-        document.body.classList.remove('theme-school', 'theme-university');
-      } else {
-        document.body.classList.remove('theme-school');
-        document.body.classList.remove('theme-university');
-        document.body.classList.remove('theme-online');
-        if (industry === 'retail') {
-          primaryColor = '24 98% 50%'; // Sunset Orange
-        } else if (industry === 'hotel') {
-          primaryColor = '251 52% 40%'; // Deep Violet/Purple (#443199)
-        } else if (industry === 'hospital') {
-          primaryColor = '175 84% 32%'; // Peaceful Teal/Medical Green (#0d9488)
-        } else if (industry === 'insurance') {
-          primaryColor = '275 100% 50%'; // Vibrant Purple (#9400FF)
-        }
-      }
-      document.documentElement.style.setProperty('--primary', primaryColor);
-      document.documentElement.style.setProperty('--ring', primaryColor);
-    } else {
-      document.body.classList.remove('theme-school');
-      document.body.classList.remove('theme-university');
-      document.body.classList.remove('theme-online');
-    }
+    // Clean up any legacy classes just in case
+    document.body.classList.remove('theme-school', 'theme-university', 'theme-online');
+    // We let index.css :root handle the unified primary colors
   }, [user?.company_industry, impersonatedCompany?.industry_type]);
 
   const toggleChat = () => {
@@ -185,98 +151,15 @@ export default function AppLayout() {
 
   return (
     <div className="flex h-screen bg-slate-50/50 dark:bg-background overflow-hidden relative selection:bg-primary/20">
-      {/* Global Ambient Orbit Background */}
-      {(() => {
-        const industry = (impersonatedCompany?.industry_type || user?.company_industry || '').toLowerCase();
+      {/* Global Ambient Orbit Background - Unified Optavel Theme */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-all duration-1000 bg-white dark:bg-[#0A0F1C]">
+        {/* Clean White Background with subtle Emerald Green accents */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[hsl(158,68%,38%)]/[0.03] via-transparent to-[hsl(158,68%,38%)]/[0.06] dark:from-[hsl(158,68%,38%)]/10 dark:via-[#0A0F1C] dark:to-[hsl(158,68%,38%)]/20" />
         
-        if (industry === 'insurance') {
-          return (
-            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-all duration-1000 bg-slate-50/30 dark:bg-slate-950/30">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#9400FF]/5 via-transparent to-[#9400FF]/10 mix-blend-normal" />
-              <div className="absolute top-[-20%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[#9400FF]/15 blur-[120px] mix-blend-multiply dark:mix-blend-screen" />
-              <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#9400FF]/15 blur-[100px] mix-blend-multiply dark:mix-blend-screen" />
-              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.04] dark:opacity-[0.08]" />
-            </div>
-          );
-        } else if (industry === 'hospital') {
-          return (
-            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-all duration-1000 bg-emerald-50/20 dark:bg-emerald-950/20">
-              <div className="absolute inset-0 bg-gradient-to-b from-[#0d9488]/5 via-transparent to-[#0d9488]/10" />
-              <div className="absolute top-0 right-0 w-[100%] h-[50%] bg-gradient-to-b from-[#0d9488]/10 to-transparent opacity-60 blur-3xl" />
-              <div className="absolute bottom-0 left-0 w-[100%] h-[50%] bg-gradient-to-t from-[#0d9488]/10 to-transparent opacity-60 blur-3xl" />
-              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/clean-medical.png')] opacity-[0.03] dark:opacity-[0.05]" />
-            </div>
-          );
-        } else if (industry === 'hotel') {
-          return (
-            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-all duration-1000 bg-slate-100/40 dark:bg-slate-900/60">
-              <div className="absolute inset-0 bg-gradient-to-tr from-[#443199]/10 via-[#dabcff]/5 to-[#443199]/10 mix-blend-multiply dark:mix-blend-color-dodge" />
-              <div className="absolute top-1/4 left-1/4 w-[40%] h-[40%] rounded-full bg-amber-200/10 blur-[100px] mix-blend-overlay" />
-              <div className="absolute bottom-1/4 right-1/4 w-[40%] h-[40%] rounded-full bg-[#443199]/20 blur-[100px]" />
-              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-[0.06] dark:opacity-[0.1]" />
-            </div>
-          );
-        } else if (industry === 'university') {
-          return (
-            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-all duration-1000 bg-white dark:bg-[#0A0F1C]">
-              {/* Clean White Background with subtle Emerald Green accents */}
-              <div className="absolute inset-0 bg-gradient-to-br from-[hsl(158,68%,38%)]/[0.03] via-transparent to-[hsl(158,68%,38%)]/[0.06] dark:from-[hsl(158,68%,38%)]/10 dark:via-[#0A0F1C] dark:to-[hsl(158,68%,38%)]/20" />
-              
-              {/* Soft Radial Glows - Emerald Green */}
-              <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-[hsl(158,68%,38%)]/5 blur-[150px] mix-blend-multiply dark:mix-blend-screen" />
-              <div className="absolute bottom-[-15%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[hsl(158,68%,38%)]/5 blur-[160px] mix-blend-multiply dark:mix-blend-screen" />
-              
-              {/* Subtle Noise Texture for depth */}
-              {/* Noise overlay removed to fix 404 */}
-            </div>
-          );
-        } else if (industry === 'school' || industry === 'highschool') {
-          return (
-            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-all duration-1000 bg-[#FAFAFA] dark:bg-[#0A0F1C]">
-              {/* Premium Silicon Valley Gradient Mesh */}
-              <div className="absolute inset-0 bg-gradient-to-br from-[#F0F4FF] via-transparent to-[#DBEAFE]/40 dark:from-[#1E3A8A]/10 dark:via-[#0F172A] dark:to-[#172554]/20" />
-              
-              {/* Soft Radial Glows - Deep Navy & Bright Blue */}
-              <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-[#3B82F6]/10 blur-[150px] mix-blend-multiply dark:mix-blend-screen" />
-              <div className="absolute bottom-[-15%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[#1E3A8A]/8 blur-[160px] mix-blend-multiply dark:mix-blend-screen" />
-              <div className="absolute top-[20%] right-[10%] w-[40%] h-[40%] rounded-full bg-[#1E3A8A]/5 blur-[120px] mix-blend-multiply dark:mix-blend-screen" />
-              
-              {/* Elegant Grid Pattern */}
-              <div className="absolute inset-0 bg-[linear-gradient(rgba(30,58,138,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(30,58,138,0.03)_1px,transparent_1px)] bg-[size:40px_40px] dark:bg-[linear-gradient(rgba(59,130,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.03)_1px,transparent_1px)]" />
-              
-              {/* Subtle Noise Texture for depth */}
-              {/* Noise overlay removed to fix 404 */}
-            </div>
-          );
-        } else if (industry === 'online') {
-          return (
-            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-all duration-1000 bg-[#FAFAFA] dark:bg-[#0A0F1C]">
-              {/* Deep Tech Blue Gradient Mesh */}
-              <div className="absolute inset-0 bg-gradient-to-br from-[#F0F4FF] via-transparent to-[#DBEAFE]/40 dark:from-[#1E3A8A]/10 dark:via-[#0F172A] dark:to-[#172554]/20" />
-              
-              {/* Soft Radial Glows - Bright Blue */}
-              <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-[#1A73E8]/10 blur-[150px] mix-blend-multiply dark:mix-blend-screen" />
-              <div className="absolute bottom-[-15%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[#1A73E8]/8 blur-[160px] mix-blend-multiply dark:mix-blend-screen" />
-              <div className="absolute top-[20%] right-[10%] w-[40%] h-[40%] rounded-full bg-[#1A73E8]/5 blur-[120px] mix-blend-multiply dark:mix-blend-screen" />
-              
-              {/* Elegant Grid Pattern */}
-              <div className="absolute inset-0 bg-[linear-gradient(rgba(26,115,232,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(26,115,232,0.03)_1px,transparent_1px)] bg-[size:40px_40px] dark:bg-[linear-gradient(rgba(59,130,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.03)_1px,transparent_1px)]" />
-              
-              {/* Subtle Noise Texture for depth */}
-              {/* Noise overlay removed to fix 404 */}
-            </div>
-          );
-        }
-
-        // Default Ambient Orbit Background
-        return (
-          <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-colors duration-1000">
-            <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/10 blur-[120px] mix-blend-multiply dark:mix-blend-screen transition-colors duration-1000" />
-            <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-primary/10 blur-[120px] mix-blend-multiply dark:mix-blend-screen transition-colors duration-1000" />
-            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.02] dark:opacity-[0.05] transition-opacity" />
-          </div>
-        );
-      })()}
+        {/* Soft Radial Glows - Emerald Green */}
+        <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-[hsl(158,68%,38%)]/5 blur-[150px] mix-blend-multiply dark:mix-blend-screen" />
+        <div className="absolute bottom-[-15%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[hsl(158,68%,38%)]/5 blur-[160px] mix-blend-multiply dark:mix-blend-screen" />
+      </div>
 
       <div className="z-10 flex">
         <Sidebar user={user} isCollapsed={isSidebarCollapsed} setIsCollapsed={setIsSidebarCollapsed} />
