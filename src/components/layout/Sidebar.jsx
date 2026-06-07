@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ProfileAvatarDialog from "@/components/shared/ProfileAvatarDialog";
@@ -508,7 +508,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
 
       {/* Desktop sidebar */}
       <aside className={cn(
-        "hidden lg:flex flex-col h-screen sticky top-0 border-e-[3px] border-e-blue-500 shadow-sm transition-all duration-300 relative z-40",
+        "hidden lg:flex flex-col h-screen sticky top-0 border-e-[3px] border-e-primary shadow-sm transition-all duration-300 relative z-40",
         isCollapsed ? "w-[80px] min-w-[80px] max-w-[80px]" : "w-[256px] min-w-[256px] max-w-[256px]"
       )}>
         {renderNavContent(isCollapsed)}

@@ -208,256 +208,57 @@
   }
 }
 
-/* ============================================================
-   SCHOOL SUITE THEME — Ivy League / Silicon Valley Premium
-   Scoped exclusively via body.theme-school
-   ============================================================ */
+/* Global Module Colors to prevent breaking variables that dashboards depend on */
+@layer base {
+  :root, .light {
+    --color-module-orbit: hsl(152 76% 41%);
+    --color-module-academic: hsl(152 76% 41%);
+    --color-module-admissions: hsl(152 76% 41%);
+    --color-module-courses: hsl(152 76% 41%);
+    --color-module-students: hsl(152 76% 41%);
+    --color-module-exams: hsl(152 76% 41%);
+    --color-module-faculty: hsl(152 76% 41%);
+    --color-module-research: hsl(152 76% 41%);
+    --color-module-library: hsl(152 76% 41%);
+    --color-module-hostel: hsl(152 76% 41%);
+    --color-module-finance: hsl(152 76% 41%);
+    --color-module-career: hsl(152 76% 41%);
+    --color-module-lms: hsl(152 76% 41%);
+    --color-module-online: hsl(152 76% 41%);
+    --color-accent-primary: hsl(25 95% 53%);
+    --color-accent-subtle: hsl(25 95% 53% / 0.1);
+    
+    /* Additional surface colors */
+    --color-surface-0: #FFFFFF;
+    --color-surface-1: #FFFFFF;
+    --color-surface-2: #F6FFF9;
+    --color-surface-3: #E6F8F0;
+    --color-surface-4: #D1F0E1;
+  }
 
-body.theme-school {
-  font-family: 'DM Sans', system-ui, sans-serif;
-}
+  .dark {
+    --color-module-orbit: hsl(152 76% 50%);
+    --color-module-academic: hsl(152 76% 50%);
+    --color-module-admissions: hsl(152 76% 50%);
+    --color-module-courses: hsl(152 76% 50%);
+    --color-module-students: hsl(152 76% 50%);
+    --color-module-exams: hsl(152 76% 50%);
+    --color-module-faculty: hsl(152 76% 50%);
+    --color-module-research: hsl(152 76% 50%);
+    --color-module-library: hsl(152 76% 50%);
+    --color-module-hostel: hsl(152 76% 50%);
+    --color-module-finance: hsl(152 76% 50%);
+    --color-module-career: hsl(152 76% 50%);
+    --color-module-lms: hsl(152 76% 50%);
+    --color-module-online: hsl(152 76% 50%);
+    --color-accent-primary: hsl(25 95% 53%);
+    --color-accent-subtle: hsl(25 95% 53% / 0.2);
 
-/* School Suite page-level entrance animation */
-body.theme-school .school-page-enter {
-  animation: schoolFadeIn 0.4s ease-out forwards;
-}
-
-@keyframes schoolFadeIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* School Suite frosted glass cards */
-body.theme-school .school-card {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(16, 185, 129, 0.08);
-  border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(16, 185, 129, 0.06), 0 1px 3px rgba(0,0,0,0.04);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-body.theme-school .school-card:hover {
-  box-shadow: 0 12px 40px rgba(16, 185, 129, 0.12), 0 2px 6px rgba(0,0,0,0.06);
-  transform: translateY(-2px);
-}
-.dark body.theme-school .school-card {
-  background: rgba(15, 23, 42, 0.8);
-  border-color: rgba(16, 185, 129, 0.15);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
-}
-.dark body.theme-school .school-card:hover {
-  border-color: rgba(16, 185, 129, 0.3);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
-}
-
-/* School Suite KPI stat cards */
-body.theme-school .school-stat {
-  background: linear-gradient(135deg, #F6FFF9 0%, #E6F8F0 100%);
-  border: 1px solid rgba(16, 185, 129, 0.1);
-  border-radius: 16px;
-  transition: all 0.3s ease;
-}
-body.theme-school .school-stat:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 32px rgba(16, 185, 129, 0.12);
-}
-.dark body.theme-school .school-stat {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);
-  border-color: rgba(16, 185, 129, 0.2);
-}
-
-/* School Suite premium button */
-body.theme-school .school-btn-primary {
-  background: #10B981;
-  color: white;
-  border-radius: 10px;
-  padding: 10px 20px;
-  font-weight: 600;
-  font-family: 'DM Sans', system-ui, sans-serif;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
-}
-body.theme-school .school-btn-primary:hover {
-  background: #059669;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
-}
-
-/* School Suite inputs */
-body.theme-school input:focus,
-body.theme-school select:focus,
-body.theme-school textarea:focus {
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3) !important;
-  border-color: #10B981 !important;
-}
-
-/* School Suite table enhancements */
-body.theme-school thead {
-  background: linear-gradient(180deg, #F6FFF9 0%, #E6F8F0 100%);
-}
-body.theme-school tbody tr:nth-child(even) {
-  background-color: rgba(246, 255, 249, 0.4);
-}
-.dark body.theme-school thead {
-  background: linear-gradient(180deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.08) 100%);
-}
-.dark body.theme-school tbody tr:nth-child(even) {
-  background-color: rgba(16, 185, 129, 0.08);
-}
-
-/* School heading font override */
-body.theme-school .school-heading {
-  font-family: 'Playfair Display', Georgia, serif;
-  color: #0F172A;
-  letter-spacing: -0.02em;
-}
-.dark body.theme-school .school-heading {
-  color: #F1F5F9;
-}
-
-/* ============================================================
-   UNIVERSITY SUITE THEME — Emerald Green & Pure White
-   ============================================================ */
-body.theme-university {
-  font-family: 'Outfit', system-ui, sans-serif;
-  --font-body: 'Outfit', sans-serif;
-  --font-display: 'Outfit', sans-serif;
-
-  --color-border-subtle: hsl(152 76% 41% / 0.15);
-  --color-border-default: hsl(152 76% 41% / 0.25);
-  --color-border-strong: hsl(152 76% 41% / 0.4);
-  --border: 158 68% 38%;
-  
-  --color-text-primary: hsl(158 68% 25%);
-  --color-text-secondary: hsl(158 68% 35%);
-  --color-text-tertiary: hsl(158 68% 45%);
-  
-  --color-surface-0: #FFFFFF;
-  --color-surface-1: #FFFFFF;
-  --color-surface-2: #F6FFF9;
-  --color-surface-3: #E6F8F0;
-  --color-surface-4: #D1F0E1;
-
-  --color-module-orbit: hsl(152 76% 41%);
-  --color-module-academic: hsl(152 76% 41%);
-  --color-module-admissions: hsl(152 76% 41%);
-  --color-module-courses: hsl(152 76% 41%);
-  --color-module-students: hsl(152 76% 41%);
-  --color-module-exams: hsl(152 76% 41%);
-  --color-module-faculty: hsl(152 76% 41%);
-  --color-module-research: hsl(152 76% 41%);
-  --color-module-library: hsl(152 76% 41%);
-  --color-module-hostel: hsl(152 76% 41%);
-  --color-module-finance: hsl(152 76% 41%);
-  --color-module-career: hsl(152 76% 41%);
-  --color-module-lms: hsl(152 76% 41%);
-  --color-accent-primary: hsl(25 95% 53%);
-  --color-accent-subtle: hsl(25 95% 53% / 0.1);
-
-  --chart-1: 152 76% 41%;
-  --chart-2: 158 68% 48%;
-  --chart-3: 158 68% 58%;
-  --chart-4: 158 68% 68%;
-  --chart-5: 158 68% 78%;
-}
-
-.dark body.theme-university {
-  --color-border-subtle: hsl(152 76% 50% / 0.25);
-  --color-border-default: hsl(152 76% 50% / 0.4);
-  --color-border-strong: hsl(152 76% 50% / 0.6);
-  --border: 152 76% 50%;
-
-  --color-text-primary: #FFFFFF;
-  --color-text-secondary: hsl(158 68% 85%);
-  --color-text-tertiary: hsl(158 68% 70%);
-
-  --color-surface-0: transparent;
-  --color-surface-1: rgba(255, 255, 255, 0.03);
-  --color-surface-2: rgba(255, 255, 255, 0.05);
-  --color-surface-3: rgba(255, 255, 255, 0.08);
-  --color-surface-4: rgba(255, 255, 255, 0.12);
-
-  --color-module-orbit: hsl(152 76% 50%);
-  --color-module-academic: hsl(152 76% 50%);
-  --color-module-admissions: hsl(152 76% 50%);
-  --color-module-courses: hsl(152 76% 50%);
-  --color-module-students: hsl(152 76% 50%);
-  --color-module-exams: hsl(152 76% 50%);
-  --color-module-faculty: hsl(152 76% 50%);
-  --color-module-research: hsl(152 76% 50%);
-  --color-module-library: hsl(152 76% 50%);
-  --color-module-hostel: hsl(152 76% 50%);
-  --color-module-finance: hsl(152 76% 50%);
-  --color-module-career: hsl(152 76% 50%);
-  --color-module-lms: hsl(152 76% 50%);
-  --color-accent-primary: hsl(25 95% 53%);
-  --color-accent-subtle: hsl(25 95% 53% / 0.2);
-
-  --chart-1: 152 76% 50%;
-  --chart-2: 158 68% 48%;
-  --chart-3: 158 68% 58%;
-  --chart-4: 158 68% 68%;
-  --chart-5: 158 68% 78%;
-}
-
-/* ============================================================
-   ONLINE LEARNING SUITE THEME — Deep Tech Blue
-   ============================================================ */
-body.theme-online {
-  font-family: 'Outfit', system-ui, sans-serif;
-  --font-body: 'Outfit', sans-serif;
-  --font-display: 'Outfit', sans-serif;
-
-  --color-border-subtle: hsl(152 76% 41% / 0.15);
-  --color-border-default: hsl(152 76% 41% / 0.25);
-  --color-border-strong: hsl(152 76% 41% / 0.4);
-  --border: 213 89% 50%;
-  
-  --color-text-primary: hsl(213 89% 25%);
-  --color-text-secondary: hsl(213 89% 35%);
-  --color-text-tertiary: hsl(213 89% 45%);
-  
-  --color-surface-0: #FFFFFF;
-  --color-surface-1: #FFFFFF;
-  --color-surface-2: #F6FFF9;
-  --color-surface-3: #E6F8F0;
-  --color-surface-4: #D1F0E1;
-
-  --color-module-online: hsl(152 76% 41%);
-  --color-accent-primary: hsl(25 95% 53%);
-  --color-accent-subtle: hsl(25 95% 53% / 0.1);
-
-  --chart-1: 213 89% 50%;
-  --chart-2: 213 89% 40%;
-  --chart-3: 213 89% 30%;
-  --chart-4: 213 89% 60%;
-  --chart-5: 213 89% 70%;
-}
-
-.dark body.theme-online {
-  --color-border-subtle: hsl(152 76% 50% / 0.25);
-  --color-border-default: hsl(152 76% 50% / 0.4);
-  --color-border-strong: hsl(152 76% 50% / 0.6);
-  --border: 152 76% 50%;
-
-  --color-text-primary: #FFFFFF;
-  --color-text-secondary: hsl(213 89% 85%);
-  --color-text-tertiary: hsl(213 89% 70%);
-
-  --color-surface-0: transparent;
-  --color-surface-1: rgba(255, 255, 255, 0.03);
-  --color-surface-2: rgba(255, 255, 255, 0.05);
-  --color-surface-3: rgba(255, 255, 255, 0.08);
-  --color-surface-4: rgba(255, 255, 255, 0.12);
-
-  --color-module-online: hsl(152 76% 50%);
-  --color-accent-primary: hsl(25 95% 53%);
-  --color-accent-subtle: hsl(25 95% 53% / 0.2);
-
-  --chart-1: 152 76% 50%;
-  --chart-2: 213 89% 40%;
-  --chart-3: 213 89% 30%;
-  --chart-4: 213 89% 60%;
-  --chart-5: 213 89% 70%;
-}
+    /* Additional surface colors */
+    --color-surface-0: transparent;
+    --color-surface-1: rgba(255, 255, 255, 0.03);
+    --color-surface-2: rgba(255, 255, 255, 0.05);
+    --color-surface-3: rgba(255, 255, 255, 0.08);
+    --color-surface-4: rgba(255, 255, 255, 0.12);
+  }
+}

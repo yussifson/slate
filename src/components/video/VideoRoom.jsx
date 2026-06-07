@@ -440,7 +440,7 @@ export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePi
   if (!daily || !roomUrl) {
     return (
       <div className="flex flex-col h-full bg-slate-950 rounded-xl items-center justify-center">
-        <div className="w-12 h-12 rounded-full border-[3px] border-emerald-500/30 border-t-blue-500 animate-spin mb-4"></div>
+        <div className="w-12 h-12 rounded-full border-[3px] border-emerald-500/30 border-t-primary animate-spin mb-4"></div>
         <p className="text-slate-400 font-medium">Connecting to secure video server...</p>
       </div>
     );
