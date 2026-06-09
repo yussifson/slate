@@ -444,7 +444,7 @@ function SuitesSection() {
             onClick={() => setIsModalOpen(false)}
           ></div>
           
-          <div className="relative bg-white w-full max-w-4xl max-h-[90vh] rounded-[2rem] shadow-2xl overflow-hidden flex flex-col transform transition-all animate-in fade-in zoom-in-95 duration-200">
+          <div className="relative bg-white w-full max-w-4xl max-h-[90vh] rounded-[2rem] overflow-hidden flex flex-col transform transition-all animate-in fade-in zoom-in-95 duration-200">
             {/* Header */}
             <div className="flex-none p-6 sm:p-8 border-b border-slate-100 flex justify-between items-start bg-slate-50/50">
               <div>
@@ -583,7 +583,7 @@ export default function Home() {
 
           {/* Dashboard mockup */}
           <FadeIn delay="delay-500">
-            <div className="relative w-full max-w-6xl mx-auto h-[400px] md:h-[550px] rounded-2xl border border-slate-200/80 bg-slate-50 shadow-2xl overflow-hidden flex items-center justify-center">
+            <div className="relative w-full max-w-6xl mx-auto h-[400px] md:h-[550px] rounded-2xl border border-slate-200/80 bg-slate-50 overflow-hidden flex items-center justify-center">
               <img src="/images/hero_dashboard_ui.png" alt="Slate Dashboard Mockup" className="w-full h-full object-cover object-top" />
             </div>
           </FadeIn>
@@ -626,7 +626,7 @@ export default function Home() {
             </FadeIn>
 
             <FadeIn delay="delay-200">
-              <div className="relative rounded-2xl border border-slate-200/60 bg-white shadow-2xl overflow-hidden transform rotate-1 hover:rotate-0 transition-transform duration-500 group">
+              <div className="relative rounded-2xl border border-slate-200/60 bg-white overflow-hidden transform rotate-1 hover:rotate-0 transition-transform duration-500 group">
                 <img 
                   src="/images/orbit_dashboard_mockup.png" 
                   alt="Slate Dashboard featuring Orbit AI Panel" 
