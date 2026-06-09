@@ -30,7 +30,7 @@ export default function MediaManager() {
           <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Media Library</h1>
           <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage all your uploaded videos, documents, and images centrally.</p>
         </div>
-        <button onClick={handleUpload} className="flex items-center gap-2 px-4 py-2 bg-[var(--color-module-online)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">
+        <button onClick={handleUpload} className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">
           <UploadCloud className="w-4 h-4" /> Upload Asset
         </button>
       </div>
@@ -40,7 +40,7 @@ export default function MediaManager() {
           <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] shadow-sm p-4">
             <h3 className="font-semibold text-[var(--color-text-primary)] mb-4">Folders</h3>
             <div className="space-y-1">
-              <button className="w-full flex items-center justify-between px-3 py-2 text-sm bg-[var(--color-surface-1)] text-[var(--color-module-online)] rounded-[var(--radius-md)] font-medium">
+              <button className="w-full flex items-center justify-between px-3 py-2 text-sm bg-[var(--color-surface-1)] text-[var(--primary)] rounded-[var(--radius-md)] font-medium">
                 <div className="flex items-center gap-3">
                   <Folder className="w-4 h-4" /> All Assets
                 </div>
@@ -61,11 +61,11 @@ export default function MediaManager() {
 
           <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] shadow-sm p-6 text-center">
             <div className="w-16 h-16 bg-[var(--color-surface-1)] rounded-full flex items-center justify-center mx-auto mb-4">
-              <UploadCloud className="w-8 h-8 text-[var(--color-module-online)]" />
+              <UploadCloud className="w-8 h-8 text-[var(--primary)]" />
             </div>
             <h4 className="font-semibold text-[var(--color-text-primary)]">Quick Upload</h4>
             <p className="text-xs text-[var(--color-text-secondary)] mt-1 mb-4">Drag & drop files here</p>
-            <button className="text-sm text-[var(--color-module-online)] font-medium hover:underline">Browse Files</button>
+            <button className="text-sm text-[var(--primary)] font-medium hover:underline">Browse Files</button>
           </div>
         </div>
 
@@ -79,7 +79,7 @@ export default function MediaManager() {
                   placeholder="Search assets..." 
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full bg-[var(--color-surface-0)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--color-module-online)] focus:ring-1 focus:ring-[var(--color-module-online)] font-body"
+                  className="w-full bg-[var(--color-surface-0)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
                 />
               </div>
             </div>
@@ -117,7 +117,7 @@ export default function MediaManager() {
                         <td className="px-6 py-4 text-[var(--color-text-secondary)]">{asset.date}</td>
                         <td className="px-6 py-4 text-right">
                           <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button className="p-1.5 text-[var(--color-text-secondary)] hover:text-[var(--color-module-online)] hover:bg-[var(--color-surface-2)] rounded-md transition-colors">
+                            <button className="p-1.5 text-[var(--color-text-secondary)] hover:text-[var(--primary)] hover:bg-[var(--color-surface-2)] rounded-md transition-colors">
                               <Download className="w-4 h-4" />
                             </button>
                             <button className="p-1.5 text-[var(--color-text-secondary)] hover:text-[var(--color-error)] hover:bg-[var(--color-error-subtle)] rounded-md transition-colors">

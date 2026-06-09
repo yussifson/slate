@@ -345,29 +345,29 @@ function SuitesSection() {
                     onClick={() => setActiveSuite(suite)}
                     className={`w-full text-left px-6 py-4 md:py-5 transition-all duration-300 relative group overflow-hidden ${
                       activeSuite.id === suite.id
-                        ? 'bg-gradient-to-r from-primary/80 to-transparent'
+                        ? 'bg-primary'
                         : 'bg-transparent hover:bg-slate-50'
                     }`}
                   >
                     {/* Active Indicator Line */}
                     {activeSuite.id === suite.id ? (
-                      <div className="absolute top-0 left-[-1px] w-[3px] h-full bg-primary rounded-r-full shadow-[0_0_10px_rgba(37,99,235,0.4)]"></div>
+                      <div className="absolute top-0 left-[-1px] w-[3px] h-full bg-white rounded-r-full shadow-lg shadow-white/40"></div>
                     ) : (
                       <div className="absolute top-0 left-[-1px] w-[3px] h-full bg-slate-300 scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-center rounded-r-full"></div>
                     )}
                     <div className="relative z-10 flex items-center justify-between">
                       <div>
-                        <div className={`font-bold text-base transition-colors ${activeSuite.id === suite.id ? 'text-primary/90' : 'text-slate-700 group-hover:text-slate-900'}`}>
+                        <div className={`font-bold text-base transition-colors ${activeSuite.id === suite.id ? 'text-white' : 'text-slate-700 group-hover:text-slate-900'}`}>
                           {suite.name}
                         </div>
-                        <div className={`text-[13px] font-medium mt-1 transition-colors ${activeSuite.id === suite.id ? 'text-primary/80' : 'text-slate-500'}`}>
+                        <div className={`text-[13px] font-medium mt-1 transition-colors ${activeSuite.id === suite.id ? 'text-white/90' : 'text-slate-500'}`}>
                           {suite.tagline}
                         </div>
                       </div>
                       
                       {/* Arrow Icon on Active */}
                       <div className={`transition-all duration-300 ${activeSuite.id === suite.id ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}>
-                        <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <svg className={`w-5 h-5 ${activeSuite.id === suite.id ? 'text-white' : 'text-primary'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                         </svg>
                       </div>

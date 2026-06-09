@@ -55,7 +55,7 @@ export default function UniExams() {
     updateStudentGpaMutation.mutate({ studentId: activeStudent.id, newGpa });
   };
 
-  const selectClass = "w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-module-exams)] focus:ring-1 focus:ring-[var(--color-module-exams)] font-body";
+  const selectClass = "w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body";
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -112,8 +112,8 @@ export default function UniExams() {
                           <p className="font-medium text-[var(--color-text-primary)]">{qIdx + 1}. {q.q}</p>
                           <div className="grid grid-cols-1 gap-2 pt-2">
                             {q.options.map((opt, optIdx) => (
-                              <label key={optIdx} className={cn("flex items-center gap-2 text-[var(--text-sm)] border rounded-[var(--radius-md)] p-2.5 cursor-pointer transition-colors", answers[qIdx] === optIdx ? "border-[var(--color-module-exams)] bg-[var(--color-accent-subtle)]" : "border-[var(--color-border-default)] hover:bg-[var(--color-surface-2)]")}>
-                                <input type="radio" name={`q-${qIdx}`} checked={answers[qIdx] === optIdx} onChange={() => setAnswers({ ...answers, [qIdx]: optIdx })} className="accent-[var(--color-module-exams)]" />
+                              <label key={optIdx} className={cn("flex items-center gap-2 text-[var(--text-sm)] border rounded-[var(--radius-md)] p-2.5 cursor-pointer transition-colors", answers[qIdx] === optIdx ? "border-[var(--primary)] bg-[var(--color-accent-subtle)]" : "border-[var(--color-border-default)] hover:bg-[var(--color-surface-2)]")}>
+                                <input type="radio" name={`q-${qIdx}`} checked={answers[qIdx] === optIdx} onChange={() => setAnswers({ ...answers, [qIdx]: optIdx })} className="accent-[var(--primary)]" />
                                 <span className="font-medium text-[var(--color-text-primary)]">{opt}</span>
                               </label>
                             ))}

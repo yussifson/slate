@@ -17,19 +17,19 @@ function cn(...classes) {
 }
 
 const MODULES = [
-  { id: 'dashboard', path: '/u/', name: 'Dashboard', icon: LayoutGrid, color: 'var(--color-module-orbit)' },
-  { id: 'students', path: '/u/students', name: 'Students', icon: Users, color: 'var(--color-module-students)' },
-  { id: 'admissions', path: '/u/admissions', name: 'Admissions', icon: CheckSquare, color: 'var(--color-module-admissions)' },
-  { id: 'academic', path: '/u/academic-structure', name: 'Academic Records', icon: FileText, color: 'var(--color-module-academic)' },
-  { id: 'courses', path: '/u/courses', name: 'Courses', icon: Calendar, color: 'var(--color-module-courses)' },
-  { id: 'lms', path: '/u/lms', name: 'Learning (LMS)', icon: BookOpen, color: 'var(--color-module-lms)' },
-  { id: 'exams', path: '/u/exams', name: 'Examinations', icon: FileText, color: 'var(--color-module-exams)' },
-  { id: 'faculty', path: '/u/faculties', name: 'Faculty', icon: GraduationCap, color: 'var(--color-module-faculty)' },
-  { id: 'research', path: '/u/research-activity', name: 'Research', icon: FlaskConical, color: 'var(--color-module-research)' },
-  { id: 'library', path: '/u/library', name: 'Library', icon: Library, color: 'var(--color-module-library)' },
-  { id: 'hostel', path: '/u/hostel', name: 'Hostel', icon: Home, color: 'var(--color-module-hostel)' },
-  { id: 'finance', path: '/u/finance', name: 'Finance', icon: DollarSign, color: 'var(--color-module-finance)' },
-  { id: 'career', path: '/u/career-alumni', name: 'Career & Alumni', icon: Briefcase, color: 'var(--color-module-career)' },
+  { id: 'dashboard', path: '/u/', name: 'Dashboard', icon: LayoutGrid, color: 'var(--primary)' },
+  { id: 'students', path: '/u/students', name: 'Students', icon: Users, color: 'var(--primary)' },
+  { id: 'admissions', path: '/u/admissions', name: 'Admissions', icon: CheckSquare, color: 'var(--primary)' },
+  { id: 'academic', path: '/u/academic-structure', name: 'Academic Records', icon: FileText, color: 'var(--primary)' },
+  { id: 'courses', path: '/u/courses', name: 'Courses', icon: Calendar, color: 'var(--primary)' },
+  { id: 'lms', path: '/u/lms', name: 'Learning (LMS)', icon: BookOpen, color: 'var(--primary)' },
+  { id: 'exams', path: '/u/exams', name: 'Examinations', icon: FileText, color: 'var(--primary)' },
+  { id: 'faculty', path: '/u/faculties', name: 'Faculty', icon: GraduationCap, color: 'var(--primary)' },
+  { id: 'research', path: '/u/research-activity', name: 'Research', icon: FlaskConical, color: 'var(--primary)' },
+  { id: 'library', path: '/u/library', name: 'Library', icon: Library, color: 'var(--primary)' },
+  { id: 'hostel', path: '/u/hostel', name: 'Hostel', icon: Home, color: 'var(--primary)' },
+  { id: 'finance', path: '/u/finance', name: 'Finance', icon: DollarSign, color: 'var(--primary)' },
+  { id: 'career', path: '/u/career-alumni', name: 'Career & Alumni', icon: Briefcase, color: 'var(--primary)' },
 ];
 
 export default function UniLayout({ children }) {
@@ -99,7 +99,7 @@ export default function UniLayout({ children }) {
             <Bell className="w-4 h-4" />
             <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[var(--color-danger)] rounded-full border border-[var(--color-surface-0)]" />
           </button>
-          <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-[var(--color-accent-primary)] to-[var(--color-module-admissions)] flex items-center justify-center text-xs font-semibold text-white ml-2">
+          <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-[var(--color-accent-primary)] to-[var(--primary)] flex items-center justify-center text-xs font-semibold text-white ml-2">
             {user?.email?.substring(0, 2).toUpperCase() || 'AD'}
           </div>
         </div>

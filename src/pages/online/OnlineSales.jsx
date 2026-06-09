@@ -26,7 +26,7 @@ export default function OnlineSales() {
 
   const stats = [
     { label: 'Total Revenue', value: `$${totalRevenue.toLocaleString()}`, icon: Banknote, color: 'var(--color-success)' },
-    { label: 'Avg Order Value', value: '$0.00', icon: ShoppingCart, color: 'var(--color-module-online)' },
+    { label: 'Avg Order Value', value: '$0.00', icon: ShoppingCart, color: 'var(--primary)' },
     { label: 'Monthly Recurring', value: '$0', icon: CreditCard, color: 'var(--color-info)' },
     { label: 'Growth (YoY)', value: '0%', icon: TrendingUp, color: 'var(--color-warning)' },
   ];

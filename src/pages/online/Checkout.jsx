@@ -78,7 +78,7 @@ export default function Checkout() {
           <div className="lg:col-span-2 lg:order-1 space-y-6">
             <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] shadow-sm p-6 sm:p-8">
               <h2 className="text-xl font-bold font-display text-[var(--color-text-primary)] mb-6 flex items-center gap-2">
-                <CreditCard className="w-5 h-5 text-[var(--color-module-online)]" /> Payment Details
+                <CreditCard className="w-5 h-5 text-[var(--primary)]" /> Payment Details
               </h2>
               
               <div className="space-y-5">
@@ -87,7 +87,7 @@ export default function Checkout() {
                   <input 
                     type="text" 
                     placeholder="John Doe" 
-                    className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-4 py-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-module-online)] focus:ring-1 focus:ring-[var(--color-module-online)] font-body"
+                    className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-4 py-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
                   />
                 </div>
                 <div>
@@ -96,7 +96,7 @@ export default function Checkout() {
                     <input 
                       type="text" 
                       placeholder="0000 0000 0000 0000" 
-                      className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] pl-12 pr-4 py-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-module-online)] focus:ring-1 focus:ring-[var(--color-module-online)] font-body"
+                      className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] pl-12 pr-4 py-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
                     />
                     <CreditCard className="absolute left-4 top-3.5 h-5 w-5 text-[var(--color-text-tertiary)]" />
                   </div>
@@ -107,7 +107,7 @@ export default function Checkout() {
                     <input 
                       type="text" 
                       placeholder="MM/YY" 
-                      className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-4 py-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-module-online)] focus:ring-1 focus:ring-[var(--color-module-online)] font-body"
+                      className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-4 py-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
                     />
                   </div>
                   <div>
@@ -115,7 +115,7 @@ export default function Checkout() {
                     <input 
                       type="text" 
                       placeholder="123" 
-                      className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-4 py-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-module-online)] focus:ring-1 focus:ring-[var(--color-module-online)] font-body"
+                      className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-4 py-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
                     />
                   </div>
                 </div>
@@ -124,7 +124,7 @@ export default function Checkout() {
               <button 
                 onClick={handleCheckout} 
                 disabled={loading}
-                className="w-full mt-8 py-4 bg-[var(--color-module-online)] text-white text-base font-bold rounded-[var(--radius-md)] hover:opacity-90 transition-opacity flex items-center justify-center gap-2 shadow-md disabled:opacity-70"
+                className="w-full mt-8 py-4 bg-[var(--primary)] text-white text-base font-bold rounded-[var(--radius-md)] hover:opacity-90 transition-opacity flex items-center justify-center gap-2 shadow-md disabled:opacity-70"
               >
                 {loading ? 'Processing...' : `Pay $${price}`} <ArrowRight className="w-5 h-5" />
               </button>

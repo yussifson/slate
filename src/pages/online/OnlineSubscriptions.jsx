@@ -11,7 +11,7 @@ export default function OnlineSubscriptions() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
         {/* Monthly Plan */}
-        <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-8 shadow-sm hover:border-[var(--color-module-online)] transition-colors relative flex flex-col">
+        <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-8 shadow-sm hover:border-[var(--primary)] transition-colors relative flex flex-col">
           <h2 className="text-2xl font-bold font-display text-[var(--color-text-primary)] mb-2">Monthly</h2>
           <p className="text-[var(--color-text-secondary)] text-sm mb-6">Perfect for short-term learning goals.</p>
           <div className="flex items-end gap-1 mb-8">
@@ -44,7 +44,7 @@ export default function OnlineSubscriptions() {
         </div>
 
         {/* Annual Plan */}
-        <div className="bg-[var(--color-module-online)] rounded-[var(--radius-xl)] p-8 shadow-lg relative flex flex-col text-white transform md:-translate-y-4 border border-[var(--color-module-online)]">
+        <div className="bg-[var(--primary)] rounded-[var(--radius-xl)] p-8 shadow-lg relative flex flex-col text-white transform md:-translate-y-4 border border-[var(--primary)]">
           <div className="absolute top-0 right-0 bg-[var(--color-warning)] text-[var(--color-warning-foreground)] text-xs font-bold px-3 py-1 rounded-bl-[var(--radius-lg)] rounded-tr-[var(--radius-xl)] uppercase tracking-wider">
             Best Value
           </div>
@@ -74,7 +74,7 @@ export default function OnlineSubscriptions() {
             </div>
           </div>
 
-          <button className="w-full py-3 bg-white text-[var(--color-module-online)] font-bold rounded-[var(--radius-md)] hover:bg-gray-50 transition-colors shadow-sm">
+          <button className="w-full py-3 bg-white text-[var(--primary)] font-bold rounded-[var(--radius-md)] hover:bg-gray-50 transition-colors shadow-sm">
             Subscribe Annually
           </button>
         </div>

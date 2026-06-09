@@ -18,7 +18,7 @@ export default function OnlineLive() {
           <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Live Sessions</h1>
           <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Join virtual classrooms, webinars, and interactive Q&A sessions.</p>
         </div>
-        <button className="px-4 py-2 bg-[var(--color-module-online)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity flex items-center gap-2">
+        <button className="px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity flex items-center gap-2">
           <Video className="w-4 h-4" /> Schedule Session
         </button>
       </div>
@@ -29,10 +29,10 @@ export default function OnlineLive() {
           
           <div className="space-y-4">
             {sessions.map(session => (
-              <div key={session.id} className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-5 shadow-sm flex flex-col sm:flex-row gap-5 items-start sm:items-center group hover:border-[var(--color-module-online)] transition-colors">
+              <div key={session.id} className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-5 shadow-sm flex flex-col sm:flex-row gap-5 items-start sm:items-center group hover:border-[var(--primary)] transition-colors">
                 <div className="w-16 h-16 rounded-[var(--radius-lg)] flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-[var(--color-surface-1)] to-[var(--color-surface-2)] border border-[var(--color-border-default)]">
                   {session.status === 'upcoming' ? (
-                    <Calendar className="w-8 h-8 text-[var(--color-module-online)]" />
+                    <Calendar className="w-8 h-8 text-[var(--primary)]" />
                   ) : (
                     <PlayCircle className="w-8 h-8 text-[var(--color-text-tertiary)]" />
                   )}
@@ -58,7 +58,7 @@ export default function OnlineLive() {
                   </div>
                 </div>
                 {session.status === 'upcoming' ? (
-                  <button className="w-full sm:w-auto px-6 py-2 bg-[var(--color-module-online)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity whitespace-nowrap">
+                  <button className="w-full sm:w-auto px-6 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity whitespace-nowrap">
                     Join Room
                   </button>
                 ) : (

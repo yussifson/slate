@@ -24,7 +24,7 @@ export default function UniGraduationStats() {
     
     return {
       stats: [
-        { label: 'Total Alumni', value: totalAlumni.toLocaleString(), icon: GraduationCap, color: 'var(--color-module-orbit)' },
+        { label: 'Total Alumni', value: totalAlumni.toLocaleString(), icon: GraduationCap, color: 'var(--primary)' },
         { label: 'Employment Rate', value: `${mockEmployed}%`, icon: Briefcase, color: 'var(--color-success)' },
         { label: 'Higher Education', value: '18.5%', icon: Globe2, color: 'var(--color-warning)' },
         { label: 'Degrees Verified', value: '100%', icon: ShieldCheck, color: 'var(--chart-1)' }
@@ -36,7 +36,7 @@ export default function UniGraduationStats() {
         { name: 'Pass', value: Math.floor(totalAlumni * 0.11) },
       ],
       employmentSectors: [
-        { name: 'Technology & Software Engineering', value: 38, color: 'var(--color-module-orbit)' },
+        { name: 'Technology & Software Engineering', value: 38, color: 'var(--primary)' },
         { name: 'Finance & Investment Banking', value: 24, color: 'var(--color-success)' },
         { name: 'Healthcare & Medical Research', value: 18, color: 'var(--chart-3)' },
         { name: 'Government & Public Policy', value: 12, color: 'var(--chart-4)' }

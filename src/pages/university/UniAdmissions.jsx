@@ -95,7 +95,7 @@ export default function UniAdmissions() {
   };
 
   const columns = [
-    { id: 'name', header: 'Candidate Name', render: (_, r) => <div className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-[var(--color-module-admissions)] text-white flex items-center justify-center font-bold text-xs">{r.name?.substring(0,2).toUpperCase()}</div><span className="font-semibold text-[var(--color-text-primary)]">{r.name}</span></div> },
+    { id: 'name', header: 'Candidate Name', render: (_, r) => <div className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-[var(--primary)] text-white flex items-center justify-center font-bold text-xs">{r.name?.substring(0,2).toUpperCase()}</div><span className="font-semibold text-[var(--color-text-primary)]">{r.name}</span></div> },
     { id: 'email', header: 'Contact', render: (_, r) => <span className="text-[var(--color-text-secondary)]">{r.email}</span> },
     { id: 'major', header: 'Intended Major', render: (_, r) => <span className="inline-flex items-center px-2 py-1 rounded-[var(--radius-sm)] text-[11px] font-medium bg-[var(--color-surface-2)] text-[var(--color-text-secondary)]">{r.major}</span> },
     { id: 'gpa', header: 'Entrance GPA', render: (_, r) => <span className="font-mono font-bold text-[var(--color-text-primary)]">{r.gpa}</span> },
@@ -103,7 +103,7 @@ export default function UniAdmissions() {
     { id: 'actions', header: 'Actions', align: 'right', render: (_, r) => <button onClick={(e) => { e.stopPropagation(); setSelectedApplicant(r); }} className="px-3 py-1.5 text-xs font-bold text-[var(--color-accent-primary)] hover:bg-[var(--color-surface-3)] rounded-[var(--radius-md)] transition-colors flex items-center gap-1"><Eye className="w-4 h-4"/> Review</button> }
   ];
 
-  const inputClass = "w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--color-module-admissions)] focus:ring-1 focus:ring-[var(--color-module-admissions)] font-body";
+  const inputClass = "w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body";
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -125,7 +125,7 @@ export default function UniAdmissions() {
             {parsedApplicants.length > 0 ? (
               <OrbitTable columns={columns} data={parsedApplicants} title="All Applicants" showToolbar={true} onRowClick={(r) => setSelectedApplicant(r)} />
             ) : (
-              <OrbitEmptyState icon={GraduationCap} title="No applicant profiles logged" description="Use the 'Log Candidate' tab to add applicant records." moduleColor="var(--color-module-admissions)" actionLabel="Add Applicant" onAction={() => setActiveTab('add')} />
+              <OrbitEmptyState icon={GraduationCap} title="No applicant profiles logged" description="Use the 'Log Candidate' tab to add applicant records." moduleColor="var(--primary)" actionLabel="Add Applicant" onAction={() => setActiveTab('add')} />
             )}
           </div>
         )}
@@ -134,7 +134,7 @@ export default function UniAdmissions() {
           <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
             <div className="bg-[var(--color-surface-2)] p-6 border-b border-[var(--color-border-subtle)] flex justify-between items-center">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-[var(--radius-lg)] bg-[var(--color-module-admissions)] text-white flex items-center justify-center font-display text-[var(--text-2xl)] shadow-glow-sm shadow-[var(--color-module-admissions)]">
+                <div className="w-16 h-16 rounded-[var(--radius-lg)] bg-[var(--primary)] text-white flex items-center justify-center font-display text-[var(--text-2xl)] shadow-glow-sm shadow-[var(--primary)]">
                   {selectedApplicant.name?.substring(0, 2).toUpperCase()}
                 </div>
                 <div>
@@ -167,11 +167,11 @@ export default function UniAdmissions() {
 
         {activeTab === 'interviews' && (
           <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 shadow-sm">
-            <h2 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-1.5 mb-1"><Calendar className="w-4 h-4 text-[var(--color-module-admissions)]" /> Interview Matrix</h2>
+            <h2 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-1.5 mb-1"><Calendar className="w-4 h-4 text-[var(--primary)]" /> Interview Matrix</h2>
             <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mb-6">Scheduled entrance evaluation sessions.</p>
             
             <div className="p-4 bg-[var(--color-surface-1)] border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] flex items-start gap-4">
-              <CalendarCheck className="w-8 h-8 text-[var(--color-module-admissions)] shrink-0" />
+              <CalendarCheck className="w-8 h-8 text-[var(--primary)] shrink-0" />
               <div>
                 <p className="font-bold text-[var(--color-text-primary)] text-sm">Interviews scheduled for tomorrow</p>
                 <p className="text-[var(--text-xs)] text-[var(--color-text-secondary)] mt-1">Dr. Alan Turing with candidate John Doe regarding Computer Science admission offer.</p>
@@ -208,7 +208,7 @@ export default function UniAdmissions() {
                 <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Personal Statement</label>
                 <textarea value={formData.statement} onChange={e => setFormData({ ...formData, statement: e.target.value })} rows={4} placeholder="Explain your academic pursuits..." className={cn(inputClass, "min-h-[100px]")} />
               </div>
-              <button type="submit" className="w-full flex items-center justify-center gap-2 py-2.5 bg-[var(--color-module-admissions)] hover:opacity-90 text-white font-medium rounded-[var(--radius-md)] transition-all">Submit Application</button>
+              <button type="submit" className="w-full flex items-center justify-center gap-2 py-2.5 bg-[var(--primary)] hover:opacity-90 text-white font-medium rounded-[var(--radius-md)] transition-all">Submit Application</button>
             </form>
           </div>
         )}

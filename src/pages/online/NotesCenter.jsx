@@ -18,7 +18,7 @@ export default function NotesCenter() {
           <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">My Notes</h1>
           <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Review all the notes you've taken during your courses.</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-[var(--color-module-online)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">
+        <button className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">
           <PlusCircle className="w-4 h-4" /> New Note
         </button>
       </div>
@@ -32,13 +32,13 @@ export default function NotesCenter() {
               placeholder="Search notes..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-[var(--color-surface-0)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-module-online)] focus:ring-1 focus:ring-[var(--color-module-online)]"
+              className="w-full bg-[var(--color-surface-0)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]"
             />
           </div>
 
           <div className="space-y-2">
             {notes.map(note => (
-              <div key={note.id} className="p-4 bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] cursor-pointer hover:border-[var(--color-module-online)] transition-colors">
+              <div key={note.id} className="p-4 bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] cursor-pointer hover:border-[var(--primary)] transition-colors">
                 <h3 className="font-semibold text-[var(--color-text-primary)] text-sm line-clamp-1">{note.title}</h3>
                 <div className="flex items-center gap-2 mt-2 text-xs text-[var(--color-text-secondary)]">
                   <BookOpen className="w-3.5 h-3.5" /> <span className="truncate">{note.course}</span>

@@ -86,7 +86,7 @@ export default function UniCourses() {
     { id: 'status', header: 'Status', render: (_, row) => <OrbitStatusBadge status={row.status} /> }
   ];
 
-  const inputClass = "w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--color-module-courses)] focus:ring-1 focus:ring-[var(--color-module-courses)] font-body";
+  const inputClass = "w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body";
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -110,7 +110,7 @@ export default function UniCourses() {
           courses.length > 0 ? (
             <OrbitTable columns={columns} data={courses} showToolbar={true} />
           ) : (
-            <OrbitEmptyState title="No courses in catalog" description="Start by adding academic courses to the university catalog." actionLabel="Add Course" onAction={() => setActiveTab('add')} icon={BookOpen} moduleColor="var(--color-module-courses)" />
+            <OrbitEmptyState title="No courses in catalog" description="Start by adding academic courses to the university catalog." actionLabel="Add Course" onAction={() => setActiveTab('add')} icon={BookOpen} moduleColor="var(--primary)" />
           )
         )}
 
@@ -167,7 +167,7 @@ export default function UniCourses() {
               </div>
               <div className="pt-4 border-t border-[var(--color-border-subtle)] flex justify-end gap-3">
                 <button type="button" onClick={() => setActiveTab('directory')} className="px-5 py-2 border border-[var(--color-border-default)] text-[var(--color-text-primary)] rounded-[var(--radius-md)] font-medium hover:bg-[var(--color-surface-3)] transition-colors">Cancel</button>
-                <button type="submit" className="flex items-center gap-2 px-6 py-2.5 bg-[var(--color-module-courses)] hover:opacity-90 text-white rounded-[var(--radius-md)] font-medium transition-all shadow-sm">
+                <button type="submit" className="flex items-center gap-2 px-6 py-2.5 bg-[var(--primary)] hover:opacity-90 text-white rounded-[var(--radius-md)] font-medium transition-all shadow-sm">
                   <Plus className="w-4 h-4" /> Create Course
                 </button>
               </div>

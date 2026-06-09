@@ -16,7 +16,7 @@ export const CURRENCIES = {
 export const CASE_STATUS_COLORS = {
   open: "bg-orange-100 text-orange-700",
   in_progress: "bg-amber-100 text-amber-700",
-  pending_hearing: "bg-purple-100 text-purple-700",
+  pending_hearing: "bg-primary/10 text-primary",
   closed: "bg-green-100 text-green-700",
   archived: "bg-gray-100 text-gray-500"
 };

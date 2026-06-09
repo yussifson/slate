@@ -69,7 +69,7 @@ export default function UniDashboard() {
           <button className="px-5 py-2.5 bg-[var(--color-surface-1)] border border-[var(--color-border-default)] text-[var(--color-text-primary)] text-sm font-medium rounded-lg hover:bg-[var(--color-surface-2)] transition-colors">
             Generate Report
           </button>
-          <button className="px-5 py-2.5 bg-[var(--color-module-orbit)] text-white text-sm font-medium rounded-lg hover:opacity-90 transition-opacity shadow-sm flex items-center gap-2">
+          <button className="px-5 py-2.5 bg-[var(--primary)] text-white text-sm font-medium rounded-lg hover:opacity-90 transition-opacity shadow-sm flex items-center gap-2">
             <PlusIcon className="w-4 h-4" /> New Admission
           </button>
         </div>
@@ -124,10 +124,10 @@ export default function UniDashboard() {
           <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-2xl p-8 shadow-sm flex-1">
             <h2 className="text-lg font-semibold text-[var(--color-text-primary)] mb-6">Enterprise Actions</h2>
             <div className="space-y-4">
-              <ActionItem icon={UserSquare2} title="Directory Management" desc="Update student & faculty records" color="var(--color-module-students)" />
-              <ActionItem icon={Building} title="Facility Logistics" desc="Manage hostels, libraries & spaces" color="var(--color-module-hostel)" />
+              <ActionItem icon={UserSquare2} title="Directory Management" desc="Update student & faculty records" color="var(--primary)" />
+              <ActionItem icon={Building} title="Facility Logistics" desc="Manage hostels, libraries & spaces" color="var(--primary)" />
               <ActionItem icon={ShieldCheck} title="Compliance & Audits" desc="Review academic structures" color="var(--chart-3)" />
-              <ActionItem icon={LineChart} title="Financial Operations" desc="Process tuition & scholarships" color="var(--color-module-finance)" />
+              <ActionItem icon={LineChart} title="Financial Operations" desc="Process tuition & scholarships" color="var(--primary)" />
             </div>
           </div>
         </div>
@@ -138,7 +138,7 @@ export default function UniDashboard() {
         <p className="text-sm text-[var(--color-text-secondary)] mb-6">Latest students onboarded into the academic register.</p>
         
         {students.length === 0 ? (
-          <OrbitEmptyState icon={Users} title="No active enrollments" description="Awaiting student registrations." moduleColor="var(--color-module-orbit)" />
+          <OrbitEmptyState icon={Users} title="No active enrollments" description="Awaiting student registrations." moduleColor="var(--primary)" />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
@@ -171,12 +171,12 @@ export default function UniDashboard() {
                         {extra.major || 'Undeclared'}
                       </td>
                       <td className="py-4">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[var(--color-surface-2)] text-[var(--color-module-orbit)] border border-[var(--color-border-subtle)]">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[var(--color-surface-2)] text-[var(--primary)] border border-[var(--color-border-subtle)]">
                           Active
                         </span>
                       </td>
                       <td className="py-4 text-right pr-2">
-                        <button className="text-[var(--color-text-tertiary)] hover:text-[var(--color-module-orbit)] text-sm font-medium transition-colors opacity-0 group-hover:opacity-100">
+                        <button className="text-[var(--color-text-tertiary)] hover:text-[var(--primary)] text-sm font-medium transition-colors opacity-0 group-hover:opacity-100">
                           View Record
                         </button>
                       </td>
@@ -195,7 +195,7 @@ export default function UniDashboard() {
 // Utility Components
 function MetricCard({ title, value, icon: Icon, trend, highlight }) {
   return (
-    <div className={`p-6 rounded-2xl border transition-all duration-200 hover:-translate-y-1 hover:shadow-md ${highlight ? 'bg-[var(--color-module-orbit)] border-transparent text-white shadow-lg' : 'bg-[var(--color-surface-0)] border-[var(--color-border-subtle)] shadow-sm'}`}>
+    <div className={`p-6 rounded-2xl border transition-all duration-200 hover:-translate-y-1 hover:shadow-md ${highlight ? 'bg-[var(--primary)] border-transparent text-white shadow-lg' : 'bg-[var(--color-surface-0)] border-[var(--color-border-subtle)] shadow-sm'}`}>
       <div className="flex justify-between items-start mb-4">
         <h3 className={`text-sm font-medium ${highlight ? 'text-white/90' : 'text-[var(--color-text-secondary)]'}`}>{title}</h3>
         <div className={`p-2 rounded-lg ${highlight ? 'bg-white/20' : 'bg-[var(--color-surface-2)] text-[var(--color-text-primary)]'}`}>
@@ -205,7 +205,7 @@ function MetricCard({ title, value, icon: Icon, trend, highlight }) {
       <div>
         <div className={`text-3xl font-display font-semibold tracking-tight ${highlight ? 'text-white' : 'text-[var(--color-text-primary)]'}`}>{value}</div>
         <p className={`text-xs mt-2 font-medium ${highlight ? 'text-white/80' : 'text-[var(--color-text-tertiary)]'}`}>
-          <span className={highlight ? 'text-white' : 'text-[var(--color-module-orbit)]'}>{trend}</span> vs last period
+          <span className={highlight ? 'text-white' : 'text-[var(--primary)]'}>{trend}</span> vs last period
         </p>
       </div>
     </div>

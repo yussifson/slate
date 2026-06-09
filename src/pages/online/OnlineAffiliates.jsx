@@ -79,7 +79,7 @@ export default function OnlineAffiliates() {
         <div className="space-y-6">
           <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] shadow-sm p-6">
             <h2 className="font-bold text-[var(--color-text-primary)] mb-4 font-display flex items-center gap-2">
-              <LinkIcon className="w-5 h-5 text-[var(--color-module-online)]" /> Your Affiliate Link
+              <LinkIcon className="w-5 h-5 text-[var(--primary)]" /> Your Affiliate Link
             </h2>
             <p className="text-sm text-[var(--color-text-secondary)] mb-4">Share this link to earn a 20% commission on every course purchased.</p>
             <div className="flex bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] p-1">

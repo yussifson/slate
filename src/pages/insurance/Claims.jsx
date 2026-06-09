@@ -25,7 +25,7 @@ const CLAIM_FIELDS = [
 const statusColors = {
   'Submitted': 'bg-muted text-muted-foreground',
   'Under Review': 'bg-amber-100 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400',
-  'Approved': 'bg-insurance-100 text-insurance-700 dark:bg-insurance-950/30 dark:text-insurance-400',
+  'Approved': 'bg-primary/10 text-primary dark:bg-primary/30 dark:text-primary/70',
   'Rejected': 'bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400',
   'Paid': 'bg-primary/10 text-primary/90 dark:bg-primary/30 dark:text-primary/70',
 };
@@ -165,7 +165,7 @@ export default function Claims() {
           <Button onClick={() => setShowRiskAnalyzer(true)} variant="outline" className="gap-2 border-amber-300 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/20">
             <Sparkles className="w-4 h-4" /> {t("ai_risk_scan", "AI Risk Scan")}
           </Button>
-          <Button onClick={openNewModal} className="gap-2 bg-insurance-600 hover:bg-insurance-700 text-white">
+          <Button onClick={openNewModal} className="gap-2 bg-primary hover:bg-primary text-white">
             <Plus className="w-4 h-4" /> {t("file_new_claim", "File New Claim")}
           </Button>
         </div>
@@ -185,7 +185,7 @@ export default function Claims() {
           <p className="text-2xl font-bold text-card-foreground">{claims.filter(c => c.status === 'Approved' || c.status === 'Paid').length}</p>
         </div>
         <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
-          <div className="flex items-center gap-2 mb-2 text-insurance-600"><span className="font-bold text-sm">$</span> {t("total_claimed", "Total Claimed")}</div>
+          <div className="flex items-center gap-2 mb-2 text-primary"><span className="font-bold text-sm">$</span> {t("total_claimed", "Total Claimed")}</div>
           <p className="text-2xl font-bold text-card-foreground">${totalAmount.toLocaleString()}</p>
         </div>
       </div>
@@ -207,7 +207,7 @@ export default function Claims() {
             <div className="py-12 text-center text-muted-foreground">{t("loading_claims", "Loading claims...")}</div>
           ) : filtered.length === 0 ? (
             <div className="py-12 text-center text-muted-foreground">
-              <FileWarning className="w-12 h-12 mx-auto mb-3 opacity-30 text-insurance-600" />
+              <FileWarning className="w-12 h-12 mx-auto mb-3 opacity-30 text-primary" />
               <p className="font-semibold text-lg text-card-foreground">{t("no_claims_found", "No claims found")}</p>
               <p className="text-xs mt-1">{t(
                 "file_a_new_claim_or_adjust_you",
@@ -231,7 +231,7 @@ export default function Claims() {
                   return (
                     <tr key={claim.id} className="hover:bg-muted/50 transition-colors">
                       <td className="px-6 py-4">
-                        <p className="font-mono font-bold text-insurance-600">{claim.claimNumber}</p>
+                        <p className="font-mono font-bold text-primary">{claim.claimNumber}</p>
                         <Link to="/insurance/policies" className="text-primary hover:underline text-xs mt-0.5 font-medium block">{claim.policyNumber}</Link>
                         <p className="text-[10px] text-muted-foreground mt-0.5">{claim.incidentDate}</p>
                       </td>
@@ -360,7 +360,7 @@ export default function Claims() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditTargetId(null); }}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-insurance-600 hover:bg-insurance-700 text-white" onClick={handleCreateClaim}>{editTargetId ? 'Save Changes' : 'Submit Claim'}</Button>
+              <Button className="flex-1 bg-primary hover:bg-primary text-white" onClick={handleCreateClaim}>{editTargetId ? 'Save Changes' : 'Submit Claim'}</Button>
             </div>
           </div>
         </div>

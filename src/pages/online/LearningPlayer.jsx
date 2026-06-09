@@ -48,15 +48,15 @@ export default function LearningPlayer() {
             animate={{ opacity: 1, y: 0 }}
             className="w-full aspect-video bg-black relative flex items-center justify-center flex-shrink-0 group overflow-hidden"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-module-online)]/20 to-transparent opacity-50" />
-            <PlayCircle className="w-24 h-24 text-white/80 group-hover:text-[var(--color-module-online)] group-hover:scale-110 transition-all duration-300 cursor-pointer drop-shadow-2xl z-10" />
+            <div className="absolute inset-0 bg-gradient-to-br from-[var(--primary)]/20 to-transparent opacity-50" />
+            <PlayCircle className="w-24 h-24 text-white/80 group-hover:text-[var(--primary)] group-hover:scale-110 transition-all duration-300 cursor-pointer drop-shadow-2xl z-10" />
             <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end px-6 pb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
               <div className="flex items-center gap-3 mb-2 text-white/90 text-sm font-medium">
-                <PlayCircle className="w-4 h-4 text-[var(--color-module-online)]" />
+                <PlayCircle className="w-4 h-4 text-[var(--primary)]" />
                 <span>{courseTitle}</span>
               </div>
               <div className="w-full h-1.5 bg-white/30 rounded-full overflow-hidden cursor-pointer group/progress">
-                <div className="h-full bg-[var(--color-module-online)] w-0 relative group-hover/progress:bg-primary/70 transition-colors">
+                <div className="h-full bg-[var(--primary)] w-0 relative group-hover/progress:bg-primary/70 transition-colors">
                   <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow scale-0 group-hover/progress:scale-100 transition-transform" />
                 </div>
               </div>
@@ -71,13 +71,13 @@ export default function LearningPlayer() {
             className="p-8 max-w-5xl mx-auto w-full relative z-10"
           >
             <div className="flex items-center gap-6 border-b border-[var(--color-border-subtle)] pb-0">
-              <button onClick={() => setActiveTab('overview')} className={`px-2 py-4 font-semibold text-sm transition-colors border-b-2 -mb-[1px] ${activeTab === 'overview' ? 'border-[var(--color-module-online)] text-[var(--color-module-online)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}>
+              <button onClick={() => setActiveTab('overview')} className={`px-2 py-4 font-semibold text-sm transition-colors border-b-2 -mb-[1px] ${activeTab === 'overview' ? 'border-[var(--primary)] text-[var(--primary)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}>
                 Overview
               </button>
-              <button onClick={() => setActiveTab('qna')} className={`px-2 py-4 font-semibold text-sm transition-colors border-b-2 -mb-[1px] ${activeTab === 'qna' ? 'border-[var(--color-module-online)] text-[var(--color-module-online)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}>
+              <button onClick={() => setActiveTab('qna')} className={`px-2 py-4 font-semibold text-sm transition-colors border-b-2 -mb-[1px] ${activeTab === 'qna' ? 'border-[var(--primary)] text-[var(--primary)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}>
                 Q&A
               </button>
-              <button onClick={() => setActiveTab('resources')} className={`px-2 py-4 font-semibold text-sm transition-colors border-b-2 -mb-[1px] ${activeTab === 'resources' ? 'border-[var(--color-module-online)] text-[var(--color-module-online)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}>
+              <button onClick={() => setActiveTab('resources')} className={`px-2 py-4 font-semibold text-sm transition-colors border-b-2 -mb-[1px] ${activeTab === 'resources' ? 'border-[var(--primary)] text-[var(--primary)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}>
                 Resources
               </button>
             </div>
@@ -91,9 +91,9 @@ export default function LearningPlayer() {
               )}
               {activeTab === 'qna' && (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
-                  <div className="flex gap-4 p-1 bg-[var(--color-surface-1)] rounded-full border border-[var(--color-border-default)] focus-within:border-[var(--color-module-online)] focus-within:ring-1 focus-within:ring-[var(--color-module-online)] transition-all">
+                  <div className="flex gap-4 p-1 bg-[var(--color-surface-1)] rounded-full border border-[var(--color-border-default)] focus-within:border-[var(--primary)] focus-within:ring-1 focus-within:ring-[var(--primary)] transition-all">
                     <input type="text" placeholder="Ask a new question..." className="bg-transparent border-none outline-none w-full text-sm text-[var(--color-text-primary)] px-4 py-2" />
-                    <button className="bg-[var(--color-module-online)] text-white rounded-full p-2.5 hover:opacity-90 transition-opacity">
+                    <button className="bg-[var(--primary)] text-white rounded-full p-2.5 hover:opacity-90 transition-opacity">
                       <MessageSquare className="w-4 h-4" />
                     </button>
                   </div>
@@ -114,7 +114,7 @@ export default function LearningPlayer() {
           <div className="p-4 border-b border-[var(--color-border-subtle)]">
             <h2 className="font-bold text-[var(--color-text-primary)]">Course Content</h2>
             <div className="w-full bg-[var(--color-border-default)] h-1.5 rounded-full mt-3 overflow-hidden">
-              <div className="bg-[var(--color-module-online)] h-full w-1/3"></div>
+              <div className="bg-[var(--primary)] h-full w-1/3"></div>
             </div>
             <p className="text-xs text-[var(--color-text-secondary)] mt-1.5">0% Complete</p>
           </div>

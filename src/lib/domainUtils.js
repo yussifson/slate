@@ -19,6 +19,18 @@ export function getSubdomainAndBase() {
     return { currentSubdomain: null, baseDomain: host };
   }
 
+  // Handle specific custom base domain from environment variables or hardcoded for slate.optavel.com
+  const customBaseDomain = import.meta.env.VITE_BASE_DOMAIN || 'slate.optavel.com';
+  
+  if (host === customBaseDomain) {
+    return { currentSubdomain: null, baseDomain: host };
+  }
+
+  if (host.endsWith(`.${customBaseDomain}`)) {
+    const currentSubdomain = host.replace(`.${customBaseDomain}`, '');
+    return { currentSubdomain, baseDomain: customBaseDomain };
+  }
+
   // Handle custom domains (e.g. firm.company.com -> current: firm, base: company.com)
   const parts = host.split('.');
   

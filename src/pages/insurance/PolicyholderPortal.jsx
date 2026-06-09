@@ -62,10 +62,10 @@ export default function PolicyholderPortal() {
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       {/* Header */}
-      <div className="bg-gradient-to-r from-insurance-700 to-insurance-800 rounded-2xl p-6 md:p-8 text-white shadow-md relative overflow-hidden">
+      <div className="bg-gradient-to-r from-primary/90 to-primary/80 rounded-2xl p-6 md:p-8 text-white shadow-md relative overflow-hidden">
         <div className="relative z-10">
           <h1 className="text-2xl md:text-3xl font-bold mb-2">{t("my_coverage_portal", "My Coverage Portal")}</h1>
-          <p className="text-insurance-100 max-w-xl">{t(
+          <p className="text-primary/10 max-w-xl">{t(
             "welcome_back_view_your_active_",
             "Welcome back. View your active policies, file new claims, and track your claim status instantly."
           )}</p>
@@ -79,7 +79,7 @@ export default function PolicyholderPortal() {
         <div className="col-span-1 lg:col-span-2 space-y-6">
           <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
             <div className="p-4 md:p-5 border-b border-border bg-muted/50 flex justify-between items-center">
-              <h3 className="font-bold text-card-foreground flex items-center gap-2"><Shield className="w-5 h-5 text-insurance-600" /> {t("active_policies", "Active Policies")}</h3>
+              <h3 className="font-bold text-card-foreground flex items-center gap-2"><Shield className="w-5 h-5 text-primary" /> {t("active_policies", "Active Policies")}</h3>
             </div>
             <div className="p-0">
                {policies.length === 0 ? (
@@ -99,7 +99,7 @@ export default function PolicyholderPortal() {
                             </div>
                             <div className="text-right">
                               <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider">{t("premium", "Premium")}</p>
-                              <p className="font-bold text-insurance-600">${Number(policy.premium).toLocaleString()}</p>
+                              <p className="font-bold text-primary">${Number(policy.premium).toLocaleString()}</p>
                             </div>
                          </div>
                          <div className="bg-muted/50 rounded-lg p-3 grid grid-cols-2 gap-4 text-sm">
@@ -128,7 +128,7 @@ export default function PolicyholderPortal() {
               <h3 className="font-bold text-card-foreground flex items-center gap-2"><FileWarning className="w-5 h-5 text-amber-600" /> {t("claim_center", "Claim Center")}</h3>
             </div>
             <div className="p-4 space-y-4">
-               <Button onClick={() => setShowClaimModal(true)} className="w-full bg-insurance-600 hover:bg-insurance-700 text-white shadow-sm flex items-center justify-center gap-2 h-12">
+               <Button onClick={() => setShowClaimModal(true)} className="w-full bg-primary hover:bg-primary text-white shadow-sm flex items-center justify-center gap-2 h-12">
                  <Plus className="w-5 h-5" /> {t("file_a_new_claim", "File a New Claim")}
                </Button>
                
@@ -140,7 +140,7 @@ export default function PolicyholderPortal() {
                    <div className="space-y-3">
                      {claims.slice(0, 4).map(claim => {
                        return (
-                         <div key={claim.id} className="flex justify-between items-center p-3 rounded-lg border border-border hover:border-insurance-200 transition-colors bg-card">
+                         <div key={claim.id} className="flex justify-between items-center p-3 rounded-lg border border-border hover:border-primary/20 transition-colors bg-card">
                            <div>
                              <p className="font-bold text-sm text-foreground">{claim.claimType} {t("claim", "Claim")}</p>
                              <p className="text-[10px] text-muted-foreground mt-0.5">{claim.incidentDate}</p>
@@ -161,13 +161,13 @@ export default function PolicyholderPortal() {
           </div>
           
           <div className="bg-gradient-to-br from-card to-muted rounded-xl border border-border p-5 shadow-sm text-center">
-             <CreditCard className="w-8 h-8 text-insurance-600 mx-auto mb-2" />
+             <CreditCard className="w-8 h-8 text-primary mx-auto mb-2" />
              <h4 className="font-bold text-sm">{t("need_to_pay_your_premium", "Need to pay your premium?")}</h4>
              <p className="text-xs text-muted-foreground mt-1 mb-3">{t(
                "keep_your_coverage_active_by_s",
                "Keep your coverage active by settling your upcoming bills."
              )}</p>
-             <Button variant="outline" className="w-full text-insurance-600 border-insurance-200 hover:bg-insurance-50">{t("make_a_payment", "Make a Payment")}</Button>
+             <Button variant="outline" className="w-full text-primary border-primary/20 hover:bg-primary/5">{t("make_a_payment", "Make a Payment")}</Button>
           </div>
         </div>
       </div>
@@ -215,7 +215,7 @@ export default function PolicyholderPortal() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => setShowClaimModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-insurance-600 hover:bg-insurance-700 text-white" onClick={handleFileClaim}>{t("submit_claim", "Submit Claim")}</Button>
+              <Button className="flex-1 bg-primary hover:bg-primary text-white" onClick={handleFileClaim}>{t("submit_claim", "Submit Claim")}</Button>
             </div>
           </div>
         </div>

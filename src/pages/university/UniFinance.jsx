@@ -85,7 +85,7 @@ export default function UniFinance() {
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-[var(--color-module-finance)] to-[var(--color-accent-primary)] rounded-[var(--radius-xl)] p-6 text-white shadow-md shadow-[var(--color-accent-glow)]">
+        <div className="bg-gradient-to-br from-[var(--primary)] to-[var(--color-accent-primary)] rounded-[var(--radius-xl)] p-6 text-white shadow-md shadow-[var(--color-accent-glow)]">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[11px] font-semibold text-white/80 uppercase tracking-[var(--tracking-widest)]">Net Balance</p>
@@ -104,13 +104,13 @@ export default function UniFinance() {
             {transactions.length > 0 ? (
               <OrbitTable columns={columns} data={transactions} title="General Ledger" showToolbar={true} />
             ) : (
-              <OrbitEmptyState icon={DollarSign} title="No Transactions" description="The financial ledger is currently empty." actionLabel="New Record" onAction={() => setActiveTab('add')} moduleColor="var(--color-module-finance)" />
+              <OrbitEmptyState icon={DollarSign} title="No Transactions" description="The financial ledger is currently empty." actionLabel="New Record" onAction={() => setActiveTab('add')} moduleColor="var(--primary)" />
             )}
           </div>
         )}
         
         {activeTab === 'tuition' && (
-          <OrbitEmptyState icon={Wallet} title="Tuition Billing Active" description="Tuition module is connected to Student accounts. Select a student to bill." moduleColor="var(--color-module-finance)" />
+          <OrbitEmptyState icon={Wallet} title="Tuition Billing Active" description="Tuition module is connected to Student accounts. Select a student to bill." moduleColor="var(--primary)" />
         )}
         
         {activeTab === 'add' && (
@@ -121,7 +121,7 @@ export default function UniFinance() {
               <span>Use the billing form to deduct or credit the general ledger. This form is connected to base44 case engine.</span>
             </div>
             <div className="space-y-4 text-center">
-              <button className="flex items-center justify-center gap-2 px-6 py-3 w-full bg-[var(--color-module-finance)] hover:opacity-90 text-white rounded-[var(--radius-md)] font-medium transition-all">
+              <button className="flex items-center justify-center gap-2 px-6 py-3 w-full bg-[var(--primary)] hover:opacity-90 text-white rounded-[var(--radius-md)] font-medium transition-all">
                 <Plus className="w-4 h-4" /> Initialize Form
               </button>
             </div>

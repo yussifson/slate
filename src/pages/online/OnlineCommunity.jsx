@@ -16,7 +16,7 @@ export default function OnlineCommunity() {
           <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Community Forums</h1>
           <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Connect with instructors and fellow learners.</p>
         </div>
-        <button className="px-4 py-2 bg-[var(--color-module-online)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity flex items-center gap-2">
+        <button className="px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity flex items-center gap-2">
           <MessageSquare className="w-4 h-4" /> New Discussion
         </button>
       </div>
@@ -26,7 +26,7 @@ export default function OnlineCommunity() {
           <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] shadow-sm p-4">
             <h3 className="font-semibold text-[var(--color-text-primary)] mb-3">Categories</h3>
             <div className="space-y-1">
-              <button className="w-full text-left px-3 py-2 text-sm bg-[var(--color-surface-1)] text-[var(--color-module-online)] font-bold rounded-[var(--radius-md)]">All Discussions</button>
+              <button className="w-full text-left px-3 py-2 text-sm bg-[var(--color-surface-1)] text-[var(--primary)] font-bold rounded-[var(--radius-md)]">All Discussions</button>
               <button className="w-full text-left px-3 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--color-text-primary)] rounded-[var(--radius-md)] transition-colors">Course Q&A</button>
               <button className="w-full text-left px-3 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--color-text-primary)] rounded-[var(--radius-md)] transition-colors">General Chat</button>
               <button className="w-full text-left px-3 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--color-text-primary)] rounded-[var(--radius-md)] transition-colors">Announcements</button>
@@ -34,7 +34,7 @@ export default function OnlineCommunity() {
           </div>
 
           <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] shadow-sm p-4 text-center">
-            <Users className="w-8 h-8 mx-auto text-[var(--color-module-online)] mb-2" />
+            <Users className="w-8 h-8 mx-auto text-[var(--primary)] mb-2" />
             <h4 className="font-bold text-[var(--color-text-primary)]">1,204 Online</h4>
             <p className="text-xs text-[var(--color-text-secondary)] mt-1">Active learners right now</p>
           </div>
@@ -49,7 +49,7 @@ export default function OnlineCommunity() {
                 placeholder="Search discussions..." 
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-[var(--color-surface-0)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-module-online)] focus:ring-1 focus:ring-[var(--color-module-online)]"
+                className="w-full bg-[var(--color-surface-0)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]"
               />
             </div>
             <button className="px-4 py-2 bg-[var(--color-surface-1)] border border-[var(--color-border-default)] text-[var(--color-text-primary)] text-sm font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors flex items-center gap-2">
@@ -59,9 +59,9 @@ export default function OnlineCommunity() {
 
           <div className="space-y-4">
             {posts.map(post => (
-              <div key={post.id} className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 shadow-sm hover:border-[var(--color-module-online)] transition-colors cursor-pointer">
+              <div key={post.id} className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 shadow-sm hover:border-[var(--primary)] transition-colors cursor-pointer">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white shadow-sm ${post.role === 'Instructor' ? 'bg-[var(--color-module-online)]' : 'bg-[var(--color-surface-3)] text-[var(--color-text-primary)]'}`}>
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white shadow-sm ${post.role === 'Instructor' ? 'bg-[var(--primary)]' : 'bg-[var(--color-surface-3)] text-[var(--color-text-primary)]'}`}>
                     {post.avatar}
                   </div>
                   <div>

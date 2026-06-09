@@ -56,7 +56,7 @@ export default function AssessmentBuilder() {
           <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Create quizzes to test learner knowledge.</p>
         </div>
         <div className="ml-auto">
-          <button onClick={handleSave} className="flex items-center gap-2 px-4 py-2 bg-[var(--color-module-online)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">
+          <button onClick={handleSave} className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">
             <Save className="w-4 h-4" /> Save Assessment
           </button>
         </div>
@@ -69,7 +69,7 @@ export default function AssessmentBuilder() {
           value={assessmentTitle}
           onChange={(e) => setAssessmentTitle(e.target.value)}
           placeholder="e.g., Module 1 Final Quiz" 
-          className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-4 py-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-module-online)] focus:ring-1 focus:ring-[var(--color-module-online)] font-body"
+          className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-4 py-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
         />
       </div>
 
@@ -90,7 +90,7 @@ export default function AssessmentBuilder() {
                   value={q.text}
                   onChange={(e) => updateQuestion(q.id, 'text', e.target.value)}
                   placeholder="What is the main objective of..." 
-                  className="w-full bg-[var(--color-surface-0)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-module-online)] focus:ring-1 focus:ring-[var(--color-module-online)]"
+                  className="w-full bg-[var(--color-surface-0)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]"
                 />
               </div>
 
@@ -109,7 +109,7 @@ export default function AssessmentBuilder() {
                       value={opt}
                       onChange={(e) => updateOption(q.id, optIndex, e.target.value)}
                       placeholder={`Option ${optIndex + 1}`} 
-                      className={`flex-1 bg-[var(--color-surface-0)] border rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] focus:outline-none transition-colors ${q.correctIndex === optIndex ? 'border-[var(--color-success)] ring-1 ring-[var(--color-success)] text-[var(--color-text-primary)] font-medium' : 'border-[var(--color-border-default)] text-[var(--color-text-secondary)] focus:border-[var(--color-module-online)]'}`}
+                      className={`flex-1 bg-[var(--color-surface-0)] border rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] focus:outline-none transition-colors ${q.correctIndex === optIndex ? 'border-[var(--color-success)] ring-1 ring-[var(--color-success)] text-[var(--color-text-primary)] font-medium' : 'border-[var(--color-border-default)] text-[var(--color-text-secondary)] focus:border-[var(--primary)]'}`}
                     />
                   </div>
                 ))}
@@ -119,7 +119,7 @@ export default function AssessmentBuilder() {
         ))}
       </div>
 
-      <button onClick={addQuestion} className="w-full py-4 border-2 border-dashed border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] flex items-center justify-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-module-online)] hover:border-[var(--color-module-online)] hover:bg-[var(--color-surface-1)] transition-colors font-medium">
+      <button onClick={addQuestion} className="w-full py-4 border-2 border-dashed border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] flex items-center justify-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--primary)] hover:border-[var(--primary)] hover:bg-[var(--color-surface-1)] transition-colors font-medium">
         <PlusCircle className="w-5 h-5" /> Add Another Question
       </button>
     </div>

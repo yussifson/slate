@@ -18,7 +18,7 @@ export default function UniResearchActivity() {
   const pendingEthics = research.filter(r => r.status === 'Ethics Review');
 
   const stats = [
-    { label: 'Active Projects', value: activeProjects.length || 24, icon: Layers, color: 'var(--color-module-research)' },
+    { label: 'Active Projects', value: activeProjects.length || 24, icon: Layers, color: 'var(--primary)' },
     { label: 'Publications & Journals', value: '142', icon: BookOpen, color: 'var(--color-info)' },
     { label: 'Ethics Approvals', value: `${pendingEthics.length || 12} Pending`, icon: ShieldCheck, color: 'var(--color-warning)' },
     { label: 'Grant Value YTD', value: '$1.4M', icon: Award, color: 'var(--color-success)' }
@@ -56,7 +56,7 @@ export default function UniResearchActivity() {
               <h2 className="font-semibold text-[var(--color-text-primary)]">Research & Projects Directory</h2>
               <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Academic investigations, field research, and publications portfolio.</p>
             </div>
-            <button className="flex items-center gap-1.5 px-4 py-2 bg-[var(--color-module-research)] hover:opacity-90 text-white text-sm font-medium rounded-[var(--radius-md)] transition-all">
+            <button className="flex items-center gap-1.5 px-4 py-2 bg-[var(--primary)] hover:opacity-90 text-white text-sm font-medium rounded-[var(--radius-md)] transition-all">
               <Plus className="w-4 h-4" /> Add Proposal
             </button>
           </div>

@@ -146,7 +146,7 @@ export default function Underwriting() {
             "Evaluate risk and process insurance applications"
           )}</p>
         </div>
-        <Button onClick={openNewModal} className="gap-2 bg-insurance-600 hover:bg-insurance-700 text-white">
+        <Button onClick={openNewModal} className="gap-2 bg-primary hover:bg-primary text-white">
           <Plus className="w-4 h-4" /> {t("new_application", "New Application")}
         </Button>
       </div>
@@ -180,7 +180,7 @@ export default function Underwriting() {
             <div className="py-12 text-center text-muted-foreground">{t("loading_applications", "Loading applications...")}</div>
           ) : filtered.length === 0 ? (
             <div className="py-12 text-center text-muted-foreground">
-              <FileSignature className="w-12 h-12 mx-auto mb-3 opacity-30 text-insurance-600" />
+              <FileSignature className="w-12 h-12 mx-auto mb-3 opacity-30 text-primary" />
               <p className="font-semibold text-lg text-card-foreground">{t("no_applications_found", "No applications found")}</p>
               <p className="text-xs mt-1">{t(
                 "submit_a_new_application_to_se",
@@ -204,7 +204,7 @@ export default function Underwriting() {
                   return (
                     <tr key={app.id} className="hover:bg-muted/50 transition-colors">
                       <td className="px-6 py-4">
-                        <p className="font-mono font-bold text-insurance-600">{app.applicationId}</p>
+                        <p className="font-mono font-bold text-primary">{app.applicationId}</p>
                         <p className="text-[10px] text-muted-foreground mt-0.5">{app.submittedDate}</p>
                       </td>
                       <td className="px-6 py-4">
@@ -229,7 +229,7 @@ export default function Underwriting() {
                           onChange={e => handleUpdateDecision(app, e.target.value)}
                           className={`rounded-md border border-input px-2 py-1 text-xs font-bold ${
                             app.decision === 'Approved' ? 'bg-primary/10 text-primary/90' : 
-                            app.decision === 'Conditionally Approved' ? 'bg-insurance-100 text-insurance-700' : 
+                            app.decision === 'Conditionally Approved' ? 'bg-primary/10 text-primary' : 
                             app.decision === 'Rejected' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'
                           }`}
                         >
@@ -303,7 +303,7 @@ export default function Underwriting() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditTargetId(null); }}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-insurance-600 hover:bg-insurance-700 text-white" onClick={handleCreateApplication}>{editTargetId ? 'Save Changes' : 'Submit Application'}</Button>
+              <Button className="flex-1 bg-primary hover:bg-primary text-white" onClick={handleCreateApplication}>{editTargetId ? 'Save Changes' : 'Submit Application'}</Button>
             </div>
           </div>
         </div>

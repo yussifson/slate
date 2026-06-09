@@ -43,9 +43,9 @@ export default function UniHostel() {
   const handleAllocate = (e) => { e.preventDefault(); if (!allocForm.studentId || !allocForm.roomNumber) { toast({ title: "Validation", description: "Fill all fields.", variant: "destructive" }); return; } allocateMutation.mutate(allocForm); };
   const handleTicket = (e) => { e.preventDefault(); if (!ticketForm.room || !ticketForm.issue) { toast({ title: "Validation", description: "Fill all fields.", variant: "destructive" }); return; } ticketMutation.mutate({ company_id: companyId, case_name: ticketForm.issue, case_type: 'uni_hostel_ticket', notes: JSON.stringify({ room: ticketForm.room, issue: ticketForm.issue, priority: ticketForm.priority, status: 'Open' }) }); };
 
-  const inputClass = "w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--color-module-hostel)] focus:ring-1 focus:ring-[var(--color-module-hostel)] font-body";
+  const inputClass = "w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body";
   const stats = [
-    { label: 'Total Beds', value: '1,200', icon: Bed, color: 'var(--color-module-hostel)' },
+    { label: 'Total Beds', value: '1,200', icon: Bed, color: 'var(--primary)' },
     { label: 'Occupied', value: allocatedStudents.length, icon: Users, color: 'var(--color-success)' },
     { label: 'Work Orders', value: tickets.filter(t => t.status === 'Open').length, icon: Wrench, color: 'var(--color-warning)' },
     { label: 'Urgent Faults', value: tickets.filter(t => t.priority === 'High').length, icon: AlertTriangle, color: 'var(--color-danger)' }
@@ -99,7 +99,7 @@ export default function UniHostel() {
                 ) : allocatedStudents.map((s, i) => (
                   <div key={i} className="flex justify-between items-center p-3 bg-[var(--color-surface-1)] rounded-[var(--radius-md)] border border-[var(--color-border-subtle)]">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-[var(--color-module-hostel)] text-white flex items-center justify-center text-xs font-bold">{s.name?.substring(0, 2).toUpperCase()}</div>
+                      <div className="w-8 h-8 rounded-full bg-[var(--primary)] text-white flex items-center justify-center text-xs font-bold">{s.name?.substring(0, 2).toUpperCase()}</div>
                       <span className="font-medium text-[var(--color-text-primary)]">{s.name}</span>
                     </div>
                     <div className="text-right">
@@ -136,7 +136,7 @@ export default function UniHostel() {
                   <input placeholder="e.g. 205" value={allocForm.roomNumber} onChange={e => setAllocForm({ ...allocForm, roomNumber: e.target.value })} className={inputClass} required />
                 </div>
               </div>
-              <button type="submit" className="w-full flex items-center justify-center gap-2 py-2.5 bg-[var(--color-module-hostel)] hover:opacity-90 text-white font-medium rounded-[var(--radius-md)] transition-all"><Home className="w-4 h-4" /> Allocate Room</button>
+              <button type="submit" className="w-full flex items-center justify-center gap-2 py-2.5 bg-[var(--primary)] hover:opacity-90 text-white font-medium rounded-[var(--radius-md)] transition-all"><Home className="w-4 h-4" /> Allocate Room</button>
             </form>
           </div>
         )}

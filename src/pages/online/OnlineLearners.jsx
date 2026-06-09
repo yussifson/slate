@@ -25,7 +25,7 @@ export default function OnlineLearners() {
           <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Learners Directory</h1>
           <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage and communicate with all registered learners on the platform.</p>
         </div>
-        <button className="px-4 py-2 bg-[var(--color-module-online)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">
+        <button className="px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">
           Add Learner
         </button>
       </div>
@@ -39,7 +39,7 @@ export default function OnlineLearners() {
               placeholder="Search learners by name..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-[var(--color-surface-0)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--color-module-online)] focus:ring-1 focus:ring-[var(--color-module-online)] font-body"
+              className="w-full bg-[var(--color-surface-0)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
             />
           </div>
         </div>
@@ -73,7 +73,7 @@ export default function OnlineLearners() {
                     <tr key={idx} className="hover:bg-[var(--color-surface-1)] transition-colors group">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-[var(--color-surface-2)] text-[var(--color-module-online)] flex items-center justify-center font-bold text-xs uppercase shadow-sm">
+                          <div className="w-8 h-8 rounded-full bg-[var(--color-surface-2)] text-[var(--primary)] flex items-center justify-center font-bold text-xs uppercase shadow-sm">
                             {(learner.title || 'U').charAt(0)}
                           </div>
                           <span className="font-medium">{learner.title || 'Unnamed Learner'}</span>
@@ -100,12 +100,12 @@ export default function OnlineLearners() {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-1.5 text-xs font-semibold text-[var(--color-text-primary)]">
-                          <GraduationCap className="w-4 h-4 text-[var(--color-module-online)]" />
+                          <GraduationCap className="w-4 h-4 text-[var(--primary)]" />
                           {extra.enrolled_count || 0} courses
                         </div>
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <button className="p-1.5 text-[var(--color-text-tertiary)] hover:text-[var(--color-module-online)] hover:bg-[var(--color-surface-2)] rounded-md transition-colors opacity-0 group-hover:opacity-100">
+                        <button className="p-1.5 text-[var(--color-text-tertiary)] hover:text-[var(--primary)] hover:bg-[var(--color-surface-2)] rounded-md transition-colors opacity-0 group-hover:opacity-100">
                           <MoreHorizontal className="w-4 h-4" />
                         </button>
                       </td>

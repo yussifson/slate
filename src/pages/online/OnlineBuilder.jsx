@@ -90,7 +90,7 @@ export default function OnlineBuilder() {
     saveMutation.mutate();
   };
 
-  const navClass = (tab) => `h-full px-6 border-b-2 font-medium transition-colors ${activeTab === tab ? 'border-[var(--color-module-online)] text-[var(--color-module-online)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`;
+  const navClass = (tab) => `h-full px-6 border-b-2 font-medium transition-colors ${activeTab === tab ? 'border-[var(--primary)] text-[var(--primary)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`;
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -106,7 +106,7 @@ export default function OnlineBuilder() {
           <button className="px-4 py-2 bg-[var(--color-surface-1)] border border-[var(--color-border-default)] text-[var(--color-text-primary)] text-sm font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors">
             Preview Course
           </button>
-          <button onClick={handleSave} disabled={saveMutation.isPending} className="flex items-center gap-2 px-4 py-2 bg-[var(--color-module-online)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity disabled:opacity-50">
+          <button onClick={handleSave} disabled={saveMutation.isPending} className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity disabled:opacity-50">
             <Save className="w-4 h-4" /> {saveMutation.isPending ? 'Saving...' : 'Save & Publish'}
           </button>
         </div>
@@ -117,16 +117,16 @@ export default function OnlineBuilder() {
           <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] shadow-sm p-4">
             <h3 className="font-semibold text-[var(--color-text-primary)] mb-4">Add Content</h3>
             <div className="space-y-2">
-              <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--color-module-online)] rounded-[var(--radius-md)] transition-colors">
+              <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--primary)] rounded-[var(--radius-md)] transition-colors">
                 <Video className="w-4 h-4" /> Video Lesson
               </button>
-              <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--color-module-online)] rounded-[var(--radius-md)] transition-colors">
+              <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--primary)] rounded-[var(--radius-md)] transition-colors">
                 <FileText className="w-4 h-4" /> Reading Material
               </button>
-              <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--color-module-online)] rounded-[var(--radius-md)] transition-colors">
+              <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--primary)] rounded-[var(--radius-md)] transition-colors">
                 <CheckSquare className="w-4 h-4" /> Quiz / Assessment
               </button>
-              <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--color-module-online)] rounded-[var(--radius-md)] transition-colors">
+              <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--primary)] rounded-[var(--radius-md)] transition-colors">
                 <Award className="w-4 h-4" /> Certificate
               </button>
             </div>
@@ -141,7 +141,7 @@ export default function OnlineBuilder() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Enter Course Title..." 
-                className="w-full text-[var(--text-2xl)] font-bold font-display text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] bg-transparent border-0 border-b border-transparent hover:border-[var(--color-border-default)] focus:border-[var(--color-module-online)] focus:ring-0 px-0 transition-colors" 
+                className="w-full text-[var(--text-2xl)] font-bold font-display text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] bg-transparent border-0 border-b border-transparent hover:border-[var(--color-border-default)] focus:border-[var(--primary)] focus:ring-0 px-0 transition-colors" 
               />
             </div>
             
@@ -167,7 +167,7 @@ export default function OnlineBuilder() {
                     </div>
                   )}
 
-                  <button className="w-full flex items-center justify-center gap-2 py-6 border-2 border-dashed border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] text-[var(--color-text-secondary)] font-medium hover:text-[var(--color-module-online)] hover:border-[var(--color-module-online)] hover:bg-[var(--color-surface-1)] transition-colors">
+                  <button className="w-full flex items-center justify-center gap-2 py-6 border-2 border-dashed border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] text-[var(--color-text-secondary)] font-medium hover:text-[var(--primary)] hover:border-[var(--primary)] hover:bg-[var(--color-surface-1)] transition-colors">
                     <PlusCircle className="w-5 h-5" /> Add New Module
                   </button>
                 </div>
@@ -181,7 +181,7 @@ export default function OnlineBuilder() {
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                       rows={5}
-                      className="w-full bg-[var(--color-surface-0)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-module-online)] focus:ring-1 focus:ring-[var(--color-module-online)]"
+                      className="w-full bg-[var(--color-surface-0)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]"
                       placeholder="Brief overview of what students will learn..."
                     />
                   </div>
@@ -206,7 +206,7 @@ export default function OnlineBuilder() {
                       value={price}
                       onChange={(e) => setPrice(e.target.value)}
                       placeholder="0.00"
-                      className="w-full bg-[var(--color-surface-0)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-module-online)] focus:ring-1 focus:ring-[var(--color-module-online)]"
+                      className="w-full bg-[var(--color-surface-0)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]"
                     />
                     <p className="text-xs text-[var(--color-text-tertiary)] mt-1">Leave at 0 to make this course free.</p>
                   </div>

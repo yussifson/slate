@@ -20,12 +20,11 @@ import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tool
 
 function MetricCard({ title, value, icon: Icon }) {
   return (
-    <div className="bg-white/10 border border-white/20 rounded-2xl p-4 flex flex-col items-center justify-center text-center relative overflow-hidden group">
-      <div className="absolute inset-0 bg-white/0 group-hover:bg-white/5 transition-colors pointer-events-none" />
-      <p className="text-2xl font-black text-white mb-1 relative z-10">{value}</p>
+    <div className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col items-center justify-center text-center relative overflow-hidden group shadow-sm hover:shadow-md transition-shadow">
+      <p className="text-2xl font-black text-slate-900 mb-1 relative z-10">{value}</p>
       <div className="flex items-center gap-1.5 relative z-10">
-        <Icon className="w-3.5 h-3.5 text-primary/10" />
-        <p className="text-xs font-bold text-primary/5 uppercase tracking-wider">{title}</p>
+        <Icon className="w-4 h-4 text-primary" />
+        <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">{title}</p>
       </div>
     </div>
   );
@@ -125,41 +124,35 @@ export default function SchoolDashboard({ companyId, company, isAdmin }) {
     <div className="space-y-5">
       {/* 24h Hearing Reminders */}
       <HearingReminders hearings={hearings} userEmail={user?.email} isAdmin={isAdmin} />
-      {/* Hero Banner Area */}
-      <div className="bg-primary rounded-3xl p-6 relative overflow-hidden">
-        {/* Abstract Background Shapes */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-primary rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/3 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary rounded-full blur-3xl opacity-50 translate-y-1/3 -translate-x-1/4 pointer-events-none" />
-        
-        <div className="relative z-10 flex flex-col md:flex-row md:items-start justify-between gap-6 mb-6">
-          <div>
-            <p className="text-primary/10 text-sm font-bold tracking-widest uppercase mb-2">
-              {format(new Date(), "eeee, d MMMM")}
-            </p>
-            <h1 className="text-3xl md:text-4xl font-black text-white mb-2 tracking-tight">
-              Welcome back, {user?.user_metadata?.full_name || user?.email?.split('@')[0]} <span className="inline-block animate-wave">👋</span>
-            </h1>
-            <p className="text-primary/5 text-base font-medium opacity-90">
-              Here's your school at a glance
-            </p>
-          </div>
-          <div className="flex items-center gap-2 shrink-0">
-            <Button variant="outline" size="sm" className="gap-1.5 text-sm font-bold rounded-xl border-primary/70 text-primary/5 hover:bg-primary hover:text-white bg-primary/50 backdrop-blur-md border-0">
-              <BarChart2 className="w-4 h-4" /> {t("analytics", "Analytics")}
-            </Button>
-            <Button onClick={handleRefresh} disabled={isRefreshing} size="sm" className="gap-1.5 text-sm font-bold bg-white/20 text-white hover:bg-white/30 rounded-xl border-0 shadow-sm backdrop-blur-md">
-              <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} /> {t("refresh", "Refresh")}
-            </Button>
-          </div>
+      {/* Header Area */}
+      <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-2">
+        <div>
+          <p className="text-slate-500 text-sm font-bold tracking-widest uppercase mb-1">
+            {format(new Date(), "eeee, d MMMM")}
+          </p>
+          <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-1 tracking-tight">
+            Welcome back, {user?.user_metadata?.full_name || user?.email?.split('@')[0]} <span className="inline-block animate-wave">👋</span>
+          </h1>
+          <p className="text-slate-500 text-base font-medium">
+            Here's your school at a glance
+          </p>
         </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <Button variant="outline" size="sm" className="gap-1.5 text-sm font-bold rounded-xl text-slate-700 bg-white shadow-sm hover:bg-slate-50 border-slate-200">
+            <BarChart2 className="w-4 h-4" /> {t("analytics", "Analytics")}
+          </Button>
+          <Button onClick={handleRefresh} disabled={isRefreshing} size="sm" className="gap-1.5 text-sm font-bold bg-white text-slate-700 hover:bg-slate-50 rounded-xl border border-slate-200 shadow-sm">
+            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} /> {t("refresh", "Refresh")}
+          </Button>
+        </div>
+      </div>
 
-        {/* Metric Cards Grid within Banner */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 relative z-10">
-          <MetricCard title={`Active ${casesTermPlural}`} value={activeCases.length} icon={Briefcase} />
-          <MetricCard title={`Active ${clientsTermPlural}`} value={students.filter((s) => s.status === "active" || s.status === "Active").length} icon={Users} />
-          <MetricCard title="Total Revenue" value={formatCurrency(totalRevenue, currency)} icon={DollarSign} />
-          <MetricCard title="Pending Tasks" value={pendingTasks.length} icon={Clock} />
-        </div>
+      {/* Metric Cards Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <MetricCard title={`Active ${casesTermPlural}`} value={activeCases.length} icon={Briefcase} />
+        <MetricCard title={`Active ${clientsTermPlural}`} value={students.filter((s) => s.status === "active" || s.status === "Active").length} icon={Users} />
+        <MetricCard title="Total Revenue" value={formatCurrency(totalRevenue, currency)} icon={DollarSign} />
+        <MetricCard title="Pending Tasks" value={pendingTasks.length} icon={Clock} />
       </div>
       {/* Analytics Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

@@ -22,7 +22,7 @@ export default function LearnerProfile() {
   let extra = {};
   try { extra = JSON.parse(learner?.notes || '{}'); } catch(e) {}
 
-  const navClass = (tab) => `px-6 py-4 font-medium text-sm transition-colors border-b-2 ${activeTab === tab ? 'border-[var(--color-module-online)] text-[var(--color-module-online)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`;
+  const navClass = (tab) => `px-6 py-4 font-medium text-sm transition-colors border-b-2 ${activeTab === tab ? 'border-[var(--primary)] text-[var(--primary)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`;
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-5xl mx-auto pb-12">
@@ -32,7 +32,7 @@ export default function LearnerProfile() {
         <div className="px-8 pb-8 relative">
           <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-end -mt-12 sm:-mt-16 mb-6">
             <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-[var(--color-surface-0)] border-4 border-[var(--color-surface-0)] flex items-center justify-center shadow-md flex-shrink-0">
-              <div className="w-full h-full rounded-full bg-gradient-to-br from-[var(--color-module-online)] to-[var(--color-success)] flex items-center justify-center text-white text-3xl sm:text-4xl font-bold font-display">
+              <div className="w-full h-full rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--color-success)] flex items-center justify-center text-white text-3xl sm:text-4xl font-bold font-display">
                 {title.charAt(0)}
               </div>
             </div>
@@ -67,13 +67,13 @@ export default function LearnerProfile() {
 
       {activeTab === 'courses' && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-5 shadow-sm hover:border-[var(--color-module-online)] transition-colors cursor-pointer group">
-            <div className="w-12 h-12 bg-[var(--color-surface-1)] rounded-[var(--radius-md)] flex items-center justify-center mb-4 text-[var(--color-module-online)]">
+          <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-5 shadow-sm hover:border-[var(--primary)] transition-colors cursor-pointer group">
+            <div className="w-12 h-12 bg-[var(--color-surface-1)] rounded-[var(--radius-md)] flex items-center justify-center mb-4 text-[var(--primary)]">
               <BookOpen className="w-6 h-6" />
             </div>
             <h3 className="font-bold text-[var(--text-lg)] text-[var(--color-text-primary)] mb-2">React Foundations</h3>
             <div className="w-full bg-[var(--color-border-default)] h-1.5 rounded-full mb-2 overflow-hidden">
-              <div className="bg-[var(--color-module-online)] h-full w-[65%]"></div>
+              <div className="bg-[var(--primary)] h-full w-[65%]"></div>
             </div>
             <p className="text-xs text-[var(--color-text-secondary)]">65% Complete</p>
           </div>
@@ -98,7 +98,7 @@ export default function LearnerProfile() {
         <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 shadow-sm">
           <div className="relative pl-6 border-l-2 border-[var(--color-border-default)] space-y-8">
             <div className="relative">
-              <div className="absolute w-3 h-3 bg-[var(--color-module-online)] rounded-full -left-[31px] top-1.5 ring-4 ring-[var(--color-surface-0)]"></div>
+              <div className="absolute w-3 h-3 bg-[var(--primary)] rounded-full -left-[31px] top-1.5 ring-4 ring-[var(--color-surface-0)]"></div>
               <h4 className="font-semibold text-[var(--color-text-primary)]">Completed Module 4 Assessment</h4>
               <p className="text-xs text-[var(--color-text-secondary)] mt-1">Today at 10:45 AM</p>
             </div>

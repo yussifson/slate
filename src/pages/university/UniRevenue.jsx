@@ -38,7 +38,7 @@ export default function UniRevenue() {
   const pendingCollection = totalInvoiced - collectedRevenue;
 
   const stats = [
-    { label: 'Total Billing Invoiced', value: `$${totalInvoiced.toLocaleString() || "450,000"}`, icon: DollarSign, color: 'var(--color-module-orbit)' },
+    { label: 'Total Billing Invoiced', value: `$${totalInvoiced.toLocaleString() || "450,000"}`, icon: DollarSign, color: 'var(--primary)' },
     { label: 'Collected Tuition', value: `$${collectedRevenue.toLocaleString() || "320,000"}`, icon: CheckCircle2, color: 'var(--color-success)' },
     { label: 'Outstanding Balances', value: `$${pendingCollection.toLocaleString() || "130,000"}`, icon: Percent, color: 'var(--color-danger)' },
     { label: 'Scholarship Relief', value: '$45,000', icon: Gift, color: 'var(--color-info)' }
@@ -70,7 +70,7 @@ export default function UniRevenue() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 shadow-sm">
           <h2 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-2 mb-1">
-            <TrendingUp className="w-5 h-5 text-[var(--color-module-orbit)]" /> Monthly Revenue Breakdown
+            <TrendingUp className="w-5 h-5 text-[var(--primary)]" /> Monthly Revenue Breakdown
           </h2>
           <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mb-6">Visual metrics showing distribution of tuition, housing payments, and grants.</p>
           <div className="h-[300px] w-full">
@@ -93,7 +93,7 @@ export default function UniRevenue() {
           <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mb-6">Current fee structures and collection rates.</p>
           <div className="space-y-4">
             {finances.length === 0 ? (
-              <OrbitEmptyState icon={FileText} title="No Invoices" description="No billing invoices generated yet." moduleColor="var(--color-module-orbit)" />
+              <OrbitEmptyState icon={FileText} title="No Invoices" description="No billing invoices generated yet." moduleColor="var(--primary)" />
             ) : (
               <div className="space-y-3">
                 {finances.slice(0, 5).map((f, i) => {

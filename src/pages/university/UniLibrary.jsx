@@ -31,13 +31,13 @@ export default function UniLibrary() {
   }, [bookRecords]);
 
   const stats = [
-    { label: 'Physical Volumes', value: '45,000', icon: Book, color: 'var(--color-module-library)' },
+    { label: 'Physical Volumes', value: '45,000', icon: Book, color: 'var(--primary)' },
     { label: 'Digital Assets', value: Math.max(12800, digitalItems.length), icon: Globe, color: 'var(--color-info)' },
     { label: 'Active Borrows', value: '324', icon: RefreshCw, color: 'var(--color-warning)' },
     { label: 'Subscribed Journals', value: '24', icon: Shield, color: 'var(--color-success)' }
   ];
 
-  const inputClass = "w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--color-module-library)] focus:ring-1 focus:ring-[var(--color-module-library)] font-body";
+  const inputClass = "w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body";
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -74,18 +74,18 @@ export default function UniLibrary() {
                 icon={Book} 
                 title="No Digital Assets" 
                 description="The digital repository is currently empty." 
-                moduleColor="var(--color-module-library)" 
+                moduleColor="var(--primary)" 
               />
             ) : (
               digitalItems.map((item, idx) => (
-                <div key={idx} className="p-4 bg-[var(--color-surface-1)] border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] flex justify-between items-center text-[var(--text-xs)] hover:border-[var(--color-module-library)] transition-colors">
+                <div key={idx} className="p-4 bg-[var(--color-surface-1)] border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] flex justify-between items-center text-[var(--text-xs)] hover:border-[var(--primary)] transition-colors">
                   <div>
                     <h4 className="font-bold text-[var(--text-sm)] text-[var(--color-text-primary)] flex items-center gap-1.5">
-                      <FileText className="w-4 h-4" style={{ color: 'var(--color-module-library)' }} /> {item.title}
+                      <FileText className="w-4 h-4" style={{ color: 'var(--primary)' }} /> {item.title}
                     </h4>
                     <p className="text-[var(--color-text-secondary)] mt-1">Author: {item.author} · Published: {item.date}</p>
                   </div>
-                  <button className="flex items-center gap-1 px-3 py-1.5 bg-[var(--color-module-library)] hover:opacity-90 text-white font-medium rounded-[var(--radius-md)] transition-all text-xs">
+                  <button className="flex items-center gap-1 px-3 py-1.5 bg-[var(--primary)] hover:opacity-90 text-white font-medium rounded-[var(--radius-md)] transition-all text-xs">
                     <Download className="w-3.5 h-3.5" /> Download PDF
                   </button>
                 </div>
@@ -102,7 +102,7 @@ export default function UniLibrary() {
               <Search className="absolute left-3 top-2.5 h-4 w-4 text-[var(--color-text-tertiary)]" />
               <input type="text" placeholder="Search books, authors..." className={inputClass} />
             </div>
-            <button className="w-full py-2 bg-[var(--color-module-library)] hover:opacity-90 text-white font-medium rounded-[var(--radius-md)] transition-all text-sm">
+            <button className="w-full py-2 bg-[var(--primary)] hover:opacity-90 text-white font-medium rounded-[var(--radius-md)] transition-all text-sm">
               Query Catalog
             </button>
           </div>

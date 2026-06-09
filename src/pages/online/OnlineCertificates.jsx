@@ -25,15 +25,15 @@ export default function OnlineCertificates() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {certificates.map(cert => (
-            <div key={cert.id} className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden flex flex-col group hover:border-[var(--color-module-online)] transition-colors">
+            <div key={cert.id} className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden flex flex-col group hover:border-[var(--primary)] transition-colors">
               <div className="p-8 bg-gradient-to-br from-[var(--color-surface-1)] to-[var(--color-surface-2)] flex flex-col items-center justify-center text-center border-b border-[var(--color-border-subtle)] relative">
                 <div className="absolute top-4 right-4 bg-white/50 backdrop-blur rounded-full p-2">
                   <ShieldCheck className="w-5 h-5 text-[var(--color-success)]" />
                 </div>
-                <Award className="w-16 h-16 text-[var(--color-module-online)] mb-4" />
+                <Award className="w-16 h-16 text-[var(--primary)] mb-4" />
                 <h2 className="font-serif text-2xl font-bold text-[var(--color-text-primary)] mb-1">Certificate of Completion</h2>
                 <p className="text-sm text-[var(--color-text-secondary)] mb-4">This certifies that you have successfully completed</p>
-                <h3 className="font-display text-xl font-bold text-[var(--color-module-online)]">{cert.title}</h3>
+                <h3 className="font-display text-xl font-bold text-[var(--primary)]">{cert.title}</h3>
                 <p className="text-xs text-[var(--color-text-tertiary)] mt-4">Instructor: {cert.instructor}</p>
               </div>
               <div className="p-5 flex items-center justify-between bg-[var(--color-surface-0)]">
@@ -47,7 +47,7 @@ export default function OnlineCertificates() {
                 </div>
               </div>
               <div className="p-4 border-t border-[var(--color-border-subtle)] bg-[var(--color-surface-1)] flex gap-3">
-                <button className="flex-1 flex justify-center items-center gap-2 px-4 py-2 bg-[var(--color-module-online)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">
+                <button className="flex-1 flex justify-center items-center gap-2 px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">
                   <Download className="w-4 h-4" /> Download PDF
                 </button>
                 <button className="flex justify-center items-center gap-2 px-4 py-2 bg-[var(--color-surface-0)] border border-[var(--color-border-default)] text-[var(--color-text-primary)] text-sm font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors">

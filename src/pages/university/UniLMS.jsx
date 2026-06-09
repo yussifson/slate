@@ -38,7 +38,7 @@ export default function UniLMS() {
   });
 
   const handleSubmitAssignment = (e) => { e.preventDefault(); if (!submissionText.trim()) return; submitAssignmentMutation.mutate({ studentId: activeStudent.id, courseCode: selectedCourseCode, text: submissionText }); };
-  const selectClass = "w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-module-lms)] focus:ring-1 focus:ring-[var(--color-module-lms)] font-body";
+  const selectClass = "w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body";
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -58,13 +58,13 @@ export default function UniLMS() {
       {activeStudent ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            <h3 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-2"><BookOpen className="w-5 h-5" style={{ color: 'var(--color-module-lms)' }} /> Enrolled Workspaces</h3>
+            <h3 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-2"><BookOpen className="w-5 h-5" style={{ color: 'var(--primary)' }} /> Enrolled Workspaces</h3>
             {activeStudentCourses.length === 0 ? (
               <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-12 text-center text-[var(--color-text-tertiary)]">Not enrolled in any courses yet.</div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {activeStudentCourses.map((course, idx) => (
-                  <div key={idx} onClick={() => setSelectedCourseCode(course.code)} className={cn("bg-[var(--color-surface-0)] border rounded-[var(--radius-lg)] p-5 cursor-pointer transition-all hover:shadow-md", selectedCourseCode === course.code ? "border-[var(--color-module-lms)] ring-1 ring-[var(--color-module-lms)] bg-[var(--color-accent-subtle)]" : "border-[var(--color-border-subtle)]")}>
+                  <div key={idx} onClick={() => setSelectedCourseCode(course.code)} className={cn("bg-[var(--color-surface-0)] border rounded-[var(--radius-lg)] p-5 cursor-pointer transition-all hover:shadow-md", selectedCourseCode === course.code ? "border-[var(--primary)] ring-1 ring-[var(--primary)] bg-[var(--color-accent-subtle)]" : "border-[var(--color-border-subtle)]")}>
                     <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-[var(--radius-sm)]" style={{ background: 'var(--color-accent-subtle)', color: 'var(--color-accent-primary)' }}>{course.code}</span>
                     <h4 className="font-semibold text-[var(--color-text-primary)] mt-2">{course.name}</h4>
                     <p className="text-[var(--text-xs)] text-[var(--color-text-secondary)] mt-1">{course.teacher}</p>
@@ -84,11 +84,11 @@ export default function UniLMS() {
                 </div>
                 <div className="p-6 space-y-6">
                   <div className="bg-[var(--color-surface-1)] border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] p-5">
-                    <h4 className="font-semibold text-[var(--color-text-primary)] mb-1 flex items-center gap-1.5"><ClipboardList className="w-4 h-4" style={{ color: 'var(--color-module-lms)' }} /> Assignment 1: Final Practical Project</h4>
+                    <h4 className="font-semibold text-[var(--color-text-primary)] mb-1 flex items-center gap-1.5"><ClipboardList className="w-4 h-4" style={{ color: 'var(--primary)' }} /> Assignment 1: Final Practical Project</h4>
                     <p className="text-[var(--text-xs)] text-[var(--color-text-secondary)] mb-3">Due: End of term.</p>
                     <form onSubmit={handleSubmitAssignment} className="space-y-3">
-                      <textarea value={submissionText} onChange={e => setSubmissionText(e.target.value)} placeholder="Paste submission notes, github links..." className="w-full bg-[var(--color-surface-2)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] p-3 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--color-module-lms)] focus:ring-1 focus:ring-[var(--color-module-lms)] font-body min-h-[100px]" required />
-                      <button type="submit" className="flex items-center gap-1 px-4 py-2 bg-[var(--color-module-lms)] hover:opacity-90 text-white text-sm font-medium rounded-[var(--radius-md)] transition-all"><Upload className="w-3.5 h-3.5" /> Upload</button>
+                      <textarea value={submissionText} onChange={e => setSubmissionText(e.target.value)} placeholder="Paste submission notes, github links..." className="w-full bg-[var(--color-surface-2)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] p-3 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body min-h-[100px]" required />
+                      <button type="submit" className="flex items-center gap-1 px-4 py-2 bg-[var(--primary)] hover:opacity-90 text-white text-sm font-medium rounded-[var(--radius-md)] transition-all"><Upload className="w-3.5 h-3.5" /> Upload</button>
                     </form>
                   </div>
                   <div className="space-y-3">
@@ -112,7 +112,7 @@ export default function UniLMS() {
           </div>
 
           <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 h-fit">
-            <h3 className="font-semibold text-[var(--color-text-primary)] mb-4 flex items-center gap-1.5"><MessageSquare className="w-4 h-4" style={{ color: 'var(--color-module-lms)' }} /> Discussions</h3>
+            <h3 className="font-semibold text-[var(--color-text-primary)] mb-4 flex items-center gap-1.5"><MessageSquare className="w-4 h-4" style={{ color: 'var(--primary)' }} /> Discussions</h3>
             <div className="space-y-3">
               <div className="p-3 bg-[var(--color-surface-1)] border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] text-[var(--text-xs)]">
                 <p className="font-semibold text-[var(--color-text-primary)]">"Trouble with partition algorithms?"</p>

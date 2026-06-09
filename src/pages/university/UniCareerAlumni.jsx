@@ -37,7 +37,7 @@ export default function UniCareerAlumni() {
   }, [jobRecords]);
 
   const stats = [
-    { label: 'Active Internships', value: jobs.length, icon: Briefcase, color: 'var(--color-module-career)' },
+    { label: 'Active Internships', value: jobs.length, icon: Briefcase, color: 'var(--primary)' },
     { label: 'Partnered Employers', value: Math.max(14, jobs.length * 2), icon: Landmark, color: 'var(--color-info)' },
     { label: 'Alumni Directory', value: alumniRecords.length > 0 ? alumniRecords.length : '12K', icon: Users, color: 'var(--color-warning)' },
     { label: 'Donations Received', value: '$450K', icon: HeartHandshake, color: 'var(--color-success)' }
@@ -78,16 +78,16 @@ export default function UniCareerAlumni() {
                 icon={Briefcase} 
                 title="No Active Postings" 
                 description="There are currently no job or internship postings available." 
-                moduleColor="var(--color-module-career)" 
+                moduleColor="var(--primary)" 
               />
             ) : (
               jobs.map((job, idx) => (
-                <div key={idx} className="p-4 bg-[var(--color-surface-1)] border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] flex justify-between items-center text-[var(--text-xs)] hover:border-[var(--color-module-career)] transition-colors">
+                <div key={idx} className="p-4 bg-[var(--color-surface-1)] border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] flex justify-between items-center text-[var(--text-xs)] hover:border-[var(--primary)] transition-colors">
                   <div>
                     <h4 className="font-bold text-[var(--text-sm)] text-[var(--color-text-primary)]">{job.title}</h4>
                     <p className="text-[var(--color-text-secondary)] mt-1">Employer: {job.employer} · {job.location}</p>
                   </div>
-                  <button className="flex items-center gap-1 px-4 py-2 bg-[var(--color-module-career)] hover:opacity-90 text-white font-medium rounded-[var(--radius-md)] transition-all text-xs">
+                  <button className="flex items-center gap-1 px-4 py-2 bg-[var(--primary)] hover:opacity-90 text-white font-medium rounded-[var(--radius-md)] transition-all text-xs">
                     Apply <ArrowUpRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -100,11 +100,11 @@ export default function UniCareerAlumni() {
           <h2 className="font-semibold text-[var(--color-text-primary)] mb-1">Alumni Relations & Events</h2>
           <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mb-4">Keep in touch with graduating classes.</p>
           <div className="space-y-4">
-            <div className="p-4 bg-[var(--color-surface-2)] border border-[var(--color-module-career)] text-[var(--color-module-career)] rounded-[var(--radius-md)] text-[var(--text-sm)] space-y-1">
+            <div className="p-4 bg-[var(--color-surface-2)] border border-[var(--primary)] text-[var(--primary)] rounded-[var(--radius-md)] text-[var(--text-sm)] space-y-1">
               <p className="font-bold flex items-center gap-1.5"><Trophy className="w-4 h-4" /> Annual Alumni Gala 2026</p>
               <p className="text-[var(--text-xs)] opacity-90 text-[var(--color-text-secondary)]">Scheduled for November 12 inside the Grand Ballroom. Registration open.</p>
             </div>
-            <button className="w-full py-2 bg-[var(--color-module-career)] hover:opacity-90 text-white font-medium rounded-[var(--radius-md)] transition-all text-sm">
+            <button className="w-full py-2 bg-[var(--primary)] hover:opacity-90 text-white font-medium rounded-[var(--radius-md)] transition-all text-sm">
               Browse Alumni Database ({alumniRecords.length})
             </button>
           </div>

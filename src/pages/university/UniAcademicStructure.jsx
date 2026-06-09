@@ -39,7 +39,7 @@ export default function UniAcademicStructure() {
 
       <div className="flex justify-between items-center bg-[var(--color-surface-0)] p-4 rounded-[var(--radius-xl)] border border-[var(--color-border-subtle)] shadow-sm">
         <div className="flex gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 bg-[var(--color-module-academic)] hover:opacity-90 text-white text-sm font-medium rounded-[var(--radius-md)] transition-all">
+          <button className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)] hover:opacity-90 text-white text-sm font-medium rounded-[var(--radius-md)] transition-all">
             <Plus className="w-4 h-4" /> Add Faculty
           </button>
           <button className="flex items-center gap-2 px-4 py-2 bg-[var(--color-surface-2)] hover:bg-[var(--color-surface-3)] text-[var(--color-text-primary)] border border-[var(--color-border-default)] text-sm font-medium rounded-[var(--radius-md)] transition-all">
@@ -55,13 +55,13 @@ export default function UniAcademicStructure() {
             icon={Building2} 
             title="No Academic Structure" 
             description="Create faculties to define your university's academic branches." 
-            moduleColor="var(--color-module-academic)" 
+            moduleColor="var(--primary)" 
           />
         ) : (
           structure.map((fac, idx) => (
-            <div key={idx} className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] hover:border-[var(--color-module-academic)] transition-colors rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
+            <div key={idx} className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] hover:border-[var(--primary)] transition-colors rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
               <div className="flex items-center gap-4 bg-[var(--color-surface-1)] px-6 py-4 border-b border-[var(--color-border-subtle)]">
-                <div className="w-10 h-10 rounded-[var(--radius-lg)] bg-[var(--color-module-academic)] text-white flex items-center justify-center shadow-glow-sm shadow-[var(--color-module-academic)]">
+                <div className="w-10 h-10 rounded-[var(--radius-lg)] bg-[var(--primary)] text-white flex items-center justify-center shadow-glow-sm shadow-[var(--primary)]">
                   <fac.icon className="w-5 h-5" />
                 </div>
                 <div>
@@ -74,7 +74,7 @@ export default function UniAcademicStructure() {
                 {fac.schools && fac.schools.length > 0 ? fac.schools.map((school, sIdx) => (
                   <div key={sIdx} className="pl-4 border-l-2 border-[var(--color-border-subtle)] space-y-4">
                     <div className="flex items-center gap-2 text-[var(--color-text-primary)] font-semibold text-[var(--text-sm)]">
-                      <School className="w-4 h-4 text-[var(--color-module-academic)]" /> {school.name}
+                      <School className="w-4 h-4 text-[var(--primary)]" /> {school.name}
                     </div>
                     
                     {school.departments && school.departments.map((dept, dIdx) => (
@@ -88,7 +88,7 @@ export default function UniAcademicStructure() {
                             <div key={pIdx} className="bg-[var(--color-surface-1)] border border-[var(--color-border-subtle)] p-4 rounded-[var(--radius-lg)] flex flex-col justify-between hover:bg-[var(--color-surface-2)] transition-colors">
                               <div>
                                 <p className="font-bold text-[var(--text-xs)] text-[var(--color-text-primary)] flex items-center gap-1.5">
-                                  <GraduationCap className="w-4 h-4 text-[var(--color-module-academic)]" /> {prog.name}
+                                  <GraduationCap className="w-4 h-4 text-[var(--primary)]" /> {prog.name}
                                 </p>
                                 <div className="mt-2 space-y-1">
                                   {prog.majors && prog.majors.length > 0 && (
@@ -103,7 +103,7 @@ export default function UniAcademicStructure() {
                                   )}
                                 </div>
                               </div>
-                              <button className="self-end text-[10px] font-semibold flex items-center gap-0.5 mt-4 text-[var(--color-module-academic)] hover:opacity-80 transition-opacity">
+                              <button className="self-end text-[10px] font-semibold flex items-center gap-0.5 mt-4 text-[var(--primary)] hover:opacity-80 transition-opacity">
                                 View Curriculum <ChevronRight className="w-3 h-3" />
                               </button>
                             </div>

@@ -27,7 +27,7 @@ export default function OnlineAssessments() {
       
       {!started && (
         <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-8 shadow-sm text-center">
-          <div className="w-16 h-16 bg-[var(--color-module-online)] text-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-md">
+          <div className="w-16 h-16 bg-[var(--primary)] text-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-md">
             <BookOpen className="w-8 h-8" />
           </div>
           <h1 className="text-2xl font-bold font-display text-[var(--color-text-primary)] mb-2">Module 1 Final Assessment</h1>
@@ -39,7 +39,7 @@ export default function OnlineAssessments() {
             <div className="flex items-center gap-2"><AlertCircle className="w-4 h-4 text-[var(--color-text-tertiary)]"/> 1 Attempt Remaining</div>
           </div>
 
-          <button onClick={() => setStarted(true)} className="px-8 py-3 bg-[var(--color-module-online)] text-white font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">
+          <button onClick={() => setStarted(true)} className="px-8 py-3 bg-[var(--primary)] text-white font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">
             Start Assessment
           </button>
         </div>
@@ -64,7 +64,7 @@ export default function OnlineAssessments() {
                 <button 
                   key={idx}
                   onClick={() => setSelectedOption(idx)}
-                  className={`w-full text-left p-4 rounded-[var(--radius-md)] border text-sm font-medium transition-colors ${selectedOption === idx ? 'bg-[var(--color-module-online)] text-white border-[var(--color-module-online)]' : 'bg-[var(--color-surface-0)] text-[var(--color-text-primary)] border-[var(--color-border-default)] hover:border-[var(--color-module-online)]'}`}
+                  className={`w-full text-left p-4 rounded-[var(--radius-md)] border text-sm font-medium transition-colors ${selectedOption === idx ? 'bg-[var(--primary)] text-white border-[var(--primary)]' : 'bg-[var(--color-surface-0)] text-[var(--color-text-primary)] border-[var(--color-border-default)] hover:border-[var(--primary)]'}`}
                 >
                   {opt}
                 </button>
@@ -76,7 +76,7 @@ export default function OnlineAssessments() {
             <button 
               disabled={selectedOption === null}
               onClick={handleNext} 
-              className="px-6 py-2 bg-[var(--color-module-online)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity disabled:opacity-50"
+              className="px-6 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity disabled:opacity-50"
             >
               {currentQ === questions.length - 1 ? 'Submit Assessment' : 'Next Question'}
             </button>
@@ -96,7 +96,7 @@ export default function OnlineAssessments() {
             <button onClick={() => navigate('/o/student-dashboard')} className="px-6 py-2 bg-[var(--color-surface-1)] border border-[var(--color-border-default)] text-[var(--color-text-primary)] font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors">
               Back to Dashboard
             </button>
-            <button onClick={() => navigate('/o/certificates')} className="px-6 py-2 bg-[var(--color-module-online)] text-white font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">
+            <button onClick={() => navigate('/o/certificates')} className="px-6 py-2 bg-[var(--primary)] text-white font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">
               View Certificate
             </button>
           </div>

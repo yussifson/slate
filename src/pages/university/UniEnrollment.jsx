@@ -33,7 +33,7 @@ export default function UniEnrollment() {
   const rejectedCount = applicants.filter(a => a.status === 'Rejected').length;
 
   const stats = [
-    { label: 'Total Active Enrolled', value: students.length || 3240, icon: Users, color: 'var(--color-module-orbit)' },
+    { label: 'Total Active Enrolled', value: students.length || 3240, icon: Users, color: 'var(--primary)' },
     { label: 'Admitted (Current Batch)', value: admittedCount || 412, icon: CheckCircle2, color: 'var(--color-success)' },
     { label: 'Pending Applications', value: pendingCount || 185, icon: UserPlus, color: 'var(--color-warning)' },
     { label: 'Rejected Applications', value: rejectedCount || 54, icon: XCircle, color: 'var(--color-danger)' }
@@ -65,7 +65,7 @@ export default function UniEnrollment() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 shadow-sm">
           <h2 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-2 mb-1">
-            <BarChart4 className="w-5 h-5 text-[var(--color-module-orbit)]" /> Enrollment & Application Growth
+            <BarChart4 className="w-5 h-5 text-[var(--primary)]" /> Enrollment & Application Growth
           </h2>
           <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mb-6">Historical comparison of student applications versus final enrollments.</p>
           <div className="h-[300px] w-full">
@@ -102,7 +102,7 @@ export default function UniEnrollment() {
                 <span>82%</span>
               </div>
               <div className="w-full bg-[var(--color-surface-2)] h-2 rounded-full overflow-hidden">
-                <div className="bg-[var(--color-module-orbit)] h-full rounded-full" style={{ width: '82%' }} />
+                <div className="bg-[var(--primary)] h-full rounded-full" style={{ width: '82%' }} />
               </div>
             </div>
             <div>

@@ -163,7 +163,7 @@ export default function UniStudents() {
                 actionLabel="Enroll Student"
                 onAction={() => setActiveTab('add')}
                 icon={Users}
-                moduleColor="var(--color-module-students)"
+                moduleColor="var(--primary)"
               />
             )}
           </div>
@@ -173,7 +173,7 @@ export default function UniStudents() {
           <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] overflow-hidden shadow-sm">
             <div className="bg-[var(--color-surface-2)] p-6 md:p-8 flex items-center justify-between border-b border-[var(--color-border-subtle)]">
               <div className="flex items-center gap-6">
-                <div className="w-20 h-20 rounded-full bg-[var(--color-module-students)] text-white flex items-center justify-center font-display text-[var(--text-3xl)] shadow-glow-sm shadow-[var(--color-module-students)]">
+                <div className="w-20 h-20 rounded-full bg-[var(--primary)] text-white flex items-center justify-center font-display text-[var(--text-3xl)] shadow-glow-sm shadow-[var(--primary)]">
                   {selectedStudent.name?.substring(0, 2).toUpperCase()}
                 </div>
                 <div>
@@ -197,12 +197,12 @@ export default function UniStudents() {
               <div className="lg:col-span-2 space-y-6">
                 <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] p-6">
                   <h3 className="font-semibold text-[var(--color-text-primary)] mb-6 flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-[var(--color-module-students)]" /> Academic History & Transcript
+                    <Calendar className="w-4 h-4 text-[var(--primary)]" /> Academic History & Transcript
                   </h3>
                   
                   <div className="relative border-l border-[var(--color-border-strong)] ml-3 space-y-8 pb-4">
                     <div className="relative pl-6">
-                      <div className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-[var(--color-module-students)] shadow-glow-sm shadow-[var(--color-module-students)]" />
+                      <div className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-[var(--primary)] shadow-glow-sm shadow-[var(--primary)]" />
                       <h4 className="font-medium text-[var(--color-text-primary)]">Fall Semester 2025 <span className="ml-2 font-mono text-[var(--color-text-tertiary)] text-xs">Current</span></h4>
                       <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">CS-302: HCI (Grade: A) · CS-401: Distributed Systems (Grade: A-)</p>
                     </div>
@@ -294,7 +294,7 @@ export default function UniStudents() {
                     value={formData.name} 
                     onChange={e => setFormData({ ...formData, name: e.target.value })} 
                     placeholder="e.g. Marie Curie" 
-                    className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--color-module-students)] focus:ring-1 focus:ring-[var(--color-module-students)] font-body"
+                    className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
                     required
                   />
                 </div>
@@ -305,7 +305,7 @@ export default function UniStudents() {
                     value={formData.email} 
                     onChange={e => setFormData({ ...formData, email: e.target.value })} 
                     placeholder="e.g. mcurie@university.edu" 
-                    className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--color-module-students)] focus:ring-1 focus:ring-[var(--color-module-students)] font-body"
+                    className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
                   />
                 </div>
                 <div className="space-y-2">
@@ -313,7 +313,7 @@ export default function UniStudents() {
                   <select 
                     value={formData.major} 
                     onChange={e => setFormData({ ...formData, major: e.target.value })}
-                    className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-module-students)] focus:ring-1 focus:ring-[var(--color-module-students)] font-body"
+                    className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
                   >
                     <option value="Computer Science">Computer Science</option>
                     <option value="Software Engineering">Software Engineering</option>
@@ -327,7 +327,7 @@ export default function UniStudents() {
                   <select 
                     value={formData.year} 
                     onChange={e => setFormData({ ...formData, year: e.target.value })}
-                    className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-module-students)] focus:ring-1 focus:ring-[var(--color-module-students)] font-body"
+                    className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
                   >
                     <option value="Freshman">Freshman</option>
                     <option value="Sophomore">Sophomore</option>
@@ -341,7 +341,7 @@ export default function UniStudents() {
                 <button 
                   type="submit" 
                   disabled={createStudentMutation.isPending}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-[var(--color-module-students)] hover:opacity-90 text-white rounded-[var(--radius-md)] font-medium transition-all shadow-sm disabled:opacity-50"
+                  className="flex items-center gap-2 px-6 py-2.5 bg-[var(--primary)] hover:opacity-90 text-white rounded-[var(--radius-md)] font-medium transition-all shadow-sm disabled:opacity-50"
                 >
                   <Plus className="w-4 h-4" />
                   {createStudentMutation.isPending ? 'Saving...' : 'Enroll Student'}

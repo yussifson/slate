@@ -43,7 +43,7 @@ export default function OnlineCourses() {
           <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage learning modules, update curriculum, and track course performance.</p>
         </div>
         <div className="flex gap-3">
-          <button onClick={() => navigate('/o/builder')} className="px-4 py-2 bg-[var(--color-module-online)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">
+          <button onClick={() => navigate('/o/builder')} className="px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">
             Create Course
           </button>
         </div>
@@ -57,7 +57,7 @@ export default function OnlineCourses() {
             placeholder="Search catalog..." 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--color-module-online)] focus:ring-1 focus:ring-[var(--color-module-online)] font-body"
+            className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
           />
         </div>
       </div>
@@ -84,7 +84,7 @@ export default function OnlineCourses() {
             animate={{ opacity: 1, y: 0 }}
             className="col-span-full py-16 text-center border-2 border-dashed border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] bg-[var(--color-surface-0)] glass-card"
           >
-            <BookOpen className="w-12 h-12 mx-auto mb-4 opacity-30 text-[var(--color-module-online)]" />
+            <BookOpen className="w-12 h-12 mx-auto mb-4 opacity-30 text-[var(--primary)]" />
             <h3 className="font-semibold text-lg text-[var(--color-text-primary)] mb-1">No courses found</h3>
             <p className="text-sm text-[var(--color-text-secondary)] mb-6 max-w-sm mx-auto">Get started by creating your first online course.</p>
           </motion.div>
@@ -101,17 +101,17 @@ export default function OnlineCourses() {
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.2, delay: idx * 0.05 }}
                   key={course.id || idx} 
-                  className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden flex flex-col group hover:border-[var(--color-module-online)] transition-all duration-300 hover:shadow-md glass-card"
+                  className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden flex flex-col group hover:border-[var(--primary)] transition-all duration-300 hover:shadow-md glass-card"
                 >
                   <div className="aspect-video bg-gradient-to-br from-[var(--color-surface-2)] to-[var(--color-surface-3)] relative flex items-center justify-center overflow-hidden">
                     <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors z-10" />
-                    <PlayCircle className="w-12 h-12 text-[var(--color-module-online)] opacity-40 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 z-20 drop-shadow-md" />
+                    <PlayCircle className="w-12 h-12 text-[var(--primary)] opacity-40 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 z-20 drop-shadow-md" />
                     <div className="absolute top-3 right-3 px-2.5 py-1 bg-white/90 dark:bg-black/50 backdrop-blur-sm border border-white/20 dark:border-white/10 text-[10px] font-bold rounded-md shadow-sm text-[var(--color-text-primary)] uppercase tracking-wider z-20">
                       {extra.level || 'Beginner'}
                     </div>
                   </div>
                   <div className="p-5 flex flex-col flex-1">
-                    <h3 className="font-bold text-[var(--text-lg)] text-[var(--color-text-primary)] mb-2 group-hover:text-[var(--color-module-online)] transition-colors">{course.title || 'Untitled Course'}</h3>
+                    <h3 className="font-bold text-[var(--text-lg)] text-[var(--color-text-primary)] mb-2 group-hover:text-[var(--primary)] transition-colors">{course.title || 'Untitled Course'}</h3>
                     <p className="text-sm text-[var(--color-text-secondary)] line-clamp-2 mb-4 flex-1 leading-relaxed">
                       {extra.description || 'No description provided for this course module.'}
                     </p>
@@ -134,8 +134,8 @@ export default function OnlineCourses() {
                       </div>
                     </div>
                   </div>
-                  <div className="bg-[var(--color-surface-1)] border-t border-[var(--color-border-subtle)] px-5 py-3 group-hover:bg-[var(--color-module-online)] transition-colors duration-300 flex items-center justify-between">
-                    <button onClick={() => navigate(`/o/builder/course/${course.id}`)} className="text-sm font-semibold text-[var(--color-module-online)] group-hover:text-white flex items-center gap-1 transition-colors">
+                  <div className="bg-[var(--color-surface-1)] border-t border-[var(--color-border-subtle)] px-5 py-3 group-hover:bg-[var(--primary)] transition-colors duration-300 flex items-center justify-between">
+                    <button onClick={() => navigate(`/o/builder/course/${course.id}`)} className="text-sm font-semibold text-[var(--primary)] group-hover:text-white flex items-center gap-1 transition-colors">
                       Manage Course <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </button>
                     <button onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(course.id); }} className="text-[var(--color-error)] opacity-0 group-hover:opacity-100 hover:text-white transition-all bg-white/50 group-hover:bg-transparent rounded-md p-1.5 backdrop-blur-sm shadow-sm" title="Delete Course">

@@ -30,7 +30,7 @@ export default function CorporateDashboard() {
           <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Corporate Portal</h1>
           <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage bulk licenses, track employee training, and view organizational metrics.</p>
         </div>
-        <button className="px-4 py-2 bg-[var(--color-module-online)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity flex items-center gap-2">
+        <button className="px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity flex items-center gap-2">
           <Users className="w-4 h-4" /> Invite Employees
         </button>
       </div>
@@ -74,8 +74,8 @@ export default function CorporateDashboard() {
 
       <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
         <div className="border-b border-[var(--color-border-subtle)] bg-[var(--color-surface-1)] flex px-4">
-          <button onClick={() => setActiveTab('overview')} className={`px-6 py-4 font-medium text-sm transition-colors border-b-2 ${activeTab === 'overview' ? 'border-[var(--color-module-online)] text-[var(--color-module-online)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}>Overview</button>
-          <button onClick={() => setActiveTab('employees')} className={`px-6 py-4 font-medium text-sm transition-colors border-b-2 ${activeTab === 'employees' ? 'border-[var(--color-module-online)] text-[var(--color-module-online)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}>Employee Directory</button>
+          <button onClick={() => setActiveTab('overview')} className={`px-6 py-4 font-medium text-sm transition-colors border-b-2 ${activeTab === 'overview' ? 'border-[var(--primary)] text-[var(--primary)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}>Overview</button>
+          <button onClick={() => setActiveTab('employees')} className={`px-6 py-4 font-medium text-sm transition-colors border-b-2 ${activeTab === 'employees' ? 'border-[var(--primary)] text-[var(--primary)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}>Employee Directory</button>
         </div>
 
         <div className="p-6">
@@ -83,7 +83,7 @@ export default function CorporateDashboard() {
             <div className="space-y-6">
               <div className="flex justify-between items-center mb-2">
                 <h2 className="font-bold text-[var(--color-text-primary)] font-display">Department Training Progress</h2>
-                <button className="text-sm font-medium text-[var(--color-module-online)] flex items-center gap-1 hover:underline">
+                <button className="text-sm font-medium text-[var(--primary)] flex items-center gap-1 hover:underline">
                   <Download className="w-4 h-4" /> Export Report
                 </button>
               </div>
@@ -138,7 +138,7 @@ export default function CorporateDashboard() {
                           </div>
                         </td>
                         <td className="px-6 py-4 text-right">
-                          <button className="text-sm font-semibold text-[var(--color-module-online)] flex items-center justify-end gap-1 hover:underline w-full opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button className="text-sm font-semibold text-[var(--primary)] flex items-center justify-end gap-1 hover:underline w-full opacity-0 group-hover:opacity-100 transition-opacity">
                             View Report <ChevronRight className="w-4 h-4" />
                           </button>
                         </td>

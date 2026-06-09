@@ -39,7 +39,7 @@ export default function OnlineDashboard() {
   const chartData = [];
 
   const stats = [
-    { label: 'Total Learners', value: learners.length || 0, icon: Users, color: 'var(--color-module-online)' },
+    { label: 'Total Learners', value: learners.length || 0, icon: Users, color: 'var(--primary)' },
     { label: 'Active Courses', value: courses.length || 0, icon: BookOpen, color: 'var(--color-info)' },
     { label: 'Total Sales', value: `$${totalRevenue.toLocaleString()}`, icon: Banknote, color: 'var(--color-success)' },
     { label: 'Avg. Completion', value: '0%', icon: TrendingUp, color: 'var(--color-warning)' },
@@ -94,9 +94,9 @@ export default function OnlineDashboard() {
               </div>
             ) : (
               recentCourses.map((c, idx) => (
-                <div key={idx} className="p-3 bg-[var(--color-surface-1)] border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] flex items-start gap-3 hover:border-[var(--color-module-online)] transition-colors">
+                <div key={idx} className="p-3 bg-[var(--color-surface-1)] border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] flex items-start gap-3 hover:border-[var(--primary)] transition-colors">
                   <div className="w-10 h-10 rounded-[var(--radius-md)] bg-[var(--color-surface-2)] flex items-center justify-center flex-shrink-0">
-                    <PlayCircle className="w-5 h-5 text-[var(--color-module-online)]" />
+                    <PlayCircle className="w-5 h-5 text-[var(--primary)]" />
                   </div>
                   <div>
                     <h4 className="font-bold text-[var(--text-sm)] text-[var(--color-text-primary)]">{c.title || 'Untitled Course'}</h4>
