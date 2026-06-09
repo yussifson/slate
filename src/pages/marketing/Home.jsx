@@ -584,7 +584,7 @@ export default function Home() {
           {/* Dashboard mockup */}
           <FadeIn delay="delay-500">
             <div className="relative w-full max-w-6xl mx-auto h-[400px] md:h-[550px] rounded-2xl border border-slate-200/80 bg-slate-50 overflow-hidden flex items-center justify-center">
-              <img src="/images/hero_dashboard_ui.png" alt="Slate Dashboard Mockup" className="w-full h-full object-cover object-top" />
+              <img src="/images/hero_dashboard_ui.png" alt="Slate Dashboard Mockup" className="w-full h-auto max-h-full object-contain" />
             </div>
           </FadeIn>
         </div>
