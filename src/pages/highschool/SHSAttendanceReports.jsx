@@ -135,7 +135,7 @@ export default function SHSAttendanceReports() {
               {/* Student Stats */}
               <div className="space-y-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-primary/5 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70">
+                  <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70">
                     <Users className="w-6 h-6" />
                   </div>
                   <div>
@@ -151,7 +151,7 @@ export default function SHSAttendanceReports() {
                       {sPresentRate}%
                     </p>
                   </div>
-                  <div className="p-5 rounded-2xl bg-primary/5 border border-primary/10 flex flex-col justify-center items-center text-center">
+                  <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-center items-center text-center">
                     <p className="text-xs font-bold text-primary/70 uppercase tracking-wider mb-1">Total Present</p>
                     <p className="text-3xl font-black text-primary">{studentStats.present}</p>
                   </div>
@@ -169,7 +169,7 @@ export default function SHSAttendanceReports() {
               {/* Teacher Stats */}
               <div className="space-y-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-primary/5 flex items-center justify-center text-primary">
+                  <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-primary">
                     <Briefcase className="w-6 h-6" />
                   </div>
                   <div>
@@ -185,7 +185,7 @@ export default function SHSAttendanceReports() {
                       {tPresentRate}%
                     </p>
                   </div>
-                  <div className="p-5 rounded-2xl bg-primary/5 border border-primary/10 flex flex-col justify-center items-center text-center">
+                  <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-center items-center text-center">
                     <p className="text-xs font-bold text-primary/70 uppercase tracking-wider mb-1">Total Present</p>
                     <p className="text-3xl font-black text-primary">{teacherStats.present}</p>
                   </div>

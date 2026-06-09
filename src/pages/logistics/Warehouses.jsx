@@ -15,7 +15,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sh
 import { MoreVertical, Eye } from 'lucide-react';
 
 const STATUS_COLORS = {
-  'Active':   'bg-primary/10 text-primary/90 dark:bg-primary/30 dark:text-primary/70',
+  'Active':   'bg-slate-100 text-primary/90 dark:bg-primary/30 dark:text-primary/70',
   'Inactive': 'bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400',
 };
 
@@ -137,10 +137,10 @@ export default function Warehouses() {
   const usedPct = totalCap > 0 ? Math.round((usedCap / totalCap) * 100) : 0;
 
   const stats = [
-    { label: 'Total Warehouses', value: total, icon: Warehouse, color: 'bg-primary/10 text-primary', border: 'border-primary/20' },
-    { label: 'Total Capacity', value: `${totalCap.toLocaleString()} units`, icon: Package, color: 'bg-primary/10 text-primary', border: 'border-primary/20' },
-    { label: 'Used Capacity', value: `${usedPct}%`, icon: BarChart3, color: usedPct >= 90 ? 'bg-red-100 text-red-600' : usedPct >= 70 ? 'bg-amber-100 text-amber-600' : 'bg-primary/10 text-primary', border: usedPct >= 90 ? 'border-red-200' : usedPct >= 70 ? 'border-amber-200' : 'border-primary/20' },
-    { label: 'Active', value: activeCount, icon: CheckCircle2, color: 'bg-primary/10 text-primary', border: 'border-primary/20' },
+    { label: 'Total Warehouses', value: total, icon: Warehouse, color: 'bg-slate-100 text-primary', border: 'border-primary/20' },
+    { label: 'Total Capacity', value: `${totalCap.toLocaleString()} units`, icon: Package, color: 'bg-slate-100 text-primary', border: 'border-primary/20' },
+    { label: 'Used Capacity', value: `${usedPct}%`, icon: BarChart3, color: usedPct >= 90 ? 'bg-red-100 text-red-600' : usedPct >= 70 ? 'bg-amber-100 text-amber-600' : 'bg-slate-100 text-primary', border: usedPct >= 90 ? 'border-red-200' : usedPct >= 70 ? 'border-amber-200' : 'border-primary/20' },
+    { label: 'Active', value: activeCount, icon: CheckCircle2, color: 'bg-slate-100 text-primary', border: 'border-primary/20' },
   ];
 
   return (
@@ -212,7 +212,7 @@ export default function Warehouses() {
                 {/* Card Header */}
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 dark:bg-primary/30 flex items-center justify-center text-primary">
+                    <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-primary/30 flex items-center justify-center text-primary">
                       <Warehouse className="w-5 h-5" />
                     </div>
                     <div>
@@ -271,7 +271,7 @@ export default function Warehouses() {
                   <div className="flex flex-wrap gap-1.5">
                     {cats.map(cat => {
                       return (
-                        <span key={cat} className="inline-flex items-center gap-1 text-[10px] bg-primary/5 dark:bg-primary/20 text-primary/90 dark:text-primary/70 px-2 py-0.5 rounded-full font-medium border border-primary/20 dark:border-primary/80">
+                        <span key={cat} className="inline-flex items-center gap-1 text-[10px] bg-slate-50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 px-2 py-0.5 rounded-full font-medium border border-primary/20 dark:border-primary/80">
                           <Tag className="w-2.5 h-2.5" /> {cat}
                         </span>
                       );

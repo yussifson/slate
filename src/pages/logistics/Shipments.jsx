@@ -20,7 +20,7 @@ import { MessageSquare, Bell } from "lucide-react";
 const STATUS_COLORS = {
   'Pending':     'bg-amber-100 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400',
   'In Transit':  'bg-orange-100 text-orange-700 dark:bg-primary/30 dark:text-primary/70',
-  'Delivered':   'bg-primary/10 text-primary/90 dark:bg-primary/30 dark:text-primary/70',
+  'Delivered':   'bg-slate-100 text-primary/90 dark:bg-primary/30 dark:text-primary/70',
   'Failed':      'bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400',
 };
 
@@ -148,8 +148,8 @@ export default function Shipments() {
 
   const stats = [
     { label: 'Total Shipments', value: total, icon: Package, color: 'bg-orange-100 text-orange-600', border: 'border-orange-200' },
-    { label: 'In Transit', value: inTransit, icon: Truck, color: 'bg-primary/10 text-primary', border: 'border-primary/20' },
-    { label: 'Delivered', value: delivered, icon: CheckCircle2, color: 'bg-primary/10 text-primary', border: 'border-primary/20' },
+    { label: 'In Transit', value: inTransit, icon: Truck, color: 'bg-slate-100 text-primary', border: 'border-primary/20' },
+    { label: 'Delivered', value: delivered, icon: CheckCircle2, color: 'bg-slate-100 text-primary', border: 'border-primary/20' },
     { label: 'Pending', value: pending, icon: Clock, color: 'bg-amber-100 text-amber-600', border: 'border-amber-200' },
   ];
 

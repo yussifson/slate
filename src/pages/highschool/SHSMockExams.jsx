@@ -126,7 +126,7 @@ export default function SHSMockExams() {
             <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading exams...</div>
           ) : filteredExams.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-primary/5 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
                 <Award className="w-8 h-8 text-primary dark:text-primary" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No mock exams found</h3>
@@ -152,7 +152,7 @@ export default function SHSMockExams() {
                         <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">{exam.case_number}</p>
                       </td>
                       <td className="px-6 py-4">
-                        <Badge variant="outline" className="bg-primary/5 text-primary/90 border-primary/20">
+                        <Badge variant="outline" className="bg-slate-50 text-primary/90 border-primary/20">
                           {exam.data?.targetForm || 'Form 3'} Candidates
                         </Badge>
                       </td>
@@ -166,8 +166,8 @@ export default function SHSMockExams() {
                         <Badge variant="outline" className={
                           exam.status === 'Upcoming' ? 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700' :
                           exam.status === 'Ongoing' ? 'bg-amber-50 text-amber-600 border-amber-200' :
-                          exam.status === 'Completed' ? 'bg-primary/5 text-primary border-primary/20' :
-                          'bg-primary/5 text-primary/90 border-primary/20'
+                          exam.status === 'Completed' ? 'bg-slate-50 text-primary border-primary/20' :
+                          'bg-slate-50 text-primary/90 border-primary/20'
                         }>
                           {exam.status}
                         </Badge>
@@ -180,12 +180,12 @@ export default function SHSMockExams() {
                             </Button>
                           )}
                           {exam.status === 'Ongoing' && (
-                            <Button size="sm" variant="outline" onClick={() => updateExamStatus(exam.id, 'Completed')} className="h-8 text-xs font-semibold text-primary border-primary/20 hover:bg-primary/5">
+                            <Button size="sm" variant="outline" onClick={() => updateExamStatus(exam.id, 'Completed')} className="h-8 text-xs font-semibold text-primary border-primary/20 hover:bg-slate-50">
                               End Mock
                             </Button>
                           )}
                           {exam.status === 'Completed' && (
-                            <Button size="sm" variant="outline" onClick={() => updateExamStatus(exam.id, 'Published')} className="h-8 text-xs font-semibold text-primary border-primary/20 hover:bg-primary/5">
+                            <Button size="sm" variant="outline" onClick={() => updateExamStatus(exam.id, 'Published')} className="h-8 text-xs font-semibold text-primary border-primary/20 hover:bg-slate-50">
                               Publish Results
                             </Button>
                           )}

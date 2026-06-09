@@ -504,7 +504,7 @@ function EmailSettings({ activeIndustry, company, onSave, saving }) {
                     placeholder="e.g. smithandassociates.com"
                   />
                   {company?.custom_email_verified && (
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-primary flex items-center gap-1 text-xs font-bold bg-primary/5 dark:bg-primary/40 px-2 py-0.5 rounded-full border border-primary/50">
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-primary flex items-center gap-1 text-xs font-bold bg-slate-50 dark:bg-primary/40 px-2 py-0.5 rounded-full border border-slate-200">
                       <CheckCircle className="w-3.5 h-3.5" /> {t("verified", "Verified")}
                     </span>
                   )}
@@ -991,7 +991,7 @@ function BillingSettings({ company, activeIndustry }) {
                 {currentPlan} {t("model", "Model")}
                 <span className={`text-[10px] font-extrabold uppercase py-0.5 px-2.5 rounded-full border tracking-wider ${
                   currentStatus === 'active' 
-                    ? 'bg-primary/5 dark:bg-primary/20 text-primary/90 dark:text-primary/70 border-primary/50' 
+                    ? 'bg-slate-50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 border-slate-200' 
                     : 'bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 border-amber-200/50 animate-pulse'
                 }`}>
                   {currentStatus}
@@ -1080,7 +1080,7 @@ function BillingSettings({ company, activeIndustry }) {
                       <td className="px-5 py-3.5 font-extrabold text-foreground">${inv.amount}</td>
                       <td className="px-5 py-3.5 font-mono text-xs text-muted-foreground/80">{inv.paystack_ref}</td>
                       <td className="px-5 py-3.5">
-                        <span className="inline-flex py-0.5 px-2.5 rounded-full text-[10px] font-bold bg-primary/5 dark:bg-primary/20 text-primary/90 dark:text-primary/70 border border-primary/50 uppercase select-none">
+                        <span className="inline-flex py-0.5 px-2.5 rounded-full text-[10px] font-bold bg-slate-50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 border border-slate-200 uppercase select-none">
                           {inv.status}
                         </span>
                       </td>

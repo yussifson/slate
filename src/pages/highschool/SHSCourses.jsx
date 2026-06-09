@@ -117,7 +117,7 @@ export default function SHSCourses() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
               <Layers className="w-6 h-6" />
             </div>
             <div>
@@ -129,7 +129,7 @@ export default function SHSCourses() {
         
         <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-primary shrink-0">
               <GraduationCap className="w-6 h-6" />
             </div>
             <div>
@@ -179,7 +179,7 @@ export default function SHSCourses() {
             <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading courses...</div>
           ) : filteredCourses.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-primary/5 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
                 <Layers className="w-8 h-8 text-primary dark:text-primary" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No courses defined</h3>
@@ -213,7 +213,7 @@ export default function SHSCourses() {
                       </td>
                       <td className="px-6 py-4">
                         <Badge variant="outline" className={
-                          course.data?.type === 'Core' ? 'bg-primary/5 text-primary/90 border-primary/20' :
+                          course.data?.type === 'Core' ? 'bg-slate-50 text-primary/90 border-primary/20' :
                           'bg-amber-50 text-amber-700 border-amber-200'
                         }>
                           {course.data?.type || 'Core'}
@@ -230,7 +230,7 @@ export default function SHSCourses() {
                         </div>
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity text-primary dark:text-primary/70 hover:bg-primary/5 dark:bg-slate-800">
+                        <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800">
                           Edit
                         </Button>
                       </td>

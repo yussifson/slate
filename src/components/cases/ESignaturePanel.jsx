@@ -16,7 +16,7 @@ const STATUS_CONFIG = {
   draft:    { color: "bg-gray-100 text-gray-600",    icon: Clock },
   sent:     { color: "bg-orange-100 text-orange-700",    icon: Send },
   opened:   { color: "bg-amber-100 text-amber-700",  icon: Eye },
-  signed:   { color: "bg-primary/10 text-primary/90",  icon: CheckCircle },
+  signed:   { color: "bg-slate-100 text-primary/90",  icon: CheckCircle },
   declined: { color: "bg-red-100 text-red-700",      icon: XCircle },
   expired:  { color: "bg-gray-100 text-gray-500",    icon: Clock },
 };
@@ -135,7 +135,7 @@ Slate Law Management`,
             const StatusIcon = cfg.icon;
             return (
               <div key={req.id} className="bg-card rounded-xl border border-border px-4 py-3 flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
                   <PenTool className="w-4 h-4 text-primary" />
                 </div>
                 <div className="flex-1 min-w-0">

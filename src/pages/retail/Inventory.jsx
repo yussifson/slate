@@ -17,7 +17,7 @@ import { isRetailAdmin, isRetailInventoryManager } from '@/lib/constants';
 const CATEGORIES = ['Electronics', 'Apparel', 'Footwear', 'Groceries', 'Fitness', 'Home & Living', 'Beauty', 'Other'];
 
 const statusColors = {
-  'In Stock': 'bg-primary/10 dark:bg-primary/20 text-primary/90 dark:text-primary/70',
+  'In Stock': 'bg-slate-100 dark:bg-primary/20 text-primary/90 dark:text-primary/70',
   'Low Stock': 'bg-amber-100 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800',
   'Out of Stock': 'bg-red-100 dark:bg-red-950/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800',
 };

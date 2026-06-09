@@ -29,7 +29,7 @@ const STATUS_CONFIG = {
   submitted: {
     icon: Send,
     color: 'text-primary',
-    bg: 'bg-primary/5',
+    bg: 'bg-slate-50',
     border: 'border-primary/20',
     gradient: 'from-primary to-primary',
     badgeCls: 'bg-orange-100 text-orange-700',
@@ -47,10 +47,10 @@ const STATUS_CONFIG = {
   approved: {
     icon: CheckCircle2,
     color: 'text-primary',
-    bg: 'bg-primary/5',
+    bg: 'bg-slate-50',
     border: 'border-primary/20',
     gradient: 'from-primary to-primary',
-    badgeCls: 'bg-primary/10 text-primary/90',
+    badgeCls: 'bg-slate-100 text-primary/90',
     ring: 'ring-primary/20',
   },
   rejected: {
@@ -345,7 +345,7 @@ export default function DynamicApprovalView({ data = [], fieldDefinitions = [], 
   if (!data || data.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
-        <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/5 border border-primary/10 mb-5">
+        <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/5 border border-slate-200 mb-5">
           <Inbox className="w-12 h-12 text-primary/30" />
         </div>
         <h3 className="text-lg font-semibold text-slate-700 mb-2">No Approval Items</h3>

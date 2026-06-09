@@ -134,7 +134,7 @@ export default function CasePipelineKanban({ pipelines, caseStates, companyId })
                           ref={provided.innerRef}
                           {...provided.droppableProps}
                           className={`flex-1 space-y-2 min-h-[120px] rounded-lg p-2 transition-colors ${
-                            snapshot.isDraggingOver ? "bg-primary/5 border border-dashed border-primary/30" : "bg-muted/20"
+                            snapshot.isDraggingOver ? "bg-slate-50 border border-dashed border-primary/30" : "bg-muted/20"
                           }`}
                         >
                           {(stageCards[stage.id] || []).map((c, index) => {

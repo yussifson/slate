@@ -103,7 +103,7 @@ export default function VMaintenance() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 dark:from-primary/70 dark:to-white bg-clip-text text-transparent flex items-center gap-3">
-            <div className="p-2 bg-primary/10 dark:bg-primary/50 rounded-xl text-primary dark:text-primary/70">
+            <div className="p-2 bg-slate-100 dark:bg-slate-500 rounded-xl text-primary dark:text-primary/70">
               <Wrench className="w-6 h-6" />
             </div>
             Equipment Maintenance
@@ -170,7 +170,7 @@ export default function VMaintenance() {
         <Card className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl border-none shadow-sm rounded-3xl ring-1 ring-slate-200/50 dark:ring-slate-800">
           <CardContent className="p-6 flex flex-col justify-center">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-primary/5 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70">
+              <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
               <div>
@@ -197,7 +197,7 @@ export default function VMaintenance() {
                 {filtered.map(item => (
                   <div key={item.id} className="flex items-center justify-between p-5 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors group">
                     <div className="flex items-center gap-5">
-                      <div className="w-12 h-12 rounded-2xl bg-primary/5 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70 font-bold shrink-0">
+                      <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70 font-bold shrink-0">
                         <Wrench className="w-6 h-6" />
                       </div>
                       <div>
@@ -219,7 +219,7 @@ export default function VMaintenance() {
                         </div>
                       )}
                       <Badge className={
-                        item.status === 'Completed' ? 'bg-primary/10 text-primary/90 hover:bg-primary/20 dark:bg-primary/20 dark:text-primary/70' :
+                        item.status === 'Completed' ? 'bg-slate-100 text-primary/90 hover:bg-primary/20 dark:bg-primary/20 dark:text-primary/70' :
                         item.status === 'In Progress' ? 'bg-orange-100 text-orange-700 hover:bg-primary/20 dark:bg-primary/20 dark:text-primary/70' :
                         item.status === 'Scheduled' ? 'bg-amber-100 text-amber-700 hover:bg-amber-200 dark:bg-amber-500/20 dark:text-amber-400' :
                         item.status === 'Overdue' ? 'bg-rose-100 text-rose-700 hover:bg-rose-200 dark:bg-rose-500/20 dark:text-rose-400' :
@@ -228,7 +228,7 @@ export default function VMaintenance() {
                         {item.status}
                       </Badge>
                       <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button variant="ghost" size="icon" onClick={() => openModal(item)} className="h-8 w-8 text-primary hover:bg-primary/5 dark:hover:bg-primary/20">
+                        <Button variant="ghost" size="icon" onClick={() => openModal(item)} className="h-8 w-8 text-primary hover:bg-slate-50 dark:hover:bg-primary/20">
                           <Edit className="w-4 h-4" />
                         </Button>
                         <Button variant="ghost" size="icon" onClick={() => handleDelete(item.id)} className="h-8 w-8 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20">

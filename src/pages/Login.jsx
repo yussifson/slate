@@ -330,8 +330,6 @@ export default function Login() {
       <div className="hidden lg:flex flex-1 relative items-center justify-center bg-slate-50 overflow-hidden">
         {/* Abstract Pattern Background */}
         <div className="absolute inset-0 bg-slate-900/5 mix-blend-overlay"></div>
-        <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-gradient-to-br from-primary/20 to-primary/20 blur-[100px] rounded-full pointer-events-none"></div>
-        <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-gradient-to-tr from-primary/20 to-primary/20 blur-[100px] rounded-full pointer-events-none"></div>
 
         <div className="relative z-10 w-full max-w-2xl bg-white rounded-[2rem] border border-slate-200/60 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] p-12 lg:p-16 flex flex-col justify-center relative group">
           <div className="absolute top-0 right-0 p-8 opacity-[0.03] text-[10rem] font-serif leading-none font-black text-primary/70 group-hover:text-primary group-hover:opacity-10 transition-colors duration-700 pointer-events-none">"</div>

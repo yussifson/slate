@@ -134,7 +134,7 @@ export default function Assignments() {
                 <span className="text-xs font-bold flex items-center gap-2 text-slate-500 uppercase tracking-wider">
                   <Calendar className="w-4 h-4 text-primary" /> Due: {a.dueDate ? format(new Date(a.dueDate), 'MMM d, yyyy') : 'No Date'}
                 </span>
-                <span className="bg-primary/5 dark:bg-primary/20 text-primary dark:text-primary/30 border border-primary/20 text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-md shadow-sm">{t("active", "Active")}</span>
+                <span className="bg-slate-50 dark:bg-primary/20 text-primary dark:text-primary/30 border border-primary/20 text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-md shadow-sm">{t("active", "Active")}</span>
               </div>
             </div>
           ))}

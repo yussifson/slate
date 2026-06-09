@@ -380,7 +380,7 @@ export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePi
         </div>
         
         <div className="flex flex-col items-center max-w-md text-center p-8 bg-white dark:bg-slate-900 rounded-3xl border border-border shadow-xl">
-           <div className="w-24 h-24 bg-primary/5 dark:bg-primary/30 rounded-full flex items-center justify-center mb-6 shadow-sm border border-primary/10 dark:border-primary/80">
+           <div className="w-24 h-24 bg-slate-50 dark:bg-primary/30 rounded-full flex items-center justify-center mb-6 shadow-sm border border-slate-200 dark:border-primary/80">
              <VideoIcon className="w-10 h-10 text-primary dark:text-primary/70" />
            </div>
            <h2 className="text-2xl font-bold mb-3 text-slate-800 dark:text-white tracking-tight">Secure Video Meeting</h2>

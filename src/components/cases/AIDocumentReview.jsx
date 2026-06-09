@@ -15,19 +15,19 @@ const URGENCY_COLORS = {
   critical: "bg-red-100 text-red-700 border-red-200",
   high: "bg-orange-100 text-orange-700 border-orange-200",
   medium: "bg-yellow-100 text-yellow-700 border-yellow-200",
-  low: "bg-primary/10 text-primary/90 border-primary/20",
+  low: "bg-slate-100 text-primary/90 border-primary/20",
 };
 
 const IMPORTANCE_COLORS = {
   high: "bg-red-50 border-red-200 text-red-800",
-  medium: "bg-primary/5 border-primary/20 text-primary/80",
+  medium: "bg-slate-50 border-primary/20 text-primary/80",
   low: "bg-gray-50 border-gray-200 text-gray-700",
 };
 
 const DATE_TYPE_COLORS = {
-  Hearing: "bg-primary/10 text-primary/90",
+  Hearing: "bg-slate-100 text-primary/90",
   Signing: "bg-orange-100 text-orange-700",
-  Effective: "bg-primary/10 text-primary/90",
+  Effective: "bg-slate-100 text-primary/90",
   Expiry: "bg-red-100 text-red-700",
   Filing: "bg-orange-100 text-orange-700",
   Payment: "bg-yellow-100 text-yellow-700",
@@ -208,7 +208,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
         onDragOver={(e) => e.preventDefault()}
         className={cn(
           "border-2 border-dashed rounded-xl p-8 text-center transition-colors",
-          file ? "border-primary bg-primary/5" : "border-border hover:border-primary/50 hover:bg-muted/30"
+          file ? "border-primary bg-slate-50" : "border-border hover:border-slate-200 hover:bg-muted/30"
         )}
       >
         {file ? (
@@ -222,7 +222,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
           </div>
         ) : (
           <div className="flex flex-col items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center">
               <Upload className="w-6 h-6 text-primary" />
             </div>
             <div>
@@ -279,7 +279,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
           </div>
 
           {/* Summary */}
-          <div className="bg-primary/5 border border-primary/20 rounded-xl p-4">
+          <div className="bg-slate-50 border border-primary/20 rounded-xl p-4">
             <div className="flex items-center gap-2 mb-2">
               <FileText className="w-4 h-4 text-primary" />
               <span className="text-sm font-semibold">{t("executive_summary", "Executive Summary")}</span>

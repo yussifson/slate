@@ -8,8 +8,8 @@ import { toast } from 'react-hot-toast';
 
 const statusColors = {
   'Pending': 'bg-red-100 dark:bg-red-950/20 text-red-700 dark:text-red-400 animate-pulse',
-  'In Progress': 'bg-primary/10 dark:bg-primary/20 text-primary/90 dark:text-primary/70',
-  'Completed': 'bg-primary/10 dark:bg-primary/20 text-primary/90 dark:text-primary/70'
+  'In Progress': 'bg-slate-100 dark:bg-primary/20 text-primary/90 dark:text-primary/70',
+  'Completed': 'bg-slate-100 dark:bg-primary/20 text-primary/90 dark:text-primary/70'
 };
 
 const requestIcons = {
@@ -139,7 +139,7 @@ export default function GuestRequests() {
                return (
                  <div key={req.id} className="p-4 sm:p-6 hover:bg-muted/40 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4 group">
                    <div className="flex gap-4 items-start">
-                      <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 bg-primary/5 dark:bg-primary/20 text-primary dark:text-primary/70`}>
+                      <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 bg-slate-50 dark:bg-primary/20 text-primary dark:text-primary/70`}>
                          {requestIcons[req.type] || <Bell className="w-5 h-5" />}
                       </div>
                       <div>

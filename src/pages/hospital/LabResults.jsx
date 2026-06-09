@@ -10,7 +10,7 @@ import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } 
 import { toast } from 'react-hot-toast';
 
 const statusColors = {
-  Completed: 'bg-primary/10 text-primary/90',
+  Completed: 'bg-slate-100 text-primary/90',
   Abnormal: 'bg-red-100 text-red-700 font-bold',
   Pending: 'bg-amber-100 text-amber-700'
 };
@@ -184,7 +184,7 @@ export default function LabResults() {
                     </td>
                     <td className="px-6 py-4">
                        <div className="flex justify-center items-center">
-                          <span className={`flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full ${statusColors[res.status] || 'bg-primary/10 text-primary/90'}`}>
+                          <span className={`flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full ${statusColors[res.status] || 'bg-slate-100 text-primary/90'}`}>
                              {statusIcons[res.status]} {res.status}
                           </span>
                        </div>

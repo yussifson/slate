@@ -111,7 +111,7 @@ export default function CSVImportModal({ isOpen, onClose, recordType, onComplete
 
           {step === 2 && (
             <div className="space-y-6">
-              <div className="flex items-center gap-3 bg-primary/5 dark:bg-primary/30 text-primary/90 dark:text-primary/70 p-3 rounded-lg border border-primary/20 dark:border-primary/50">
+              <div className="flex items-center gap-3 bg-slate-50 dark:bg-primary/30 text-primary/90 dark:text-primary/70 p-3 rounded-lg border border-primary/20 dark:border-slate-200">
                 <CheckCircle className="w-5 h-5" />
                 <span className="text-sm font-medium">{t("successfully_loaded", "Successfully loaded")} <strong>{data.length}</strong> {t("rows_map_the_columns_below", "rows. Map the columns below.")}</span>
               </div>

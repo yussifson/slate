@@ -96,7 +96,7 @@ export default function Shifts() {
           <div><p className="text-2xl font-bold text-card-foreground">{shifts.length}</p><p className="text-xs text-muted-foreground">Total Shifts</p></div>
         </div>
         <div className="bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary"><CalendarCheck className="w-5 h-5" /></div>
+          <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-primary/20 flex items-center justify-center text-primary"><CalendarCheck className="w-5 h-5" /></div>
           <div><p className="text-2xl font-bold text-card-foreground">{shifts.filter(s => s.status === 'Completed').length}</p><p className="text-xs text-muted-foreground">Completed Shifts</p></div>
         </div>
       </div>
@@ -134,7 +134,7 @@ export default function Shifts() {
                     <td className="px-6 py-4 font-medium">{s.date}</td>
                     <td className="px-6 py-4 text-center">{s.startTime} - {s.endTime}</td>
                     <td className="px-6 py-4 text-center">
-                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${s.status === 'Completed' ? 'bg-primary/10 text-primary/90' : s.status === 'Cancelled' ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700'}`}>{s.status}</span>
+                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${s.status === 'Completed' ? 'bg-slate-100 text-primary/90' : s.status === 'Cancelled' ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700'}`}>{s.status}</span>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <Button variant="ghost" size="icon" onClick={() => openEdit(s)}><Edit className="w-4 h-4" /></Button>

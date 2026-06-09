@@ -190,7 +190,7 @@ export default function Prescriptions() {
                        <p className="text-xs text-muted-foreground">{rx.date}</p>
                     </td>
                     <td className="px-6 py-4 text-center">
-                      <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${rx.status === 'Active' ? 'bg-primary/10 text-primary/90' : 'bg-muted text-muted-foreground'}`}>
+                      <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${rx.status === 'Active' ? 'bg-slate-100 text-primary/90' : 'bg-muted text-muted-foreground'}`}>
                         {rx.status}
                       </span>
                     </td>

@@ -257,7 +257,7 @@ export default function Chat() {
             >
               <div className="relative flex-shrink-0">
                 {room.room_type === "group" ? (
-                  <div className="w-12 h-12 rounded-full bg-primary/10 dark:bg-primary/30 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-primary/30 flex items-center justify-center">
                     <Users className="w-6 h-6 text-primary dark:text-primary/70" />
                   </div>
                 ) : (
@@ -294,7 +294,7 @@ export default function Chat() {
             <div className="px-4 py-3 border-b border-border flex items-center justify-between bg-[#f0f2f5] dark:bg-[#202c33] z-10 shadow-sm">
               <div className="flex items-center gap-3">
                 {activeRoom.room_type === "group" ? (
-                  <div className="w-10 h-10 rounded-full bg-primary/10 dark:bg-primary/30 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-primary/30 flex items-center justify-center">
                     <Users className="w-5 h-5 text-primary dark:text-primary/70" />
                   </div>
                 ) : (
@@ -481,16 +481,16 @@ export default function Chat() {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent side="top" align="start" className="w-48 p-2 mb-2 rounded-2xl flex flex-col gap-1 shadow-xl">
-                   <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-primary/5 hover:text-primary" onClick={() => document.getElementById('chat-doc-upload')?.click()}>
-                     <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary"><FileText className="w-4 h-4"/></div>
+                   <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-slate-50 hover:text-primary" onClick={() => document.getElementById('chat-doc-upload')?.click()}>
+                     <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-primary"><FileText className="w-4 h-4"/></div>
                      Document
                    </Button>
                    <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-rose-50 hover:text-rose-600" onClick={() => document.getElementById('chat-image-upload')?.click()}>
                      <div className="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center text-rose-600"><ImageIcon className="w-4 h-4"/></div>
                      Photos & Videos
                    </Button>
-                   <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-primary/5 hover:text-primary" onClick={() => fileInputRef.current?.click()}>
-                     <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary"><File className="w-4 h-4"/></div>
+                   <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-slate-50 hover:text-primary" onClick={() => fileInputRef.current?.click()}>
+                     <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-primary"><File className="w-4 h-4"/></div>
                      File
                    </Button>
                 </PopoverContent>
@@ -505,7 +505,7 @@ export default function Chat() {
                   placeholder="Type a message"
                   className="w-full bg-transparent border-none px-4 py-2.5 text-sm focus:ring-0 focus:outline-none"
                 />
-                <button onClick={handleAiAssist} className="absolute right-3 p-1 text-primary hover:bg-primary/10 rounded-full transition-colors" title="AI Magic Rewrite">
+                <button onClick={handleAiAssist} className="absolute right-3 p-1 text-primary hover:bg-slate-100 rounded-full transition-colors" title="AI Magic Rewrite">
                   <Sparkles className="w-4 h-4" />
                 </button>
               </div>

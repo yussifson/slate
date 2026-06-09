@@ -67,7 +67,7 @@ export default function AIDocumentParser({ onExtracted, fieldsContext = 'invoice
   };
 
   return (
-    <div className="bg-card border border-dashed border-primary/40 rounded-xl p-6 text-center transition-all hover:bg-primary/5 group relative overflow-hidden">
+    <div className="bg-card border border-dashed border-primary/40 rounded-xl p-6 text-center transition-all hover:bg-slate-50 group relative overflow-hidden">
       <input
         type="file"
         ref={fileInputRef}
@@ -106,7 +106,7 @@ export default function AIDocumentParser({ onExtracted, fieldsContext = 'invoice
           className="flex flex-col items-center cursor-pointer"
           onClick={() => fileInputRef.current?.click()}
         >
-          <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-3 group-hover:scale-110 transition-transform">
+          <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center text-primary mb-3 group-hover:scale-110 transition-transform">
             <Upload className="w-6 h-6" />
           </div>
           <h4 className="text-sm font-bold text-card-foreground">{t("upload_document_for_ai_auto_fi", "Upload Document for AI Auto-Fill")}</h4>

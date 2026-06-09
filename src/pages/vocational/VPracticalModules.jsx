@@ -207,7 +207,7 @@ export default function VPracticalModules() {
                       </CardContent>
                     </Card>
 
-                    <Card className="bg-primary/30 dark:bg-slate-800/30 border-primary/10 dark:border-slate-700 shadow-none">
+                    <Card className="bg-primary/30 dark:bg-slate-800/30 border-slate-200 dark:border-slate-700 shadow-none">
                       <CardHeader className="pb-2">
                         <CardTitle className="text-lg flex items-center gap-2">
                           <CheckSquare className="w-5 h-5 text-primary" /> Assessment Criteria

@@ -24,10 +24,10 @@ import { useNotifications } from "@/hooks/useNotifications";
 import { getIndustryRoles } from "@/config/industries";
 
 const roleColors = {
-  company_admin: "bg-primary/10 text-primary/90",
+  company_admin: "bg-slate-100 text-primary/90",
   lawyer: "bg-orange-100 text-orange-700",
-  paralegal: "bg-primary/10 text-primary/90",
-  hr: "bg-primary/10 text-primary/90",
+  paralegal: "bg-slate-100 text-primary/90",
+  hr: "bg-slate-100 text-primary/90",
   finance: "bg-amber-100 text-amber-700",
   support: "bg-slate-100 text-slate-600",
 };
@@ -85,7 +85,7 @@ export default function Team() {
       render: row => {
         return (
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
               <span className="text-xs font-bold text-primary">{row.full_name?.[0]?.toUpperCase()}</span>
             </div>
             <div>
@@ -106,7 +106,7 @@ export default function Team() {
       header: "Status",
       render: row => {
         return (
-          <Badge className={`text-[10px] ${row.status === "active" ? "bg-primary/10 text-primary/90" : row.status === "on_leave" ? "bg-amber-100 text-amber-700" : "bg-slate-100 text-slate-600"}`}>
+          <Badge className={`text-[10px] ${row.status === "active" ? "bg-slate-100 text-primary/90" : row.status === "on_leave" ? "bg-amber-100 text-amber-700" : "bg-slate-100 text-slate-600"}`}>
             {row.status?.replace("_", " ")}
           </Badge>
         );

@@ -106,7 +106,7 @@ export default function DynamicKanbanView({ data, records, moduleDef, fieldDefin
                 <div 
                   {...provided.droppableProps}
                   ref={provided.innerRef}
-                  className={`flex-1 overflow-y-auto p-3 space-y-3 transition-colors ${snapshot.isDraggingOver ? 'bg-primary/5' : ''}`}
+                  className={`flex-1 overflow-y-auto p-3 space-y-3 transition-colors ${snapshot.isDraggingOver ? 'bg-slate-50' : ''}`}
                   style={{ minHeight: '150px' }}
                 >
                   {colRecords.map((item, index) => (

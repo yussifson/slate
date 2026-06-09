@@ -25,7 +25,7 @@ import { useImpersonation } from "@/lib/ImpersonationContext";
 const SUB_STATUS_COLORS = {
   pending: "bg-slate-100 text-slate-600",
   sent: "bg-orange-100 text-orange-700",
-  paid: "bg-primary/10 text-primary/90",
+  paid: "bg-slate-100 text-primary/90",
   overdue: "bg-red-100 text-red-700",
   cancelled: "bg-gray-100 text-gray-500",
 };
@@ -244,8 +244,8 @@ function CompanyBilling({ companyId }) {
         subtitle="Invoices and expenses"
       />
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard icon={DollarSign} label="Collected" value={formatCurrency(totalCollected, currency)} color="bg-primary/5 text-primary" />
-        <MetricCard icon={Clock} label="Pending" value={formatCurrency(totalPending, currency)} color="bg-primary/5 text-primary" />
+        <MetricCard icon={DollarSign} label="Collected" value={formatCurrency(totalCollected, currency)} color="bg-slate-50 text-primary" />
+        <MetricCard icon={Clock} label="Pending" value={formatCurrency(totalPending, currency)} color="bg-slate-50 text-primary" />
         <MetricCard icon={AlertCircle} label="Overdue" value={overdueCount} color="bg-red-50 text-red-600" />
         <MetricCard icon={Receipt} label="Unbilled Time/Expenses" value={`${unbilledTime.length} / ${unbilledExpenses.length}`} color="bg-amber-50 text-amber-600" />
       </div>
@@ -395,7 +395,7 @@ function CompanyBilling({ companyId }) {
                           <span className="text-sm font-medium">{exp.description}</span>
                           <Badge variant="outline" className="text-[10px] capitalize">{EXPENSE_CATEGORY_LABELS[exp.category] || exp.category}</Badge>
                           {exp.billable && !exp.billed && <Badge className="text-[10px] bg-amber-100 text-amber-700">{t("unbilled", "Unbilled")}</Badge>}
-                          {exp.billed && <Badge className="text-[10px] bg-primary/10 text-primary/90">{t("billed", "Billed")}</Badge>}
+                          {exp.billed && <Badge className="text-[10px] bg-slate-100 text-primary/90">{t("billed", "Billed")}</Badge>}
                           {!exp.billable && <Badge className="text-[10px] bg-gray-100 text-gray-600">{t("internal", "Internal")}</Badge>}
                         </div>
                         <p className="text-xs text-muted-foreground mt-0.5">
@@ -523,10 +523,10 @@ function SuperAdminBilling() {
         }
       />
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard icon={DollarSign} label="Total Collected" value={`$${totalRevenue.toLocaleString()}`} color="bg-primary/5 text-primary" />
-        <MetricCard icon={Clock} label="Pending" value={`$${totalPending.toLocaleString()}`} color="bg-primary/5 text-primary" />
+        <MetricCard icon={DollarSign} label="Total Collected" value={`$${totalRevenue.toLocaleString()}`} color="bg-slate-50 text-primary" />
+        <MetricCard icon={Clock} label="Pending" value={`$${totalPending.toLocaleString()}`} color="bg-slate-50 text-primary" />
         <MetricCard icon={AlertCircle} label="Overdue Invoices" value={overdueCount} color="bg-red-50 text-red-600" />
-        <MetricCard icon={CreditCard} label="Total Invoices" value={invoices.length} color="bg-primary/5 text-primary" />
+        <MetricCard icon={CreditCard} label="Total Invoices" value={invoices.length} color="bg-slate-50 text-primary" />
       </div>
       <div className="bg-card rounded-xl border border-border overflow-hidden">
         <div className="p-4 border-b border-border flex items-center justify-between gap-3 flex-wrap">

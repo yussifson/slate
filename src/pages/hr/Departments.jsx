@@ -141,7 +141,7 @@ export default function Departments() {
              <p className="text-sm text-muted-foreground mb-1">{t("total_departments", "Total Departments")}</p>
              <h2 className="text-3xl font-bold text-card-foreground">{departments.length}</h2>
            </div>
-           <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+           <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-primary">
              <Building2 className="w-6 h-6" />
            </div>
         </div>
@@ -150,7 +150,7 @@ export default function Departments() {
              <p className="text-sm text-muted-foreground mb-1">{t("total_employees", "Total Employees")}</p>
              <h2 className="text-3xl font-bold text-card-foreground">{departments.reduce((sum, d) => sum + d.staffCount, 0)}</h2>
            </div>
-           <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+           <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-primary">
              <Users className="w-6 h-6" />
            </div>
         </div>
@@ -159,7 +159,7 @@ export default function Departments() {
              <p className="text-sm text-muted-foreground mb-1">{t("total_budget", "Total Budget")}</p>
              <h2 className="text-3xl font-bold text-card-foreground">${departments.reduce((sum, d) => sum + d.budget, 0).toLocaleString()}</h2>
            </div>
-           <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+           <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-primary">
              <DollarSign className="w-6 h-6" />
            </div>
         </div>

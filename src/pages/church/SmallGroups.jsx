@@ -133,7 +133,7 @@ export default function SmallGroups() {
             return (
               <div key={group.id} className="bg-card rounded-xl border border-border p-6 shadow-sm hover:border-primary/20 transition-colors relative group">
                 <div className="flex justify-between items-start mb-4">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 dark:bg-primary/50 flex items-center justify-center text-primary dark:text-primary/70">
+                  <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70">
                     <Users className="w-6 h-6" />
                   </div>
                   <div className="flex items-center gap-2">

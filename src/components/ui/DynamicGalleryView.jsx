@@ -343,7 +343,7 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
                           </span>
                           <span className="font-medium text-slate-700 truncate max-w-[50%] text-right">
                             {f.field_type === 'boolean' ? (
-                              <span className={`px-2 py-0.5 rounded-full text-[10px] ${val ? 'bg-primary/10 text-primary/90' : 'bg-slate-100 text-slate-500'}`}>
+                              <span className={`px-2 py-0.5 rounded-full text-[10px] ${val ? 'bg-slate-100 text-primary/90' : 'bg-slate-100 text-slate-500'}`}>
                                 {val ? 'Yes' : 'No'}
                               </span>
                             ) : f.field_type === 'select' ? (

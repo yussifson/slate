@@ -206,7 +206,7 @@ export default function Clients() {
         </div>
       ) : filtered.length === 0 ? (
         <div className="bg-card rounded-2xl border border-dashed border-slate-200 p-12 text-center max-w-sm mx-auto my-8 space-y-4 shadow-sm">
-          <div className="w-12 h-12 rounded-full bg-primary/5 border border-primary/10 flex items-center justify-center mx-auto text-primary">
+          <div className="w-12 h-12 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center mx-auto text-primary">
             <Users className="w-5 h-5" />
           </div>
           <div className="space-y-1">
@@ -246,7 +246,7 @@ export default function Clients() {
                       <TableCell onClick={e => toggleOne(row.id, e)}><Checkbox checked={selected.has(row.id)} onCheckedChange={() => {}} /></TableCell>
                       <TableCell>
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                          <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
                             <span className="text-xs font-bold text-primary">{row.name?.[0]?.toUpperCase()}</span>
                           </div>
                           <div>
@@ -258,7 +258,7 @@ export default function Clients() {
                       <TableCell><span className="text-sm">{row.phone || "—"}</span></TableCell>
                       <TableCell><Badge variant="outline" className="text-[10px] capitalize">{row.type}</Badge></TableCell>
                       <TableCell>
-                        <Badge className={`text-[10px] ${row.status === "active" ? "bg-primary/10 text-primary/90" : row.status === "lead" ? "bg-amber-100 text-amber-700" : "bg-slate-100 text-slate-600"}`}>
+                        <Badge className={`text-[10px] ${row.status === "active" ? "bg-slate-100 text-primary/90" : row.status === "lead" ? "bg-amber-100 text-amber-700" : "bg-slate-100 text-slate-600"}`}>
                           {row.status}
                         </Badge>
                       </TableCell>

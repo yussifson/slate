@@ -99,7 +99,7 @@ export default function SHSStudentPromotion() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="col-span-1 rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50">
-          <CardHeader className="bg-primary/50 dark:bg-slate-800/50 rounded-t-3xl border-b border-primary/10 dark:border-slate-700">
+          <CardHeader className="bg-slate-500 dark:bg-slate-800/50 rounded-t-3xl border-b border-slate-200 dark:border-slate-700">
             <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Promotion Rules</CardTitle>
             <CardDescription>Select the source and target forms</CardDescription>
           </CardHeader>
@@ -138,7 +138,7 @@ export default function SHSStudentPromotion() {
             </div>
             
             <div className="pt-4 border-t border-primary/5">
-              <div className="p-4 rounded-xl bg-primary/5 dark:bg-slate-800 flex items-start gap-3">
+              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-start gap-3">
                 <AlertCircle className="w-5 h-5 text-primary dark:text-primary/70 shrink-0 mt-0.5" />
                 <p className="text-xs text-primary/70 font-medium">
                   Promoting students will update their academic level immediately. Ensure end-of-term results are processed before promotion.
@@ -182,7 +182,7 @@ export default function SHSStudentPromotion() {
                 <div className="p-8 text-center text-slate-400 dark:text-slate-500">Loading students...</div>
               ) : eligibleStudents.length === 0 ? (
                 <div className="p-12 text-center flex flex-col items-center">
-                  <div className="w-16 h-16 rounded-2xl bg-primary/5 dark:bg-slate-800 flex items-center justify-center mb-4 text-primary/30">
+                  <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center mb-4 text-primary/30">
                     <GraduationCap className="w-8 h-8" />
                   </div>
                   <h3 className="font-bold text-slate-700 dark:text-slate-200">No students found in {sourceGrade}</h3>
@@ -191,7 +191,7 @@ export default function SHSStudentPromotion() {
               ) : (
                 <div className="divide-y divide-slate-50">
                   {eligibleStudents.map(student => (
-                    <div key={student.id} className={`px-6 py-3 flex items-center gap-4 transition-colors ${selectedStudentIds.has(student.id) ? 'bg-primary/50 dark:bg-slate-800/50' : 'hover:bg-slate-50 dark:bg-slate-800'}`}>
+                    <div key={student.id} className={`px-6 py-3 flex items-center gap-4 transition-colors ${selectedStudentIds.has(student.id) ? 'bg-slate-500 dark:bg-slate-800/50' : 'hover:bg-slate-50 dark:bg-slate-800'}`}>
                       <input 
                         type="checkbox" 
                         className="w-4 h-4 rounded text-primary dark:text-primary/70 focus:ring-primary dark:focus:ring-primary border-slate-300"
@@ -216,7 +216,7 @@ export default function SHSStudentPromotion() {
             </ScrollArea>
           </div>
           
-          <div className="p-4 bg-white dark:bg-slate-900 border-t border-primary/10 dark:border-slate-700 rounded-b-3xl flex items-center justify-between">
+          <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700 rounded-b-3xl flex items-center justify-between">
             <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">
               <span className="text-primary dark:text-primary/70 font-black">{selectedStudentIds.size}</span> students selected
             </p>

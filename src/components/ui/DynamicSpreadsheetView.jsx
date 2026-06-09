@@ -358,7 +358,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
                     key={record.id}
                     className={`border-b border-slate-100 transition-colors ${
                       isSelected
-                        ? 'bg-primary/50'
+                        ? 'bg-slate-500'
                         : rowIdx % 2 === 0
                         ? 'bg-white'
                         : 'bg-slate-50/30'
@@ -387,7 +387,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
                         <td
                           key={field.name}
                           className={`px-1 py-1 border-r border-slate-100/60 last:border-r-0 ${
-                            isEditing ? 'bg-primary/5 ring-2 ring-inset ring-primary/70' : ''
+                            isEditing ? 'bg-slate-50 ring-2 ring-inset ring-primary/70' : ''
                           }`}
                         >
                           {/* Boolean - toggle immediately */}

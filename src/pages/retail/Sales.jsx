@@ -181,7 +181,7 @@ export default function Sales() {
                       <td className="px-6 py-4 font-medium text-card-foreground">{sale.cashier}</td>
                       <td className="px-6 py-4 text-muted-foreground">{sale.method}</td>
                       <td className="px-6 py-4 text-center">
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider ${sale.status === 'Refunded' ? 'bg-red-100 dark:bg-red-950/20 text-red-700 dark:text-red-400' : 'bg-primary/10 dark:bg-primary/20 text-primary/90 dark:text-primary/70'}`}>
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider ${sale.status === 'Refunded' ? 'bg-red-100 dark:bg-red-950/20 text-red-700 dark:text-red-400' : 'bg-slate-100 dark:bg-primary/20 text-primary/90 dark:text-primary/70'}`}>
                           {sale.status}
                         </span>
                       </td>
@@ -246,7 +246,7 @@ export default function Sales() {
               <div className="grid grid-cols-2 gap-4 border-b pb-4">
                 <div className="font-semibold text-muted-foreground">{t("status", "Status")}</div>
                 <div className="text-right">
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider ${selectedRecord.status === 'Refunded' ? 'bg-red-100 text-red-700' : 'bg-primary/10 text-primary/90'}`}>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider ${selectedRecord.status === 'Refunded' ? 'bg-red-100 text-red-700' : 'bg-slate-100 text-primary/90'}`}>
                     {selectedRecord.status}
                   </span>
                 </div>

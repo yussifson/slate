@@ -21,11 +21,11 @@ const ROLES = [
 ];
 
 const ROLE_COLORS = {
-  company_admin: "bg-primary/10 text-primary/90",
+  company_admin: "bg-slate-100 text-primary/90",
   lawyer: "bg-orange-100 text-orange-700",
-  paralegal: "bg-primary/10 text-primary/90",
+  paralegal: "bg-slate-100 text-primary/90",
   hr: "bg-amber-100 text-amber-700",
-  finance: "bg-primary/10 text-primary/90",
+  finance: "bg-slate-100 text-primary/90",
   support: "bg-slate-100 text-slate-600",
 };
 
@@ -188,7 +188,7 @@ export default function FirmStaffManager({ firm, onClose }) {
           ) : staffRecords.map(staff => {
             return (
               <div key={staff.id} className="flex items-center gap-3 p-3 bg-card rounded-lg border border-border">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
                   <span className="text-xs font-bold text-primary">{staff.full_name?.[0]?.toUpperCase() || "?"}</span>
                 </div>
                 <div className="flex-1 min-w-0">
@@ -210,7 +210,7 @@ export default function FirmStaffManager({ firm, onClose }) {
                   onClick={() => toggleStatusMutation.mutate({ id: staff.id, status: staff.status === "active" ? "inactive" : "active" })}
                   title="Toggle active/inactive"
                 >
-                  <Badge className={`text-[10px] cursor-pointer shrink-0 ${staff.status === "active" ? "bg-primary/10 text-primary/90" : "bg-slate-100 text-slate-500"}`}>
+                  <Badge className={`text-[10px] cursor-pointer shrink-0 ${staff.status === "active" ? "bg-slate-100 text-primary/90" : "bg-slate-100 text-slate-500"}`}>
                     {staff.status === "active" ? "Active" : "Inactive"}
                   </Badge>
                 </button>

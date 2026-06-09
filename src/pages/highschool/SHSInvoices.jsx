@@ -110,7 +110,7 @@ export default function SHSInvoices() {
         
         <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-primary shrink-0">
               <CheckCircle2 className="w-6 h-6" />
             </div>
             <div>
@@ -185,7 +185,7 @@ export default function SHSInvoices() {
                       </td>
                       <td className="px-6 py-4">
                         <Badge variant="outline" className={
-                          inv.status === 'Paid' ? 'bg-primary/5 text-primary/90 border-primary/20' :
+                          inv.status === 'Paid' ? 'bg-slate-50 text-primary/90 border-primary/20' :
                           inv.status === 'Partial' ? 'bg-amber-50 text-amber-700 border-amber-200' :
                           'bg-rose-50 text-rose-700 border-rose-200'
                         }>
@@ -194,10 +194,10 @@ export default function SHSInvoices() {
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex justify-end gap-2">
-                          <Button size="sm" variant="ghost" className="text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:text-primary dark:text-primary/70 hover:bg-primary/5 dark:bg-slate-800">
+                          <Button size="sm" variant="ghost" className="text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800">
                             <Download className="w-4 h-4" />
                           </Button>
-                          <Button size="sm" variant="ghost" className="text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:text-primary dark:text-primary/70 hover:bg-primary/5 dark:bg-slate-800">
+                          <Button size="sm" variant="ghost" className="text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800">
                             <Send className="w-4 h-4" />
                           </Button>
                         </div>

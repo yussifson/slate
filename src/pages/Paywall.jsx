@@ -293,7 +293,7 @@ export default function Paywall() {
           <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden bg-white border-0 rounded-[2rem] shadow-2xl flex flex-col max-h-[85vh]">
             {/* Header */}
             <div className="bg-slate-50 px-8 py-5 border-b border-slate-100 relative shrink-0">
-              <div className="mx-auto w-12 h-12 bg-primary/5 rounded-xl flex items-center justify-center mb-3 border border-primary/10 shadow-sm">
+              <div className="mx-auto w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center mb-3 border border-slate-200 shadow-sm">
                 <Server className="w-6 h-6 text-primary" />
               </div>
               <div className="text-center">

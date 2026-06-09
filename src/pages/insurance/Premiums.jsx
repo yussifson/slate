@@ -244,7 +244,7 @@ export default function Premiums() {
                           value={premium.status}
                           onChange={e => handleUpdateStatus(premium, e.target.value)}
                           className={`rounded-md border border-input px-2 py-1 text-xs font-bold ${
-                            premium.status === 'Paid' ? 'bg-primary/10 text-primary/90' : 
+                            premium.status === 'Paid' ? 'bg-slate-100 text-primary/90' : 
                             premium.status === 'Overdue' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'
                           }`}
                         >

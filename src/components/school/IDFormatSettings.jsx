@@ -86,7 +86,7 @@ export default function IDFormatSettings() {
             <input type="checkbox" id="includeYear" checked={studentIncludeYear} onChange={e => setStudentIncludeYear(e.target.checked)} className="rounded border-input text-primary focus:ring-primary" />
             <Label htmlFor="includeYear">Include Current Year (e.g. {new Date().getFullYear()})</Label>
           </div>
-          <div className="bg-primary/5 p-3 rounded-lg border border-primary/20">
+          <div className="bg-slate-50 p-3 rounded-lg border border-primary/20">
             <p className="text-xs text-muted-foreground">Preview:</p>
             <p className="font-mono font-bold text-primary">
               {studentPrefix}{studentPrefix ? '-' : ''}{studentIncludeYear ? new Date().getFullYear() + '-' : ''}0001
@@ -100,7 +100,7 @@ export default function IDFormatSettings() {
             <Label>Prefix</Label>
             <Input value={parentPrefix} onChange={e => setParentPrefix(e.target.value)} placeholder="e.g. PAR" className="mt-1" />
           </div>
-          <div className="bg-primary/5 p-3 rounded-lg border border-primary/20 mt-8">
+          <div className="bg-slate-50 p-3 rounded-lg border border-primary/20 mt-8">
             <p className="text-xs text-muted-foreground">Preview:</p>
             <p className="font-mono font-bold text-primary">
               {parentPrefix}{parentPrefix ? '-' : ''}0001

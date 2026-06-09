@@ -61,7 +61,7 @@ export default function VWorkshopAssessments() {
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
               <Input 
                 placeholder="Search assessments..." 
-                className="pl-9 h-10 bg-white dark:bg-slate-900 border-primary/10 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
+                className="pl-9 h-10 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -81,11 +81,11 @@ export default function VWorkshopAssessments() {
                     className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
                       selectedAssessment?.id === assessment.id 
                         ? 'bg-primary text-white shadow-md shadow-indigo-500/20' 
-                        : 'hover:bg-primary/5 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'
+                        : 'hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'
                     }`}
                   >
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0 ${
-                      selectedAssessment?.id === assessment.id ? 'bg-white/20' : 'bg-primary/10 dark:bg-slate-800 text-primary'
+                      selectedAssessment?.id === assessment.id ? 'bg-white/20' : 'bg-slate-100 dark:bg-slate-800 text-primary'
                     }`}>
                       <ClipboardCheck className="w-5 h-5" />
                     </div>
@@ -113,14 +113,14 @@ export default function VWorkshopAssessments() {
                 <div className="px-8 pb-8">
                   <div className="flex flex-col sm:flex-row gap-6 items-end sm:items-center relative z-10">
                     <div className="w-24 h-24 rounded-3xl bg-white dark:bg-slate-900 p-1 shadow-xl shrink-0">
-                      <div className="w-full h-full rounded-2xl bg-primary/5 dark:bg-slate-800 flex items-center justify-center text-primary">
+                      <div className="w-full h-full rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-primary">
                         <Wrench className="w-12 h-12" />
                       </div>
                     </div>
                     <div className="flex-1 mt-4 sm:mt-12">
                       <h2 className="text-3xl font-black text-slate-800 dark:text-slate-100">{selectedAssessment.title}</h2>
                       <div className="flex items-center gap-3 mt-2 text-sm text-slate-600 dark:text-slate-300 font-medium">
-                        <span className="flex items-center gap-1.5"><Badge variant="outline" className="border-primary/20 dark:border-slate-600 bg-primary/5 dark:bg-slate-800 text-primary">{selectedAssessment.data?.workshop_name}</Badge></span>
+                        <span className="flex items-center gap-1.5"><Badge variant="outline" className="border-primary/20 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-primary">{selectedAssessment.data?.workshop_name}</Badge></span>
                         <span>•</span>
                         <span className="flex items-center gap-1.5">Inspector: {selectedAssessment.data?.inspector || 'N/A'}</span>
                       </div>
@@ -129,7 +129,7 @@ export default function VWorkshopAssessments() {
 
                   <div className="mt-8 space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <Card className="bg-white dark:bg-slate-900 border-primary/10 dark:border-slate-700 shadow-sm">
+                      <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 shadow-sm">
                         <CardHeader className="pb-2 flex flex-row items-center justify-between">
                           <div>
                             <CardTitle className="text-lg">Safety Score</CardTitle>
@@ -144,7 +144,7 @@ export default function VWorkshopAssessments() {
                         </CardContent>
                       </Card>
 
-                      <Card className="bg-white dark:bg-slate-900 border-primary/10 dark:border-slate-700 shadow-sm">
+                      <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 shadow-sm">
                         <CardHeader className="pb-2 flex flex-row items-center justify-between">
                           <div>
                             <CardTitle className="text-lg">Issues Found</CardTitle>
@@ -160,7 +160,7 @@ export default function VWorkshopAssessments() {
                       </Card>
                     </div>
 
-                    <div className="p-5 rounded-2xl bg-primary/30 dark:bg-slate-800/30 border border-primary/10 dark:border-slate-700 space-y-4">
+                    <div className="p-5 rounded-2xl bg-primary/30 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 space-y-4">
                       <h3 className="text-sm font-bold text-primary uppercase tracking-wider">Assessment Details</h3>
                       <div className="grid grid-cols-1 gap-4">
                         <div>
@@ -183,7 +183,7 @@ export default function VWorkshopAssessments() {
             </>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-              <div className="w-20 h-20 rounded-full bg-primary/5 dark:bg-slate-800 flex items-center justify-center mb-6">
+              <div className="w-20 h-20 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center mb-6">
                 <ClipboardCheck className="w-10 h-10 text-primary/30" />
               </div>
               <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200">No Assessment Selected</h3>

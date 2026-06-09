@@ -122,7 +122,7 @@ export default function AdminUsers() {
                         {user.companies?.name || <span className="text-slate-400 italic">{t("orphaned", "Orphaned")}</span>}
                       </td>
                       <td className="px-6 py-4">
-                        <Badge className="text-[10px] font-bold uppercase py-0.5 px-2 bg-primary/5 text-primary/90 border-none">
+                        <Badge className="text-[10px] font-bold uppercase py-0.5 px-2 bg-slate-50 text-primary/90 border-none">
                           {user.role?.replace(/_/g, ' ')}
                         </Badge>
                       </td>

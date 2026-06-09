@@ -120,7 +120,7 @@ export default function VTrades() {
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
               <Input 
                 placeholder="Search trades..." 
-                className="pl-9 h-10 bg-primary/50 dark:bg-slate-800/50 border-primary/10 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
+                className="pl-9 h-10 bg-slate-500 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -140,11 +140,11 @@ export default function VTrades() {
                     className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
                       selectedTrade?.id === trade.id 
                         ? 'bg-primary text-white shadow-md shadow-indigo-500/20' 
-                        : 'hover:bg-primary/5 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'
+                        : 'hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'
                     }`}
                   >
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-                      selectedTrade?.id === trade.id ? 'bg-white/20' : 'bg-primary/10 dark:bg-slate-800 text-primary'
+                      selectedTrade?.id === trade.id ? 'bg-white/20' : 'bg-slate-100 dark:bg-slate-800 text-primary'
                     }`}>
                       <Briefcase className="w-5 h-5" />
                     </div>
@@ -169,7 +169,7 @@ export default function VTrades() {
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
                 <div className="relative z-10 flex items-center gap-6 translate-y-10">
                   <div className="w-24 h-24 rounded-2xl bg-white dark:bg-slate-900 p-2 shadow-xl shrink-0">
-                    <div className="w-full h-full rounded-xl bg-primary/5 dark:bg-slate-800 flex items-center justify-center text-primary">
+                    <div className="w-full h-full rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-primary">
                       <Briefcase className="w-10 h-10" />
                     </div>
                   </div>
@@ -182,7 +182,7 @@ export default function VTrades() {
                     <div>
                       <h2 className="text-3xl font-black text-slate-800 dark:text-slate-100">{selectedTrade.title}</h2>
                       <div className="flex items-center gap-3 mt-2 text-sm text-slate-600 dark:text-slate-300 font-medium">
-                        <Badge variant="outline" className="border-primary/20 bg-primary/5 text-primary/90 dark:bg-slate-800 dark:text-primary/70">
+                        <Badge variant="outline" className="border-primary/20 bg-slate-50 text-primary/90 dark:bg-slate-800 dark:text-primary/70">
                           {selectedTrade.data?.industry || 'General Industry'}
                         </Badge>
                         <span>•</span>
@@ -191,13 +191,13 @@ export default function VTrades() {
                         </span>
                       </div>
                     </div>
-                    <Button variant="outline" size="sm" className="rounded-xl border-primary/20 text-primary hover:bg-primary/5">
+                    <Button variant="outline" size="sm" className="rounded-xl border-primary/20 text-primary hover:bg-slate-50">
                       <Settings className="w-4 h-4 mr-2" /> Edit Trade
                     </Button>
                   </div>
 
                   <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="p-6 rounded-2xl bg-primary/50 dark:bg-slate-800/50 border border-primary/10 dark:border-slate-700">
+                    <div className="p-6 rounded-2xl bg-slate-500 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
                       <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2">
                         <FileText className="w-5 h-5 text-primary" /> Description
                       </h3>
@@ -206,16 +206,16 @@ export default function VTrades() {
                       </p>
                     </div>
 
-                    <div className="p-6 rounded-2xl bg-primary/50 dark:bg-slate-800/50 border border-primary/10 dark:border-slate-700">
+                    <div className="p-6 rounded-2xl bg-slate-500 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
                       <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2">
                         <Users className="w-5 h-5 text-primary" /> Trainee Stats
                       </h3>
                       <div className="space-y-4">
-                        <div className="flex justify-between items-center pb-2 border-b border-primary/10 dark:border-slate-700">
+                        <div className="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-slate-700">
                           <span className="text-slate-600 dark:text-slate-400 text-sm">Active Trainees</span>
                           <span className="font-bold text-slate-800 dark:text-slate-100">--</span>
                         </div>
-                        <div className="flex justify-between items-center pb-2 border-b border-primary/10 dark:border-slate-700">
+                        <div className="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-slate-700">
                           <span className="text-slate-600 dark:text-slate-400 text-sm">Graduates</span>
                           <span className="font-bold text-slate-800 dark:text-slate-100">--</span>
                         </div>
@@ -227,7 +227,7 @@ export default function VTrades() {
             </>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-              <div className="w-20 h-20 rounded-full bg-primary/5 dark:bg-slate-800 flex items-center justify-center mb-6">
+              <div className="w-20 h-20 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center mb-6">
                 <Briefcase className="w-10 h-10 text-primary/30" />
               </div>
               <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200">No Trade Selected</h3>

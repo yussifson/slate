@@ -171,7 +171,7 @@ export default function Payroll() {
              <p className="text-sm text-muted-foreground mb-1">{t("total_payroll", "Total Payroll")}</p>
              <h2 className="text-3xl font-bold text-card-foreground">${totalPayroll.toLocaleString()}</h2>
            </div>
-           <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+           <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-primary">
              <DollarSign className="w-6 h-6" />
            </div>
         </div>
@@ -180,7 +180,7 @@ export default function Payroll() {
              <p className="text-sm text-muted-foreground mb-1">{t("processed", "Processed")}</p>
              <h2 className="text-3xl font-bold text-card-foreground">{processed}</h2>
            </div>
-           <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+           <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-primary">
              <FileText className="w-6 h-6" />
            </div>
         </div>
@@ -242,7 +242,7 @@ export default function Payroll() {
                           value={pay.status}
                           onChange={e => handleUpdateStatus(pay, e.target.value)}
                           className={`rounded-md border border-input px-2 py-1 text-xs font-bold ${
-                            pay.status === 'Processed' ? 'bg-primary/10 text-primary/90' : 
+                            pay.status === 'Processed' ? 'bg-slate-100 text-primary/90' : 
                             pay.status === 'Failed' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'
                           }`}
                         >

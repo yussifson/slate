@@ -91,7 +91,7 @@ export default function SHSProgrammes() {
           <div className="col-span-full p-12 text-center text-slate-400 dark:text-slate-500">Loading programmes...</div>
         ) : filteredProgrammes.length === 0 ? (
           <div className="col-span-full p-16 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-primary/5 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+            <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
               <GraduationCap className="w-8 h-8 text-primary dark:text-primary" />
             </div>
             <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No programmes defined</h3>
@@ -100,13 +100,12 @@ export default function SHSProgrammes() {
         ) : (
           filteredProgrammes.map(prog => (
             <Card key={prog.id} className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-md hover:ring-primary/30 dark:hover:ring-primary/30 transition-all group overflow-hidden">
-              <div className="h-2 bg-gradient-to-r from-primary/90 to-primary/70"></div>
               <CardContent className="p-6">
                 <div className="flex justify-between items-start mb-4">
-                  <div className="w-12 h-12 rounded-2xl bg-primary/5 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 group-hover:scale-110 transition-transform">
+                  <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 group-hover:scale-110 transition-transform">
                     <Book className="w-6 h-6" />
                   </div>
-                  <Badge variant="outline" className="bg-primary/5 text-primary/90 border-primary/20">
+                  <Badge variant="outline" className="bg-slate-50 text-primary/90 border-primary/20">
                     {prog.status}
                   </Badge>
                 </div>
@@ -126,7 +125,7 @@ export default function SHSProgrammes() {
                 </p>
                 
                 <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-2">
-                  <Button variant="ghost" size="sm" className="text-primary dark:text-primary/70 hover:bg-primary/5 dark:bg-slate-800 font-semibold w-full">
+                  <Button variant="ghost" size="sm" className="text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800 font-semibold w-full">
                     View Details
                   </Button>
                 </div>

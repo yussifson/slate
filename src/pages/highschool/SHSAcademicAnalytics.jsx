@@ -111,7 +111,7 @@ export default function SHSAcademicAnalytics() {
             <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100">
               <CardContent className="p-6">
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                  <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
                     <TrendingUp className="w-6 h-6" />
                   </div>
                   <div>
@@ -146,7 +146,7 @@ export default function SHSAcademicAnalytics() {
             <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100">
               <CardContent className="p-6">
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70">
+                  <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70">
                     <Activity className="w-6 h-6" />
                   </div>
                   <div>

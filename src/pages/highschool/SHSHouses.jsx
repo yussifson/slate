@@ -102,7 +102,7 @@ export default function SHSHouses() {
           <div className="col-span-full p-12 text-center text-slate-400 dark:text-slate-500">Loading houses...</div>
         ) : filteredHouses.length === 0 ? (
           <div className="col-span-full p-16 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-primary/5 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+            <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
               <Home className="w-8 h-8 text-primary dark:text-primary" />
             </div>
             <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No houses defined</h3>
@@ -125,8 +125,8 @@ export default function SHSHouses() {
                   </div>
                   <Badge variant="outline" className={
                     house.data?.gender === 'Boys' ? 'bg-orange-50 text-orange-700 border-primary/20' :
-                    house.data?.gender === 'Girls' ? 'bg-primary/5 text-primary/90 border-primary/20' :
-                    'bg-primary/5 text-primary/90 border-primary/20'
+                    house.data?.gender === 'Girls' ? 'bg-slate-50 text-primary/90 border-primary/20' :
+                    'bg-slate-50 text-primary/90 border-primary/20'
                   }>
                     {house.data?.gender || 'Mixed'}
                   </Badge>
@@ -137,7 +137,7 @@ export default function SHSHouses() {
                 
                 <div className="space-y-3 mt-4 text-sm">
                   <div className="flex items-center gap-3 text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 p-2 rounded-xl border border-slate-100 dark:border-slate-800">
-                    <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                    <div className="w-8 h-8 rounded-lg bg-slate-100 text-primary flex items-center justify-center shrink-0">
                       <UserCheck className="w-4 h-4" />
                     </div>
                     <div className="flex-1 overflow-hidden">
@@ -153,7 +153,7 @@ export default function SHSHouses() {
                 </div>
                 
                 <div className="mt-5 pt-4 border-t border-slate-50 flex justify-end gap-2">
-                  <Button variant="ghost" size="sm" className="w-full rounded-xl text-primary dark:text-primary/70 hover:bg-primary/5 dark:bg-slate-800 font-semibold">
+                  <Button variant="ghost" size="sm" className="w-full rounded-xl text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800 font-semibold">
                     Manage Residents <Users className="w-4 h-4 ml-2" />
                   </Button>
                 </div>

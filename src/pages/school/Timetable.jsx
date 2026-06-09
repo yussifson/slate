@@ -20,14 +20,14 @@ const SUBJECTS = ['Mathematics', 'Science', 'English', 'History', 'Chemistry', '
 
 const SLOT_COLORS = [
   'bg-orange-100 text-orange-800 border-primary/20',
-  'bg-primary/10 text-primary/80 border-primary/20',
-  'bg-primary/5 dark:bg-primary/30 text-primary/80 border-primary/20',
+  'bg-slate-100 text-primary/80 border-primary/20',
+  'bg-slate-50 dark:bg-primary/30 text-primary/80 border-primary/20',
   'bg-amber-100 text-amber-800 border-amber-200',
-  'bg-primary/10 text-primary/80 border-primary/20',
-  'bg-primary/10 text-primary/80 border-primary/20',
-  'bg-primary/10 text-primary/80 border-primary/20',
+  'bg-slate-100 text-primary/80 border-primary/20',
+  'bg-slate-100 text-primary/80 border-primary/20',
+  'bg-slate-100 text-primary/80 border-primary/20',
   'bg-orange-100 text-orange-800 border-orange-200',
-  'bg-primary/10 text-primary/80 border-primary/20',
+  'bg-slate-100 text-primary/80 border-primary/20',
   'bg-lime-100 text-lime-800 border-lime-200',
 ];
 

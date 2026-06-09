@@ -16,7 +16,7 @@ import { UploadCloud } from 'lucide-react';
 
 const segmentColors = {
   VIP: 'bg-primary/15 text-primary border-primary/25',
-  Regular: 'bg-primary/10 text-primary border-primary/20',
+  Regular: 'bg-slate-100 text-primary border-primary/20',
   New: 'bg-muted text-muted-foreground border-border',
 };
 
@@ -148,7 +148,7 @@ export default function Customers() {
           <p className="text-sm text-muted-foreground mt-0.5">{t("manage_customer_profiles_and_l", "Manage customer profiles and loyalty tiers")}</p>
         </div>
         <div className="flex gap-2">
-          <Button onClick={() => setShowImportModal(true)} variant="outline" className="gap-2 text-primary border-primary hover:bg-primary/5">
+          <Button onClick={() => setShowImportModal(true)} variant="outline" className="gap-2 text-primary border-primary hover:bg-slate-50">
             <UploadCloud className="w-4 h-4" /> {t("import_csv", "Import CSV")}
           </Button>
           <Button onClick={() => { setEditingId(null); setFormData({ name: '', email: '', phone: '', totalSpent: '', orders: '' }); setShowModal(true); }} className="gap-2 bg-orange-600 hover:bg-orange-700 text-white">

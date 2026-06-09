@@ -110,7 +110,7 @@ export default function Hostel() {
                 </DropdownMenu>
               </div>
               <div className="flex flex-col">
-                <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary/90 flex items-center justify-center mb-4">
+                <div className="w-12 h-12 rounded-lg bg-slate-100 text-primary/90 flex items-center justify-center mb-4">
                   <Home className="w-6 h-6" />
                 </div>
                 <h3 className="font-bold text-card-foreground text-lg line-clamp-1" title={h.name}>{h.name}</h3>

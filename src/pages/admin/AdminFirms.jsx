@@ -211,7 +211,7 @@ export default function AdminFirms() {
                         <td className="px-5 py-4">
                           <span className={`inline-flex py-1 px-2.5 rounded-full text-[10px] font-bold uppercase ${
                             c.status === 'active' 
-                              ? 'bg-primary/5 text-primary/90 border border-primary/10' 
+                              ? 'bg-slate-50 text-primary/90 border border-slate-200' 
                               : 'bg-red-50 text-red-700 border border-red-100'
                           }`}>
                             {c.status}
@@ -226,7 +226,7 @@ export default function AdminFirms() {
                               variant="outline" 
                               size="sm" 
                               onClick={() => handleImpersonate(c)}
-                              className="h-8 text-xs gap-1.5 px-3 rounded-lg border-primary/20 text-primary/90 bg-primary/5 hover:bg-primary/10 hover:text-primary/80"
+                              className="h-8 text-xs gap-1.5 px-3 rounded-lg border-primary/20 text-primary/90 bg-slate-50 hover:bg-slate-100 hover:text-primary/80"
                             >
                               <UserCheck className="w-3.5 h-3.5" /> {t("impersonate", "Impersonate")}
                             </Button>
@@ -234,7 +234,7 @@ export default function AdminFirms() {
                               variant="outline" 
                               size="sm" 
                               onClick={() => handleOpenMessageDialog(c)}
-                              className="h-8 text-xs gap-1.5 px-3 rounded-lg border-primary/20 text-orange-700 bg-orange-50 hover:bg-primary/10 hover:text-primary/80"
+                              className="h-8 text-xs gap-1.5 px-3 rounded-lg border-primary/20 text-orange-700 bg-orange-50 hover:bg-slate-100 hover:text-primary/80"
                             >
                               <MessageSquare className="w-3.5 h-3.5" /> {t("message", "Message")}
                             </Button>

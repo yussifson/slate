@@ -12,10 +12,10 @@ import { Pencil, DollarSign } from "lucide-react";
 import { formatCurrency } from "@/lib/constants";
 
 const roleColors = {
-  company_admin: "bg-primary/10 text-primary/90",
+  company_admin: "bg-slate-100 text-primary/90",
   lawyer: "bg-orange-100 text-orange-700",
-  paralegal: "bg-primary/10 text-primary/90",
-  hr: "bg-primary/10 text-primary/90",
+  paralegal: "bg-slate-100 text-primary/90",
+  hr: "bg-slate-100 text-primary/90",
   finance: "bg-amber-100 text-amber-700",
   support: "bg-slate-100 text-slate-600",
 };
@@ -34,7 +34,7 @@ export default function HRSalaryPanel({ companyId, staff, currency, isAdmin }) {
 
   return (
     <div className="space-y-4">
-      <div className="bg-primary/5 border border-primary/20 rounded-xl px-5 py-4 flex items-center gap-3">
+      <div className="bg-slate-50 border border-primary/20 rounded-xl px-5 py-4 flex items-center gap-3">
         <DollarSign className="w-5 h-5 text-primary" />
         <div>
           <p className="text-xs text-muted-foreground">{t("total_monthly_payroll_active_s", "Total Monthly Payroll (Active Staff)")}</p>

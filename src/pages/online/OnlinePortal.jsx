@@ -54,7 +54,7 @@ export default function OnlinePortal() {
           <h2 className="text-xl font-bold text-gray-900">Up Next for You</h2>
           <Card className="border-0 shadow-sm rounded-xl p-0 overflow-hidden">
             <div className="flex flex-col sm:flex-row items-center p-4 group hover:bg-gray-50 transition-colors border-b last:border-0 cursor-pointer">
-              <div className="bg-primary/10 p-3 rounded-full text-primary mr-4">
+              <div className="bg-slate-100 p-3 rounded-full text-primary mr-4">
                 <PlayCircle className="h-6 w-6" />
               </div>
               <div className="flex-1">
@@ -74,7 +74,7 @@ export default function OnlinePortal() {
               <span className="text-sm font-medium text-gray-400 mt-2 sm:mt-0">10 min</span>
             </div>
             <div className="flex flex-col sm:flex-row items-center p-4 group hover:bg-gray-50 transition-colors border-b last:border-0 cursor-pointer">
-              <div className="bg-primary/10 p-3 rounded-full text-primary mr-4">
+              <div className="bg-slate-100 p-3 rounded-full text-primary mr-4">
                 <Award className="h-6 w-6" />
               </div>
               <div className="flex-1">
@@ -111,7 +111,7 @@ export default function OnlinePortal() {
                 <p className="text-sm text-gray-500">React Web Dev</p>
               </div>
             </div>
-            <Button variant="outline" className="w-full mt-6 text-primary border-primary hover:bg-primary/5">View Calendar</Button>
+            <Button variant="outline" className="w-full mt-6 text-primary border-primary hover:bg-slate-50">View Calendar</Button>
           </Card>
         </div>
       </div>

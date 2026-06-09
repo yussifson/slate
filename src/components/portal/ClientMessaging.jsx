@@ -101,7 +101,7 @@ export default function ClientMessaging({ caseData, user, senderType = "client" 
         <div ref={endRef} />
       </div>
       <div className="px-4 py-3 border-t border-border bg-background flex items-end gap-2">
-        <div className="flex-1 bg-muted/50 rounded-xl px-3 py-2 border border-border focus-within:border-primary/50 focus-within:bg-background transition-colors">
+        <div className="flex-1 bg-muted/50 rounded-xl px-3 py-2 border border-border focus-within:border-slate-200 focus-within:bg-background transition-colors">
           <textarea
             rows={1}
             className="w-full bg-transparent text-sm outline-none resize-none placeholder:text-muted-foreground"

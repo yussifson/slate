@@ -160,13 +160,13 @@ export default function Events() {
           {filtered.map(event => {
             return (
               <div key={event.id} className="bg-card rounded-xl border border-border p-5 shadow-sm flex flex-col sm:flex-row gap-5 relative group hover:shadow-md transition-all">
-                <div className="flex flex-col items-center justify-center bg-primary/5 dark:bg-primary/20 text-primary/90 dark:text-primary/70 rounded-lg p-4 min-w-[100px] shrink-0 border border-primary/10 dark:border-primary/50">
+                <div className="flex flex-col items-center justify-center bg-slate-50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 rounded-lg p-4 min-w-[100px] shrink-0 border border-slate-200 dark:border-slate-200">
                   <span className="text-xs font-bold uppercase tracking-widest">{event.date?.split(' ')[0] || 'Upcoming'}</span>
                   <span className="text-2xl font-black">{event.date?.includes(' ') ? event.date.split(' ')[1]?.replace(',', '') : 'Soon'}</span>
                 </div>
                 <div className="flex-1">
                   <div className="flex justify-between items-start">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-primary dark:text-primary/70 bg-primary/10 dark:bg-primary/50 px-2 py-0.5 rounded-full mb-2 inline-block">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-primary dark:text-primary/70 bg-slate-100 dark:bg-slate-500 px-2 py-0.5 rounded-full mb-2 inline-block">
                       {event.type}
                     </span>
                     <DropdownMenu>

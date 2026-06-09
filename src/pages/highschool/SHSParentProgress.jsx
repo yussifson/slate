@@ -69,7 +69,7 @@ export default function SHSParentProgress() {
       ) : wards.length === 0 ? (
         <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
           <CardContent className="p-20 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-primary/5 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+            <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
               <User className="w-8 h-8 text-primary dark:text-primary" />
             </div>
             <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No Wards Linked</h3>
@@ -88,7 +88,7 @@ export default function SHSParentProgress() {
                 className={`w-full p-4 rounded-2xl border text-left transition-all duration-300 flex items-center gap-4 ${
                   selectedWardId === ward.id 
                     ? 'bg-primary dark:bg-primary border-primary dark:border-primary text-white shadow-lg shadow-emerald-500/20 scale-100' 
-                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-primary dark:border-primary/50 scale-95'
+                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-primary dark:border-slate-200 scale-95'
                 }`}
               >
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg shrink-0 ${
@@ -138,7 +138,7 @@ export default function SHSParentProgress() {
                     {wardReports.map(report => (
                       <div key={report.id} className="p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
                         <div className="flex items-start gap-4">
-                          <div className="w-12 h-12 rounded-xl bg-primary/5 dark:bg-slate-800 flex items-center justify-center shrink-0">
+                          <div className="w-12 h-12 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center shrink-0">
                             <Award className="w-6 h-6 text-primary dark:text-primary/70" />
                           </div>
                           <div>
@@ -150,7 +150,7 @@ export default function SHSParentProgress() {
                             </div>
                           </div>
                         </div>
-                        <Button variant="outline" className="shrink-0 h-10 gap-2 rounded-xl border-primary dark:border-primary/20 text-primary dark:text-primary/70 hover:bg-primary/5 dark:bg-slate-800">
+                        <Button variant="outline" className="shrink-0 h-10 gap-2 rounded-xl border-primary dark:border-primary/20 text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800">
                           <Download className="w-4 h-4" /> Download PDF
                         </Button>
                       </div>

@@ -187,14 +187,14 @@ export default function Prayers() {
                       <Button
                         variant="outline"
                         onClick={() => handleIncrementPrayers(prayer)}
-                        className="gap-2 border-primary/20 text-primary/90 hover:bg-primary/5"
+                        className="gap-2 border-primary/20 text-primary/90 hover:bg-slate-50"
                       >
                         <Heart className="w-4 h-4" /> {t("praying", "Praying (")}{prayer.prayersCount || 0})
                                             </Button>
                       <Button
                         variant="outline"
                         onClick={() => handleMarkAnswered(prayer)}
-                        className="gap-2 text-muted-foreground hover:text-primary hover:border-primary/20 hover:bg-primary/5"
+                        className="gap-2 text-muted-foreground hover:text-primary hover:border-primary/20 hover:bg-slate-50"
                       >
                         <CheckCircle className="w-4 h-4" /> {t("mark_answered", "Mark Answered")}
                       </Button>

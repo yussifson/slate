@@ -67,7 +67,7 @@ export default function VCoursePerformance() {
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
               <Input 
                 placeholder="Search courses or instructors..." 
-                className="pl-9 h-10 bg-slate-50 dark:bg-slate-900 border-primary/10 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
+                className="pl-9 h-10 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -87,11 +87,11 @@ export default function VCoursePerformance() {
                     className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
                       selectedCourse?.id === course.id 
                         ? 'bg-primary text-white shadow-md shadow-fuchsia-500/20' 
-                        : 'hover:bg-primary/5 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'
+                        : 'hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'
                     }`}
                   >
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-                      selectedCourse?.id === course.id ? 'bg-white/20' : 'bg-primary/10 text-primary'
+                      selectedCourse?.id === course.id ? 'bg-white/20' : 'bg-slate-100 text-primary'
                     }`}>
                       <Presentation className="w-5 h-5" />
                     </div>
@@ -124,7 +124,7 @@ export default function VCoursePerformance() {
                 <div className="px-8 pb-8">
                   <div className="flex flex-col sm:flex-row gap-6 items-end sm:items-center relative z-10">
                     <div className="w-24 h-24 rounded-3xl bg-white dark:bg-slate-900 p-1 shadow-xl shrink-0">
-                      <div className="w-full h-full rounded-2xl bg-primary/5 dark:bg-slate-800 flex items-center justify-center text-primary">
+                      <div className="w-full h-full rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-primary">
                         <LineChart className="w-10 h-10" />
                       </div>
                     </div>
@@ -140,7 +140,7 @@ export default function VCoursePerformance() {
 
                   <div className="mt-8">
                     <Tabs defaultValue="overview" className="w-full">
-                      <TabsList className="bg-primary/50 dark:bg-slate-800/50 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border border-primary/10 dark:border-slate-700">
+                      <TabsList className="bg-slate-500 dark:bg-slate-800/50 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border border-slate-200 dark:border-slate-700">
                         <TabsTrigger value="overview" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-primary">Performance Metrics</TabsTrigger>
                         <TabsTrigger value="feedback" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-primary">Feedback & Satisfaction</TabsTrigger>
                       </TabsList>
@@ -150,7 +150,7 @@ export default function VCoursePerformance() {
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <Card className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm rounded-2xl">
                               <CardContent className="p-6 flex flex-col items-center text-center">
-                                <div className="w-12 h-12 bg-primary/5 text-primary rounded-full flex items-center justify-center mb-4">
+                                <div className="w-12 h-12 bg-slate-50 text-primary rounded-full flex items-center justify-center mb-4">
                                   <Activity className="w-6 h-6" />
                                 </div>
                                 <h4 className="text-slate-500 text-sm font-medium">Attendance Rate</h4>
@@ -160,7 +160,7 @@ export default function VCoursePerformance() {
                             
                             <Card className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm rounded-2xl">
                               <CardContent className="p-6 flex flex-col items-center text-center">
-                                <div className="w-12 h-12 bg-primary/5 text-primary rounded-full flex items-center justify-center mb-4">
+                                <div className="w-12 h-12 bg-slate-50 text-primary rounded-full flex items-center justify-center mb-4">
                                   <CheckSquare className="w-6 h-6" />
                                 </div>
                                 <h4 className="text-slate-500 text-sm font-medium">Completion Rate</h4>
@@ -170,7 +170,7 @@ export default function VCoursePerformance() {
 
                             <Card className="bg-white dark:bg-slate-900 border border-primary/20 dark:border-primary/80 shadow-sm rounded-2xl ring-1 ring-primary/20">
                               <CardContent className="p-6 flex flex-col items-center text-center">
-                                <div className="w-12 h-12 bg-primary/5 text-primary rounded-full flex items-center justify-center mb-4">
+                                <div className="w-12 h-12 bg-slate-50 text-primary rounded-full flex items-center justify-center mb-4">
                                   <Star className="w-6 h-6" />
                                 </div>
                                 <h4 className="text-slate-500 text-sm font-medium">Avg Satisfaction</h4>
@@ -183,10 +183,10 @@ export default function VCoursePerformance() {
                         </TabsContent>
                         
                         <TabsContent value="feedback" className="outline-none">
-                          <div className="p-8 text-center border-2 border-dashed border-primary/10 dark:border-slate-700 rounded-2xl">
+                          <div className="p-8 text-center border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl">
                             <h4 className="text-slate-700 dark:text-slate-200 font-bold mb-2">Student & Instructor Feedback</h4>
                             <p className="text-slate-500 text-sm mb-4">Detailed qualitative feedback and instructor notes will be displayed here.</p>
-                            <Button variant="outline" className="border-primary/20 text-primary hover:bg-primary/5 rounded-xl">
+                            <Button variant="outline" className="border-primary/20 text-primary hover:bg-slate-50 rounded-xl">
                               View Raw Feedback Forms
                             </Button>
                           </div>
@@ -199,7 +199,7 @@ export default function VCoursePerformance() {
             </>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-              <div className="w-20 h-20 rounded-full bg-primary/5 flex items-center justify-center mb-6">
+              <div className="w-20 h-20 rounded-full bg-slate-50 flex items-center justify-center mb-6">
                 <LineChart className="w-10 h-10 text-primary/30" />
               </div>
               <h3 className="text-xl font-bold text-slate-700">No Course Selected</h3>

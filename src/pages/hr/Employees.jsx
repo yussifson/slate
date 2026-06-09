@@ -172,7 +172,7 @@ export default function Employees() {
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+          <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
             <Users className="w-5 h-5" />
           </div>
           <div>
@@ -181,7 +181,7 @@ export default function Employees() {
           </div>
         </div>
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+          <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
             <Users className="w-5 h-5" />
           </div>
           <div>
@@ -199,7 +199,7 @@ export default function Employees() {
           </div>
         </div>
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+          <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
             <Briefcase className="w-5 h-5" />
           </div>
           <div>

@@ -138,7 +138,7 @@ export default function PerformanceDashboard() {
           return (
             <div key={lawyer.id} className="bg-card border border-border rounded-xl p-4">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
                   <span className="text-sm font-bold text-primary">{lawyer.full_name?.[0]}</span>
                 </div>
                 <div className="flex-1 min-w-0">
@@ -149,7 +149,7 @@ export default function PerformanceDashboard() {
                   <p className="text-xs text-muted-foreground">{lawyer.department || "Lawyer"}</p>
                 </div>
                 {lawyer.metrics.winRate !== null && (
-                  <Badge className={cn("text-xs", lawyer.metrics.winRate >= 60 ? "bg-primary/10 text-primary/90" : "bg-amber-100 text-amber-700")}>
+                  <Badge className={cn("text-xs", lawyer.metrics.winRate >= 60 ? "bg-slate-100 text-primary/90" : "bg-amber-100 text-amber-700")}>
                     {lawyer.metrics.winRate}{t("win_rate", "% win rate")}
                   </Badge>
                 )}

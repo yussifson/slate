@@ -151,7 +151,7 @@ export default function SHSBorrowing() {
             <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading active records...</div>
           ) : filteredBorrowings.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-primary/5 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
                 <BookUp className="w-8 h-8 text-primary dark:text-primary" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No active checkouts</h3>

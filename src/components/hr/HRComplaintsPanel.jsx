@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 
 const CATEGORIES = ["workplace_conduct", "harassment", "discrimination", "salary", "workload", "management", "safety", "other"];
 const CATEGORY_LABELS = { workplace_conduct: "Workplace Conduct", harassment: "Harassment", discrimination: "Discrimination", salary: "Salary", workload: "Workload", management: "Management", safety: "Safety", other: "Other" };
-const STATUS_COLORS = { open: "bg-red-100 text-red-700", under_review: "bg-amber-100 text-amber-700", resolved: "bg-primary/10 text-primary/90", dismissed: "bg-slate-100 text-slate-600" };
+const STATUS_COLORS = { open: "bg-red-100 text-red-700", under_review: "bg-amber-100 text-amber-700", resolved: "bg-slate-100 text-primary/90", dismissed: "bg-slate-100 text-slate-600" };
 const PRIORITY_COLORS = { low: "bg-slate-100 text-slate-600", medium: "bg-amber-100 text-amber-700", high: "bg-red-100 text-red-700" };
 
 export default function HRComplaintsPanel({ companyId, complaints, staff, isAdmin, user }) {

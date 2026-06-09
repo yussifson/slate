@@ -77,7 +77,7 @@ export default function CustomerPortal() {
                             <div>
                               <div className="flex items-center gap-2 mb-1">
                                 <h4 className="font-bold text-base text-foreground">{t("order", "Order")} {order.saleId || `SAL-${order.id.slice(0,4)}`}</h4>
-                                <Badge variant="outline" className={`${order.status === 'Completed' ? 'bg-primary/10 text-primary/90 border-primary/20' : 'bg-muted text-muted-foreground'}`}>{order.status || 'Completed'}</Badge>
+                                <Badge variant="outline" className={`${order.status === 'Completed' ? 'bg-slate-100 text-primary/90 border-primary/20' : 'bg-muted text-muted-foreground'}`}>{order.status || 'Completed'}</Badge>
                               </div>
                               <p className="text-xs text-muted-foreground">{order.timestamp ? new Date(order.timestamp).toLocaleString() : 'Recent'}</p>
                             </div>
@@ -131,7 +131,7 @@ export default function CustomerPortal() {
                "looking_for_something_specific",
                "Looking for something specific? Check local availability."
              )}</p>
-             <Button variant="outline" className="w-full text-primary/90 border-primary/20 hover:bg-primary/5 dark:hover:bg-primary/60">{t("store_locator", "Store Locator")}</Button>
+             <Button variant="outline" className="w-full text-primary/90 border-primary/20 hover:bg-slate-50 dark:hover:bg-primary/60">{t("store_locator", "Store Locator")}</Button>
           </div>
         </div>
       </div>

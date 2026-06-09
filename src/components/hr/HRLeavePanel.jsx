@@ -15,8 +15,8 @@ import { format, parseISO, differenceInCalendarDays } from "date-fns";
 import { cn } from "@/lib/utils";
 
 const LEAVE_TYPES = ["annual", "sick", "maternity", "paternity", "bereavement", "unpaid", "other"];
-const STATUS_COLORS = { pending: "bg-amber-100 text-amber-700", approved: "bg-primary/10 text-primary/90", rejected: "bg-red-100 text-red-700", cancelled: "bg-gray-100 text-gray-600" };
-const LEAVE_COLORS = { annual: "bg-orange-100 text-orange-700", sick: "bg-red-100 text-red-700", maternity: "bg-primary/10 text-primary/90", paternity: "bg-primary/10 text-primary/90", bereavement: "bg-gray-100 text-gray-600", unpaid: "bg-orange-100 text-orange-700", other: "bg-slate-100 text-slate-600" };
+const STATUS_COLORS = { pending: "bg-amber-100 text-amber-700", approved: "bg-slate-100 text-primary/90", rejected: "bg-red-100 text-red-700", cancelled: "bg-gray-100 text-gray-600" };
+const LEAVE_COLORS = { annual: "bg-orange-100 text-orange-700", sick: "bg-red-100 text-red-700", maternity: "bg-slate-100 text-primary/90", paternity: "bg-slate-100 text-primary/90", bereavement: "bg-gray-100 text-gray-600", unpaid: "bg-orange-100 text-orange-700", other: "bg-slate-100 text-slate-600" };
 
 export default function HRLeavePanel({ companyId, leaves, staff, isAdmin, user }) {
   const { t } = useTranslation();
@@ -78,7 +78,7 @@ export default function HRLeavePanel({ companyId, leaves, staff, isAdmin, user }
                 const pct = Math.min((bal.used / bal.total) * 100, 100);
                 return (
                   <div key={s.id} className="px-4 py-3 flex items-center gap-4">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
                       <span className="text-xs font-bold text-primary">{s.full_name?.[0]}</span>
                     </div>
                     <div className="flex-1 min-w-0">
@@ -90,7 +90,7 @@ export default function HRLeavePanel({ companyId, leaves, staff, isAdmin, user }
                         <span className="text-xs text-muted-foreground shrink-0">{bal.used}/{bal.total} {t("days_used", "days used")}</span>
                       </div>
                     </div>
-                    <Badge className={cn("text-[10px]", bal.remaining < 5 ? "bg-red-100 text-red-700" : "bg-primary/10 text-primary/90")}>
+                    <Badge className={cn("text-[10px]", bal.remaining < 5 ? "bg-red-100 text-red-700" : "bg-slate-100 text-primary/90")}>
                       {bal.remaining} {t("days_left", "days left")}
                     </Badge>
                   </div>

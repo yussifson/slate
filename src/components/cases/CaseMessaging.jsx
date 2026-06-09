@@ -13,7 +13,7 @@ function parseContent(content, taggedEmails, staff) {
   const parts = content.split(/(@\w[\w.]*)/g);
   return parts.map((part, i) => {
     if (part.startsWith("@")) {
-      return <span key={i} className="text-primary font-semibold bg-primary/10 px-0.5 rounded">{part}</span>;
+      return <span key={i} className="text-primary font-semibold bg-slate-100 px-0.5 rounded">{part}</span>;
     }
     return part;
   });
@@ -198,7 +198,7 @@ export default function CaseMessaging({ caseData, user }) {
                             <div className="flex flex-wrap gap-1 mt-1">
                               {msg.tagged_emails.map(e => {
                                 const s = staff.find(m => m.user_email === e);
-                                return <span key={e} className={`text-[10px] px-1.5 py-0.5 rounded-full ${isMe ? "bg-white/20" : "bg-primary/10 text-primary"}`}>@{s?.full_name || e}</span>;
+                                return <span key={e} className={`text-[10px] px-1.5 py-0.5 rounded-full ${isMe ? "bg-white/20" : "bg-slate-100 text-primary"}`}>@{s?.full_name || e}</span>;
                               })}
                             </div>
                           )}
@@ -230,7 +230,7 @@ export default function CaseMessaging({ caseData, user }) {
         <div className="px-4 py-2 border-t border-border flex flex-wrap gap-1.5 bg-muted/20">
           {linkedDocs.map((d, i) => {
             return (
-              <div key={i} className="flex items-center gap-1 bg-primary/10 text-primary rounded-full px-2.5 py-1 text-[11px]">
+              <div key={i} className="flex items-center gap-1 bg-slate-100 text-primary rounded-full px-2.5 py-1 text-[11px]">
                 <Link className="w-3 h-3" />
                 <span>{d.name}</span>
                 <button onClick={() => setLinkedDocs(prev => prev.filter((_, j) => j !== i))}>
@@ -296,7 +296,7 @@ export default function CaseMessaging({ caseData, user }) {
             {selectedTags.map(e => {
               const s = staff.find(m => m.user_email === e);
               return (
-                <span key={e} className="flex items-center gap-1 bg-primary/10 text-primary rounded-full px-2 py-0.5 text-[10px] font-medium">
+                <span key={e} className="flex items-center gap-1 bg-slate-100 text-primary rounded-full px-2 py-0.5 text-[10px] font-medium">
                   @{s?.full_name?.split(" ")[0] || e}
                   <button onClick={() => setSelectedTags(prev => prev.filter(item => t !== e))}><X className="w-2.5 h-2.5" /></button>
                 </span>
@@ -305,7 +305,7 @@ export default function CaseMessaging({ caseData, user }) {
           </div>
         )}
         <div className="flex items-end gap-2">
-          <div className="flex-1 flex items-end gap-1 bg-muted/50 rounded-xl px-3 py-2 border border-border focus-within:border-primary/50 focus-within:bg-background transition-colors">
+          <div className="flex-1 flex items-end gap-1 bg-muted/50 rounded-xl px-3 py-2 border border-border focus-within:border-slate-200 focus-within:bg-background transition-colors">
             <textarea
               ref={inputRef}
               rows={1}
@@ -320,14 +320,14 @@ export default function CaseMessaging({ caseData, user }) {
           </div>
           <button
             onClick={() => { setShowTagMenu(v => !v); setShowDocPicker(false); }}
-            className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+            className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-slate-100 transition-colors"
             title="Tag colleague"
           >
             <AtSign className="w-4 h-4" />
           </button>
           <button
             onClick={() => { setShowDocPicker(v => !v); setShowTagMenu(false); }}
-            className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+            className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-slate-100 transition-colors"
             title="Attach document"
           >
             <Paperclip className="w-4 h-4" />

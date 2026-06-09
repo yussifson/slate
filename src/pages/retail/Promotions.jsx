@@ -167,7 +167,7 @@ export default function Promotions() {
                       {promo.data?.discountType === "percentage" ? `${promo.data?.discountValue}%` : `$${promo.data?.discountValue}`}
                     </td>
                     <td className="px-6 py-4 text-center">
-                      <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${promo.data?.isActive ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
+                      <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${promo.data?.isActive ? "bg-slate-100 text-primary" : "bg-muted text-muted-foreground"}`}>
                         {promo.data?.isActive ? t("active", "Active") : t("inactive", "Inactive")}
                       </span>
                     </td>

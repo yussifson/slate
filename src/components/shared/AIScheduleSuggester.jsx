@@ -61,7 +61,7 @@ Use dates starting from tomorrow.`
     <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+          <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-primary">
             <Sparkles className="w-4 h-4" />
           </div>
           <div>
@@ -88,7 +88,7 @@ Use dates starting from tomorrow.`
                 <button
                   key={idx}
                   onClick={() => onSelectSlot({ date: slot.date, time: slot.time })}
-                  className="flex flex-col items-start p-3 rounded-lg border border-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors text-left group"
+                  className="flex flex-col items-start p-3 rounded-lg border border-primary/20 bg-slate-50 hover:bg-slate-100 transition-colors text-left group"
                 >
                   <div className="flex items-center gap-1.5 text-primary font-bold text-sm mb-1">
                     <CalendarIcon className="w-3.5 h-3.5" />

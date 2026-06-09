@@ -42,10 +42,10 @@ export function ViewModeToggle({ viewMode, onChange, className }) {
 
 export function RetailStatCard({ label, value, icon: Icon, hint, variant = "default" }) {
   const variants = {
-    default: "bg-primary/10 text-primary",
+    default: "bg-slate-100 text-primary",
     warning: "bg-amber-500/10 text-amber-600",
     danger: "bg-red-500/10 text-red-600",
-    success: "bg-primary/10 text-primary",
+    success: "bg-slate-100 text-primary",
   };
   return (
     <div className="bg-card rounded-xl border border-border p-5 shadow-sm flex items-center gap-4 min-h-[88px]">
@@ -123,7 +123,7 @@ export function ProductGridCard({ product, onEdit, onDelete, suppliers = [] }) {
         <span
           className={cn(
             "absolute top-3 left-3 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border",
-            inStock ? "bg-primary/10 text-primary border-primary/20" : "bg-red-50 text-red-700 border-red-200"
+            inStock ? "bg-slate-100 text-primary border-primary/20" : "bg-red-50 text-red-700 border-red-200"
           )}
         >
           {inStock ? `${product.stock} in stock` : "Out of stock"}
@@ -152,7 +152,7 @@ export function PromotionGridCard({ promo, onEdit, onDelete }) {
     <article className="group relative bg-card border border-dashed border-border rounded-2xl overflow-hidden hover:shadow-xl hover:border-solid hover:border-primary/40 transition-all flex flex-col min-h-[220px]">
       <div className="flex-1 p-6 relative">
         <div className="flex justify-between items-start mb-6">
-          <div className="bg-primary/10 text-primary text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest inline-flex items-center gap-1.5">
+          <div className="bg-slate-100 text-primary text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest inline-flex items-center gap-1.5">
             <div className={cn("w-1.5 h-1.5 rounded-full", active ? "bg-primary animate-pulse" : "bg-muted-foreground")} />
             {active ? "Active Code" : "Inactive Code"}
           </div>
@@ -195,7 +195,7 @@ export function CustomerGridCard({ customer, onEdit, onDelete, onView, segmentCo
       <div className="min-w-0 flex-1 mb-6">
         <h3 className="font-bold text-xl text-foreground truncate">{customer.name}</h3>
         <p className="text-xs text-muted-foreground font-mono mt-1">{customer.custId || customer.id}</p>
-        <p className="text-sm text-primary/80 truncate mt-2 bg-primary/5 inline-block px-3 py-1 rounded-full">{customer.email}</p>
+        <p className="text-sm text-primary/80 truncate mt-2 bg-slate-50 inline-block px-3 py-1 rounded-full">{customer.email}</p>
       </div>
       
       <div className="mt-auto grid grid-cols-2 gap-4 pt-4 border-t border-border">
@@ -214,10 +214,10 @@ export function CustomerGridCard({ customer, onEdit, onDelete, onView, segmentCo
 
 export function OrderGridCard({ order, onEdit, onDelete }) {
   const statusStyles = {
-    Completed: "bg-primary/10 text-primary/90",
+    Completed: "bg-slate-100 text-primary/90",
     Pending: "bg-amber-500/10 text-amber-700",
     Cancelled: "bg-red-500/10 text-red-600",
-    Processing: "bg-primary/10 text-primary/90",
+    Processing: "bg-slate-100 text-primary/90",
   };
   return (
     <article className="group relative bg-card border border-border rounded-xl p-0 hover:shadow-xl transition-all flex flex-col min-h-[220px] overflow-hidden">
@@ -251,7 +251,7 @@ export function OrderGridCard({ order, onEdit, onDelete }) {
 
 export function InventoryGridCard({ item, onEdit, onDelete, onView }) {
   const statusClass = {
-    "In Stock": "bg-primary/10 text-primary border-primary/20",
+    "In Stock": "bg-slate-100 text-primary border-primary/20",
     "Low Stock": "bg-amber-500/10 text-amber-700 border-amber-200",
     "Out of Stock": "bg-red-500/10 text-red-700 border-red-200",
   };
@@ -312,8 +312,8 @@ export function LoyaltyGridCard({ member, onEdit, onDelete }) {
   const tierColors = {
     Bronze: "bg-amber-700/10 text-amber-800",
     Silver: "bg-slate-500/10 text-slate-700",
-    Gold: "bg-primary/10 text-primary",
-    Platinum: "bg-primary/10 text-primary/70",
+    Gold: "bg-slate-100 text-primary",
+    Platinum: "bg-slate-100 text-primary/70",
   };
   return (
     <article className="group relative bg-card border border-border rounded-2xl p-6 hover:shadow-lg hover:border-primary/30 transition-all min-h-[180px] flex flex-col">
@@ -329,7 +329,7 @@ export function LoyaltyGridCard({ member, onEdit, onDelete }) {
           <p className="text-[10px] text-muted-foreground uppercase font-bold">Points</p>
           <p className="text-2xl font-black text-primary">{member.points?.toLocaleString()}</p>
         </div>
-        <span className={cn("text-xs font-bold px-3 py-1 rounded-full", tierColors[member.tier] || "bg-primary/10 text-primary")}>
+        <span className={cn("text-xs font-bold px-3 py-1 rounded-full", tierColors[member.tier] || "bg-slate-100 text-primary")}>
           {member.tier}
         </span>
       </div>

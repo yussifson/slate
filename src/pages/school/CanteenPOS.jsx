@@ -81,7 +81,7 @@ export default function CanteenPOS() {
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
           {menu.map(item => (
             <div key={item.id} onClick={() => addToCart(item.id)} className="bg-card rounded-xl border border-border p-6 shadow-sm cursor-pointer hover:border-primary/30 transition-colors group select-none">
-              <div className={`w-12 h-12 rounded-full bg-primary/5 dark:bg-primary/20 text-primary dark:text-primary/30 flex items-center justify-center mb-4`}>
+              <div className={`w-12 h-12 rounded-full bg-slate-50 dark:bg-primary/20 text-primary dark:text-primary/30 flex items-center justify-center mb-4`}>
                 <item.icon className="w-6 h-6" />
               </div>
               <h3 className="font-bold text-lg mb-1">{item.name}</h3>

@@ -64,9 +64,9 @@ export default function SHSAdmissionDecisions() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10 cursor-pointer transition-all hover:bg-primary/5 dark:bg-slate-800" onClick={() => setFilterType('All')}>
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10 cursor-pointer transition-all hover:bg-slate-50 dark:bg-slate-800" onClick={() => setFilterType('All')}>
           <CardContent className="p-5 flex items-center gap-4">
-            <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${filterType === 'All' ? 'bg-primary dark:bg-primary text-white' : 'bg-primary/10 dark:bg-slate-800 text-primary dark:text-primary/70'}`}>
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${filterType === 'All' ? 'bg-primary dark:bg-primary text-white' : 'bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70'}`}>
               <Mail className="w-6 h-6" />
             </div>
             <div>
@@ -76,9 +76,9 @@ export default function SHSAdmissionDecisions() {
           </CardContent>
         </Card>
         
-        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10 cursor-pointer transition-all hover:bg-primary/5" onClick={() => setFilterType('Admitted')}>
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10 cursor-pointer transition-all hover:bg-slate-50" onClick={() => setFilterType('Admitted')}>
           <CardContent className="p-5 flex items-center gap-4">
-            <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${filterType === 'Admitted' ? 'bg-primary text-white' : 'bg-primary/10 text-primary'}`}>
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${filterType === 'Admitted' ? 'bg-primary text-white' : 'bg-slate-100 text-primary'}`}>
               <FileCheck className="w-6 h-6" />
             </div>
             <div>
@@ -134,7 +134,7 @@ export default function SHSAdmissionDecisions() {
             <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading decisions...</div>
           ) : filteredDecisions.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-primary/5 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
                 <Mail className="w-8 h-8 text-primary dark:text-primary" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No decisions found</h3>
@@ -163,7 +163,7 @@ export default function SHSAdmissionDecisions() {
                       </td>
                       <td className="px-6 py-4">
                         {decision.status === 'Admitted' ? (
-                          <Badge className="bg-primary/10 text-primary/90 hover:bg-primary/20 border-none px-3 py-1 gap-1">
+                          <Badge className="bg-slate-100 text-primary/90 hover:bg-primary/20 border-none px-3 py-1 gap-1">
                             <CheckCircle className="w-3 h-3" /> Admitted
                           </Badge>
                         ) : (
@@ -180,7 +180,7 @@ export default function SHSAdmissionDecisions() {
                           variant="ghost" 
                           size="sm" 
                           onClick={() => generateLetter(decision)}
-                          className="text-primary dark:text-primary/70 hover:text-primary hover:bg-primary/5 dark:bg-slate-800 rounded-lg gap-2 font-semibold"
+                          className="text-primary dark:text-primary/70 hover:text-primary hover:bg-slate-50 dark:bg-slate-800 rounded-lg gap-2 font-semibold"
                         >
                           <Printer className="w-4 h-4" /> Letter
                         </Button>

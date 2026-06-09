@@ -67,14 +67,14 @@ export default function AdminBilling() {
         }
       />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="bg-gradient-to-br from-primary/5 to-white border-primary/10 shadow-sm rounded-2xl">
+        <Card className="bg-gradient-to-br from-primary/5 to-white border-slate-200 shadow-sm rounded-2xl">
           <CardContent className="p-6">
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-sm font-bold text-primary/80 uppercase tracking-wider mb-1">{t("total_paid_mrr", "Total Paid MRR")}</p>
                 <h3 className="text-4xl font-extrabold text-primary/60">{formatCurrency(totalRevenue, 'USD')}</h3>
               </div>
-              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center">
                 <DollarSign className="w-6 h-6 text-primary" />
               </div>
             </div>
@@ -161,7 +161,7 @@ export default function AdminBilling() {
                         <td className="px-6 py-4 font-bold">{formatCurrency(inv.total_amount || inv.amount || 0, 'USD')}</td>
                         <td className="px-6 py-4 text-slate-500">{inv.created_at ? format(new Date(inv.created_at), 'MMM dd, yyyy') : 'N/A'}</td>
                         <td className="px-6 py-4">
-                          <Badge className={`${inv.status === 'paid' ? 'bg-primary/10 text-primary/90' : inv.status === 'pending' ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'} border-none`}>
+                          <Badge className={`${inv.status === 'paid' ? 'bg-slate-100 text-primary/90' : inv.status === 'pending' ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'} border-none`}>
                             {inv.status || 'unknown'}
                           </Badge>
                         </td>

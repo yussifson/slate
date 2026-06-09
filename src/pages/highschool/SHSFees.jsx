@@ -96,7 +96,7 @@ export default function SHSFees() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
               <Layers className="w-6 h-6" />
             </div>
             <div>
@@ -130,7 +130,7 @@ export default function SHSFees() {
             <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading fees...</div>
           ) : filteredFees.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-primary/5 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
                 <CreditCard className="w-8 h-8 text-primary dark:text-primary" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No fee items found</h3>
@@ -167,13 +167,13 @@ export default function SHSFees() {
                         </Badge>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="font-black text-slate-800 dark:text-slate-100 bg-primary/5 px-3 py-1 rounded-lg border border-primary/10 text-primary/90">
+                        <span className="font-black text-slate-800 dark:text-slate-100 bg-slate-50 px-3 py-1 rounded-lg border border-slate-200 text-primary/90">
                           ${parseFloat(fee.data?.amount).toFixed(2)}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-right">
                         <Badge variant="outline" className={
-                          fee.status === 'Active' ? 'bg-primary/5 text-primary/90 border-primary/20' : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'
+                          fee.status === 'Active' ? 'bg-slate-50 text-primary/90 border-primary/20' : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'
                         }>
                           {fee.status}
                         </Badge>

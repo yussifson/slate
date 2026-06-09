@@ -89,7 +89,7 @@ export default function PatientPortal() {
       </div>
       {/* Patient Profile Card */}
       <div className="bg-card rounded-2xl border border-border p-6 shadow-sm flex flex-col md:flex-row items-center md:items-start gap-6">
-        <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center text-primary/90 text-3xl font-bold shrink-0 shadow-inner uppercase">
+        <div className="w-24 h-24 rounded-full bg-slate-100 flex items-center justify-center text-primary/90 text-3xl font-bold shrink-0 shadow-inner uppercase">
           {activePatient.name?.substring(0, 2)}
         </div>
         <div className="text-center md:text-left flex-1">
@@ -108,7 +108,7 @@ export default function PatientPortal() {
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-card rounded-xl border border-border p-5 shadow-sm">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary"><Pill className="w-4 h-4" /></div>
+                <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-primary/20 flex items-center justify-center text-primary"><Pill className="w-4 h-4" /></div>
                 <h3 className="font-bold text-foreground">{t("active_prescriptions", "Active Prescriptions")}</h3>
               </div>
               <p className="text-3xl font-extrabold text-card-foreground mb-1">2</p>
@@ -117,7 +117,7 @@ export default function PatientPortal() {
             
             <div className="bg-card rounded-xl border border-border p-5 shadow-sm">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary"><Beaker className="w-4 h-4" /></div>
+                <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-primary/20 flex items-center justify-center text-primary"><Beaker className="w-4 h-4" /></div>
                 <h3 className="font-bold text-foreground">{t("lab_results", "Lab Results")}</h3>
               </div>
               <p className="text-3xl font-extrabold text-primary mb-1">{t("new", "New")}</p>
@@ -134,7 +134,7 @@ export default function PatientPortal() {
                 return (
                   <div key={i} className="flex items-center gap-4 p-3 hover:bg-muted dark:hover:bg-muted/30 rounded-lg transition-colors">
                     <div className="w-20 shrink-0 text-center flex flex-col items-center">
-                      <span className="text-xs font-bold text-primary bg-primary/5 dark:bg-primary/20 px-2 py-1 rounded w-full">{item.date}</span>
+                      <span className="text-xs font-bold text-primary bg-slate-50 dark:bg-primary/20 px-2 py-1 rounded w-full">{item.date}</span>
                       <span className="text-[10px] font-semibold text-muted-foreground mt-1">{item.time}</span>
                     </div>
                     <div className="flex-1">
@@ -173,7 +173,7 @@ export default function PatientPortal() {
                     </div>
                     {doc.file_url && (
                       <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-primary hover:text-primary/90 hover:bg-primary/5">
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-primary hover:text-primary/90 hover:bg-slate-50">
                           <Download className="w-4 h-4" />
                         </Button>
                       </a>

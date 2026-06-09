@@ -211,7 +211,7 @@ export default function Recruitment() {
             return (
               <div key={cand.id} className="border border-border rounded-lg p-4 flex items-center justify-between hover:shadow-md transition-shadow bg-background group">
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+                  <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-primary font-bold">
                     {cand.name.charAt(0)}
                   </div>
                   <div>
@@ -225,8 +225,8 @@ export default function Recruitment() {
                     value={cand.stage}
                     onChange={e => handleUpdateStage(cand, e.target.value)}
                     className={`text-xs font-bold px-2 py-1 rounded-full border border-input ${
-                      cand.stage === 'Offer' ? 'bg-primary/10 text-primary/90' :
-                      cand.stage === 'Hired' ? 'bg-primary/10 text-primary/90' :
+                      cand.stage === 'Offer' ? 'bg-slate-100 text-primary/90' :
+                      cand.stage === 'Hired' ? 'bg-slate-100 text-primary/90' :
                       cand.stage === 'Interview' ? 'bg-orange-100 text-orange-700' : 
                       cand.stage === 'Rejected' ? 'bg-red-100 text-red-700' : 'bg-muted text-foreground'
                     }`}
@@ -240,7 +240,7 @@ export default function Recruitment() {
                   </select>
                 </div>
                 <div className="flex gap-2">
-                  <Button onClick={() => handleUpdateStage(cand, 'Hired')} size="sm" variant="outline" className="text-primary border-primary/20 hover:bg-primary/5 px-2"><CheckCircle2 className="w-4 h-4"/></Button>
+                  <Button onClick={() => handleUpdateStage(cand, 'Hired')} size="sm" variant="outline" className="text-primary border-primary/20 hover:bg-slate-50 px-2"><CheckCircle2 className="w-4 h-4"/></Button>
                   <Button onClick={() => handleUpdateStage(cand, 'Rejected')} size="sm" variant="outline" className="text-red-600 border-red-200 hover:bg-red-50 px-2"><XCircle className="w-4 h-4"/></Button>
                   <Button onClick={() => setDeleteTargetId(cand.id)} size="sm" variant="ghost" className="text-red-500 hover:text-red-700 hover:bg-red-50 px-2 opacity-0 group-hover:opacity-100"><Trash2 className="w-4 h-4"/></Button>
                 </div>

@@ -136,7 +136,7 @@ export default function FeeManagement() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-card rounded-xl border border-border p-5 shadow-sm">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/50 flex items-center justify-center text-primary dark:text-primary/70">
+            <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70">
               <DollarSign className="w-4 h-4" />
             </div>
             <h3 className="font-semibold text-foreground text-sm">{t("total_collected", "Total Collected")}</h3>
@@ -154,7 +154,7 @@ export default function FeeManagement() {
         </div>
         <div className="bg-card rounded-xl border border-border p-5 shadow-sm">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/50 flex items-center justify-center text-primary dark:text-primary/70 dark:text-primary/70">
+            <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70 dark:text-primary/70">
               <CheckCircle className="w-4 h-4" />
             </div>
             <h3 className="font-semibold text-foreground text-sm">{t("fully_paid_students", "Fully Paid Students")}</h3>
@@ -166,7 +166,7 @@ export default function FeeManagement() {
         <div className="p-4 border-b border-border bg-muted/50">
           <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input placeholder="Search student tuition listings..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white/80 dark:bg-slate-800/50 border-primary/10 dark:border-slate-700 rounded-xl focus-visible:ring-primary" />
+            <Input placeholder="Search student tuition listings..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white/80 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary" />
           </div>
         </div>
         <div className="overflow-x-auto">
@@ -183,7 +183,7 @@ export default function FeeManagement() {
             </div>
           ) : (
             <table className="w-full text-sm">
-              <thead className="bg-primary/5/60 dark:bg-slate-800/40 border-b border-primary/10 dark:border-slate-700">
+              <thead className="bg-slate-50/60 dark:bg-slate-800/40 border-b border-slate-200 dark:border-slate-700">
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{t("student", "Student")}</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{t("class", "Class")}</th>
@@ -208,7 +208,7 @@ export default function FeeManagement() {
                       <td className="px-6 py-4 text-right font-bold text-red-600">${f.balance}</td>
                       <td className="px-6 py-4 text-center">
                         <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${
-                          f.status === 'Paid' ? 'bg-primary/10 dark:bg-primary/30 text-primary/90 dark:text-primary/70' :
+                          f.status === 'Paid' ? 'bg-slate-100 dark:bg-primary/30 text-primary/90 dark:text-primary/70' :
                           f.status === 'Owing' ? 'bg-red-100 dark:bg-red-950/30 text-red-700 dark:text-red-400' : 'bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400'
                         }`}>
                           {f.status}
@@ -327,7 +327,7 @@ export default function FeeManagement() {
           {viewDetails && (
             <div className="mt-6 space-y-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-primary/5 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70 font-bold text-xl">
+                <div className="w-16 h-16 rounded-full bg-slate-50 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70 font-bold text-xl">
                   {viewDetails.student.substring(0, 2).toUpperCase()}
                 </div>
                 <div>
@@ -346,7 +346,7 @@ export default function FeeManagement() {
                 <div className="bg-muted/50 p-3 rounded-lg">
                   <p className="text-xs text-muted-foreground uppercase font-semibold">{t("status", "Status")}</p>
                   <span className={`inline-block mt-1 text-xs font-bold px-2.5 py-0.5 rounded-full ${
-                    viewDetails.status === 'Paid' ? 'bg-primary/10 text-primary/90' :
+                    viewDetails.status === 'Paid' ? 'bg-slate-100 text-primary/90' :
                     viewDetails.status === 'Owing' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'
                   }`}>
                     {viewDetails.status}

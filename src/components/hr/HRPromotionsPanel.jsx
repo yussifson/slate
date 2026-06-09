@@ -14,7 +14,7 @@ import { format } from "date-fns";
 import { formatCurrency } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
-const STATUS_COLORS = { pending: "bg-amber-100 text-amber-700", approved: "bg-primary/10 text-primary/90", rejected: "bg-red-100 text-red-700" };
+const STATUS_COLORS = { pending: "bg-amber-100 text-amber-700", approved: "bg-slate-100 text-primary/90", rejected: "bg-red-100 text-red-700" };
 
 export default function HRPromotionsPanel({ companyId, promotions, staff, currency, isAdmin, user }) {
   const { t } = useTranslation();
@@ -51,7 +51,7 @@ export default function HRPromotionsPanel({ companyId, promotions, staff, curren
           {promotions.map(p => {
             return (
               <div key={p.id} className="px-4 py-3 flex items-center gap-4">
-                <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
                   <span className="text-sm font-bold text-primary">{p.staff_name?.[0]?.toUpperCase()}</span>
                 </div>
                 <div className="flex-1 min-w-0">

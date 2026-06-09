@@ -301,7 +301,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
 
       <nav className="flex-1 px-3 pb-3 space-y-1 overflow-y-auto overflow-x-hidden scrollbar-hide">
         {isOrbitMode && !collapsed && dynamicNavItems.length === 0 && (
-          <div className="mx-1 my-3 p-3 rounded-xl bg-primary/5 border border-primary/10 text-center">
+          <div className="mx-1 my-3 p-3 rounded-xl bg-slate-50 border border-slate-200 text-center">
             <div className="text-2xl mb-1">⚡</div>
             <p className="text-xs font-bold text-primary/90 mb-1">Orbit Mode Active</p>
             <p className="text-[11px] text-primary leading-snug mb-2">Use the Module Builder to create your custom pages with AI.</p>
@@ -389,7 +389,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20">
-              <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 border border-primary/20 overflow-hidden">
+              <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 border border-primary/20 overflow-hidden">
                 {user?.avatar_url ? (
                   <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
                 ) : (
@@ -481,7 +481,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
                   isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                <div className={cn("w-8 h-8 rounded-full flex items-center justify-center transition-colors", isActive ? "bg-primary/10" : "")}>
+                <div className={cn("w-8 h-8 rounded-full flex items-center justify-center transition-colors", isActive ? "bg-slate-100" : "")}>
                   <IconComp className={cn("w-5 h-5 transition-transform", isActive ? "scale-110" : "")} />
                 </div>
                 <span className={cn("text-[10px] font-semibold leading-none", isActive ? "text-primary" : "")}>

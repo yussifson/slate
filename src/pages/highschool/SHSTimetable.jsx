@@ -127,7 +127,7 @@ export default function SHSTimetable() {
         <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70">
+              <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70">
                 <CalendarIcon className="w-5 h-5" />
               </div>
               <div>
@@ -201,7 +201,7 @@ export default function SHSTimetable() {
                         return (
                           <div key={`${day}-${slot}`} className="p-2 border-r border-slate-100 dark:border-slate-800 min-h-[100px] relative group">
                             {entry ? (
-                              <div className="h-full rounded-xl bg-primary/5 dark:bg-slate-800 border border-primary/10 dark:border-slate-700 p-3 flex flex-col gap-1 transition-all hover:shadow-md hover:border-primary/30">
+                              <div className="h-full rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-3 flex flex-col gap-1 transition-all hover:shadow-md hover:border-primary/30">
                                 <h4 className="font-bold text-xs text-primary dark:text-primary/70 leading-tight">{entry.data?.subjectName}</h4>
                                 <div className="mt-auto space-y-1">
                                   <p className="text-[10px] text-slate-500 dark:text-slate-400 dark:text-slate-500 flex items-center gap-1 truncate">
@@ -224,7 +224,7 @@ export default function SHSTimetable() {
                                   setNewEntry(prev => ({ ...prev, day, timeSlot: slot }));
                                   setIsAddModalOpen(true);
                                 }}
-                                className="w-full h-full rounded-xl border-2 border-dashed border-transparent hover:border-primary/20 dark:border-slate-600 hover:bg-primary/50 dark:bg-slate-800/50 text-transparent hover:text-primary/30 flex items-center justify-center transition-all"
+                                className="w-full h-full rounded-xl border-2 border-dashed border-transparent hover:border-primary/20 dark:border-slate-600 hover:bg-slate-500 dark:bg-slate-800/50 text-transparent hover:text-primary/30 flex items-center justify-center transition-all"
                               >
                                 <Plus className="w-5 h-5" />
                               </button>

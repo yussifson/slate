@@ -6,7 +6,7 @@ export default function Integrations() {
   const { t } = useTranslation();
   return (
     <div className="min-h-[70vh] flex flex-col items-center justify-center py-20 px-4 sm:px-6 lg:px-8 text-center bg-slate-50 relative overflow-hidden">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/50 rounded-full blur-3xl pointer-events-none opacity-50"></div>
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-slate-500 rounded-full blur-3xl pointer-events-none opacity-50"></div>
       <div className="relative z-10">
         <div className="w-20 h-20 bg-white border border-slate-200 shadow-xl shadow-emerald-900/5 text-primary rounded-3xl flex items-center justify-center mx-auto mb-8">
           <Puzzle className="w-10 h-10" />

@@ -111,7 +111,7 @@ View in App: ${window.location.origin}/leads`,
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-primary/5 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full text-center">
-          <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="w-8 h-8 text-primary" />
           </div>
           <h2 className="text-xl font-bold text-foreground mb-2">{t("inquiry_received", "Inquiry Received!")}</h2>
@@ -244,7 +244,7 @@ View in App: ${window.location.origin}/leads`,
                     type="button"
                     key={val}
                     onClick={() => setForm({ ...form, preferred_contact: val })}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${form.preferred_contact === val ? "bg-primary text-white border-primary" : "border-border text-muted-foreground hover:border-primary/50"}`}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${form.preferred_contact === val ? "bg-primary text-white border-primary" : "border-border text-muted-foreground hover:border-slate-200"}`}
                   >
                     <IconComp className="w-3.5 h-3.5" /> {label}
                   </button>

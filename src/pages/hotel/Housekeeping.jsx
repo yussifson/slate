@@ -105,10 +105,10 @@ export default function Housekeeping() {
            </div>
 
            {/* Column 2: In Progress */}
-           <div className="bg-primary/50 dark:bg-primary/10 rounded-xl p-4 border border-primary/10 dark:border-primary/30 min-h-[500px]">
+           <div className="bg-slate-500 dark:bg-slate-100 rounded-xl p-4 border border-slate-200 dark:border-primary/30 min-h-[500px]">
               <h3 className="font-bold text-primary/70 dark:text-primary/70 flex items-center justify-between mb-4">
                  <span className="flex items-center gap-2"><Brush className="w-4 h-4 text-primary dark:text-primary"/> {t("in_progress", "In Progress")}</span>
-                 <span className="bg-primary/10 dark:bg-primary/60 text-primary/80 dark:text-primary/30 px-2 py-0.5 rounded-full text-xs">{columns.inProgress.length}</span>
+                 <span className="bg-slate-100 dark:bg-primary/60 text-primary/80 dark:text-primary/30 px-2 py-0.5 rounded-full text-xs">{columns.inProgress.length}</span>
               </h3>
               <div className="space-y-3">
                  {columns.inProgress.map(room => {
@@ -116,7 +116,7 @@ export default function Housekeeping() {
                      <div key={room.id} className="bg-card p-4 rounded-lg shadow-sm border border-border border-l-4 border-l-violet-500">
                        <p className="font-bold text-lg mb-1">{t("room", "Room")} {room.roomNumber}</p>
                        <p className="text-xs text-muted-foreground mb-3 flex items-center gap-1"><User className="w-3.5 h-3.5" /> {t("assigned", "Assigned:")} {room.cleaner}</p>
-                       <Button onClick={() => handleUpdateStatus(room, 'Inspecting')} size="sm" variant="outline" className="w-full text-xs border-primary/20 dark:border-primary/70 text-primary/90 dark:text-primary/70 hover:bg-primary/5 dark:hover:bg-primary/35">{t("mark_ready_for_inspection", "Mark Ready for Inspection")}</Button>
+                       <Button onClick={() => handleUpdateStatus(room, 'Inspecting')} size="sm" variant="outline" className="w-full text-xs border-primary/20 dark:border-primary/70 text-primary/90 dark:text-primary/70 hover:bg-slate-50 dark:hover:bg-primary/35">{t("mark_ready_for_inspection", "Mark Ready for Inspection")}</Button>
                      </div>
                    );
                  })}
@@ -124,10 +124,10 @@ export default function Housekeeping() {
            </div>
 
            {/* Column 3: Inspecting */}
-           <div className="bg-primary/50 dark:bg-primary/10 rounded-xl p-4 border border-primary/10 dark:border-primary/30 min-h-[500px]">
+           <div className="bg-slate-500 dark:bg-slate-100 rounded-xl p-4 border border-slate-200 dark:border-primary/30 min-h-[500px]">
               <h3 className="font-bold text-primary/70 dark:text-primary/70 flex items-center justify-between mb-4">
                  <span className="flex items-center gap-2"><Sparkles className="w-4 h-4 text-primary dark:text-primary"/> {t("inspecting", "Inspecting")}</span>
-                 <span className="bg-primary/10 dark:bg-primary/60 text-primary/80 dark:text-primary/30 px-2 py-0.5 rounded-full text-xs">{columns.inspecting.length}</span>
+                 <span className="bg-slate-100 dark:bg-primary/60 text-primary/80 dark:text-primary/30 px-2 py-0.5 rounded-full text-xs">{columns.inspecting.length}</span>
               </h3>
               <div className="space-y-3">
                  {columns.inspecting.map(room => {
@@ -143,10 +143,10 @@ export default function Housekeeping() {
            </div>
 
            {/* Column 4: Clean */}
-           <div className="bg-primary/50 dark:bg-primary/10 rounded-xl p-4 border border-primary/10 dark:border-primary/30 min-h-[500px]">
+           <div className="bg-slate-500 dark:bg-slate-100 rounded-xl p-4 border border-slate-200 dark:border-primary/30 min-h-[500px]">
               <h3 className="font-bold text-primary/70 dark:text-primary/70 flex items-center justify-between mb-4">
                  <span className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-primary dark:text-primary"/> {t("clean_ready", "Clean & Ready")}</span>
-                 <span className="bg-primary/10 dark:bg-primary/60 text-primary/80 dark:text-primary/30 px-2 py-0.5 rounded-full text-xs">{columns.clean.length}</span>
+                 <span className="bg-slate-100 dark:bg-primary/60 text-primary/80 dark:text-primary/30 px-2 py-0.5 rounded-full text-xs">{columns.clean.length}</span>
               </h3>
               <div className="space-y-3 opacity-80">
                  {columns.clean.map(room => {

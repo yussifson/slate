@@ -99,7 +99,7 @@ export default function CampusMarketplace() {
                     <h3 className="font-extrabold text-lg text-slate-900 dark:text-white mb-1 line-clamp-2">{item.title}</h3>
                     <p className="text-xs font-bold text-primary dark:text-primary/70 uppercase tracking-wider mb-4">{item.status}</p>
                   </div>
-                  <Button variant="outline" className="w-full rounded-xl border-slate-200 dark:border-slate-800 font-bold hover:bg-primary/5 dark:bg-primary/20 hover:text-primary dark:text-primary/70 hover:border-primary/20 dark:hover:bg-primary/20 dark:hover:border-primary/80">
+                  <Button variant="outline" className="w-full rounded-xl border-slate-200 dark:border-slate-800 font-bold hover:bg-slate-50 dark:bg-primary/20 hover:text-primary dark:text-primary/70 hover:border-primary/20 dark:hover:bg-primary/20 dark:hover:border-primary/80">
                     <MessageCircle className="w-4 h-4 mr-2" /> Contact Seller
                   </Button>
                 </div>

@@ -454,7 +454,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
                         return (
                            <div className="animate-in fade-in zoom-in-95 duration-300">
                              <div className="mb-6 flex items-center gap-3 border-b border-border/60 pb-5">
-                               <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shadow-sm">
+                               <div className="w-12 h-12 rounded-xl bg-slate-100 border border-primary/20 flex items-center justify-center shadow-sm">
                                  <Layers className="w-6 h-6 text-primary" />
                                </div>
                                <div>

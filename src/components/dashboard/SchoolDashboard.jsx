@@ -102,7 +102,7 @@ export default function SchoolDashboard({ companyId, company, isAdmin }) {
   if (!companyId) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[70vh] text-center space-y-6">
-        <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center">
+        <div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center">
           <Building2 className="w-12 h-12 text-primary" />
         </div>
         <div className="max-w-md space-y-2">
@@ -160,7 +160,7 @@ export default function SchoolDashboard({ companyId, company, isAdmin }) {
         <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 shadow-sm p-6 space-y-6">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-black text-slate-900 dark:text-white">{t("revenue_growth_curve", "Revenue Growth Curve (")}{currency})</h3>
-            <span className="text-[10px] bg-primary/10 text-primary py-1 px-3 rounded-full font-black border border-primary/20 uppercase tracking-wider">{t("paid_invoices", "Paid Invoices")}</span>
+            <span className="text-[10px] bg-slate-100 text-primary py-1 px-3 rounded-full font-black border border-primary/20 uppercase tracking-wider">{t("paid_invoices", "Paid Invoices")}</span>
           </div>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -185,7 +185,7 @@ export default function SchoolDashboard({ companyId, company, isAdmin }) {
         <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 shadow-sm p-6 space-y-6">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-black text-slate-900 dark:text-white">{caseTerm} {t("distribution_by_stage", "Distribution by Stage")}</h3>
-            <span className="text-[10px] bg-primary/10 text-primary py-1 px-3 rounded-full font-black border border-primary/20 uppercase tracking-wider">{t("active_pipelines", "Active Pipelines")}</span>
+            <span className="text-[10px] bg-slate-100 text-primary py-1 px-3 rounded-full font-black border border-primary/20 uppercase tracking-wider">{t("active_pipelines", "Active Pipelines")}</span>
           </div>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -209,7 +209,7 @@ export default function SchoolDashboard({ companyId, company, isAdmin }) {
               <Calendar className="w-4 h-4 text-primary" />
               <h3 className="text-sm font-semibold">{t("upcoming", "Upcoming")} {hearingsTermPlural}</h3>
             </div>
-            <span className="text-xs font-semibold text-primary bg-primary/10 rounded-full w-5 h-5 flex items-center justify-center">
+            <span className="text-xs font-semibold text-primary bg-slate-100 rounded-full w-5 h-5 flex items-center justify-center">
               {upcomingHearings.length}
             </span>
           </div>
@@ -224,7 +224,7 @@ export default function SchoolDashboard({ companyId, company, isAdmin }) {
             ) : upcomingHearings.map(h => {
               return (
                 <div key={h.id} className="px-4 py-3 flex items-center gap-3 hover:bg-muted/40 transition-colors">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex flex-col items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 rounded-lg bg-slate-100 flex flex-col items-center justify-center flex-shrink-0">
                     <span className="text-[9px] font-bold text-primary leading-none uppercase">{format(new Date(h.date), "MMM")}</span>
                     <span className="text-sm font-bold text-primary leading-none">{format(new Date(h.date), "d")}</span>
                   </div>

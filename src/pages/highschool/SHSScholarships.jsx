@@ -112,7 +112,7 @@ export default function SHSScholarships() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-slate-100">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
               <Award className="w-6 h-6" />
             </div>
             <div>
@@ -146,7 +146,7 @@ export default function SHSScholarships() {
             <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading grants...</div>
           ) : filteredSch.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-primary/5 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
                 <GraduationCap className="w-8 h-8 text-primary dark:text-primary" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No active scholarships</h3>
@@ -179,7 +179,7 @@ export default function SHSScholarships() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <Badge variant="secondary" className="bg-primary/5 text-primary/90 border-none font-bold">
+                        <Badge variant="secondary" className="bg-slate-50 text-primary/90 border-none font-bold">
                           {sch.data?.percentage}% Waived
                         </Badge>
                       </td>
@@ -188,7 +188,7 @@ export default function SHSScholarships() {
                       </td>
                       <td className="px-6 py-4">
                         <Badge variant="outline" className={
-                          sch.status === 'Active' ? 'bg-primary/5 text-primary/90 border-primary/20' : 'bg-rose-50 text-rose-700 border-rose-200'
+                          sch.status === 'Active' ? 'bg-slate-50 text-primary/90 border-primary/20' : 'bg-rose-50 text-rose-700 border-rose-200'
                         }>
                           {sch.status}
                         </Badge>
@@ -199,7 +199,7 @@ export default function SHSScholarships() {
                             Revoke
                           </Button>
                         ) : (
-                          <Button size="sm" variant="outline" onClick={() => updateStatus(sch.id, 'Active')} className="h-8 text-xs font-semibold text-primary border-primary/20 hover:bg-primary/5">
+                          <Button size="sm" variant="outline" onClick={() => updateStatus(sch.id, 'Active')} className="h-8 text-xs font-semibold text-primary border-primary/20 hover:bg-slate-50">
                             Reinstate
                           </Button>
                         )}

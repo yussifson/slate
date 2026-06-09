@@ -15,8 +15,8 @@ import { useNotifications } from "@/hooks/integrations/useNotifications";
 import { MessageSquare } from "lucide-react";
 
 const statusColors = {
-  'Checked-in': 'bg-primary/10 text-primary/90',
-  'Confirmed': 'bg-primary/10 text-primary/90',
+  'Checked-in': 'bg-slate-100 text-primary/90',
+  'Confirmed': 'bg-slate-100 text-primary/90',
   'Checked-out': 'bg-muted text-foreground',
   'Cancelled': 'bg-red-100 text-red-700'
 };
@@ -195,7 +195,7 @@ export default function Reservations() {
                     </td>
                     <td className="px-6 py-4 text-muted-foreground font-medium">{res.roomType}</td>
                     <td className="px-6 py-4 text-center">
-                      <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${statusColors[res.status] || 'bg-primary/10 text-primary/90'}`}>{res.status}</span>
+                      <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${statusColors[res.status] || 'bg-slate-100 text-primary/90'}`}>{res.status}</span>
                     </td>
                     <td className="px-6 py-4 text-center font-bold text-card-foreground">${res.total}</td>
                     <td className="px-6 py-4 text-right flex justify-end gap-2">
@@ -311,7 +311,7 @@ export default function Reservations() {
                   <div>
                     <h3 className="text-sm font-semibold text-muted-foreground mb-2">{t("guest_info", "Guest Info")}</h3>
                     <div className="bg-muted/50 p-4 rounded-lg flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-full bg-slate-100 text-primary flex items-center justify-center">
                         <User className="w-5 h-5" />
                       </div>
                       <div>
@@ -339,7 +339,7 @@ export default function Reservations() {
                       </div>
                       <div className="bg-muted/50 p-3 rounded-lg">
                         <p className="text-xs text-muted-foreground mb-1">{t("status", "Status")}</p>
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-bold ${res.status === 'Confirmed' ? 'bg-primary/10 text-primary/90' : res.status === 'Checked-in' ? 'bg-primary/10 text-primary/90' : 'bg-primary/10 text-primary/90'}`}>
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-bold ${res.status === 'Confirmed' ? 'bg-slate-100 text-primary/90' : res.status === 'Checked-in' ? 'bg-slate-100 text-primary/90' : 'bg-slate-100 text-primary/90'}`}>
                           <Activity className="w-3 h-3 mr-1" /> {res.status}
                         </span>
                       </div>

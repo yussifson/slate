@@ -193,7 +193,7 @@ export default function Marketplace() {
           subtitle="Discover and install community-built modules for your workspace."
         />
         <div className="flex items-center gap-3">
-          <Badge variant="outline" className="h-8 gap-1.5 bg-primary/5 text-primary/90 border-primary/20">
+          <Badge variant="outline" className="h-8 gap-1.5 bg-slate-50 text-primary/90 border-primary/20">
             <ShieldCheck className="w-3.5 h-3.5" /> Free to Install
           </Badge>
         </div>
@@ -269,11 +269,11 @@ export default function Marketplace() {
                     </div>
 
                     {(isInstalled || isOwned) ? (
-                      <Badge className="bg-primary/5 dark:bg-primary/10 text-primary/90 dark:text-primary/70 border-primary/20 dark:border-primary/20 font-extrabold gap-1.5 px-3 py-1.5 rounded-full shadow-sm">
+                      <Badge className="bg-slate-50 dark:bg-slate-100 text-primary/90 dark:text-primary/70 border-primary/20 dark:border-primary/20 font-extrabold gap-1.5 px-3 py-1.5 rounded-full shadow-sm">
                         <CheckCircle2 className="w-4 h-4" /> {isOwned ? 'Owned' : 'Installed'}
                       </Badge>
                     ) : (
-                      <Badge variant="outline" className="text-xs font-bold text-primary dark:text-primary/70 border-primary/20 dark:border-primary/20 bg-primary/5 dark:bg-primary/10 px-3 py-1 rounded-full">
+                      <Badge variant="outline" className="text-xs font-bold text-primary dark:text-primary/70 border-primary/20 dark:border-primary/20 bg-slate-50 dark:bg-slate-100 px-3 py-1 rounded-full">
                         Free
                       </Badge>
                     )}
@@ -352,7 +352,7 @@ export default function Marketplace() {
       {/* Installation Success Dialog */}
       <Dialog open={!!installSuccessModal} onOpenChange={(open) => !open && setInstallSuccessModal(null)}>
         <DialogContent className="sm:max-w-[425px] flex flex-col items-center justify-center text-center p-8">
-          <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 border-4 border-primary/5">
+          <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4 border-4 border-primary/5">
             <CheckCircle2 className="w-8 h-8 text-primary" />
           </div>
           <DialogHeader>

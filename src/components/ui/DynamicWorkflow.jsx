@@ -44,7 +44,7 @@ export default function DynamicWorkflow({ record, moduleDef, onStatusChange }) {
             <React.Fragment key={step}>
               <div className="flex flex-col items-center">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shadow-sm transition-colors
-                  ${isCompleted ? 'bg-primary/10 text-primary' : 
+                  ${isCompleted ? 'bg-slate-100 text-primary' : 
                     isCurrent ? 'bg-primary text-white ring-2 ring-primary/20' : 
                     'bg-slate-200 text-slate-400'}`}>
                   {isCompleted ? <CheckCircle2 className="w-5 h-5" /> : (idx + 1)}

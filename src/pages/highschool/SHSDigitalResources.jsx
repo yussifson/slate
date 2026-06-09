@@ -108,7 +108,7 @@ export default function SHSDigitalResources() {
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
         <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-slate-100">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
               <Cloud className="w-6 h-6" />
             </div>
             <div>
@@ -144,7 +144,7 @@ export default function SHSDigitalResources() {
             <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading resources...</div>
           ) : filteredResources.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-primary/5 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
                 <FileText className="w-8 h-8 text-primary dark:text-primary" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No resources found</h3>
@@ -153,9 +153,9 @@ export default function SHSDigitalResources() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6 bg-slate-50 dark:bg-slate-800/30">
               {filteredResources.map(resource => (
-                <div key={resource.id} className="p-5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-primary dark:border-primary/50 hover:shadow-lg hover:shadow-emerald-500/10 transition-all group">
+                <div key={resource.id} className="p-5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-primary dark:border-slate-200 hover:shadow-lg hover:shadow-emerald-500/10 transition-all group">
                   <div className="flex justify-between items-start mb-3">
-                    <div className="w-10 h-10 rounded-lg bg-primary/5 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center">
                       <FileText className="w-5 h-5 text-primary" />
                     </div>
                     <Button 

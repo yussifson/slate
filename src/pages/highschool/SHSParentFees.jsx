@@ -78,7 +78,7 @@ export default function SHSParentFees() {
       ) : wards.length === 0 ? (
         <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
           <CardContent className="p-20 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-primary/5 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+            <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
               <User className="w-8 h-8 text-primary dark:text-primary" />
             </div>
             <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No Wards Linked</h3>
@@ -97,7 +97,7 @@ export default function SHSParentFees() {
                 className={`w-full p-4 rounded-2xl border text-left transition-all duration-300 flex items-center gap-4 ${
                   selectedWardId === ward.id 
                     ? 'bg-primary dark:bg-primary border-primary dark:border-primary text-white shadow-lg shadow-emerald-500/20 scale-100' 
-                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-primary dark:border-primary/50 scale-95'
+                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-primary dark:border-slate-200 scale-95'
                 }`}
               >
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg shrink-0 ${
@@ -124,7 +124,7 @@ export default function SHSParentFees() {
                   <h3 className="text-3xl font-black text-slate-800 dark:text-slate-100">${totalBilled.toFixed(2)}</h3>
                 </CardContent>
               </Card>
-              <Card className="rounded-3xl border-none shadow-sm bg-primary/5">
+              <Card className="rounded-3xl border-none shadow-sm bg-slate-50">
                 <CardContent className="p-6">
                   <p className="text-sm font-bold text-primary/70 uppercase tracking-wider mb-2">Total Paid</p>
                   <h3 className="text-3xl font-black text-primary/90">${totalPaid.toFixed(2)}</h3>
@@ -161,7 +161,7 @@ export default function SHSParentFees() {
                             <h4 className="font-bold text-slate-800 dark:text-slate-100">{invoice.case_number}</h4>
                             <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">{invoice.data?.term} • {invoice.data?.academicYear}</p>
                             <Badge variant="outline" className={`mt-2 ${
-                              invoice.status === 'Paid' ? 'bg-primary/5 text-primary/90 border-primary/20' :
+                              invoice.status === 'Paid' ? 'bg-slate-50 text-primary/90 border-primary/20' :
                               invoice.status === 'Partial' ? 'bg-amber-50 text-amber-700 border-amber-200' :
                               'bg-rose-50 text-rose-700 border-rose-200'
                             }`}>
@@ -171,7 +171,7 @@ export default function SHSParentFees() {
                         </div>
                         <div className="text-right">
                           <p className="text-2xl font-black text-slate-800 dark:text-slate-100">${parseFloat(invoice.data?.amount || 0).toFixed(2)}</p>
-                          <Button variant="ghost" size="sm" className="mt-2 text-primary dark:text-primary/70 hover:bg-primary/5 dark:bg-slate-800 -mr-3">
+                          <Button variant="ghost" size="sm" className="mt-2 text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800 -mr-3">
                             <Download className="w-4 h-4 mr-2" /> Bill PDF
                           </Button>
                         </div>

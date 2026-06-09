@@ -27,10 +27,10 @@ const getRoomStatus = (roomNumber, reservations, today) => {
 };
 
 const statusColors = {
-  Available:  'bg-primary/5 border-primary/30 text-primary/80 hover:bg-primary/10',
+  Available:  'bg-slate-50 border-primary/30 text-primary/80 hover:bg-slate-100',
   Occupied:   'bg-red-50 border-red-300 text-red-800 hover:bg-red-100',
-  Arriving:   'bg-primary/5 border-primary/30 text-primary/80 hover:bg-primary/10',
-  Reserved:   'bg-primary/5 border-primary/30 text-primary/80 hover:bg-primary/10',
+  Arriving:   'bg-slate-50 border-primary/30 text-primary/80 hover:bg-slate-100',
+  Reserved:   'bg-slate-50 border-primary/30 text-primary/80 hover:bg-slate-100',
   Cleaning:   'bg-yellow-50 border-yellow-300 text-yellow-800 hover:bg-yellow-100',
   Maintenance:'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200',
 };
@@ -129,7 +129,7 @@ export default function FrontDesk() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-card rounded-xl border border-border p-4 shadow-sm border-l-4 border-l-violet-500">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-primary" />
             </div>
             <div>
@@ -140,7 +140,7 @@ export default function FrontDesk() {
         </div>
         <div className="bg-card rounded-xl border border-border p-4 shadow-sm border-l-4 border-l-green-500">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
               <LogIn className="w-5 h-5 text-primary" />
             </div>
             <div>
@@ -162,7 +162,7 @@ export default function FrontDesk() {
         </div>
         <div className="bg-card rounded-xl border border-border p-4 shadow-sm border-l-4 border-l-violet-500">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
               <Users className="w-5 h-5 text-primary" />
             </div>
             <div>
@@ -176,7 +176,7 @@ export default function FrontDesk() {
       {(todayArrivals.length > 0 || todayDepartures.length > 0) && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {todayArrivals.length > 0 && (
-            <div className="bg-primary/5 border border-primary/20 rounded-xl p-4">
+            <div className="bg-slate-50 border border-primary/20 rounded-xl p-4">
               <h3 className="font-bold text-primary/80 flex items-center gap-2 mb-3">
                 <LogIn className="w-4 h-4" /> {t("today_s_arrivals", "Today's Arrivals (")}{todayArrivals.length})
                               </h3>
@@ -237,7 +237,7 @@ export default function FrontDesk() {
                 return (
                   <div key={floor}>
                     <p className="text-xs font-bold text-muted-foreground uppercase mb-3 flex items-center gap-2">
-                      <span className="w-6 h-6 rounded bg-primary/10 text-primary/90 flex items-center justify-center font-bold text-[10px]">{floor}</span>
+                      <span className="w-6 h-6 rounded bg-slate-100 text-primary/90 flex items-center justify-center font-bold text-[10px]">{floor}</span>
                       {t("floor", "Floor")} {floor}
                     </p>
                     <div className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-2">

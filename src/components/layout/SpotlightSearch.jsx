@@ -176,7 +176,7 @@ export default function SpotlightSearch() {
               ) : (
                 <div className="max-w-sm space-y-2 mt-4 px-4">
                   <div className="flex items-center justify-center gap-2 mb-3">
-                    <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center">
                       <Search className="w-4 h-4 text-primary" />
                     </div>
                   </div>
@@ -245,7 +245,7 @@ export default function SpotlightSearch() {
                                   className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-all duration-150 ${
                                     isSelected
                                       ? "bg-white/20 text-primary-foreground hover:bg-white/30"
-                                      : "bg-primary/10 text-primary hover:bg-primary/20"
+                                      : "bg-slate-100 text-primary hover:bg-primary/20"
                                   }`}
                                   title="Ask Orbit AI about this record"
                                 >

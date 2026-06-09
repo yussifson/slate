@@ -60,7 +60,7 @@ export default function QueryBuilder({ fields = [], onApply, onClear }) {
         onClick={() => setIsOpen(v => !v)}
         className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium transition-all duration-200 ${
           activeCount > 0
-            ? 'border-primary bg-primary/10 text-primary'
+            ? 'border-primary bg-slate-100 text-primary'
             : 'border-border bg-card text-muted-foreground hover:bg-muted/50 hover:text-foreground'
         }`}
       >

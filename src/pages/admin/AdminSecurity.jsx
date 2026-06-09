@@ -22,14 +22,14 @@ export default function AdminSecurity() {
         subtitle="Global monitoring for impersonation events, access logs, and system alerts." 
       />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="bg-gradient-to-br from-primary/5 to-white border-primary/10 shadow-sm rounded-2xl">
+        <Card className="bg-gradient-to-br from-primary/5 to-white border-slate-200 shadow-sm rounded-2xl">
           <CardContent className="p-6">
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-sm font-bold text-primary/80 uppercase tracking-wider mb-1">{t("system_health", "System Health")}</p>
                 <h3 className="text-2xl font-extrabold text-primary/60">{t("secure_online", "Secure & Online")}</h3>
               </div>
-              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center">
                 <ShieldCheck className="w-6 h-6 text-primary" />
               </div>
             </div>
@@ -56,14 +56,14 @@ export default function AdminSecurity() {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-primary/5 to-white border-primary/10 shadow-sm rounded-2xl">
+        <Card className="bg-gradient-to-br from-primary/5 to-white border-slate-200 shadow-sm rounded-2xl">
           <CardContent className="p-6">
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-sm font-bold text-primary/80 uppercase tracking-wider mb-1">{t("active_impersonations", "Active Impersonations")}</p>
                 <h3 className="text-4xl font-extrabold text-primary/60">1</h3>
               </div>
-              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center">
                 <Eye className="w-6 h-6 text-primary" />
               </div>
             </div>
@@ -101,7 +101,7 @@ export default function AdminSecurity() {
                       <td className="px-6 py-4 text-xs font-medium text-slate-500">{log.time}</td>
                       <td className="px-6 py-4 text-right">
                         <Badge className={`text-[10px] font-bold uppercase py-0.5 px-2 border-none ${
-                          log.status === 'Success' ? 'bg-primary/5 text-primary/90' :
+                          log.status === 'Success' ? 'bg-slate-50 text-primary/90' :
                           log.status === 'Blocked' ? 'bg-rose-50 text-rose-700' :
                           'bg-amber-50 text-amber-700'
                         }`}>

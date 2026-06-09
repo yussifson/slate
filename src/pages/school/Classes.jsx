@@ -188,7 +188,7 @@ export default function Classes() {
         <div className="school-card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-primary/5/60 dark:bg-slate-800/40 border-b border-primary/10 dark:border-slate-700">
+              <thead className="bg-slate-50/60 dark:bg-slate-800/40 border-b border-slate-200 dark:border-slate-700">
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Class Name</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Subject</th>
@@ -298,7 +298,7 @@ export default function Classes() {
           {viewDetails && (
             <div className="mt-6 space-y-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-primary/5 dark:bg-primary/20 dark:bg-primary/50 flex items-center justify-center text-primary dark:text-primary/70 dark:text-primary/70">
+                <div className="w-16 h-16 rounded-full bg-slate-50 dark:bg-primary/20 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70 dark:text-primary/70">
                   <BookOpen className="w-8 h-8" />
                 </div>
                 <div>
@@ -331,7 +331,7 @@ export default function Classes() {
                   <h4 className="text-sm font-bold text-foreground">{t("assigned_courses", "Assigned Courses")}</h4>
                   <div className="flex flex-wrap gap-2">
                     {viewDetails.courses.split(',').map(course => (
-                      <span key={course} className="px-3 py-1 bg-primary/5 dark:bg-primary/20 text-primary dark:text-primary/30 font-semibold text-xs rounded-full border border-primary/20">
+                      <span key={course} className="px-3 py-1 bg-slate-50 dark:bg-primary/20 text-primary dark:text-primary/30 font-semibold text-xs rounded-full border border-primary/20">
                         {course.trim()}
                       </span>
                     ))}

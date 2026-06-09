@@ -191,7 +191,7 @@ export default function PurchaseOrders() {
 
   const getStatusBadge = (status) => {
     switch (status) {
-      case 'received': return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary/10 text-primary/90">Received</span>;
+      case 'received': return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-primary/90">Received</span>;
       case 'sent': return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-100 text-orange-700">Sent</span>;
       default: return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">Draft</span>;
     }

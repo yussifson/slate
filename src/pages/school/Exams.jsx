@@ -12,9 +12,9 @@ import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
 
 const statusColors = {
-  Upcoming: 'bg-primary/10 dark:bg-primary/50 text-primary dark:text-primary/70 dark:text-primary/70',
+  Upcoming: 'bg-slate-100 dark:bg-slate-500 text-primary dark:text-primary/70 dark:text-primary/70',
   Ongoing: 'bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400 animate-pulse',
-  Completed: 'bg-primary/10 dark:bg-primary/50 text-primary/90 dark:text-primary/70'
+  Completed: 'bg-slate-100 dark:bg-slate-500 text-primary/90 dark:text-primary/70'
 };
 
 export default function Exams() {
@@ -206,7 +206,7 @@ export default function Exams() {
         <div className="school-card overflow-hidden mt-4">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-primary/5/60 dark:bg-slate-800/40 border-b border-primary/10 dark:border-slate-700">
+              <thead className="bg-slate-50/60 dark:bg-slate-800/40 border-b border-slate-200 dark:border-slate-700">
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("subject", "Subject")}</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("class", "Class")}</th>
@@ -366,7 +366,7 @@ export default function Exams() {
           {viewDetails && (
             <div className="mt-6 space-y-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-primary/5 dark:bg-primary/20 dark:bg-primary/50 flex items-center justify-center text-primary dark:text-primary/70 dark:text-primary/70">
+                <div className="w-16 h-16 rounded-full bg-slate-50 dark:bg-primary/20 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70 dark:text-primary/70">
                   <FileText className="w-8 h-8" />
                 </div>
                 <div>

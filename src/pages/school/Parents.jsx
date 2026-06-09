@@ -166,7 +166,7 @@ export default function Parents() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-primary/5/60 dark:bg-slate-800/40 border-b border-primary/10 dark:border-slate-700">
+              <thead className="bg-slate-50/60 dark:bg-slate-800/40 border-b border-slate-200 dark:border-slate-700">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Parent / Guardian</th>
                   <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">ID / Login ID</th>
@@ -181,7 +181,7 @@ export default function Parents() {
                 <tr key={p.id} className="hover:bg-muted/50 transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-primary/5 dark:bg-primary/30 flex items-center justify-center text-primary dark:text-primary/30 font-bold text-xs">
+                      <div className="w-9 h-9 rounded-full bg-slate-50 dark:bg-primary/30 flex items-center justify-center text-primary dark:text-primary/30 font-bold text-xs">
                         {p.avatar}
                       </div>
                       <p className="font-semibold text-card-foreground">{p.name}</p>

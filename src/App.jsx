@@ -627,7 +627,6 @@ function ProtectedRoute() {
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
         <div className="relative flex items-center justify-center">
           <div className="w-12 h-12 rounded-full border-[3px] border-primary/20 border-t-primary animate-spin"></div>
-          <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent rounded-full animate-pulse"></div>
         </div>
       </div>
     );

@@ -130,7 +130,7 @@ export default function SHSPayments() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-slate-100">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
               <DollarSign className="w-6 h-6" />
             </div>
             <div>
@@ -164,7 +164,7 @@ export default function SHSPayments() {
             <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading transactions...</div>
           ) : filteredPayments.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-primary/5 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
                 <History className="w-8 h-8 text-primary dark:text-primary" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No payments recorded</h3>
@@ -196,7 +196,7 @@ export default function SHSPayments() {
                         <span className="text-slate-600 dark:text-slate-300 font-mono text-xs bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">{payment.data?.invoiceNumber}</span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="font-black text-primary bg-primary/5 px-3 py-1 rounded-lg border border-primary/10">
+                        <span className="font-black text-primary bg-slate-50 px-3 py-1 rounded-lg border border-slate-200">
                           ${parseFloat(payment.data?.amountPaid || 0).toFixed(2)}
                         </span>
                       </td>
@@ -207,7 +207,7 @@ export default function SHSPayments() {
                         <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">{payment.data?.date}</p>
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <Badge variant="outline" className="bg-primary/5 text-primary/90 border-primary/20">
+                        <Badge variant="outline" className="bg-slate-50 text-primary/90 border-primary/20">
                           {payment.status}
                         </Badge>
                       </td>

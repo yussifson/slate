@@ -764,7 +764,7 @@ RULES FOR MULTI-STEP REASONING:
                   onClick={() => { setActiveId(s.id); setShowHistory(false); }}
                   className={`group relative flex items-start gap-2 p-2 rounded-lg cursor-pointer text-left transition-colors ${
                     s.id === activeId
-                      ? 'bg-primary/5 dark:bg-primary/30 border border-primary/20 dark:border-primary/50'
+                      ? 'bg-slate-50 dark:bg-primary/30 border border-primary/20 dark:border-slate-200'
                       : 'hover:bg-muted/70'
                   }`}
                 >
@@ -794,7 +794,7 @@ RULES FOR MULTI-STEP REASONING:
         <div className="flex items-center gap-2 px-3 py-2.5 border-b border-border bg-gradient-to-r from-primary/8 to-primary/5 shrink-0">
           <button
             onClick={() => setShowHistory(prev => !prev)}
-            className={`p-1.5 rounded-md transition-colors shrink-0 ${showHistory ? 'bg-primary/10 dark:bg-primary/40 text-primary dark:text-primary/70' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
+            className={`p-1.5 rounded-md transition-colors shrink-0 ${showHistory ? 'bg-slate-100 dark:bg-primary/40 text-primary dark:text-primary/70' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
             title="Chat history"
           >
             <Clock className="w-4 h-4" />
@@ -821,7 +821,7 @@ RULES FOR MULTI-STEP REASONING:
         </div>
 
         {/* Page Context Bar */}
-        <div className="px-3 py-1.5 flex items-center gap-1.5 bg-primary/60 dark:bg-primary/10 border-b border-primary/10 dark:border-primary/20 shrink-0">
+        <div className="px-3 py-1.5 flex items-center gap-1.5 bg-primary/60 dark:bg-slate-100 border-b border-slate-200 dark:border-primary/20 shrink-0">
           <div className="w-1.5 h-1.5 rounded-full bg-primary shrink-0"></div>
           <span className="text-[10px] text-primary dark:text-primary/70 font-semibold truncate">
             {ctx ? `${ctx.suite}  ${ctx.title}` : location.pathname}  {t("ai_has_full_context", "AI has full context")}
@@ -896,7 +896,7 @@ RULES FOR MULTI-STEP REASONING:
                 <button
                   key={i}
                   onClick={() => handleSend(s)}
-                  className="text-[10px] font-medium px-2.5 py-1 rounded-full bg-primary/5 dark:bg-primary/30 text-primary/90 dark:text-primary/70 border border-primary/10 dark:border-primary/40 hover:bg-primary/10 dark:hover:bg-primary/40 transition-colors truncate max-w-[180px]"
+                  className="text-[10px] font-medium px-2.5 py-1 rounded-full bg-slate-50 dark:bg-primary/30 text-primary/90 dark:text-primary/70 border border-slate-200 dark:border-primary/40 hover:bg-slate-100 dark:hover:bg-primary/40 transition-colors truncate max-w-[180px]"
                 >
                   {s}
                 </button>
@@ -907,7 +907,7 @@ RULES FOR MULTI-STEP REASONING:
 
         {/* Attached File Preview */}
         {uploadedFile && (
-          <div className="mx-3 mb-2 px-3 py-2 rounded-lg bg-primary/5 dark:bg-primary/20 border border-primary/20 dark:border-primary/40 flex items-center gap-2 shrink-0">
+          <div className="mx-3 mb-2 px-3 py-2 rounded-lg bg-slate-50 dark:bg-primary/20 border border-primary/20 dark:border-primary/40 flex items-center gap-2 shrink-0">
             {uploadedFile.type === 'image'
               ? <Image className="w-4 h-4 text-primary shrink-0" />
               : <FileText className="w-4 h-4 text-primary shrink-0" />}
@@ -938,7 +938,7 @@ RULES FOR MULTI-STEP REASONING:
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="p-1.5 text-muted-foreground hover:text-primary hover:bg-primary/5 dark:hover:bg-primary/30 rounded-md transition-colors"
+                  className="p-1.5 text-muted-foreground hover:text-primary hover:bg-slate-50 dark:hover:bg-primary/30 rounded-md transition-colors"
                   title="Attach file or image"
                 >
                   <Paperclip className="w-4 h-4" />
@@ -949,7 +949,7 @@ RULES FOR MULTI-STEP REASONING:
                   className={`p-1.5 rounded-md transition-colors ${
                     isRecording
                       ? 'text-red-500 bg-red-50 dark:bg-red-950/30 animate-pulse'
-                      : 'text-muted-foreground hover:text-primary hover:bg-primary/5 dark:hover:bg-primary/30'
+                      : 'text-muted-foreground hover:text-primary hover:bg-slate-50 dark:hover:bg-primary/30'
                   }`}
                   title={isRecording ? 'Stop recording' : 'Voice input'}
                 >

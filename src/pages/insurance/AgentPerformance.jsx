@@ -234,7 +234,7 @@ export default function AgentPerformance() {
                           value={agent.status}
                           onChange={e => handleUpdateStatus(agent, e.target.value)}
                           className={`rounded-md border border-input px-2 py-1 text-xs font-bold ${
-                            agent.status === 'Active' ? 'bg-primary/10 text-primary/90' : 'bg-muted text-muted-foreground'
+                            agent.status === 'Active' ? 'bg-slate-100 text-primary/90' : 'bg-muted text-muted-foreground'
                           }`}
                         >
                           <option value="Active">{t("active", "Active")}</option>

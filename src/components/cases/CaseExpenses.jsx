@@ -18,7 +18,7 @@ const CATEGORIES = ["travel", "filing_fees", "court_costs", "postage", "printing
 
 const STATUS_COLORS = {
   pending: "bg-amber-100 text-amber-700",
-  approved: "bg-primary/10 text-primary/90",
+  approved: "bg-slate-100 text-primary/90",
   rejected: "bg-red-100 text-red-700",
   billed: "bg-orange-100 text-orange-700",
 };

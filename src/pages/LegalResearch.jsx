@@ -16,7 +16,7 @@ import { generateText } from "@/lib/cloudflareAI";
 
 const JURISDICTIONS = ["Ghana", "Nigeria", "Sierra Leone", "West Africa (General)", "International"];
 const CASE_TYPES = ["civil", "criminal", "corporate", "family", "property", "labor", "tax", "other"];
-const CONFIDENCE_COLORS = { high: "bg-primary/10 text-primary/90", medium: "bg-yellow-100 text-yellow-700", low: "bg-red-100 text-red-700" };
+const CONFIDENCE_COLORS = { high: "bg-slate-100 text-primary/90", medium: "bg-yellow-100 text-yellow-700", low: "bg-red-100 text-red-700" };
 
 function Section({ icon: Icon, title, children, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -164,7 +164,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
 
           {!result && !loading && !error && (
             <div className="bg-card border border-border rounded-xl p-12 text-center">
-              <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4"><BookOpen className="w-7 h-7 text-primary" /></div>
+              <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4"><BookOpen className="w-7 h-7 text-primary" /></div>
               <h3 className="text-sm font-semibold mb-1">{t("ask_your_first_question", "Ask your first question")}</h3>
               <p className="text-xs text-muted-foreground max-w-xs mx-auto">{t(
                 "get_instant_research_on_statut",
@@ -172,7 +172,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
               )}</p>
               <div className="mt-4 flex flex-wrap gap-2 justify-center">
                 {["Requirements for bail in Nigeria", "Tenancy termination notice periods Ghana", "Corporate registration requirements Sierra Leone"].map(s => {
-                  return (<button key={s} onClick={() => setQuestion(s)} className="text-xs px-3 py-1.5 rounded-full border border-primary/30 text-primary hover:bg-primary/5 transition-colors">{s}</button>);
+                  return (<button key={s} onClick={() => setQuestion(s)} className="text-xs px-3 py-1.5 rounded-full border border-primary/30 text-primary hover:bg-slate-50 transition-colors">{s}</button>);
                 })}
               </div>
             </div>
@@ -189,7 +189,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
               </div>
 
               {/* Main Answer */}
-              <div className="bg-primary/5 border border-primary/20 rounded-xl p-4">
+              <div className="bg-slate-50 border border-primary/20 rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-2"><Scale className="w-4 h-4 text-primary" /><span className="text-sm font-semibold">{t("answer", "Answer")}</span></div>
                 <div className="text-sm text-foreground leading-relaxed prose prose-sm max-w-none">
                   <ReactMarkdown>{result.answer}</ReactMarkdown>
@@ -202,7 +202,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
                   <div className="space-y-2 pt-1">
                     {result.legislation.map((l, i) => {
                       return (
-                        <div key={i} className="p-3 bg-primary/5 border border-primary/20 rounded-lg">
+                        <div key={i} className="p-3 bg-slate-50 border border-primary/20 rounded-lg">
                           <p className="text-sm font-medium text-primary/80">{l.name}{l.section && ` — ${l.section}`}</p>
                           {l.relevance && <p className="text-xs text-primary/90 mt-0.5">{l.relevance}</p>}
                         </div>
@@ -218,7 +218,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
                   <div className="space-y-2 pt-1">
                     {result.case_law.map((c, i) => {
                       return (
-                        <div key={i} className="p-3 bg-primary/5 border border-primary/20 rounded-lg">
+                        <div key={i} className="p-3 bg-slate-50 border border-primary/20 rounded-lg">
                           <p className="text-sm font-medium text-primary/80">{c.case_name}{c.year && ` (${c.year})`}</p>
                           {c.principle && <p className="text-xs text-primary/90 mt-0.5">{c.principle}</p>}
                         </div>
@@ -235,7 +235,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
                     {result.next_steps.map((s, i) => {
                       return (
                         <div key={i} className="flex items-start gap-2 text-sm">
-                          <span className="w-5 h-5 rounded-full bg-primary/10 text-primary text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">{i + 1}</span>
+                          <span className="w-5 h-5 rounded-full bg-slate-100 text-primary text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">{i + 1}</span>
                           <span>{s}</span>
                         </div>
                       );

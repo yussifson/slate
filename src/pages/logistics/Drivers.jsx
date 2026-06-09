@@ -17,7 +17,7 @@ import { useContracts } from '@/hooks/integrations/useContracts';
 import { useCompanyId } from '@/hooks/useCompanyId';
 
 const STATUS_COLORS = {
-  'Active':    'bg-primary/10 text-primary/90 dark:bg-primary/30 dark:text-primary/70',
+  'Active':    'bg-slate-100 text-primary/90 dark:bg-primary/30 dark:text-primary/70',
   'On Trip':   'bg-orange-100 text-orange-700 dark:bg-primary/30 dark:text-primary/70',
   'Off Duty':  'bg-amber-100 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400',
   'Suspended': 'bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400',
@@ -143,9 +143,9 @@ export default function Drivers() {
   const suspended = drivers.filter(d => d.status === 'Suspended').length;
 
   const stats = [
-    { label: 'Total Drivers', value: total, icon: User, color: 'bg-primary/10 text-primary', border: 'border-primary/20' },
-    { label: 'Active', value: active, icon: CheckCircle2, color: 'bg-primary/10 text-primary', border: 'border-primary/20' },
-    { label: 'On Trip', value: onTrip, icon: Truck, color: 'bg-primary/10 text-primary', border: 'border-primary/20' },
+    { label: 'Total Drivers', value: total, icon: User, color: 'bg-slate-100 text-primary', border: 'border-primary/20' },
+    { label: 'Active', value: active, icon: CheckCircle2, color: 'bg-slate-100 text-primary', border: 'border-primary/20' },
+    { label: 'On Trip', value: onTrip, icon: Truck, color: 'bg-slate-100 text-primary', border: 'border-primary/20' },
     { label: 'Suspended', value: suspended, icon: ShieldOff, color: 'bg-red-100 text-red-600', border: 'border-red-200' },
   ];
 
@@ -232,7 +232,7 @@ export default function Drivers() {
                     <tr key={driver.id} className="hover:bg-muted/30 transition-colors">
                       <td className="px-5 py-4 pl-6">
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-full bg-primary/10 dark:bg-primary/30 flex items-center justify-center text-primary font-bold text-sm">
+                          <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-primary/30 flex items-center justify-center text-primary font-bold text-sm">
                             {driver.driverName?.charAt(0)?.toUpperCase() || 'D'}
                           </div>
                           <div>

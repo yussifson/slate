@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { SUBSCRIPTION_PLANS, formatCurrency } from "@/lib/constants";
 
 const STATUS_COLORS = {
-  active: "bg-primary/10 text-primary/90",
+  active: "bg-slate-100 text-primary/90",
   trial: "bg-orange-100 text-orange-700",
   inactive: "bg-slate-100 text-slate-600",
   expired: "bg-red-100 text-red-700",

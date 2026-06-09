@@ -15,15 +15,15 @@ import { useNotifications } from "@/hooks/integrations/useNotifications";
 import { MessageSquare, Bell } from "lucide-react";
 
 const typeColors = {
-  Consultation: 'bg-primary/5 text-primary/90 border-primary/20',
-  'Follow-up': 'bg-primary/5 text-primary/90 border-primary/20',
+  Consultation: 'bg-slate-50 text-primary/90 border-primary/20',
+  'Follow-up': 'bg-slate-50 text-primary/90 border-primary/20',
   Emergency: 'bg-red-50 text-red-700 border-red-200',
 };
 
 const statusColors = {
-  Scheduled: 'text-primary bg-primary/5 border-primary/20',
+  Scheduled: 'text-primary bg-slate-50 border-primary/20',
   'In Progress': 'text-amber-600 bg-amber-50 border-amber-200 animate-pulse',
-  Completed: 'text-primary bg-primary/5 border-primary/20',
+  Completed: 'text-primary bg-slate-50 border-primary/20',
 };
 
 export default function Appointments() {
@@ -253,7 +253,7 @@ export default function Appointments() {
                     </Button>
                   )}
                   {selectedAppt.status === 'Completed' && (
-                    <div className="bg-primary/5 border border-primary/20 text-primary/90 text-sm p-4 rounded-xl flex items-center gap-2 w-full justify-center font-semibold">
+                    <div className="bg-slate-50 border border-primary/20 text-primary/90 text-sm p-4 rounded-xl flex items-center gap-2 w-full justify-center font-semibold">
                       <CheckCircle className="w-5 h-5" /> {t(
                         "visit_completed_successfully_c",
                         "Visit completed successfully. Clinical chart created."
@@ -264,7 +264,7 @@ export default function Appointments() {
               </div>
             ) : (
               <div className="bg-card rounded-xl border border-border p-6 shadow-sm flex flex-col items-center justify-center min-h-[300px] text-center">
-                 <div className="w-16 h-16 bg-primary/5 rounded-full flex items-center justify-center mb-4">
+                 <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
                     <Stethoscope className="w-8 h-8 text-primary" />
                  </div>
                  <h2 className="text-lg font-bold text-card-foreground mb-2">{t("select_an_appointment", "Select an appointment")}</h2>

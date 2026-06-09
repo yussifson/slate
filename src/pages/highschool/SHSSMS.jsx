@@ -112,7 +112,7 @@ export default function SHSSMS() {
         <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-slate-100">
           <CardContent className="p-5 flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
+              <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
                 <MessageSquare className="w-6 h-6" />
               </div>
               <div>
@@ -150,7 +150,7 @@ export default function SHSSMS() {
             <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading SMS logs...</div>
           ) : filteredMessages.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-primary/5 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
                 <MessageSquare className="w-8 h-8 text-primary dark:text-primary" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No messages sent</h3>
@@ -162,7 +162,7 @@ export default function SHSSMS() {
                 <div key={msg.id} className="p-6 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
                   <div className="flex justify-between items-start mb-3">
                     <div className="flex items-center gap-2">
-                      <Badge variant="secondary" className="bg-primary/10 dark:bg-slate-800 text-primary dark:text-primary/70 border-none">
+                      <Badge variant="secondary" className="bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70 border-none">
                         {msg.data?.targetGroup}
                       </Badge>
                       <span className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-slate-500 flex items-center gap-1">
@@ -244,7 +244,7 @@ export default function SHSSMS() {
               />
             </div>
             
-            <div className="p-3 rounded-xl bg-primary/5 dark:bg-slate-800 border border-primary/10 dark:border-slate-700 flex items-start gap-3">
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-start gap-3">
               <MessageSquare className="w-5 h-5 text-primary dark:text-primary/70 shrink-0 mt-0.5" />
               <p className="text-xs text-primary/70 dark:text-primary/10 leading-relaxed">
                 Messages exceeding 160 characters will be charged as multiple SMS units per recipient. Estimated cost for this blast will be calculated before sending.

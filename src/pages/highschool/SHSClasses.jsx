@@ -103,7 +103,7 @@ export default function SHSClasses() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
               <BookOpen className="w-6 h-6" />
             </div>
             <div>
@@ -115,7 +115,7 @@ export default function SHSClasses() {
         
         <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-primary shrink-0">
               <UserCheck className="w-6 h-6" />
             </div>
             <div>
@@ -151,7 +151,7 @@ export default function SHSClasses() {
             <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading classes...</div>
           ) : filteredClasses.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-primary/5 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
                 <BookOpen className="w-8 h-8 text-primary dark:text-primary" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No classes found</h3>
@@ -164,7 +164,7 @@ export default function SHSClasses() {
                   <div className="flex items-start justify-between mb-4">
                     <div>
                       <h4 className="font-black text-xl text-slate-800 dark:text-slate-100 group-hover:text-primary dark:text-primary/70 transition-colors">{cls.title}</h4>
-                      <Badge variant="outline" className="mt-1 bg-primary/5 dark:bg-slate-800 text-primary dark:text-primary/70 border-primary/20 dark:border-slate-600">
+                      <Badge variant="outline" className="mt-1 bg-slate-50 dark:bg-slate-800 text-primary dark:text-primary/70 border-primary/20 dark:border-slate-600">
                         {cls.data?.grade} • {cls.data?.program}
                       </Badge>
                     </div>
@@ -172,7 +172,7 @@ export default function SHSClasses() {
                   
                   <div className="space-y-3 mt-4 text-sm">
                     <div className="flex items-center gap-3 text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 p-2 rounded-xl border border-slate-100 dark:border-slate-800">
-                      <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                      <div className="w-8 h-8 rounded-lg bg-slate-100 text-primary flex items-center justify-center shrink-0">
                         <UserCheck className="w-4 h-4" />
                       </div>
                       <div className="flex-1 overflow-hidden">
@@ -194,7 +194,7 @@ export default function SHSClasses() {
                   </div>
                   
                   <div className="mt-5 pt-4 border-t border-slate-50 flex justify-end gap-2">
-                    <Button variant="ghost" size="sm" className="w-full rounded-xl text-primary dark:text-primary/70 hover:bg-primary/5 dark:bg-slate-800 font-semibold">
+                    <Button variant="ghost" size="sm" className="w-full rounded-xl text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800 font-semibold">
                       View Students <Users className="w-4 h-4 ml-2" />
                     </Button>
                   </div>

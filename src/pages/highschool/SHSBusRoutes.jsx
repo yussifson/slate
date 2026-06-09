@@ -113,7 +113,7 @@ export default function SHSBusRoutes() {
             <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading routes...</div>
           ) : filteredRoutes.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-primary/5 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
                 <Navigation className="w-8 h-8 text-primary dark:text-primary" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No routes defined</h3>
@@ -132,7 +132,7 @@ export default function SHSBusRoutes() {
                         </Badge>
                       </div>
                       <div className="text-right">
-                        <span className="font-black text-primary bg-primary/5 px-2 py-1 rounded text-sm block">
+                        <span className="font-black text-primary bg-slate-50 px-2 py-1 rounded text-sm block">
                           ${parseFloat(route.data?.feeAmount || 0).toFixed(2)}
                         </span>
                         <span className="text-[10px] text-slate-400 dark:text-slate-500 uppercase font-bold mt-1 block">Per Term</span>

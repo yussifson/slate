@@ -243,7 +243,7 @@ export default function SHSReportCards() {
                               variant="ghost" 
                               onClick={() => setPreviewStudent(student)}
                               disabled={student.subjectCount === 0}
-                              className="text-primary dark:text-primary/70 hover:text-primary hover:bg-primary/5 dark:bg-slate-800 font-semibold"
+                              className="text-primary dark:text-primary/70 hover:text-primary hover:bg-slate-50 dark:bg-slate-800 font-semibold"
                             >
                               <Eye className="w-4 h-4 mr-2" /> View Report
                             </Button>

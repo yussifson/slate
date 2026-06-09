@@ -29,7 +29,7 @@ const PRIORITY_COLORS = {
 const STATUS_COLORS = {
   pending: "bg-yellow-100 text-yellow-700",
   in_progress: "bg-orange-100 text-orange-700",
-  completed: "bg-primary/10 text-primary/90",
+  completed: "bg-slate-100 text-primary/90",
   cancelled: "bg-gray-100 text-gray-500",
 };
 
@@ -334,10 +334,10 @@ export default function Tasks() {
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
-          { label: "Total", value: stats.total, icon: Clock, color: "text-primary bg-primary/5" },
+          { label: "Total", value: stats.total, icon: Clock, color: "text-primary bg-slate-50" },
           { label: "Pending", value: stats.pending, icon: AlertCircle, color: "text-yellow-600 bg-yellow-50" },
-          { label: "In Progress", value: stats.in_progress, icon: Clock, color: "text-primary bg-primary/5" },
-          { label: "Completed", value: stats.completed, icon: CheckCircle2, color: "text-primary bg-primary/5" },
+          { label: "In Progress", value: stats.in_progress, icon: Clock, color: "text-primary bg-slate-50" },
+          { label: "Completed", value: stats.completed, icon: CheckCircle2, color: "text-primary bg-slate-50" },
         ].map(({ label, value, icon: Icon, color }) => {
           return (
             <div key={label} className="bg-card rounded-xl border border-border p-4 flex items-center gap-3">

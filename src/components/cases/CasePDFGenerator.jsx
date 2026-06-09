@@ -422,9 +422,9 @@ export default function CasePDFGenerator({ caseData, user }) {
   return (
     <div className="space-y-5">
       {/* Client Report Quick Download */}
-      <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="bg-slate-50 border border-primary/20 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-start gap-3">
-          <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+          <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
             <BarChart2 className="w-4 h-4 text-primary" />
           </div>
           <div>
@@ -451,7 +451,7 @@ export default function CasePDFGenerator({ caseData, user }) {
             <button
               key={item.id}
               onClick={() => setTemplateId(item.id)}
-              className={`text-left p-4 rounded-xl border-2 transition-all ${templateId === item.id ? "border-primary bg-primary/5" : "border-border hover:border-primary/40 bg-card"}`}
+              className={`text-left p-4 rounded-xl border-2 transition-all ${templateId === item.id ? "border-primary bg-slate-50" : "border-border hover:border-primary/40 bg-card"}`}
             >
               <div className={`w-8 h-8 rounded-lg flex items-center justify-center mb-2 ${templateId === item.id ? "bg-primary text-white" : "bg-muted text-muted-foreground"}`}>
                 <FileText className="w-4 h-4" />

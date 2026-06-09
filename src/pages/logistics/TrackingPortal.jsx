@@ -87,7 +87,7 @@ export default function TrackingPortal() {
                    </div>
                    <div className="text-left md:text-right">
                      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">{t("current_status", "Current Status")}</p>
-                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/5 dark:bg-primary/30 border border-primary/10 dark:border-primary/70">
+                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-50 dark:bg-primary/30 border border-slate-200 dark:border-primary/70">
                         {shipment.status === 'Delivered' ? <CheckCircle2 className="w-5 h-5 text-primary" /> : 
                          shipment.status === 'In Transit' ? <Truck className="w-5 h-5 text-primary" /> :
                          <Clock className="w-5 h-5 text-amber-500" />}

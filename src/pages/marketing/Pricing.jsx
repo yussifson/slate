@@ -102,7 +102,7 @@ export default function Pricing() {
             {t("choose_the_right_plan_for_your", "Choose the Right Plan for Your Team")}
           </h1>
           <p className="text-xl text-slate-800 font-medium mb-10 flex items-center justify-center gap-2">
-            {t("start_with_a", "Start with a")} <span className="bg-primary/10 text-primary/80 px-3 py-0.5 rounded-md">{t("14_day_free_trial", "14-day free trial.")}</span>
+            {t("start_with_a", "Start with a")} <span className="bg-slate-100 text-primary/80 px-3 py-0.5 rounded-md">{t("14_day_free_trial", "14-day free trial.")}</span>
           </p>
 
           {/* Billing toggle */}
@@ -171,7 +171,7 @@ export default function Pricing() {
                         className={`w-full py-6 px-6 text-sm font-bold rounded-full transition-all hover:scale-[1.02] ${
                           p.popular 
                             ? 'bg-primary hover:bg-primary/90 text-white shadow-md' 
-                            : 'border-2 border-primary text-primary hover:bg-primary/5'
+                            : 'border-2 border-primary text-primary hover:bg-slate-50'
                         }`}
                       >
                         {p.cta}
@@ -241,7 +241,7 @@ export default function Pricing() {
             <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden bg-white border-0 rounded-[2rem] shadow-2xl flex flex-col max-h-[85vh]">
               {/* Header */}
               <div className="bg-slate-50 px-8 py-5 border-b border-slate-100 relative shrink-0">
-                <div className="mx-auto w-12 h-12 bg-primary/5 rounded-xl flex items-center justify-center mb-3 border border-primary/10 shadow-sm">
+                <div className="mx-auto w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center mb-3 border border-slate-200 shadow-sm">
                   <Server className="w-6 h-6 text-primary" />
                 </div>
                 <div className="text-center">
@@ -355,7 +355,7 @@ export default function Pricing() {
           <div className="mt-24">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-slate-900 flex items-center justify-center gap-3">
-                {t("full_plan", "Full Plan")} <span className="bg-primary/10 text-primary/70 px-4 py-1 rounded-full">{t("comparison", "Comparison")}</span>
+                {t("full_plan", "Full Plan")} <span className="bg-slate-100 text-primary/70 px-4 py-1 rounded-full">{t("comparison", "Comparison")}</span>
               </h2>
             </div>
             

@@ -28,11 +28,11 @@ const DAYS_OF_WEEK = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 const EVENT_COLORS = [
   { bg: 'bg-primary', light: 'bg-orange-100 text-orange-700', ring: 'ring-primary/20' },
-  { bg: 'bg-primary', light: 'bg-primary/10 text-primary/90', ring: 'ring-primary/20' },
-  { bg: 'bg-primary', light: 'bg-primary/10 text-primary/90', ring: 'ring-primary/20' },
+  { bg: 'bg-primary', light: 'bg-slate-100 text-primary/90', ring: 'ring-primary/20' },
+  { bg: 'bg-primary', light: 'bg-slate-100 text-primary/90', ring: 'ring-primary/20' },
   { bg: 'bg-amber-500', light: 'bg-amber-100 text-amber-700', ring: 'ring-amber-200' },
   { bg: 'bg-rose-500', light: 'bg-rose-100 text-rose-700', ring: 'ring-rose-200' },
-  { bg: 'bg-primary', light: 'bg-primary/10 text-primary/90', ring: 'ring-primary/20' },
+  { bg: 'bg-primary', light: 'bg-slate-100 text-primary/90', ring: 'ring-primary/20' },
 ];
 
 function getRecordTitle(record, fieldDefinitions) {
@@ -241,7 +241,7 @@ export default function DynamicCalendarView({ data = [], fieldDefinitions = [], 
                 className={`
                   min-h-[100px] p-2 border-b border-r border-slate-100 relative transition-all duration-150
                   ${cell.inMonth ? 'bg-white' : 'bg-slate-50/50'}
-                  ${hasEvents ? 'cursor-pointer hover:bg-primary/50 hover:shadow-inner' : ''}
+                  ${hasEvents ? 'cursor-pointer hover:bg-slate-500 hover:shadow-inner' : ''}
                   ${isToday ? 'ring-2 ring-inset ring-primary/40 bg-primary/30' : ''}
                 `}
               >
@@ -342,7 +342,7 @@ export default function DynamicCalendarView({ data = [], fieldDefinitions = [], 
                     <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
                         onClick={() => { setViewRecord(ev.record); setSelectedDay(null); }}
-                        className="p-1.5 rounded-lg bg-slate-100 text-slate-500 hover:text-primary hover:bg-primary/5 transition-colors"
+                        className="p-1.5 rounded-lg bg-slate-100 text-slate-500 hover:text-primary hover:bg-slate-50 transition-colors"
                       >
                         <Eye className="w-3.5 h-3.5" />
                       </button>

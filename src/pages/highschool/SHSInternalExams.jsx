@@ -103,7 +103,7 @@ export default function SHSInternalExams() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
               <FileText className="w-6 h-6" />
             </div>
             <div>
@@ -115,7 +115,7 @@ export default function SHSInternalExams() {
         
         <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-primary shrink-0">
               <AlertCircle className="w-6 h-6" />
             </div>
             <div>
@@ -165,7 +165,7 @@ export default function SHSInternalExams() {
             <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading exams...</div>
           ) : filteredExams.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-primary/5 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
                 <FileText className="w-8 h-8 text-primary dark:text-primary" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No exams found</h3>
@@ -204,8 +204,8 @@ export default function SHSInternalExams() {
                         <Badge variant="outline" className={
                           exam.status === 'Upcoming' ? 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700' :
                           exam.status === 'Ongoing' ? 'bg-amber-50 text-amber-600 border-amber-200' :
-                          exam.status === 'Completed' ? 'bg-primary/5 text-primary border-primary/20' :
-                          'bg-primary/5 text-primary/90 border-primary/20'
+                          exam.status === 'Completed' ? 'bg-slate-50 text-primary border-primary/20' :
+                          'bg-slate-50 text-primary/90 border-primary/20'
                         }>
                           {exam.status}
                         </Badge>
@@ -218,16 +218,16 @@ export default function SHSInternalExams() {
                             </Button>
                           )}
                           {exam.status === 'Ongoing' && (
-                            <Button size="sm" variant="outline" onClick={() => updateExamStatus(exam.id, 'Completed')} className="h-8 text-xs font-semibold text-primary border-primary/20 hover:bg-primary/5">
+                            <Button size="sm" variant="outline" onClick={() => updateExamStatus(exam.id, 'Completed')} className="h-8 text-xs font-semibold text-primary border-primary/20 hover:bg-slate-50">
                               End Exam
                             </Button>
                           )}
                           {exam.status === 'Completed' && (
-                            <Button size="sm" variant="outline" onClick={() => updateExamStatus(exam.id, 'Published')} className="h-8 text-xs font-semibold text-primary border-primary/20 hover:bg-primary/5">
+                            <Button size="sm" variant="outline" onClick={() => updateExamStatus(exam.id, 'Published')} className="h-8 text-xs font-semibold text-primary border-primary/20 hover:bg-slate-50">
                               Publish Results
                             </Button>
                           )}
-                          <Button size="sm" variant="ghost" className="h-8 text-primary dark:text-primary/70 font-semibold hover:bg-primary/5 dark:bg-slate-800">
+                          <Button size="sm" variant="ghost" className="h-8 text-primary dark:text-primary/70 font-semibold hover:bg-slate-50 dark:bg-slate-800">
                             Details
                           </Button>
                         </div>

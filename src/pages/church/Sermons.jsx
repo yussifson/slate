@@ -131,7 +131,7 @@ export default function Sermons() {
             return (
               <div key={sermon.id} className="bg-card rounded-xl border border-border overflow-hidden shadow-sm hover:shadow-md transition-all group relative flex flex-col justify-between">
                 <div>
-                  <div className="h-40 bg-muted dark:bg-muted/50 relative flex items-center justify-center group-hover:bg-primary/10 dark:group-hover:bg-primary/20 transition-colors cursor-pointer">
+                  <div className="h-40 bg-muted dark:bg-muted/50 relative flex items-center justify-center group-hover:bg-slate-100 dark:group-hover:bg-primary/20 transition-colors cursor-pointer">
                     <PlayCircle className="w-16 h-16 text-primary dark:text-primary/70 opacity-80 group-hover:scale-110 transition-transform" />
                     <span className="absolute bottom-2 right-2 bg-black/60 text-white text-xs font-bold px-2 py-1 rounded">{sermon.duration || '45:00'}</span>
                     <DropdownMenu>

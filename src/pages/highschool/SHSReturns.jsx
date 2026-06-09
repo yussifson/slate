@@ -166,7 +166,7 @@ export default function SHSReturns() {
 
         {/* Recently Returned History */}
         <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/10 overflow-hidden">
-          <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-primary/50 pb-4">
+          <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-500 pb-4">
             <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
               <History className="w-5 h-5 text-primary" /> Recently Returned
             </CardTitle>
@@ -188,7 +188,7 @@ export default function SHSReturns() {
                       <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">On: {record.data?.returnDate}</p>
                     </div>
                     <Badge variant="outline" className={`
-                      ${record.data?.returnCondition === 'Good' ? 'bg-primary/5 text-primary/90 border-primary/20' : ''}
+                      ${record.data?.returnCondition === 'Good' ? 'bg-slate-50 text-primary/90 border-primary/20' : ''}
                       ${record.data?.returnCondition === 'Damaged' ? 'bg-amber-50 text-amber-700 border-amber-200' : ''}
                       ${record.data?.returnCondition === 'Lost' ? 'bg-rose-50 text-rose-700 border-rose-200' : ''}
                     `}>

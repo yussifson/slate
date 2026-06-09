@@ -280,7 +280,7 @@ export default function Orders() {
                     <td className="px-6 py-4 text-muted-foreground">{o.date}</td>
                     <td className="px-6 py-4 text-right font-bold text-card-foreground">${o.total.toFixed(2)}</td>
                     <td className="px-6 py-4 text-center">
-                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${o.status === 'Completed' || o.status === 'Delivered' ? 'bg-primary/10 text-primary/90' : 'bg-amber-100 text-amber-700'}`}>{o.status}</span>
+                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${o.status === 'Completed' || o.status === 'Delivered' ? 'bg-slate-100 text-primary/90' : 'bg-amber-100 text-amber-700'}`}>{o.status}</span>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <Button variant="ghost" size="icon" onClick={() => openEdit(o)}><Edit className="w-4 h-4" /></Button>

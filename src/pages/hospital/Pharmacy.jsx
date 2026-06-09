@@ -130,7 +130,7 @@ export default function Pharmacy() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-card rounded-xl border border-border p-5 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary"><Pill className="w-6 h-6" /></div>
+          <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-primary"><Pill className="w-6 h-6" /></div>
           <div><p className="text-3xl font-bold text-card-foreground">{inventory.length}</p><p className="text-sm font-medium text-muted-foreground">{t("total_unique_drugs", "Total Unique Drugs")}</p></div>
         </div>
         <div className="bg-card rounded-xl border border-border p-5 shadow-sm flex items-center gap-4">
@@ -138,7 +138,7 @@ export default function Pharmacy() {
           <div><p className="text-3xl font-bold text-red-600">{lowStockCount}</p><p className="text-sm font-medium text-muted-foreground">{t("low_stock_alerts", "Low Stock Alerts")}</p></div>
         </div>
         <div className="bg-card rounded-xl border border-border p-5 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary"><ShoppingBag className="w-6 h-6" /></div>
+          <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-primary"><ShoppingBag className="w-6 h-6" /></div>
           <div><p className="text-3xl font-bold text-card-foreground">{inventory.filter(d => d.stock > d.reorder).length}</p><p className="text-sm font-medium text-muted-foreground">{t("well_stocked_drugs", "Well Stocked Drugs")}</p></div>
         </div>
       </div>

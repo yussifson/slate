@@ -162,7 +162,7 @@ export default function Attendance() {
           </div>
         </div>
         <div className="stat-card-premium bg-card rounded-xl border border-border border-l-4 border-l-green-500 p-4 shadow-sm flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
             <CheckCircle2 className="w-5 h-5 text-primary" />
           </div>
           <div>
@@ -209,7 +209,7 @@ export default function Attendance() {
 
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-primary/5/60 dark:bg-slate-800/40 border-b border-primary/10 dark:border-slate-700">
+            <thead className="bg-slate-50/60 dark:bg-slate-800/40 border-b border-slate-200 dark:border-slate-700">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{t("student", "Student")}</th>
                 <th className="px-4 py-3 text-center text-xs font-bold text-primary uppercase tracking-wide">{t("present", "Present")}</th>
@@ -223,7 +223,7 @@ export default function Attendance() {
                   <tr key={student.id} className="hover:bg-muted/40 transition-colors">
                     <td className="px-6 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-primary/5 dark:bg-primary/30 flex items-center justify-center text-primary dark:text-primary/30 font-bold text-xs shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-slate-50 dark:bg-primary/30 flex items-center justify-center text-primary dark:text-primary/30 font-bold text-xs shrink-0">
                           {student.name.substring(0, 2).toUpperCase()}
                         </div>
                         <div>
@@ -304,7 +304,7 @@ export default function Attendance() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-primary/5/60 dark:bg-slate-800/40 border-b border-primary/10 dark:border-slate-700">
+              <thead className="bg-slate-50/60 dark:bg-slate-800/40 border-b border-slate-200 dark:border-slate-700">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{t("date", "Date")}</th>
                   <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{t("class", "Class")}</th>
@@ -324,7 +324,7 @@ export default function Attendance() {
                   return (
                     <tr key={rec.id} className="hover:bg-muted/40 transition-colors">
                       <td className="px-6 py-3 text-foreground font-medium">{rec.date}</td>
-                      <td className="px-6 py-3"><Link to="/classes" className="bg-primary/5 dark:bg-primary/20 text-primary dark:text-primary/30 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{rec.className}</Link></td>
+                      <td className="px-6 py-3"><Link to="/classes" className="bg-slate-50 dark:bg-primary/20 text-primary dark:text-primary/30 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{rec.className}</Link></td>
                       <td className="px-6 py-3 text-muted-foreground">{rec.takenBy || '—'}</td>
                       <td className="px-6 py-3 text-center font-bold text-primary">{p}</td>
                       <td className="px-6 py-3 text-center font-bold text-red-600">{a}</td>
@@ -392,7 +392,7 @@ export default function Attendance() {
                       <div key={i} className="flex items-center justify-between p-2 rounded-md border border-border bg-card">
                         <span className="text-sm font-medium">{r.studentName}</span>
                         <span className={`text-xs font-semibold px-2 py-1 rounded-full ${
-                          r.status === 'Present' ? 'bg-primary/10 text-primary/90' :
+                          r.status === 'Present' ? 'bg-slate-100 text-primary/90' :
                           r.status === 'Absent' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'
                         }`}>
                           {r.status}

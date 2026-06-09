@@ -213,7 +213,7 @@ export default function Underwriting() {
                       </td>
                       <td className="px-6 py-4 text-center">
                         <span className={`text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wide ${
-                          app.riskLevel === 'Low' ? 'bg-primary/10 text-primary/90' : 
+                          app.riskLevel === 'Low' ? 'bg-slate-100 text-primary/90' : 
                           app.riskLevel === 'Medium' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'
                         }`}>
                           {app.riskLevel}
@@ -228,8 +228,8 @@ export default function Underwriting() {
                           value={app.decision}
                           onChange={e => handleUpdateDecision(app, e.target.value)}
                           className={`rounded-md border border-input px-2 py-1 text-xs font-bold ${
-                            app.decision === 'Approved' ? 'bg-primary/10 text-primary/90' : 
-                            app.decision === 'Conditionally Approved' ? 'bg-primary/10 text-primary' : 
+                            app.decision === 'Approved' ? 'bg-slate-100 text-primary/90' : 
+                            app.decision === 'Conditionally Approved' ? 'bg-slate-100 text-primary' : 
                             app.decision === 'Rejected' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'
                           }`}
                         >
@@ -367,7 +367,7 @@ export default function Underwriting() {
               <div>
                 <h4 className="text-sm font-medium text-muted-foreground">{t("risk_level", "Risk Level")}</h4>
                 <span className={`text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wide inline-block mt-1 ${
-                  viewRecord.riskLevel === 'Low' ? 'bg-primary/10 text-primary/90' : 
+                  viewRecord.riskLevel === 'Low' ? 'bg-slate-100 text-primary/90' : 
                   viewRecord.riskLevel === 'Medium' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'
                 }`}>
                   {viewRecord.riskLevel}

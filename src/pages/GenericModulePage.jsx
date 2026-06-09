@@ -312,7 +312,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
               <ShieldCheck className="w-4 h-4" /> Share
             </Button>
             {isAdmin && (
-              <Button onClick={() => setIsBoltOpen(true)} variant="outline" size="sm" className="gap-1.5 shadow-sm border-primary/30 text-primary hover:bg-primary/10">
+              <Button onClick={() => setIsBoltOpen(true)} variant="outline" size="sm" className="gap-1.5 shadow-sm border-primary/30 text-primary hover:bg-slate-100">
                 <Sparkles className="w-4 h-4" /> OrbitBolt
               </Button>
             )}
@@ -329,7 +329,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
             <p className="text-xs text-muted-foreground mb-1">Total Records</p>
             <p className="text-2xl font-bold text-foreground">{records.length}</p>
           </div>
-          <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center">
+          <div className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center">
             <BarChart2 className="w-5 h-5 text-primary" />
           </div>
         </div>
@@ -339,7 +339,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
             <p className="text-xs text-muted-foreground mb-1">Module Status</p>
             <p className="text-2xl font-bold text-foreground">Active</p>
           </div>
-          <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center">
+          <div className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center">
             <ShieldCheck className="w-5 h-5 text-primary" />
           </div>
         </div>
@@ -349,7 +349,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
             <p className="text-xs text-muted-foreground mb-1">Custom Fields</p>
             <p className="text-2xl font-bold text-foreground">{fieldDefs.length}</p>
           </div>
-          <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center">
+          <div className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center">
             <FileText className="w-5 h-5 text-primary" />
           </div>
         </div>

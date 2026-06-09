@@ -135,7 +135,7 @@ export default function Tithes() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-card rounded-xl border border-border p-5 shadow-sm">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/50 flex items-center justify-center text-primary dark:text-primary/70">
+            <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70">
               <DollarSign className="w-4 h-4" />
             </div>
             <h3 className="font-semibold text-foreground text-sm">{t("total_tithes_logged", "Total Tithes logged")}</h3>
@@ -144,7 +144,7 @@ export default function Tithes() {
         </div>
         <div className="bg-card rounded-xl border border-border p-5 shadow-sm">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/50 flex items-center justify-center text-primary dark:text-primary/70">
+            <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70">
               <DollarSign className="w-4 h-4" />
             </div>
             <h3 className="font-semibold text-foreground text-sm">{t("total_offerings", "Total Offerings")}</h3>
@@ -153,7 +153,7 @@ export default function Tithes() {
         </div>
         <div className="bg-card rounded-xl border border-border p-5 shadow-sm">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/50 flex items-center justify-center text-primary dark:text-primary/70">
+            <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70">
               <DollarSign className="w-4 h-4" />
             </div>
             <h3 className="font-semibold text-foreground text-sm">{t("special_building_funds", "Special/Building Funds")}</h3>
@@ -202,7 +202,7 @@ export default function Tithes() {
                         <Link to="/church/members" className="text-primary hover:underline">{item.member}</Link>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="bg-primary/10 dark:bg-primary/50 text-primary/90 dark:text-primary/70 px-2.5 py-1 rounded-full text-xs font-bold">
+                        <span className="bg-slate-100 dark:bg-slate-500 text-primary/90 dark:text-primary/70 px-2.5 py-1 rounded-full text-xs font-bold">
                           {item.type}
                         </span>
                       </td>

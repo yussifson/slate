@@ -136,7 +136,7 @@ export default function SHSElectives() {
             <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading elective groups...</div>
           ) : filteredElectives.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-primary/5 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
                 <FolderTree className="w-8 h-8 text-primary dark:text-primary" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No groups defined</h3>
@@ -148,7 +148,7 @@ export default function SHSElectives() {
                 <div key={group.id} className="group p-5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-primary dark:border-primary/30 hover:shadow-lg hover:shadow-purple-500/5 transition-all duration-300">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-primary/10 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70">
+                      <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70">
                         <ListPlus className="w-5 h-5" />
                       </div>
                       <div>
@@ -229,7 +229,7 @@ export default function SHSElectives() {
                           onClick={() => handleToggleSubject(sub.id)}
                           className={`p-3 rounded-xl text-sm font-medium text-left transition-all border ${
                             isSelected 
-                              ? 'bg-primary/5 dark:bg-slate-800 border-primary/20 dark:border-slate-600 text-primary dark:text-primary/70' 
+                              ? 'bg-slate-50 dark:bg-slate-800 border-primary/20 dark:border-slate-600 text-primary dark:text-primary/70' 
                               : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-primary/20 dark:border-slate-600'
                           }`}
                         >

@@ -109,9 +109,9 @@ export default function NotificationBell({ user }) {
               return (
                 <div
                   key={n.id}
-                  className={`p-3.5 flex gap-3 items-start hover:bg-muted/30 transition-colors ${!n.is_read ? "bg-primary/5 border-l-2 border-primary" : ""}`}
+                  className={`p-3.5 flex gap-3 items-start hover:bg-muted/30 transition-colors ${!n.is_read ? "bg-slate-50 border-l-2 border-primary" : ""}`}
                 >
-                  <div className={`w-8 h-8 rounded-lg shrink-0 flex items-center justify-center ${!n.is_read ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
+                  <div className={`w-8 h-8 rounded-lg shrink-0 flex items-center justify-center ${!n.is_read ? "bg-slate-100 text-primary" : "bg-muted text-muted-foreground"}`}>
                     <IconComp className="w-4 h-4" />
                   </div>
                   <div className="flex-1 min-w-0">

@@ -15,7 +15,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sh
 import { MoreVertical, Eye } from 'lucide-react';
 
 const STATUS_COLORS = {
-  'Available':      'bg-primary/10 text-primary/90 dark:bg-primary/30 dark:text-primary/70',
+  'Available':      'bg-slate-100 text-primary/90 dark:bg-primary/30 dark:text-primary/70',
   'On Route':       'bg-orange-100 text-orange-700 dark:bg-primary/30 dark:text-primary/70',
   'Maintenance':    'bg-amber-100 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400',
   'Decommissioned': 'bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400',
@@ -141,8 +141,8 @@ export default function Fleet() {
 
   const stats = [
     { label: 'Total Vehicles', value: total, icon: Truck, color: 'bg-slate-100 text-slate-600', border: 'border-slate-200' },
-    { label: 'Available', value: available, icon: CheckCircle2, color: 'bg-primary/10 text-primary', border: 'border-primary/20' },
-    { label: 'On Route', value: onRoute, icon: Car, color: 'bg-primary/10 text-primary', border: 'border-primary/20' },
+    { label: 'Available', value: available, icon: CheckCircle2, color: 'bg-slate-100 text-primary', border: 'border-primary/20' },
+    { label: 'On Route', value: onRoute, icon: Car, color: 'bg-slate-100 text-primary', border: 'border-primary/20' },
     { label: 'In Maintenance', value: maintenance, icon: Wrench, color: 'bg-amber-100 text-amber-600', border: 'border-amber-200' },
   ];
 

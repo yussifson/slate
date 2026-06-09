@@ -18,7 +18,7 @@ import { Play, FileText, CheckCircle, Banknote, Plus, Trash2, Printer, Eye, Chev
 const STATUS_COLORS = {
   draft: "bg-slate-100 text-slate-600",
   approved: "bg-orange-100 text-orange-700",
-  paid: "bg-primary/10 text-primary/90",
+  paid: "bg-slate-100 text-primary/90",
 };
 
 // Generate YYYY-MM period string
@@ -140,7 +140,7 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
                           </Button>
           )}
           {isAdmin && approvedCount > 0 && (
-            <Button size="sm" variant="outline" className="text-primary/90 border-primary/30 hover:bg-primary/5" onClick={handleMarkAllPaid}>
+            <Button size="sm" variant="outline" className="text-primary/90 border-primary/30 hover:bg-slate-50" onClick={handleMarkAllPaid}>
               <Banknote className="w-4 h-4 mr-1" /> {t("mark_all_paid", "Mark All Paid (")}{approvedCount})
                           </Button>
           )}
@@ -148,7 +148,7 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
       </div>
       {/* Summary bar */}
       {slips.length > 0 && (
-        <div className="bg-primary/5 border border-primary/20 rounded-xl px-5 py-3 flex flex-wrap gap-6 items-center">
+        <div className="bg-slate-50 border border-primary/20 rounded-xl px-5 py-3 flex flex-wrap gap-6 items-center">
           <div>
             <p className="text-xs text-muted-foreground">{t("total_net_payroll", "Total Net Payroll")}</p>
             <p className="text-xl font-bold text-primary">{formatCurrency(totalNet, currency)}</p>
@@ -390,7 +390,7 @@ function SalarySlipDialog({ slip, currency, onClose }) {
 
           <Separator />
 
-          <div className="flex justify-between text-base font-bold bg-primary/5 rounded-lg px-4 py-3">
+          <div className="flex justify-between text-base font-bold bg-slate-50 rounded-lg px-4 py-3">
             <span>{t("net_pay", "Net Pay")}</span>
             <span className="text-primary">{formatCurrency(slip.net_salary, currency)}</span>
           </div>

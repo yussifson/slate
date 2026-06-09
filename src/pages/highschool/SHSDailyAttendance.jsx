@@ -266,7 +266,7 @@ export default function SHSDailyAttendance() {
               <div className="bg-slate-50 dark:bg-slate-800/80 p-3 flex justify-between items-center border-b border-slate-100 dark:border-slate-800">
                 <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-500 pl-3">Mark entire form as:</p>
                 <div className="flex gap-2 pr-3">
-                  <Button variant="outline" size="sm" onClick={() => handleMarkAll('Present')} className="h-8 text-xs font-semibold text-primary border-primary/20 hover:bg-primary/5">
+                  <Button variant="outline" size="sm" onClick={() => handleMarkAll('Present')} className="h-8 text-xs font-semibold text-primary border-primary/20 hover:bg-slate-50">
                     All Present
                   </Button>
                   <Button variant="outline" size="sm" onClick={() => handleMarkAll('Absent')} className="h-8 text-xs font-semibold text-rose-600 border-rose-200 hover:bg-rose-50">
@@ -343,7 +343,7 @@ export default function SHSDailyAttendance() {
               <div className="p-6 bg-slate-50 dark:bg-slate-800 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
                 <div>
                   {saveSuccess && (
-                    <Badge className="bg-primary/10 text-primary/90 border-none px-3 py-1 text-sm font-semibold flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2">
+                    <Badge className="bg-slate-100 text-primary/90 border-none px-3 py-1 text-sm font-semibold flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2">
                       <CheckCircle2 className="w-4 h-4" /> Roll Call Saved Successfully
                     </Badge>
                   )}

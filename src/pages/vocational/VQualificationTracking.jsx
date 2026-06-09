@@ -66,7 +66,7 @@ export default function VQualificationTracking() {
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
               <Input 
                 placeholder="Search qualifications..." 
-                className="pl-9 h-10 bg-white dark:bg-slate-900 border-primary/10 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
+                className="pl-9 h-10 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -86,11 +86,11 @@ export default function VQualificationTracking() {
                     className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
                       selectedQual?.id === qual.id 
                         ? 'bg-primary text-white shadow-md shadow-emerald-500/20' 
-                        : 'hover:bg-primary/5 dark:bg-slate-800 text-slate-700 dark:text-slate-200'
+                        : 'hover:bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200'
                     }`}
                   >
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0 ${
-                      selectedQual?.id === qual.id ? 'bg-white/20' : 'bg-primary/10 text-primary'
+                      selectedQual?.id === qual.id ? 'bg-white/20' : 'bg-slate-100 text-primary'
                     }`}>
                       <GraduationCap className="w-5 h-5" />
                     </div>
@@ -118,7 +118,7 @@ export default function VQualificationTracking() {
                 <div className="px-8 pb-8">
                   <div className="flex flex-col sm:flex-row gap-6 items-end sm:items-center relative z-10">
                     <div className="w-24 h-24 rounded-3xl bg-white dark:bg-slate-900 p-1 shadow-xl shrink-0">
-                      <div className="w-full h-full rounded-2xl bg-primary/5 dark:bg-slate-800 flex items-center justify-center text-primary">
+                      <div className="w-full h-full rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-primary">
                         <Target className="w-12 h-12" />
                       </div>
                     </div>
@@ -147,7 +147,7 @@ export default function VQualificationTracking() {
                             selectedQual.data.modules.map((mod, idx) => (
                               <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
                                 <div className="flex items-center gap-3">
-                                  <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs">{idx + 1}</div>
+                                  <div className="w-8 h-8 rounded-full bg-slate-100 text-primary flex items-center justify-center font-bold text-xs">{idx + 1}</div>
                                   <span className="font-medium text-slate-700">{mod.name || 'Module Name'}</span>
                                 </div>
                                 <span className="text-xs text-slate-500 font-medium">{mod.credits || 0} Credits</span>
@@ -164,14 +164,14 @@ export default function VQualificationTracking() {
                     </div>
                     
                     <div className="space-y-6">
-                      <div className="p-6 rounded-2xl bg-primary/50 border border-primary/10 text-center">
+                      <div className="p-6 rounded-2xl bg-slate-500 border border-slate-200 text-center">
                         <LineChart className="w-8 h-8 text-primary mx-auto mb-2" />
                         <h3 className="text-slate-800 font-bold mb-1">Enrolled Students</h3>
                         <p className="text-3xl font-black text-primary">{selectedQual.data?.enrolled_count || 0}</p>
                         <Button variant="outline" className="w-full mt-4 bg-white rounded-xl">View Roster</Button>
                       </div>
 
-                      <div className="p-6 rounded-2xl bg-primary/50 border border-primary/10 text-center">
+                      <div className="p-6 rounded-2xl bg-slate-500 border border-slate-200 text-center">
                         <CheckCircle className="w-8 h-8 text-primary mx-auto mb-2" />
                         <h3 className="text-slate-800 font-bold mb-1">Completion Rate</h3>
                         <p className="text-3xl font-black text-primary">{selectedQual.data?.completion_rate || '0%'}</p>
@@ -183,7 +183,7 @@ export default function VQualificationTracking() {
             </>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-              <div className="w-20 h-20 rounded-full bg-primary/5 flex items-center justify-center mb-6">
+              <div className="w-20 h-20 rounded-full bg-slate-50 flex items-center justify-center mb-6">
                 <Target className="w-10 h-10 text-primary/30" />
               </div>
               <h3 className="text-xl font-bold text-slate-700">No Qualification Selected</h3>

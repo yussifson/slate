@@ -319,7 +319,7 @@ export default function POS() {
             
             {/* Promo Input / Display */}
             {appliedPromo ? (
-              <div className="flex justify-between items-center text-sm bg-primary/5 p-2 rounded-md border border-primary/10">
+              <div className="flex justify-between items-center text-sm bg-slate-50 p-2 rounded-md border border-slate-200">
                 <div className="flex items-center gap-2">
                   <span className="text-primary/90 font-bold text-xs uppercase bg-primary/20 px-1.5 py-0.5 rounded">{appliedPromo.code}</span>
                   <button onClick={removePromo} className="text-primary hover:text-primary/80"><X className="w-3 h-3" /></button>

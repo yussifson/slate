@@ -24,12 +24,12 @@ import { supabase } from '@/api/supabaseClient';
 import { useToast } from '@/components/ui/use-toast';
 
 const TIMELINE_COLORS = [
-  { dot: 'bg-primary', border: 'border-primary/20', gradient: 'from-primary to-primary', lightBg: 'bg-primary/5', text: 'text-primary/90' },
-  { dot: 'bg-primary', border: 'border-primary/20', gradient: 'from-primary to-primary', lightBg: 'bg-primary/5', text: 'text-primary/90' },
-  { dot: 'bg-primary', border: 'border-primary/20', gradient: 'from-primary to-primary', lightBg: 'bg-primary/5', text: 'text-primary/90' },
+  { dot: 'bg-primary', border: 'border-primary/20', gradient: 'from-primary to-primary', lightBg: 'bg-slate-50', text: 'text-primary/90' },
+  { dot: 'bg-primary', border: 'border-primary/20', gradient: 'from-primary to-primary', lightBg: 'bg-slate-50', text: 'text-primary/90' },
+  { dot: 'bg-primary', border: 'border-primary/20', gradient: 'from-primary to-primary', lightBg: 'bg-slate-50', text: 'text-primary/90' },
   { dot: 'bg-amber-500', border: 'border-amber-200', gradient: 'from-amber-500 to-amber-600', lightBg: 'bg-amber-50', text: 'text-amber-700' },
   { dot: 'bg-rose-500', border: 'border-rose-200', gradient: 'from-rose-500 to-rose-600', lightBg: 'bg-rose-50', text: 'text-rose-700' },
-  { dot: 'bg-primary', border: 'border-primary/20', gradient: 'from-primary to-primary', lightBg: 'bg-primary/5', text: 'text-primary/90' },
+  { dot: 'bg-primary', border: 'border-primary/20', gradient: 'from-primary to-primary', lightBg: 'bg-slate-50', text: 'text-primary/90' },
 ];
 
 function getRecordTitle(record, fieldDefinitions) {
@@ -411,7 +411,7 @@ function TimelineCard({ record, fieldDefinitions, colorSet, onView, onEdit, onDe
             )}
           </div>
           <div className="flex gap-1 opacity-0 group-hover/card:opacity-100 transition-opacity ml-2 flex-shrink-0">
-            <button onClick={onView} className="p-1.5 rounded-lg bg-slate-100 text-slate-500 hover:text-primary hover:bg-primary/5 transition-colors">
+            <button onClick={onView} className="p-1.5 rounded-lg bg-slate-100 text-slate-500 hover:text-primary hover:bg-slate-50 transition-colors">
               <Eye className="w-3.5 h-3.5" />
             </button>
             <button onClick={onEdit} className="p-1.5 rounded-lg bg-slate-100 text-slate-500 hover:text-amber-600 hover:bg-amber-50 transition-colors">

@@ -64,7 +64,7 @@ export default function ForgotPassword() {
 
           {sent ? (
             <div className="flex flex-col items-center gap-4 py-4">
-              <div className="w-16 h-16 rounded-full bg-primary/5 flex items-center justify-center">
+              <div className="w-16 h-16 rounded-full bg-slate-50 flex items-center justify-center">
                 <CheckCircle2 className="w-8 h-8 text-primary" />
               </div>
               <p className="text-sm text-slate-600 text-center">

@@ -118,7 +118,7 @@ export default function SHSAssessment() {
         <Card className="lg:col-span-2 rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
           <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70">
+              <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70">
                 <SlidersHorizontal className="w-5 h-5" />
               </div>
               <div>
@@ -143,7 +143,7 @@ export default function SHSAssessment() {
                     min="0" 
                     max="100" 
                     step="5"
-                    className="w-full h-2 bg-primary/10 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-primary"
+                    className="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-primary"
                     value={assessmentConfig.classWorkWeight}
                     onChange={(e) => handleWeightChange('classWorkWeight', e.target.value)}
                   />
@@ -159,7 +159,7 @@ export default function SHSAssessment() {
                     min="0" 
                     max="100" 
                     step="5"
-                    className="w-full h-2 bg-primary/10 rounded-lg appearance-none cursor-pointer accent-primary"
+                    className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-primary"
                     value={assessmentConfig.examWeight}
                     onChange={(e) => handleWeightChange('examWeight', e.target.value)}
                   />
@@ -202,7 +202,7 @@ export default function SHSAssessment() {
                 <div className="pt-6 flex items-center justify-between">
                   <div>
                     {saveSuccess && (
-                      <Badge className="bg-primary/10 text-primary/90 border-none px-3 py-1.5 text-sm font-semibold flex items-center gap-2 animate-in fade-in">
+                      <Badge className="bg-slate-100 text-primary/90 border-none px-3 py-1.5 text-sm font-semibold flex items-center gap-2 animate-in fade-in">
                         <CheckCircle2 className="w-4 h-4" /> Settings Saved
                       </Badge>
                     )}

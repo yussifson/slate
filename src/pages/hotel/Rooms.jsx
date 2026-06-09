@@ -159,7 +159,7 @@ export default function Rooms() {
                            <Activity className="w-3 h-3 mr-1" /> {t("maintenance_alert", "Maintenance Alert")}
                          </span>
                       ) : (
-                         <span className={`inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${room.status === 'Available' ? 'bg-primary/10 text-primary/90' : 'bg-primary/10 text-primary/90'}`}>
+                         <span className={`inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${room.status === 'Available' ? 'bg-slate-100 text-primary/90' : 'bg-slate-100 text-primary/90'}`}>
                            {room.status}
                          </span>
                       )}
@@ -298,7 +298,7 @@ export default function Rooms() {
                       </div>
                       <div className="bg-muted/50 p-3 rounded-lg">
                         <p className="text-xs text-muted-foreground mb-1">{t("status", "Status")}</p>
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-bold bg-primary/10 text-primary/90">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-bold bg-slate-100 text-primary/90">
                           <Activity className="w-3 h-3 mr-1" /> {room.status}
                         </span>
                       </div>
@@ -308,7 +308,7 @@ export default function Rooms() {
                     <h3 className="text-sm font-semibold text-muted-foreground mb-2">{t("amenities", "Amenities")}</h3>
                     <div className="flex flex-wrap gap-2">
                       {room.amenities?.map(a => {
-                        return (<span key={a} className="bg-primary/10 text-primary/80 px-3 py-1 rounded-md text-xs font-bold uppercase">{a}</span>);
+                        return (<span key={a} className="bg-slate-100 text-primary/80 px-3 py-1 rounded-md text-xs font-bold uppercase">{a}</span>);
                       })}
                       {(!room.amenities || room.amenities.length === 0) && (
                         <p className="text-sm text-muted-foreground">{t("no_amenities_listed", "No amenities listed.")}</p>

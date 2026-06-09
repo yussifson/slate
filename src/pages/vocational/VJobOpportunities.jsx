@@ -67,7 +67,7 @@ export default function VJobOpportunities() {
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
               <Input 
                 placeholder="Search jobs..." 
-                className="pl-9 h-10 bg-slate-50 dark:bg-slate-900 border-primary/10 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
+                className="pl-9 h-10 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -87,11 +87,11 @@ export default function VJobOpportunities() {
                     className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
                       selectedJob?.id === job.id 
                         ? 'bg-primary text-white shadow-md shadow-indigo-500/20' 
-                        : 'hover:bg-primary/5 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'
+                        : 'hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'
                     }`}
                   >
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-                      selectedJob?.id === job.id ? 'bg-white/20' : 'bg-primary/10 text-primary'
+                      selectedJob?.id === job.id ? 'bg-white/20' : 'bg-slate-100 text-primary'
                     }`}>
                       <Building className="w-5 h-5" />
                     </div>
@@ -127,7 +127,7 @@ export default function VJobOpportunities() {
                 <div className="px-8 pb-8">
                   <div className="flex flex-col sm:flex-row gap-6 items-end sm:items-center relative z-10">
                     <div className="w-24 h-24 rounded-3xl bg-white dark:bg-slate-900 p-1 shadow-xl shrink-0">
-                      <div className="w-full h-full rounded-2xl bg-primary/5 dark:bg-slate-800 flex items-center justify-center text-primary">
+                      <div className="w-full h-full rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-primary">
                         <Briefcase className="w-10 h-10" />
                       </div>
                     </div>
@@ -143,7 +143,7 @@ export default function VJobOpportunities() {
 
                   <div className="mt-8">
                     <Tabs defaultValue="overview" className="w-full">
-                      <TabsList className="bg-primary/50 dark:bg-slate-800/50 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border border-primary/10 dark:border-slate-700">
+                      <TabsList className="bg-slate-500 dark:bg-slate-800/50 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border border-slate-200 dark:border-slate-700">
                         <TabsTrigger value="overview" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-primary">Job Details</TabsTrigger>
                         <TabsTrigger value="requirements" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-primary">Requirements</TabsTrigger>
                         <TabsTrigger value="applications" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-primary">Applications</TabsTrigger>
@@ -151,13 +151,13 @@ export default function VJobOpportunities() {
                       
                       <div className="mt-6">
                         <TabsContent value="overview" className="space-y-6 outline-none">
-                          <div className="p-6 rounded-2xl bg-primary/30 border border-primary/10 dark:border-slate-700 space-y-4">
+                          <div className="p-6 rounded-2xl bg-primary/30 border border-slate-200 dark:border-slate-700 space-y-4">
                             <h3 className="text-sm font-bold text-primary uppercase tracking-wider">Description</h3>
                             <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">
                               {selectedJob.data?.description || 'No detailed description provided for this position. Please contact the employer for more information.'}
                             </p>
                             
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-primary/10 dark:border-slate-700">
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-slate-200 dark:border-slate-700">
                               <div>
                                 <p className="text-xs text-slate-500">Posted Date</p>
                                 <p className="font-medium text-slate-800 dark:text-slate-200">{new Date(selectedJob.created_date).toLocaleDateString()}</p>
@@ -193,11 +193,11 @@ export default function VJobOpportunities() {
                         </TabsContent>
 
                         <TabsContent value="applications" className="outline-none">
-                          <div className="p-8 text-center border-2 border-dashed border-primary/10 dark:border-slate-700 rounded-2xl">
+                          <div className="p-8 text-center border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl">
                             <Users className="w-10 h-10 text-primary/30 mx-auto mb-3" />
                             <h4 className="text-slate-700 dark:text-slate-200 font-bold">Manage Applications</h4>
                             <p className="text-slate-500 text-sm mt-1 mb-4">View and process trainees who have applied for this position.</p>
-                            <Button variant="outline" className="border-primary/20 text-primary hover:bg-primary/5 rounded-xl">
+                            <Button variant="outline" className="border-primary/20 text-primary hover:bg-slate-50 rounded-xl">
                               View Candidates <ArrowRight className="w-4 h-4 ml-2" />
                             </Button>
                           </div>
@@ -210,7 +210,7 @@ export default function VJobOpportunities() {
             </>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-              <div className="w-20 h-20 rounded-full bg-primary/5 flex items-center justify-center mb-6">
+              <div className="w-20 h-20 rounded-full bg-slate-50 flex items-center justify-center mb-6">
                 <Briefcase className="w-10 h-10 text-primary/30" />
               </div>
               <h3 className="text-xl font-bold text-slate-700">No Job Selected</h3>

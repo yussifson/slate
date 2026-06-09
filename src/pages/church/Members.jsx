@@ -131,7 +131,7 @@ export default function Members() {
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-primary/10 dark:bg-primary/50 flex items-center justify-center text-primary dark:text-primary/70">
+          <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70">
             <Users className="w-5 h-5" />
           </div>
           <div>

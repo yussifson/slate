@@ -14,7 +14,7 @@ export default function Careers() {
   return (
     <div className="py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto min-h-screen">
       <div className="text-center max-w-3xl mx-auto mb-20">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/5 border border-primary/10 text-primary/90 text-sm font-bold mb-6">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-50 border border-slate-200 text-primary/90 text-sm font-bold mb-6">
           <Briefcase className="w-4 h-4" /> {t("we_re_hiring", "We're Hiring")}
         </div>
         <h1 className="text-4xl md:text-6xl font-extrabold text-slate-900 tracking-tight mb-6">
@@ -67,7 +67,7 @@ export default function Careers() {
                     <span>{job.type}</span>
                   </div>
                 </div>
-                <Button variant="outline" className="shrink-0 rounded-full group-hover:bg-primary/5 group-hover:text-primary/90 group-hover:border-primary/20 transition-all">
+                <Button variant="outline" className="shrink-0 rounded-full group-hover:bg-slate-50 group-hover:text-primary/90 group-hover:border-primary/20 transition-all">
                   {t("apply_now", "Apply Now")} <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </div>

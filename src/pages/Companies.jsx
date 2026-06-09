@@ -67,7 +67,7 @@ export default function Companies() {
       render: row => {
         return (
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center">
               <span className="text-sm font-bold text-primary">{row.name?.[0]}</span>
             </div>
             <div>
@@ -91,7 +91,7 @@ export default function Companies() {
       header: "Subscription",
       render: row => {
         return (
-          <Badge className={`text-[10px] ${row.subscription_status === "active" ? "bg-primary/10 text-primary/90" : row.subscription_status === "trial" ? "bg-orange-100 text-orange-700" : "bg-slate-100 text-slate-600"}`}>
+          <Badge className={`text-[10px] ${row.subscription_status === "active" ? "bg-slate-100 text-primary/90" : row.subscription_status === "trial" ? "bg-orange-100 text-orange-700" : "bg-slate-100 text-slate-600"}`}>
             {row.subscription_status}
           </Badge>
         );
@@ -101,7 +101,7 @@ export default function Companies() {
       header: "Status",
       render: row => {
         return (
-          <Badge className={`text-[10px] ${row.status === "active" ? "bg-primary/10 text-primary/90" : row.status === "suspended" ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700"}`}>
+          <Badge className={`text-[10px] ${row.status === "active" ? "bg-slate-100 text-primary/90" : row.status === "suspended" ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700"}`}>
             {row.status}
           </Badge>
         );

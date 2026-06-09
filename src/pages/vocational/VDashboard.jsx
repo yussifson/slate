@@ -53,7 +53,7 @@ export default function VDashboard() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="rounded-xl border-primary/20 text-primary/90 hover:bg-primary/5">
+          <Button variant="outline" className="rounded-xl border-primary/20 text-primary/90 hover:bg-slate-50">
             Download Report
           </Button>
           <Button className="rounded-xl bg-primary hover:bg-primary/90 text-white shadow-lg shadow-emerald-200 dark:shadow-none">

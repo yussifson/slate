@@ -66,7 +66,7 @@ function HorizontalBarChart({ title, data, icon: Icon, maxVal }) {
         className="w-full flex items-center justify-between p-5 pb-4 hover:bg-slate-50/50 transition-colors"
       >
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-gradient-to-br from-primary/5 to-primary/5 border border-primary/10">
+          <div className="p-2 rounded-xl bg-gradient-to-br from-primary/5 to-primary/5 border border-slate-200">
             <Icon className="w-4 h-4 text-primary" />
           </div>
           <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
@@ -128,17 +128,17 @@ function NumberAggCard({ fieldName, stats }) {
   return (
     <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 transition-all duration-300 hover:shadow-md">
       <div className="flex items-center gap-3 mb-4">
-        <div className="p-2 rounded-xl bg-gradient-to-br from-primary/5 to-primary/5 border border-primary/10">
+        <div className="p-2 rounded-xl bg-gradient-to-br from-primary/5 to-primary/5 border border-slate-200">
           <Hash className="w-4 h-4 text-primary" />
         </div>
         <h3 className="text-sm font-semibold text-slate-800">{label}</h3>
       </div>
       <div className="grid grid-cols-2 gap-3">
         {[
-          { k: 'Sum', v: stats.sum, icon: TrendingUp, color: 'text-primary bg-primary/5' },
-          { k: 'Average', v: stats.avg, icon: Activity, color: 'text-primary bg-primary/5' },
+          { k: 'Sum', v: stats.sum, icon: TrendingUp, color: 'text-primary bg-slate-50' },
+          { k: 'Average', v: stats.avg, icon: Activity, color: 'text-primary bg-slate-50' },
           { k: 'Min', v: stats.min, icon: ArrowDownRight, color: 'text-amber-600 bg-amber-50' },
-          { k: 'Max', v: stats.max, icon: ArrowUpRight, color: 'text-primary bg-primary/5' },
+          { k: 'Max', v: stats.max, icon: ArrowUpRight, color: 'text-primary bg-slate-50' },
         ].map(({ k, v, icon: Ic, color }) => (
           <div
             key={k}

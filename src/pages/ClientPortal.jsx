@@ -166,9 +166,9 @@ export default function ClientPortal() {
       </div>
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <StatCard icon={Briefcase} label={`My ${getTerm(user?.company_industry, 'cases')}`} value={cases.length} color="bg-primary/5 text-primary" />
-        <StatCard icon={Calendar} label="Upcoming Appointments" value={upcomingHearings.length} color="bg-primary/5 text-primary" />
-        <StatCard icon={Receipt} label="Invoices Paid" value={invoices.filter(i => i.status === "paid").length} color="bg-primary/5 text-primary" />
+        <StatCard icon={Briefcase} label={`My ${getTerm(user?.company_industry, 'cases')}`} value={cases.length} color="bg-slate-50 text-primary" />
+        <StatCard icon={Calendar} label="Upcoming Appointments" value={upcomingHearings.length} color="bg-slate-50 text-primary" />
+        <StatCard icon={Receipt} label="Invoices Paid" value={invoices.filter(i => i.status === "paid").length} color="bg-slate-50 text-primary" />
         <StatCard icon={FolderOpen} label="Documents" value={sharedDocs.length} color="bg-amber-50 text-amber-600" />
       </div>
       {/* At a Glance */}
@@ -213,7 +213,7 @@ export default function ClientPortal() {
                   {ps && (
                     <div className="flex items-center gap-1.5 mt-1">
                       <span className="text-[10px] text-muted-foreground">{t("status", "Status:")}</span>
-                      <Badge className="text-[10px] bg-primary/10 text-primary">{ps.current_stage_name}</Badge>
+                      <Badge className="text-[10px] bg-slate-100 text-primary">{ps.current_stage_name}</Badge>
                     </div>
                   )}
                   {c.next_hearing_date && (
@@ -233,7 +233,7 @@ export default function ClientPortal() {
             ) : upcomingHearings.map(h => {
               return (
                 <div key={h.id} className="p-4 flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex flex-col items-center justify-center shrink-0">
+                  <div className="w-12 h-12 rounded-xl bg-slate-100 flex flex-col items-center justify-center shrink-0">
                     <span className="text-[9px] font-bold text-primary leading-none">{format(new Date(h.date), "MMM")}</span>
                     <span className="text-lg font-bold text-primary leading-none">{format(new Date(h.date), "d")}</span>
                   </div>

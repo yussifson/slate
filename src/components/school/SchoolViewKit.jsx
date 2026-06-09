@@ -65,15 +65,15 @@ function CardActions({ onEdit, onDelete, onView }) {
 
 export function StudentGridCard({ student, onEdit, onDelete, onView }) {
   const feeStyles = {
-    Paid: "bg-primary/10 text-primary border-primary/20 dark:bg-primary/20 dark:text-primary dark:border-primary/30",
+    Paid: "bg-slate-100 text-primary border-primary/20 dark:bg-primary/20 dark:text-primary dark:border-primary/30",
     Owing: "bg-red-50 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800",
     Partial: "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800"
   };
 
   const statusStyles = {
-    Active: "bg-primary/10 text-primary border-primary/20 dark:bg-primary/20 dark:text-primary dark:border-primary/30",
+    Active: "bg-slate-100 text-primary border-primary/20 dark:bg-primary/20 dark:text-primary dark:border-primary/30",
     Suspended: "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700",
-    Graduated: "bg-primary/5 text-primary/90 border-primary/20 dark:bg-primary/30 dark:text-primary/30 dark:border-primary/80"
+    Graduated: "bg-slate-50 text-primary/90 border-primary/20 dark:bg-primary/30 dark:text-primary/30 dark:border-primary/80"
   };
 
   return (
@@ -81,7 +81,7 @@ export function StudentGridCard({ student, onEdit, onDelete, onView }) {
       <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent dark:from-primary/20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-2xl" />
       <CardActions onView={onView} onEdit={onEdit} onDelete={onDelete} />
       
-      <div className="w-24 h-24 mx-auto rounded-[1.5rem] bg-gradient-to-br from-primary/5 to-primary/15 dark:from-primary/20 dark:to-primary/30 border border-primary/10 dark:border-primary/20 shadow-inner flex items-center justify-center text-4xl font-black text-primary dark:text-primary mb-5 shrink-0 relative overflow-hidden transform group-hover:scale-105 transition-transform duration-300">
+      <div className="w-24 h-24 mx-auto rounded-[1.5rem] bg-gradient-to-br from-primary/5 to-primary/15 dark:from-primary/20 dark:to-primary/30 border border-slate-200 dark:border-primary/20 shadow-inner flex items-center justify-center text-4xl font-black text-primary dark:text-primary mb-5 shrink-0 relative overflow-hidden transform group-hover:scale-105 transition-transform duration-300">
         {student.avatar || student.name?.[0]?.toUpperCase()}
       </div>
       
@@ -89,7 +89,7 @@ export function StudentGridCard({ student, onEdit, onDelete, onView }) {
         <h3 className="school-heading font-extrabold text-xl line-clamp-1 tracking-tight group-hover:text-primary transition-colors">{student.name}</h3>
         <p className="text-xs text-muted-foreground font-semibold tracking-widest mt-1 opacity-70 font-dmsans">{student.studentId}</p>
         <div className="mt-4 flex items-center justify-center gap-2">
-          <span className="text-xs font-bold px-4 py-1.5 rounded-full bg-primary/10 dark:bg-slate-800 text-primary dark:text-primary shadow-sm border border-primary/10 dark:border-primary/20">{student.class}</span>
+          <span className="text-xs font-bold px-4 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary shadow-sm border border-slate-200 dark:border-primary/20">{student.class}</span>
         </div>
       </div>
       
@@ -119,7 +119,7 @@ export function ClassGridCard({ classInfo, onEdit, onDelete, onView }) {
       </div>
       
       <div className="flex justify-between items-start mb-5 relative z-10">
-        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/15 dark:from-primary/20 dark:to-primary/30 border border-primary/10 dark:border-primary/20 shadow-sm text-primary dark:text-primary flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/15 dark:from-primary/20 dark:to-primary/30 border border-slate-200 dark:border-primary/20 shadow-sm text-primary dark:text-primary flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
           <BookOpen className="w-6 h-6" />
         </div>
         <CardActions onView={onView} onEdit={onEdit} onDelete={onDelete} />
@@ -130,14 +130,14 @@ export function ClassGridCard({ classInfo, onEdit, onDelete, onView }) {
         <p className="text-sm font-semibold text-muted-foreground/80 mt-1 tracking-wide uppercase">{classInfo.subject}</p>
       </div>
 
-      <div className="space-y-3 mt-auto relative z-10 bg-primary/5 dark:bg-slate-800/50 p-4 rounded-xl border border-primary/5 dark:border-slate-700">
+      <div className="space-y-3 mt-auto relative z-10 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-primary/5 dark:border-slate-700">
         <div className="flex justify-between text-sm items-center">
           <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Teacher</span>
           <span className="font-bold text-foreground text-right">{classInfo.teacher}</span>
         </div>
         <div className="flex justify-between text-sm items-center">
           <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Enrolled</span>
-          <span className="font-bold text-foreground bg-white dark:bg-slate-800 px-2.5 py-0.5 rounded-md border border-primary/10 dark:border-slate-700 shadow-sm">{classInfo.students}</span>
+          <span className="font-bold text-foreground bg-white dark:bg-slate-800 px-2.5 py-0.5 rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">{classInfo.students}</span>
         </div>
         <div className="flex justify-between text-sm items-center pt-2 border-t border-primary/5 dark:border-slate-700">
           <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Schedule</span>
@@ -157,7 +157,7 @@ export function BookGridCard({ book, onEdit, onDelete, onView, onIssue }) {
         {book.cover_url ? (
           <img src={book.cover_url} alt="Cover" className="h-full object-contain drop-shadow-md rounded-sm" />
         ) : (
-          <div className="w-24 h-32 bg-white dark:bg-slate-800 border border-primary/10 dark:border-slate-700 shadow-sm rounded-lg flex items-center justify-center text-primary dark:text-slate-500">
+          <div className="w-24 h-32 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm rounded-lg flex items-center justify-center text-primary dark:text-slate-500">
             <BookOpen className="w-8 h-8" />
           </div>
         )}
@@ -209,9 +209,9 @@ export function BookGridCard({ book, onEdit, onDelete, onView, onIssue }) {
 
 export function ExamGridCard({ exam, onEdit, onDelete, onView, onStatusChange }) {
   const statusStyles = {
-    Upcoming: 'bg-primary/10 text-primary border-primary/20 dark:bg-primary/20 dark:text-primary dark:border-primary/30',
+    Upcoming: 'bg-slate-100 text-primary border-primary/20 dark:bg-primary/20 dark:text-primary dark:border-primary/30',
     Ongoing: 'bg-amber-50 text-amber-700 border-amber-200 animate-pulse dark:bg-amber-900/30 dark:text-amber-300',
-    Completed: 'bg-primary/5 text-primary/90 border-primary/20 dark:bg-primary/30 dark:text-primary/30'
+    Completed: 'bg-slate-50 text-primary/90 border-primary/20 dark:bg-primary/30 dark:text-primary/30'
   };
 
   return (
@@ -231,7 +231,7 @@ export function ExamGridCard({ exam, onEdit, onDelete, onView, onStatusChange })
       
       <div className="mb-4">
         <h3 className="school-heading font-bold text-xl mb-1">{exam.subject}</h3>
-        <span className="text-xs font-bold px-2 py-1 bg-primary/10 dark:bg-slate-800 text-primary dark:text-primary rounded-lg">{exam.class}</span>
+        <span className="text-xs font-bold px-2 py-1 bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary rounded-lg">{exam.class}</span>
       </div>
 
       <div className="space-y-3 mt-auto pt-4 border-t border-slate-100 dark:border-slate-800 text-sm text-muted-foreground">

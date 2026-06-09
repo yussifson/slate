@@ -179,7 +179,7 @@ export default function Restaurant() {
                        </div>
                        <div onClick={() => addToOrder(item)} className="flex justify-between items-center mt-4">
                           <span className="font-bold text-primary">${item.price.toFixed(2)}</span>
-                          <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary"><Plus className="w-4 h-4"/></div>
+                          <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-muted-foreground group-hover:bg-slate-100 group-hover:text-primary"><Plus className="w-4 h-4"/></div>
                        </div>
                      </div>
                    );

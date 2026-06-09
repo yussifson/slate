@@ -136,7 +136,7 @@ export default function StaffPermissionsSettings() {
             <button
               key={s.id}
               onClick={() => setSelectedStaff(s)}
-              className={`w-full text-left px-3 py-2.5 text-sm transition-colors border-b border-border last:border-0 ${activeStaff?.id === s.id ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted text-foreground"}`}
+              className={`w-full text-left px-3 py-2.5 text-sm transition-colors border-b border-border last:border-0 ${activeStaff?.id === s.id ? "bg-slate-100 text-primary font-medium" : "hover:bg-muted text-foreground"}`}
             >
               <p className="font-medium truncate">{s.full_name}</p>
               <p className="text-[10px] text-muted-foreground capitalize">{s.role?.replace(/_/g, " ")}</p>
@@ -148,7 +148,7 @@ export default function StaffPermissionsSettings() {
       {activeStaff && (
         <div className="flex-1 space-y-4">
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
               <span className="text-xs font-bold text-primary">{activeStaff.full_name?.[0]}</span>
             </div>
             <div>

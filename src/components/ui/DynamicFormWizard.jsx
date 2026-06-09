@@ -83,7 +83,7 @@ export default function DynamicFormWizard({ fieldDefinitions = [], onRefresh, mo
           {steps.map((_, idx) => (
             <React.Fragment key={idx}>
               <div className={`flex flex-col items-center ${idx <= currentStep ? 'text-primary' : 'text-muted-foreground'}`}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold mb-1 transition-colors ${idx < currentStep ? 'bg-primary text-white' : idx === currentStep ? 'bg-primary/10 dark:bg-primary/70 border-2 border-primary' : 'bg-muted border-2 border-muted-foreground'}`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold mb-1 transition-colors ${idx < currentStep ? 'bg-primary text-white' : idx === currentStep ? 'bg-slate-100 dark:bg-primary/70 border-2 border-primary' : 'bg-muted border-2 border-muted-foreground'}`}>
                   {idx < currentStep ? <CheckCircle2 className="w-5 h-5" /> : idx + 1}
                 </div>
                 <span className="text-xs font-medium">Step {idx + 1}</span>

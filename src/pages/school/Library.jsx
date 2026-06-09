@@ -176,7 +176,7 @@ export default function Library() {
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         <div className="stat-card-premium school-card p-5 flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-primary/5 dark:bg-primary/30 flex items-center justify-center text-primary dark:text-primary/30">
+          <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-primary/30 flex items-center justify-center text-primary dark:text-primary/30">
             <Book className="w-5 h-5" />
           </div>
           <div>
@@ -185,7 +185,7 @@ export default function Library() {
           </div>
         </div>
         <div className="stat-card-premium school-card p-5 flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+          <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
             <BookOpen className="w-5 h-5" />
           </div>
           <div>
@@ -206,7 +206,7 @@ export default function Library() {
       <div className="school-card p-5 flex items-center justify-between flex-wrap gap-4">
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Search catalog title, author or ISBN..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white/80 dark:bg-slate-800/50 border-primary/10 dark:border-slate-700 rounded-xl focus-visible:ring-primary" />
+          <Input placeholder="Search catalog title, author or ISBN..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white/80 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary" />
         </div>
         <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
       </div>
@@ -251,7 +251,7 @@ export default function Library() {
         <div className="school-card overflow-hidden mt-4">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-primary/5/60 dark:bg-slate-800/40 border-b border-primary/10 dark:border-slate-700">
+              <thead className="bg-slate-50/60 dark:bg-slate-800/40 border-b border-slate-200 dark:border-slate-700">
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("book_title", "Book Title")}</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("author", "Author")}</th>
@@ -276,7 +276,7 @@ export default function Library() {
                     </td>
                     <td className="px-6 py-4 text-center text-foreground font-medium">{b.total}</td>
                     <td className="px-6 py-4 text-center">
-                      <span className={`font-bold px-2.5 py-1 rounded-full text-xs ${b.available > 0 ? 'bg-primary/10 text-primary/90' : 'bg-red-100 text-red-700'}`}>
+                      <span className={`font-bold px-2.5 py-1 rounded-full text-xs ${b.available > 0 ? 'bg-slate-100 text-primary/90' : 'bg-red-100 text-red-700'}`}>
                         {b.available}
                       </span>
                     </td>
@@ -464,7 +464,7 @@ export default function Library() {
           {viewDetails && (
             <div className="mt-6 space-y-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-20 shrink-0 rounded-md bg-primary/5 dark:bg-primary/20 overflow-hidden flex items-center justify-center text-primary dark:text-primary/70 font-bold text-xl border border-border">
+                <div className="w-16 h-20 shrink-0 rounded-md bg-slate-50 dark:bg-primary/20 overflow-hidden flex items-center justify-center text-primary dark:text-primary/70 font-bold text-xl border border-border">
                   {viewDetails.cover_url ? (
                     <img src={viewDetails.cover_url} alt="Cover" className="w-full h-full object-cover" />
                   ) : (
@@ -492,7 +492,7 @@ export default function Library() {
                 </div>
                 <div className="bg-muted/50 p-3 rounded-lg">
                   <p className="text-xs text-muted-foreground uppercase font-semibold">{t("status", "Status")}</p>
-                  <span className={`inline-block mt-1 font-bold px-2.5 py-0.5 rounded-full text-xs ${viewDetails.available > 0 ? 'bg-primary/10 text-primary/90' : 'bg-red-100 text-red-700'}`}>
+                  <span className={`inline-block mt-1 font-bold px-2.5 py-0.5 rounded-full text-xs ${viewDetails.available > 0 ? 'bg-slate-100 text-primary/90' : 'bg-red-100 text-red-700'}`}>
                     {viewDetails.available > 0 ? 'Available' : 'Out of Stock'}
                   </span>
                 </div>
@@ -507,7 +507,7 @@ export default function Library() {
               </div>
               {viewDetails.ebook_url && (
                 <div className="pt-2 border-t border-border mt-4">
-                  <a href={viewDetails.ebook_url} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 bg-primary/5 dark:bg-primary/20 text-primary dark:text-primary/30 hover:bg-primary/10 font-bold py-3 rounded-xl transition-colors">
+                  <a href={viewDetails.ebook_url} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 bg-slate-50 dark:bg-primary/20 text-primary dark:text-primary/30 hover:bg-slate-100 font-bold py-3 rounded-xl transition-colors">
                     <Book className="w-5 h-5" />
                     {t("read_e_book_now", "Read E-Book Now")}
                   </a>

@@ -52,8 +52,6 @@ export default function EnterpriseContact() {
   return (
     <div className="min-h-screen bg-slate-50 relative overflow-hidden flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8">
       {/* Background gradients */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary/20 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-primary/20 blur-[120px] pointer-events-none" />
       <div className="w-full max-w-7xl relative z-10 flex flex-col lg:flex-row shadow-2xl rounded-[2.5rem] overflow-hidden border border-white/40 bg-white/40 backdrop-blur-3xl">
         
         {/* Left Side: Premium Info Panel */}
@@ -172,10 +170,10 @@ export default function EnterpriseContact() {
                       <SelectValue placeholder="Select user count" />
                     </SelectTrigger>
                     <SelectContent className="rounded-2xl shadow-xl border-slate-100">
-                      <SelectItem value="10-50" className="rounded-xl focus:bg-primary/5">{t("10_50_users", "10 - 50 Users")}</SelectItem>
-                      <SelectItem value="50-100" className="rounded-xl focus:bg-primary/5">{t("50_100_users", "50 - 100 Users")}</SelectItem>
-                      <SelectItem value="100-500" className="rounded-xl focus:bg-primary/5">{t("100_500_users", "100 - 500 Users")}</SelectItem>
-                      <SelectItem value="500+" className="rounded-xl focus:bg-primary/5">{t("500_users", "500+ Users")}</SelectItem>
+                      <SelectItem value="10-50" className="rounded-xl focus:bg-slate-50">{t("10_50_users", "10 - 50 Users")}</SelectItem>
+                      <SelectItem value="50-100" className="rounded-xl focus:bg-slate-50">{t("50_100_users", "50 - 100 Users")}</SelectItem>
+                      <SelectItem value="100-500" className="rounded-xl focus:bg-slate-50">{t("100_500_users", "100 - 500 Users")}</SelectItem>
+                      <SelectItem value="500+" className="rounded-xl focus:bg-slate-50">{t("500_users", "500+ Users")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -184,7 +182,7 @@ export default function EnterpriseContact() {
                 <div>
                   <Label className="text-sm font-bold text-slate-900 mb-4 block">{t("enterprise_add_ons", "Enterprise Add-ons")}</Label>
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between p-5 rounded-2xl border border-white bg-white/60 backdrop-blur-md shadow-sm hover:border-primary/10 transition-colors">
+                    <div className="flex items-center justify-between p-5 rounded-2xl border border-white bg-white/60 backdrop-blur-md shadow-sm hover:border-slate-200 transition-colors">
                       <div className="space-y-1">
                         <Label className="text-base font-bold text-slate-900 cursor-pointer" onClick={() => handleChange('needsMigration', !formData.needsMigration)}>{t("legacy_data_migration", "Legacy Data Migration")}</Label>
                         <p className="text-xs text-slate-500 font-medium">{t(
@@ -195,7 +193,7 @@ export default function EnterpriseContact() {
                       <Switch checked={formData.needsMigration} onCheckedChange={(c) => handleChange('needsMigration', c)} />
                     </div>
                     
-                    <div className="flex items-center justify-between p-5 rounded-2xl border border-white bg-white/60 backdrop-blur-md shadow-sm hover:border-primary/10 transition-colors">
+                    <div className="flex items-center justify-between p-5 rounded-2xl border border-white bg-white/60 backdrop-blur-md shadow-sm hover:border-slate-200 transition-colors">
                       <div className="space-y-1">
                         <Label className="text-base font-bold text-slate-900 cursor-pointer" onClick={() => handleChange('needsWhitelabel', !formData.needsWhitelabel)}>{t("full_white_labeling", "Full White-Labeling")}</Label>
                         <p className="text-xs text-slate-500 font-medium">{t(
@@ -206,7 +204,7 @@ export default function EnterpriseContact() {
                       <Switch checked={formData.needsWhitelabel} onCheckedChange={(c) => handleChange('needsWhitelabel', c)} />
                     </div>
 
-                    <div className="flex items-center justify-between p-5 rounded-2xl border border-white bg-white/60 backdrop-blur-md shadow-sm hover:border-primary/10 transition-colors">
+                    <div className="flex items-center justify-between p-5 rounded-2xl border border-white bg-white/60 backdrop-blur-md shadow-sm hover:border-slate-200 transition-colors">
                       <div className="space-y-1">
                         <Label className="text-base font-bold text-slate-900 cursor-pointer" onClick={() => handleChange('needsCompliance', !formData.needsCompliance)}>{t("compliance_audit_package", "Compliance Audit Package")}</Label>
                         <p className="text-xs text-slate-500 font-medium">{t(
@@ -262,11 +260,11 @@ export default function EnterpriseContact() {
                           <SelectValue placeholder="Select industry" />
                         </SelectTrigger>
                         <SelectContent className="rounded-2xl shadow-xl border-slate-100">
-                          <SelectItem value="law" className="rounded-xl focus:bg-primary/5">{t("law_firm", "Law Firm")}</SelectItem>
-                          <SelectItem value="healthcare" className="rounded-xl focus:bg-primary/5">{t("healthcare_hospital", "Healthcare / Hospital")}</SelectItem>
-                          <SelectItem value="education" className="rounded-xl focus:bg-primary/5">{t("education", "Education")}</SelectItem>
-                          <SelectItem value="finance" className="rounded-xl focus:bg-primary/5">{t("finance_insurance", "Finance / Insurance")}</SelectItem>
-                          <SelectItem value="other" className="rounded-xl focus:bg-primary/5">{t("other", "Other")}</SelectItem>
+                          <SelectItem value="law" className="rounded-xl focus:bg-slate-50">{t("law_firm", "Law Firm")}</SelectItem>
+                          <SelectItem value="healthcare" className="rounded-xl focus:bg-slate-50">{t("healthcare_hospital", "Healthcare / Hospital")}</SelectItem>
+                          <SelectItem value="education" className="rounded-xl focus:bg-slate-50">{t("education", "Education")}</SelectItem>
+                          <SelectItem value="finance" className="rounded-xl focus:bg-slate-50">{t("finance_insurance", "Finance / Insurance")}</SelectItem>
+                          <SelectItem value="other" className="rounded-xl focus:bg-slate-50">{t("other", "Other")}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -297,7 +295,7 @@ export default function EnterpriseContact() {
 
           {step === 3 && (
             <div className="text-center py-12 animate-in fade-in zoom-in-95 duration-500 h-full flex flex-col items-center justify-center">
-              <div className="w-24 h-24 bg-primary/5 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-inner border border-primary/10">
+              <div className="w-24 h-24 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-inner border border-slate-200">
                 <Check className="w-12 h-12 text-primary" strokeWidth={3} />
               </div>
               <h3 className="text-3xl font-extrabold text-slate-900 mb-4">{t("request_sent_successfully", "Request Sent Successfully!")}</h3>

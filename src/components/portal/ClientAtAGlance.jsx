@@ -34,8 +34,8 @@ export default function ClientAtAGlance({ hearings = [], signatureRequests = [],
 
   if (allClear) {
     return (
-      <div className="bg-primary/5 border border-primary/20 rounded-xl p-6 flex items-center gap-4">
-        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+      <div className="bg-slate-50 border border-primary/20 rounded-xl p-6 flex items-center gap-4">
+        <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
           <CheckCircle2 className="w-6 h-6 text-primary" />
         </div>
         <div>
@@ -68,7 +68,7 @@ export default function ClientAtAGlance({ hearings = [], signatureRequests = [],
                 <div key={h.id} className="px-4 py-3 flex items-center gap-3">
                   <div className={cn(
                     "w-11 h-11 rounded-xl flex flex-col items-center justify-center shrink-0 text-center",
-                    isUrgent ? "bg-red-50" : "bg-primary/10"
+                    isUrgent ? "bg-red-50" : "bg-slate-100"
                   )}>
                     <span className={cn("text-[9px] font-bold leading-none", isUrgent ? "text-red-500" : "text-primary")}>
                       {format(new Date(h.date), "MMM")}

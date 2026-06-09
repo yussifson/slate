@@ -339,7 +339,7 @@ export default function SHSGrades() {
                             {total > 0 ? (
                               <Badge variant="outline" className={`
                                 border-none font-bold text-sm h-8 w-10 flex items-center justify-center
-                                ${grade === 'A1' ? 'bg-primary/10 text-primary/90' : 
+                                ${grade === 'A1' ? 'bg-slate-100 text-primary/90' : 
                                   ['B2', 'B3'].includes(grade) ? 'bg-orange-100 text-orange-700' :
                                   ['C4', 'C5', 'C6'].includes(grade) ? 'bg-amber-100 text-amber-700' :
                                   ['D7', 'E8'].includes(grade) ? 'bg-orange-100 text-orange-700' :
@@ -362,7 +362,7 @@ export default function SHSGrades() {
               <div className="p-6 bg-slate-50 dark:bg-slate-800 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
                 <div>
                   {saveSuccess && (
-                    <Badge className="bg-primary/10 text-primary/90 border-none px-3 py-1 text-sm font-semibold flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2">
+                    <Badge className="bg-slate-100 text-primary/90 border-none px-3 py-1 text-sm font-semibold flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2">
                       <CheckCircle2 className="w-4 h-4" /> Grades Saved Successfully
                     </Badge>
                   )}

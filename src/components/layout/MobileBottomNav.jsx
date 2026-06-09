@@ -42,7 +42,7 @@ export default function MobileBottomNav() {
                   isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                <div className={cn("w-8 h-8 rounded-full flex items-center justify-center transition-colors", isActive ? "bg-primary/10" : "")}>
+                <div className={cn("w-8 h-8 rounded-full flex items-center justify-center transition-colors", isActive ? "bg-slate-100" : "")}>
                   <IconComp className={cn("w-5 h-5 transition-transform", isActive ? "scale-110" : "")} />
                 </div>
                 <span className={cn("text-[10px] font-semibold leading-none", isActive ? "text-primary" : "")}>
@@ -60,7 +60,7 @@ export default function MobileBottomNav() {
               mobileMenuOpen ? "text-primary" : "text-muted-foreground hover:text-foreground"
             )}
           >
-            <div className={cn("w-8 h-8 rounded-full flex items-center justify-center transition-colors", mobileMenuOpen ? "bg-primary/10" : "")}>
+            <div className={cn("w-8 h-8 rounded-full flex items-center justify-center transition-colors", mobileMenuOpen ? "bg-slate-100" : "")}>
               <MoreHorizontal className={cn("w-5 h-5 transition-transform", mobileMenuOpen ? "scale-110" : "")} />
             </div>
             <span className={cn("text-[10px] font-semibold leading-none", mobileMenuOpen ? "text-primary" : "")}>
@@ -97,7 +97,7 @@ export default function MobileBottomNav() {
                       onClick={() => setMobileMenuOpen(false)}
                       className={cn(
                         "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors",
-                        isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+                        isActive ? "bg-slate-100 text-primary" : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
                       )}
                     >
                       <IconComp className="w-5 h-5" />

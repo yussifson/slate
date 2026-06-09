@@ -96,7 +96,7 @@ export default function SHSTeachers() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
               <Users className="w-6 h-6" />
             </div>
             <div>
@@ -108,7 +108,7 @@ export default function SHSTeachers() {
         
         <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-primary shrink-0">
               <User className="w-6 h-6" />
             </div>
             <div>
@@ -158,7 +158,7 @@ export default function SHSTeachers() {
             <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading staff...</div>
           ) : filteredTeachers.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-primary/5 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
                 <Users className="w-8 h-8 text-primary dark:text-primary" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No teachers found</h3>
@@ -170,7 +170,7 @@ export default function SHSTeachers() {
                 <div key={teacher.id} className="group p-5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-primary dark:border-primary/30 hover:shadow-lg hover:shadow-purple-500/5 transition-all duration-300">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/10 to-white border border-primary/10 dark:border-slate-700 flex items-center justify-center text-xl font-black text-primary dark:text-primary/70">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/10 to-white border border-slate-200 dark:border-slate-700 flex items-center justify-center text-xl font-black text-primary dark:text-primary/70">
                         {teacher.title.charAt(0)}
                       </div>
                       <div>
@@ -179,7 +179,7 @@ export default function SHSTeachers() {
                       </div>
                     </div>
                     <Badge variant="outline" className={
-                      teacher.status === 'Active' ? 'bg-primary/5 text-primary/90 border-primary/20' :
+                      teacher.status === 'Active' ? 'bg-slate-50 text-primary/90 border-primary/20' :
                       'bg-amber-50 text-amber-700 border-amber-200'
                     }>
                       {teacher.status}
@@ -202,10 +202,10 @@ export default function SHSTeachers() {
                   </div>
                   
                   <div className="mt-5 pt-4 border-t border-slate-50 flex justify-between gap-2">
-                    <Button variant="outline" size="sm" className="flex-1 rounded-xl border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-primary dark:text-primary/70 hover:bg-primary/5 dark:bg-slate-800">
+                    <Button variant="outline" size="sm" className="flex-1 rounded-xl border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800">
                       Profile
                     </Button>
-                    <Button variant="outline" size="sm" className="flex-1 rounded-xl border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-primary dark:text-primary/70 hover:bg-primary/5 dark:bg-slate-800">
+                    <Button variant="outline" size="sm" className="flex-1 rounded-xl border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800">
                       Subjects
                     </Button>
                   </div>

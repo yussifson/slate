@@ -27,8 +27,8 @@ function calcGrade(score, maxScore) {
 }
 
 const GRADE_COLORS = {
-  A: 'bg-primary/10 text-primary/90',
-  B: 'bg-primary/5 text-primary dark:bg-primary/30 dark:text-primary/30',
+  A: 'bg-slate-100 text-primary/90',
+  B: 'bg-slate-50 text-primary dark:bg-primary/30 dark:text-primary/30',
   C: 'bg-amber-100 text-amber-700',
   D: 'bg-orange-100 text-orange-700',
   F: 'bg-red-100 text-red-700',
@@ -260,7 +260,7 @@ export default function Grades() {
             </div>
           ) : (
             <table className="w-full text-sm">
-              <thead className="bg-primary/5/60 dark:bg-slate-800/40 border-b border-primary/10 dark:border-slate-700">
+              <thead className="bg-slate-50/60 dark:bg-slate-800/40 border-b border-slate-200 dark:border-slate-700">
                 <tr>
                   {['Student', 'Class', 'Subject', 'Exam', 'Date', 'Score', 'Grade', ''].map(h => {
                     return (<th key={h} className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{h}</th>);
@@ -273,14 +273,14 @@ export default function Grades() {
                     <tr key={g.id} className="hover:bg-muted/40 transition-colors">
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary/90 font-bold text-xs shrink-0">
+                          <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-primary/90 font-bold text-xs shrink-0">
                             {g.studentName?.substring(0, 2).toUpperCase()}
                           </div>
                           <Link to="/students" className="font-semibold text-primary hover:underline">{g.studentName}</Link>
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <Link to="/classes" className="bg-primary/5 dark:bg-primary/20 text-primary dark:text-primary/30 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{g.className}</Link>
+                        <Link to="/classes" className="bg-slate-50 dark:bg-primary/20 text-primary dark:text-primary/30 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{g.className}</Link>
                       </td>
                       <td className="px-4 py-3 text-muted-foreground">{g.subject}</td>
                       <td className="px-4 py-3 text-foreground font-medium">{g.examName}</td>
@@ -480,7 +480,7 @@ export default function Grades() {
           {viewDetails && (
             <div className="mt-6 space-y-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary/90 font-bold text-xl">
+                <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-primary/90 font-bold text-xl">
                   {viewDetails.studentName?.substring(0, 2).toUpperCase()}
                 </div>
                 <div>

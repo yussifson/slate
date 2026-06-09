@@ -8,10 +8,10 @@ import { format } from "date-fns";
 import { User, Calendar } from "lucide-react";
 
 const COLUMNS = [
-  { id: "open", label: "Open", color: "bg-primary", light: "bg-primary/5 border-primary/20" },
+  { id: "open", label: "Open", color: "bg-primary", light: "bg-slate-50 border-primary/20" },
   { id: "in_progress", label: "In Progress", color: "bg-amber-500", light: "bg-amber-50 border-amber-200" },
-  { id: "pending_hearing", label: "Pending Hearing", color: "bg-primary", light: "bg-primary/5 border-primary/20" },
-  { id: "closed", label: "Closed", color: "bg-primary", light: "bg-primary/5 border-primary/20" },
+  { id: "pending_hearing", label: "Pending Hearing", color: "bg-primary", light: "bg-slate-50 border-primary/20" },
+  { id: "closed", label: "Closed", color: "bg-primary", light: "bg-slate-50 border-primary/20" },
   { id: "archived", label: "Archived", color: "bg-gray-400", light: "bg-gray-50 border-gray-200" },
 ];
 
@@ -99,7 +99,7 @@ export default function CasesKanban({ cases, onStatusChange }) {
                                   </div>
                                   {c.assigned_lawyer_name && (
                                     <div className="flex items-center gap-1.5">
-                                      <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center">
+                                      <div className="w-5 h-5 rounded-full bg-slate-100 flex items-center justify-center">
                                         <span className="text-[8px] font-bold text-primary">
                                           {c.assigned_lawyer_name[0].toUpperCase()}
                                         </span>

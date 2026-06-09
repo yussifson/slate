@@ -7,7 +7,7 @@ export default function Partners() {
   return (
     <div className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto min-h-screen">
       <div className="text-center max-w-3xl mx-auto mb-20">
-        <div className="w-20 h-20 bg-primary/10 text-primary rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-inner border border-primary/20">
+        <div className="w-20 h-20 bg-slate-100 text-primary rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-inner border border-primary/20">
           <Handshake className="w-10 h-10" />
         </div>
         <h1 className="text-5xl md:text-6xl font-extrabold text-slate-900 tracking-tight mb-6">
@@ -30,7 +30,7 @@ export default function Partners() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="bg-white p-10 rounded-[2rem] border border-slate-200 shadow-sm text-center">
-          <div className="w-14 h-14 bg-primary/5 text-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <div className="w-14 h-14 bg-slate-50 text-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
             <Globe className="w-7 h-7" />
           </div>
           <h3 className="text-xl font-bold text-slate-900 mb-4">{t("technology_partners", "Technology Partners")}</h3>
@@ -43,7 +43,7 @@ export default function Partners() {
         </div>
         
         <div className="bg-white p-10 rounded-[2rem] border border-slate-200 shadow-sm text-center">
-          <div className="w-14 h-14 bg-primary/5 text-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <div className="w-14 h-14 bg-slate-50 text-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
             <ShieldCheck className="w-7 h-7" />
           </div>
           <h3 className="text-xl font-bold text-slate-900 mb-4">{t("solutions_partners", "Solutions Partners")}</h3>
@@ -56,7 +56,7 @@ export default function Partners() {
         </div>
 
         <div className="bg-white p-10 rounded-[2rem] border border-slate-200 shadow-sm text-center">
-          <div className="w-14 h-14 bg-primary/5 text-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <div className="w-14 h-14 bg-slate-50 text-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
             <Rocket className="w-7 h-7" />
           </div>
           <h3 className="text-xl font-bold text-slate-900 mb-4">{t("referral_partners", "Referral Partners")}</h3>

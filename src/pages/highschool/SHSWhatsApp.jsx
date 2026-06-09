@@ -118,7 +118,7 @@ export default function SHSWhatsapp() {
         <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-slate-100">
           <CardContent className="p-5 flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+              <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-primary shrink-0">
                 <Smartphone className="w-6 h-6" />
               </div>
               <div>
@@ -158,7 +158,7 @@ export default function SHSWhatsapp() {
             <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading WhatsApp campaigns...</div>
           ) : filteredCampaigns.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-primary/5 mx-auto flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-slate-50 mx-auto flex items-center justify-center mb-4">
                 <MessageCircle className="w-8 h-8 text-primary" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No campaigns launched</h3>
@@ -185,9 +185,9 @@ export default function SHSWhatsapp() {
                     </span>
                   </div>
                   
-                  <div className="bg-primary/10/50 p-4 rounded-xl border border-primary/20 text-sm text-slate-700 dark:text-slate-200 whitespace-pre-wrap relative mt-3">
+                  <div className="bg-slate-100/50 p-4 rounded-xl border border-primary/20 text-sm text-slate-700 dark:text-slate-200 whitespace-pre-wrap relative mt-3">
                     {/* Simulated WA message bubble tail */}
-                    <div className="absolute -top-2 left-4 w-4 h-4 bg-primary/10/50 border-t border-l border-primary/20 rotate-45"></div>
+                    <div className="absolute -top-2 left-4 w-4 h-4 bg-slate-100/50 border-t border-l border-primary/20 rotate-45"></div>
                     <p className="relative z-10">{camp.data?.messageText || `[Template used: ${camp.data?.templateId}]`}</p>
                   </div>
                 </div>

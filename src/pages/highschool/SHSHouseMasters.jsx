@@ -93,7 +93,7 @@ export default function SHSHouseMasters() {
             <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading directory...</div>
           ) : filteredMasters.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-primary/5 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
                 <Shield className="w-8 h-8 text-primary dark:text-primary" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No House Masters Assigned</h3>
@@ -136,7 +136,7 @@ export default function SHSHouseMasters() {
                   </div>
                   
                   <div className="mt-6 pt-4 border-t border-slate-50 flex gap-2">
-                    <Button variant="outline" className="flex-1 rounded-xl font-semibold text-slate-600 dark:text-slate-300 hover:text-primary dark:text-primary/70 hover:bg-primary/5 dark:bg-slate-800 hover:border-primary/20 dark:border-slate-600">
+                    <Button variant="outline" className="flex-1 rounded-xl font-semibold text-slate-600 dark:text-slate-300 hover:text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800 hover:border-primary/20 dark:border-slate-600">
                       Send Message
                     </Button>
                   </div>

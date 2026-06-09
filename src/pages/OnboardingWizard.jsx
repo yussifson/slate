@@ -238,8 +238,8 @@ export default function OnboardingWizard() {
     <div className="min-h-[100dvh] bg-[#f8fafc] flex flex-col justify-center items-center sm:py-12 sm:px-6 relative overflow-hidden font-sans">
       
       {/* Background Decorative Elements */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-primary/10 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-slate-100 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-slate-100 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
       {/* Main Container */}
       <div className="w-full h-[100dvh] sm:h-auto sm:max-w-3xl bg-white sm:rounded-3xl sm:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] sm:border border-slate-100 relative z-10 flex flex-col sm:my-10">
@@ -354,7 +354,7 @@ export default function OnboardingWizard() {
                     <div className="space-y-2">
                       <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Education Level</label>
                       <Select value={educationLevel} onValueChange={setEducationLevel}>
-                        <SelectTrigger className="w-full h-12 bg-primary/50 border-primary/20 rounded-xl text-slate-900 focus:ring-primary">
+                        <SelectTrigger className="w-full h-12 bg-slate-500 border-primary/20 rounded-xl text-slate-900 focus:ring-primary">
                           <SelectValue placeholder="Select level" />
                         </SelectTrigger>
                         <SelectContent className="bg-white text-slate-900 border-slate-200">
@@ -418,7 +418,7 @@ export default function OnboardingWizard() {
 
                 <div className="space-y-4">
                   {/* Template Option */}
-                  <label className={`block relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${setupMode === 'template' ? 'border-primary bg-primary/50 shadow-sm' : 'border-slate-200 hover:border-primary/30 bg-white'}`}>
+                  <label className={`block relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${setupMode === 'template' ? 'border-primary bg-slate-500 shadow-sm' : 'border-slate-200 hover:border-primary/30 bg-white'}`}>
                     <input 
                       type="radio" 
                       name="setupMode" 
@@ -439,7 +439,7 @@ export default function OnboardingWizard() {
                   </label>
                   
                   {/* Orbit Option */}
-                  <label className={`block relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${setupMode === 'orbit' ? 'border-primary bg-primary/50 shadow-sm' : 'border-slate-200 hover:border-primary/30 bg-white'}`}>
+                  <label className={`block relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${setupMode === 'orbit' ? 'border-primary bg-slate-500 shadow-sm' : 'border-slate-200 hover:border-primary/30 bg-white'}`}>
                     <input 
                       type="radio" 
                       name="setupMode" 
@@ -455,7 +455,7 @@ export default function OnboardingWizard() {
                       <div>
                         <div className="flex items-center gap-2">
                           <h3 className={`font-bold ${setupMode === 'orbit' ? 'text-primary/70' : 'text-slate-900'}`}>Build with Orbit</h3>
-                          <span className="px-2 py-0.5 rounded-md bg-primary/10 text-primary/90 text-[10px] font-bold uppercase tracking-wider">AI Powered</span>
+                          <span className="px-2 py-0.5 rounded-md bg-slate-100 text-primary/90 text-[10px] font-bold uppercase tracking-wider">AI Powered</span>
                         </div>
                         <p className="text-sm text-slate-500 mt-1 leading-relaxed">Start fresh with a blank slate. Use Orbit AI to dynamically generate custom pages and databases exactly how you want them.</p>
                       </div>
@@ -633,7 +633,7 @@ export default function OnboardingWizard() {
                   </p>
                 </div>
 
-                <div className="bg-primary/50 border border-primary/10 rounded-2xl p-6 space-y-5">
+                <div className="bg-slate-500 border border-slate-200 rounded-2xl p-6 space-y-5">
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(industry, 'case')} {t("title", "Title")}</label>
                     <Input 
@@ -743,7 +743,7 @@ function Badge({ role, industry }) {
   const label = roleDef ? roleDef.label : role;
   
   return (
-    <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-orange-50 text-orange-700 border border-primary/10">
+    <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-orange-50 text-orange-700 border border-slate-200">
       {label}
     </span>
   );

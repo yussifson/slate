@@ -483,7 +483,7 @@ export default function Integrations() {
           subtitle="Connect Slate with the tools your team already uses." 
         />
         <div className="flex items-center gap-3">
-          <Badge variant="outline" className="h-8 gap-1.5 bg-primary/5 text-primary/90 border-primary/20">
+          <Badge variant="outline" className="h-8 gap-1.5 bg-slate-50 text-primary/90 border-primary/20">
             <ShieldCheck className="w-3.5 h-3.5" /> {t("secure_oauth_2_0", "Secure OAuth 2.0")}
           </Badge>
           <Button variant="ghost" size="sm" className="h-8 text-slate-500 hover:text-primary">
@@ -562,12 +562,12 @@ export default function Integrations() {
                       />
                     </div>
                     {isConnected && (
-                      <Badge className="bg-primary/5 dark:bg-primary/10 text-primary/90 dark:text-primary/70 border-primary/20 dark:border-primary/20 font-extrabold gap-1.5 px-3 py-1.5 rounded-full shadow-sm">
+                      <Badge className="bg-slate-50 dark:bg-slate-100 text-primary/90 dark:text-primary/70 border-primary/20 dark:border-primary/20 font-extrabold gap-1.5 px-3 py-1.5 rounded-full shadow-sm">
                         <CheckCircle2 className="w-4 h-4" /> {t("connected", "Connected")}
                       </Badge>
                     )}
                     {!isConnected && app.popular && (
-                      <Badge variant="outline" className="text-xs font-bold text-primary dark:text-primary/70 border-primary/20 dark:border-primary/20 bg-primary/5 dark:bg-primary/10 px-3 py-1 rounded-full">
+                      <Badge variant="outline" className="text-xs font-bold text-primary dark:text-primary/70 border-primary/20 dark:border-primary/20 bg-slate-50 dark:bg-slate-100 px-3 py-1 rounded-full">
                         {t("popular", "Popular")}
                       </Badge>
                     )}
@@ -594,7 +594,7 @@ export default function Integrations() {
                           variant="secondary" 
                           disabled={isLoading}
                           onClick={() => handleTestSync(app)}
-                          className="h-10 px-4 rounded-xl bg-primary/5 dark:bg-primary/10 text-primary/90 dark:text-primary/70 hover:bg-primary/10 dark:hover:bg-primary/20 font-bold transition-colors shadow-sm"
+                          className="h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-100 text-primary/90 dark:text-primary/70 hover:bg-slate-100 dark:hover:bg-primary/20 font-bold transition-colors shadow-sm"
                         >
                           {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Test Sync"}
                         </Button>
@@ -604,7 +604,7 @@ export default function Integrations() {
                           variant="secondary" 
                           disabled={isLoading}
                           onClick={() => handleTestFeature(app)}
-                          className="h-10 px-4 rounded-xl bg-primary/5 dark:bg-primary/10 text-primary/90 dark:text-primary/70 hover:bg-primary/10 dark:hover:bg-primary/20 font-bold transition-colors shadow-sm"
+                          className="h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-100 text-primary/90 dark:text-primary/70 hover:bg-slate-100 dark:hover:bg-primary/20 font-bold transition-colors shadow-sm"
                         >
                           {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Test Feature"}
                         </Button>

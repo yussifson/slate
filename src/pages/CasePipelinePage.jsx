@@ -37,7 +37,7 @@ function PipelineCard({ pipeline, onEdit, onDelete, caseStates }) {
               <Badge variant="outline" className="text-[10px] capitalize">{pipeline.case_type}</Badge>
             )}
             {pipeline.is_default && (
-              <Badge className="text-[10px] bg-primary/10 text-primary">{t("default", "Default")}</Badge>
+              <Badge className="text-[10px] bg-slate-100 text-primary">{t("default", "Default")}</Badge>
             )}
           </div>
           <p className="text-xs text-muted-foreground mt-1">{stagesCount} {t("stages", "stages ·")} {activeCases} {t("active_cases", "active cases")}</p>

@@ -182,7 +182,7 @@ export default function Leave() {
       </div>
       <div className="grid grid-cols-3 gap-4">
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+          <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
             <CalendarDays className="w-5 h-5" />
           </div>
           <div>
@@ -200,7 +200,7 @@ export default function Leave() {
           </div>
         </div>
         <div className="stat-card-premium bg-card rounded-xl border border-border p-4 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+          <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
             <Check className="w-5 h-5" />
           </div>
           <div>
@@ -256,7 +256,7 @@ export default function Leave() {
                     </h3>
                     <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-sm ${
                       req.status === 'Pending' ? 'bg-amber-100 text-amber-700' : 
-                      req.status === 'Approved' ? 'bg-primary/10 text-primary/90' : 'bg-red-100 text-red-700'
+                      req.status === 'Approved' ? 'bg-slate-100 text-primary/90' : 'bg-red-100 text-red-700'
                     }`}>{req.status}</span>
                   </div>
                   

@@ -108,13 +108,13 @@ export default function SHSEnrollment() {
         <Card className="w-full md:w-[400px] shrink-0 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50">
           <div className="p-4 border-b border-primary/5">
             <h3 className="font-bold text-slate-800 dark:text-slate-100 mb-3 flex items-center justify-between">
-              Ready to Enroll <Badge className="bg-primary/10 text-primary/90">{admittedApplicants.length}</Badge>
+              Ready to Enroll <Badge className="bg-slate-100 text-primary/90">{admittedApplicants.length}</Badge>
             </h3>
             <div className="relative">
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary dark:text-primary" />
               <Input 
                 placeholder="Search admitted students..." 
-                className="pl-9 h-10 bg-white dark:bg-slate-900 border-primary/10 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
+                className="pl-9 h-10 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -135,11 +135,11 @@ export default function SHSEnrollment() {
                     className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
                       selectedApplicant?.id === app.id 
                         ? 'bg-primary dark:bg-primary text-white shadow-md shadow-emerald-500/20' 
-                        : 'hover:bg-primary/5 dark:bg-slate-800 text-slate-700 dark:text-slate-200'
+                        : 'hover:bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200'
                     }`}
                   >
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0 ${
-                      selectedApplicant?.id === app.id ? 'bg-white dark:bg-slate-900/20' : 'bg-primary/10 dark:bg-slate-800 text-primary dark:text-primary/70'
+                      selectedApplicant?.id === app.id ? 'bg-white dark:bg-slate-900/20' : 'bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70'
                     }`}>
                       <UserCheck className="w-5 h-5" />
                     </div>
@@ -167,7 +167,7 @@ export default function SHSEnrollment() {
           
           {selectedApplicant ? (
             <>
-              <div className="p-8 bg-gradient-to-r from-primary/5 to-white border-b border-primary/10 dark:border-slate-700">
+              <div className="p-8 bg-gradient-to-r from-primary/5 to-white border-b border-slate-200 dark:border-slate-700">
                 <div className="flex items-start justify-between">
                   <div>
                     <h2 className="text-2xl font-black text-slate-800 dark:text-slate-100">{selectedApplicant.title}</h2>
@@ -176,7 +176,7 @@ export default function SHSEnrollment() {
                       <span className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-slate-500">Admitted to: {selectedApplicant.data?.programChoice1}</span>
                     </div>
                   </div>
-                  <Badge className="bg-primary/10 text-primary/90 px-3 py-1 gap-1 text-sm border-none shadow-sm">
+                  <Badge className="bg-slate-100 text-primary/90 px-3 py-1 gap-1 text-sm border-none shadow-sm">
                     <CheckCircle className="w-4 h-4" /> Cleared for Enrollment
                   </Badge>
                 </div>
@@ -260,7 +260,7 @@ export default function SHSEnrollment() {
             </>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50">
-              <div className="w-20 h-20 rounded-full bg-primary/10 dark:bg-slate-800 flex items-center justify-center mb-6">
+              <div className="w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-6">
                 <GraduationCap className="w-10 h-10 text-primary/30" />
               </div>
               <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200">No Applicant Selected</h3>

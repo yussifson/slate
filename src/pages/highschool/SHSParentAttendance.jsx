@@ -82,11 +82,11 @@ export default function SHSParentAttendance() {
 
   const getStatusColor = (status) => {
     switch(status) {
-      case 'Present': return 'bg-primary/5 text-primary/90 border-primary/20';
+      case 'Present': return 'bg-slate-50 text-primary/90 border-primary/20';
       case 'Absent': return 'bg-rose-50 text-rose-700 border-rose-200';
       case 'Late': return 'bg-amber-50 text-amber-700 border-amber-200';
       case 'Excused': return 'bg-orange-50 text-orange-700 border-primary/20';
-      case 'Exeat': return 'bg-primary/5 dark:bg-slate-800 text-primary/80 dark:text-primary/20 border-primary/20 dark:border-slate-600';
+      case 'Exeat': return 'bg-slate-50 dark:bg-slate-800 text-primary/80 dark:text-primary/20 border-primary/20 dark:border-slate-600';
       default: return 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700';
     }
   };
@@ -112,7 +112,7 @@ export default function SHSParentAttendance() {
       ) : wards.length === 0 ? (
         <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
           <CardContent className="p-20 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-primary/5 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+            <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
               <User className="w-8 h-8 text-primary dark:text-primary" />
             </div>
             <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No Wards Linked</h3>
@@ -131,7 +131,7 @@ export default function SHSParentAttendance() {
                 className={`w-full p-4 rounded-2xl border text-left transition-all duration-300 flex items-center gap-4 ${
                   selectedWardId === ward.id 
                     ? 'bg-primary dark:bg-primary border-primary dark:border-primary text-white shadow-lg shadow-emerald-500/20 scale-100' 
-                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-primary dark:border-primary/50 scale-95'
+                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-primary dark:border-slate-200 scale-95'
                 }`}
               >
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg shrink-0 ${

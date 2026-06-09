@@ -213,7 +213,7 @@ export default function SHSRoomAllocation() {
                           {student.data?.classRoom || 'N/A'}
                         </td>
                         <td className="px-6 py-4 text-center">
-                          <Badge variant="outline" className={student.data?.houseId === selectedHouseId ? "bg-primary/5 text-primary/90 border-primary/20" : "bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 dark:text-slate-500"}>
+                          <Badge variant="outline" className={student.data?.houseId === selectedHouseId ? "bg-slate-50 text-primary/90 border-primary/20" : "bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 dark:text-slate-500"}>
                             {student.data?.houseName || 'Unassigned'}
                           </Badge>
                         </td>
@@ -234,7 +234,7 @@ export default function SHSRoomAllocation() {
               <div className="p-6 bg-slate-50 dark:bg-slate-800 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
                 <div>
                   {saveSuccess && (
-                    <Badge className="bg-primary/10 text-primary/90 border-none px-3 py-1 text-sm font-semibold flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2">
+                    <Badge className="bg-slate-100 text-primary/90 border-none px-3 py-1 text-sm font-semibold flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2">
                       <CheckCircle2 className="w-4 h-4" /> Allocations Saved
                     </Badge>
                   )}

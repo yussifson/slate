@@ -22,11 +22,11 @@ const CATEGORIES = [
   { value: "pleading", label: "Pleading", color: "bg-orange-100 text-orange-700" },
   { value: "court_order", label: "Court Order", color: "bg-amber-100 text-amber-700" },
   { value: "evidence", label: "Evidence", color: "bg-orange-100 text-orange-700" },
-  { value: "contract", label: "Contract", color: "bg-primary/10 text-primary/90" },
+  { value: "contract", label: "Contract", color: "bg-slate-100 text-primary/90" },
   { value: "correspondence", label: "Correspondence", color: "bg-slate-100 text-slate-600" },
-  { value: "scanned_document", label: "Scanned Document", color: "bg-primary/10 text-primary/90" },
-  { value: "id_document", label: "ID Document", color: "bg-primary/10 text-primary/90" },
-  { value: "invoice", label: "Invoice", color: "bg-primary/10 text-primary/90" },
+  { value: "scanned_document", label: "Scanned Document", color: "bg-slate-100 text-primary/90" },
+  { value: "id_document", label: "ID Document", color: "bg-slate-100 text-primary/90" },
+  { value: "invoice", label: "Invoice", color: "bg-slate-100 text-primary/90" },
   { value: "other", label: "Other", color: "bg-gray-100 text-gray-600" },
 ];
 
@@ -275,7 +275,7 @@ function DocRow({ doc, canManage, onDelete, onToggleShare, onPreview, highlighte
     )}>
       <div className={cn(
         "w-9 h-9 rounded-lg flex items-center justify-center shrink-0",
-        highlighted ? "bg-red-50" : "bg-primary/10"
+        highlighted ? "bg-red-50" : "bg-slate-100"
       )}>
         {getFileIcon(doc.file_type, doc.name)}
       </div>
@@ -390,7 +390,7 @@ export function UploadDocumentDialog({ onClose, onSubmit, isUploading: saving, c
           <div
             className={cn(
               "border-2 border-dashed rounded-xl p-6 text-center transition-colors cursor-pointer",
-              dragOver ? "border-primary bg-primary/5" : "border-border hover:border-primary/40"
+              dragOver ? "border-primary bg-slate-50" : "border-border hover:border-primary/40"
             )}
             onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
             onDragLeave={() => setDragOver(false)}

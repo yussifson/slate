@@ -418,7 +418,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false }
                       <button
                         type="button"
                         onClick={() => setState({ ...state, layout: "table" })}
-                        className={`flex flex-col items-center justify-center p-3 rounded-lg border text-sm font-medium transition-all ${layout === 'table' ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card text-muted-foreground hover:bg-muted'}`}
+                        className={`flex flex-col items-center justify-center p-3 rounded-lg border text-sm font-medium transition-all ${layout === 'table' ? 'border-primary bg-slate-100 text-primary' : 'border-border bg-card text-muted-foreground hover:bg-muted'}`}
                       >
                         <svg className="w-6 h-6 mb-2 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
                         Table View
@@ -426,7 +426,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false }
                       <button
                         type="button"
                         onClick={() => setState({ ...state, layout: "grid" })}
-                        className={`flex flex-col items-center justify-center p-3 rounded-lg border text-sm font-medium transition-all ${layout === 'grid' ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card text-muted-foreground hover:bg-muted'}`}
+                        className={`flex flex-col items-center justify-center p-3 rounded-lg border text-sm font-medium transition-all ${layout === 'grid' ? 'border-primary bg-slate-100 text-primary' : 'border-border bg-card text-muted-foreground hover:bg-muted'}`}
                       >
                         <svg className="w-6 h-6 mb-2 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
                         Grid / Cards
@@ -498,7 +498,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false }
                 {fields.filter(f => f.name.trim()).length > 0 ? (
                   <div className="animate-in fade-in zoom-in-95 duration-300">
                     <div className="mb-6 flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-lg bg-slate-100 text-primary flex items-center justify-center">
                         <Blocks className="w-5 h-5" />
                       </div>
                       <div>

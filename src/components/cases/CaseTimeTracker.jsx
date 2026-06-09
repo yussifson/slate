@@ -277,7 +277,7 @@ export default function CaseTimeTracker({ caseData, user }) {
                     <div className="flex flex-wrap gap-2 mt-0.5">
                       <span className="text-xs text-muted-foreground">{entry.start_time ? format(new Date(entry.start_time), "MMM d, yyyy") : ""}</span>
                       <Badge variant="outline" className="text-[10px] capitalize">{entry.category?.replace("_", " ")}</Badge>
-                      {entry.billed && <Badge className="text-[10px] bg-primary/10 text-primary/90">{t("billed", "Billed")}</Badge>}
+                      {entry.billed && <Badge className="text-[10px] bg-slate-100 text-primary/90">{t("billed", "Billed")}</Badge>}
                       {!entry.billed && entry.is_billable && <Badge className="text-[10px] bg-amber-100 text-amber-700">{t("unbilled", "Unbilled")}</Badge>}
                     </div>
                   </div>

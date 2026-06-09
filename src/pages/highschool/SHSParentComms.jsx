@@ -122,7 +122,7 @@ export default function SHSParentComms() {
         
         <div className="flex items-center gap-3">
           {sendSuccess && (
-            <Badge className="bg-primary/10 text-primary/90 border-none px-3 py-1.5 text-sm font-semibold flex items-center gap-2">
+            <Badge className="bg-slate-100 text-primary/90 border-none px-3 py-1.5 text-sm font-semibold flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4" /> Message Sent Successfully
             </Badge>
           )}
@@ -188,7 +188,7 @@ export default function SHSParentComms() {
               <div className="p-16 text-center text-slate-400 dark:text-slate-500">Loading directory...</div>
             ) : filteredStudents.length === 0 ? (
               <div className="p-20 text-center">
-                <div className="w-16 h-16 rounded-2xl bg-primary/5 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
                   <MessageSquare className="w-8 h-8 text-primary dark:text-primary" />
                 </div>
                 <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No contacts found</h3>
@@ -217,7 +217,7 @@ export default function SHSParentComms() {
                       return (
                         <tr 
                           key={student.id} 
-                          className={`transition-colors cursor-pointer ${isSelected ? 'bg-primary/50 dark:bg-slate-800/50' : 'hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50'}`}
+                          className={`transition-colors cursor-pointer ${isSelected ? 'bg-slate-500 dark:bg-slate-800/50' : 'hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50'}`}
                           onClick={() => toggleStudent(student.id)}
                         >
                           <td className="px-6 py-4 text-center">
@@ -292,7 +292,7 @@ export default function SHSParentComms() {
                 <button
                   onClick={() => setMessage({...message, type: 'SMS'})}
                   className={`p-3 rounded-xl border flex flex-col items-center justify-center gap-2 transition-all ${
-                    message.type === 'SMS' ? 'bg-primary/5 dark:bg-slate-800 border-primary/30 text-primary dark:text-primary/70' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:bg-slate-800'
+                    message.type === 'SMS' ? 'bg-slate-50 dark:bg-slate-800 border-primary/30 text-primary dark:text-primary/70' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:bg-slate-800'
                   }`}
                 >
                   <Smartphone className="w-5 h-5" />
@@ -301,7 +301,7 @@ export default function SHSParentComms() {
                 <button
                   onClick={() => setMessage({...message, type: 'Email'})}
                   className={`p-3 rounded-xl border flex flex-col items-center justify-center gap-2 transition-all ${
-                    message.type === 'Email' ? 'bg-primary/5 dark:bg-slate-800 border-primary/30 text-primary dark:text-primary/70' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:bg-slate-800'
+                    message.type === 'Email' ? 'bg-slate-50 dark:bg-slate-800 border-primary/30 text-primary dark:text-primary/70' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:bg-slate-800'
                   }`}
                 >
                   <Mail className="w-5 h-5" />
@@ -310,7 +310,7 @@ export default function SHSParentComms() {
                 <button
                   onClick={() => setMessage({...message, type: 'App Push'})}
                   className={`p-3 rounded-xl border flex flex-col items-center justify-center gap-2 transition-all ${
-                    message.type === 'App Push' ? 'bg-primary/5 dark:bg-slate-800 border-primary/30 text-primary dark:text-primary/70' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:bg-slate-800'
+                    message.type === 'App Push' ? 'bg-slate-50 dark:bg-slate-800 border-primary/30 text-primary dark:text-primary/70' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:bg-slate-800'
                   }`}
                 >
                   <MessageSquare className="w-5 h-5" />

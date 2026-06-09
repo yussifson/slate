@@ -18,14 +18,14 @@ import { useToast } from "@/components/ui/use-toast";
 const STATUS_COLORS = {
   new: "bg-orange-100 text-orange-700",
   contacted: "bg-amber-100 text-amber-700",
-  qualified: "bg-primary/10 text-primary/90",
-  converted: "bg-primary/10 text-primary/90",
+  qualified: "bg-slate-100 text-primary/90",
+  converted: "bg-slate-100 text-primary/90",
   lost: "bg-gray-100 text-gray-500",
 };
 
 const URGENCY_COLORS = {
   low: "bg-slate-100 text-slate-600",
-  medium: "bg-primary/10 text-primary",
+  medium: "bg-slate-100 text-primary",
   high: "bg-amber-100 text-amber-700",
   urgent: "bg-red-100 text-red-700",
 };
@@ -154,7 +154,7 @@ export default function Leads() {
         }
       />
       {/* Intake Form Link Banner */}
-      <div className="bg-primary/5 border border-primary/20 rounded-xl px-4 py-3 flex items-center justify-between gap-4">
+      <div className="bg-slate-50 border border-primary/20 rounded-xl px-4 py-3 flex items-center justify-between gap-4">
         <div>
           <p className="text-sm font-medium text-primary/70">{t("your_public_intake_form_is_liv", "Your public intake form is live")}</p>
           <p className="text-xs text-primary/90 mt-0.5 break-all">{intakeFormUrl}</p>

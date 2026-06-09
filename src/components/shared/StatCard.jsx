@@ -13,7 +13,7 @@ export default function StatCard({ title, value, subtitle, icon: Icon, trend, tr
           {subtitle && <p className="text-xs text-muted-foreground">{subtitle}</p>}
         </div>
         {Icon && (
-          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
             <Icon className="w-5 h-5 text-primary" />
           </div>
         )}

@@ -82,7 +82,7 @@ export default function Complaints() {
               <div key={ticket.id} className="bg-background p-4 rounded-xl border border-border shadow-sm flex flex-col gap-3">
                 <div className="flex justify-between items-start">
                   <h4 className="font-bold text-foreground line-clamp-1">{ticket.title}</h4>
-                  <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${ticket.status === 'pending' ? 'bg-amber-100 text-amber-700' : 'bg-primary/10 text-primary dark:text-primary/70'}`}>
+                  <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${ticket.status === 'pending' ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-primary dark:text-primary/70'}`}>
                     {ticket.status}
                   </span>
                 </div>

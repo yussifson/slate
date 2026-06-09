@@ -208,7 +208,7 @@ export default function Cases() {
             </div>
           ) : filtered.length === 0 ? (
             <div className="bg-card rounded-2xl border border-dashed border-slate-200 p-12 text-center max-w-sm mx-auto my-8 space-y-4 shadow-sm">
-              <div className="w-12 h-12 rounded-full bg-primary/5 border border-primary/10 flex items-center justify-center mx-auto text-primary">
+              <div className="w-12 h-12 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center mx-auto text-primary">
                 <Briefcase className="w-5 h-5" />
               </div>
               <div className="space-y-1">

@@ -122,7 +122,7 @@ export default function SHSResultsProcessing() {
             <div className="py-12 text-center text-slate-400 dark:text-slate-500">Loading exams...</div>
           ) : !selectedExamId ? (
             <div className="py-20 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-primary/5 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
                 <Calculator className="w-8 h-8 text-primary dark:text-primary" />
               </div>
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">Select an exam to process</h3>
@@ -156,7 +156,7 @@ export default function SHSResultsProcessing() {
                     <span className="text-primary dark:text-primary/70">Processing Data...</span>
                     <span className="text-slate-500 dark:text-slate-400 dark:text-slate-500">{progress}%</span>
                   </div>
-                  <Progress value={progress} className="h-3 bg-primary/10 dark:bg-slate-800 [&>div]:bg-primary dark:bg-primary" />
+                  <Progress value={progress} className="h-3 bg-slate-100 dark:bg-slate-800 [&>div]:bg-primary dark:bg-primary" />
                   <p className="text-xs text-slate-400 dark:text-slate-500 text-center mt-4">
                     {progress < 30 ? 'Aggregating raw scores...' : 
                      progress < 60 ? 'Calculating class averages...' : 
@@ -165,13 +165,13 @@ export default function SHSResultsProcessing() {
                   </p>
                 </div>
               ) : processSuccess ? (
-                <div className="p-12 text-center rounded-2xl bg-primary/5 border border-primary/10">
-                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4 text-primary">
+                <div className="p-12 text-center rounded-2xl bg-slate-50 border border-slate-200">
+                  <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4 text-primary">
                     <CheckCircle2 className="w-8 h-8" />
                   </div>
                   <h3 className="text-xl font-bold text-primary/90 mb-2">Processing Complete!</h3>
                   <p className="text-primary/80 mb-6">Results have been locked and published successfully.</p>
-                  <Button variant="outline" className="border-primary/20 text-primary/90 hover:bg-primary/10 font-semibold h-11 px-8 rounded-xl">
+                  <Button variant="outline" className="border-primary/20 text-primary/90 hover:bg-slate-100 font-semibold h-11 px-8 rounded-xl">
                     View Broadsheet
                   </Button>
                 </div>

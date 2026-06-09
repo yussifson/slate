@@ -22,11 +22,11 @@ import {
 
 const STAGE_COLORS = [
   { bg: 'from-slate-500 to-slate-600', light: 'bg-slate-50', border: 'border-slate-200', text: 'text-slate-700', badge: 'bg-slate-100 text-slate-600' },
-  { bg: 'from-primary to-primary', light: 'bg-primary/5', border: 'border-primary/20', text: 'text-primary/90', badge: 'bg-primary/10 text-primary' },
-  { bg: 'from-primary to-primary', light: 'bg-primary/5', border: 'border-primary/20', text: 'text-primary/90', badge: 'bg-primary/10 text-primary' },
-  { bg: 'from-primary to-primary', light: 'bg-primary/5', border: 'border-primary/20', text: 'text-primary/90', badge: 'bg-primary/10 text-primary' },
-  { bg: 'from-primary to-primary', light: 'bg-primary/5', border: 'border-primary/20', text: 'text-primary/90', badge: 'bg-primary/10 text-primary' },
-  { bg: 'from-primary to-primary', light: 'bg-primary/5', border: 'border-primary/20', text: 'text-primary/90', badge: 'bg-primary/10 text-primary' },
+  { bg: 'from-primary to-primary', light: 'bg-slate-50', border: 'border-primary/20', text: 'text-primary/90', badge: 'bg-slate-100 text-primary' },
+  { bg: 'from-primary to-primary', light: 'bg-slate-50', border: 'border-primary/20', text: 'text-primary/90', badge: 'bg-slate-100 text-primary' },
+  { bg: 'from-primary to-primary', light: 'bg-slate-50', border: 'border-primary/20', text: 'text-primary/90', badge: 'bg-slate-100 text-primary' },
+  { bg: 'from-primary to-primary', light: 'bg-slate-50', border: 'border-primary/20', text: 'text-primary/90', badge: 'bg-slate-100 text-primary' },
+  { bg: 'from-primary to-primary', light: 'bg-slate-50', border: 'border-primary/20', text: 'text-primary/90', badge: 'bg-slate-100 text-primary' },
   { bg: 'from-amber-500 to-amber-600', light: 'bg-amber-50', border: 'border-amber-200', text: 'text-amber-700', badge: 'bg-amber-100 text-amber-600' },
   { bg: 'from-rose-500 to-rose-600', light: 'bg-rose-50', border: 'border-rose-200', text: 'text-rose-700', badge: 'bg-rose-100 text-rose-600' },
 ];
@@ -200,7 +200,7 @@ export default function DynamicPipelineView({ data = [], fieldDefinitions = [], 
   if (!stageField && fieldDefinitions.length > 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
-        <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/5 border border-primary/10 mb-5">
+        <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/5 border border-slate-200 mb-5">
           <Layers className="w-12 h-12 text-primary/30" />
         </div>
         <h3 className="text-lg font-semibold text-slate-700 mb-2">No Pipeline Field Found</h3>
@@ -214,7 +214,7 @@ export default function DynamicPipelineView({ data = [], fieldDefinitions = [], 
   if (!data || data.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
-        <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/5 border border-primary/10 mb-5">
+        <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/5 border border-slate-200 mb-5">
           <Sparkles className="w-12 h-12 text-primary/30" />
         </div>
         <h3 className="text-lg font-semibold text-slate-700 mb-2">Empty Pipeline</h3>

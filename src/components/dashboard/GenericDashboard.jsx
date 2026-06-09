@@ -103,7 +103,7 @@ export default function GenericDashboard({ companyId, company, isAdmin, industry
   if (!companyId) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[70vh] text-center space-y-6">
-        <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center">
+        <div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center">
           <Building2 className="w-12 h-12 text-primary" />
         </div>
         <div className="max-w-md space-y-2">
@@ -140,11 +140,11 @@ export default function GenericDashboard({ companyId, company, isAdmin, industry
       </div>
       {/* Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard title={`Active ${casesTermPlural}`} value={activeCases.length} icon={Briefcase} iconBg="bg-primary/10" iconColor="text-primary" subtitle={`${cases.length} total`} />
-        <MetricCard title={`Active ${clientsTermPlural}`} value={activeClients.length} icon={Users} iconBg="bg-primary/10" iconColor="text-primary"
+        <MetricCard title={`Active ${casesTermPlural}`} value={activeCases.length} icon={Briefcase} iconBg="bg-slate-100" iconColor="text-primary" subtitle={`${cases.length} total`} />
+        <MetricCard title={`Active ${clientsTermPlural}`} value={activeClients.length} icon={Users} iconBg="bg-slate-100" iconColor="text-primary"
           subtitle={clients.length > 0 ? `+${Math.round((activeClients.length / Math.max(clients.length, 1)) * 100)}% this month` : undefined}
           subtitleColor="text-primary" />
-        <MetricCard title="Total Revenue" value={formatCurrency(totalRevenue, currency)} icon={DollarSign} iconBg="bg-primary/10" iconColor="text-primary" subtitle="This year" />
+        <MetricCard title="Total Revenue" value={formatCurrency(totalRevenue, currency)} icon={DollarSign} iconBg="bg-slate-100" iconColor="text-primary" subtitle="This year" />
         <MetricCard title="Pending Tasks" value={pendingTasks.length} icon={Clock} iconBg="bg-orange-100" iconColor="text-orange-500"
           subtitle={overdueInvoices > 0 ? `${overdueInvoices} invoices overdue` : `${upcomingHearings.length} ${hearingsTermPlural.toLowerCase()} due`}
           subtitleColor={overdueInvoices > 0 ? "text-red-500" : "text-muted-foreground"} />
@@ -155,7 +155,7 @@ export default function GenericDashboard({ companyId, company, isAdmin, industry
         <div className="bg-card rounded-xl border border-border p-4 space-y-4 shadow-sm">
           <div className="flex justify-between items-center">
             <h3 className="text-sm font-semibold text-slate-800">{t("revenue_growth_curve", "Revenue Growth Curve (")}{currency})</h3>
-            <span className="text-[10px] bg-primary/10 text-primary py-0.5 px-2 rounded-full font-bold border border-primary/20 uppercase">{t("paid_invoices", "Paid Invoices")}</span>
+            <span className="text-[10px] bg-slate-100 text-primary py-0.5 px-2 rounded-full font-bold border border-primary/20 uppercase">{t("paid_invoices", "Paid Invoices")}</span>
           </div>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -180,7 +180,7 @@ export default function GenericDashboard({ companyId, company, isAdmin, industry
         <div className="bg-card rounded-xl border border-border p-4 space-y-4 shadow-sm">
           <div className="flex justify-between items-center">
             <h3 className="text-sm font-semibold text-slate-800">{caseTerm} {t("distribution_by_stage", "Distribution by Stage")}</h3>
-            <span className="text-[10px] bg-primary/10 text-primary py-0.5 px-2 rounded-full font-bold border border-primary/20 uppercase">{t("active_pipelines", "Active Pipelines")}</span>
+            <span className="text-[10px] bg-slate-100 text-primary py-0.5 px-2 rounded-full font-bold border border-primary/20 uppercase">{t("active_pipelines", "Active Pipelines")}</span>
           </div>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -204,7 +204,7 @@ export default function GenericDashboard({ companyId, company, isAdmin, industry
               <Calendar className="w-4 h-4 text-primary" />
               <h3 className="text-sm font-semibold">{t("upcoming", "Upcoming")} {hearingsTermPlural}</h3>
             </div>
-            <span className="text-xs font-semibold text-primary bg-primary/10 rounded-full w-5 h-5 flex items-center justify-center">
+            <span className="text-xs font-semibold text-primary bg-slate-100 rounded-full w-5 h-5 flex items-center justify-center">
               {upcomingHearings.length}
             </span>
           </div>
@@ -219,7 +219,7 @@ export default function GenericDashboard({ companyId, company, isAdmin, industry
             ) : upcomingHearings.map(h => {
               return (
                 <div key={h.id} className="px-4 py-3 flex items-center gap-3 hover:bg-muted/40 transition-colors">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex flex-col items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 rounded-lg bg-slate-100 flex flex-col items-center justify-center flex-shrink-0">
                     <span className="text-[9px] font-bold text-primary leading-none uppercase">{format(new Date(h.date), "MMM")}</span>
                     <span className="text-sm font-bold text-primary leading-none">{format(new Date(h.date), "d")}</span>
                   </div>

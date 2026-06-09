@@ -121,8 +121,8 @@ export default function SHSFinancialReports() {
             <div className="space-y-8">
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="p-6 rounded-3xl bg-primary/5 border border-primary/10 flex flex-col justify-center text-left">
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-4">
+                <div className="p-6 rounded-3xl bg-slate-50 border border-slate-200 flex flex-col justify-center text-left">
+                  <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-primary mb-4">
                     <TrendingUp className="w-6 h-6" />
                   </div>
                   <p className="text-sm font-bold text-primary/70 uppercase tracking-wider mb-1">Total Collected</p>

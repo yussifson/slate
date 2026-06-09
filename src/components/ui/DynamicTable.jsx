@@ -43,7 +43,7 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
         const val = row.original.data?.[field.name];
         if (field.field_type === 'boolean') {
           return val ? (
-            <span className="px-2 py-1 bg-primary/10 text-primary/90 text-xs rounded-full">Yes</span>
+            <span className="px-2 py-1 bg-slate-100 text-primary/90 text-xs rounded-full">Yes</span>
           ) : (
             <span className="px-2 py-1 bg-slate-100 text-slate-700 text-xs rounded-full">No</span>
           );

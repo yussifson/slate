@@ -66,7 +66,7 @@ export default function VSkillBadges() {
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
               <Input 
                 placeholder="Search badges..." 
-                className="pl-9 h-10 bg-white dark:bg-slate-900 border-primary/10 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
+                className="pl-9 h-10 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -86,7 +86,7 @@ export default function VSkillBadges() {
                     className={`text-center p-4 rounded-2xl transition-all duration-200 flex flex-col items-center gap-2 ${
                       selectedBadge?.id === badge.id 
                         ? 'bg-primary text-white shadow-md shadow-fuchsia-500/20' 
-                        : 'hover:bg-primary/5 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-primary/50'
+                        : 'hover:bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200'
                     }`}
                   >
                     <Hexagon className={`w-10 h-10 ${selectedBadge?.id === badge.id ? 'text-primary/20 fill-primary' : 'text-primary/30 fill-primary/5'}`} />
@@ -119,13 +119,13 @@ export default function VSkillBadges() {
                     <h2 className="text-3xl font-black text-slate-800 dark:text-slate-100">{selectedBadge.title}</h2>
                     <p className="text-slate-500 max-w-lg mx-auto mt-2">{selectedBadge.data?.description || 'A recognized micro-credential validating specific technical or soft skills.'}</p>
                     <div className="flex justify-center gap-2 mt-4">
-                      <Badge className="bg-primary/10 text-primary/90 hover:bg-primary/10 border-none">{selectedBadge.data?.category || 'Technical Skill'}</Badge>
+                      <Badge className="bg-slate-100 text-primary/90 hover:bg-slate-100 border-none">{selectedBadge.data?.category || 'Technical Skill'}</Badge>
                       <Badge variant="outline" className="border-primary/20 text-primary">{selectedBadge.data?.points || 0} Points</Badge>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="p-6 rounded-2xl bg-primary/30 border border-primary/10">
+                    <div className="p-6 rounded-2xl bg-primary/30 border border-slate-200">
                       <h3 className="text-sm font-bold text-primary uppercase tracking-wider mb-4 flex items-center gap-2"><CheckCircle2 className="w-4 h-4" /> Criteria for Awarding</h3>
                       <ul className="space-y-3">
                         {selectedBadge.data?.criteria?.length > 0 ? (
@@ -146,7 +146,7 @@ export default function VSkillBadges() {
                       <h3 className="font-bold text-slate-800">Recipients</h3>
                       <p className="text-3xl font-black text-primary my-2">{selectedBadge.data?.recipient_count || 0}</p>
                       <p className="text-xs text-slate-500 mb-4">Students have earned this badge</p>
-                      <Button variant="outline" className="w-full border-primary/20 text-primary hover:bg-primary/5 rounded-xl">View Recipients</Button>
+                      <Button variant="outline" className="w-full border-primary/20 text-primary hover:bg-slate-50 rounded-xl">View Recipients</Button>
                     </div>
                   </div>
                 </div>
@@ -154,7 +154,7 @@ export default function VSkillBadges() {
             </>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-              <div className="w-20 h-20 rounded-full bg-primary/5 flex items-center justify-center mb-6">
+              <div className="w-20 h-20 rounded-full bg-slate-50 flex items-center justify-center mb-6">
                 <Medal className="w-10 h-10 text-primary/30" />
               </div>
               <h3 className="text-xl font-bold text-slate-700">No Badge Selected</h3>

@@ -20,7 +20,7 @@ export default function AddOptionInline({ onAdd, placeholder = "New option..." }
     <button
       type="button"
       onClick={() => setAdding(true)}
-      className="flex items-center gap-1 px-2 py-1.5 text-xs text-primary hover:bg-primary/5 rounded w-full"
+      className="flex items-center gap-1 px-2 py-1.5 text-xs text-primary hover:bg-slate-50 rounded w-full"
     >
       <Plus className="w-3 h-3" /> {t("add_option", "Add option")}
     </button>

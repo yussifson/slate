@@ -48,7 +48,7 @@ export default function About() {
           </div>
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1] max-w-4xl mx-auto mb-6">
             {t("digitizing_business_operations", "Digitizing business operations")}{' '}
-            <span className="bg-primary/10 text-primary/70 px-4 py-1 rounded-[1.5rem] inline-block mt-2">
+            <span className="bg-slate-100 text-primary/70 px-4 py-1 rounded-[1.5rem] inline-block mt-2">
               {t("globally", "globally")}
             </span>
           </h1>
@@ -98,7 +98,6 @@ export default function About() {
 
             {/* Right — Visual Collage */}
             <div className="relative">
-              <div className="absolute inset-0 bg-primary/5 blur-[100px] rounded-full"></div>
               <div className="relative rounded-[2rem] border border-slate-200/60 bg-white p-2 shadow-2xl overflow-hidden aspect-[4/5] transform lg:rotate-2 hover:rotate-0 transition-transform duration-700">
                 <img src="/images/hero_dashboard_ui.png" alt="Slate Interface" className="w-full h-full object-cover rounded-[1.5rem]" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent flex items-end p-8">
@@ -139,7 +138,7 @@ export default function About() {
                   key={i}
                   className="bg-white border border-slate-200/60 rounded-[2rem] p-10 shadow-xl shadow-slate-200/20 hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-900/5 transition-all duration-300 group"
                 >
-                  <div className="w-16 h-16 rounded-2xl bg-primary/5 group-hover:bg-primary flex items-center justify-center text-primary group-hover:text-white mb-8 transition-colors duration-300">
+                  <div className="w-16 h-16 rounded-2xl bg-slate-50 group-hover:bg-primary flex items-center justify-center text-primary group-hover:text-white mb-8 transition-colors duration-300">
                     <v.icon className="w-8 h-8" strokeWidth={2} />
                   </div>
                   <h3 className="font-bold text-2xl text-slate-900 mb-4">{v.title}</h3>
