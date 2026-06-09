@@ -525,9 +525,9 @@ export default function Home() {
   return (
     <div className="overflow-x-hidden">
       <Helmet>
-        <title>Slate - The Ultimate AI Work made effortless.</title>
-        <meta name="description" content="Slate is an AI-powered Work made effortless. replacing multiple tools with one cohesive ecosystem. Simplify communication, scheduling, cases, and payments." />
-        <meta property="og:title" content="Slate - The Ultimate AI Work made effortless." />
+        <title>Slate - The Ultimate AI Workspace</title>
+        <meta name="description" content="Slate is an AI-powered workspace replacing multiple tools with one cohesive ecosystem. Simplify communication, scheduling, cases, and payments." />
+        <meta property="og:title" content="Slate - The Ultimate AI Workspace" />
         <meta property="og:description" content="Replace fragmented tools with an intelligent, cohesive workspace built for maximum operational excellence." />
       </Helmet>
 

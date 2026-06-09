@@ -1,4 +1,4 @@
-﻿import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Menu, X, Scale, ArrowRight, Building, Home, Layers, CreditCard, Info, Mail, Shield, Clock, Globe } from 'lucide-react';
@@ -139,7 +139,7 @@ export default function MarketingLayout({ children }) {
                 {t("slate", "Slate")}
               </span>
               <span className="text-[9px] text-muted-foreground font-bold tracking-[0.2em] uppercase leading-none mt-0.5">
-                {t("work_made_effortless", "Work made effortless.")}
+                {t("by_optavel", "by Optavel")}
               </span>
             </div>
           </Link>
@@ -345,10 +345,13 @@ export default function MarketingLayout({ children }) {
           <div className="grid grid-cols-2 md:grid-cols-12 gap-10 md:gap-12 mb-16 md:mb-20">
             {/* Brand Column */}
             <div className="col-span-2 md:col-span-5 lg:col-span-4 flex flex-col gap-6 pr-0 md:pr-10">
-              <Link to="/" className="flex items-center gap-2.5 group w-fit">
-                <Logo className="w-10 h-10 text-primary" />
-                <span className="font-extrabold text-xl text-slate-900 tracking-tight">{t("slate", "Slate")}</span>
-              </Link>
+              <div className="flex flex-col w-fit">
+                <Link to="/" className="flex items-center gap-2.5 group">
+                  <Logo className="w-10 h-10 text-primary" />
+                  <span className="font-extrabold text-xl text-slate-900 tracking-tight">{t("slate", "Slate")}</span>
+                </Link>
+                <span className="text-[10px] text-slate-500 font-bold tracking-[0.2em] uppercase ml-[50px] mt-0.5">by Optavel</span>
+              </div>
               <p className="text-sm leading-relaxed text-slate-600 font-medium">
                 {t(
                   "the_unified_business_operating",

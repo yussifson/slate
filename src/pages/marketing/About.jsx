@@ -1,4 +1,4 @@
-﻿import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Target, Shield, Users, Globe, Clock, Headphones } from 'lucide-react';
@@ -34,8 +34,8 @@ export default function About() {
   return (
     <div className="overflow-x-hidden bg-white min-h-screen">
       <Helmet>
-        <title>About Us | Slate AI Work made effortless.</title>
-        <meta name="description" content="Learn more about Slate. We are a team of engineers building the ultimate AI Work made effortless. for modern businesses." />
+        <title>About Us | Slate AI Workspace</title>
+        <meta name="description" content="Learn more about Slate. We are a team of engineers building the ultimate AI Workspace for modern businesses." />
       </Helmet>
       {/* Hero Section */}
       <section className="relative py-10 md:py-14 lg:py-16">

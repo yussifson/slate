@@ -59,7 +59,10 @@ export default function ResetPassword() {
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-xl border border-slate-100 p-10 space-y-8">
           <div className="flex flex-col items-center gap-3 text-center">
-            <Logo className="w-12 h-12" />
+            <div className="flex flex-col items-center mb-2">
+              <Logo className="w-12 h-12" />
+              <span className="text-[10px] text-slate-500 font-bold tracking-[0.2em] uppercase mt-1">by Optavel</span>
+            </div>
             <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{t("set_new_password", "Set new password")}</h1>
             <p className="text-sm text-slate-500">
               {done ? 'Password updated! Redirecting to login...' : 'Choose a strong password for your account.'}

@@ -114,8 +114,9 @@ export default function SignUp() {
       {/* Left Side: Form */}
       <div className="flex-1 flex flex-col justify-center px-8 lg:px-16 py-12">
         <div className="max-w-md w-full mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <Logo />
+          <div className="flex flex-col mb-8">
+            <Logo className="w-10 h-10" />
+            <span className="text-[10px] text-muted-foreground font-bold tracking-[0.2em] uppercase mt-1">by Optavel</span>
           </div>
           
           <div className="mb-8">
