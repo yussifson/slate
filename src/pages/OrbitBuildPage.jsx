@@ -123,7 +123,7 @@ export default function OrbitBuildPage() {
         .eq('industry', 'orbit_build')
         .eq('record_type', 'workspace_config')
         .single();
-      return data?.data?.pages || [];
+      return data?.data || null;
     },
     enabled: !!companyId
   });
@@ -138,7 +138,7 @@ export default function OrbitBuildPage() {
 
   // Find the page in config
   // The param is lowercase with hyphens, e.g. "pet-records"
-  const pageDef = config?.find(p => p.page_name.toLowerCase().replace(/[^a-z0-9]+/g, '-') === pageName);
+  const pageDef = config?.pages?.find(p => p.page_name.toLowerCase().replace(/[^a-z0-9]+/g, '-') === pageName);
 
   if (!pageDef) {
     return (
