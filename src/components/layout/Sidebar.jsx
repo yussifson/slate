@@ -124,7 +124,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   const industryData = INDUSTRIES[activeIndustry] || INDUSTRIES.law;
   const industryNav = getIndustryNav(activeIndustry, activeEducationLevel);
   
-  const savedModulesStr = localStorage.getItem(`active_modules_${user?.company_id}`);
+  const savedModulesStr = localStorage.getItem(`active_modules_${companyId}`);
   const activeModules = savedModulesStr ? JSON.parse(savedModulesStr) : null;
   const isOrbitMode = activeModules?.length === 1 && activeModules[0] === '__orbit__';
   
@@ -192,7 +192,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   const allowedPaths = isAdmin ? null : (ROLE_PERMISSIONS[user?.role] || ROLE_PERMISSIONS.support);
 
   const coreOrbitNav = [
-    { label: "Orbit Home", path: "/", icon: "Sparkles" },
+    { label: "Dashboard", path: "/", icon: "Sparkles" },
     { label: "Inbox", path: "/email-inbox", icon: "Mail" },
     { label: "Chat", path: "/chat", icon: "MessageCircle" },
     { label: "Board", path: "/board", icon: "LayoutGrid" },
@@ -200,9 +200,14 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   ];
 
   const filteredCompanyNav = isOrbitMode ? coreOrbitNav : industryNav.filter(item => {
+    // If activeModules is explicitly set (Custom Selection mode)
     if (activeModules && !['/', '/settings', '/integrations', '/admin', '/email-inbox', '/chat', '/board'].includes(item.path)) {
+      // If it's not in the active modules, completely hide it
       if (!activeModules.includes(item.path)) return false;
+      // If it IS in the active modules, bypass role restrictions so the user can actually see what they selected!
+      return true;
     }
+    // If no activeModules override (Template mode), fallback to role permissions
     if (isAdmin) return true;
     if (!allowedPaths) return true;
     return allowedPaths.includes(item.path);
@@ -231,26 +236,36 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
       queryKey: ['orbit_build_config', companyId],
       queryFn: async () => {
         if (activeIndustry !== 'orbit_build') return null;
-        const { data } = await supabase
+        const { data, error } = await supabase
           .from('industry_records')
           .select('data')
           .eq('company_id', companyId)
           .eq('industry', 'orbit_build')
           .eq('record_type', 'workspace_config')
-          .single();
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        
+        if (error) {
+          console.error("Failed to fetch orbit config:", error);
+        }
         return data?.data || null;
       },
       enabled: !!companyId && activeIndustry === 'orbit_build'
     });
   
-      const orbitBuildNavItemsRaw = (orbitBuildData?.pages || []).map(p => ({
-        id: p.page_name,
-        label: p.component_id === 'dashboard' ? 'Dashboard' : p.page_name,
-        icon: p.component_id === 'dashboard' ? 'LayoutDashboard' : (p.icon || "LayoutDashboard"),
-        path: `/ob/${p.page_name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
-        isDynamic: true,
-        component_id: p.component_id
-      }));
+      // Force dashboard to be at the top and mapped to the dashboard component correctly
+      const orbitBuildNavItemsRaw = (orbitBuildData?.pages || []).map((p, idx) => {
+        const isDash = p.component_id === 'dashboard' || idx === 0;
+        return {
+          id: p.page_name,
+          label: isDash ? 'Dashboard' : p.page_name,
+          icon: isDash ? 'LayoutDashboard' : (p.icon || "LayoutDashboard"),
+          path: `/ob/${p.page_name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+          isDynamic: true,
+          component_id: isDash ? 'dashboard' : p.component_id
+        };
+      });
 
       // Force dashboard to be at the top
       const orbitBuildNavItems = orbitBuildNavItemsRaw.sort((a, b) => {

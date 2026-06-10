@@ -362,6 +362,47 @@ export default function OnboardingWizard() {
                 </div>
 
                 <div className="space-y-4">
+                  {setupMode !== "orbit" && (
+                    <div className="space-y-3 p-5 rounded-2xl bg-slate-50 border border-slate-200">
+                      <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("industry", "Workspace Selection")}</label>
+                      <Select value={industry} onValueChange={setIndustry}>
+                        <SelectTrigger className="h-12 bg-card border-border rounded-xl text-slate-900 focus:ring-primary">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-card text-slate-900 border-border">
+                          <SelectItem value="law">{t("law_firm", "Law Firm")}</SelectItem>
+                          <SelectItem value="retail">{t("retail_pos", "Retail / POS")}</SelectItem>
+                          <SelectItem value="school">{t("school_education", "School & Education")}</SelectItem>
+                          <SelectItem value="hospital">{t("hospital_healthcare", "Hospital & Healthcare")}</SelectItem>
+                          <SelectItem value="hotel">{t("hotel_hospitality", "Hotel & Hospitality")}</SelectItem>
+                          <SelectItem value="logistics">{t("logistics_delivery", "Logistics & Delivery")}</SelectItem>
+                          <SelectItem value="insurance">{t("insurance", "Insurance Agency")}</SelectItem>
+                          <SelectItem value="religion">{t("religion_religion", "Religious Organization")}</SelectItem>
+                          <SelectItem value="hr">{t("hr_erp", "HR & ERP")}</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      
+                      {industry === 'school' && (
+                        <div className="space-y-2 mt-4">
+                          <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Education Level</label>
+                          <Select value={educationLevel} onValueChange={setEducationLevel}>
+                            <SelectTrigger className="w-full h-12 bg-card border-border rounded-xl text-slate-900 focus:ring-primary">
+                              <SelectValue placeholder="Select level" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-card text-slate-900 border-border">
+                              <SelectItem value="basic">Basic</SelectItem>
+                              <SelectItem value="highschool">High School</SelectItem>
+                              <SelectItem value="university">University</SelectItem>
+                              <SelectItem value="college">College</SelectItem>
+                              <SelectItem value="online">Online Learning Platform</SelectItem>
+                              <SelectItem value="vocational">Vocational / Technical</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   {/* Template Option */}
                   <label className={`block relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${setupMode === 'template' ? 'border-primary bg-primary/5 shadow-sm' : 'border-border hover:border-primary/30 bg-card'}`}>
                     <input 
@@ -517,43 +558,7 @@ export default function OnboardingWizard() {
                     </div>
                   )}
 
-                    {setupMode !== "orbit" && <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("industry", "Workspace Selection")}</label>}
-                    {setupMode !== "orbit" && <Select value={industry} onValueChange={setIndustry}>
-                      <SelectTrigger className="h-12 bg-card border-border rounded-xl text-slate-900 focus:ring-primary">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="bg-card text-slate-900 border-border">
-                        <SelectItem value="law">{t("law_firm", "Law Firm")}</SelectItem>
-                        <SelectItem value="retail">{t("retail_pos", "Retail / POS")}</SelectItem>
-                        <SelectItem value="school">{t("school_education", "School & Education")}</SelectItem>
-                        <SelectItem value="hospital">{t("hospital_healthcare", "Hospital & Healthcare")}</SelectItem>
-                        <SelectItem value="hotel">{t("hotel_hospitality", "Hotel & Hospitality")}</SelectItem>
-                        <SelectItem value="logistics">{t("logistics_delivery", "Logistics & Delivery")}</SelectItem>
-                        <SelectItem value="insurance">{t("insurance", "Insurance Agency")}</SelectItem>
-                        <SelectItem value="religion">{t("religion_religion", "Religious Organization")}</SelectItem>
-                        <SelectItem value="hr">{t("hr_erp", "HR & ERP")}</SelectItem>
-                      </SelectContent>
-                    </Select>}
                   </div>
-
-                  {industry === 'school' && (
-                    <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Education Level</label>
-                      <Select value={educationLevel} onValueChange={setEducationLevel}>
-                        <SelectTrigger className="w-full h-12 bg-slate-500 border-primary/20 rounded-xl text-slate-900 focus:ring-primary">
-                          <SelectValue placeholder="Select level" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-card text-slate-900 border-border">
-                          <SelectItem value="basic">Basic</SelectItem>
-                          <SelectItem value="highschool">High School</SelectItem>
-                          <SelectItem value="university">University</SelectItem>
-                          <SelectItem value="college">College</SelectItem>
-                          <SelectItem value="online">Online Learning Platform</SelectItem>
-                          <SelectItem value="vocational">Vocational / Technical</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
 
                   <div className="grid grid-cols-2 gap-5">
                     <div className="space-y-2">

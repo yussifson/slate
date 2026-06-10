@@ -73,16 +73,26 @@ export async function generateOrbitBuildWorkspace(prompt, companyId) {
     let assembledPages = [];
     let industryName = 'Custom Workspace';
 
+    // Best-effort attempt to extract an industry name from the prompt
+    // e.g., "Build a veterinary clinic management system..." -> "veterinary clinic"
+    const extractIndustryFromPrompt = (text) => {
+      const match = text.match(/(?:build|create|make) (?:a|an) (.*?) (?:management system|workspace|app|software)/i);
+      return match ? match[1].trim().replace(/\b\w/g, l => l.toUpperCase()) : 'Custom Workspace';
+    };
+
     try {
       parsedData = JSON.parse(jsonStr);
       
       // Handle fallback for older generated arrays vs the new object structure
       if (Array.isArray(parsedData)) {
         assembledPages = parsedData;
+        industryName = extractIndustryFromPrompt(prompt);
       } else if (parsedData && Array.isArray(parsedData.pages)) {
         assembledPages = parsedData.pages;
         if (parsedData.industry_name) {
           industryName = parsedData.industry_name;
+        } else {
+          industryName = extractIndustryFromPrompt(prompt);
         }
       } else {
         throw new Error("OrbitBuild returned invalid format (expected array of pages or object with pages array).");
