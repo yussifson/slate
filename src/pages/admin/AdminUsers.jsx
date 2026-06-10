@@ -73,11 +73,13 @@ export default function AdminUsers() {
     }
   };
 
-  const filteredProfiles = profiles.filter(p => 
-    p.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    p.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    p.companies?.name?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredProfiles = profiles.filter(p => {
+    const search = (searchQuery || '').toLowerCase();
+    const name = (p.full_name || '').toLowerCase();
+    const email = (p.email || '').toLowerCase();
+    const company = (p.companies?.name || '').toLowerCase();
+    return name.includes(search) || email.includes(search) || company.includes(search);
+  });
 
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto">
@@ -115,61 +117,69 @@ export default function AdminUsers() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
-                {filteredProfiles.map(user => {
-                  return (
-                    <tr key={user.id} className="hover:bg-slate-50/50 dark:bg-transparent transition-colors group">
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-600 text-xs shrink-0">
-                            {user.full_name?.charAt(0) || user.email?.charAt(0) || 'U'}
+                {filteredProfiles.length === 0 ? (
+                  <tr>
+                    <td colSpan="5" className="text-center py-8 text-slate-500">
+                      No users found.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredProfiles.map(user => {
+                    return (
+                      <tr key={user.id} className="hover:bg-slate-50/50 dark:bg-transparent transition-colors group">
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-600 text-xs shrink-0">
+                              {user.full_name?.charAt(0) || user.email?.charAt(0) || 'U'}
+                            </div>
+                            <div>
+                              <p className="font-bold text-slate-900 dark:text-slate-100">{user.full_name || 'Anonymous'}</p>
+                              <p className="text-xs text-slate-500 dark:text-slate-400">{user.email}</p>
+                            </div>
                           </div>
-                          <div>
-                            <p className="font-bold text-slate-900 dark:text-slate-100">{user.full_name || 'Anonymous'}</p>
-                            <p className="text-xs text-slate-500 dark:text-slate-400">{user.email}</p>
+                        </td>
+                        <td className="px-6 py-4 text-sm font-semibold text-slate-700 dark:text-slate-300">
+                          {user.companies?.name || <span className="text-slate-400 italic">{t("orphaned", "Orphaned")}</span>}
+                        </td>
+                        <td className="px-6 py-4">
+                          <Badge className="text-[10px] font-bold uppercase py-0.5 px-2 bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-none">
+                            {user.role?.replace(/_/g, ' ')}
+                          </Badge>
+                        </td>
+                        <td className="px-6 py-4 text-xs text-slate-500 dark:text-slate-400 font-medium">
+                          {user.created_at ? new Date(user.created_at).toLocaleDateString() : 'Unknown'}
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => handleForceOnboarding(user.id)}
+                              className="h-8 px-3 rounded-lg border-slate-200 text-slate-600 hover:text-slate-900 dark:text-slate-100"
+                            >
+                              <RefreshCcw className="w-3.5 h-3.5 mr-1.5" /> {t("force_onboarding", "Force Onboard")}
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => handleResetPassword(user.email)}
+                              className="h-8 px-3 rounded-lg border-slate-200 text-slate-600 hover:text-slate-900 dark:text-slate-100"
+                            >
+                              <KeyRound className="w-3.5 h-3.5 mr-1.5" /> {t("reset", "Reset")}
+                            </Button>
+                            <Button 
+                              variant="destructive" 
+                              size="sm"
+                              className="h-8 px-3 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 border-none"
+                            >
+                              <ShieldAlert className="w-3.5 h-3.5 mr-1.5" /> {t("suspend", "Suspend")}
+                            </Button>
                           </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-sm font-semibold text-slate-700 dark:text-slate-300">
-                        {user.companies?.name || <span className="text-slate-400 italic">{t("orphaned", "Orphaned")}</span>}
-                      </td>
-                      <td className="px-6 py-4">
-                        <Badge className="text-[10px] font-bold uppercase py-0.5 px-2 bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-none">
-                          {user.role?.replace(/_/g, ' ')}
-                        </Badge>
-                      </td>
-                      <td className="px-6 py-4 text-xs text-slate-500 dark:text-slate-400 font-medium">
-                        {new Date(user.created_at).toLocaleDateString()}
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => handleForceOnboarding(user.id)}
-                            className="h-8 px-3 rounded-lg border-slate-200 text-slate-600 hover:text-slate-900 dark:text-slate-100"
-                          >
-                            <RefreshCcw className="w-3.5 h-3.5 mr-1.5" /> {t("force_onboarding", "Force Onboard")}
-                          </Button>
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => handleResetPassword(user.email)}
-                            className="h-8 px-3 rounded-lg border-slate-200 text-slate-600 hover:text-slate-900 dark:text-slate-100"
-                          >
-                            <KeyRound className="w-3.5 h-3.5 mr-1.5" /> {t("reset", "Reset")}
-                          </Button>
-                          <Button 
-                            variant="destructive" 
-                            size="sm"
-                            className="h-8 px-3 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 border-none"
-                          >
-                            <ShieldAlert className="w-3.5 h-3.5 mr-1.5" /> {t("suspend", "Suspend")}
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
               </tbody>
             </table>
           </div>
