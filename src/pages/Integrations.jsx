@@ -1,4 +1,4 @@
-﻿import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/AuthContext';
 import { getTerm } from "@/config/industries";
@@ -483,16 +483,13 @@ export default function Integrations() {
           subtitle="Connect Slate with the tools your team already uses." 
         />
         <div className="flex items-center gap-3">
-          <Badge variant="outline" className="h-8 gap-1.5 bg-slate-50 text-primary/90 border-primary/20">
+          <Badge variant="outline" className="h-8 gap-1.5 bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-primary/20">
             <ShieldCheck className="w-3.5 h-3.5" /> {t("secure_oauth_2_0", "Secure OAuth 2.0")}
           </Badge>
-          <Button variant="ghost" size="sm" className="h-8 text-slate-500 hover:text-primary">
-            <HelpCircle className="w-4 h-4 mr-1.5" /> {t("api_docs", "API Docs")}
-          </Button>
         </div>
       </div>
       {/* Top Filter Bar */}
-      <div className="bg-white dark:bg-slate-900/50 dark:backdrop-blur-xl rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm dark:shadow-lg flex flex-col md:flex-row gap-4 items-center justify-between">
+      <div className="bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:bg-slate-900/50 dark:backdrop-blur-xl rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm dark:shadow-lg flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 hide-scrollbar">
           {categories.map(cat => {
             return (
@@ -502,7 +499,7 @@ export default function Integrations() {
                 className={`px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all ${
                   activeCategory === cat 
                     ? 'bg-primary text-white shadow-md shadow-emerald-600/20' 
-                    : 'bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
+                    : 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
                 }`}
               >
                 {cat}
@@ -516,7 +513,7 @@ export default function Integrations() {
             placeholder="Search apps or features..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 h-11 bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 rounded-xl w-full focus:bg-white dark:focus:bg-slate-800 transition-colors"
+            className="pl-10 h-11 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-white placeholder:text-slate-400 rounded-xl w-full focus:bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:focus:bg-slate-800 transition-colors"
           />
         </div>
       </div>
@@ -542,7 +539,7 @@ export default function Integrations() {
             return (
               <div 
                 key={app.id} 
-                className={`bg-white dark:bg-slate-900 rounded-2xl border transition-all duration-300 flex flex-col overflow-hidden ${
+                className={`bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:bg-slate-900 rounded-2xl border transition-all duration-300 flex flex-col overflow-hidden ${
                   isConnected 
                     ? 'border-primary shadow-lg shadow-emerald-500/10 ring-1 ring-primary/20' 
                     : 'border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-700 hover:-translate-y-1'
@@ -550,7 +547,7 @@ export default function Integrations() {
               >
                 <div className="p-6 sm:p-7 flex-1">
                   <div className="flex justify-between items-start mb-6">
-                    <div className="w-16 h-16 rounded-2xl bg-white border border-slate-200 dark:border-slate-700 flex items-center justify-center p-3 shadow-sm dark:shadow-md group-hover:scale-105 transition-transform">
+                    <div className="w-16 h-16 rounded-2xl bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-700 flex items-center justify-center p-3 shadow-sm dark:shadow-md group-hover:scale-105 transition-transform">
                       <img 
                         src={app.logo} 
                         alt={app.name} 
@@ -562,22 +559,22 @@ export default function Integrations() {
                       />
                     </div>
                     {isConnected && (
-                      <Badge className="bg-slate-50 dark:bg-slate-100 text-primary/90 dark:text-primary/70 border-primary/20 dark:border-primary/20 font-extrabold gap-1.5 px-3 py-1.5 rounded-full shadow-sm">
+                      <Badge className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-100 text-primary/90 dark:text-primary/70 border-primary/20 dark:border-primary/20 font-extrabold gap-1.5 px-3 py-1.5 rounded-full shadow-sm">
                         <CheckCircle2 className="w-4 h-4" /> {t("connected", "Connected")}
                       </Badge>
                     )}
                     {!isConnected && app.popular && (
-                      <Badge variant="outline" className="text-xs font-bold text-primary dark:text-primary/70 border-primary/20 dark:border-primary/20 bg-slate-50 dark:bg-slate-100 px-3 py-1 rounded-full">
+                      <Badge variant="outline" className="text-xs font-bold text-primary dark:text-primary/70 border-primary/20 dark:border-primary/20 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-100 px-3 py-1 rounded-full">
                         {t("popular", "Popular")}
                       </Badge>
                     )}
                   </div>
                   
-                  <h3 className="text-xl font-extrabold text-slate-900 dark:text-white mb-1.5">{app.name}</h3>
-                  <p className="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3.5">{app.category}</p>
+                  <h3 className="text-xl font-extrabold text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-white mb-1.5">{app.name}</h3>
+                  <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3.5">{app.category}</p>
                   <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{appDescription}</p>
                 </div>
-                <div className="px-6 py-5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/50 flex items-center justify-between">
+                <div className="px-6 py-5 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/50 flex items-center justify-between">
                   <a 
                     href={app.learnMore} 
                     target="_blank" 
@@ -594,7 +591,7 @@ export default function Integrations() {
                           variant="secondary" 
                           disabled={isLoading}
                           onClick={() => handleTestSync(app)}
-                          className="h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-100 text-primary/90 dark:text-primary/70 hover:bg-slate-100 dark:hover:bg-primary/20 font-bold transition-colors shadow-sm"
+                          className="h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-100 text-primary/90 dark:text-primary/70 hover:bg-slate-100 dark:hover:bg-primary/20 font-bold transition-colors shadow-sm"
                         >
                           {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Test Sync"}
                         </Button>
@@ -604,7 +601,7 @@ export default function Integrations() {
                           variant="secondary" 
                           disabled={isLoading}
                           onClick={() => handleTestFeature(app)}
-                          className="h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-100 text-primary/90 dark:text-primary/70 hover:bg-slate-100 dark:hover:bg-primary/20 font-bold transition-colors shadow-sm"
+                          className="h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-100 text-primary/90 dark:text-primary/70 hover:bg-slate-100 dark:hover:bg-primary/20 font-bold transition-colors shadow-sm"
                         >
                           {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Test Feature"}
                         </Button>
@@ -613,7 +610,7 @@ export default function Integrations() {
                         variant="outline" 
                         disabled={isLoading}
                         onClick={() => handleDisconnect(app)}
-                        className="h-10 px-4 rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-transparent text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:border-red-200 dark:hover:border-red-500/20 transition-colors font-bold shadow-sm"
+                        className="h-10 px-4 rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:bg-transparent text-slate-700 dark:text-slate-300 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:border-red-200 dark:hover:border-red-500/20 transition-colors font-bold shadow-sm"
                       >
                         {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Disconnect"}
                       </Button>
@@ -640,26 +637,26 @@ export default function Integrations() {
         </div>
       )}
       {!initialLoading && filteredApps.length === 0 && (
-        <div className="py-24 flex flex-col items-center justify-center text-center px-4 bg-white rounded-2xl border border-slate-200 border-dashed">
-          <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-5 border border-slate-100">
+        <div className="py-24 flex flex-col items-center justify-center text-center px-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 rounded-2xl border border-slate-200 border-dashed">
+          <div className="w-20 h-20 bg-slate-50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mb-5 border border-slate-100 dark:border-slate-800">
             <Search className="w-8 h-8 text-slate-400" />
           </div>
-          <h3 className="text-xl font-extrabold text-slate-900 mb-2">{t("no_apps_found", "No apps found")}</h3>
-          <p className="text-slate-500 max-w-md leading-relaxed">{t(
+          <h3 className="text-xl font-extrabold text-slate-900 dark:text-slate-100 dark:text-slate-100 mb-2">{t("no_apps_found", "No apps found")}</h3>
+          <p className="text-slate-500 dark:text-slate-400 max-w-md leading-relaxed">{t(
             "we_couldn_t_find_any_integrati",
             "We couldn't find any integrations matching your search criteria. Try a different term or clear your filters."
           )}</p>
         </div>
       )}
       <Dialog open={!!modalApp} onOpenChange={(open) => !open && setModalApp(null)}>
-        <DialogContent className="max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl p-6">
+        <DialogContent className="max-w-md bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl p-6">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-slate-950 dark:text-white">
               Connect {modalApp?.name}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4 text-slate-950 dark:text-white">
-            <p className="text-sm text-slate-500 dark:text-slate-400">
+            <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400">
               Configure your production credentials to securely integrate {modalApp?.name} into your active workflow.
             </p>
 
@@ -778,7 +775,7 @@ export default function Integrations() {
 
             {modalApp?.provider === 'mailchimp' && (
               <>
-                <p className="text-xs text-slate-500 italic mb-2">Instructions: In Mailchimp, go to Profile &gt; Extras &gt; API keys to create a new key.</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 italic mb-2">Instructions: In Mailchimp, go to Profile &gt; Extras &gt; API keys to create a new key.</p>
                 <div className="space-y-1.5">
                   <Label>Mailchimp API Key</Label>
                   <Input 
@@ -801,7 +798,7 @@ export default function Integrations() {
 
             {modalApp?.provider === 'shipstation' && (
               <>
-                <p className="text-xs text-slate-500 italic mb-2">Instructions: In ShipStation, go to Settings &gt; Account &gt; API Settings to generate your Key and Secret.</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 italic mb-2">Instructions: In ShipStation, go to Settings &gt; Account &gt; API Settings to generate your Key and Secret.</p>
                 <div className="space-y-1.5">
                   <Label>ShipStation API Key</Label>
                   <Input 
