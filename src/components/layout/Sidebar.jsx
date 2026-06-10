@@ -336,7 +336,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
           </div>
         )}
         {navItems.map((item, idx) => {
-          const isRootPath = ["/", "/s/", "/u/", "/v/", "/o/"].includes(item.path);
+          const isRootPath = ["/", "/s/", "/u/", "/v/", "/o/", "/admin"].includes(item.path);
           const isActive = location.pathname === item.path || (!isRootPath && location.pathname.startsWith(item.path));
           const IconComp = typeof item.icon === 'string' ? ICON_MAP[item.icon] || LayoutDashboard : item.icon;
           const showSection = item.section && !collapsed;
@@ -521,7 +521,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-xl border-t border-border shadow-[0_-4px_20px_rgba(0,0,0,0.06)] pb-[env(safe-area-inset-bottom)]">
         <div className="flex items-center justify-around h-16 px-1">
           {navItems.slice(0, 4).map((item) => {
-            const isActive = location.pathname === item.path || (item.path !== "/" && location.pathname.startsWith(item.path));
+            const isActive = location.pathname === item.path || (item.path !== "/" && item.path !== "/admin" && location.pathname.startsWith(item.path));
             const IconComp = typeof item.icon === 'string' ? ICON_MAP[item.icon] || LayoutDashboard : item.icon;
             return (
               <Link

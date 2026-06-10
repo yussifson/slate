@@ -40,9 +40,14 @@ export default function AdminUsers() {
         }
       }));
 
-      setProfiles(joinedData);
+      if (joinedData.length === 0) {
+        setProfiles([{ id: 'debug-empty', full_name: `DEBUG: profData=${profData?.length || 0}, compData=${compData?.length || 0}`, email: 'No data returned from DB', role: 'debug' }]);
+      } else {
+        setProfiles(joinedData);
+      }
     } catch (err) {
       toast({ title: "Failed to load users", description: err.message, variant: "destructive" });
+      setProfiles([{ id: 'debug-error', full_name: 'ERROR', email: err.message, role: 'error' }]);
     } finally {
       setLoading(false);
     }
