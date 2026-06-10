@@ -35,6 +35,18 @@ const UnivDocument = React.lazy(() => import("@/components/universal/UnivDocumen
 const UnivMessaging = React.lazy(() => import("@/components/universal/UnivMessaging"));
 const UnivNotification = React.lazy(() => import("@/components/universal/UnivNotification"));
 
+// Phase 4 Universal Components
+const UnivContactManagement = React.lazy(() => import("@/components/universal/UnivContactManagement"));
+const UnivPayment = React.lazy(() => import("@/components/universal/UnivPayment"));
+const UnivSubscription = React.lazy(() => import("@/components/universal/UnivSubscription"));
+const UnivAssetManagement = React.lazy(() => import("@/components/universal/UnivAssetManagement"));
+const UnivProcurement = React.lazy(() => import("@/components/universal/UnivProcurement"));
+const UnivPOS = React.lazy(() => import("@/components/universal/UnivPOS"));
+const UnivAttendance = React.lazy(() => import("@/components/universal/UnivAttendance"));
+const UnivPayroll = React.lazy(() => import("@/components/universal/UnivPayroll"));
+const UnivRecruitment = React.lazy(() => import("@/components/universal/UnivRecruitment"));
+const UnivLeaveManagement = React.lazy(() => import("@/components/universal/UnivLeaveManagement"));
+
 // Basic dummy data generator for these components since they might not be hooked to real tables yet if they are purely UI templates in OrbitBuild
 const DUMMY_DATA = Array(5).fill(0).map((_, i) => ({
   id: `id-${i}`,
@@ -146,6 +158,42 @@ export default function OrbitBuildPage() {
       case 'reminders':
         return <UnivNotification />;
         
+      // Phase 4 Components
+      case 'contact_management':
+      case 'contacts':
+        return <UnivContactManagement />;
+      case 'payment':
+      case 'payments':
+      case 'billing':
+        return <UnivPayment />;
+      case 'subscription':
+      case 'subscriptions':
+      case 'plans':
+        return <UnivSubscription />;
+      case 'asset_management':
+      case 'assets':
+        return <UnivAssetManagement />;
+      case 'procurement':
+      case 'purchasing':
+        return <UnivProcurement />;
+      case 'pos':
+      case 'point_of_sale':
+        return <UnivPOS />;
+      case 'attendance':
+      case 'time_tracking':
+        return <UnivAttendance />;
+      case 'payroll':
+      case 'salaries':
+        return <UnivPayroll />;
+      case 'recruitment':
+      case 'hiring':
+      case 'applicants':
+        return <UnivRecruitment />;
+      case 'leave_management':
+      case 'leaves':
+      case 'time_off':
+        return <UnivLeaveManagement />;
+
       case 'data_table':
       case 'pos':
       default:
