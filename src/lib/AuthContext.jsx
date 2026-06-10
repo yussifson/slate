@@ -45,11 +45,16 @@ export const AuthProvider = ({ children }) => {
       }
       
       let sessionVal = passedSession;
+      
+      // Parse URL parameters ONCE before any scrubbing occurs
+      const urlParams = new URLSearchParams(window.location.search);
+      const setupModeParam = urlParams.get('setup_mode');
+      const activeModulesParam = urlParams.get('active_modules');
+      
       if (!sessionVal) {
         // Attempt to restore cross-domain session from URL query parameters manually
-        const params = new URLSearchParams(window.location.search);
-        const urlAccessToken = params.get('access_token');
-        const urlRefreshToken = params.get('refresh_token');
+        const urlAccessToken = urlParams.get('access_token');
+        const urlRefreshToken = urlParams.get('refresh_token');
         
         if (urlAccessToken && urlRefreshToken) {
             setAuthStep("Restoring cross-domain session...");
@@ -59,7 +64,8 @@ export const AuthProvider = ({ children }) => {
             });
             if (!error && data.session) {
                 sessionVal = data.session;
-                // Clean the URL to remove the tokens for security
+                // Clean the URL to remove the tokens for security, but preserve other params if we need them later?
+                // Actually, we'll just clean the whole thing at the end or here, since we already extracted them into memory.
                 const newUrl = window.location.pathname + window.location.hash;
                 window.history.replaceState({}, document.title, newUrl);
             }
@@ -78,11 +84,6 @@ export const AuthProvider = ({ children }) => {
       if (!sessionUser) {
         throw new Error("Not logged in");
       }
-
-      // Handle cross-subdomain onboarding config transfer
-      const params = new URLSearchParams(window.location.search);
-      const setupModeParam = params.get('setup_mode');
-      const activeModulesParam = params.get('active_modules');
       
       // Optimization: If already authenticated with the same user ID and not forcing a refresh, return immediately.
       // This prevents redundant database queries and layout/sidebar flickering on window refocus.

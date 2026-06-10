@@ -285,6 +285,12 @@ export default function OnboardingWizard() {
       if (activeModulesToSave) {
         transferParams.set('active_modules', JSON.stringify(activeModulesToSave));
       }
+      
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        transferParams.set('access_token', session.access_token);
+        transferParams.set('refresh_token', session.refresh_token);
+      }
 
       const { currentSubdomain, baseDomain } = getSubdomainAndBase();
       if (!currentSubdomain) {
