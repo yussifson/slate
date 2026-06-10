@@ -413,7 +413,7 @@ const suites = [
               <div className="flex-none p-6 sm:p-8 border-b border-slate-100 flex justify-between items-start bg-slate-50/50">
                 <div>
                   <div className="inline-flex items-center px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-[10px] font-bold uppercase tracking-widest mb-3">
-                    {t("workspace_module", "WorkSlate Module")}
+                    {t("workslate_module", "WorkSlate Module")}
                   </div>
                   <h3 className="text-3xl font-extrabold text-slate-900 tracking-tight">{activeSuite.name}</h3>
                   <p className="text-slate-500 font-medium mt-2 max-w-2xl">{activeSuite.description}</p>
@@ -867,7 +867,7 @@ export default function Home() {
                 <p className="text-lg md:text-xl text-white/80 leading-relaxed max-w-2xl mx-auto font-medium">
                   {t(
                     "create_your_workspace_invite_a",
-                    "Create your workspace, invite associates, and start managing\n                  cases in minutes."
+                    "Create your workslate, invite associates, and start managing\n                  cases in minutes."
                   )}
                 </p>
 

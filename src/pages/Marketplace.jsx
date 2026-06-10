@@ -126,7 +126,7 @@ export default function Marketplace() {
       setInstallSuccessModal(mod);
       toast({
         title: "🎉 Slate Installed!",
-        description: `${mod.name} is now in your workspace sidebar.`,
+        description: `${mod.name} is now in your workslate sidebar.`,
       });
 
     } catch (err) {
@@ -159,7 +159,7 @@ export default function Marketplace() {
 
       toast({
         title: "Module Uninstalled",
-        description: `${mod.name} has been removed from your workspace.`,
+        description: `${mod.name} has been removed from your workslate.`,
       });
     } catch (err) {
       console.error(err);
@@ -190,7 +190,7 @@ export default function Marketplace() {
       <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
         <PageHeader
           title="Module Marketplace"
-          subtitle="Discover and install community-built modules for your workspace."
+          subtitle="Discover and install community-built modules for your workslate."
         />
         <div className="flex items-center gap-3">
           <Badge variant="outline" className="h-8 gap-1.5 bg-slate-50 text-primary/90 border-primary/20">
@@ -337,7 +337,7 @@ export default function Marketplace() {
           <DialogHeader>
             <DialogTitle>Uninstall Module</DialogTitle>
             <DialogDescription>
-              Are you sure you want to uninstall <strong>{confirmUninstall?.name}</strong>? This will remove the module, all its fields, and all records from your workspace. This action cannot be undone.
+              Are you sure you want to uninstall <strong>{confirmUninstall?.name}</strong>? This will remove the module, all its fields, and all records from your workslate. This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-4">

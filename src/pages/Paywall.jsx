@@ -128,7 +128,7 @@ export default function Paywall() {
             recipientEmail: user?.email,
             recipientName: user?.full_name,
             title: 'Plan Upgraded Successfully',
-            message: `Your workspace has been successfully upgraded to the ${plan.name} plan.`,
+            message: `Your workslate has been successfully upgraded to the ${plan.name} plan.`,
             type: 'success',
             channels: ['in-app', 'email'] // Sending email receipt and in-app alert
           });

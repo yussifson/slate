@@ -36,7 +36,7 @@ export default function Login() {
              // Fallback to table query if RPC is not created yet (for development)
              const { data: tableData, error: tableError } = await supabase.from('companies').select('name, logo_url').eq('subdomain', currentSubdomain).single();
              if (tableData) {
-               setBranding({ name: tableData.name || 'Slate', logo_url: tableData.logo_url, tagline: `Sign in to ${tableData.name || 'your workspace'}` });
+               setBranding({ name: tableData.name || 'Slate', logo_url: tableData.logo_url, tagline: `Sign in to ${tableData.name || 'your workslate'}` });
              } else if (tableError) {
                console.error("Table fallback error:", tableError);
                setInvalidSubdomain(true);
@@ -48,7 +48,7 @@ export default function Login() {
               setBranding({
                 name: brandData.name || 'Slate',
                 logo_url: brandData.logo_url,
-                tagline: `Sign in to ${brandData.name || 'your workspace'}`
+                tagline: `Sign in to ${brandData.name || 'your workslate'}`
               });
             } else {
               setInvalidSubdomain(true);
@@ -279,7 +279,7 @@ export default function Login() {
           
           <div className="mb-8">
             <h1 className="text-2xl font-bold text-slate-900">{t("welcome_back", "Welcome back")}</h1>
-            <p className="text-xs text-slate-500 font-medium mt-1">{t("enter_your_credentials_to_acce", "Enter your credentials to access your workspace")}</p>
+            <p className="text-xs text-slate-500 font-medium mt-1">{t("enter_your_credentials_to_acce", "Enter your credentials to access your workslate")}</p>
           </div>
           
           <form className="space-y-4" onSubmit={handleLogin}>

@@ -108,7 +108,7 @@ export default function HospitalDashboard({ companyId, company, isAdmin }) {
           <Building2 className="w-12 h-12 text-primary" />
         </div>
         <div className="max-w-md space-y-2">
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">{t("welcome_to_your_workspace", "Welcome to your workslate")}</h1>
+          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">{t("welcome_to_your_workslate", "Welcome to your workslate")}</h1>
           <p className="text-slate-500 text-lg">{t(
             "you_haven_t_set_up_your_firm_y",
             "You haven't set up your firm yet. Configure your details to unlock your dashboard and features."

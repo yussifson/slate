@@ -131,7 +131,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
   const startNewSession = () => {
     const s = {
       id: crypto.randomUUID(),
-      title: 'New Workspace',
+      title: 'New WorkSlate',
       createdAt: new Date().toISOString(),
       messages: [{ role: 'assistant', content: "Hi there! I'm OrbitBolt, your AI System Architect. Tell me what kind of module, app, or dashboard you want to build, and I'll generate the architecture for you instantly." }],
       latest_schema: null
@@ -171,7 +171,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
     const updatedMsgs = [...activeSession.messages, userMsg];
     
     let title = activeSession.title;
-    if (title === 'New Workspace') title = text.slice(0, 30) + '...';
+    if (title === 'New WorkSlate') title = text.slice(0, 30) + '...';
     
     let s = { ...activeSession, title, messages: updatedMsgs };
     setActiveSession(s);
@@ -303,13 +303,13 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
         >
           <div className="p-3 border-b border-border">
             <Button onClick={startNewSession} className="w-full justify-start h-9 rounded-lg text-xs font-medium gap-2 shadow-sm">
-              <MessageSquarePlus className="w-4 h-4 opacity-90" /> New workspace
+              <MessageSquarePlus className="w-4 h-4 opacity-90" /> New workslate
             </Button>
           </div>
           <div className="px-3 py-3 border-b border-border">
             <div className="relative">
               <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
-              <input type="text" placeholder="Search workspaces…" className="w-full h-8 bg-muted border border-border rounded-lg pl-8 pr-3 text-xs focus:outline-none focus:ring-1 focus:ring-primary/40 focus:border-primary/30 text-foreground placeholder:text-muted-foreground transition-shadow" />
+              <input type="text" placeholder="Search workslates…" className="w-full h-8 bg-muted border border-border rounded-lg pl-8 pr-3 text-xs focus:outline-none focus:ring-1 focus:ring-primary/40 focus:border-primary/30 text-foreground placeholder:text-muted-foreground transition-shadow" />
             </div>
           </div>
           <div className="flex-1 overflow-y-auto py-2 scrollbar-thin">

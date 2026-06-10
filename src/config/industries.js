@@ -220,7 +220,7 @@ export const INDUSTRIES = {
       
       { section: 'Admissions', label: 'Portal', path: '/u/admissions', icon: 'PlusSquare' },
 
-      { section: 'Learning & Exams', label: 'LMS Workspaces', path: '/u/lms', icon: 'FolderOpen' },
+      { section: 'Learning & Exams', label: 'LMS WorkSlates', path: '/u/lms', icon: 'FolderOpen' },
       { label: 'Exams & Grading', path: '/u/exams', icon: 'Award' },
 
       { section: 'Campus Life', label: 'Hostels', path: '/u/hostel', icon: 'BedDouble' },

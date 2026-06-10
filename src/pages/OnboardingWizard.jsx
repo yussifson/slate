@@ -412,7 +412,7 @@ export default function OnboardingWizard() {
                     Choose Your Setup Mode
                   </h2>
                   <p className="text-slate-500 text-sm leading-relaxed">
-                    How would you like to initialize your workspace?
+                    How would you like to initialize your workslate?
                   </p>
                 </div>
 
@@ -478,7 +478,7 @@ export default function OnboardingWizard() {
                       </div>
                       <div>
                         <h3 className={`font-bold ${setupMode === 'custom' ? 'text-slate-900' : 'text-slate-900'}`}>Custom Selection</h3>
-                        <p className="text-sm text-slate-500 mt-1 leading-relaxed">Hand-pick exactly which predefined pages you want to include in your workspace.</p>
+                        <p className="text-sm text-slate-500 mt-1 leading-relaxed">Hand-pick exactly which predefined pages you want to include in your workslate.</p>
                       </div>
                     </label>
                     
@@ -697,7 +697,7 @@ export default function OnboardingWizard() {
                     return;
                   }
                   if (step === 1 && isMissingMetadata && (!workspaceName || !subdomain)) {
-                    toast({ title: "Required", description: "Please enter your workspace name and subdomain.", variant: "destructive" });
+                    toast({ title: "Required", description: "Please enter your workslate name and subdomain.", variant: "destructive" });
                     return;
                   }
                   setStep(step + 1);

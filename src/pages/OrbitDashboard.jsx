@@ -77,7 +77,7 @@ export default function OrbitDashboard() {
           <div className="flex-1 text-center md:text-left">
             <h4 className="text-xl font-bold text-white mb-2">Core Tools Ready</h4>
             <p className="text-slate-300 text-sm leading-relaxed max-w-xl">
-              While your workspace is empty, your core operational tools (Inbox, Chat, Boards, and Settings) are fully active and available in the sidebar.
+              While your workslate is empty, your core operational tools (Inbox, Chat, Boards, and Settings) are fully active and available in the sidebar.
             </p>
           </div>
           <div className="shrink-0 w-full md:w-auto">

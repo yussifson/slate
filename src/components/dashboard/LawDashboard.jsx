@@ -110,7 +110,7 @@ export default function LawDashboard({ companyId, company, isAdmin }) {
           <Building2 className="w-12 h-12 text-primary" />
         </div>
         <div className="max-w-md space-y-2">
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">{t('welcome_to_workspace', "Welcome to your workslate")}</h1>
+          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">{t('welcome_to_workslate', "Welcome to your workslate")}</h1>
           <p className="text-slate-500 text-lg">{t('setup_firm_prompt', "You haven't set up your law firm yet. Configure your firm's details to unlock your dashboard and features.")}</p>
         </div>
         <Button onClick={() => window.location.href = '/onboarding'} size="lg" className="mt-4 shadow-md px-8 h-12 text-md">

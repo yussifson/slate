@@ -86,7 +86,7 @@ export default function Features() {
       badge: "Orbit AI Assistant",
       title: "Your intelligent co-pilot",
       description:
-        "Meet Orbit, an advanced AI integrated directly into your workspace. It understands your cases, summarizes documents, and answers questions using contextual data instantly.",
+        "Meet Orbit, an advanced AI integrated directly into your workslate. It understands your cases, summarizes documents, and answers questions using contextual data instantly.",
       bullets: [
         "Context-aware insights from your active screen",
         "Natural language search across the entire database",
@@ -149,7 +149,7 @@ export default function Features() {
       icon: Mail,
       title: "Integrated Email Sync",
       description:
-        "Connect your workspace directly with Office 365 or Gmail. Read, flag, and reply to client emails right inside the project files.",
+        "Connect your workslate directly with Office 365 or Gmail. Read, flag, and reply to client emails right inside the project files.",
     },
     {
       icon: Shield,
