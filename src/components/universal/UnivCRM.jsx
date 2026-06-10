@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Plus, Search, Filter, MoreHorizontal, User, Mail, Phone, 
   Calendar as CalendarIcon, Loader2, DollarSign, Trash2, X,
-  LayoutList, KanbanSquare, Target, TrendingUp, Building2, Edit2
+  LayoutList, KanbanSquare, Target, TrendingUp, Building2, Edit2, Eye
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
@@ -294,6 +294,9 @@ export default function UnivCRM() {
                                     <div className="flex justify-between items-start mb-2 pl-2">
                                       <h4 className="font-bold text-[15px] text-foreground tracking-tight">{lead.first_name} {lead.last_name}</h4>
                                       <div className="flex gap-1">
+                                        <button onClick={(e) => { e.stopPropagation(); setViewingLead(lead); }} className="text-slate-400 hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity p-1 bg-muted rounded-md">
+                                          <Eye className="w-3.5 h-3.5" />
+                                        </button>
                                         <button onClick={(e) => { e.stopPropagation(); handleOpenModal(lead); }} className="text-slate-400 hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity p-1 bg-muted rounded-md">
                                           <Edit2 className="w-3.5 h-3.5" />
                                         </button>
