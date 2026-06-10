@@ -33,14 +33,7 @@ export default function UnivClassAttendance() {
       if (error && error.code !== '42P01') throw error;
       setAttendance(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setAttendance([
-          { id: '1', student_name: 'Emily Chen', course_name: 'CS101', date: new Date().toISOString().split('T')[0], status: 'Present' },
-          { id: '2', student_name: 'Michael Johnson', course_name: 'PHY201', date: new Date().toISOString().split('T')[0], status: 'Late' },
-          { id: '3', student_name: 'Sophia Martinez', course_name: 'ENG101', date: new Date().toISOString().split('T')[0], status: 'Absent' },
-          { id: '4', student_name: 'John Doe', course_name: 'CS101', date: new Date().toISOString().split('T')[0], status: 'Excused' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

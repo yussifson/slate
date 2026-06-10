@@ -33,14 +33,7 @@ export default function UnivSubscription() {
       if (error && error.code !== '42P01') throw error;
       setSubscriptions(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setSubscriptions([
-          { id: '1', plan_name: 'Pro Tier', customer_name: 'Acme Corp', status: 'Active', billing_cycle: 'Monthly', amount: 99.00, next_billing_date: '2026-07-01' },
-          { id: '2', plan_name: 'Enterprise', customer_name: 'TechStars', status: 'Active', billing_cycle: 'Annually', amount: 999.00, next_billing_date: '2027-01-01' },
-          { id: '3', plan_name: 'Starter', customer_name: 'SmallBiz LLC', status: 'Past Due', billing_cycle: 'Monthly', amount: 29.00, next_billing_date: '2026-06-01' },
-          { id: '4', plan_name: 'Pro Tier', customer_name: 'Churned Inc', status: 'Canceled', billing_cycle: 'Monthly', amount: 99.00, next_billing_date: null }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

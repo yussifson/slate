@@ -33,13 +33,7 @@ export default function UnivFaculty() {
       if (error && error.code !== '42P01') throw error;
       setFaculty(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setFaculty([
-          { id: '1', first_name: 'Dr. Alan', last_name: 'Turing', title: 'Professor', department: 'Computer Science', email: 'alan@university.edu', phone: '555-0101', status: 'Active' },
-          { id: '2', first_name: 'Marie', last_name: 'Curie', title: 'Lecturer', department: 'Physics', email: 'marie@university.edu', phone: '555-0102', status: 'Active' },
-          { id: '3', first_name: 'Isaac', last_name: 'Newton', title: 'Teacher', department: 'Mathematics', email: 'isaac@university.edu', phone: '555-0103', status: 'On Leave' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

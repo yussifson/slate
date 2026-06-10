@@ -33,13 +33,7 @@ export default function UnivDining() {
       if (error && error.code !== '42P01') throw error;
       setOrders(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setOrders([
-          { id: '1', order_number: 'ORD-001', table_number: 'T-05', order_type: 'Dine-In', status: 'Received', total_amount: 45.50, items: [{name: 'Grilled Salmon', qty: 1}, {name: 'Craft Lemonade', qty: 2}] },
-          { id: '2', order_number: 'ORD-002', table_number: null, room_number: '201', order_type: 'Room Service', status: 'Preparing', total_amount: 32.00, items: [{name: 'Caesar Salad', qty: 1}, {name: 'Club Sandwich', qty: 1}] },
-          { id: '3', order_number: 'ORD-003', table_number: 'T-12', order_type: 'Dine-In', status: 'Served', total_amount: 110.00, items: [{name: 'Steak Frites', qty: 2}, {name: 'Wine (Bottle)', qty: 1}] }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

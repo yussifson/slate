@@ -33,13 +33,7 @@ export default function UnivTelemedicine() {
       if (error && error.code !== '42P01') throw error;
       setAppointments(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setAppointments([
-          { id: '1', patient_name: 'John Doe', doctor_name: 'Dr. House', scheduled_time: new Date(Date.now() + 3600000).toISOString(), status: 'Scheduled', meeting_link: 'https://meet.slate.com/xyz-abc' },
-          { id: '2', patient_name: 'Jane Smith', doctor_name: 'Dr. Grey', scheduled_time: new Date().toISOString(), status: 'Ongoing', meeting_link: 'https://meet.slate.com/def-ghi' },
-          { id: '3', patient_name: 'Robert Brown', doctor_name: 'Dr. House', scheduled_time: new Date(Date.now() - 86400000).toISOString(), status: 'Completed', meeting_link: null }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

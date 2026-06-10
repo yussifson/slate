@@ -33,13 +33,7 @@ export default function UnivCaseManagement() {
       if (error && error.code !== '42P01') throw error;
       setCases(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setCases([
-          { id: '1', case_number: 'CV-2026-045', client_name: 'Acme Corp', case_type: 'Corporate Litigation', status: 'In Progress', filed_date: '2026-03-15', court_jurisdiction: 'District Court' },
-          { id: '2', case_number: 'FAM-2026-112', client_name: 'Jane Doe', case_type: 'Family Law', status: 'Open', filed_date: '2026-05-10', court_jurisdiction: 'Family Court' },
-          { id: '3', case_number: 'CR-2025-889', client_name: 'John Smith', case_type: 'Criminal Defense', status: 'Closed', filed_date: '2025-11-20', court_jurisdiction: 'Superior Court' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

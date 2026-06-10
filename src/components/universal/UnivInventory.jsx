@@ -33,12 +33,7 @@ export default function UnivInventory() {
       if (error && error.code !== '42P01') throw error;
       setInventory(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setInventory([
-          { id: '1', item_name: 'Stethoscope Pro', sku: 'ST-001', quantity: 45, unit_price: 120.00, status: 'In Stock', reorder_level: 10, category: 'Medical Equipment' },
-          { id: '2', item_name: 'Latex Gloves (Box of 100)', sku: 'GL-100', quantity: 4, unit_price: 15.50, status: 'Low Stock', reorder_level: 10, category: 'Consumables' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

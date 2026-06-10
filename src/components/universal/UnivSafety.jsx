@@ -33,13 +33,7 @@ export default function UnivSafety() {
       if (error && error.code !== '42P01') throw error;
       setIncidents(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setIncidents([
-          { id: '1', incident_type: 'Near Miss', description: 'Scaffolding pipe fell near worker', reported_by: 'John D.', report_date: new Date().toISOString(), status: 'Investigating', severity: 'High' },
-          { id: '2', incident_type: 'Hazard', description: 'Exposed wiring on level 2', reported_by: 'Emma S.', report_date: new Date(Date.now() - 86400000).toISOString(), status: 'Open', severity: 'Medium' },
-          { id: '3', incident_type: 'Injury', description: 'Minor cut on hand during fabrication', reported_by: 'Mike J.', report_date: new Date(Date.now() - 172800000).toISOString(), status: 'Resolved', severity: 'Low' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

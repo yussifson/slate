@@ -33,13 +33,7 @@ export default function UnivDispatch() {
       if (error && error.code !== '42P01') throw error;
       setDispatch(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setDispatch([
-          { id: '1', driver_name: 'Mike Johnson', status: 'On Route', current_location: 'Downtown District', updated_at: new Date().toISOString() },
-          { id: '2', driver_name: 'Sarah Connor', status: 'Available', current_location: 'Main Depot', updated_at: new Date().toISOString() },
-          { id: '3', driver_name: 'Tom Hardy', status: 'Off Duty', current_location: 'Home', updated_at: new Date(Date.now() - 86400000).toISOString() }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

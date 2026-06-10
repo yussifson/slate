@@ -33,13 +33,7 @@ export default function UnivContractor() {
       if (error && error.code !== '42P01') throw error;
       setContractors(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setContractors([
-          { id: '1', contractor_name: 'Apex Electricals', trade_specialty: 'Electrical', contact_email: 'info@apexelectric.com', contact_phone: '555-0100', status: 'Active', rating: 4.8 },
-          { id: '2', contractor_name: 'Solid Foundations Ltd', trade_specialty: 'Concrete & Masonry', contact_email: 'contact@solidfoundations.co', contact_phone: '555-0200', status: 'Active', rating: 4.5 },
-          { id: '3', contractor_name: 'Blue Sky Plumbing', trade_specialty: 'Plumbing', contact_email: 'service@bluesky.com', contact_phone: '555-0300', status: 'Suspended', rating: 2.1 }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

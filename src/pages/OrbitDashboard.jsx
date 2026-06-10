@@ -20,7 +20,9 @@ export default function OrbitDashboard() {
         .eq('company_id', companyId)
         .eq('industry', 'orbit_build')
         .eq('record_type', 'workspace_config')
-        .single();
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
       return data?.data || null;
     },
     enabled: !!companyId

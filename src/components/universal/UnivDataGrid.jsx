@@ -118,12 +118,12 @@ export default function UnivDataGrid({
 
   return (
     <div className="flex flex-col h-full overflow-hidden bg-background relative">
-      <div className="flex items-center justify-between mb-6 shrink-0 px-1">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 shrink-0 px-1 gap-4">
         <div>
            <h2 className="text-2xl font-bold text-foreground tracking-tight">{title}</h2>
            <p className="text-sm text-muted-foreground mt-1">Manage and organize your records efficiently.</p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           <button className="flex items-center gap-2 px-4 py-2 bg-card border border-border rounded-xl text-sm font-medium hover:bg-muted/50 transition-colors">
             <Download className="w-4 h-4" /> Export
           </button>
@@ -135,7 +135,7 @@ export default function UnivDataGrid({
 
       {isAdding && (
         <div className="mb-6 p-4 bg-card border border-primary/20 rounded-2xl shadow-sm">
-          <form onSubmit={handleAdd} className="flex items-end gap-4">
+          <form onSubmit={handleAdd} className="flex flex-col sm:flex-row sm:items-end gap-4">
             <div className="flex-1">
               <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Record Name</label>
               <input 
@@ -172,25 +172,29 @@ export default function UnivDataGrid({
           </button>
         </div>
 
-        <div className="flex-1 overflow-auto">
+        <div className="flex-1 overflow-auto border border-border rounded-2xl shadow-sm bg-card relative">
           {isLoading ? (
-            <div className="flex h-full items-center justify-center">
-               <Loader2 className="w-8 h-8 animate-spin text-primary/50" />
+            <div className="absolute inset-0 flex items-center justify-center bg-background/50 z-10">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
             </div>
-          ) : (
-            <table className="w-full text-left text-sm whitespace-nowrap">
-              <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground sticky top-0 z-10 backdrop-blur-md">
+          ) : null}
+          <div className="w-full overflow-x-auto">
+            <table className="w-full text-sm text-left whitespace-nowrap min-w-max">
+              <thead className="text-xs text-muted-foreground uppercase bg-muted/50 border-b border-border sticky top-0 z-10">
                 <tr>
-                  <th className="p-4 font-semibold cursor-pointer hover:text-foreground transition-colors group w-[50%]" onClick={() => handleSort('name')}>
-                    <div className="flex items-center gap-2">Name <ArrowUpDown className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" /></div>
-                  </th>
-                  <th className="p-4 font-semibold cursor-pointer hover:text-foreground transition-colors group" onClick={() => handleSort('status')}>
-                    <div className="flex items-center gap-2">Status <ArrowUpDown className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" /></div>
-                  </th>
-                  <th className="p-4 font-semibold cursor-pointer hover:text-foreground transition-colors group" onClick={() => handleSort('date')}>
-                    <div className="flex items-center gap-2">Date <ArrowUpDown className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" /></div>
-                  </th>
-                  <th className="p-4 font-semibold text-right">Actions</th>
+                  {displayColumns.map(col => (
+                    <th 
+                      key={col.key} 
+                      className="px-6 py-4 font-semibold cursor-pointer hover:bg-muted transition-colors"
+                      onClick={() => handleSort(col.key)}
+                    >
+                      <div className="flex items-center gap-2">
+                        {col.label}
+                        <ArrowUpDown className="w-3 h-3 opacity-50" />
+                      </div>
+                    </th>
+                  ))}
+                  <th className="px-6 py-4 font-semibold text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -232,7 +236,7 @@ export default function UnivDataGrid({
                 )}
               </tbody>
             </table>
-          )}
+          </div>
         </div>
         
         <div className="p-4 border-t border-border flex justify-between items-center text-sm text-muted-foreground bg-muted/20">

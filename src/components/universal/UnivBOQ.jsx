@@ -33,13 +33,7 @@ export default function UnivBOQ() {
       if (error && error.code !== '42P01') throw error;
       setBoqs(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setBoqs([
-          { id: '1', item_description: 'Concrete Grade C30', unit: 'm3', quantity: 500, unit_rate: 120, total_amount: 60000, status: 'Approved' },
-          { id: '2', item_description: 'Steel Reinforcement 16mm', unit: 'ton', quantity: 50, unit_rate: 850, total_amount: 42500, status: 'Procuring' },
-          { id: '3', item_description: 'Formwork Timber', unit: 'm2', quantity: 1200, unit_rate: 15, total_amount: 18000, status: 'Draft' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

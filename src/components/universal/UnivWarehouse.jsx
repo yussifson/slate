@@ -33,14 +33,7 @@ export default function UnivWarehouse() {
       if (error && error.code !== '42P01') throw error;
       setZones(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setZones([
-          { id: '1', zone_name: 'Zone A', bay_number: 'A-01', capacity: 1000, current_occupancy: 850, status: 'Active' },
-          { id: '2', zone_name: 'Zone A', bay_number: 'A-02', capacity: 1000, current_occupancy: 950, status: 'Active' },
-          { id: '3', zone_name: 'Zone B', bay_number: 'B-01', capacity: 500, current_occupancy: 100, status: 'Maintenance' },
-          { id: '4', zone_name: 'Cold Storage', bay_number: 'C-01', capacity: 200, current_occupancy: 180, status: 'Active' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

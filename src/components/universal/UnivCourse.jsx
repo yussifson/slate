@@ -33,13 +33,7 @@ export default function UnivCourse() {
       if (error && error.code !== '42P01') throw error;
       setCourses(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setCourses([
-          { id: '1', course_code: 'CS101', course_name: 'Introduction to Computer Science', department: 'Computer Science', credits: 4, status: 'Active' },
-          { id: '2', course_code: 'PHY201', course_name: 'Classical Mechanics', department: 'Physics', credits: 3, status: 'Active' },
-          { id: '3', course_code: 'ENG101', course_name: 'English Composition', department: 'English', credits: 3, status: 'Upcoming' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

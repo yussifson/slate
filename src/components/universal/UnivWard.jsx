@@ -33,13 +33,7 @@ export default function UnivWard() {
       if (error && error.code !== '42P01') throw error;
       setWards(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setWards([
-          { id: '1', ward_name: 'ICU', bed_number: 'ICU-01', status: 'Occupied', patient_id: 'John Doe', admission_date: new Date().toISOString() },
-          { id: '2', ward_name: 'General Ward A', bed_number: 'GWA-12', status: 'Available', patient_id: null, admission_date: null },
-          { id: '3', ward_name: 'Maternity', bed_number: 'MAT-05', status: 'Maintenance', patient_id: null, admission_date: null }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

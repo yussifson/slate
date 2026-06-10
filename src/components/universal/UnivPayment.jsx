@@ -33,13 +33,7 @@ export default function UnivPayment() {
       if (error && error.code !== '42P01') throw error;
       setPayments(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setPayments([
-          { id: '1', amount: 150.00, currency: 'USD', method: 'Credit Card', status: 'Completed', reference_id: 'ch_1M', created_at: new Date().toISOString() },
-          { id: '2', amount: 49.99, currency: 'USD', method: 'PayPal', status: 'Pending', reference_id: 'pp_X9', created_at: new Date(Date.now() - 86400000).toISOString() },
-          { id: '3', amount: 200.00, currency: 'USD', method: 'Bank Transfer', status: 'Refunded', reference_id: 'bt_78', created_at: new Date(Date.now() - 172800000).toISOString() }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

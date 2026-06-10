@@ -33,13 +33,7 @@ export default function UnivQualityControl() {
       if (error && error.code !== '42P01') throw error;
       setInspections(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setInspections([
-          { id: '1', batch_number: 'BATCH-2026-A1', inspector_name: 'Sarah Jenkins', inspection_date: '2026-06-15', result: 'Pass', notes: 'All tolerances within acceptable limits.' },
-          { id: '2', batch_number: 'BATCH-2026-B2', inspector_name: 'Mark Davis', inspection_date: '2026-06-05', result: 'Rework', notes: 'Surface finish non-compliant on 15% sample.' },
-          { id: '3', batch_number: 'BATCH-2026-C3', inspector_name: 'Sarah Jenkins', inspection_date: '2026-05-30', result: 'Fail', notes: 'Critical structural failure in stress test.' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

@@ -34,12 +34,7 @@ export default function UnivHREmployee() {
       if (error && error.code !== '42P01') throw error;
       setEmployees(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setEmployees([
-          { id: '1', first_name: 'Alice', last_name: 'Johnson', email: 'alice@company.com', role_title: 'Software Engineer', department: 'Engineering', status: 'Active' },
-          { id: '2', first_name: 'Bob', last_name: 'Smith', email: 'bob@company.com', role_title: 'Marketing Manager', department: 'Marketing', status: 'Onboarding' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

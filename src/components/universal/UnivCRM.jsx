@@ -37,12 +37,7 @@ export default function UnivCRM() {
     } catch (err) {
       console.error('Error fetching leads:', err);
       // Fallback for UI testing if table isn't created yet
-      if (err.code === '42P01') {
-         setLeads([
-            { id: '1', first_name: 'Jane', last_name: 'Doe', email: 'jane@example.com', status: 'New', value: 5000 },
-            { id: '2', first_name: 'John', last_name: 'Smith', email: 'john@example.com', status: 'Qualified', value: 12000 }
-         ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

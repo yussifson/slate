@@ -33,13 +33,7 @@ export default function UnivLegalDocument() {
       if (error && error.code !== '42P01') throw error;
       setDocuments(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setDocuments([
-          { id: '1', document_title: 'NDA - Acme Corp', document_type: 'Contract', status: 'Final', created_at: new Date().toISOString() },
-          { id: '2', document_title: 'Motion to Dismiss', document_type: 'Pleading', status: 'Filed', created_at: new Date(Date.now() - 86400000).toISOString() },
-          { id: '3', document_title: 'Witness Affidavit', document_type: 'Affidavit', status: 'Draft', created_at: new Date(Date.now() - 172800000).toISOString() }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

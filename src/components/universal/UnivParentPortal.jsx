@@ -33,13 +33,7 @@ export default function UnivParentPortal() {
       if (error && error.code !== '42P01') throw error;
       setAccesses(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setAccesses([
-          { id: '1', parent_name: 'David Chen', parent_email: 'david@example.com', student_name: 'Emily Chen', access_code: 'PP-1234-ABCD', status: 'Active' },
-          { id: '2', parent_name: 'Sarah Johnson', parent_email: 'sarah@example.com', student_name: 'Michael Johnson', access_code: 'PP-5678-EFGH', status: 'Pending' },
-          { id: '3', parent_name: 'Carlos Martinez', parent_email: 'carlos@example.com', student_name: 'Sophia Martinez', access_code: 'PP-9012-IJKL', status: 'Active' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

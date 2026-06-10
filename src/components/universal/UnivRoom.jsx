@@ -33,14 +33,7 @@ export default function UnivRoom() {
       if (error && error.code !== '42P01') throw error;
       setRooms(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setRooms([
-          { id: '1', room_number: '101', room_type: 'Standard Room', floor: '1st Floor', price_per_night: 150, status: 'Available' },
-          { id: '2', room_number: '102', room_type: 'Standard Room', floor: '1st Floor', price_per_night: 150, status: 'Occupied' },
-          { id: '3', room_number: '201', room_type: 'Deluxe Suite', floor: '2nd Floor', price_per_night: 350, status: 'Cleaning' },
-          { id: '4', room_number: 'PH1', room_type: 'Penthouse', floor: 'Top Floor', price_per_night: 800, status: 'Maintenance' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

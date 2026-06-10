@@ -33,13 +33,7 @@ export default function UnivPrescription() {
       if (error && error.code !== '42P01') throw error;
       setPrescriptions(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setPrescriptions([
-          { id: '1', patient_name: 'John Doe', doctor_name: 'Dr. House', medication: 'Lisinopril', dosage: '10mg', frequency: 'Once daily', duration: '30 Days', status: 'Active' },
-          { id: '2', patient_name: 'Jane Smith', doctor_name: 'Dr. Grey', medication: 'Amoxicillin', dosage: '500mg', frequency: 'Twice daily', duration: '7 Days', status: 'Completed' },
-          { id: '3', patient_name: 'Robert Brown', doctor_name: 'Dr. House', medication: 'Atorvastatin', dosage: '20mg', frequency: 'Once daily at night', duration: '90 Days', status: 'Active' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

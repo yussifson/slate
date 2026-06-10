@@ -33,13 +33,7 @@ export default function UnivSiteInspection() {
       if (error && error.code !== '42P01') throw error;
       setInspections(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setInspections([
-          { id: '1', inspector_name: 'David Smith', inspection_date: '2026-06-08', findings: 'Foundation cracks observed', snag_list: 'Fix cracks in sector A; Repaint walls', status: 'Pending Review' },
-          { id: '2', inspector_name: 'Emma Jones', inspection_date: '2026-06-05', findings: 'All electrical wiring compliant', snag_list: 'None', status: 'Closed' },
-          { id: '3', inspector_name: 'David Smith', inspection_date: '2026-05-28', findings: 'Plumbing leak on 2nd floor', snag_list: 'Replace valve', status: 'Addressed' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

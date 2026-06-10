@@ -33,13 +33,7 @@ export default function UnivProduction() {
       if (error && error.code !== '42P01') throw error;
       setProduction(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setProduction([
-          { id: '1', batch_number: 'BATCH-2026-A1', product_name: 'Industrial Widget X', quantity: 5000, status: 'In Progress', start_date: '2026-06-01', end_date: '2026-06-15' },
-          { id: '2', batch_number: 'BATCH-2026-B2', product_name: 'Consumer Gadget Y', quantity: 15000, status: 'QA', start_date: '2026-05-20', end_date: '2026-06-05' },
-          { id: '3', batch_number: 'BATCH-2026-C3', product_name: 'Heavy Duty Gear Z', quantity: 1000, status: 'Planned', start_date: '2026-07-01', end_date: '2026-07-20' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

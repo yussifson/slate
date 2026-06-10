@@ -33,13 +33,7 @@ export default function UnivStudent() {
       if (error && error.code !== '42P01') throw error;
       setStudents(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setStudents([
-          { id: '1', student_id_number: 'STD-001', first_name: 'Emily', last_name: 'Chen', grade_level: '10th Grade', status: 'Enrolled', guardian_name: 'David Chen', enrollment_date: '2025-09-01' },
-          { id: '2', student_id_number: 'STD-002', first_name: 'Michael', last_name: 'Johnson', grade_level: '11th Grade', status: 'Enrolled', guardian_name: 'Sarah Johnson', enrollment_date: '2024-09-01' },
-          { id: '3', student_id_number: 'STD-003', first_name: 'Sophia', last_name: 'Martinez', grade_level: '12th Grade', status: 'Graduated', guardian_name: 'Carlos Martinez', enrollment_date: '2023-09-01' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

@@ -33,13 +33,7 @@ export default function UnivProject() {
       if (error && error.code !== '42P01') throw error;
       setProjects(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setProjects([
-          { id: '1', project_name: 'Downtown Commercial Tower', client_name: 'City Developers', start_date: '2025-01-15', end_date: '2027-06-30', budget: 15000000, status: 'Active', completion_percentage: 45 },
-          { id: '2', project_name: 'Residential Block A', client_name: 'HomeCorp', start_date: '2026-03-01', end_date: '2026-12-15', budget: 2500000, status: 'Planning', completion_percentage: 5 },
-          { id: '3', project_name: 'Highway Expansion', client_name: 'Gov Transport', start_date: '2024-05-10', end_date: '2025-11-20', budget: 8500000, status: 'Completed', completion_percentage: 100 }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

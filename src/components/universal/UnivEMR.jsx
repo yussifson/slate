@@ -33,12 +33,7 @@ export default function UnivEMR() {
       if (error && error.code !== '42P01') throw error;
       setEmrRecords(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setEmrRecords([
-          { id: '1', patient_name: 'John Doe', doctor_name: 'Dr. House', visit_date: new Date().toISOString(), diagnosis: 'Hypertension', symptoms: 'Headache, Dizziness', treatment_plan: 'Lisinopril 10mg daily' },
-          { id: '2', patient_name: 'Jane Smith', doctor_name: 'Dr. Grey', visit_date: new Date(Date.now() - 86400000).toISOString(), diagnosis: 'Acute Bronchitis', symptoms: 'Cough, fever', treatment_plan: 'Rest, Azithromycin' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

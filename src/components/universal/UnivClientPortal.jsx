@@ -33,13 +33,7 @@ export default function UnivClientPortal() {
       if (error && error.code !== '42P01') throw error;
       setClients(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setClients([
-          { id: '1', client_name: 'Acme Corp', portal_access: true, last_login: new Date().toISOString(), outstanding_balance: 5500.00 },
-          { id: '2', client_name: 'Jane Doe', portal_access: true, last_login: new Date(Date.now() - 86400000 * 5).toISOString(), outstanding_balance: 0 },
-          { id: '3', client_name: 'John Smith', portal_access: false, last_login: null, outstanding_balance: 1200.50 }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

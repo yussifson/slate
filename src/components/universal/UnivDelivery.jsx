@@ -33,13 +33,7 @@ export default function UnivDelivery() {
       if (error && error.code !== '42P01') throw error;
       setDeliveries(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setDeliveries([
-          { id: '1', tracking_number: 'TRK-90210-A', recipient_name: 'Acme Corp', delivery_address: '123 Business Rd, City', status: 'In Transit', updated_at: new Date().toISOString() },
-          { id: '2', tracking_number: 'TRK-90211-B', recipient_name: 'Tech Solutions', delivery_address: '456 Tech Park, City', status: 'Delivered', updated_at: new Date(Date.now() - 3600000).toISOString() },
-          { id: '3', tracking_number: 'TRK-90212-C', recipient_name: 'Global Trade', delivery_address: '789 Harbor Blvd, City', status: 'Pending', updated_at: new Date().toISOString() }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

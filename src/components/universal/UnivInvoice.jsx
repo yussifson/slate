@@ -34,12 +34,7 @@ export default function UnivInvoice() {
       setInvoices(data || []);
     } catch (err) {
       console.error(err);
-      if (err.code === '42P01') {
-        setInvoices([
-          { id: '1', invoice_number: 'INV-2026-001', client_name: 'Acme Corp', amount: 4500, status: 'Paid', due_date: '2026-07-01', currency: 'USD' },
-          { id: '2', invoice_number: 'INV-2026-002', client_name: 'Stark Industries', amount: 12000, status: 'Draft', due_date: '2026-07-15', currency: 'USD' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

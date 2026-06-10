@@ -33,13 +33,7 @@ export default function UnivLeaveManagement() {
       if (error && error.code !== '42P01') throw error;
       setLeaves(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setLeaves([
-          { id: '1', employee_id: 'emp1', leave_type: 'Annual', start_date: '2026-07-01', end_date: '2026-07-14', status: 'Pending', reason: 'Summer vacation' },
-          { id: '2', employee_id: 'emp2', leave_type: 'Sick', start_date: '2026-06-10', end_date: '2026-06-11', status: 'Approved', reason: 'Flu' },
-          { id: '3', employee_id: 'emp3', leave_type: 'Maternity', start_date: '2026-08-01', end_date: '2026-11-01', status: 'Pending', reason: 'Maternity Leave' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

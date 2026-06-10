@@ -33,13 +33,7 @@ export default function UnivAttendance() {
       if (error && error.code !== '42P01') throw error;
       setRecords(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setRecords([
-          { id: '1', employee_id: 'emp1', employee_name: 'Alice Johnson', date: new Date().toISOString().split('T')[0], check_in: '09:00 AM', check_out: '05:00 PM', status: 'Present' },
-          { id: '2', employee_id: 'emp2', employee_name: 'Bob Smith', date: new Date().toISOString().split('T')[0], check_in: '09:30 AM', check_out: null, status: 'Late' },
-          { id: '3', employee_id: 'emp3', employee_name: 'Charlie Davis', date: new Date().toISOString().split('T')[0], check_in: null, check_out: null, status: 'Absent' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

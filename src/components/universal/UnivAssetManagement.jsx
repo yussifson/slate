@@ -33,13 +33,7 @@ export default function UnivAssetManagement() {
       if (error && error.code !== '42P01') throw error;
       setAssets(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setAssets([
-          { id: '1', name: 'MacBook Pro 16"', category: 'Equipment', status: 'Active', purchase_date: '2025-01-10', purchase_value: 2499.00 },
-          { id: '2', name: 'Delivery Van 01', category: 'Vehicle', status: 'Under Maintenance', purchase_date: '2024-05-15', purchase_value: 35000.00 },
-          { id: '3', name: 'HQ Office Building', category: 'Building', status: 'Active', purchase_date: '2022-10-01', purchase_value: 1250000.00 }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

@@ -33,13 +33,7 @@ export default function UnivRoute() {
       if (error && error.code !== '42P01') throw error;
       setRoutes(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setRoutes([
-          { id: '1', route_name: 'North Region Daily', start_location: 'Depot A', end_location: 'Client Zone 1', estimated_distance: 120, estimated_duration: '3h 30m', status: 'Active' },
-          { id: '2', route_name: 'City Center Express', start_location: 'Depot B', end_location: 'Downtown Hub', estimated_distance: 45, estimated_duration: '1h 15m', status: 'Planned' },
-          { id: '3', route_name: 'East Coast Delivery', start_location: 'Warehouse 1', end_location: 'Port Terminal', estimated_distance: 280, estimated_duration: '5h 45m', status: 'Completed' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

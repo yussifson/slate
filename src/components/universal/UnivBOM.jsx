@@ -33,13 +33,7 @@ export default function UnivBOM() {
       if (error && error.code !== '42P01') throw error;
       setBoms(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setBoms([
-          { id: '1', product_name: 'Industrial Widget X', material_name: 'Steel Alloy Component', quantity_required: 2, unit: 'pcs', cost_per_unit: 15.50, total_cost: 31.00, status: 'Active' },
-          { id: '2', product_name: 'Industrial Widget X', material_name: 'Rubber Seal', quantity_required: 4, unit: 'pcs', cost_per_unit: 0.50, total_cost: 2.00, status: 'Active' },
-          { id: '3', product_name: 'Consumer Gadget Y', material_name: 'Lithium Battery Pack', quantity_required: 1, unit: 'pcs', cost_per_unit: 12.00, total_cost: 12.00, status: 'Active' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

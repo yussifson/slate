@@ -33,13 +33,7 @@ export default function UnivBooking() {
       if (error && error.code !== '42P01') throw error;
       setBookings(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setBookings([
-          { id: '1', booking_reference: 'BK-001', guest_name: 'John Doe', guest_email: 'john@example.com', check_in: '2026-10-15', check_out: '2026-10-20', room_type: 'Deluxe Suite', status: 'Confirmed', total_amount: 1500 },
-          { id: '2', booking_reference: 'BK-002', guest_name: 'Jane Smith', guest_email: 'jane@example.com', check_in: '2026-11-01', check_out: '2026-11-05', room_type: 'Standard Room', status: 'Pending', total_amount: 600 },
-          { id: '3', booking_reference: 'BK-003', guest_name: 'Robert Brown', guest_email: 'robert@example.com', check_in: '2026-09-10', check_out: '2026-09-15', room_type: 'Ocean View', status: 'Checked Out', total_amount: 1200 }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

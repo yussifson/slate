@@ -33,12 +33,7 @@ export default function UnivPayroll() {
       if (error && error.code !== '42P01') throw error;
       setPayrolls(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setPayrolls([
-          { id: '1', employee_id: 'emp1', employee_name: 'Alice Johnson', period_start: '2026-05-01', period_end: '2026-05-31', base_salary: 5000, bonuses: 500, deductions: 200, net_pay: 5300, status: 'Paid' },
-          { id: '2', employee_id: 'emp2', employee_name: 'Bob Smith', period_start: '2026-05-01', period_end: '2026-05-31', base_salary: 4000, bonuses: 0, deductions: 100, net_pay: 3900, status: 'Draft' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

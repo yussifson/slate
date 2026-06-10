@@ -34,14 +34,7 @@ export default function UnivMenu() {
       if (error && error.code !== '42P01') throw error;
       setMenus(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setMenus([
-          { id: '1', item_name: 'Grilled Salmon', category: 'Main Course', price: 28.50, is_available: true, dietary_info: 'Gluten-Free' },
-          { id: '2', item_name: 'Caesar Salad', category: 'Appetizer', price: 12.00, is_available: true, dietary_info: 'Contains Dairy' },
-          { id: '3', item_name: 'Chocolate Lava Cake', category: 'Dessert', price: 9.00, is_available: false, dietary_info: 'Vegetarian' },
-          { id: '4', item_name: 'Craft Lemonade', category: 'Beverage', price: 5.50, is_available: true, dietary_info: 'Vegan' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

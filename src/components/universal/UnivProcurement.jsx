@@ -33,13 +33,7 @@ export default function UnivProcurement() {
       if (error && error.code !== '42P01') throw error;
       setOrders(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setOrders([
-          { id: '1', po_number: 'PO-2026-001', supplier: 'Tech Equipments Inc.', total_amount: 12500.00, status: 'Approved', order_date: '2026-06-05', expected_date: '2026-06-20' },
-          { id: '2', po_number: 'PO-2026-002', supplier: 'Office Supplies Co.', total_amount: 850.50, status: 'Received', order_date: '2026-06-01', expected_date: '2026-06-10' },
-          { id: '3', po_number: 'PO-2026-003', supplier: 'Cloud Servers Ltd.', total_amount: 4500.00, status: 'Pending', order_date: '2026-06-08', expected_date: '2026-06-15' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

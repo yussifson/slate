@@ -281,24 +281,21 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
     });
   
       // Force dashboard to be at the top and mapped to the dashboard component correctly
-      const orbitBuildNavItemsRaw = (orbitBuildData?.pages || []).map((p, idx) => {
-        const isDash = p.component_id === 'dashboard' || idx === 0;
-        return {
-          id: p.page_name,
-          label: isDash ? 'Dashboard' : p.page_name,
-          icon: isDash ? 'LayoutDashboard' : (p.icon || "LayoutDashboard"),
-          path: `/ob/${p.page_name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
-          isDynamic: true,
-          component_id: isDash ? 'dashboard' : p.component_id
-        };
-      });
+      const orbitBuildNavItemsRaw = (orbitBuildData?.pages || [])
+        .filter(p => p.component_id !== 'dashboard')
+        .map((p, idx) => {
+          return {
+            id: p.page_name,
+            label: p.page_name,
+            icon: p.icon || "LayoutDashboard",
+            path: `/ob/${p.page_name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+            isDynamic: true,
+            component_id: p.component_id
+          };
+        });
 
-      // Force dashboard to be at the top
-      const orbitBuildNavItems = orbitBuildNavItemsRaw.sort((a, b) => {
-        if (a.component_id === 'dashboard') return -1;
-        if (b.component_id === 'dashboard') return 1;
-        return 0;
-      });
+      // Pass it through (dashboard is already handled by coreOrbitNav at root)
+      const orbitBuildNavItems = orbitBuildNavItemsRaw;
   
     const customPageItems = customPages.map(p => ({
       id: p.id,
@@ -379,7 +376,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
       )}
 
       <nav className="flex-1 px-3 pb-3 space-y-1 overflow-y-auto overflow-x-hidden scrollbar-hide">
-        {isOrbitMode && !collapsed && dynamicNavItems.length === 0 && (
+        {isOrbitMode && !collapsed && dynamicNavItems.length === 0 && orbitBuildNavItems.length === 0 && (
           <div className="mx-1 my-3 p-3 rounded-xl bg-slate-50 border border-slate-200 text-center">
             <div className="text-2xl mb-1">⚡</div>
             <p className="text-xs font-bold text-primary/90 mb-1">Orbit Mode Active</p>

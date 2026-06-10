@@ -33,13 +33,7 @@ export default function UnivPatient() {
       if (error && error.code !== '42P01') throw error;
       setPatients(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setPatients([
-          { id: '1', patient_number: 'PT-1001', first_name: 'John', last_name: 'Doe', date_of_birth: '1985-04-12', gender: 'M', blood_group: 'O+', phone: '555-0101', status: 'Active' },
-          { id: '2', patient_number: 'PT-1002', first_name: 'Jane', last_name: 'Smith', date_of_birth: '1992-08-25', gender: 'F', blood_group: 'A-', phone: '555-0102', status: 'Active' },
-          { id: '3', patient_number: 'PT-1003', first_name: 'Robert', last_name: 'Brown', date_of_birth: '1970-11-05', gender: 'M', blood_group: 'B+', phone: '555-0103', status: 'Discharged' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

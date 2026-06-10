@@ -33,13 +33,7 @@ export default function UnivMachine() {
       if (error && error.code !== '42P01') throw error;
       setMachines(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setMachines([
-          { id: '1', machine_name: 'CNC Milling Machine - A1', serial_number: 'SN-00921A', location: 'Shop Floor 1', status: 'Operational', last_maintenance: '2026-05-10', next_maintenance: '2026-08-10' },
-          { id: '2', machine_name: 'Laser Cutter - C3', serial_number: 'SN-00812C', location: 'Fabrication Bay', status: 'Maintenance', last_maintenance: '2026-01-15', next_maintenance: '2026-06-01' },
-          { id: '3', machine_name: 'Injection Molder - B2', serial_number: 'SN-00744B', location: 'Shop Floor 2', status: 'Operational', last_maintenance: '2026-04-20', next_maintenance: '2026-07-20' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

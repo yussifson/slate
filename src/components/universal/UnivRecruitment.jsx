@@ -33,14 +33,7 @@ export default function UnivRecruitment() {
       if (error && error.code !== '42P01') throw error;
       setApplicants(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setApplicants([
-          { id: '1', applicant_name: 'John Smith', job_title: 'Senior Frontend Developer', stage: 'Interviewing', rating: 4, email: 'john@example.com' },
-          { id: '2', applicant_name: 'Jane Doe', job_title: 'Product Manager', stage: 'Applied', rating: 0, email: 'jane@example.com' },
-          { id: '3', applicant_name: 'Alice Johnson', job_title: 'Backend Engineer', stage: 'Offered', rating: 5, email: 'alice@example.com' },
-          { id: '4', applicant_name: 'Bob Ross', job_title: 'Designer', stage: 'Rejected', rating: 2, email: 'bob@example.com' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

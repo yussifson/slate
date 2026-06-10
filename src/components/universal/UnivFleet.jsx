@@ -33,13 +33,7 @@ export default function UnivFleet() {
       if (error && error.code !== '42P01') throw error;
       setVehicles(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setVehicles([
-          { id: '1', vehicle_name: 'Truck Alpha', license_plate: 'XYZ-1234', vehicle_type: 'Heavy Truck', status: 'Active', mileage: 45000, last_service_date: '2026-05-10' },
-          { id: '2', vehicle_name: 'Van Bravo', license_plate: 'ABC-5678', vehicle_type: 'Delivery Van', status: 'Maintenance', mileage: 82000, last_service_date: '2026-01-15' },
-          { id: '3', vehicle_name: 'Truck Charlie', license_plate: 'LMN-9012', vehicle_type: 'Light Truck', status: 'Active', mileage: 12000, last_service_date: '2026-06-01' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

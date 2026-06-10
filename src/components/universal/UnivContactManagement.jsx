@@ -33,13 +33,7 @@ export default function UnivContactManagement() {
       if (error && error.code !== '42P01') throw error;
       setContacts(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setContacts([
-          { id: '1', first_name: 'John', last_name: 'Doe', email: 'john@acmecorp.com', phone: '+1 555-0100', organization: 'Acme Corp', type: 'Customer' },
-          { id: '2', first_name: 'Jane', last_name: 'Smith', email: 'jane@techstars.io', phone: '+1 555-0200', organization: 'TechStars', type: 'Partner' },
-          { id: '3', first_name: 'Robert', last_name: 'Johnson', email: 'rob@supplies.net', phone: '+1 555-0300', organization: 'Office Supplies Inc', type: 'Vendor' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

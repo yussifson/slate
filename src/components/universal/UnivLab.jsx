@@ -33,13 +33,7 @@ export default function UnivLab() {
       if (error && error.code !== '42P01') throw error;
       setLabs(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setLabs([
-          { id: '1', patient_name: 'John Doe', test_name: 'Complete Blood Count (CBC)', test_date: new Date().toISOString(), result_value: 'Normal', reference_range: 'Standard', status: 'Completed' },
-          { id: '2', patient_name: 'Jane Smith', test_name: 'Lipid Panel', test_date: new Date(Date.now() - 86400000).toISOString(), result_value: 'Elevated LDL', reference_range: '<100 mg/dL', status: 'Completed' },
-          { id: '3', patient_name: 'Robert Brown', test_name: 'HbA1c', test_date: new Date().toISOString(), result_value: null, reference_range: '<5.7%', status: 'Processing' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

@@ -33,13 +33,7 @@ export default function UnivCourtCalendar() {
       if (error && error.code !== '42P01') throw error;
       setEvents(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setEvents([
-          { id: '1', event_title: 'Pre-Trial Hearing vs. Acme', event_type: 'Hearing', event_date: new Date(Date.now() + 86400000 * 2).toISOString(), location: 'Room 302, District Court', status: 'Scheduled' },
-          { id: '2', event_title: 'Motion to Dismiss Deadline', event_type: 'Deadline', event_date: new Date(Date.now() + 86400000 * 5).toISOString(), location: 'Online Portal', status: 'Scheduled' },
-          { id: '3', event_title: 'Initial Deposition - Smith', event_type: 'Deposition', event_date: new Date(Date.now() - 86400000).toISOString(), location: 'Law Office Branch A', status: 'Completed' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

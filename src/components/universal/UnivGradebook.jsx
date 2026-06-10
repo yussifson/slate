@@ -33,13 +33,7 @@ export default function UnivGradebook() {
       if (error && error.code !== '42P01') throw error;
       setGrades(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setGrades([
-          { id: '1', student_name: 'Emily Chen', course_name: 'CS101', assessment_name: 'Midterm Exam', score: 92, max_score: 100, grade: 'A', date_recorded: '2026-10-15' },
-          { id: '2', student_name: 'Michael Johnson', course_name: 'PHY201', assessment_name: 'Lab Report 1', score: 85, max_score: 100, grade: 'B', date_recorded: '2026-09-20' },
-          { id: '3', student_name: 'Sophia Martinez', course_name: 'ENG101', assessment_name: 'Final Essay', score: 98, max_score: 100, grade: 'A+', date_recorded: '2026-12-05' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

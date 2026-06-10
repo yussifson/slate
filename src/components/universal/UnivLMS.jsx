@@ -33,14 +33,7 @@ export default function UnivLMS() {
       if (error && error.code !== '42P01') throw error;
       setLessons(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setLessons([
-          { id: '1', title: 'Week 1: Introduction to Algorithms', content_type: 'Lesson', course_name: 'CS101', status: 'Published', due_date: null },
-          { id: '2', title: 'Assignment 1: Data Structures', content_type: 'Assignment', course_name: 'CS101', status: 'Published', due_date: '2026-10-10' },
-          { id: '3', title: 'Midterm Review Quiz', content_type: 'Quiz', course_name: 'CS101', status: 'Draft', due_date: '2026-10-15' },
-          { id: '4', title: 'Chapter 4 Notes', content_type: 'Document', course_name: 'PHY201', status: 'Published', due_date: null }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }

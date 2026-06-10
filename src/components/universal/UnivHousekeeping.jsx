@@ -33,13 +33,7 @@ export default function UnivHousekeeping() {
       if (error && error.code !== '42P01') throw error;
       setTasks(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        setTasks([
-          { id: '1', room_id: 'R-101', task_type: 'Routine Cleaning', status: 'Completed', priority: 'Medium' },
-          { id: '2', room_id: 'R-205', task_type: 'Deep Cleaning', status: 'In Progress', priority: 'High' },
-          { id: '3', room_id: 'R-310', task_type: 'Maintenance Issue', status: 'Pending', priority: 'High', notes: 'Leaking faucet' }
-        ]);
-      }
+      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }
