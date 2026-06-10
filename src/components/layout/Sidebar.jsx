@@ -244,13 +244,13 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   });
 
   const orbitBuildNavItems = (orbitBuildConfig || []).map(p => ({
-    id: p.page_name,
-    label: p.page_name,
-    icon: p.icon || "LayoutDashboard",
-    path: /ob/,
-    isDynamic: true,
-    component_id: p.component_id
-  }));
+      id: p.page_name,
+      label: p.page_name,
+      icon: p.icon || "LayoutDashboard",
+      path: `/ob/${p.page_name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+      isDynamic: true,
+      component_id: p.component_id
+    }));
 
   const customPageItems = customPages.map(p => ({
     id: p.id,
