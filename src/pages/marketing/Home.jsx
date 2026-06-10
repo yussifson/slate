@@ -331,7 +331,11 @@ const suites = [
                 <button
                   key={suite.id}
                   onClick={() => setActiveSuite(suite)}
-                  className={lex-none flex items-center gap-2 px-6 py-3.5 rounded-full font-bold text-sm whitespace-nowrap transition-all duration-300 transform shadow-sm }
+                  className={`flex-none flex items-center gap-2 px-6 py-3.5 rounded-full font-bold text-sm whitespace-nowrap transition-all duration-300 transform shadow-sm ${
+                    isActive
+                      ? 'bg-primary text-white shadow-lg shadow-primary/30 scale-105'
+                      : 'bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-900 border border-slate-200'
+                  }`}
                 >
                   {suite.name.replace(' WorkSlate', '')}
                 </button>
