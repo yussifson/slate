@@ -26,7 +26,7 @@ export default function StudentDashboard() {
         className="flex justify-between items-center bg-gradient-to-r from-[var(--primary)] to-[hsl(213,89%,35%)] rounded-[var(--radius-xl)] p-8 text-white shadow-lg overflow-hidden relative"
       >
         {/* Noise overlay removed to fix 404 */}
-        <div className="absolute top-[-50%] right-[-10%] w-[50%] h-[200%] bg-white/10 blur-[80px] rounded-full pointer-events-none" />
+        <div className="absolute top-[-50%] right-[-10%] w-[50%] h-[200%] bg-white dark:bg-slate-900/40/10 blur-[80px] rounded-full pointer-events-none" />
         <div className="relative z-10">
           <h1 className="text-3xl font-display font-bold mb-2">Welcome back, Learner!</h1>
           <p className="opacity-90 max-w-lg">Pick up where you left off. You have 2 courses in progress and 1 new certificate available.</p>

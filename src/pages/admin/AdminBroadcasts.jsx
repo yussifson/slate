@@ -53,27 +53,27 @@ export default function AdminBroadcasts() {
       />
       <div className="bg-card border border-border rounded-2xl p-8 space-y-6 shadow-sm">
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-12 h-12 rounded-2xl bg-slate-50 text-primary flex items-center justify-center">
+          <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800/50 text-primary flex items-center justify-center">
             <Bell className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="font-bold text-lg text-slate-900">{t("compose_broadcast", "Compose Broadcast")}</h3>
-            <p className="text-sm text-slate-500">{t(
+            <h3 className="font-bold text-lg text-slate-900 dark:text-slate-100">{t("compose_broadcast", "Compose Broadcast")}</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400">{t(
               "this_message_will_appear_in_th",
               "This message will appear in the notification bell for all active firms."
             )}</p>
           </div>
         </div>
         
-        <div className="space-y-4 pt-4 border-t border-slate-100">
+        <div className="space-y-4 pt-4 border-t border-slate-100 dark:border-slate-800">
           <div>
-            <label className="block text-sm font-bold text-slate-700 mb-2">{t("message_body", "Message Body")}</label>
+            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">{t("message_body", "Message Body")}</label>
             <textarea
               value={announcementText}
               onChange={(e) => setAnnouncementText(e.target.value)}
               placeholder="e.g. Scheduled maintenance this Saturday at 2:00 AM UTC. Expect 15 minutes of downtime."
               rows={6}
-              className="w-full p-4 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-slate-50/50 hover:bg-slate-50 transition-colors resize-none"
+              className="w-full p-4 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-slate-50/50 dark:bg-transparent hover:bg-slate-50 dark:bg-slate-800/50 transition-colors resize-none"
             />
           </div>
           

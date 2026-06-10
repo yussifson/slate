@@ -196,12 +196,12 @@ export default function Teachers() {
               <p className="text-xs font-bold text-primary dark:text-primary/70 dark:text-primary/70 uppercase tracking-widest mb-4 opacity-90 relative z-10">{teacher.position}</p>
               
               <div className="w-full space-y-2 mt-auto relative z-10">
-                <div className="flex items-center gap-3 text-xs text-muted-foreground bg-slate-50/50 dark:bg-slate-900/50 border border-border/50 p-2.5 rounded-xl shadow-sm">
-                  <div className="w-6 h-6 rounded-md bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm shrink-0"><GraduationCap className="w-3.5 h-3.5 text-primary" /></div>
+                <div className="flex items-center gap-3 text-xs text-muted-foreground bg-slate-50/50 dark:bg-transparent dark:bg-slate-900/50 border border-border/50 p-2.5 rounded-xl shadow-sm">
+                  <div className="w-6 h-6 rounded-md bg-white dark:bg-slate-900/40 dark:bg-slate-800 flex items-center justify-center shadow-sm shrink-0"><GraduationCap className="w-3.5 h-3.5 text-primary" /></div>
                   <span className="truncate font-medium">{teacher.qualifications}</span>
                 </div>
-                <div className="flex items-center gap-3 text-xs text-muted-foreground bg-slate-50/50 dark:bg-slate-900/50 border border-border/50 p-2.5 rounded-xl shadow-sm">
-                  <div className="w-6 h-6 rounded-md bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm shrink-0"><Briefcase className="w-3.5 h-3.5 text-primary" /></div>
+                <div className="flex items-center gap-3 text-xs text-muted-foreground bg-slate-50/50 dark:bg-transparent dark:bg-slate-900/50 border border-border/50 p-2.5 rounded-xl shadow-sm">
+                  <div className="w-6 h-6 rounded-md bg-white dark:bg-slate-900/40 dark:bg-slate-800 flex items-center justify-center shadow-sm shrink-0"><Briefcase className="w-3.5 h-3.5 text-primary" /></div>
                   <span className="truncate font-medium">{teacher.subjects}</span>
                 </div>
               </div>
@@ -225,7 +225,7 @@ export default function Teachers() {
                 <tr key={p.id} className="hover:bg-muted/50 transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-slate-50 dark:bg-primary/30 flex items-center justify-center text-primary dark:text-primary/30 font-bold text-xs">
+                      <div className="w-9 h-9 rounded-full bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/30 flex items-center justify-center text-primary dark:text-primary/30 font-bold text-xs">
                         {p.avatar}
                       </div>
                       <div>
@@ -268,7 +268,7 @@ export default function Teachers() {
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
-          <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
+          <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
             <h2 className="text-lg font-bold text-card-foreground">{editingId ? 'Edit Staff' : 'Add Staff'}</h2>
             <div className="space-y-3">
               <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("full_name", "Full Name")}</label><Input value={formData.full_name} onChange={e => setFormData({...formData, full_name: e.target.value})} className="mt-1" /></div>

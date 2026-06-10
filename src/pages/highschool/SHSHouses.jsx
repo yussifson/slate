@@ -99,18 +99,18 @@ export default function SHSHouses() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading ? (
-          <div className="col-span-full p-12 text-center text-slate-400 dark:text-slate-500">Loading houses...</div>
+          <div className="col-span-full p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading houses...</div>
         ) : filteredHouses.length === 0 ? (
           <div className="col-span-full p-16 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+            <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
               <Home className="w-8 h-8 text-primary dark:text-primary" />
             </div>
-            <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No houses defined</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Create boarding houses to allocate students.</p>
+            <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">No houses defined</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Create boarding houses to allocate students.</p>
           </div>
         ) : (
           filteredHouses.map(house => (
-            <Card key={house.id} className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-md hover:ring-primary/30 dark:hover:ring-primary/30 transition-all group overflow-hidden relative">
+            <Card key={house.id} className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-md hover:ring-primary/30 dark:hover:ring-primary/30 transition-all group overflow-hidden relative">
               <div 
                 className="absolute top-0 left-0 w-2 h-full" 
                 style={{ backgroundColor: house.data?.color || '#6F00FF' }}
@@ -125,35 +125,35 @@ export default function SHSHouses() {
                   </div>
                   <Badge variant="outline" className={
                     house.data?.gender === 'Boys' ? 'bg-orange-50 text-orange-700 border-primary/20' :
-                    house.data?.gender === 'Girls' ? 'bg-slate-50 text-primary/90 border-primary/20' :
-                    'bg-slate-50 text-primary/90 border-primary/20'
+                    house.data?.gender === 'Girls' ? 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-primary/20' :
+                    'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-primary/20'
                   }>
                     {house.data?.gender || 'Mixed'}
                   </Badge>
                 </div>
                 
                 <h3 className="text-xl font-black text-slate-800 dark:text-slate-100 mb-1">{house.title}</h3>
-                <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-500 mb-6">{house.case_number}</p>
+                <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 mb-6">{house.case_number}</p>
                 
                 <div className="space-y-3 mt-4 text-sm">
-                  <div className="flex items-center gap-3 text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 p-2 rounded-xl border border-slate-100 dark:border-slate-800">
+                  <div className="flex items-center gap-3 text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 p-2 rounded-xl border border-slate-100 dark:border-slate-800 dark:border-slate-800">
                     <div className="w-8 h-8 rounded-lg bg-slate-100 text-primary flex items-center justify-center shrink-0">
                       <UserCheck className="w-4 h-4" />
                     </div>
                     <div className="flex-1 overflow-hidden">
-                      <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">House Master/Mistress</p>
-                      <p className="font-bold text-slate-700 dark:text-slate-200 truncate">{house.data?.houseMasterName || 'Unassigned'}</p>
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 dark:text-slate-400">House Master/Mistress</p>
+                      <p className="font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200 truncate">{house.data?.houseMasterName || 'Unassigned'}</p>
                     </div>
                   </div>
                   
-                  <div className="bg-slate-50 dark:bg-slate-800 p-2 rounded-xl border border-slate-100 dark:border-slate-800 text-center">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Total Capacity</p>
-                    <p className="font-bold text-slate-700 dark:text-slate-200">{house.data?.capacity || 100} Beds</p>
+                  <div className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 p-2 rounded-xl border border-slate-100 dark:border-slate-800 dark:border-slate-800 text-center">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 dark:text-slate-400">Total Capacity</p>
+                    <p className="font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">{house.data?.capacity || 100} Beds</p>
                   </div>
                 </div>
                 
                 <div className="mt-5 pt-4 border-t border-slate-50 flex justify-end gap-2">
-                  <Button variant="ghost" size="sm" className="w-full rounded-xl text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800 font-semibold">
+                  <Button variant="ghost" size="sm" className="w-full rounded-xl text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 font-semibold">
                     Manage Residents <Users className="w-4 h-4 ml-2" />
                   </Button>
                 </div>
@@ -174,12 +174,12 @@ export default function SHSHouses() {
             </DialogHeader>
           </div>
           
-          <div className="p-6 bg-slate-50 dark:bg-slate-800 space-y-4">
+          <div className="p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 space-y-4">
             <div className="space-y-2">
               <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">House Name</label>
               <Input 
                 placeholder="e.g. Aggrey House"
-                className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+                className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                 value={newHouse.name}
                 onChange={e => setNewHouse({...newHouse, name: e.target.value})}
               />
@@ -191,12 +191,12 @@ export default function SHSHouses() {
                 <div className="flex gap-2">
                   <Input 
                     type="color"
-                    className="w-12 h-11 p-1 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer"
+                    className="w-12 h-11 p-1 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer"
                     value={newHouse.color}
                     onChange={e => setNewHouse({...newHouse, color: e.target.value})}
                   />
                   <Input 
-                    className="flex-1 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+                    className="flex-1 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                     value={newHouse.color}
                     onChange={e => setNewHouse({...newHouse, color: e.target.value})}
                   />
@@ -205,7 +205,7 @@ export default function SHSHouses() {
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Gender</label>
                 <select 
-                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
                   value={newHouse.gender}
                   onChange={e => setNewHouse({...newHouse, gender: e.target.value})}
                 >
@@ -219,7 +219,7 @@ export default function SHSHouses() {
             <div className="space-y-2">
               <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">House Master/Mistress</label>
               <select 
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
                 value={newHouse.houseMasterId}
                 onChange={e => setNewHouse({...newHouse, houseMasterId: e.target.value})}
               >
@@ -235,14 +235,14 @@ export default function SHSHouses() {
               <Input 
                 type="number"
                 min="1"
-                className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+                className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                 value={newHouse.capacity}
                 onChange={e => setNewHouse({...newHouse, capacity: parseInt(e.target.value) || 100})}
               />
             </div>
           </div>
           
-          <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+          <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-end gap-3">
             <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
               Cancel
             </Button>

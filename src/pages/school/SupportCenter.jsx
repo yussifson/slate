@@ -62,7 +62,7 @@ export default function SupportCenter() {
       {/* Categories Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
         <div className="bg-card rounded-xl border border-border p-6 shadow-sm hover:border-primary/30 transition-colors cursor-pointer group flex flex-col">
-          <div className="w-12 h-12 rounded-full bg-slate-50 dark:bg-primary/20 text-primary dark:text-primary/30 flex items-center justify-center mb-6">
+          <div className="w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary dark:text-primary/30 flex items-center justify-center mb-6">
             <Book className="w-6 h-6" />
           </div>
           <h3 className="text-lg font-bold text-card-foreground mb-2">Knowledge Base</h3>
@@ -73,7 +73,7 @@ export default function SupportCenter() {
         </div>
 
         <div className="bg-card rounded-xl border border-border p-6 shadow-sm hover:border-primary/30 transition-colors cursor-pointer group flex flex-col">
-          <div className="w-12 h-12 rounded-full bg-slate-50 dark:bg-primary/20 text-primary dark:text-primary/30 flex items-center justify-center mb-6">
+          <div className="w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary dark:text-primary/30 flex items-center justify-center mb-6">
             <FileQuestion className="w-6 h-6" />
           </div>
           <h3 className="text-lg font-bold text-card-foreground mb-2">FAQs</h3>
@@ -84,7 +84,7 @@ export default function SupportCenter() {
         </div>
 
         <div className="bg-card rounded-xl border border-border p-6 shadow-sm hover:border-primary/30 transition-colors cursor-pointer group flex flex-col">
-          <div className="w-12 h-12 rounded-full bg-slate-50 dark:bg-primary/20 text-primary dark:text-primary/30 flex items-center justify-center mb-6">
+          <div className="w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary dark:text-primary/30 flex items-center justify-center mb-6">
             <PhoneCall className="w-6 h-6" />
           </div>
           <h3 className="text-lg font-bold text-card-foreground mb-2">Contact IT</h3>
@@ -99,7 +99,7 @@ export default function SupportCenter() {
       <div className="mx-4 mt-8 bg-card rounded-xl p-8 md:p-10 border border-border shadow-sm">
         <div className="flex flex-col md:flex-row items-center gap-12">
           <div className="flex-1 text-center md:text-left">
-            <div className="inline-flex items-center gap-2 bg-slate-50 dark:bg-primary/20 border border-slate-200 text-primary dark:text-primary/70 px-3 py-1 rounded-full text-xs font-bold mb-4">
+            <div className="inline-flex items-center gap-2 bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 border border-slate-200 text-primary dark:text-primary/70 px-3 py-1 rounded-full text-xs font-bold mb-4">
               <Sparkles className="w-3 h-3" /> Have a Feature Request?
             </div>
             <h2 className="text-2xl font-bold mb-4 text-card-foreground">
@@ -112,7 +112,7 @@ export default function SupportCenter() {
           <div className="w-full md:w-[450px]">
             {submitted ? (
               <div className="bg-background border border-border p-6 rounded-xl text-center flex flex-col items-center">
-                <div className="w-12 h-12 bg-slate-50 dark:bg-primary/20 rounded-full flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 rounded-full flex items-center justify-center mb-4">
                   <CheckCircle2 className="w-6 h-6 text-primary dark:text-primary/70" />
                 </div>
                 <h3 className="text-lg font-bold text-foreground mb-2">Idea Received!</h3>

@@ -55,9 +55,9 @@ export default function LearningPlayer() {
                 <PlayCircle className="w-4 h-4 text-[var(--primary)]" />
                 <span>{courseTitle}</span>
               </div>
-              <div className="w-full h-1.5 bg-white/30 rounded-full overflow-hidden cursor-pointer group/progress">
+              <div className="w-full h-1.5 bg-white dark:bg-slate-900/40/30 rounded-full overflow-hidden cursor-pointer group/progress">
                 <div className="h-full bg-[var(--primary)] w-0 relative group-hover/progress:bg-primary/70 transition-colors">
-                  <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow scale-0 group-hover/progress:scale-100 transition-transform" />
+                  <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white dark:bg-slate-900/40 rounded-full shadow scale-0 group-hover/progress:scale-100 transition-transform" />
                 </div>
               </div>
             </div>

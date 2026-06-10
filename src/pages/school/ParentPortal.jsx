@@ -166,7 +166,7 @@ export default function ParentPortal() {
               key={child.id}
               onClick={() => setSelectedChildId(child.id)}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-colors border ${
-                activeStudent?.id === child.id ? 'bg-slate-50 dark:bg-primary/20 border-primary/20 text-primary dark:text-primary/70' : 'bg-card border-border text-muted-foreground hover:bg-muted'
+                activeStudent?.id === child.id ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 border-primary/20 text-primary dark:text-primary/70' : 'bg-card border-border text-muted-foreground hover:bg-muted'
               }`}
             >
               <div className="w-5 h-5 rounded-full bg-slate-100 text-primary dark:text-primary/70 flex items-center justify-center text-[10px] font-bold">
@@ -180,7 +180,7 @@ export default function ParentPortal() {
 
       {/* Child Profile Card */}
       <div className="bg-card rounded-2xl border border-border p-6 shadow-sm flex flex-col md:flex-row items-center md:items-start gap-6">
-        <div className="w-24 h-24 rounded-full bg-slate-50 dark:bg-primary/30 flex items-center justify-center text-primary dark:text-primary/30 text-3xl font-bold shrink-0 shadow-inner uppercase">
+        <div className="w-24 h-24 rounded-full bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/30 flex items-center justify-center text-primary dark:text-primary/30 text-3xl font-bold shrink-0 shadow-inner uppercase">
           {activeStudent.name?.substring(0, 2)}
         </div>
         <div className="text-center md:text-left flex-1">
@@ -188,14 +188,14 @@ export default function ParentPortal() {
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-sm text-muted-foreground font-medium">
             <span className="bg-muted px-3 py-1 rounded-full text-foreground">{activeStudent.class}</span>
             <span>Student ID: {activeStudent.studentId}</span>
-            <span className="text-primary font-bold bg-slate-50 px-3 py-1 rounded-full border border-slate-200">Active</span>
+            <span className="text-primary font-bold bg-slate-50 dark:bg-slate-800/50 px-3 py-1 rounded-full border border-slate-200">Active</span>
           </div>
         </div>
         <div className="shrink-0 flex flex-col items-center md:items-end gap-2 border-t md:border-t-0 md:border-l border-border pt-4 md:pt-0 md:pl-6 w-full md:w-auto">
           <span className="text-xs font-bold text-muted-foreground uppercase tracking-wide">Term Balance</span>
           <div className="text-3xl font-bold text-card-foreground">${balance.toLocaleString()}</div>
           <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-sm border ${
-            feeStatus === 'Paid' ? 'bg-slate-50 dark:bg-primary/20 text-primary dark:text-primary/30 border-primary/20' :
+            feeStatus === 'Paid' ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary dark:text-primary/30 border-primary/20' :
             feeStatus === 'Partial' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-red-50 text-red-700 border-red-200'
           }`}>{feeStatus}</span>
         </div>
@@ -262,7 +262,7 @@ export default function ParentPortal() {
                     </div>
                     {doc.file_url && (
                       <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-primary dark:text-primary/70 hover:text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-primary/20">
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-primary dark:text-primary/70 hover:text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20">
                           <Download className="w-4 h-4" />
                         </Button>
                       </a>

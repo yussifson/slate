@@ -43,7 +43,7 @@ export default function CustomerPortal() {
               "View your purchase history, track active orders, and check your loyalty rewards."
             )}</p>
           </div>
-          <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 text-center min-w-[150px]">
+          <div className="bg-white dark:bg-slate-900/40/10 backdrop-blur-md rounded-xl p-4 border border-white/20 text-center min-w-[150px]">
              <p className="text-xs uppercase font-bold tracking-wider text-primary/10 mb-1">{t("loyalty_points", "Loyalty Points")}</p>
              <p className="text-3xl font-black flex items-center justify-center gap-2">
                <Star className="w-5 h-5 text-yellow-300 fill-yellow-300" /> {loyaltyPoints}
@@ -131,7 +131,7 @@ export default function CustomerPortal() {
                "looking_for_something_specific",
                "Looking for something specific? Check local availability."
              )}</p>
-             <Button variant="outline" className="w-full text-primary/90 border-primary/20 hover:bg-slate-50 dark:hover:bg-primary/60">{t("store_locator", "Store Locator")}</Button>
+             <Button variant="outline" className="w-full text-primary/90 border-primary/20 hover:bg-slate-50 dark:bg-slate-800/50 dark:hover:bg-primary/60">{t("store_locator", "Store Locator")}</Button>
           </div>
         </div>
       </div>

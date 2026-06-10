@@ -234,7 +234,7 @@ export default function Classes() {
       {/* Add Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
-          <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
+          <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
             <h2 className="text-lg font-bold text-card-foreground">{editingId ? 'Edit Class' : 'Add New Class'}</h2>
             <div className="space-y-3">
               <div>
@@ -298,7 +298,7 @@ export default function Classes() {
           {viewDetails && (
             <div className="mt-6 space-y-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-slate-50 dark:bg-primary/20 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70 dark:text-primary/70">
+                <div className="w-16 h-16 rounded-full bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70 dark:text-primary/70">
                   <BookOpen className="w-8 h-8" />
                 </div>
                 <div>
@@ -331,7 +331,7 @@ export default function Classes() {
                   <h4 className="text-sm font-bold text-foreground">{t("assigned_courses", "Assigned Courses")}</h4>
                   <div className="flex flex-wrap gap-2">
                     {viewDetails.courses.split(',').map(course => (
-                      <span key={course} className="px-3 py-1 bg-slate-50 dark:bg-primary/20 text-primary dark:text-primary/30 font-semibold text-xs rounded-full border border-primary/20">
+                      <span key={course} className="px-3 py-1 bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary dark:text-primary/30 font-semibold text-xs rounded-full border border-primary/20">
                         {course.trim()}
                       </span>
                     ))}

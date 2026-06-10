@@ -170,7 +170,7 @@ export default function Loyalty() {
                     <td className="px-6 py-4 text-muted-foreground">{m.customerName}</td>
                     <td className="px-6 py-4 text-center font-bold text-primary">{m.points}</td>
                     <td className="px-6 py-4 text-center">
-                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${m.tier === 'Gold' ? 'bg-amber-100 text-amber-700' : m.tier === 'Silver' ? 'bg-slate-200 text-slate-700' : 'bg-orange-100 text-orange-800'}`}>{m.tier}</span>
+                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${m.tier === 'Gold' ? 'bg-amber-100 text-amber-700' : m.tier === 'Silver' ? 'bg-slate-200 text-slate-700 dark:text-slate-300' : 'bg-orange-100 text-orange-800'}`}>{m.tier}</span>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <Button variant="ghost" size="icon" onClick={() => openEdit(m)}><Edit className="w-4 h-4" /></Button>
@@ -199,15 +199,15 @@ export default function Loyalty() {
                      {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                    </select>
                  ) : (
-                   <div className="border rounded-md max-h-48 overflow-y-auto bg-white p-2 space-y-1">
+                   <div className="border rounded-md max-h-48 overflow-y-auto bg-white dark:bg-slate-900/40 p-2 space-y-1">
                      {customers.length === 0 ? (
-                       <p className="text-sm text-slate-500 text-center py-2">No customers available.</p>
+                       <p className="text-sm text-slate-500 dark:text-slate-400 text-center py-2">No customers available.</p>
                      ) : (
                        customers.map(c => (
                          <div 
                            key={c.id} 
                            onClick={() => toggleCustomer(c.id)}
-                           className={`flex items-center justify-between p-2 rounded cursor-pointer text-sm ${formData.customerIds.includes(c.id) ? 'bg-orange-50 border border-orange-200 text-orange-700 font-medium' : 'hover:bg-slate-50 text-slate-700'}`}
+                           className={`flex items-center justify-between p-2 rounded cursor-pointer text-sm ${formData.customerIds.includes(c.id) ? 'bg-orange-50 border border-orange-200 text-orange-700 font-medium' : 'hover:bg-slate-50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300'}`}
                          >
                            {c.name}
                            {formData.customerIds.includes(c.id) && <Check className="w-4 h-4 text-orange-600" />}

@@ -60,13 +60,13 @@ export default function VSkillBadges() {
       </div>
 
       <div className="flex-1 flex gap-6 overflow-hidden">
-        <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50">
+        <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50">
           <div className="p-4 border-b border-primary/5">
             <div className="relative">
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
               <Input 
                 placeholder="Search badges..." 
-                className="pl-9 h-10 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
+                className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -86,7 +86,7 @@ export default function VSkillBadges() {
                     className={`text-center p-4 rounded-2xl transition-all duration-200 flex flex-col items-center gap-2 ${
                       selectedBadge?.id === badge.id 
                         ? 'bg-primary text-white shadow-md shadow-fuchsia-500/20' 
-                        : 'hover:bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200'
+                        : 'hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 dark:text-slate-200 border border-slate-200'
                     }`}
                   >
                     <Hexagon className={`w-10 h-10 ${selectedBadge?.id === badge.id ? 'text-primary/20 fill-primary' : 'text-primary/30 fill-primary/5'}`} />
@@ -98,7 +98,7 @@ export default function VSkillBadges() {
           </ScrollArea>
         </Card>
 
-        <Card className="flex-1 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative">
+        <Card className="flex-1 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative">
           {selectedBadge ? (
             <>
               <div className="h-48 bg-gradient-to-br from-primary/70 via-primary/90 to-primary relative shrink-0 flex items-center justify-center overflow-hidden">
@@ -117,7 +117,7 @@ export default function VSkillBadges() {
                 <div className="p-8">
                   <div className="text-center mb-8">
                     <h2 className="text-3xl font-black text-slate-800 dark:text-slate-100">{selectedBadge.title}</h2>
-                    <p className="text-slate-500 max-w-lg mx-auto mt-2">{selectedBadge.data?.description || 'A recognized micro-credential validating specific technical or soft skills.'}</p>
+                    <p className="text-slate-500 dark:text-slate-400 max-w-lg mx-auto mt-2">{selectedBadge.data?.description || 'A recognized micro-credential validating specific technical or soft skills.'}</p>
                     <div className="flex justify-center gap-2 mt-4">
                       <Badge className="bg-slate-100 text-primary/90 hover:bg-slate-100 border-none">{selectedBadge.data?.category || 'Technical Skill'}</Badge>
                       <Badge variant="outline" className="border-primary/20 text-primary">{selectedBadge.data?.points || 0} Points</Badge>
@@ -130,23 +130,23 @@ export default function VSkillBadges() {
                       <ul className="space-y-3">
                         {selectedBadge.data?.criteria?.length > 0 ? (
                           selectedBadge.data.criteria.map((criterion, idx) => (
-                            <li key={idx} className="flex items-start gap-2 text-sm text-slate-700">
+                            <li key={idx} className="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-300">
                               <Zap className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
                               <span>{criterion}</span>
                             </li>
                           ))
                         ) : (
-                          <li className="text-sm text-slate-500 italic">No specific criteria defined.</li>
+                          <li className="text-sm text-slate-500 dark:text-slate-400 italic">No specific criteria defined.</li>
                         )}
                       </ul>
                     </div>
 
-                    <div className="p-6 rounded-2xl bg-white border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center">
+                    <div className="p-6 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col items-center justify-center text-center">
                       <Shield className="w-12 h-12 text-slate-200 mb-3" />
                       <h3 className="font-bold text-slate-800">Recipients</h3>
                       <p className="text-3xl font-black text-primary my-2">{selectedBadge.data?.recipient_count || 0}</p>
-                      <p className="text-xs text-slate-500 mb-4">Students have earned this badge</p>
-                      <Button variant="outline" className="w-full border-primary/20 text-primary hover:bg-slate-50 rounded-xl">View Recipients</Button>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">Students have earned this badge</p>
+                      <Button variant="outline" className="w-full border-primary/20 text-primary hover:bg-slate-50 dark:bg-slate-800/50 rounded-xl">View Recipients</Button>
                     </div>
                   </div>
                 </div>
@@ -154,11 +154,11 @@ export default function VSkillBadges() {
             </>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-              <div className="w-20 h-20 rounded-full bg-slate-50 flex items-center justify-center mb-6">
+              <div className="w-20 h-20 rounded-full bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center mb-6">
                 <Medal className="w-10 h-10 text-primary/30" />
               </div>
-              <h3 className="text-xl font-bold text-slate-700">No Badge Selected</h3>
-              <p className="text-slate-500 max-w-sm mt-2">
+              <h3 className="text-xl font-bold text-slate-700 dark:text-slate-300">No Badge Selected</h3>
+              <p className="text-slate-500 dark:text-slate-400 max-w-sm mt-2">
                 Select a skill badge to view its criteria and student recipients.
               </p>
             </div>

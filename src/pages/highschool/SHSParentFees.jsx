@@ -72,24 +72,24 @@ export default function SHSParentFees() {
       </div>
 
       {loading ? (
-        <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
-          <CardContent className="p-20 text-center text-slate-400 dark:text-slate-500">Loading financial records...</CardContent>
+        <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+          <CardContent className="p-20 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading financial records...</CardContent>
         </Card>
       ) : wards.length === 0 ? (
-        <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
           <CardContent className="p-20 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+            <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
               <User className="w-8 h-8 text-primary dark:text-primary" />
             </div>
-            <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No Wards Linked</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Contact the school administration to link your child's account.</p>
+            <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">No Wards Linked</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Contact the school administration to link your child's account.</p>
           </CardContent>
         </Card>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           
           <div className="lg:col-span-1 space-y-4">
-            <h3 className="text-sm font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider pl-2">Select Child</h3>
+            <h3 className="text-sm font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider pl-2">Select Child</h3>
             {wards.map(ward => (
               <button
                 key={ward.id}
@@ -97,17 +97,17 @@ export default function SHSParentFees() {
                 className={`w-full p-4 rounded-2xl border text-left transition-all duration-300 flex items-center gap-4 ${
                   selectedWardId === ward.id 
                     ? 'bg-primary dark:bg-primary border-primary dark:border-primary text-white shadow-lg shadow-emerald-500/20 scale-100' 
-                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-primary dark:border-slate-200 scale-95'
+                    : 'bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:border-primary dark:border-slate-200 scale-95'
                 }`}
               >
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg shrink-0 ${
-                  selectedWardId === ward.id ? 'bg-white dark:bg-slate-900/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70'
+                  selectedWardId === ward.id ? 'bg-white dark:bg-slate-900/40 dark:bg-slate-900/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70'
                 }`}>
                   {ward.title.charAt(0)}
                 </div>
                 <div>
                   <h4 className="font-bold">{ward.title}</h4>
-                  <p className={`text-xs ${selectedWardId === ward.id ? 'text-primary/20 dark:text-primary/80' : 'text-slate-500 dark:text-slate-400 dark:text-slate-500'}`}>
+                  <p className={`text-xs ${selectedWardId === ward.id ? 'text-primary/20 dark:text-primary/80' : 'text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400'}`}>
                     {ward.data?.classRoom || 'Form 1'}
                   </p>
                 </div>
@@ -118,9 +118,9 @@ export default function SHSParentFees() {
           <div className="lg:col-span-3 space-y-6">
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100">
+              <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100">
                 <CardContent className="p-6">
-                  <p className="text-sm font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">Total Billed</p>
+                  <p className="text-sm font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Total Billed</p>
                   <h3 className="text-3xl font-black text-slate-800 dark:text-slate-100">${totalBilled.toFixed(2)}</h3>
                 </CardContent>
               </Card>
@@ -130,38 +130,38 @@ export default function SHSParentFees() {
                   <h3 className="text-3xl font-black text-primary/90">${totalPaid.toFixed(2)}</h3>
                 </CardContent>
               </Card>
-              <Card className={`rounded-3xl border-none shadow-sm ${currentBalance > 0 ? 'bg-rose-50' : 'bg-slate-50 dark:bg-slate-800'}`}>
+              <Card className={`rounded-3xl border-none shadow-sm ${currentBalance > 0 ? 'bg-rose-50' : 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800'}`}>
                 <CardContent className="p-6">
-                  <p className={`text-sm font-bold uppercase tracking-wider mb-2 ${currentBalance > 0 ? 'text-rose-600/70' : 'text-slate-500 dark:text-slate-400 dark:text-slate-500'}`}>Current Arrears</p>
+                  <p className={`text-sm font-bold uppercase tracking-wider mb-2 ${currentBalance > 0 ? 'text-rose-600/70' : 'text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400'}`}>Current Arrears</p>
                   <h3 className={`text-3xl font-black ${currentBalance > 0 ? 'text-rose-700' : 'text-slate-800 dark:text-slate-100'}`}>${currentBalance.toFixed(2)}</h3>
                 </CardContent>
               </Card>
             </div>
 
-            <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100">
-              <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50">
+            <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100">
+              <CardHeader className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50">
                 <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
                   <Receipt className="w-5 h-5 text-primary dark:text-primary/70" /> Recent Invoices
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
                 {wardInvoices.length === 0 ? (
-                  <div className="p-16 text-center text-slate-500 dark:text-slate-400 dark:text-slate-500">
+                  <div className="p-16 text-center text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">
                     No invoices generated for this student.
                   </div>
                 ) : (
                   <div className="divide-y divide-slate-100">
                     {wardInvoices.map(invoice => (
-                      <div key={invoice.id} className="p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
+                      <div key={invoice.id} className="p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
                         <div className="flex items-start gap-4">
                           <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0">
-                            <Receipt className="w-6 h-6 text-slate-500 dark:text-slate-400 dark:text-slate-500" />
+                            <Receipt className="w-6 h-6 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400" />
                           </div>
                           <div>
                             <h4 className="font-bold text-slate-800 dark:text-slate-100">{invoice.case_number}</h4>
-                            <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">{invoice.data?.term} • {invoice.data?.academicYear}</p>
+                            <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">{invoice.data?.term} • {invoice.data?.academicYear}</p>
                             <Badge variant="outline" className={`mt-2 ${
-                              invoice.status === 'Paid' ? 'bg-slate-50 text-primary/90 border-primary/20' :
+                              invoice.status === 'Paid' ? 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-primary/20' :
                               invoice.status === 'Partial' ? 'bg-amber-50 text-amber-700 border-amber-200' :
                               'bg-rose-50 text-rose-700 border-rose-200'
                             }`}>
@@ -171,7 +171,7 @@ export default function SHSParentFees() {
                         </div>
                         <div className="text-right">
                           <p className="text-2xl font-black text-slate-800 dark:text-slate-100">${parseFloat(invoice.data?.amount || 0).toFixed(2)}</p>
-                          <Button variant="ghost" size="sm" className="mt-2 text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800 -mr-3">
+                          <Button variant="ghost" size="sm" className="mt-2 text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 -mr-3">
                             <Download className="w-4 h-4 mr-2" /> Bill PDF
                           </Button>
                         </div>
@@ -182,21 +182,21 @@ export default function SHSParentFees() {
               </CardContent>
             </Card>
 
-            <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100">
-              <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50">
+            <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100">
+              <CardHeader className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50">
                 <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
                   <DollarSign className="w-5 h-5 text-primary" /> Payment History
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
                 {wardPayments.length === 0 ? (
-                  <div className="p-16 text-center text-slate-500 dark:text-slate-400 dark:text-slate-500">
+                  <div className="p-16 text-center text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">
                     No payments recorded for this student.
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm text-left">
-                      <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
+                      <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-semibold uppercase text-[10px] tracking-wider">
                         <tr>
                           <th className="px-6 py-4 rounded-tl-xl">Date</th>
                           <th className="px-6 py-4">Receipt No</th>
@@ -206,14 +206,14 @@ export default function SHSParentFees() {
                       </thead>
                       <tbody className="divide-y divide-slate-100">
                         {wardPayments.map((payment) => (
-                          <tr key={payment.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
+                          <tr key={payment.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
                             <td className="px-6 py-4 text-slate-600 dark:text-slate-300">
                               {new Date(payment.data?.date).toLocaleDateString()}
                             </td>
                             <td className="px-6 py-4 font-bold text-slate-800 dark:text-slate-100">
                               {payment.case_number}
                             </td>
-                            <td className="px-6 py-4 text-slate-500 dark:text-slate-400 dark:text-slate-500">
+                            <td className="px-6 py-4 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">
                               {payment.data?.invoiceNumber}
                             </td>
                             <td className="px-6 py-4 font-black text-primary">

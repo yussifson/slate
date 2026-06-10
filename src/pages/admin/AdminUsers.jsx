@@ -93,9 +93,9 @@ export default function AdminUsers() {
       ) : (
         <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left border-collapse bg-white font-sans">
+            <table className="w-full text-sm text-left border-collapse bg-white dark:bg-slate-900/40 font-sans">
               <thead>
-                <tr className="bg-slate-50/80 border-b border-slate-100 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
+                <tr className="bg-slate-50/80 border-b border-slate-100 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider text-[10px]">
                   <th className="px-6 py-4">{t("identity", "Identity")}</th>
                   <th className="px-6 py-4">{t("organization", "Organization")}</th>
                   <th className="px-6 py-4">{t("role", "Role")}</th>
@@ -106,27 +106,27 @@ export default function AdminUsers() {
               <tbody className="divide-y divide-slate-50">
                 {filteredProfiles.map(user => {
                   return (
-                    <tr key={user.id} className="hover:bg-slate-50/50 transition-colors group">
+                    <tr key={user.id} className="hover:bg-slate-50/50 dark:bg-transparent transition-colors group">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-600 text-xs shrink-0">
                             {user.full_name?.charAt(0) || user.email?.charAt(0) || 'U'}
                           </div>
                           <div>
-                            <p className="font-bold text-slate-900">{user.full_name || 'Anonymous'}</p>
-                            <p className="text-xs text-slate-500">{user.email}</p>
+                            <p className="font-bold text-slate-900 dark:text-slate-100">{user.full_name || 'Anonymous'}</p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400">{user.email}</p>
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-sm font-semibold text-slate-700">
+                      <td className="px-6 py-4 text-sm font-semibold text-slate-700 dark:text-slate-300">
                         {user.companies?.name || <span className="text-slate-400 italic">{t("orphaned", "Orphaned")}</span>}
                       </td>
                       <td className="px-6 py-4">
-                        <Badge className="text-[10px] font-bold uppercase py-0.5 px-2 bg-slate-50 text-primary/90 border-none">
+                        <Badge className="text-[10px] font-bold uppercase py-0.5 px-2 bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-none">
                           {user.role?.replace(/_/g, ' ')}
                         </Badge>
                       </td>
-                      <td className="px-6 py-4 text-xs text-slate-500 font-medium">
+                      <td className="px-6 py-4 text-xs text-slate-500 dark:text-slate-400 font-medium">
                         {new Date(user.created_at).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 text-right">
@@ -135,7 +135,7 @@ export default function AdminUsers() {
                             variant="outline" 
                             size="sm"
                             onClick={() => handleResetPassword(user.email)}
-                            className="h-8 px-3 rounded-lg border-slate-200 text-slate-600 hover:text-slate-900"
+                            className="h-8 px-3 rounded-lg border-slate-200 text-slate-600 hover:text-slate-900 dark:text-slate-100"
                           >
                             <KeyRound className="w-3.5 h-3.5 mr-1.5" /> {t("reset", "Reset")}
                           </Button>

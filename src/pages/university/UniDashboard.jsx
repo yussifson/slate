@@ -198,7 +198,7 @@ function MetricCard({ title, value, icon: Icon, trend, highlight }) {
     <div className={`p-6 rounded-2xl border transition-all duration-200 hover:-translate-y-1 hover:shadow-md ${highlight ? 'bg-[var(--primary)] border-transparent text-white shadow-lg' : 'bg-[var(--color-surface-0)] border-[var(--color-border-subtle)] shadow-sm'}`}>
       <div className="flex justify-between items-start mb-4">
         <h3 className={`text-sm font-medium ${highlight ? 'text-white/90' : 'text-[var(--color-text-secondary)]'}`}>{title}</h3>
-        <div className={`p-2 rounded-lg ${highlight ? 'bg-white/20' : 'bg-[var(--color-surface-2)] text-[var(--color-text-primary)]'}`}>
+        <div className={`p-2 rounded-lg ${highlight ? 'bg-white dark:bg-slate-900/40/20' : 'bg-[var(--color-surface-2)] text-[var(--color-text-primary)]'}`}>
           <Icon className="w-5 h-5" />
         </div>
       </div>

@@ -61,13 +61,13 @@ export default function VEmployerEvaluations() {
       </div>
 
       <div className="flex-1 flex gap-6 overflow-hidden">
-        <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50">
+        <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50">
           <div className="p-4 border-b border-primary/5">
             <div className="relative">
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
               <Input 
                 placeholder="Search evaluations..." 
-                className="pl-9 h-10 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
+                className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -87,17 +87,17 @@ export default function VEmployerEvaluations() {
                     className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
                       selectedEval?.id === evaluation.id 
                         ? 'bg-primary text-white shadow-md shadow-teal-500/20' 
-                        : 'hover:bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200'
+                        : 'hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 dark:text-slate-200'
                     }`}
                   >
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0 ${
-                      selectedEval?.id === evaluation.id ? 'bg-white/20' : 'bg-slate-100 text-primary'
+                      selectedEval?.id === evaluation.id ? 'bg-white dark:bg-slate-900/40/20' : 'bg-slate-100 text-primary'
                     }`}>
                       <ClipboardCheck className="w-5 h-5" />
                     </div>
                     <div className="overflow-hidden">
                       <p className="font-bold truncate">{evaluation.data?.student_name || evaluation.title}</p>
-                      <p className={`text-xs truncate ${selectedEval?.id === evaluation.id ? 'text-primary/20' : 'text-slate-500'}`}>
+                      <p className={`text-xs truncate ${selectedEval?.id === evaluation.id ? 'text-primary/20' : 'text-slate-500 dark:text-slate-400'}`}>
                         {evaluation.data?.employer_name || 'Unknown Employer'}
                       </p>
                     </div>
@@ -108,7 +108,7 @@ export default function VEmployerEvaluations() {
           </ScrollArea>
         </Card>
 
-        <Card className="flex-1 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative">
+        <Card className="flex-1 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative">
           {selectedEval ? (
             <>
               <div className="h-32 bg-gradient-to-r from-primary to-primary relative shrink-0">
@@ -118,8 +118,8 @@ export default function VEmployerEvaluations() {
               <ScrollArea className="flex-1 -mt-12">
                 <div className="px-8 pb-8">
                   <div className="flex flex-col sm:flex-row gap-6 items-end sm:items-center relative z-10">
-                    <div className="w-24 h-24 rounded-3xl bg-white dark:bg-slate-900 p-1 shadow-xl shrink-0">
-                      <div className="w-full h-full rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-primary">
+                    <div className="w-24 h-24 rounded-3xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-1 shadow-xl shrink-0">
+                      <div className="w-full h-full rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 flex items-center justify-center text-primary">
                         <ClipboardCheck className="w-12 h-12" />
                       </div>
                     </div>
@@ -143,7 +143,7 @@ export default function VEmployerEvaluations() {
                         </div>
                       </div>
                       
-                      <div className="md:col-span-2 p-6 rounded-2xl bg-white border border-slate-100 shadow-sm">
+                      <div className="md:col-span-2 p-6 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800 shadow-sm">
                         <h3 className="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2"><MessageSquare className="w-4 h-4 text-primary" /> Supervisor Feedback</h3>
                         <p className="text-slate-600 italic">
                           "{selectedEval.data?.feedback || 'No written feedback provided for this evaluation.'}"
@@ -151,7 +151,7 @@ export default function VEmployerEvaluations() {
                       </div>
                     </div>
                     
-                    <div className="p-6 rounded-2xl bg-white border border-slate-100 shadow-sm space-y-4">
+                    <div className="p-6 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800 shadow-sm space-y-4">
                       <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">Skill Assessment breakdown</h3>
                       <div className="space-y-4">
                         {['Technical Skills', 'Punctuality', 'Teamwork', 'Problem Solving'].map(skill => (
@@ -165,7 +165,7 @@ export default function VEmployerEvaluations() {
                           </div>
                         ))}
                         {(!selectedEval.data || !Object.keys(selectedEval.data).some(k => ['technical_skills', 'punctuality', 'teamwork', 'problem_solving'].includes(k))) && (
-                          <p className="text-sm text-slate-500 text-center py-4">Detailed metrics not available in this record.</p>
+                          <p className="text-sm text-slate-500 dark:text-slate-400 text-center py-4">Detailed metrics not available in this record.</p>
                         )}
                       </div>
                     </div>
@@ -175,11 +175,11 @@ export default function VEmployerEvaluations() {
             </>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-              <div className="w-20 h-20 rounded-full bg-slate-50 flex items-center justify-center mb-6">
+              <div className="w-20 h-20 rounded-full bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center mb-6">
                 <ClipboardCheck className="w-10 h-10 text-primary/30" />
               </div>
-              <h3 className="text-xl font-bold text-slate-700">No Evaluation Selected</h3>
-              <p className="text-slate-500 max-w-sm mt-2">
+              <h3 className="text-xl font-bold text-slate-700 dark:text-slate-300">No Evaluation Selected</h3>
+              <p className="text-slate-500 dark:text-slate-400 max-w-sm mt-2">
                 Select an employer evaluation to view the student's ratings and feedback.
               </p>
             </div>

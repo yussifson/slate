@@ -70,7 +70,7 @@ export default function ConflictChecker() {
       </div>
       {/* Result Banner */}
       {checked && (
-        <div className={cn("rounded-xl p-5 flex items-start gap-4 border", hasConflict ? "bg-red-50 border-red-200" : "bg-slate-50 border-primary/20")}>
+        <div className={cn("rounded-xl p-5 flex items-start gap-4 border", hasConflict ? "bg-red-50 border-red-200" : "bg-slate-50 dark:bg-slate-800/50 border-primary/20")}>
           <div className={cn("w-10 h-10 rounded-full flex items-center justify-center shrink-0", hasConflict ? "bg-red-100" : "bg-slate-100")}>
             {hasConflict ? <AlertTriangle className="w-5 h-5 text-red-600" /> : <CheckCircle className="w-5 h-5 text-primary" />}
           </div>

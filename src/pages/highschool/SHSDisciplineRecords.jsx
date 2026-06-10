@@ -102,7 +102,7 @@ export default function SHSDisciplineRecords() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10">
           <CardContent className="p-5 flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
               <ShieldAlert className="w-6 h-6" />
@@ -114,7 +114,7 @@ export default function SHSDisciplineRecords() {
           </CardContent>
         </Card>
         
-        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-rose-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-rose-100">
           <CardContent className="p-5 flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-rose-100 flex items-center justify-center text-rose-600 shrink-0">
               <AlertOctagon className="w-6 h-6" />
@@ -128,7 +128,7 @@ export default function SHSDisciplineRecords() {
           </CardContent>
         </Card>
         
-        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-amber-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-amber-100">
           <CardContent className="p-5 flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 shrink-0">
               <Scale className="w-6 h-6" />
@@ -143,18 +143,18 @@ export default function SHSDisciplineRecords() {
         </Card>
       </div>
 
-      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
-        <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
+      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Incident Log</CardTitle>
             </div>
             
             <div className="relative w-full sm:w-64">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
               <Input 
                 placeholder="Search student or infraction..." 
-                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
+                className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -163,19 +163,19 @@ export default function SHSDisciplineRecords() {
         </CardHeader>
         <CardContent className="p-0">
           {loading ? (
-            <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading records...</div>
+            <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading records...</div>
           ) : filteredRecords.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
                 <FileWarning className="w-8 h-8 text-primary dark:text-primary" />
               </div>
-              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No discipline records</h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">No incidents match your search, or none have been logged.</p>
+              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">No discipline records</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">No incidents match your search, or none have been logged.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left">
-                <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
+                <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-semibold uppercase text-[10px] tracking-wider">
                   <tr>
                     <th className="px-6 py-4 rounded-tl-xl">Date</th>
                     <th className="px-6 py-4">Student</th>
@@ -187,14 +187,14 @@ export default function SHSDisciplineRecords() {
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {filteredRecords.map((record) => (
-                    <tr key={record.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
+                    <tr key={record.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap text-slate-600 dark:text-slate-300 font-medium">
                         {record.data?.date}
                       </td>
                       <td className="px-6 py-4 font-bold text-primary dark:text-primary/70">
                         {record.data?.studentName}
                       </td>
-                      <td className="px-6 py-4 text-slate-700 dark:text-slate-200">
+                      <td className="px-6 py-4 text-slate-700 dark:text-slate-300 dark:text-slate-200">
                         {record.data?.infraction}
                       </td>
                       <td className="px-6 py-4">
@@ -232,12 +232,12 @@ export default function SHSDisciplineRecords() {
             </DialogHeader>
           </div>
           
-          <ScrollArea className="max-h-[60vh] p-6 bg-slate-50 dark:bg-slate-800">
+          <ScrollArea className="max-h-[60vh] p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800">
             <div className="space-y-4">
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Student</label>
                 <select 
-                  className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+                  className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
                   value={newRecord.studentId}
                   onChange={e => setNewRecord({...newRecord, studentId: e.target.value})}
                 >
@@ -253,7 +253,7 @@ export default function SHSDisciplineRecords() {
                   <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Date of Incident</label>
                   <Input 
                     type="date"
-                    className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+                    className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                     value={newRecord.date}
                     onChange={e => setNewRecord({...newRecord, date: e.target.value})}
                   />
@@ -261,7 +261,7 @@ export default function SHSDisciplineRecords() {
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Severity</label>
                   <select 
-                    className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+                    className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
                     value={newRecord.severity}
                     onChange={e => setNewRecord({...newRecord, severity: e.target.value})}
                   >
@@ -276,7 +276,7 @@ export default function SHSDisciplineRecords() {
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Infraction Description</label>
                 <Input 
                   placeholder="e.g. Disruption of class, Late to assembly"
-                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+                  className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                   value={newRecord.infraction}
                   onChange={e => setNewRecord({...newRecord, infraction: e.target.value})}
                 />
@@ -287,7 +287,7 @@ export default function SHSDisciplineRecords() {
                   <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Action Taken</label>
                   <Input 
                     placeholder="e.g. Warning, Suspension, Weeding"
-                    className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+                    className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                     value={newRecord.actionTaken}
                     onChange={e => setNewRecord({...newRecord, actionTaken: e.target.value})}
                   />
@@ -297,7 +297,7 @@ export default function SHSDisciplineRecords() {
                   <Input 
                     type="number"
                     min="0"
-                    className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+                    className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                     value={newRecord.points}
                     onChange={e => setNewRecord({...newRecord, points: parseInt(e.target.value) || 0})}
                   />
@@ -306,7 +306,7 @@ export default function SHSDisciplineRecords() {
             </div>
           </ScrollArea>
           
-          <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+          <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-end gap-3">
             <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
               Cancel
             </Button>

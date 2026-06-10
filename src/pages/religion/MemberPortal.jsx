@@ -84,7 +84,7 @@ export default function MemberPortal() {
                    {events.slice(0, 3).map(event => {
                      return (
                        <div key={event.id} className="p-4 flex gap-4 hover:bg-muted/30 transition-colors">
-                         <div className="flex flex-col items-center justify-center bg-slate-50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 rounded-lg p-3 min-w-[70px] shrink-0">
+                         <div className="flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 rounded-lg p-3 min-w-[70px] shrink-0">
                            <span className="text-[10px] font-bold uppercase">{event.date?.split(' ')[0] || 'Upcoming'}</span>
                            <span className="text-xl font-black">{event.date?.includes(' ') ? event.date.split(' ')[1]?.replace(',', '') : ''}</span>
                          </div>

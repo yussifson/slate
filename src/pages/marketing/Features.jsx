@@ -166,16 +166,16 @@ export default function Features() {
   ];
 
   return (
-    <div className="overflow-x-hidden bg-white">
+    <div className="overflow-x-hidden bg-white dark:bg-slate-900/40">
       {/* ── Hero Header ── */}
-      <section className="relative pt-10 pb-16 md:pt-14 md:pb-20 bg-slate-50 border-b border-slate-100">
+      <section className="relative pt-10 pb-16 md:pt-14 md:pb-20 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-600 text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
+          <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white dark:bg-slate-900/40 border border-slate-200 text-slate-600 text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
             {t("core_features", "Core Features")}
           </span>
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-slate-900 mb-6 max-w-4xl mx-auto leading-[1.1]">
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-6 max-w-4xl mx-auto leading-[1.1]">
             {t("everything_your_business_team_", "Everything your business team needs to")}{' '}
-            <span className="bg-slate-100 text-slate-900 px-4 py-1 rounded-[1.5rem] inline-block mt-2">
+            <span className="bg-slate-100 text-slate-900 dark:text-slate-100 px-4 py-1 rounded-[1.5rem] inline-block mt-2">
               {t("succeed", "succeed")}
             </span>
           </h1>
@@ -188,7 +188,7 @@ export default function Features() {
         </div>
       </section>
       {/* ── Feature Deep Dives ── */}
-      <section className="py-20 md:py-28 bg-white">
+      <section className="py-20 md:py-28 bg-white dark:bg-slate-900/40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-28 lg:space-y-32">
           {deepDives.map((feature, index) => {
             const Icon = feature.icon;
@@ -203,11 +203,11 @@ export default function Features() {
               >
                 {/* Text content */}
                 <div className="flex-1 space-y-6">
-                  <span className="inline-flex px-4 py-1.5 rounded-full bg-slate-50 text-primary text-xs font-bold uppercase tracking-wider">
+                  <span className="inline-flex px-4 py-1.5 rounded-full bg-slate-50 dark:bg-slate-800/50 text-primary text-xs font-bold uppercase tracking-wider">
                     {feature.badge}
                   </span>
 
-                  <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight leading-tight">
+                  <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-slate-100 tracking-tight leading-tight">
                     {feature.title}
                   </h2>
 
@@ -220,9 +220,9 @@ export default function Features() {
                       return (
                         <li
                           key={idx}
-                          className="flex items-start gap-3 text-base text-slate-700 font-medium"
+                          className="flex items-start gap-3 text-base text-slate-700 dark:text-slate-300 font-medium"
                         >
-                          <div className="w-5 h-5 rounded-full bg-slate-50 flex items-center justify-center text-primary mt-0.5 shrink-0">
+                          <div className="w-5 h-5 rounded-full bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center text-primary mt-0.5 shrink-0">
                             <Check className="w-3.5 h-3.5" strokeWidth={3} />
                           </div>
                           <span>{bullet}</span>
@@ -233,7 +233,7 @@ export default function Features() {
                 </div>
                 {/* Stylized UI Mockup */}
                 <div className="flex-1 w-full">
-                  <div className="aspect-[4/3] rounded-3xl border border-slate-200 bg-slate-50 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden">
+                  <div className="aspect-[4/3] rounded-3xl border border-slate-200 bg-slate-50 dark:bg-slate-800/50 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden">
                     <img 
                       src={feature.image} 
                       alt={`${feature.badge} Interface`} 
@@ -247,13 +247,13 @@ export default function Features() {
         </div>
       </section>
       {/* ── Additional Capabilities Grid ── */}
-      <section className="py-20 md:py-28 bg-slate-50 border-t border-slate-100">
+      <section className="py-20 md:py-28 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-600 text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
+            <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white dark:bg-slate-900/40 border border-slate-200 text-slate-600 text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
               {t("even_more_capabilities", "Even More Capabilities")}
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
               {t(
                 "an_operating_system_packed_wit",
                 "An operating system packed with integrations"
@@ -267,12 +267,12 @@ export default function Features() {
               return (
                 <div
                   key={index}
-                  className="rounded-3xl border border-slate-100 bg-white p-8 space-y-5 shadow-sm hover:shadow-md transition-shadow duration-300"
+                  className="rounded-3xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-8 space-y-5 shadow-sm hover:shadow-md transition-shadow duration-300"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-primary">
+                  <div className="w-12 h-12 rounded-xl bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center text-primary">
                     <FeatIcon className="w-6 h-6" />
                   </div>
-                  <h3 className="font-bold text-xl text-slate-900">
+                  <h3 className="font-bold text-xl text-slate-900 dark:text-slate-100">
                     {feat.title}
                   </h3>
                   <p className="text-base text-slate-600 leading-relaxed font-medium">
@@ -285,9 +285,9 @@ export default function Features() {
         </div>
       </section>
       {/* ── CTA Footer ── */}
-      <section className="py-24 md:py-32 bg-white">
+      <section className="py-24 md:py-32 bg-white dark:bg-slate-900/40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-slate-100 tracking-tight mb-6">
             {t("supercharge_your_business_offi", "Supercharge your business office today")}
           </h2>
           <p className="text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed mb-10 font-medium">

@@ -60,13 +60,13 @@ export default function VCertificates() {
       </div>
 
       <div className="flex-1 flex gap-6 overflow-hidden">
-        <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-rose-100/50">
+        <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-rose-100/50">
           <div className="p-4 border-b border-rose-50">
             <div className="relative">
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-rose-500" />
               <Input 
                 placeholder="Search by student or ID..." 
-                className="pl-9 h-10 bg-white dark:bg-slate-900 border-rose-100 dark:border-slate-700 rounded-xl focus-visible:ring-rose-600"
+                className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-rose-100 dark:border-slate-700 rounded-xl focus-visible:ring-rose-600"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -86,17 +86,17 @@ export default function VCertificates() {
                     className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
                       selectedCert?.id === cert.id 
                         ? 'bg-rose-600 text-white shadow-md shadow-rose-500/20' 
-                        : 'hover:bg-rose-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200'
+                        : 'hover:bg-rose-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 dark:text-slate-200'
                     }`}
                   >
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0 ${
-                      selectedCert?.id === cert.id ? 'bg-white/20' : 'bg-rose-100 text-rose-600'
+                      selectedCert?.id === cert.id ? 'bg-white dark:bg-slate-900/40/20' : 'bg-rose-100 text-rose-600'
                     }`}>
                       <Award className="w-5 h-5" />
                     </div>
                     <div className="overflow-hidden">
                       <p className="font-bold truncate">{cert.data?.student_name || cert.title}</p>
-                      <p className={`text-xs truncate ${selectedCert?.id === cert.id ? 'text-rose-200' : 'text-slate-500'}`}>
+                      <p className={`text-xs truncate ${selectedCert?.id === cert.id ? 'text-rose-200' : 'text-slate-500 dark:text-slate-400'}`}>
                         {cert.data?.qualification_name || 'Certificate'}
                       </p>
                     </div>
@@ -107,7 +107,7 @@ export default function VCertificates() {
           </ScrollArea>
         </Card>
 
-        <Card className="flex-1 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-rose-100/50 overflow-hidden relative">
+        <Card className="flex-1 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-rose-100/50 overflow-hidden relative">
           {selectedCert ? (
             <>
               <div className="h-40 bg-gradient-to-r from-slate-900 via-rose-900 to-rose-700 relative shrink-0 flex items-center justify-center">
@@ -119,21 +119,21 @@ export default function VCertificates() {
               
               <ScrollArea className="flex-1 -mt-16">
                 <div className="px-8 pb-8">
-                  <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 shadow-xl border border-slate-100 dark:border-slate-800 relative z-10 text-center max-w-2xl mx-auto mt-4">
+                  <div className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 rounded-3xl p-8 shadow-xl border border-slate-100 dark:border-slate-800 dark:border-slate-800 relative z-10 text-center max-w-2xl mx-auto mt-4">
                     <ShieldCheck className="w-16 h-16 text-rose-500 mx-auto mb-6" />
                     <h2 className="text-sm font-bold text-slate-400 tracking-widest uppercase mb-2">Certificate of Completion</h2>
                     <h1 className="text-4xl font-serif text-slate-800 dark:text-slate-100 mb-6">{selectedCert.data?.student_name || selectedCert.title}</h1>
                     <p className="text-slate-600 mb-6">has successfully completed the requirements for the</p>
                     <h3 className="text-2xl font-bold text-rose-600 mb-8">{selectedCert.data?.qualification_name || 'Vocational Training Program'}</h3>
                     
-                    <div className="flex justify-between items-end border-t border-slate-100 pt-8 mt-8">
+                    <div className="flex justify-between items-end border-t border-slate-100 dark:border-slate-800 pt-8 mt-8">
                       <div className="text-left">
                         <p className="font-bold text-slate-800">{selectedCert.data?.issue_date || new Date(selectedCert.created_date).toLocaleDateString()}</p>
-                        <p className="text-xs text-slate-500">Date of Issue</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">Date of Issue</p>
                       </div>
                       <div className="text-right">
                         <p className="font-bold text-slate-800">{selectedCert.data?.certificate_id || `CERT-${selectedCert.id.substring(0,6).toUpperCase()}`}</p>
-                        <p className="text-xs text-slate-500">Certificate ID</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">Certificate ID</p>
                       </div>
                     </div>
                   </div>
@@ -154,8 +154,8 @@ export default function VCertificates() {
               <div className="w-20 h-20 rounded-full bg-rose-50 flex items-center justify-center mb-6">
                 <Award className="w-10 h-10 text-rose-300" />
               </div>
-              <h3 className="text-xl font-bold text-slate-700">No Certificate Selected</h3>
-              <p className="text-slate-500 max-w-sm mt-2">
+              <h3 className="text-xl font-bold text-slate-700 dark:text-slate-300">No Certificate Selected</h3>
+              <p className="text-slate-500 dark:text-slate-400 max-w-sm mt-2">
                 Select a certificate from the list to view its details, verify authenticity, or download a copy.
               </p>
             </div>

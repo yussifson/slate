@@ -55,23 +55,23 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center bg-slate-50 px-4">
+    <div className="flex h-screen items-center justify-center bg-slate-50 dark:bg-slate-800/50 px-4">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-xl border border-slate-100 p-10 space-y-8">
+        <div className="bg-white dark:bg-slate-900/40 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-800 p-10 space-y-8">
           <div className="flex flex-col items-center gap-3 text-center">
             <div className="flex flex-col items-center mb-2">
               <Logo className="w-12 h-12" />
-              <span className="text-[10px] text-slate-500 font-bold tracking-[0.2em] uppercase mt-1">by Optavel</span>
+              <span className="text-[10px] text-slate-500 dark:text-slate-400 font-bold tracking-[0.2em] uppercase mt-1">by Optavel</span>
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{t("set_new_password", "Set new password")}</h1>
-            <p className="text-sm text-slate-500">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">{t("set_new_password", "Set new password")}</h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400">
               {done ? 'Password updated! Redirecting to login...' : 'Choose a strong password for your account.'}
             </p>
           </div>
 
           {done ? (
             <div className="flex flex-col items-center gap-4 py-4">
-              <div className="w-16 h-16 rounded-full bg-slate-50 flex items-center justify-center">
+              <div className="w-16 h-16 rounded-full bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center">
                 <CheckCircle2 className="w-8 h-8 text-primary" />
               </div>
               <p className="text-sm text-slate-600 text-center">
@@ -94,7 +94,7 @@ export default function ResetPassword() {
               )}
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">
+                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2">
                   {t("new_password", "New Password")}
                 </label>
                 <div className="relative">
@@ -104,7 +104,7 @@ export default function ResetPassword() {
                     placeholder="Min. 6 characters"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full h-14 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all font-medium px-4 pr-12 text-slate-900"
+                    className="w-full h-14 rounded-xl border-slate-200 bg-slate-50/50 dark:bg-transparent focus:bg-white dark:bg-slate-900/40 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all font-medium px-4 pr-12 text-slate-900 dark:text-slate-100"
                   />
                   <button
                     type="button"
@@ -117,7 +117,7 @@ export default function ResetPassword() {
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">
+                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2">
                   {t("confirm_password", "Confirm Password")}
                 </label>
                 <Input
@@ -126,7 +126,7 @@ export default function ResetPassword() {
                   placeholder="Repeat password"
                   value={confirm}
                   onChange={(e) => setConfirm(e.target.value)}
-                  className="w-full h-14 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all font-medium px-4 text-slate-900"
+                  className="w-full h-14 rounded-xl border-slate-200 bg-slate-50/50 dark:bg-transparent focus:bg-white dark:bg-slate-900/40 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all font-medium px-4 text-slate-900 dark:text-slate-100"
                 />
               </div>
 

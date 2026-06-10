@@ -120,7 +120,7 @@ export default function Notices() {
                 <span className="text-xs font-medium flex items-center gap-1 text-muted-foreground">
                   <Calendar className="w-3.5 h-3.5" /> {n.datePublished ? format(new Date(n.datePublished), 'MMM d, yyyy') : 'No Date'}
                 </span>
-                <span className="bg-slate-50 text-primary/90 text-xs font-bold px-2 py-1 rounded-md">{n.status}</span>
+                <span className="bg-slate-50 dark:bg-slate-800/50 text-primary/90 text-xs font-bold px-2 py-1 rounded-md">{n.status}</span>
               </div>
             </div>
           ))}
@@ -129,7 +129,7 @@ export default function Notices() {
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
-          <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
+          <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
             <h2 className="text-lg font-bold text-card-foreground">{editingId ? 'Edit Notice' : 'Publish Notice'}</h2>
             <div className="space-y-3">
               <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("title", "Title")}</label><Input value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="mt-1" /></div>

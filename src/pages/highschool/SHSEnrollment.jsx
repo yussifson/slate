@@ -105,7 +105,7 @@ export default function SHSEnrollment() {
 
       <div className="flex-1 flex flex-col md:flex-row gap-6 overflow-hidden">
         {/* Left Panel: Admitted List */}
-        <Card className="w-full md:w-[400px] shrink-0 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50">
+        <Card className="w-full md:w-[400px] shrink-0 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50">
           <div className="p-4 border-b border-primary/5">
             <h3 className="font-bold text-slate-800 dark:text-slate-100 mb-3 flex items-center justify-between">
               Ready to Enroll <Badge className="bg-slate-100 text-primary/90">{admittedApplicants.length}</Badge>
@@ -114,7 +114,7 @@ export default function SHSEnrollment() {
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary dark:text-primary" />
               <Input 
                 placeholder="Search admitted students..." 
-                className="pl-9 h-10 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
+                className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -125,7 +125,7 @@ export default function SHSEnrollment() {
             {loading ? (
               <div className="p-8 text-center text-primary/30 text-sm">Loading admitted students...</div>
             ) : filteredApplicants.length === 0 ? (
-              <div className="p-8 text-center text-slate-400 dark:text-slate-500 text-sm">No students currently awaiting enrollment.</div>
+              <div className="p-8 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400 text-sm">No students currently awaiting enrollment.</div>
             ) : (
               <div className="p-2 space-y-1">
                 {filteredApplicants.map(app => (
@@ -135,17 +135,17 @@ export default function SHSEnrollment() {
                     className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
                       selectedApplicant?.id === app.id 
                         ? 'bg-primary dark:bg-primary text-white shadow-md shadow-emerald-500/20' 
-                        : 'hover:bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200'
+                        : 'hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 dark:text-slate-200'
                     }`}
                   >
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0 ${
-                      selectedApplicant?.id === app.id ? 'bg-white dark:bg-slate-900/20' : 'bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70'
+                      selectedApplicant?.id === app.id ? 'bg-white dark:bg-slate-900/40 dark:bg-slate-900/20' : 'bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70'
                     }`}>
                       <UserCheck className="w-5 h-5" />
                     </div>
                     <div className="overflow-hidden flex-1">
                       <p className="font-bold truncate">{app.title}</p>
-                      <p className={`text-xs truncate ${selectedApplicant?.id === app.id ? 'text-primary/20 dark:text-primary/80' : 'text-slate-500 dark:text-slate-400 dark:text-slate-500'}`}>
+                      <p className={`text-xs truncate ${selectedApplicant?.id === app.id ? 'text-primary/20 dark:text-primary/80' : 'text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400'}`}>
                         {app.case_number}
                       </p>
                     </div>
@@ -158,7 +158,7 @@ export default function SHSEnrollment() {
         </Card>
 
         {/* Right Panel: Enrollment Form */}
-        <Card className="flex-1 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative">
+        <Card className="flex-1 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative">
           {successMsg && (
             <div className="absolute inset-x-0 top-0 bg-primary text-white p-3 text-center text-sm font-bold animate-in slide-in-from-top flex justify-center items-center gap-2 z-50">
               <CheckCircle className="w-4 h-4" /> {successMsg}
@@ -172,8 +172,8 @@ export default function SHSEnrollment() {
                   <div>
                     <h2 className="text-2xl font-black text-slate-800 dark:text-slate-100">{selectedApplicant.title}</h2>
                     <div className="flex items-center gap-3 mt-2">
-                      <Badge variant="outline" className="border-primary/20 dark:border-slate-600 text-primary dark:text-primary/70 bg-white dark:bg-slate-900">{selectedApplicant.case_number}</Badge>
-                      <span className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-slate-500">Admitted to: {selectedApplicant.data?.programChoice1}</span>
+                      <Badge variant="outline" className="border-primary/20 dark:border-slate-600 text-primary dark:text-primary/70 bg-white dark:bg-slate-900/40 dark:bg-slate-900">{selectedApplicant.case_number}</Badge>
+                      <span className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Admitted to: {selectedApplicant.data?.programChoice1}</span>
                     </div>
                   </div>
                   <Badge className="bg-slate-100 text-primary/90 px-3 py-1 gap-1 text-sm border-none shadow-sm">
@@ -186,7 +186,7 @@ export default function SHSEnrollment() {
                 <div className="max-w-xl mx-auto space-y-8">
                   
                   <div className="space-y-6">
-                    <h3 className="font-bold text-slate-800 dark:text-slate-100 border-b border-slate-100 dark:border-slate-800 pb-2">Assign Student Details</h3>
+                    <h3 className="font-bold text-slate-800 dark:text-slate-100 border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 pb-2">Assign Student Details</h3>
                     
                     <div className="space-y-2">
                       <label className="text-xs font-bold text-primary dark:text-primary/70 uppercase tracking-wider flex items-center gap-2">
@@ -194,11 +194,11 @@ export default function SHSEnrollment() {
                       </label>
                       <Input 
                         placeholder="e.g. 0010123456"
-                        className="bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-xl h-12 text-lg font-medium"
+                        className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-xl h-12 text-lg font-medium"
                         value={enrollmentData.indexNumber}
                         onChange={(e) => setEnrollmentData({...enrollmentData, indexNumber: e.target.value})}
                       />
-                      <p className="text-xs text-slate-400 dark:text-slate-500">Leave blank to auto-generate a temporary ID.</p>
+                      <p className="text-xs text-slate-400 dark:text-slate-500 dark:text-slate-400">Leave blank to auto-generate a temporary ID.</p>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
@@ -207,7 +207,7 @@ export default function SHSEnrollment() {
                           <Building className="w-4 h-4" /> Boarding House
                         </label>
                         <select 
-                          className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+                          className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
                           value={enrollmentData.house}
                           onChange={(e) => setEnrollmentData({...enrollmentData, house: e.target.value})}
                         >
@@ -225,7 +225,7 @@ export default function SHSEnrollment() {
                         </label>
                         <Input 
                           placeholder="e.g. 1 Sci A"
-                          className="bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-xl h-11"
+                          className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-xl h-11"
                           value={enrollmentData.classRoom}
                           onChange={(e) => setEnrollmentData({...enrollmentData, classRoom: e.target.value})}
                         />
@@ -236,14 +236,14 @@ export default function SHSEnrollment() {
                       <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Date of Enrollment</label>
                       <Input 
                         type="date"
-                        className="bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-xl h-11"
+                        className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-xl h-11"
                         value={enrollmentData.enrollmentDate}
                         onChange={(e) => setEnrollmentData({...enrollmentData, enrollmentDate: e.target.value})}
                       />
                     </div>
                   </div>
 
-                  <div className="pt-8 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+                  <div className="pt-8 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-end">
                     <Button 
                       onClick={handleEnrollment}
                       disabled={isEnrolling || !enrollmentData.house}
@@ -259,12 +259,12 @@ export default function SHSEnrollment() {
               </ScrollArea>
             </>
           ) : (
-            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50">
+            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50">
               <div className="w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-6">
                 <GraduationCap className="w-10 h-10 text-primary/30" />
               </div>
-              <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200">No Applicant Selected</h3>
-              <p className="text-slate-500 dark:text-slate-400 dark:text-slate-500 max-w-sm mt-2">
+              <h3 className="text-xl font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">No Applicant Selected</h3>
+              <p className="text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 max-w-sm mt-2">
                 Select an admitted applicant from the left panel to assign their house, class, and officially enroll them into the system.
               </p>
             </div>

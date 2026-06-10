@@ -160,7 +160,7 @@ export default function Events() {
           {filtered.map(event => {
             return (
               <div key={event.id} className="bg-card rounded-xl border border-border p-5 shadow-sm flex flex-col sm:flex-row gap-5 relative group hover:shadow-md transition-all">
-                <div className="flex flex-col items-center justify-center bg-slate-50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 rounded-lg p-4 min-w-[100px] shrink-0 border border-slate-200 dark:border-slate-200">
+                <div className="flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 rounded-lg p-4 min-w-[100px] shrink-0 border border-slate-200 dark:border-slate-200">
                   <span className="text-xs font-bold uppercase tracking-widest">{event.date?.split(' ')[0] || 'Upcoming'}</span>
                   <span className="text-2xl font-black">{event.date?.includes(' ') ? event.date.split(' ')[1]?.replace(',', '') : 'Soon'}</span>
                 </div>

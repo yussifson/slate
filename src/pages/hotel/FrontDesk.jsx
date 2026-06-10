@@ -27,12 +27,12 @@ const getRoomStatus = (roomNumber, reservations, today) => {
 };
 
 const statusColors = {
-  Available:  'bg-slate-50 border-primary/30 text-primary/80 hover:bg-slate-100',
+  Available:  'bg-slate-50 dark:bg-slate-800/50 border-primary/30 text-primary/80 hover:bg-slate-100',
   Occupied:   'bg-red-50 border-red-300 text-red-800 hover:bg-red-100',
-  Arriving:   'bg-slate-50 border-primary/30 text-primary/80 hover:bg-slate-100',
-  Reserved:   'bg-slate-50 border-primary/30 text-primary/80 hover:bg-slate-100',
+  Arriving:   'bg-slate-50 dark:bg-slate-800/50 border-primary/30 text-primary/80 hover:bg-slate-100',
+  Reserved:   'bg-slate-50 dark:bg-slate-800/50 border-primary/30 text-primary/80 hover:bg-slate-100',
   Cleaning:   'bg-yellow-50 border-yellow-300 text-yellow-800 hover:bg-yellow-100',
-  Maintenance:'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200',
+  Maintenance:'bg-slate-100 border-slate-300 text-slate-700 dark:text-slate-300 hover:bg-slate-200',
 };
 
 const statusIcons = {
@@ -41,7 +41,7 @@ const statusIcons = {
   Arriving:    <LogIn className="w-4 h-4 text-primary" />,
   Reserved:    <Calendar className="w-4 h-4 text-primary" />,
   Cleaning:    <Brush className="w-4 h-4 text-yellow-500" />,
-  Maintenance: <Settings className="w-4 h-4 text-slate-500" />,
+  Maintenance: <Settings className="w-4 h-4 text-slate-500 dark:text-slate-400" />,
 };
 
 export default function FrontDesk() {
@@ -176,7 +176,7 @@ export default function FrontDesk() {
       {(todayArrivals.length > 0 || todayDepartures.length > 0) && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {todayArrivals.length > 0 && (
-            <div className="bg-slate-50 border border-primary/20 rounded-xl p-4">
+            <div className="bg-slate-50 dark:bg-slate-800/50 border border-primary/20 rounded-xl p-4">
               <h3 className="font-bold text-primary/80 flex items-center gap-2 mb-3">
                 <LogIn className="w-4 h-4" /> {t("today_s_arrivals", "Today's Arrivals (")}{todayArrivals.length})
                               </h3>

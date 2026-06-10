@@ -181,7 +181,7 @@ export default function Parents() {
                 <tr key={p.id} className="hover:bg-muted/50 transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-slate-50 dark:bg-primary/30 flex items-center justify-center text-primary dark:text-primary/30 font-bold text-xs">
+                      <div className="w-9 h-9 rounded-full bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/30 flex items-center justify-center text-primary dark:text-primary/30 font-bold text-xs">
                         {p.avatar}
                       </div>
                       <p className="font-semibold text-card-foreground">{p.name}</p>
@@ -233,7 +233,7 @@ export default function Parents() {
       {/* Tabbed Wizard Modal (Edit Only) */}
       {showModal && editingId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
-          <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-lg overflow-hidden border border-border flex flex-col max-h-[90vh]">
+          <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-lg overflow-hidden border border-border flex flex-col max-h-[90vh]">
             <div className="p-6 border-b border-border">
               <h2 className="text-xl school-heading font-bold tracking-tight">Edit Parent</h2>
               <div className="flex gap-4 mt-4 border-b border-border">

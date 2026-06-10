@@ -21,7 +21,7 @@ const SUBJECTS = ['Mathematics', 'Science', 'English', 'History', 'Chemistry', '
 const SLOT_COLORS = [
   'bg-orange-100 text-orange-800 border-primary/20',
   'bg-slate-100 text-primary/80 border-primary/20',
-  'bg-slate-50 dark:bg-primary/30 text-primary/80 border-primary/20',
+  'bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/30 text-primary/80 border-primary/20',
   'bg-amber-100 text-amber-800 border-amber-200',
   'bg-slate-100 text-primary/80 border-primary/20',
   'bg-slate-100 text-primary/80 border-primary/20',
@@ -339,7 +339,7 @@ export default function Timetable() {
       {/* Add Slot Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
-          <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
               <Plus className="w-5 h-5 text-primary dark:text-primary/70" /> {editingId ? 'Edit Timetable Slot' : 'Add Timetable Slot'}
             </h2>

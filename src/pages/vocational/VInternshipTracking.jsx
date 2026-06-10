@@ -62,13 +62,13 @@ export default function VInternshipTracking() {
       </div>
 
       <div className="flex-1 flex gap-6 overflow-hidden">
-        <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50">
+        <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50">
           <div className="p-4 border-b border-primary/5">
             <div className="relative">
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
               <Input 
                 placeholder="Search placements..." 
-                className="pl-9 h-10 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
+                className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -88,17 +88,17 @@ export default function VInternshipTracking() {
                     className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
                       selectedInternship?.id === internship.id 
                         ? 'bg-primary text-white shadow-md shadow-indigo-500/20' 
-                        : 'hover:bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200'
+                        : 'hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 dark:text-slate-200'
                     }`}
                   >
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0 ${
-                      selectedInternship?.id === internship.id ? 'bg-white/20' : 'bg-slate-100 text-primary'
+                      selectedInternship?.id === internship.id ? 'bg-white dark:bg-slate-900/40/20' : 'bg-slate-100 text-primary'
                     }`}>
                       <Briefcase className="w-5 h-5" />
                     </div>
                     <div className="overflow-hidden">
                       <p className="font-bold truncate">{internship.data?.student_name || internship.title}</p>
-                      <p className={`text-xs truncate ${selectedInternship?.id === internship.id ? 'text-primary/20' : 'text-slate-500'}`}>
+                      <p className={`text-xs truncate ${selectedInternship?.id === internship.id ? 'text-primary/20' : 'text-slate-500 dark:text-slate-400'}`}>
                         {internship.data?.company_name || 'Unassigned'}
                       </p>
                     </div>
@@ -109,7 +109,7 @@ export default function VInternshipTracking() {
           </ScrollArea>
         </Card>
 
-        <Card className="flex-1 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative">
+        <Card className="flex-1 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative">
           {selectedInternship ? (
             <>
               <div className="h-32 bg-gradient-to-r from-primary/90 to-primary relative shrink-0">
@@ -119,8 +119,8 @@ export default function VInternshipTracking() {
               <ScrollArea className="flex-1 -mt-12">
                 <div className="px-8 pb-8">
                   <div className="flex flex-col sm:flex-row gap-6 items-end sm:items-center relative z-10">
-                    <div className="w-24 h-24 rounded-3xl bg-white dark:bg-slate-900 p-1 shadow-xl shrink-0">
-                      <div className="w-full h-full rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-primary">
+                    <div className="w-24 h-24 rounded-3xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-1 shadow-xl shrink-0">
+                      <div className="w-full h-full rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 flex items-center justify-center text-primary">
                         <Briefcase className="w-12 h-12" />
                       </div>
                     </div>
@@ -141,9 +141,9 @@ export default function VInternshipTracking() {
                   <div className="mt-8">
                     <Tabs defaultValue="overview" className="w-full">
                       <TabsList className="bg-slate-500 dark:bg-slate-800/50 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border border-slate-200 dark:border-slate-700">
-                        <TabsTrigger value="overview" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-primary">Overview</TabsTrigger>
-                        <TabsTrigger value="supervisor" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-primary">Supervisor</TabsTrigger>
-                        <TabsTrigger value="logs" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-primary">Daily Logs</TabsTrigger>
+                        <TabsTrigger value="overview" className="rounded-lg data-[state=active]:bg-white dark:bg-slate-900/40 data-[state=active]:text-primary">Overview</TabsTrigger>
+                        <TabsTrigger value="supervisor" className="rounded-lg data-[state=active]:bg-white dark:bg-slate-900/40 data-[state=active]:text-primary">Supervisor</TabsTrigger>
+                        <TabsTrigger value="logs" className="rounded-lg data-[state=active]:bg-white dark:bg-slate-900/40 data-[state=active]:text-primary">Daily Logs</TabsTrigger>
                       </TabsList>
                       
                       <div className="mt-6">
@@ -153,19 +153,19 @@ export default function VInternshipTracking() {
                               <h3 className="text-sm font-bold text-primary uppercase tracking-wider">Placement Details</h3>
                               <div className="grid grid-cols-2 gap-y-4">
                                 <div>
-                                  <p className="text-xs text-slate-500">Start Date</p>
+                                  <p className="text-xs text-slate-500 dark:text-slate-400">Start Date</p>
                                   <p className="font-medium text-slate-800 flex items-center gap-2"><Calendar className="w-4 h-4 text-primary/70" /> {selectedInternship.data?.start_date || 'N/A'}</p>
                                 </div>
                                 <div>
-                                  <p className="text-xs text-slate-500">End Date</p>
+                                  <p className="text-xs text-slate-500 dark:text-slate-400">End Date</p>
                                   <p className="font-medium text-slate-800 flex items-center gap-2"><Calendar className="w-4 h-4 text-primary/70" /> {selectedInternship.data?.end_date || 'N/A'}</p>
                                 </div>
                                 <div>
-                                  <p className="text-xs text-slate-500">Duration</p>
+                                  <p className="text-xs text-slate-500 dark:text-slate-400">Duration</p>
                                   <p className="font-medium text-slate-800 flex items-center gap-2"><Clock className="w-4 h-4 text-primary/70" /> {selectedInternship.data?.duration_weeks || 'N/A'} weeks</p>
                                 </div>
                                 <div>
-                                  <p className="text-xs text-slate-500">Location</p>
+                                  <p className="text-xs text-slate-500 dark:text-slate-400">Location</p>
                                   <p className="font-medium text-slate-800 flex items-center gap-2"><MapPin className="w-4 h-4 text-primary/70" /> {selectedInternship.data?.location || 'N/A'}</p>
                                 </div>
                               </div>
@@ -175,15 +175,15 @@ export default function VInternshipTracking() {
                               <h3 className="text-sm font-bold text-primary uppercase tracking-wider">Company Info</h3>
                               <div className="space-y-4">
                                 <div>
-                                  <p className="text-xs text-slate-500">Company Name</p>
+                                  <p className="text-xs text-slate-500 dark:text-slate-400">Company Name</p>
                                   <p className="font-medium text-slate-800">{selectedInternship.data?.company_name || 'N/A'}</p>
                                 </div>
                                 <div>
-                                  <p className="text-xs text-slate-500">Industry</p>
+                                  <p className="text-xs text-slate-500 dark:text-slate-400">Industry</p>
                                   <p className="font-medium text-slate-800">{selectedInternship.data?.industry || 'N/A'}</p>
                                 </div>
                                 <div>
-                                  <p className="text-xs text-slate-500">Department</p>
+                                  <p className="text-xs text-slate-500 dark:text-slate-400">Department</p>
                                   <p className="font-medium text-slate-800">{selectedInternship.data?.department || 'N/A'}</p>
                                 </div>
                               </div>
@@ -194,18 +194,18 @@ export default function VInternshipTracking() {
                         <TabsContent value="supervisor" className="outline-none">
                           <div className="p-8 text-center border-2 border-dashed border-slate-200 rounded-2xl bg-primary/20">
                             <UserCircle className="w-10 h-10 text-primary/30 mx-auto mb-3" />
-                            <h4 className="text-slate-700 font-bold">Supervisor Details</h4>
-                            <p className="text-slate-500 text-sm mt-1 mb-4">No supervisor information recorded for this placement.</p>
-                            <Button variant="outline" className="border-primary/20 text-primary hover:bg-slate-50 rounded-xl">Add Supervisor</Button>
+                            <h4 className="text-slate-700 dark:text-slate-300 font-bold">Supervisor Details</h4>
+                            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 mb-4">No supervisor information recorded for this placement.</p>
+                            <Button variant="outline" className="border-primary/20 text-primary hover:bg-slate-50 dark:bg-slate-800/50 rounded-xl">Add Supervisor</Button>
                           </div>
                         </TabsContent>
 
                         <TabsContent value="logs" className="outline-none">
                           <div className="p-8 text-center border-2 border-dashed border-slate-200 rounded-2xl bg-primary/20">
                             <Star className="w-10 h-10 text-primary/30 mx-auto mb-3" />
-                            <h4 className="text-slate-700 font-bold">No Daily Logs</h4>
-                            <p className="text-slate-500 text-sm mt-1 mb-4">Student has not submitted any daily logs yet.</p>
-                            <Button variant="outline" className="border-primary/20 text-primary hover:bg-slate-50 rounded-xl">View Requirements</Button>
+                            <h4 className="text-slate-700 dark:text-slate-300 font-bold">No Daily Logs</h4>
+                            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 mb-4">Student has not submitted any daily logs yet.</p>
+                            <Button variant="outline" className="border-primary/20 text-primary hover:bg-slate-50 dark:bg-slate-800/50 rounded-xl">View Requirements</Button>
                           </div>
                         </TabsContent>
                       </div>
@@ -216,11 +216,11 @@ export default function VInternshipTracking() {
             </>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-              <div className="w-20 h-20 rounded-full bg-slate-50 flex items-center justify-center mb-6">
+              <div className="w-20 h-20 rounded-full bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center mb-6">
                 <Briefcase className="w-10 h-10 text-primary/30" />
               </div>
-              <h3 className="text-xl font-bold text-slate-700">No Placement Selected</h3>
-              <p className="text-slate-500 max-w-sm mt-2">
+              <h3 className="text-xl font-bold text-slate-700 dark:text-slate-300">No Placement Selected</h3>
+              <p className="text-slate-500 dark:text-slate-400 max-w-sm mt-2">
                 Select an internship placement from the list to view details and performance.
               </p>
             </div>

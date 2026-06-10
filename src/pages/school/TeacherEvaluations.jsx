@@ -59,18 +59,18 @@ export default function TeacherEvaluations() {
       </div>
 
       <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
-        <h3 className="text-xl font-extrabold mb-6 text-slate-900 dark:text-white flex items-center gap-2">
+        <h3 className="text-xl font-extrabold mb-6 text-slate-900 dark:text-slate-100 dark:text-white flex items-center gap-2">
           <Award className="text-amber-500" /> Pending Evaluations
         </h3>
         <div className="space-y-4">
           {teachers.map((teacher, i) => {
             const done = hasEvaluated(teacher);
             return (
-              <div key={i} className={`p-6 rounded-3xl border ${done ? 'bg-slate-50 dark:bg-slate-900/50 border-slate-100 dark:border-slate-800' : 'bg-white dark:bg-background border-slate-200 dark:border-slate-700 shadow-md'} flex flex-col md:flex-row items-center justify-between gap-4 transition-all`}>
-                <div className="font-bold text-lg text-slate-900 dark:text-white">{teacher}</div>
+              <div key={i} className={`p-6 rounded-3xl border ${done ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900/50 border-slate-100 dark:border-slate-800 dark:border-slate-800' : 'bg-white dark:bg-slate-900/40 dark:bg-background border-slate-200 dark:border-slate-700 shadow-md'} flex flex-col md:flex-row items-center justify-between gap-4 transition-all`}>
+                <div className="font-bold text-lg text-slate-900 dark:text-slate-100 dark:text-white">{teacher}</div>
                 
                 {done ? (
-                  <div className="flex items-center gap-2 text-primary dark:text-primary/70 bg-slate-50 dark:bg-primary/20 dark:bg-primary/20 px-4 py-2 rounded-full font-bold text-sm">
+                  <div className="flex items-center gap-2 text-primary dark:text-primary/70 bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 dark:bg-primary/20 px-4 py-2 rounded-full font-bold text-sm">
                     <CheckCircle className="w-4 h-4" /> Completed
                   </div>
                 ) : (

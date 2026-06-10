@@ -28,7 +28,7 @@ function calcGrade(score, maxScore) {
 
 const GRADE_COLORS = {
   A: 'bg-slate-100 text-primary/90',
-  B: 'bg-slate-50 text-primary dark:bg-primary/30 dark:text-primary/30',
+  B: 'bg-slate-50 dark:bg-slate-800/50 text-primary dark:bg-primary/30 dark:text-primary/30',
   C: 'bg-amber-100 text-amber-700',
   D: 'bg-orange-100 text-orange-700',
   F: 'bg-red-100 text-red-700',
@@ -280,7 +280,7 @@ export default function Grades() {
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <Link to="/classes" className="bg-slate-50 dark:bg-primary/20 text-primary dark:text-primary/30 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{g.className}</Link>
+                        <Link to="/classes" className="bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary dark:text-primary/30 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{g.className}</Link>
                       </td>
                       <td className="px-4 py-3 text-muted-foreground">{g.subject}</td>
                       <td className="px-4 py-3 text-foreground font-medium">{g.examName}</td>
@@ -330,7 +330,7 @@ export default function Grades() {
       {/* Add Grade Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
-          <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
+          <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
               <Plus className="w-5 h-5 text-primary" /> {editingId ? 'Edit Grade Entry' : 'Add Grade Entry'}
             </h2>

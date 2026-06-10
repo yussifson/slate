@@ -176,7 +176,7 @@ export default function Library() {
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         <div className="stat-card-premium school-card p-5 flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-primary/30 flex items-center justify-center text-primary dark:text-primary/30">
+          <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/30 flex items-center justify-center text-primary dark:text-primary/30">
             <Book className="w-5 h-5" />
           </div>
           <div>
@@ -206,7 +206,7 @@ export default function Library() {
       <div className="school-card p-5 flex items-center justify-between flex-wrap gap-4">
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Search catalog title, author or ISBN..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white/80 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary" />
+          <Input placeholder="Search catalog title, author or ISBN..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white dark:bg-slate-900/40/80 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary" />
         </div>
         <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
       </div>
@@ -319,7 +319,7 @@ export default function Library() {
       {/* Add/Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
-          <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
+          <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
               <Plus className="w-5 h-5 text-primary dark:text-primary/70" /> {editingId ? 'Edit Book' : 'Catalog Textbook'}
             </h2>
@@ -464,7 +464,7 @@ export default function Library() {
           {viewDetails && (
             <div className="mt-6 space-y-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-20 shrink-0 rounded-md bg-slate-50 dark:bg-primary/20 overflow-hidden flex items-center justify-center text-primary dark:text-primary/70 font-bold text-xl border border-border">
+                <div className="w-16 h-20 shrink-0 rounded-md bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 overflow-hidden flex items-center justify-center text-primary dark:text-primary/70 font-bold text-xl border border-border">
                   {viewDetails.cover_url ? (
                     <img src={viewDetails.cover_url} alt="Cover" className="w-full h-full object-cover" />
                   ) : (
@@ -507,7 +507,7 @@ export default function Library() {
               </div>
               {viewDetails.ebook_url && (
                 <div className="pt-2 border-t border-border mt-4">
-                  <a href={viewDetails.ebook_url} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 bg-slate-50 dark:bg-primary/20 text-primary dark:text-primary/30 hover:bg-slate-100 font-bold py-3 rounded-xl transition-colors">
+                  <a href={viewDetails.ebook_url} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary dark:text-primary/30 hover:bg-slate-100 font-bold py-3 rounded-xl transition-colors">
                     <Book className="w-5 h-5" />
                     {t("read_e_book_now", "Read E-Book Now")}
                   </a>

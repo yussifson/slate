@@ -101,7 +101,7 @@ export default function PerformanceDashboard() {
       {/* Top Performer Highlight */}
       {topBiller && (
         <div className="bg-gradient-to-r from-primary to-primary/70 rounded-xl p-5 text-white flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-xl font-bold shrink-0">
+          <div className="w-12 h-12 rounded-full bg-white dark:bg-slate-900/40/20 flex items-center justify-center text-xl font-bold shrink-0">
             {topBiller.full_name?.[0]}
           </div>
           <div className="flex-1 min-w-0">

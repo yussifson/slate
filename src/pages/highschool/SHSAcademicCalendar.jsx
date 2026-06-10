@@ -110,18 +110,18 @@ export default function SHSAcademicCalendar() {
         </Button>
       </div>
 
-      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
-        <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
+      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Event Schedule</CardTitle>
             </div>
             
             <div className="relative w-full sm:w-64">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
               <Input 
                 placeholder="Search events..." 
-                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
+                className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -130,14 +130,14 @@ export default function SHSAcademicCalendar() {
         </CardHeader>
         <CardContent className="p-0">
           {loading ? (
-            <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading calendar...</div>
+            <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading calendar...</div>
           ) : filteredEvents.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
                 <CalendarIcon className="w-8 h-8 text-primary dark:text-primary" />
               </div>
-              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No events scheduled</h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Add key dates to build the academic calendar.</p>
+              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">No events scheduled</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Add key dates to build the academic calendar.</p>
             </div>
           ) : (
             <div className="p-6">
@@ -150,16 +150,16 @@ export default function SHSAcademicCalendar() {
                     <div key={evt.id} className="relative pl-8 md:pl-10">
                       <div className={`absolute -left-[11px] top-1.5 w-5 h-5 rounded-full border-4 border-white ${isPast ? 'bg-slate-300' : 'bg-primary dark:bg-primary'} shadow-sm`} />
                       
-                      <div className={`p-5 rounded-2xl border-l-4 shadow-sm bg-white dark:bg-slate-900 ${getEventColor(evt.data?.type)} ${isPast ? 'opacity-60' : ''}`}>
+                      <div className={`p-5 rounded-2xl border-l-4 shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900 ${getEventColor(evt.data?.type)} ${isPast ? 'opacity-60' : ''}`}>
                         <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-2">
                           <div>
                             <div className="flex items-center gap-2 mb-1">
-                              <Badge variant="outline" className="bg-white dark:bg-slate-900">{evt.data?.type}</Badge>
-                              {isPast && <Badge variant="secondary" className="bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 dark:text-slate-500">Past</Badge>}
+                              <Badge variant="outline" className="bg-white dark:bg-slate-900/40 dark:bg-slate-900">{evt.data?.type}</Badge>
+                              {isPast && <Badge variant="secondary" className="bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Past</Badge>}
                             </div>
                             <h4 className="text-lg font-bold text-slate-800 dark:text-slate-100">{evt.title}</h4>
                           </div>
-                          <div className="flex items-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-800 shrink-0">
+                          <div className="flex items-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-800 dark:border-slate-800 shrink-0">
                             {getEventIcon(evt.data?.type)}
                             <span>
                               {new Date(evt.data?.startDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
@@ -170,7 +170,7 @@ export default function SHSAcademicCalendar() {
                           </div>
                         </div>
                         {evt.data?.description && (
-                          <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500 mt-2">{evt.data.description}</p>
+                          <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 mt-2">{evt.data.description}</p>
                         )}
                       </div>
                     </div>
@@ -193,12 +193,12 @@ export default function SHSAcademicCalendar() {
             </DialogHeader>
           </div>
           
-          <div className="p-6 bg-slate-50 dark:bg-slate-800 space-y-4">
+          <div className="p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 space-y-4">
             <div className="space-y-2">
               <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Event Title</label>
               <Input 
                 placeholder="e.g. First Term Begins"
-                className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+                className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                 value={newEvent.title}
                 onChange={e => setNewEvent({...newEvent, title: e.target.value})}
               />
@@ -207,7 +207,7 @@ export default function SHSAcademicCalendar() {
             <div className="space-y-2">
               <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Event Type</label>
               <select 
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
                 value={newEvent.type}
                 onChange={e => setNewEvent({...newEvent, type: e.target.value})}
               >
@@ -223,7 +223,7 @@ export default function SHSAcademicCalendar() {
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Start Date</label>
                 <Input 
                   type="date"
-                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+                  className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                   value={newEvent.startDate}
                   onChange={e => setNewEvent({...newEvent, startDate: e.target.value})}
                 />
@@ -232,7 +232,7 @@ export default function SHSAcademicCalendar() {
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">End Date (Optional)</label>
                 <Input 
                   type="date"
-                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+                  className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                   value={newEvent.endDate}
                   onChange={e => setNewEvent({...newEvent, endDate: e.target.value})}
                 />
@@ -242,7 +242,7 @@ export default function SHSAcademicCalendar() {
             <div className="space-y-2">
               <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Description</label>
               <textarea 
-                className="w-full h-24 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary resize-none text-sm"
+                className="w-full h-24 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary resize-none text-sm"
                 placeholder="Optional details..."
                 value={newEvent.description}
                 onChange={e => setNewEvent({...newEvent, description: e.target.value})}
@@ -250,7 +250,7 @@ export default function SHSAcademicCalendar() {
             </div>
           </div>
           
-          <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+          <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-end gap-3">
             <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
               Cancel
             </Button>

@@ -93,7 +93,7 @@ export default function Gamification() {
           { title: "Math Wizard", desc: "Win the math olympiad", icon: Zap }
         ].map((badge, i) => (
           <div key={i} className="bg-card rounded-xl p-6 border border-border shadow-sm text-center group cursor-pointer hover:border-primary/30 transition-colors duration-300">
-            <div className={`w-16 h-16 mx-auto rounded-full bg-slate-50 dark:bg-primary/20 flex items-center justify-center mb-4 shadow-sm`}>
+            <div className={`w-16 h-16 mx-auto rounded-full bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 flex items-center justify-center mb-4 shadow-sm`}>
               <badge.icon className="w-8 h-8 text-primary dark:text-primary/70" />
             </div>
             <h3 className="font-bold text-lg text-card-foreground mb-1">{badge.title}</h3>
@@ -113,7 +113,7 @@ export default function Gamification() {
             leaderboard.map((student, i) => {
               const isMe = student.clientId === session?.user?.id;
               return (
-                <div key={i} className={`flex items-center justify-between p-4 rounded-lg border ${isMe ? 'bg-slate-50 dark:bg-primary/20 dark:bg-slate-100 border-primary/20' : 'bg-background border-border'} shadow-sm`}>
+                <div key={i} className={`flex items-center justify-between p-4 rounded-lg border ${isMe ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 dark:bg-slate-100 border-primary/20' : 'bg-background border-border'} shadow-sm`}>
                   <div className="flex items-center gap-4">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${i === 0 ? 'bg-slate-100 text-primary dark:text-primary/70' : i === 1 ? 'bg-muted text-muted-foreground' : i === 2 ? 'bg-muted text-muted-foreground' : 'bg-transparent text-muted-foreground'}`}>
                       #{i + 1}

@@ -18,7 +18,7 @@ import { MessageSquare, Settings } from "lucide-react";
 import IDFormatSettings from '@/components/school/IDFormatSettings';
 
 const feeColors = { Paid: 'bg-slate-100 text-primary/90', Owing: 'bg-red-100 text-red-700', Partial: 'bg-amber-100 text-amber-700' };
-const statusColors = { Active: 'bg-slate-50 text-primary dark:bg-primary/30 dark:text-primary/30', Suspended: 'bg-red-100 text-red-700', Graduated: 'bg-slate-50 dark:bg-primary/30 text-primary dark:text-primary/30' };
+const statusColors = { Active: 'bg-slate-50 dark:bg-slate-800/50 text-primary dark:bg-primary/30 dark:text-primary/30', Suspended: 'bg-red-100 text-red-700', Graduated: 'bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/30 text-primary dark:text-primary/30' };
 
 export default function Students() {
   const { t } = useTranslation();
@@ -317,7 +317,7 @@ export default function Students() {
                   <tr key={s.id} className="hover:bg-muted/50 transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-slate-50 dark:bg-primary/30 flex items-center justify-center text-primary dark:text-primary/30 font-bold text-xs flex-shrink-0">
+                        <div className="w-9 h-9 rounded-full bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/30 flex items-center justify-center text-primary dark:text-primary/30 font-bold text-xs flex-shrink-0">
                           {s.avatar}
                         </div>
                         <div>
@@ -327,7 +327,7 @@ export default function Students() {
                       </div>
                     </td>
                     <td className="px-4 py-3 text-muted-foreground font-mono text-xs">{s.studentId}</td>
-                    <td className="px-4 py-3"><Link to={`/classes`} className="bg-slate-50 dark:bg-primary/20 text-primary dark:text-primary/30 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{s.class}</Link></td>
+                    <td className="px-4 py-3"><Link to={`/classes`} className="bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary dark:text-primary/30 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{s.class}</Link></td>
                     <td className="px-4 py-3 text-foreground">{s.age} {t("yrs", "yrs")}</td>
                     <td className="px-4 py-3">
                       <div>
@@ -336,7 +336,7 @@ export default function Students() {
                       </div>
                     </td>
                     <td className="px-4 py-3"><span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${feeColors[s.feeStatus] || 'bg-gray-100 text-gray-700'}`}>{s.feeStatus}</span></td>
-                    <td className="px-4 py-3"><span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${statusColors[s.status] || 'bg-slate-50 text-primary dark:bg-primary/30 dark:text-primary/30'}`}>{s.status}</span></td>
+                    <td className="px-4 py-3"><span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${statusColors[s.status] || 'bg-slate-50 dark:bg-slate-800/50 text-primary dark:bg-primary/30 dark:text-primary/30'}`}>{s.status}</span></td>
                     <td className="px-4 py-3">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -384,7 +384,7 @@ export default function Students() {
       {/* Tabbed Wizard Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
-          <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-lg overflow-hidden border border-border flex flex-col max-h-[90vh]">
+          <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-lg overflow-hidden border border-border flex flex-col max-h-[90vh]">
             <div className="p-6 border-b border-border">
               <h2 className="text-xl school-heading font-bold tracking-tight">{editingId ? 'Edit Student' : 'Enroll Student'}</h2>
               <div className="flex gap-4 mt-4 border-b border-border">
@@ -405,7 +405,7 @@ export default function Students() {
             <div className="p-6 overflow-y-auto space-y-4">
               {activeTab === 'personal' && (
                 <div className="space-y-4 animate-in fade-in zoom-in duration-200">
-                  <div className="bg-slate-50/50 dark:bg-slate-100 p-3 rounded-xl border border-slate-200 dark:border-primary/80">
+                  <div className="bg-slate-50/50 dark:bg-transparent dark:bg-slate-100 p-3 rounded-xl border border-slate-200 dark:border-primary/80">
                     <label className="text-[10px] font-bold text-primary dark:text-primary/70 uppercase tracking-widest">{t("student_id", "Student ID")}</label>
                     <Input 
                       value={formData.studentId || "Auto-generated on save"} 
@@ -477,7 +477,7 @@ export default function Students() {
 
               {activeTab === 'parent' && (
                 <div className="space-y-4 animate-in fade-in zoom-in duration-200">
-                  <div className="bg-slate-50 dark:bg-primary/20/50 dark:bg-slate-100 p-3 rounded-xl border border-slate-200 dark:border-primary/30">
+                  <div className="bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20/50 dark:bg-slate-100 p-3 rounded-xl border border-slate-200 dark:border-primary/30">
                     <label className="text-[10px] font-bold text-primary dark:text-primary/70 uppercase tracking-widest">{t("parent_id", "Parent ID")}</label>
                     <Input 
                       value={formData.parentId || "Auto-generated on save"} 
@@ -526,13 +526,13 @@ export default function Students() {
           {viewDetails && (
             <div className="mt-6 space-y-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-slate-50 dark:bg-primary/30 flex items-center justify-center text-primary dark:text-primary/30 font-bold text-xl">
+                <div className="w-16 h-16 rounded-full bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/30 flex items-center justify-center text-primary dark:text-primary/30 font-bold text-xl">
                   {viewDetails.avatar}
                 </div>
                 <div>
                   <h3 className="text-xl school-heading font-bold tracking-tight">{viewDetails.name}</h3>
                   <p className="text-sm text-muted-foreground">{viewDetails.studentId}</p>
-                  <span className={`inline-block mt-1 text-xs font-semibold px-2.5 py-0.5 rounded-full ${statusColors[viewDetails.status] || 'bg-slate-50 text-primary dark:bg-primary/30 dark:text-primary/30'}`}>
+                  <span className={`inline-block mt-1 text-xs font-semibold px-2.5 py-0.5 rounded-full ${statusColors[viewDetails.status] || 'bg-slate-50 dark:bg-slate-800/50 text-primary dark:bg-primary/30 dark:text-primary/30'}`}>
                     {viewDetails.status}
                   </span>
                 </div>

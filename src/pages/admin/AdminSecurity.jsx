@@ -33,7 +33,7 @@ export default function AdminSecurity() {
                 <ShieldCheck className="w-6 h-6 text-primary" />
               </div>
             </div>
-            <div className="mt-4 flex items-center gap-2 text-sm text-slate-500 font-medium">
+            <div className="mt-4 flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 font-medium">
               {t("0_active_threats_detected", "0 active threats detected")}
             </div>
           </CardContent>
@@ -50,7 +50,7 @@ export default function AdminSecurity() {
                 <AlertTriangle className="w-6 h-6 text-amber-600" />
               </div>
             </div>
-            <div className="mt-4 flex items-center gap-2 text-sm text-slate-500 font-medium">
+            <div className="mt-4 flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 font-medium">
               {t("suspicious_attempts_in_last_24", "Suspicious attempts in last 24h")}
             </div>
           </CardContent>
@@ -67,14 +67,14 @@ export default function AdminSecurity() {
                 <Eye className="w-6 h-6 text-primary" />
               </div>
             </div>
-            <div className="mt-4 flex items-center gap-2 text-sm text-slate-500 font-medium">
+            <div className="mt-4 flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 font-medium">
               {t("admins_currently_viewing_tenan", "Admins currently viewing tenants")}
             </div>
           </CardContent>
         </Card>
       </div>
       <Card className="border-border shadow-sm rounded-2xl overflow-hidden">
-        <CardHeader className="bg-slate-50 border-b border-slate-100">
+        <CardHeader className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
           <CardTitle className="text-base font-bold text-slate-800 flex items-center gap-2">
             <Lock className="w-4 h-4 text-primary" /> {t("global_audit_trail", "Global Audit Trail")}
           </CardTitle>
@@ -83,7 +83,7 @@ export default function AdminSecurity() {
           <div className="divide-y divide-slate-50 overflow-x-auto">
             <table className="w-full text-sm text-left font-sans">
               <thead>
-                <tr className="bg-slate-50/50 border-b border-slate-100 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
+                <tr className="bg-slate-50/50 dark:bg-transparent border-b border-slate-100 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider text-[10px]">
                   <th className="px-6 py-4">{t("event_type", "Event Type")}</th>
                   <th className="px-6 py-4">{t("actor_origin", "Actor / Origin")}</th>
                   <th className="px-6 py-4">{t("target_detail", "Target / Detail")}</th>
@@ -94,14 +94,14 @@ export default function AdminSecurity() {
               <tbody className="divide-y divide-slate-50">
                 {auditLogs.map((log, idx) => {
                   return (
-                    <tr key={idx} className="hover:bg-slate-50/50 transition-colors">
+                    <tr key={idx} className="hover:bg-slate-50/50 dark:bg-transparent transition-colors">
                       <td className="px-6 py-4 font-bold text-slate-800">{log.type}</td>
                       <td className="px-6 py-4 text-slate-600">{log.user}</td>
                       <td className="px-6 py-4 text-slate-600">{log.target}</td>
-                      <td className="px-6 py-4 text-xs font-medium text-slate-500">{log.time}</td>
+                      <td className="px-6 py-4 text-xs font-medium text-slate-500 dark:text-slate-400">{log.time}</td>
                       <td className="px-6 py-4 text-right">
                         <Badge className={`text-[10px] font-bold uppercase py-0.5 px-2 border-none ${
-                          log.status === 'Success' ? 'bg-slate-50 text-primary/90' :
+                          log.status === 'Success' ? 'bg-slate-50 dark:bg-slate-800/50 text-primary/90' :
                           log.status === 'Blocked' ? 'bg-rose-50 text-rose-700' :
                           'bg-amber-50 text-amber-700'
                         }`}>

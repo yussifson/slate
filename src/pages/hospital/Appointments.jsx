@@ -15,15 +15,15 @@ import { useNotifications } from "@/hooks/integrations/useNotifications";
 import { MessageSquare, Bell } from "lucide-react";
 
 const typeColors = {
-  Consultation: 'bg-slate-50 text-primary/90 border-primary/20',
-  'Follow-up': 'bg-slate-50 text-primary/90 border-primary/20',
+  Consultation: 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-primary/20',
+  'Follow-up': 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-primary/20',
   Emergency: 'bg-red-50 text-red-700 border-red-200',
 };
 
 const statusColors = {
-  Scheduled: 'text-primary bg-slate-50 border-primary/20',
+  Scheduled: 'text-primary bg-slate-50 dark:bg-slate-800/50 border-primary/20',
   'In Progress': 'text-amber-600 bg-amber-50 border-amber-200 animate-pulse',
-  Completed: 'text-primary bg-slate-50 border-primary/20',
+  Completed: 'text-primary bg-slate-50 dark:bg-slate-800/50 border-primary/20',
 };
 
 export default function Appointments() {
@@ -239,7 +239,7 @@ export default function Appointments() {
                 </div>
 
                 <div className="flex gap-3">
-                  <Button variant="outline" onClick={(e) => { e.stopPropagation(); notifyTeam({ companyId, provider: 'twilio', message: `Reminder: You have an appointment at ${selectedAppt.time}.`, recipientPhone: '+1234567890' }).then(()=>toast.success("SMS Sent!")).catch(()=>{}) }} className="gap-2 bg-slate-50 text-slate-700 hover:bg-slate-100 flex-1">
+                  <Button variant="outline" onClick={(e) => { e.stopPropagation(); notifyTeam({ companyId, provider: 'twilio', message: `Reminder: You have an appointment at ${selectedAppt.time}.`, recipientPhone: '+1234567890' }).then(()=>toast.success("SMS Sent!")).catch(()=>{}) }} className="gap-2 bg-slate-50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 hover:bg-slate-100 flex-1">
                       <MessageSquare className="w-4 h-4" /> SMS Reminder
                     </Button>
                   {selectedAppt.status === 'Scheduled' && (
@@ -253,7 +253,7 @@ export default function Appointments() {
                     </Button>
                   )}
                   {selectedAppt.status === 'Completed' && (
-                    <div className="bg-slate-50 border border-primary/20 text-primary/90 text-sm p-4 rounded-xl flex items-center gap-2 w-full justify-center font-semibold">
+                    <div className="bg-slate-50 dark:bg-slate-800/50 border border-primary/20 text-primary/90 text-sm p-4 rounded-xl flex items-center gap-2 w-full justify-center font-semibold">
                       <CheckCircle className="w-5 h-5" /> {t(
                         "visit_completed_successfully_c",
                         "Visit completed successfully. Clinical chart created."
@@ -264,7 +264,7 @@ export default function Appointments() {
               </div>
             ) : (
               <div className="bg-card rounded-xl border border-border p-6 shadow-sm flex flex-col items-center justify-center min-h-[300px] text-center">
-                 <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+                 <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mb-4">
                     <Stethoscope className="w-8 h-8 text-primary" />
                  </div>
                  <h2 className="text-lg font-bold text-card-foreground mb-2">{t("select_an_appointment", "Select an appointment")}</h2>
@@ -312,7 +312,7 @@ export default function Appointments() {
                  </select>
                </div>
             </div>
-            <div className="flex flex-col gap-2 p-3 bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800">
+            <div className="flex flex-col gap-2 p-3 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800">
               <div className="flex items-center space-x-2">
                 <Checkbox id="generateZoom" checked={generateZoom} onCheckedChange={setGenerateZoom} />
                 <label htmlFor="generateZoom" className="text-sm font-medium leading-none cursor-pointer">

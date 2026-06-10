@@ -13,7 +13,7 @@ export default function OnlineAnalytics() {
           <p className="text-gray-500 mt-1">Deep insights into student engagement, completion rates, and revenue.</p>
         </div>
         <div className="flex gap-4">
-          <Button variant="outline" className="bg-white"><Calendar className="h-4 w-4 mr-2" /> Last 30 Days</Button>
+          <Button variant="outline" className="bg-white dark:bg-slate-900/40"><Calendar className="h-4 w-4 mr-2" /> Last 30 Days</Button>
           <Button className="bg-primary hover:bg-primary/90 text-white"><Download className="h-4 w-4 mr-2" /> Export Report</Button>
         </div>
       </div>
@@ -22,7 +22,7 @@ export default function OnlineAnalytics() {
         <Card className="border-0 shadow-sm rounded-xl">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-slate-50 text-primary rounded-lg">
+              <div className="p-3 bg-slate-50 dark:bg-slate-800/50 text-primary rounded-lg">
                 <Eye className="h-6 w-6" />
               </div>
               <div>
@@ -39,7 +39,7 @@ export default function OnlineAnalytics() {
         <Card className="border-0 shadow-sm rounded-xl">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-slate-50 text-primary rounded-lg">
+              <div className="p-3 bg-slate-50 dark:bg-slate-800/50 text-primary rounded-lg">
                 <BarChart className="h-6 w-6" />
               </div>
               <div>
@@ -56,7 +56,7 @@ export default function OnlineAnalytics() {
         <Card className="border-0 shadow-sm rounded-xl">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-slate-50 text-primary rounded-lg">
+              <div className="p-3 bg-slate-50 dark:bg-slate-800/50 text-primary rounded-lg">
                 <Activity className="h-6 w-6" />
               </div>
               <div>
@@ -73,7 +73,7 @@ export default function OnlineAnalytics() {
         <Card className="border-0 shadow-sm rounded-xl">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-slate-50 text-primary rounded-lg">
+              <div className="p-3 bg-slate-50 dark:bg-slate-800/50 text-primary rounded-lg">
                 <TrendingUp className="h-6 w-6" />
               </div>
               <div>

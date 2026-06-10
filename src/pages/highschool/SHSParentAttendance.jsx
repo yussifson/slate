@@ -82,12 +82,12 @@ export default function SHSParentAttendance() {
 
   const getStatusColor = (status) => {
     switch(status) {
-      case 'Present': return 'bg-slate-50 text-primary/90 border-primary/20';
+      case 'Present': return 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-primary/20';
       case 'Absent': return 'bg-rose-50 text-rose-700 border-rose-200';
       case 'Late': return 'bg-amber-50 text-amber-700 border-amber-200';
       case 'Excused': return 'bg-orange-50 text-orange-700 border-primary/20';
-      case 'Exeat': return 'bg-slate-50 dark:bg-slate-800 text-primary/80 dark:text-primary/20 border-primary/20 dark:border-slate-600';
-      default: return 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700';
+      case 'Exeat': return 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-primary/80 dark:text-primary/20 border-primary/20 dark:border-slate-600';
+      default: return 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 dark:text-slate-200 border-slate-200 dark:border-slate-700';
     }
   };
 
@@ -106,24 +106,24 @@ export default function SHSParentAttendance() {
       </div>
 
       {loading ? (
-        <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
-          <CardContent className="p-20 text-center text-slate-400 dark:text-slate-500">Loading attendance data...</CardContent>
+        <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+          <CardContent className="p-20 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading attendance data...</CardContent>
         </Card>
       ) : wards.length === 0 ? (
-        <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
           <CardContent className="p-20 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+            <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
               <User className="w-8 h-8 text-primary dark:text-primary" />
             </div>
-            <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No Wards Linked</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Contact the school administration to link your child's account.</p>
+            <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">No Wards Linked</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Contact the school administration to link your child's account.</p>
           </CardContent>
         </Card>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           
           <div className="lg:col-span-1 space-y-4">
-            <h3 className="text-sm font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider pl-2">Select Child</h3>
+            <h3 className="text-sm font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider pl-2">Select Child</h3>
             {wards.map(ward => (
               <button
                 key={ward.id}
@@ -131,17 +131,17 @@ export default function SHSParentAttendance() {
                 className={`w-full p-4 rounded-2xl border text-left transition-all duration-300 flex items-center gap-4 ${
                   selectedWardId === ward.id 
                     ? 'bg-primary dark:bg-primary border-primary dark:border-primary text-white shadow-lg shadow-emerald-500/20 scale-100' 
-                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-primary dark:border-slate-200 scale-95'
+                    : 'bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:border-primary dark:border-slate-200 scale-95'
                 }`}
               >
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg shrink-0 ${
-                  selectedWardId === ward.id ? 'bg-white dark:bg-slate-900/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70'
+                  selectedWardId === ward.id ? 'bg-white dark:bg-slate-900/40 dark:bg-slate-900/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70'
                 }`}>
                   {ward.title.charAt(0)}
                 </div>
                 <div>
                   <h4 className="font-bold">{ward.title}</h4>
-                  <p className={`text-xs ${selectedWardId === ward.id ? 'text-primary/20 dark:text-primary/80' : 'text-slate-500 dark:text-slate-400 dark:text-slate-500'}`}>
+                  <p className={`text-xs ${selectedWardId === ward.id ? 'text-primary/20 dark:text-primary/80' : 'text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400'}`}>
                     {ward.data?.classRoom || 'Form 1'}
                   </p>
                 </div>
@@ -150,22 +150,22 @@ export default function SHSParentAttendance() {
           </div>
 
           <div className="lg:col-span-3 space-y-6">
-            <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100">
-              <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50">
+            <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100">
+              <CardHeader className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50">
                 <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
                   <CalendarIcon className="w-5 h-5 text-primary dark:text-primary/70" /> Recent Attendance Log
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
                 {wardRecords.length === 0 ? (
-                  <div className="p-16 text-center text-slate-500 dark:text-slate-400 dark:text-slate-500">
+                  <div className="p-16 text-center text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">
                     <CalendarIcon className="w-12 h-12 text-slate-200 mx-auto mb-3" />
                     No attendance records found for this student.
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm text-left">
-                      <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
+                      <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-semibold uppercase text-[10px] tracking-wider">
                         <tr>
                           <th className="px-6 py-4 rounded-tl-xl">Date</th>
                           <th className="px-6 py-4">Register Type</th>
@@ -174,8 +174,8 @@ export default function SHSParentAttendance() {
                       </thead>
                       <tbody className="divide-y divide-slate-100">
                         {wardRecords.map((record, i) => (
-                          <tr key={i} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
-                            <td className="px-6 py-4 font-semibold text-slate-700 dark:text-slate-200">
+                          <tr key={i} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
+                            <td className="px-6 py-4 font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">
                               {new Date(record.date).toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}
                             </td>
                             <td className="px-6 py-4 text-slate-600 dark:text-slate-300">

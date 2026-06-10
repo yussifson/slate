@@ -54,7 +54,7 @@ export default function RetailDashboard() {
   }
 
   return (
-    <div className="flex-1 p-6 overflow-y-auto bg-slate-50/50">
+    <div className="flex-1 p-6 overflow-y-auto bg-slate-50/50 dark:bg-transparent">
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="relative overflow-hidden bg-gradient-to-r from-orange-500 to-amber-600 rounded-xl p-6 text-white mb-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
@@ -62,7 +62,7 @@ export default function RetailDashboard() {
               <h1 className="text-2xl font-bold tracking-tight">Welcome back, {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Manager'}!</h1>
               <p className="text-white/80 text-sm mt-1">{t("retail_desc", "Live metrics from your retail operations.")}</p>
             </div>
-            <div className="flex items-center bg-white/15 px-4 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider">
+            <div className="flex items-center bg-white dark:bg-slate-900/40/15 px-4 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider">
               {new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })}
             </div>
           </div>
@@ -76,7 +76,7 @@ export default function RetailDashboard() {
               <DollarSign className="w-4 h-4 text-primary" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-slate-900">${todayRevenue.toFixed(2)}</div>
+              <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">${todayRevenue.toFixed(2)}</div>
               <p className="text-xs text-primary flex items-center mt-1">
                 <TrendingUp className="w-3 h-3 mr-1" />
                 {todaysOrders.length} transactions
@@ -90,8 +90,8 @@ export default function RetailDashboard() {
               <Package className="w-4 h-4 text-orange-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-slate-900">{products.length}</div>
-              <p className="text-xs text-slate-500 mt-1">
+              <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">{products.length}</div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                 Active in inventory
               </p>
             </CardContent>
@@ -103,7 +103,7 @@ export default function RetailDashboard() {
               <AlertCircle className="w-4 h-4 text-red-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-slate-900">{lowStockProducts.length}</div>
+              <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">{lowStockProducts.length}</div>
               <p className="text-xs text-red-600 mt-1">
                 Needs restocking
               </p>
@@ -116,8 +116,8 @@ export default function RetailDashboard() {
               <Users className="w-4 h-4 text-orange-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-slate-900">{activeShifts.length}</div>
-              <p className="text-xs text-slate-500 mt-1">
+              <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">{activeShifts.length}</div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                 Staff on duty
               </p>
             </CardContent>
@@ -163,10 +163,10 @@ export default function RetailDashboard() {
                     <p className="text-sm text-muted-foreground text-center py-4">No low stock items</p>
                   ) : (
                     lowStockProducts.slice(0, 5).map(p => (
-                      <div key={p.id} className="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100">
+                      <div key={p.id} className="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
                         <div>
-                          <p className="text-sm font-medium text-slate-900">{p.data?.name}</p>
-                          <p className="text-xs text-slate-500">SKU: {p.data?.sku || 'N/A'}</p>
+                          <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{p.data?.name}</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">SKU: {p.data?.sku || 'N/A'}</p>
                         </div>
                         <Badge variant="destructive" className="bg-red-100 text-red-700 hover:bg-red-200">
                           {p.data?.quantity || 0} left
@@ -192,14 +192,14 @@ export default function RetailDashboard() {
                     <p className="text-sm text-muted-foreground text-center py-4">No recent orders</p>
                   ) : (
                     orders.slice().sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5).map(o => (
-                      <div key={o.id} className="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100">
+                      <div key={o.id} className="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
                         <div>
-                          <p className="text-sm font-medium text-slate-900">{o.data?.orderNumber || 'ORD'}</p>
-                          <p className="text-xs text-slate-500">
+                          <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{o.data?.orderNumber || 'ORD'}</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">
                             {new Date(o.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                           </p>
                         </div>
-                        <span className="text-sm font-bold text-slate-900">
+                        <span className="text-sm font-bold text-slate-900 dark:text-slate-100">
                           ${Number(o.data?.total || 0).toFixed(2)}
                         </span>
                       </div>

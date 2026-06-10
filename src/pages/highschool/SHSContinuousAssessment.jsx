@@ -50,7 +50,7 @@ export default function SHSContinuousAssessment() {
           <Card key={item.id} className="group hover:shadow-lg transition-all duration-300 border-border/50 bg-card/50 backdrop-blur-sm">
             <CardContent className="p-6">
               <div className="flex justify-between items-start mb-4">
-                <div className="w-12 h-12 rounded-xl bg-slate-50 dark:bg-slate-800 text-primary dark:text-primary/70 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <div className="w-12 h-12 rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-primary dark:text-primary/70 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <ClipboardList className="w-6 h-6" />
                 </div>
                 <span className={`text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${

@@ -74,7 +74,7 @@ export default function VDashboard() {
                 <p className="text-primary/10 font-medium mb-1">Total Trainees</p>
                 <h3 className="text-4xl font-black">{stats.loading ? '...' : stats.trainees}</h3>
               </div>
-              <div className="p-3 bg-white/20 rounded-2xl backdrop-blur-sm">
+              <div className="p-3 bg-white dark:bg-slate-900/40/20 rounded-2xl backdrop-blur-sm">
                 <Users className="w-6 h-6 text-white" />
               </div>
             </div>
@@ -95,7 +95,7 @@ export default function VDashboard() {
                 <p className="text-primary/10 font-medium mb-1">Active Trades</p>
                 <h3 className="text-4xl font-black">{stats.loading ? '...' : stats.trades}</h3>
               </div>
-              <div className="p-3 bg-white/20 rounded-2xl backdrop-blur-sm">
+              <div className="p-3 bg-white dark:bg-slate-900/40/20 rounded-2xl backdrop-blur-sm">
                 <Wrench className="w-6 h-6 text-white" />
               </div>
             </div>
@@ -116,7 +116,7 @@ export default function VDashboard() {
                 <p className="text-primary/10 font-medium mb-1">Job Placements</p>
                 <h3 className="text-4xl font-black">{stats.loading ? '...' : stats.placements}</h3>
               </div>
-              <div className="p-3 bg-white/20 rounded-2xl backdrop-blur-sm">
+              <div className="p-3 bg-white dark:bg-slate-900/40/20 rounded-2xl backdrop-blur-sm">
                 <UserCheck className="w-6 h-6 text-white" />
               </div>
             </div>
@@ -130,7 +130,7 @@ export default function VDashboard() {
 
       {/* Secondary Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 dark:ring-slate-800">
+        <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 dark:ring-slate-800">
           <CardHeader>
             <CardTitle className="text-xl flex items-center gap-2">
               <GraduationCap className="w-5 h-5 text-primary" /> Recent Graduates
@@ -139,14 +139,14 @@ export default function VDashboard() {
           </CardHeader>
           <CardContent>
             <div className="flex flex-col items-center justify-center py-8 text-center">
-              <GraduationCap className="w-12 h-12 text-slate-200 dark:text-slate-700 mb-3" />
-              <p className="text-slate-500 font-medium">No recent graduates to display.</p>
+              <GraduationCap className="w-12 h-12 text-slate-200 dark:text-slate-700 dark:text-slate-300 mb-3" />
+              <p className="text-slate-500 dark:text-slate-400 font-medium">No recent graduates to display.</p>
               <p className="text-sm text-slate-400 mt-1">Completion data will appear here once trainees finish their final assessments.</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 dark:ring-slate-800">
+        <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 dark:ring-slate-800">
           <CardHeader>
             <CardTitle className="text-xl flex items-center gap-2">
               <Building2 className="w-5 h-5 text-primary" /> Partner Employers
@@ -155,8 +155,8 @@ export default function VDashboard() {
           </CardHeader>
           <CardContent>
             <div className="flex flex-col items-center justify-center py-8 text-center">
-              <Building2 className="w-12 h-12 text-slate-200 dark:text-slate-700 mb-3" />
-              <p className="text-slate-500 font-medium">No employer data available.</p>
+              <Building2 className="w-12 h-12 text-slate-200 dark:text-slate-700 dark:text-slate-300 mb-3" />
+              <p className="text-slate-500 dark:text-slate-400 font-medium">No employer data available.</p>
               <p className="text-sm text-slate-400 mt-1">Add partner companies to track placements.</p>
               <Button variant="outline" className="mt-4 rounded-xl">Add Employer</Button>
             </div>

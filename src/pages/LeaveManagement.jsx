@@ -82,9 +82,9 @@ export default function LeaveManagement() {
       {/* My Balance */}
       <div className="grid grid-cols-3 gap-4">
         {[
-          { label: "Total Entitlement", value: myBalance.total, color: "bg-slate-50 text-primary" },
+          { label: "Total Entitlement", value: myBalance.total, color: "bg-slate-50 dark:bg-slate-800/50 text-primary" },
           { label: "Days Used", value: myBalance.used, color: "bg-amber-50 text-amber-600" },
-          { label: "Days Remaining", value: myBalance.remaining, color: "bg-slate-50 text-primary" },
+          { label: "Days Remaining", value: myBalance.remaining, color: "bg-slate-50 dark:bg-slate-800/50 text-primary" },
         ].map(s => {
           return (
             <div key={s.label} className="bg-card border border-border rounded-xl p-4 flex items-center gap-3">

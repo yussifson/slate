@@ -88,7 +88,7 @@ export default function OnlinePortal() {
 
         <div className="lg:col-span-1 space-y-6">
           <h2 className="text-xl font-bold text-gray-900">Upcoming Deadlines</h2>
-          <Card className="border-0 shadow-sm rounded-xl p-6 bg-white">
+          <Card className="border-0 shadow-sm rounded-xl p-6 bg-white dark:bg-slate-900/40">
             <div className="flex gap-4">
               <div className="flex flex-col items-center justify-center bg-red-50 text-red-600 rounded-lg p-2 min-w-[60px]">
                 <span className="text-xs font-bold uppercase">Oct</span>

@@ -240,7 +240,7 @@ export default function Recruitment() {
                   </select>
                 </div>
                 <div className="flex gap-2">
-                  <Button onClick={() => handleUpdateStage(cand, 'Hired')} size="sm" variant="outline" className="text-primary border-primary/20 hover:bg-slate-50 px-2"><CheckCircle2 className="w-4 h-4"/></Button>
+                  <Button onClick={() => handleUpdateStage(cand, 'Hired')} size="sm" variant="outline" className="text-primary border-primary/20 hover:bg-slate-50 dark:bg-slate-800/50 px-2"><CheckCircle2 className="w-4 h-4"/></Button>
                   <Button onClick={() => handleUpdateStage(cand, 'Rejected')} size="sm" variant="outline" className="text-red-600 border-red-200 hover:bg-red-50 px-2"><XCircle className="w-4 h-4"/></Button>
                   <Button onClick={() => setDeleteTargetId(cand.id)} size="sm" variant="ghost" className="text-red-500 hover:text-red-700 hover:bg-red-50 px-2 opacity-0 group-hover:opacity-100"><Trash2 className="w-4 h-4"/></Button>
                 </div>

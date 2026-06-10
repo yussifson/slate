@@ -128,7 +128,7 @@ export default function SHSPayments() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-slate-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-slate-100">
           <CardContent className="p-5 flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
               <DollarSign className="w-6 h-6" />
@@ -141,18 +141,18 @@ export default function SHSPayments() {
         </Card>
       </div>
 
-      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
-        <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
+      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Payment History</CardTitle>
             </div>
             
             <div className="relative w-full sm:w-64">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
               <Input 
                 placeholder="Search receipts..." 
-                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
+                className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -161,19 +161,19 @@ export default function SHSPayments() {
         </CardHeader>
         <CardContent className="p-0">
           {loading ? (
-            <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading transactions...</div>
+            <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading transactions...</div>
           ) : filteredPayments.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
                 <History className="w-8 h-8 text-primary dark:text-primary" />
               </div>
-              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No payments recorded</h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Record a payment to see it here.</p>
+              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">No payments recorded</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Record a payment to see it here.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left">
-                <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
+                <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-semibold uppercase text-[10px] tracking-wider">
                   <tr>
                     <th className="px-6 py-4 rounded-tl-xl">Receipt No.</th>
                     <th className="px-6 py-4">Student</th>
@@ -185,29 +185,29 @@ export default function SHSPayments() {
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {filteredPayments.map((payment) => (
-                    <tr key={payment.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
+                    <tr key={payment.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
                       <td className="px-6 py-4">
                         <p className="font-bold text-slate-800 dark:text-slate-100">{payment.case_number}</p>
                       </td>
                       <td className="px-6 py-4">
-                        <p className="font-semibold text-slate-700 dark:text-slate-200">{payment.data?.studentName || 'Unknown Student'}</p>
+                        <p className="font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">{payment.data?.studentName || 'Unknown Student'}</p>
                       </td>
                       <td className="px-6 py-4">
                         <span className="text-slate-600 dark:text-slate-300 font-mono text-xs bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">{payment.data?.invoiceNumber}</span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="font-black text-primary bg-slate-50 px-3 py-1 rounded-lg border border-slate-200">
+                        <span className="font-black text-primary bg-slate-50 dark:bg-slate-800/50 px-3 py-1 rounded-lg border border-slate-200">
                           ${parseFloat(payment.data?.amountPaid || 0).toFixed(2)}
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <p className="font-medium text-slate-700 dark:text-slate-200 flex items-center gap-1.5 mb-1">
-                          <CreditCard className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" /> {payment.data?.paymentMethod}
+                        <p className="font-medium text-slate-700 dark:text-slate-300 dark:text-slate-200 flex items-center gap-1.5 mb-1">
+                          <CreditCard className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 dark:text-slate-400" /> {payment.data?.paymentMethod}
                         </p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">{payment.data?.date}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">{payment.data?.date}</p>
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <Badge variant="outline" className="bg-slate-50 text-primary/90 border-primary/20">
+                        <Badge variant="outline" className="bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-primary/20">
                           {payment.status}
                         </Badge>
                       </td>
@@ -231,11 +231,11 @@ export default function SHSPayments() {
             </DialogHeader>
           </div>
           
-          <div className="p-6 bg-slate-50 dark:bg-slate-800 space-y-4">
+          <div className="p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 space-y-4">
             <div className="space-y-2">
               <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Select Invoice (Unpaid/Partial)</label>
               <select 
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
                 value={newPayment.invoiceId}
                 onChange={e => setNewPayment({...newPayment, invoiceId: e.target.value})}
               >
@@ -261,7 +261,7 @@ export default function SHSPayments() {
                   min="0.01"
                   step="0.01"
                   placeholder="0.00"
-                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl font-bold text-lg h-11"
+                  className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl font-bold text-lg h-11"
                   value={newPayment.amountPaid}
                   onChange={e => setNewPayment({...newPayment, amountPaid: e.target.value})}
                 />
@@ -269,7 +269,7 @@ export default function SHSPayments() {
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Payment Method</label>
                 <select 
-                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
                   value={newPayment.paymentMethod}
                   onChange={e => setNewPayment({...newPayment, paymentMethod: e.target.value})}
                 >
@@ -286,7 +286,7 @@ export default function SHSPayments() {
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Payment Date</label>
                 <Input 
                   type="date"
-                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl h-11"
+                  className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl h-11"
                   value={newPayment.date}
                   onChange={e => setNewPayment({...newPayment, date: e.target.value})}
                 />
@@ -295,7 +295,7 @@ export default function SHSPayments() {
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Reference No (Optional)</label>
                 <Input 
                   placeholder="Bank Teller / Momo Ref"
-                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl h-11 text-xs"
+                  className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl h-11 text-xs"
                   value={newPayment.referenceNo}
                   onChange={e => setNewPayment({...newPayment, referenceNo: e.target.value})}
                 />
@@ -303,7 +303,7 @@ export default function SHSPayments() {
             </div>
           </div>
           
-          <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+          <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-end gap-3">
             <Button variant="outline" onClick={() => setIsPaymentModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
               Cancel
             </Button>

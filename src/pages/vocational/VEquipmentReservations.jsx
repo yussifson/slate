@@ -97,7 +97,7 @@ export default function VEquipmentReservations() {
   );
 
   return (
-    <div className="flex-1 space-y-6 p-8 bg-slate-50/50 dark:bg-slate-900/50 min-h-screen animate-in fade-in duration-300">
+    <div className="flex-1 space-y-6 p-8 bg-slate-50/50 dark:bg-transparent dark:bg-slate-900/50 min-h-screen animate-in fade-in duration-300">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 dark:from-primary/70 dark:to-white bg-clip-text text-transparent flex items-center gap-3">
@@ -114,7 +114,7 @@ export default function VEquipmentReservations() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input 
               placeholder="Search reservations..." 
-              className="pl-9 w-[250px] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus-visible:ring-primary rounded-xl"
+              className="pl-9 w-[250px] bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus-visible:ring-primary rounded-xl"
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
             />
@@ -126,7 +126,7 @@ export default function VEquipmentReservations() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl border-none shadow-sm rounded-3xl ring-1 ring-slate-200/50 dark:ring-slate-800">
+        <Card className="bg-white dark:bg-slate-900/40/60 dark:bg-slate-900/60 backdrop-blur-xl border-none shadow-sm rounded-3xl ring-1 ring-slate-200/50 dark:ring-slate-800">
           <CardContent className="p-6 flex items-center gap-4">
             <div className="w-14 h-14 rounded-2xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-600 dark:text-amber-400">
               <Clock className="w-7 h-7" />
@@ -137,9 +137,9 @@ export default function VEquipmentReservations() {
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl border-none shadow-sm rounded-3xl ring-1 ring-slate-200/50 dark:ring-slate-800">
+        <Card className="bg-white dark:bg-slate-900/40/60 dark:bg-slate-900/60 backdrop-blur-xl border-none shadow-sm rounded-3xl ring-1 ring-slate-200/50 dark:ring-slate-800">
           <CardContent className="p-6 flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70">
+            <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70">
               <CheckCircle2 className="w-7 h-7" />
             </div>
             <div>
@@ -148,7 +148,7 @@ export default function VEquipmentReservations() {
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl border-none shadow-sm rounded-3xl ring-1 ring-slate-200/50 dark:ring-slate-800">
+        <Card className="bg-white dark:bg-slate-900/40/60 dark:bg-slate-900/60 backdrop-blur-xl border-none shadow-sm rounded-3xl ring-1 ring-slate-200/50 dark:ring-slate-800">
           <CardContent className="p-6 flex items-center gap-4">
             <div className="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-900/20 flex items-center justify-center text-rose-600 dark:text-rose-400">
               <XCircle className="w-7 h-7" />
@@ -161,7 +161,7 @@ export default function VEquipmentReservations() {
         </Card>
       </div>
 
-      <Card className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-none shadow-sm rounded-3xl ring-1 ring-slate-200/50 dark:ring-slate-800 overflow-hidden">
+      <Card className="bg-white dark:bg-slate-900/40/80 dark:bg-slate-900/80 backdrop-blur-xl border-none shadow-sm rounded-3xl ring-1 ring-slate-200/50 dark:ring-slate-800 overflow-hidden">
         <ScrollArea className="h-[500px]">
           {loading ? (
             <div className="p-12 text-center text-muted-foreground">Loading reservations...</div>
@@ -174,15 +174,15 @@ export default function VEquipmentReservations() {
             <div className="p-0">
               <div className="divide-y divide-slate-100 dark:divide-slate-800">
                 {filtered.map(item => (
-                  <div key={item.id} className="flex items-center justify-between p-5 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors group">
+                  <div key={item.id} className="flex items-center justify-between p-5 hover:bg-slate-50/50 dark:bg-transparent dark:hover:bg-slate-800/50 transition-colors group">
                     <div className="flex items-center gap-5">
-                      <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70 font-bold shrink-0">
+                      <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70 font-bold shrink-0">
                         <Calendar className="w-6 h-6" />
                       </div>
                       <div>
-                        <h4 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">{item.title}</h4>
+                        <h4 className="text-base font-bold text-slate-900 dark:text-slate-100 dark:text-white group-hover:text-primary transition-colors">{item.title}</h4>
                         <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
-                          <span className="font-medium text-slate-700 dark:text-slate-300">{item.data?.equipment_name || 'No Equipment Specified'}</span>
+                          <span className="font-medium text-slate-700 dark:text-slate-300 dark:text-slate-300">{item.data?.equipment_name || 'No Equipment Specified'}</span>
                           <span>•</span>
                           <span>By: {item.data?.reserved_by || 'Unknown'}</span>
                           <span>•</span>
@@ -195,12 +195,12 @@ export default function VEquipmentReservations() {
                         item.status === 'Approved' ? 'bg-slate-100 text-primary/90 hover:bg-primary/20 dark:bg-primary/20 dark:text-primary/70' :
                         item.status === 'Pending' ? 'bg-amber-100 text-amber-700 hover:bg-amber-200 dark:bg-amber-500/20 dark:text-amber-400' :
                         item.status === 'Cancelled' ? 'bg-rose-100 text-rose-700 hover:bg-rose-200 dark:bg-rose-500/20 dark:text-rose-400' :
-                        'bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400'
+                        'bg-slate-100 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400'
                       } variant="secondary">
                         {item.status}
                       </Badge>
                       <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button variant="ghost" size="icon" onClick={() => openModal(item)} className="h-8 w-8 text-primary hover:bg-slate-50 dark:hover:bg-primary/20">
+                        <Button variant="ghost" size="icon" onClick={() => openModal(item)} className="h-8 w-8 text-primary hover:bg-slate-50 dark:bg-slate-800/50 dark:hover:bg-primary/20">
                           <Edit className="w-4 h-4" />
                         </Button>
                         <Button variant="ghost" size="icon" onClick={() => handleDelete(item.id)} className="h-8 w-8 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20">
@@ -217,39 +217,39 @@ export default function VEquipmentReservations() {
       </Card>
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[500px] rounded-3xl bg-white dark:bg-slate-900 border-none shadow-2xl ring-1 ring-slate-200/50 dark:ring-slate-800">
+        <DialogContent className="sm:max-w-[500px] rounded-3xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-none shadow-2xl ring-1 ring-slate-200/50 dark:ring-slate-800">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold">{currentRecord ? 'Edit Reservation' : 'New Reservation'}</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Reservation Title</label>
-              <Input className="rounded-xl bg-slate-50 dark:bg-slate-800 border-none" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} placeholder="e.g. Workshop Practical Exam" />
+              <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-300">Reservation Title</label>
+              <Input className="rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-none" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} placeholder="e.g. Workshop Practical Exam" />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Equipment Needed</label>
-                <Input className="rounded-xl bg-slate-50 dark:bg-slate-800 border-none" value={formData.equipment_name} onChange={e => setFormData({...formData, equipment_name: e.target.value})} placeholder="e.g. CNC Machine A" />
+                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-300">Equipment Needed</label>
+                <Input className="rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-none" value={formData.equipment_name} onChange={e => setFormData({...formData, equipment_name: e.target.value})} placeholder="e.g. CNC Machine A" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Reserved By</label>
-                <Input className="rounded-xl bg-slate-50 dark:bg-slate-800 border-none" value={formData.reserved_by} onChange={e => setFormData({...formData, reserved_by: e.target.value})} placeholder="e.g. Instructor Smith" />
+                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-300">Reserved By</label>
+                <Input className="rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-none" value={formData.reserved_by} onChange={e => setFormData({...formData, reserved_by: e.target.value})} placeholder="e.g. Instructor Smith" />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Start Date & Time</label>
-                <Input type="datetime-local" className="rounded-xl bg-slate-50 dark:bg-slate-800 border-none" value={formData.start_date} onChange={e => setFormData({...formData, start_date: e.target.value})} />
+                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-300">Start Date & Time</label>
+                <Input type="datetime-local" className="rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-none" value={formData.start_date} onChange={e => setFormData({...formData, start_date: e.target.value})} />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">End Date & Time</label>
-                <Input type="datetime-local" className="rounded-xl bg-slate-50 dark:bg-slate-800 border-none" value={formData.end_date} onChange={e => setFormData({...formData, end_date: e.target.value})} />
+                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-300">End Date & Time</label>
+                <Input type="datetime-local" className="rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-none" value={formData.end_date} onChange={e => setFormData({...formData, end_date: e.target.value})} />
               </div>
             </div>
             <div className="space-y-2 mt-2">
-              <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Status</label>
+              <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-300">Status</label>
               <select 
-                className="flex h-10 w-full items-center justify-between rounded-xl bg-slate-50 dark:bg-slate-800 px-3 py-2 text-sm focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex h-10 w-full items-center justify-between rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 px-3 py-2 text-sm focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                 value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})}
               >
                 <option value="Pending">Pending</option>

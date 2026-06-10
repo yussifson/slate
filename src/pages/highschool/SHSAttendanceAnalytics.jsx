@@ -85,8 +85,8 @@ export default function SHSAttendanceAnalytics() {
       </div>
 
       {loading ? (
-        <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
-          <CardContent className="p-20 text-center text-slate-400 dark:text-slate-500">Loading attendance analytics...</CardContent>
+        <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+          <CardContent className="p-20 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading attendance analytics...</CardContent>
         </Card>
       ) : (
         <>
@@ -94,7 +94,7 @@ export default function SHSAttendanceAnalytics() {
             <Card className="rounded-3xl border-none shadow-sm bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 text-white">
               <CardContent className="p-6">
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-white dark:bg-slate-900/20 flex items-center justify-center text-white">
+                  <div className="w-12 h-12 rounded-xl bg-white dark:bg-slate-900/40 dark:bg-slate-900/20 flex items-center justify-center text-white">
                     <CalendarCheck className="w-6 h-6" />
                   </div>
                   <div>
@@ -106,7 +106,7 @@ export default function SHSAttendanceAnalytics() {
               </CardContent>
             </Card>
 
-            <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-rose-100">
+            <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-rose-100">
               <CardContent className="p-6">
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-12 h-12 rounded-xl bg-rose-100 flex items-center justify-center text-rose-600">
@@ -123,7 +123,7 @@ export default function SHSAttendanceAnalytics() {
               </CardContent>
             </Card>
 
-            <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-amber-100">
+            <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-amber-100">
               <CardContent className="p-6">
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600">
@@ -140,35 +140,35 @@ export default function SHSAttendanceAnalytics() {
               </CardContent>
             </Card>
 
-            <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100">
+            <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100">
               <CardContent className="p-6">
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 dark:text-slate-500">
+                  <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">
                     <AlertTriangle className="w-6 h-6" />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider">Records Analyzed</p>
+                    <p className="text-sm font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider">Records Analyzed</p>
                   </div>
                 </div>
                 <h3 className="text-4xl font-black text-slate-800 dark:text-slate-100">{totalRecordsAnalyzed.toLocaleString()}</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500 mt-2 font-medium">Individual student roll calls</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 mt-2 font-medium">Individual student roll calls</p>
               </CardContent>
             </Card>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
-              <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
+            <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+              <CardHeader className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
                 <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
                   <LineChart className="w-5 h-5 text-primary dark:text-primary/70" /> Attendance Over Time
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-16 flex items-center justify-center min-h-[300px]">
                 <div className="text-center space-y-4">
-                  <div className="w-20 h-20 rounded-3xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center border border-slate-100 dark:border-slate-800">
+                  <div className="w-20 h-20 rounded-3xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center border border-slate-100 dark:border-slate-800 dark:border-slate-800">
                     <TrendingUp className="w-10 h-10 text-primary dark:text-primary/70" />
                   </div>
-                  <p className="text-slate-500 dark:text-slate-400 dark:text-slate-500 font-medium">Connect a charting library to view interactive time-series.</p>
+                  <p className="text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-medium">Connect a charting library to view interactive time-series.</p>
                   
                   {/* Fallback mock chart line for aesthetic when no real time-series provider is hooked up */}
                   <div className="w-full max-w-sm mx-auto h-24 border-b border-l border-slate-200 dark:border-slate-700 mt-8 relative">
@@ -186,8 +186,8 @@ export default function SHSAttendanceAnalytics() {
               </CardContent>
             </Card>
 
-            <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
-              <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
+            <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+              <CardHeader className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
                 <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
                   <BarChart className="w-5 h-5 text-primary dark:text-primary/70" /> Highest Truancy by Form
                 </CardTitle>
@@ -197,7 +197,7 @@ export default function SHSAttendanceAnalytics() {
                   {defaultTruancy.map((f, idx) => (
                     <div key={idx}>
                       <div className="flex justify-between items-center mb-2">
-                        <span className="font-bold text-slate-700 dark:text-slate-200">{f.form}</span>
+                        <span className="font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">{f.form}</span>
                         <span className={`font-bold ${f.rate > 5 ? 'text-rose-600' : f.rate > 2 ? 'text-rose-400' : 'text-primary'}`}>{f.rate.toFixed(1)}% Absent</span>
                       </div>
                       <div className="w-full bg-slate-100 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">

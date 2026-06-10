@@ -110,7 +110,7 @@ View in App: ${window.location.origin}/leads`,
   if (submitted) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-primary/5 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full text-center">
+        <div className="bg-white dark:bg-slate-900/40 rounded-2xl shadow-lg p-8 max-w-md w-full text-center">
           <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="w-8 h-8 text-primary" />
           </div>
@@ -158,7 +158,7 @@ View in App: ${window.location.origin}/leads`,
           )}</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm border border-border p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-900/40 rounded-2xl shadow-sm border border-border p-6 space-y-5">
           {/* Personal Info */}
           <div>
             <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">

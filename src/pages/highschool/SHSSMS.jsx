@@ -109,7 +109,7 @@ export default function SHSSMS() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-slate-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-slate-100">
           <CardContent className="p-5 flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
@@ -125,8 +125,8 @@ export default function SHSSMS() {
         </Card>
       </div>
 
-      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
-        <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
+      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
@@ -135,10 +135,10 @@ export default function SHSSMS() {
             </div>
             
             <div className="relative w-full sm:w-64">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
               <Input 
                 placeholder="Search message content..." 
-                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
+                className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -147,36 +147,36 @@ export default function SHSSMS() {
         </CardHeader>
         <CardContent className="p-0">
           {loading ? (
-            <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading SMS logs...</div>
+            <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading SMS logs...</div>
           ) : filteredMessages.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
                 <MessageSquare className="w-8 h-8 text-primary dark:text-primary" />
               </div>
-              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No messages sent</h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Your sent SMS blasts will appear here.</p>
+              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">No messages sent</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Your sent SMS blasts will appear here.</p>
             </div>
           ) : (
             <div className="divide-y divide-slate-100">
               {filteredMessages.map((msg) => (
-                <div key={msg.id} className="p-6 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
+                <div key={msg.id} className="p-6 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
                   <div className="flex justify-between items-start mb-3">
                     <div className="flex items-center gap-2">
                       <Badge variant="secondary" className="bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70 border-none">
                         {msg.data?.targetGroup}
                       </Badge>
-                      <span className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-slate-500 flex items-center gap-1">
+                      <span className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 flex items-center gap-1">
                         <Users className="w-3 h-3" /> {msg.data?.recipientCount} Recipients
                       </span>
                     </div>
-                    <span className="text-xs text-slate-400 dark:text-slate-500 font-medium">
+                    <span className="text-xs text-slate-400 dark:text-slate-500 dark:text-slate-400 font-medium">
                       {new Date(msg.data?.sentDate).toLocaleString()}
                     </span>
                   </div>
-                  <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-800 text-sm text-slate-700 dark:text-slate-200 whitespace-pre-wrap">
+                  <div className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-800 dark:border-slate-800 text-sm text-slate-700 dark:text-slate-300 dark:text-slate-200 whitespace-pre-wrap">
                     {msg.data?.messageText}
                   </div>
-                  <div className="mt-3 flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">
+                  <div className="mt-3 flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">
                     <span>Sent by: {msg.data?.senderName}</span>
                     <span className="text-primary font-bold flex items-center gap-1">
                       <Badge className="bg-primary hover:bg-primary border-none px-2 py-0 h-5">Delivered</Badge>
@@ -200,11 +200,11 @@ export default function SHSSMS() {
             </DialogHeader>
           </div>
           
-          <div className="p-6 bg-slate-50 dark:bg-slate-800 space-y-4">
+          <div className="p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 space-y-4">
             <div className="space-y-2">
               <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Target Group</label>
               <select 
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-200"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200"
                 value={newSms.targetGroup}
                 onChange={e => setNewSms({...newSms, targetGroup: e.target.value})}
               >
@@ -222,7 +222,7 @@ export default function SHSSMS() {
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Custom Numbers (Comma separated)</label>
                 <textarea 
                   placeholder="e.g. 0241234567, 0501234567"
-                  className="w-full h-20 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary resize-none text-sm font-mono"
+                  className="w-full h-20 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary resize-none text-sm font-mono"
                   value={newSms.customNumbers}
                   onChange={e => setNewSms({...newSms, customNumbers: e.target.value})}
                 />
@@ -232,19 +232,19 @@ export default function SHSSMS() {
             <div className="space-y-2">
               <div className="flex justify-between items-end">
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Message Content</label>
-                <span className={`text-xs font-mono ${newSms.messageText.length > 160 ? 'text-amber-500 font-bold' : 'text-slate-400 dark:text-slate-500'}`}>
+                <span className={`text-xs font-mono ${newSms.messageText.length > 160 ? 'text-amber-500 font-bold' : 'text-slate-400 dark:text-slate-500 dark:text-slate-400'}`}>
                   {newSms.messageText.length} / 160 chars ({Math.ceil(Math.max(1, newSms.messageText.length) / 160)} page)
                 </span>
               </div>
               <textarea 
                 placeholder="Type your message here..."
-                className="w-full h-32 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary resize-none text-sm"
+                className="w-full h-32 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary resize-none text-sm"
                 value={newSms.messageText}
                 onChange={e => setNewSms({...newSms, messageText: e.target.value})}
               />
             </div>
             
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-start gap-3">
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-start gap-3">
               <MessageSquare className="w-5 h-5 text-primary dark:text-primary/70 shrink-0 mt-0.5" />
               <p className="text-xs text-primary/70 dark:text-primary/10 leading-relaxed">
                 Messages exceeding 160 characters will be charged as multiple SMS units per recipient. Estimated cost for this blast will be calculated before sending.
@@ -252,7 +252,7 @@ export default function SHSSMS() {
             </div>
           </div>
           
-          <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+          <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-end gap-3">
             <Button variant="outline" onClick={() => setIsSendModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
               Cancel
             </Button>

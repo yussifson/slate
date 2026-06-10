@@ -82,11 +82,11 @@ export default function HRDashboard() {
     <div className="space-y-6">
       <PageHeader title="HR Management" subtitle="Team, payroll, leave, complaints and promotions" />
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-        <MetricCard icon={Users} label="Active Staff" value={activeStaff} color="bg-slate-50 text-primary" />
-        <MetricCard icon={DollarSign} label={`Monthly Payroll (${currency})`} value={formatCurrency(totalSalary, currency)} color="bg-slate-50 text-primary" />
+        <MetricCard icon={Users} label="Active Staff" value={activeStaff} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
+        <MetricCard icon={DollarSign} label={`Monthly Payroll (${currency})`} value={formatCurrency(totalSalary, currency)} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
         <MetricCard icon={CalendarDays} label="Pending Leave" value={pendingLeaves} color="bg-amber-50 text-amber-600" />
         <MetricCard icon={MessageSquareWarning} label="Open Complaints" value={openComplaints} color="bg-red-50 text-red-600" />
-        <MetricCard icon={ArrowUpCircle} label="Pending Promotions" value={pendingPromotions} color="bg-slate-50 text-primary" />
+        <MetricCard icon={ArrowUpCircle} label="Pending Promotions" value={pendingPromotions} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
       </div>
       <Tabs defaultValue="team">
         <TabsList className="flex-wrap h-auto gap-1">

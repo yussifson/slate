@@ -126,15 +126,15 @@ export default function Assignments() {
                 </div>
               </div>
               
-              <div className="bg-slate-50/50 dark:bg-slate-900/50 border border-border/50 p-4 rounded-xl shadow-sm mb-5 relative z-10 flex-1">
+              <div className="bg-slate-50/50 dark:bg-transparent dark:bg-slate-900/50 border border-border/50 p-4 rounded-xl shadow-sm mb-5 relative z-10 flex-1">
                 <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">{a.description}</p>
               </div>
               
               <div className="flex items-center justify-between pt-4 border-t border-border/50 mt-auto relative z-10">
-                <span className="text-xs font-bold flex items-center gap-2 text-slate-500 uppercase tracking-wider">
+                <span className="text-xs font-bold flex items-center gap-2 text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                   <Calendar className="w-4 h-4 text-primary" /> Due: {a.dueDate ? format(new Date(a.dueDate), 'MMM d, yyyy') : 'No Date'}
                 </span>
-                <span className="bg-slate-50 dark:bg-primary/20 text-primary dark:text-primary/30 border border-primary/20 text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-md shadow-sm">{t("active", "Active")}</span>
+                <span className="bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary dark:text-primary/30 border border-primary/20 text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-md shadow-sm">{t("active", "Active")}</span>
               </div>
             </div>
           ))}
@@ -143,7 +143,7 @@ export default function Assignments() {
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
-          <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
+          <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
             <h2 className="text-lg font-bold text-card-foreground">{editingId ? 'Edit Assignment' : 'Create Assignment'}</h2>
             <div className="space-y-3">
               <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("title", "Title")}</label><Input value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="mt-1" /></div>

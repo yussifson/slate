@@ -106,7 +106,7 @@ export default function OnlineCourses() {
                   <div className="aspect-video bg-gradient-to-br from-[var(--color-surface-2)] to-[var(--color-surface-3)] relative flex items-center justify-center overflow-hidden">
                     <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors z-10" />
                     <PlayCircle className="w-12 h-12 text-[var(--primary)] opacity-40 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 z-20 drop-shadow-md" />
-                    <div className="absolute top-3 right-3 px-2.5 py-1 bg-white/90 dark:bg-black/50 backdrop-blur-sm border border-white/20 dark:border-white/10 text-[10px] font-bold rounded-md shadow-sm text-[var(--color-text-primary)] uppercase tracking-wider z-20">
+                    <div className="absolute top-3 right-3 px-2.5 py-1 bg-white dark:bg-slate-900/40/90 dark:bg-black/50 backdrop-blur-sm border border-white/20 dark:border-white/10 text-[10px] font-bold rounded-md shadow-sm text-[var(--color-text-primary)] uppercase tracking-wider z-20">
                       {extra.level || 'Beginner'}
                     </div>
                   </div>
@@ -138,7 +138,7 @@ export default function OnlineCourses() {
                     <button onClick={() => navigate(`/o/builder/course/${course.id}`)} className="text-sm font-semibold text-[var(--primary)] group-hover:text-white flex items-center gap-1 transition-colors">
                       Manage Course <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </button>
-                    <button onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(course.id); }} className="text-[var(--color-error)] opacity-0 group-hover:opacity-100 hover:text-white transition-all bg-white/50 group-hover:bg-transparent rounded-md p-1.5 backdrop-blur-sm shadow-sm" title="Delete Course">
+                    <button onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(course.id); }} className="text-[var(--color-error)] opacity-0 group-hover:opacity-100 hover:text-white transition-all bg-white dark:bg-slate-900/40/50 group-hover:bg-transparent rounded-md p-1.5 backdrop-blur-sm shadow-sm" title="Delete Course">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>

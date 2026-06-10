@@ -103,18 +103,18 @@ export default function SHSMockExams() {
         </Button>
       </div>
 
-      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
-        <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
+      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Scheduled Mocks</CardTitle>
             </div>
             
             <div className="relative w-full sm:w-64">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
               <Input 
                 placeholder="Search mocks..." 
-                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
+                className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -123,19 +123,19 @@ export default function SHSMockExams() {
         </CardHeader>
         <CardContent className="p-0">
           {loading ? (
-            <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading exams...</div>
+            <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading exams...</div>
           ) : filteredExams.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
                 <Award className="w-8 h-8 text-primary dark:text-primary" />
               </div>
-              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No mock exams found</h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Schedule a mock exam for candidate preparation.</p>
+              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">No mock exams found</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Schedule a mock exam for candidate preparation.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left">
-                <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
+                <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-semibold uppercase text-[10px] tracking-wider">
                   <tr>
                     <th className="px-6 py-4 rounded-tl-xl">Exam Name</th>
                     <th className="px-6 py-4">Target Form</th>
@@ -146,28 +146,28 @@ export default function SHSMockExams() {
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {filteredExams.map((exam) => (
-                    <tr key={exam.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
+                    <tr key={exam.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
                       <td className="px-6 py-4">
                         <p className="font-bold text-slate-800 dark:text-slate-100">{exam.title}</p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">{exam.case_number}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">{exam.case_number}</p>
                       </td>
                       <td className="px-6 py-4">
-                        <Badge variant="outline" className="bg-slate-50 text-primary/90 border-primary/20">
+                        <Badge variant="outline" className="bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-primary/20">
                           {exam.data?.targetForm || 'Form 3'} Candidates
                         </Badge>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-xs font-medium">
-                          <Calendar className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
+                          <Calendar className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
                           <span>{exam.data?.startDate} to {exam.data?.endDate}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <Badge variant="outline" className={
-                          exam.status === 'Upcoming' ? 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700' :
+                          exam.status === 'Upcoming' ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700' :
                           exam.status === 'Ongoing' ? 'bg-amber-50 text-amber-600 border-amber-200' :
-                          exam.status === 'Completed' ? 'bg-slate-50 text-primary border-primary/20' :
-                          'bg-slate-50 text-primary/90 border-primary/20'
+                          exam.status === 'Completed' ? 'bg-slate-50 dark:bg-slate-800/50 text-primary border-primary/20' :
+                          'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-primary/20'
                         }>
                           {exam.status}
                         </Badge>
@@ -211,12 +211,12 @@ export default function SHSMockExams() {
             </DialogHeader>
           </div>
           
-          <div className="p-6 bg-slate-50 dark:bg-slate-800 space-y-4">
+          <div className="p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 space-y-4">
             <div className="space-y-2">
               <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Mock Exam Name</label>
               <Input 
                 placeholder="e.g. WASSCE Mock 1"
-                className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+                className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                 value={newExam.examName}
                 onChange={e => setNewExam({...newExam, examName: e.target.value})}
               />
@@ -226,7 +226,7 @@ export default function SHSMockExams() {
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Academic Year</label>
                 <Input 
-                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+                  className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                   value={newExam.academicYear}
                   onChange={e => setNewExam({...newExam, academicYear: e.target.value})}
                 />
@@ -234,7 +234,7 @@ export default function SHSMockExams() {
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Target Form</label>
                 <select 
-                  className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+                  className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
                   value={newExam.targetForm}
                   onChange={e => setNewExam({...newExam, targetForm: e.target.value})}
                 >
@@ -249,7 +249,7 @@ export default function SHSMockExams() {
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Start Date</label>
                 <Input 
                   type="date"
-                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+                  className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                   value={newExam.startDate}
                   onChange={e => setNewExam({...newExam, startDate: e.target.value})}
                 />
@@ -258,7 +258,7 @@ export default function SHSMockExams() {
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">End Date</label>
                 <Input 
                   type="date"
-                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+                  className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                   value={newExam.endDate}
                   onChange={e => setNewExam({...newExam, endDate: e.target.value})}
                 />
@@ -266,7 +266,7 @@ export default function SHSMockExams() {
             </div>
           </div>
           
-          <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+          <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-end gap-3">
             <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
               Cancel
             </Button>

@@ -134,7 +134,7 @@ export default function PatientPortal() {
                 return (
                   <div key={i} className="flex items-center gap-4 p-3 hover:bg-muted dark:hover:bg-muted/30 rounded-lg transition-colors">
                     <div className="w-20 shrink-0 text-center flex flex-col items-center">
-                      <span className="text-xs font-bold text-primary bg-slate-50 dark:bg-primary/20 px-2 py-1 rounded w-full">{item.date}</span>
+                      <span className="text-xs font-bold text-primary bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 px-2 py-1 rounded w-full">{item.date}</span>
                       <span className="text-[10px] font-semibold text-muted-foreground mt-1">{item.time}</span>
                     </div>
                     <div className="flex-1">

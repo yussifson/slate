@@ -172,7 +172,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
               )}</p>
               <div className="mt-4 flex flex-wrap gap-2 justify-center">
                 {["Requirements for bail in Nigeria", "Tenancy termination notice periods Ghana", "Corporate registration requirements Sierra Leone"].map(s => {
-                  return (<button key={s} onClick={() => setQuestion(s)} className="text-xs px-3 py-1.5 rounded-full border border-primary/30 text-primary hover:bg-slate-50 transition-colors">{s}</button>);
+                  return (<button key={s} onClick={() => setQuestion(s)} className="text-xs px-3 py-1.5 rounded-full border border-primary/30 text-primary hover:bg-slate-50 dark:bg-slate-800/50 transition-colors">{s}</button>);
                 })}
               </div>
             </div>
@@ -189,7 +189,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
               </div>
 
               {/* Main Answer */}
-              <div className="bg-slate-50 border border-primary/20 rounded-xl p-4">
+              <div className="bg-slate-50 dark:bg-slate-800/50 border border-primary/20 rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-2"><Scale className="w-4 h-4 text-primary" /><span className="text-sm font-semibold">{t("answer", "Answer")}</span></div>
                 <div className="text-sm text-foreground leading-relaxed prose prose-sm max-w-none">
                   <ReactMarkdown>{result.answer}</ReactMarkdown>
@@ -202,7 +202,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
                   <div className="space-y-2 pt-1">
                     {result.legislation.map((l, i) => {
                       return (
-                        <div key={i} className="p-3 bg-slate-50 border border-primary/20 rounded-lg">
+                        <div key={i} className="p-3 bg-slate-50 dark:bg-slate-800/50 border border-primary/20 rounded-lg">
                           <p className="text-sm font-medium text-primary/80">{l.name}{l.section && ` — ${l.section}`}</p>
                           {l.relevance && <p className="text-xs text-primary/90 mt-0.5">{l.relevance}</p>}
                         </div>
@@ -218,7 +218,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
                   <div className="space-y-2 pt-1">
                     {result.case_law.map((c, i) => {
                       return (
-                        <div key={i} className="p-3 bg-slate-50 border border-primary/20 rounded-lg">
+                        <div key={i} className="p-3 bg-slate-50 dark:bg-slate-800/50 border border-primary/20 rounded-lg">
                           <p className="text-sm font-medium text-primary/80">{c.case_name}{c.year && ` (${c.year})`}</p>
                           {c.principle && <p className="text-xs text-primary/90 mt-0.5">{c.principle}</p>}
                         </div>

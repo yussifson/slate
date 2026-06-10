@@ -49,17 +49,17 @@ export default function Contact() {
   ];
 
   return (
-    <div className="overflow-x-hidden bg-white min-h-screen">
+    <div className="overflow-x-hidden bg-white dark:bg-slate-900/40 min-h-screen">
       {/* Hero Section */}
       <section className="relative py-10 md:py-14 lg:py-16">
-        <div className="absolute inset-0 bg-slate-50 pointer-events-none" />
+        <div className="absolute inset-0 bg-slate-50 dark:bg-slate-800/50 pointer-events-none" />
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 text-xs font-semibold text-slate-600 mb-8 shadow-sm">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white dark:bg-slate-900/40 border border-slate-200 text-xs font-semibold text-slate-600 mb-8 shadow-sm">
             <span className="flex h-2 w-2 rounded-full bg-primary" />
             {t("get_in_touch", "Get in Touch")}
           </div>
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1] max-w-4xl mx-auto mb-6">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 dark:text-slate-100 leading-[1.1] max-w-4xl mx-auto mb-6">
             {t("we_re_here_to", "We're here to")}{' '}
             <span className="bg-slate-100 text-primary/70 px-4 py-1 rounded-[1.5rem] inline-block mt-2">
               {t("support", "support")}
@@ -75,7 +75,7 @@ export default function Contact() {
         </div>
       </section>
       {/* Main Content Layout */}
-      <section className="py-20 md:py-32 bg-white relative">
+      <section className="py-20 md:py-32 bg-white dark:bg-slate-900/40 relative">
         <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-slate-50 to-transparent"></div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -83,13 +83,13 @@ export default function Contact() {
             
             {/* Left Column — Contact Form */}
             <div className="lg:col-span-7">
-              <div className="bg-white rounded-[2rem] border border-slate-200/60 p-8 md:p-12 shadow-2xl shadow-slate-200/40 hover:shadow-emerald-900/5 transition-all duration-300">
+              <div className="bg-white dark:bg-slate-900/40 rounded-[2rem] border border-slate-200/60 p-8 md:p-12 shadow-2xl shadow-slate-200/40 hover:shadow-emerald-900/5 transition-all duration-300">
                 {formSubmitted ? (
                   <div className="text-center py-20 space-y-6">
-                    <div className="w-20 h-20 rounded-full bg-slate-50 text-primary flex items-center justify-center mx-auto border-8 border-slate-200 shadow-inner">
+                    <div className="w-20 h-20 rounded-full bg-slate-50 dark:bg-slate-800/50 text-primary flex items-center justify-center mx-auto border-8 border-slate-200 shadow-inner">
                       <CheckCircle className="w-10 h-10" />
                     </div>
-                    <h3 className="text-4xl font-extrabold text-slate-900 tracking-tight">
+                    <h3 className="text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
                       {t("message_received", "Message Received")}
                     </h3>
                     <p className="text-lg text-slate-600 font-medium max-w-sm mx-auto leading-relaxed">
@@ -110,15 +110,15 @@ export default function Contact() {
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-8">
                     <div>
-                      <h3 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">
+                      <h3 className="text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight mb-2">
                         {t("send_a_message", "Send a Message")}
                       </h3>
-                      <p className="text-slate-500 font-medium">{t("we_ll_get_back_to_you_within_2", "We'll get back to you within 24 hours.")}</p>
+                      <p className="text-slate-500 dark:text-slate-400 font-medium">{t("we_ll_get_back_to_you_within_2", "We'll get back to you within 24 hours.")}</p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <label htmlFor="name" className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                        <label htmlFor="name" className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                           {t("full_name", "Full Name")} <span className="text-red-500">*</span>
                         </label>
                         <Input
@@ -128,12 +128,12 @@ export default function Contact() {
                           value={formData.name}
                           onChange={handleInputChange}
                           placeholder="Jane Doe"
-                          className="w-full h-14 bg-slate-50 border-slate-200 rounded-xl px-4 font-medium focus:bg-white transition-colors"
+                          className="w-full h-14 bg-slate-50 dark:bg-slate-800/50 border-slate-200 rounded-xl px-4 font-medium focus:bg-white dark:bg-slate-900/40 transition-colors"
                           required
                         />
                       </div>
                       <div className="space-y-2">
-                        <label htmlFor="email" className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                        <label htmlFor="email" className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                           {t("email_address", "Email Address")} <span className="text-red-500">*</span>
                         </label>
                         <Input
@@ -143,7 +143,7 @@ export default function Contact() {
                           value={formData.email}
                           onChange={handleInputChange}
                           placeholder="jane@company.com"
-                          className="w-full h-14 bg-slate-50 border-slate-200 rounded-xl px-4 font-medium focus:bg-white transition-colors"
+                          className="w-full h-14 bg-slate-50 dark:bg-slate-800/50 border-slate-200 rounded-xl px-4 font-medium focus:bg-white dark:bg-slate-900/40 transition-colors"
                           required
                         />
                       </div>
@@ -151,7 +151,7 @@ export default function Contact() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <label htmlFor="company" className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                        <label htmlFor="company" className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                           {t("company_name", "Company Name")}
                         </label>
                         <Input
@@ -161,11 +161,11 @@ export default function Contact() {
                           value={formData.company}
                           onChange={handleInputChange}
                           placeholder="Acme Corp"
-                          className="w-full h-14 bg-slate-50 border-slate-200 rounded-xl px-4 font-medium focus:bg-white transition-colors"
+                          className="w-full h-14 bg-slate-50 dark:bg-slate-800/50 border-slate-200 rounded-xl px-4 font-medium focus:bg-white dark:bg-slate-900/40 transition-colors"
                         />
                       </div>
                       <div className="space-y-2">
-                        <label htmlFor="phone" className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                        <label htmlFor="phone" className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                           {t("phone_number", "Phone Number")}
                         </label>
                         <Input
@@ -175,13 +175,13 @@ export default function Contact() {
                           value={formData.phone}
                           onChange={handleInputChange}
                           placeholder="+1 (555) 000-0000"
-                          className="w-full h-14 bg-slate-50 border-slate-200 rounded-xl px-4 font-medium focus:bg-white transition-colors"
+                          className="w-full h-14 bg-slate-50 dark:bg-slate-800/50 border-slate-200 rounded-xl px-4 font-medium focus:bg-white dark:bg-slate-900/40 transition-colors"
                         />
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <label htmlFor="message" className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                      <label htmlFor="message" className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                         {t("how_can_we_help", "How can we help?")} <span className="text-red-500">*</span>
                       </label>
                       <textarea
@@ -191,7 +191,7 @@ export default function Contact() {
                         value={formData.message}
                         onChange={handleInputChange}
                         placeholder="Tell us about your project or inquiry..."
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-medium text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent focus:bg-white resize-none transition-colors"
+                        className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 rounded-xl p-4 font-medium text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent focus:bg-white dark:bg-slate-900/40 resize-none transition-colors"
                         required
                       ></textarea>
                     </div>
@@ -206,12 +206,12 @@ export default function Contact() {
 
             {/* Right Column — Contact Info */}
             <div className="lg:col-span-5 space-y-8 lg:pl-4">
-              <div className="bg-slate-50 border border-slate-200 rounded-3xl p-8 flex items-start gap-4">
+              <div className="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 rounded-3xl p-8 flex items-start gap-4">
                 <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center text-white shrink-0 mt-1 shadow-md shadow-emerald-600/20">
                   <Clock className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-xl text-slate-900 mb-2">{t("support_hours", "Support Hours")}</h3>
+                  <h3 className="font-bold text-xl text-slate-900 dark:text-slate-100 mb-2">{t("support_hours", "Support Hours")}</h3>
                   <p className="text-slate-600 font-medium leading-relaxed">
                     {t("monday_friday", "Monday – Friday")}<br />
                     {t("8_00_am_5_00_pm_gmt", "8:00 AM – 5:00 PM (GMT)")}
@@ -226,19 +226,19 @@ export default function Contact() {
               </div>
 
               <div>
-                <h3 className="text-2xl font-bold text-slate-900 mb-6 px-2">{t("regional_offices", "Regional Offices")}</h3>
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6 px-2">{t("regional_offices", "Regional Offices")}</h3>
                 <div className="space-y-4">
                   {offices.map((office, idx) => {
                     return (
                       <div
                         key={idx}
-                        className="group rounded-3xl p-6 bg-white border border-slate-100 hover:border-primary/20 hover:bg-primary/30 transition-colors duration-300 flex items-start gap-5"
+                        className="group rounded-3xl p-6 bg-white dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800 hover:border-primary/20 hover:bg-primary/30 transition-colors duration-300 flex items-start gap-5"
                       >
-                        <div className="w-10 h-10 rounded-full bg-slate-100 group-hover:bg-slate-100 flex items-center justify-center text-slate-500 group-hover:text-primary shrink-0 transition-colors">
+                        <div className="w-10 h-10 rounded-full bg-slate-100 group-hover:bg-slate-100 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:text-primary shrink-0 transition-colors">
                           <MapPin className="w-5 h-5" />
                         </div>
                         <div className="space-y-3">
-                          <h4 className="font-bold text-slate-900 text-lg">{office.city}</h4>
+                          <h4 className="font-bold text-slate-900 dark:text-slate-100 text-lg">{office.city}</h4>
                           <div className="text-slate-600 font-medium text-sm space-y-2">
                             <p>{office.address}</p>
                             <p className="flex items-center gap-2 group-hover:text-primary transition-colors">

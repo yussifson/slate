@@ -234,7 +234,7 @@ export default function StudentPortal() {
             {myRegisteredCourses.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {myRegisteredCourses.map((c, i) => (
-                  <div key={i} className="p-4 rounded-xl border border-primary/20 bg-slate-50 dark:bg-primary/20 dark:bg-primary/20 flex items-center gap-3">
+                  <div key={i} className="p-4 rounded-xl border border-primary/20 bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 dark:bg-primary/20 flex items-center gap-3">
                     <BookOpen className="w-5 h-5 text-primary dark:text-primary/70" />
                     <span className="font-semibold text-primary/80 dark:text-primary/30">{c}</span>
                   </div>

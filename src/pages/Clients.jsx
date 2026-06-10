@@ -206,12 +206,12 @@ export default function Clients() {
         </div>
       ) : filtered.length === 0 ? (
         <div className="bg-card rounded-2xl border border-dashed border-slate-200 p-12 text-center max-w-sm mx-auto my-8 space-y-4 shadow-sm">
-          <div className="w-12 h-12 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center mx-auto text-primary">
+          <div className="w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 flex items-center justify-center mx-auto text-primary">
             <Users className="w-5 h-5" />
           </div>
           <div className="space-y-1">
-            <p className="font-bold text-sm text-slate-900">{t("no_registered", "No Registered")} {clientsTerm}</p>
-            <p className="text-xs text-slate-500 max-w-xs mx-auto leading-relaxed">
+            <p className="font-bold text-sm text-slate-900 dark:text-slate-100">{t("no_registered", "No Registered")} {clientsTerm}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs mx-auto leading-relaxed">
               {t(
                 "start_building_your_firm_s_add",
                 "Start building your firm's address book, tracking intake forms, and sharing retainers by adding your first"

@@ -10,7 +10,7 @@ export default function Partners() {
         <div className="w-20 h-20 bg-slate-100 text-primary rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-inner border border-primary/20">
           <Handshake className="w-10 h-10" />
         </div>
-        <h1 className="text-5xl md:text-6xl font-extrabold text-slate-900 tracking-tight mb-6">
+        <h1 className="text-5xl md:text-6xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight mb-6">
           {t("slate_partner_network", "Slate Partner Network")}
         </h1>
         <p className="text-xl text-slate-600 leading-relaxed mb-10">
@@ -23,17 +23,17 @@ export default function Partners() {
           <Button className="rounded-full px-8 bg-primary text-white hover:bg-primary/90 h-14 text-lg font-bold shadow-lg shadow-emerald-600/20 w-full sm:w-auto">
             {t("become_a_partner", "Become a Partner")}
           </Button>
-          <Button variant="outline" className="rounded-full px-8 h-14 text-lg font-bold w-full sm:w-auto border-slate-300 text-slate-700 hover:bg-slate-50">
+          <Button variant="outline" className="rounded-full px-8 h-14 text-lg font-bold w-full sm:w-auto border-slate-300 text-slate-700 dark:text-slate-300 hover:bg-slate-50">
             {t("find_a_partner", "Find a Partner")}
           </Button>
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="bg-white p-10 rounded-[2rem] border border-slate-200 shadow-sm text-center">
-          <div className="w-14 h-14 bg-slate-50 text-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
+        <div className="bg-white dark:bg-slate-900/40 p-10 rounded-[2rem] border border-slate-200 shadow-sm text-center">
+          <div className="w-14 h-14 bg-slate-50 dark:bg-slate-800/50 text-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
             <Globe className="w-7 h-7" />
           </div>
-          <h3 className="text-xl font-bold text-slate-900 mb-4">{t("technology_partners", "Technology Partners")}</h3>
+          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">{t("technology_partners", "Technology Partners")}</h3>
           <p className="text-slate-600 leading-relaxed">
             {t(
               "build_integrations_and_apps_on",
@@ -42,11 +42,11 @@ export default function Partners() {
           </p>
         </div>
         
-        <div className="bg-white p-10 rounded-[2rem] border border-slate-200 shadow-sm text-center">
-          <div className="w-14 h-14 bg-slate-50 text-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
+        <div className="bg-white dark:bg-slate-900/40 p-10 rounded-[2rem] border border-slate-200 shadow-sm text-center">
+          <div className="w-14 h-14 bg-slate-50 dark:bg-slate-800/50 text-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
             <ShieldCheck className="w-7 h-7" />
           </div>
-          <h3 className="text-xl font-bold text-slate-900 mb-4">{t("solutions_partners", "Solutions Partners")}</h3>
+          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">{t("solutions_partners", "Solutions Partners")}</h3>
           <p className="text-slate-600 leading-relaxed">
             {t(
               "consult_implement_and_manage_o",
@@ -55,11 +55,11 @@ export default function Partners() {
           </p>
         </div>
 
-        <div className="bg-white p-10 rounded-[2rem] border border-slate-200 shadow-sm text-center">
-          <div className="w-14 h-14 bg-slate-50 text-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
+        <div className="bg-white dark:bg-slate-900/40 p-10 rounded-[2rem] border border-slate-200 shadow-sm text-center">
+          <div className="w-14 h-14 bg-slate-50 dark:bg-slate-800/50 text-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
             <Rocket className="w-7 h-7" />
           </div>
-          <h3 className="text-xl font-bold text-slate-900 mb-4">{t("referral_partners", "Referral Partners")}</h3>
+          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">{t("referral_partners", "Referral Partners")}</h3>
           <p className="text-slate-600 leading-relaxed">
             {t(
               "recommend_slate_to_your_ne",

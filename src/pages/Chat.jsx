@@ -341,11 +341,11 @@ export default function Chat() {
                     <div className={cn(
                       "relative px-3 py-1.5 shadow-sm text-[14.5px] leading-snug rounded-xl",
                       isMe 
-                        ? "bg-[#d9fdd3] dark:bg-[#005c4b] text-slate-900 dark:text-gray-100 rounded-tr-none" 
-                        : "bg-white dark:bg-[#202c33] text-slate-900 dark:text-gray-100 rounded-tl-none"
+                        ? "bg-[#d9fdd3] dark:bg-[#005c4b] text-slate-900 dark:text-slate-100 dark:text-gray-100 rounded-tr-none" 
+                        : "bg-white dark:bg-slate-900/40 dark:bg-[#202c33] text-slate-900 dark:text-slate-100 dark:text-gray-100 rounded-tl-none"
                     )}>
                       {msg.reply_to_id && (
-                        <div className="bg-black/5 dark:bg-white/5 border-l-4 border-primary rounded p-1.5 mb-1.5 text-xs opacity-80 cursor-pointer" onClick={() => {
+                        <div className="bg-black/5 dark:bg-white dark:bg-slate-900/40/5 border-l-4 border-primary rounded p-1.5 mb-1.5 text-xs opacity-80 cursor-pointer" onClick={() => {
                           const el = document.getElementById(`msg-${msg.reply_to_id}`);
                           if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         }}>
@@ -367,13 +367,13 @@ export default function Chat() {
                       
                       {msg.content.startsWith('[Attachment|') ? (
                           <div className="pr-12 pt-1 pb-1">
-                            <div className="flex items-center gap-2 bg-black/5 dark:bg-white/5 p-2 rounded-lg">
+                            <div className="flex items-center gap-2 bg-black/5 dark:bg-white dark:bg-slate-900/40/5 p-2 rounded-lg">
                               {msg.content.split('|')[3] === 'data:image' ? (
                                 <img src={msg.content.split('|')[2]} alt="attachment" className="max-w-[200px] rounded object-cover cursor-pointer hover:opacity-90 transition-opacity" onClick={() => window.open(msg.content.split('|')[2], '_blank')} />
                               ) : msg.content.split('|')[3] === 'data:video' ? (
                                 <video src={msg.content.split('|')[2]} controls className="max-w-[250px] rounded" />
                               ) : (
-                                <a href={msg.content.split('|')[2]} target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-md p-1 transition-colors">
+                                <a href={msg.content.split('|')[2]} target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:bg-black/5 dark:hover:bg-white dark:bg-slate-900/40/5 rounded-md p-1 transition-colors">
                                   <FileText className="w-8 h-8 text-primary shrink-0" />
                                   <div className="flex flex-col min-w-0">
                                     <span className="text-sm font-semibold truncate max-w-[150px] text-primary hover:underline">{msg.content.split('|')[1]}</span>
@@ -400,7 +400,7 @@ export default function Chat() {
                     </div>
                     
                     {/* Message Actions */}
-                    <div className="opacity-40 hover:opacity-100 transition-opacity flex flex-wrap items-center gap-1 bg-white/50 dark:bg-black/20 rounded-full px-1 py-0.5 shadow-sm mb-1 self-center">
+                    <div className="opacity-40 hover:opacity-100 transition-opacity flex flex-wrap items-center gap-1 bg-white dark:bg-slate-900/40/50 dark:bg-black/20 rounded-full px-1 py-0.5 shadow-sm mb-1 self-center">
                       <button onClick={() => setReplyTo(msg)} className="p-1 hover:bg-black/10 rounded-full text-muted-foreground" title="Reply">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>
                       </button>
@@ -481,7 +481,7 @@ export default function Chat() {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent side="top" align="start" className="w-48 p-2 mb-2 rounded-2xl flex flex-col gap-1 shadow-xl">
-                   <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-slate-50 hover:text-primary" onClick={() => document.getElementById('chat-doc-upload')?.click()}>
+                   <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-slate-50 dark:bg-slate-800/50 hover:text-primary" onClick={() => document.getElementById('chat-doc-upload')?.click()}>
                      <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-primary"><FileText className="w-4 h-4"/></div>
                      Document
                    </Button>
@@ -489,14 +489,14 @@ export default function Chat() {
                      <div className="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center text-rose-600"><ImageIcon className="w-4 h-4"/></div>
                      Photos & Videos
                    </Button>
-                   <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-slate-50 hover:text-primary" onClick={() => fileInputRef.current?.click()}>
+                   <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-slate-50 dark:bg-slate-800/50 hover:text-primary" onClick={() => fileInputRef.current?.click()}>
                      <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-primary"><File className="w-4 h-4"/></div>
                      File
                    </Button>
                 </PopoverContent>
               </Popover>
               
-              <div className="flex-1 bg-white dark:bg-[#2a3942] rounded-lg relative flex items-center shadow-sm">
+              <div className="flex-1 bg-white dark:bg-slate-900/40 dark:bg-[#2a3942] rounded-lg relative flex items-center shadow-sm">
                 <input
                   type="text"
                   value={inputValue}

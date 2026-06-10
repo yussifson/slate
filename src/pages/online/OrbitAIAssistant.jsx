@@ -51,7 +51,7 @@ export default function OrbitAIAssistant({ isOpen = true, onClose }) {
       {/* Header */}
       <div className="bg-gradient-to-r from-[var(--primary)] to-[var(--color-success)] p-4 flex justify-between items-center text-white shrink-0">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/30">
+          <div className="w-10 h-10 bg-white dark:bg-slate-900/40/20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/30">
             <Bot className="w-6 h-6 text-white" />
           </div>
           <div>
@@ -60,7 +60,7 @@ export default function OrbitAIAssistant({ isOpen = true, onClose }) {
           </div>
         </div>
         {onClose && (
-          <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-full transition-colors">
+          <button onClick={onClose} className="p-2 hover:bg-white dark:bg-slate-900/40/20 rounded-full transition-colors">
             <X className="w-5 h-5" />
           </button>
         )}
@@ -84,9 +84,9 @@ export default function OrbitAIAssistant({ isOpen = true, onClose }) {
               <Bot className="w-4 h-4" />
             </div>
             <div className="p-4 rounded-2xl rounded-tl-sm bg-[var(--primary)] text-white shadow-sm flex items-center gap-1">
-              <div className="w-1.5 h-1.5 bg-white/60 rounded-full animate-bounce"></div>
-              <div className="w-1.5 h-1.5 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-              <div className="w-1.5 h-1.5 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+              <div className="w-1.5 h-1.5 bg-white dark:bg-slate-900/40/60 rounded-full animate-bounce"></div>
+              <div className="w-1.5 h-1.5 bg-white dark:bg-slate-900/40/60 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+              <div className="w-1.5 h-1.5 bg-white dark:bg-slate-900/40/60 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
             </div>
           </div>
         )}

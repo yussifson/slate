@@ -118,15 +118,15 @@ export default function SHSReportCards() {
         </div>
       </div>
 
-      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
-        <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
+      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
           <div className="flex flex-col md:flex-row gap-6 items-end">
             <div className="space-y-2 flex-1">
-              <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
+              <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-2">
                 <FileText className="w-4 h-4 text-primary dark:text-primary/70" /> Select Exam Cycle
               </label>
               <select 
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-200"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200"
                 value={selectedExamId}
                 onChange={(e) => setSelectedExamId(e.target.value)}
               >
@@ -138,11 +138,11 @@ export default function SHSReportCards() {
             </div>
 
             <div className="space-y-2 flex-1">
-              <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2">
+              <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-2">
                 <Search className="w-4 h-4 text-primary" /> Target Class
               </label>
               <select 
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary font-semibold text-slate-700 dark:text-slate-200"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200"
                 value={selectedClassId}
                 onChange={(e) => setSelectedClassId(e.target.value)}
                 disabled={!selectedExamId}
@@ -164,41 +164,41 @@ export default function SHSReportCards() {
         
         <CardContent className="p-0">
           {loading ? (
-            <div className="p-16 text-center text-slate-400 dark:text-slate-500">Loading student records...</div>
+            <div className="p-16 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading student records...</div>
           ) : !selectedClassId ? (
             <div className="p-20 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
-                <FileText className="w-8 h-8 text-slate-400 dark:text-slate-500" />
+              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                <FileText className="w-8 h-8 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
               </div>
-              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">Select parameters to begin</h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500 max-w-sm mx-auto mt-2">
+              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">Select parameters to begin</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 max-w-sm mx-auto mt-2">
                 Choose an Exam and Class to view report cards for that cohort.
               </p>
             </div>
           ) : filteredStats.length === 0 ? (
-            <div className="p-16 text-center text-slate-500 dark:text-slate-400 dark:text-slate-500">
+            <div className="p-16 text-center text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">
               No students found for the selected parameters.
             </div>
           ) : (
             <div>
-              <div className="p-4 bg-slate-50 dark:bg-slate-800 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+              <div className="p-4 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-between items-center">
                 <div className="relative w-64">
-                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
+                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
                   <Input 
                     placeholder="Search student..." 
-                    className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
+                    className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </div>
-                <Button variant="outline" className="h-9 rounded-xl border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-semibold hover:bg-white dark:bg-slate-900">
+                <Button variant="outline" className="h-9 rounded-xl border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-semibold hover:bg-white dark:bg-slate-900/40 dark:bg-slate-900">
                   <Printer className="w-4 h-4 mr-2" /> Print All (Class)
                 </Button>
               </div>
 
               <div className="overflow-x-auto max-h-[500px]">
                 <table className="w-full text-sm text-left">
-                  <thead className="bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 dark:text-slate-500 font-bold uppercase text-[10px] tracking-wider sticky top-0 z-10 shadow-sm border-b border-slate-100 dark:border-slate-800">
+                  <thead className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px] tracking-wider sticky top-0 z-10 shadow-sm border-b border-slate-100 dark:border-slate-800 dark:border-slate-800">
                     <tr>
                       <th className="px-6 py-4 w-12 text-center">#</th>
                       <th className="px-6 py-4">Student Name</th>
@@ -209,8 +209,8 @@ export default function SHSReportCards() {
                   </thead>
                   <tbody className="divide-y divide-slate-100">
                     {filteredStats.map((student, index) => (
-                      <tr key={student.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
-                        <td className="px-6 py-4 text-center text-slate-400 dark:text-slate-500 font-bold">
+                      <tr key={student.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
+                        <td className="px-6 py-4 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400 font-bold">
                           {index + 1}
                         </td>
                         <td className="px-6 py-4 flex items-center gap-3">
@@ -219,11 +219,11 @@ export default function SHSReportCards() {
                           </div>
                           <div>
                             <p className="font-bold text-slate-800 dark:text-slate-100">{student.title}</p>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">{student.data?.indexNumber || student.case_number}</p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">{student.data?.indexNumber || student.case_number}</p>
                           </div>
                         </td>
                         <td className="px-6 py-4 text-center">
-                          <Badge variant="outline" className={student.subjectCount > 0 ? "bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold" : "bg-rose-50 text-rose-600 border-rose-200"}>
+                          <Badge variant="outline" className={student.subjectCount > 0 ? "bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 dark:text-slate-200 font-bold" : "bg-rose-50 text-rose-600 border-rose-200"}>
                             {student.subjectCount} Subjects
                           </Badge>
                         </td>
@@ -243,7 +243,7 @@ export default function SHSReportCards() {
                               variant="ghost" 
                               onClick={() => setPreviewStudent(student)}
                               disabled={student.subjectCount === 0}
-                              className="text-primary dark:text-primary/70 hover:text-primary hover:bg-slate-50 dark:bg-slate-800 font-semibold"
+                              className="text-primary dark:text-primary/70 hover:text-primary hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 font-semibold"
                             >
                               <Eye className="w-4 h-4 mr-2" /> View Report
                             </Button>
@@ -261,7 +261,7 @@ export default function SHSReportCards() {
 
       {/* Report Card Preview Modal */}
       <Dialog open={!!previewStudent} onOpenChange={(open) => !open && setPreviewStudent(null)}>
-        <DialogContent className="sm:max-w-[800px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl bg-slate-50 dark:bg-slate-800">
+        <DialogContent className="sm:max-w-[800px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800">
           
           <div className="p-4 bg-slate-800 text-white flex justify-between items-center">
             <div className="flex items-center gap-2">
@@ -281,33 +281,33 @@ export default function SHSReportCards() {
           {previewStudent && (
             <div className="p-8 max-h-[70vh] overflow-y-auto">
               {/* Paper-like container */}
-              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-sm p-10 mx-auto max-w-3xl space-y-8 font-sans relative">
+              <div className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-sm p-10 mx-auto max-w-3xl space-y-8 font-sans relative">
                 
                 {/* Header */}
                 <div className="text-center space-y-2 border-b-2 border-slate-800 pb-6">
-                  <h1 className="text-2xl font-black uppercase tracking-wider text-slate-900">Senior High School</h1>
-                  <h2 className="text-xl font-bold text-slate-700 dark:text-slate-200">Terminal Assessment Report</h2>
-                  <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-widest mt-2">
+                  <h1 className="text-2xl font-black uppercase tracking-wider text-slate-900 dark:text-slate-100">Senior High School</h1>
+                  <h2 className="text-xl font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">Terminal Assessment Report</h2>
+                  <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-widest mt-2">
                     {exams.find(e => e.id === selectedExamId)?.title}
                   </p>
                 </div>
                 
                 {/* Student Details Grid */}
                 <div className="grid grid-cols-2 gap-x-12 gap-y-4 text-sm">
-                  <div className="flex border-b border-slate-100 dark:border-slate-800 pb-2">
-                    <span className="w-32 font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500">Student Name:</span>
+                  <div className="flex border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 pb-2">
+                    <span className="w-32 font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Student Name:</span>
                     <span className="font-black text-slate-800 dark:text-slate-100">{previewStudent.title}</span>
                   </div>
-                  <div className="flex border-b border-slate-100 dark:border-slate-800 pb-2">
-                    <span className="w-32 font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500">Index Number:</span>
+                  <div className="flex border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 pb-2">
+                    <span className="w-32 font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Index Number:</span>
                     <span className="font-bold text-slate-800 dark:text-slate-100">{previewStudent.data?.indexNumber || previewStudent.case_number}</span>
                   </div>
-                  <div className="flex border-b border-slate-100 dark:border-slate-800 pb-2">
-                    <span className="w-32 font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500">Class:</span>
+                  <div className="flex border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 pb-2">
+                    <span className="w-32 font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Class:</span>
                     <span className="font-bold text-slate-800 dark:text-slate-100">{classes.find(c => c.id === selectedClassId)?.title}</span>
                   </div>
-                  <div className="flex border-b border-slate-100 dark:border-slate-800 pb-2">
-                    <span className="w-32 font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500">Overall Average:</span>
+                  <div className="flex border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 pb-2">
+                    <span className="w-32 font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Overall Average:</span>
                     <span className="font-black text-primary dark:text-primary/70">{previewStudent.average}%</span>
                   </div>
                 </div>
@@ -316,12 +316,12 @@ export default function SHSReportCards() {
                 <table className="w-full text-sm border-collapse">
                   <thead>
                     <tr className="bg-slate-100 dark:bg-slate-800">
-                      <th className="border border-slate-300 p-2 text-left font-bold text-slate-700 dark:text-slate-200">Subject</th>
-                      <th className="border border-slate-300 p-2 text-center font-bold text-slate-700 dark:text-slate-200 w-20">Class (30)</th>
-                      <th className="border border-slate-300 p-2 text-center font-bold text-slate-700 dark:text-slate-200 w-20">Exam (70)</th>
-                      <th className="border border-slate-300 p-2 text-center font-bold text-slate-700 dark:text-slate-200 w-20">Total (100)</th>
-                      <th className="border border-slate-300 p-2 text-center font-bold text-slate-700 dark:text-slate-200 w-20">Grade</th>
-                      <th className="border border-slate-300 p-2 text-left font-bold text-slate-700 dark:text-slate-200">Remarks</th>
+                      <th className="border border-slate-300 p-2 text-left font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">Subject</th>
+                      <th className="border border-slate-300 p-2 text-center font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200 w-20">Class (30)</th>
+                      <th className="border border-slate-300 p-2 text-center font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200 w-20">Exam (70)</th>
+                      <th className="border border-slate-300 p-2 text-center font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200 w-20">Total (100)</th>
+                      <th className="border border-slate-300 p-2 text-center font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200 w-20">Grade</th>
+                      <th className="border border-slate-300 p-2 text-left font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">Remarks</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -346,10 +346,10 @@ export default function SHSReportCards() {
                 {/* Signatures */}
                 <div className="grid grid-cols-2 gap-12 pt-16">
                   <div className="text-center">
-                    <div className="border-t border-slate-400 pt-2 font-bold text-slate-700 dark:text-slate-200 text-sm">Class Teacher's Signature</div>
+                    <div className="border-t border-slate-400 pt-2 font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200 text-sm">Class Teacher's Signature</div>
                   </div>
                   <div className="text-center">
-                    <div className="border-t border-slate-400 pt-2 font-bold text-slate-700 dark:text-slate-200 text-sm">Headmaster's Signature</div>
+                    <div className="border-t border-slate-400 pt-2 font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200 text-sm">Headmaster's Signature</div>
                   </div>
                 </div>
 

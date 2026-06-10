@@ -10,7 +10,7 @@ import PageHeader from "@/components/shared/PageHeader";
 import { TASK_STATUS_COLORS, PRIORITY_COLORS, formatCurrency } from "@/lib/constants";
 import { format, isAfter, isBefore, addDays, startOfMonth, endOfMonth } from "date-fns";
 
-function StatCard({ icon: IconComp, label, value, sub, color = "bg-slate-50 text-primary" }) {
+function StatCard({ icon: IconComp, label, value, sub, color = "bg-slate-50 dark:bg-slate-800/50 text-primary" }) {
   return (
     <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4">
       <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${color}`}>
@@ -99,10 +99,10 @@ export default function StaffDashboard() {
       />
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon={Briefcase} label="Active Cases" value={activeCases.length} color="bg-slate-50 text-primary" />
+        <StatCard icon={Briefcase} label="Active Cases" value={activeCases.length} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
         <StatCard icon={CheckSquare} label="Pending Tasks" value={pendingTasks.length} sub={overdueTasks.length > 0 ? `${overdueTasks.length} overdue` : undefined} color="bg-amber-50 text-amber-600" />
-        <StatCard icon={Clock} label="Hours This Month" value={totalHours.toFixed(1)} sub={`${billedHours.toFixed(1)}h billed`} color="bg-slate-50 text-primary" />
-        <StatCard icon={TrendingUp} label="Billed Amount" value={formatCurrency(billedAmount, staffRecord?.currency || "GHS")} sub="This month" color="bg-slate-50 text-primary" />
+        <StatCard icon={Clock} label="Hours This Month" value={totalHours.toFixed(1)} sub={`${billedHours.toFixed(1)}h billed`} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
+        <StatCard icon={TrendingUp} label="Billed Amount" value={formatCurrency(billedAmount, staffRecord?.currency || "GHS")} sub="This month" color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
       </div>
       {/* Hours vs Target */}
       <div className="bg-card rounded-xl border border-border p-5">

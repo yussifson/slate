@@ -223,7 +223,7 @@ export default function Attendance() {
                   <tr key={student.id} className="hover:bg-muted/40 transition-colors">
                     <td className="px-6 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-slate-50 dark:bg-primary/30 flex items-center justify-center text-primary dark:text-primary/30 font-bold text-xs shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/30 flex items-center justify-center text-primary dark:text-primary/30 font-bold text-xs shrink-0">
                           {student.name.substring(0, 2).toUpperCase()}
                         </div>
                         <div>
@@ -324,7 +324,7 @@ export default function Attendance() {
                   return (
                     <tr key={rec.id} className="hover:bg-muted/40 transition-colors">
                       <td className="px-6 py-3 text-foreground font-medium">{rec.date}</td>
-                      <td className="px-6 py-3"><Link to="/classes" className="bg-slate-50 dark:bg-primary/20 text-primary dark:text-primary/30 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{rec.className}</Link></td>
+                      <td className="px-6 py-3"><Link to="/classes" className="bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary dark:text-primary/30 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{rec.className}</Link></td>
                       <td className="px-6 py-3 text-muted-foreground">{rec.takenBy || '—'}</td>
                       <td className="px-6 py-3 text-center font-bold text-primary">{p}</td>
                       <td className="px-6 py-3 text-center font-bold text-red-600">{a}</td>

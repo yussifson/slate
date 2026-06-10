@@ -95,8 +95,8 @@ export default function SuperAdminDashboard() {
             <p className="text-primary/10 font-medium text-lg">System Configuration & {getTerm(activeIndustry, "venue") || "Firm"} Setup</p>
           </div>
           {!company && (
-            <div className="flex items-center bg-white/10 p-2 rounded-2xl backdrop-blur-md border border-white/20 shadow-inner">
-              <Button onClick={() => setShowForm(true)} size="sm" className="gap-1.5 text-sm font-bold bg-white text-primary/70 hover:bg-white/90 rounded-xl">
+            <div className="flex items-center bg-white dark:bg-slate-900/40/10 p-2 rounded-2xl backdrop-blur-md border border-white/20 shadow-inner">
+              <Button onClick={() => setShowForm(true)} size="sm" className="gap-1.5 text-sm font-bold bg-white dark:bg-slate-900/40 text-primary/70 hover:bg-white dark:bg-slate-900/40/90 rounded-xl">
                 <Plus className="w-4 h-4" /> {t("setup_firm", "Setup " + (getTerm(activeIndustry, "venue") || "Firm"))}
               </Button>
             </div>

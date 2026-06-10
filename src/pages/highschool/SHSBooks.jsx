@@ -94,7 +94,7 @@ export default function SHSBooks() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10">
           <CardContent className="p-5 flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
               <BookOpen className="w-6 h-6" />
@@ -107,18 +107,18 @@ export default function SHSBooks() {
         </Card>
       </div>
 
-      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
-        <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
+      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Inventory Management</CardTitle>
             </div>
             
             <div className="relative w-full sm:w-64">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
               <Input 
                 placeholder="Search title, author, or ISBN..." 
-                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
+                className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -127,19 +127,19 @@ export default function SHSBooks() {
         </CardHeader>
         <CardContent className="p-0">
           {loading ? (
-            <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading catalog...</div>
+            <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading catalog...</div>
           ) : filteredBooks.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
                 <Layers className="w-8 h-8 text-primary dark:text-primary" />
               </div>
-              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No books found</h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">Add physical books to your library inventory.</p>
+              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">No books found</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Add physical books to your library inventory.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left">
-                <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
+                <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-semibold uppercase text-[10px] tracking-wider">
                   <tr>
                     <th className="px-6 py-4 rounded-tl-xl">Book Details</th>
                     <th className="px-6 py-4">Category</th>
@@ -154,10 +154,10 @@ export default function SHSBooks() {
                     const available = book.data?.availableQuantity ?? total;
                     const availabilityColor = available > 0 ? 'text-primary' : 'text-rose-600';
                     return (
-                      <tr key={book.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
+                      <tr key={book.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
                         <td className="px-6 py-4">
                           <p className="font-bold text-slate-800 dark:text-slate-100">{book.title}</p>
-                          <div className="flex items-center gap-2 mt-1 text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">
+                          <div className="flex items-center gap-2 mt-1 text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">
                             <span className="font-medium text-slate-600 dark:text-slate-300">By {book.data?.author || 'Unknown'}</span>
                             <span className="text-slate-300">•</span>
                             <span className="flex items-center gap-1 font-mono"><Hash className="w-3 h-3"/> {book.data?.isbn || 'N/A'}</span>
@@ -165,21 +165,21 @@ export default function SHSBooks() {
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-1.5">
-                            <Tag className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
-                            <span className="font-semibold text-slate-700 dark:text-slate-200">{book.data?.category}</span>
+                            <Tag className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
+                            <span className="font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">{book.data?.category}</span>
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <Badge variant="outline" className="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700">
+                          <Badge variant="outline" className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700">
                             {book.data?.rackLocation || 'Unassigned'}
                           </Badge>
                         </td>
                         <td className="px-6 py-4 text-center">
-                          <p className={`font-black text-lg ${availabilityColor}`}>{available} <span className="text-sm font-medium text-slate-400 dark:text-slate-500">/ {total}</span></p>
+                          <p className={`font-black text-lg ${availabilityColor}`}>{available} <span className="text-sm font-medium text-slate-400 dark:text-slate-500 dark:text-slate-400">/ {total}</span></p>
                         </td>
                         <td className="px-6 py-4 text-right">
                           <Badge variant="outline" className={
-                            available > 0 ? 'bg-slate-50 text-primary/90 border-primary/20' : 'bg-rose-50 text-rose-700 border-rose-200'
+                            available > 0 ? 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-primary/20' : 'bg-rose-50 text-rose-700 border-rose-200'
                           }>
                             {available > 0 ? 'Available' : 'Out of Stock'}
                           </Badge>
@@ -205,12 +205,12 @@ export default function SHSBooks() {
             </DialogHeader>
           </div>
           
-          <div className="p-6 bg-slate-50 dark:bg-slate-800 space-y-4">
+          <div className="p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 space-y-4">
             <div className="space-y-2">
               <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Book Title</label>
               <Input 
                 placeholder="e.g. Essential Mathematics for SHS"
-                className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+                className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                 value={newBook.title}
                 onChange={e => setNewBook({...newBook, title: e.target.value})}
               />
@@ -221,7 +221,7 @@ export default function SHSBooks() {
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Author(s)</label>
                 <Input 
                   placeholder="e.g. J.K. Rowling"
-                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+                  className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                   value={newBook.author}
                   onChange={e => setNewBook({...newBook, author: e.target.value})}
                 />
@@ -230,7 +230,7 @@ export default function SHSBooks() {
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">ISBN</label>
                 <Input 
                   placeholder="e.g. 978-3-16-148410-0"
-                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+                  className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                   value={newBook.isbn}
                   onChange={e => setNewBook({...newBook, isbn: e.target.value})}
                 />
@@ -241,7 +241,7 @@ export default function SHSBooks() {
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Category</label>
                 <select 
-                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+                  className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
                   value={newBook.category}
                   onChange={e => setNewBook({...newBook, category: e.target.value})}
                 >
@@ -257,7 +257,7 @@ export default function SHSBooks() {
                 <Input 
                   type="number"
                   min="1"
-                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl h-11 font-bold text-lg"
+                  className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl h-11 font-bold text-lg"
                   value={newBook.quantity}
                   onChange={e => setNewBook({...newBook, quantity: e.target.value})}
                 />
@@ -268,14 +268,14 @@ export default function SHSBooks() {
               <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Rack / Shelf Location</label>
               <Input 
                 placeholder="e.g. Section B, Shelf 4"
-                className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+                className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                 value={newBook.rackLocation}
                 onChange={e => setNewBook({...newBook, rackLocation: e.target.value})}
               />
             </div>
           </div>
           
-          <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+          <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-end gap-3">
             <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
               Cancel
             </Button>

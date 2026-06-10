@@ -45,7 +45,7 @@ export default function TrackingPortal() {
                 value={trackingId}
                 onChange={e => setTrackingId(e.target.value)}
                 placeholder="e.g. SHIP-1234" 
-                className="pl-12 h-14 bg-white/10 backdrop-blur-md border-white/20 text-white placeholder:text-white/60 focus-visible:ring-white/30 text-lg rounded-xl"
+                className="pl-12 h-14 bg-white dark:bg-slate-900/40/10 backdrop-blur-md border-white/20 text-white placeholder:text-white/60 focus-visible:ring-white/30 text-lg rounded-xl"
               />
             </div>
             <Button type="submit" className="h-14 px-8 bg-primary hover:bg-primary text-white rounded-xl text-lg font-bold shadow-lg transition-all active:scale-95">
@@ -87,7 +87,7 @@ export default function TrackingPortal() {
                    </div>
                    <div className="text-left md:text-right">
                      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">{t("current_status", "Current Status")}</p>
-                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-50 dark:bg-primary/30 border border-slate-200 dark:border-primary/70">
+                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/30 border border-slate-200 dark:border-primary/70">
                         {shipment.status === 'Delivered' ? <CheckCircle2 className="w-5 h-5 text-primary" /> : 
                          shipment.status === 'In Transit' ? <Truck className="w-5 h-5 text-primary" /> :
                          <Clock className="w-5 h-5 text-amber-500" />}

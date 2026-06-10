@@ -40,27 +40,27 @@ import { RETAIL_BRAND } from "@/components/retail/RetailViewKit";
 // Use professional enterprise colors instead of potentially playful brand colors
 const CHART_COLORS = ["#1e3a8a", "#2563eb", "#3b82f6", "#60a5fa", "#0f172a", "#334155"];
 const THEME_BLUE = "text-primary/90 dark:text-primary/70";
-const BG_BLUE_LIGHT = "bg-slate-50 dark:bg-primary/20";
+const BG_BLUE_LIGHT = "bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20";
 
 function ReportMetricCard({ title, value, sub, icon: Icon, trend }) {
   return (
     <div className="bg-card border border-border rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{title}</p>
-          <p className="text-3xl font-bold text-slate-900 dark:text-white mt-2 tracking-tight">{value}</p>
+          <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{title}</p>
+          <p className="text-3xl font-bold text-slate-900 dark:text-slate-100 dark:text-white mt-2 tracking-tight">{value}</p>
           <div className="flex items-center gap-2 mt-2 flex-wrap">
             {trend !== undefined && (
               <span
                 className={`text-xs font-semibold px-2 py-0.5 rounded-md ${
-                  trend >= 0 ? "bg-slate-50 text-primary/90 dark:bg-primary/30 dark:text-primary/70" : "bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                  trend >= 0 ? "bg-slate-50 dark:bg-slate-800/50 text-primary/90 dark:bg-primary/30 dark:text-primary/70" : "bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400"
                 }`}
               >
                 {trend > 0 ? "+" : ""}
                 {trend}% vs prior period
               </span>
             )}
-            {sub && <span className="text-xs text-slate-500">{sub}</span>}
+            {sub && <span className="text-xs text-slate-500 dark:text-slate-400">{sub}</span>}
           </div>
         </div>
         <div className={`w-12 h-12 rounded-xl ${BG_BLUE_LIGHT} flex items-center justify-center shrink-0`}>
@@ -74,12 +74,12 @@ function ReportMetricCard({ title, value, sub, icon: Icon, trend }) {
 function ReportSection({ title, description, icon: Icon, children, className = "" }) {
   return (
     <section className={`bg-card border border-border rounded-xl shadow-sm overflow-hidden ${className}`}>
-      <div className="px-6 py-5 border-b border-border bg-slate-50/50 dark:bg-slate-900/50">
+      <div className="px-6 py-5 border-b border-border bg-slate-50/50 dark:bg-transparent dark:bg-slate-900/50">
         <div className="flex items-center gap-3">
           {Icon && <Icon className={`w-5 h-5 ${THEME_BLUE} shrink-0`} />}
           <div>
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">{title}</h2>
-            {description && <p className="text-sm text-slate-500 mt-0.5">{description}</p>}
+            <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 dark:text-white">{title}</h2>
+            {description && <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">{description}</p>}
           </div>
         </div>
       </div>
@@ -335,7 +335,7 @@ export default function ReportsDashboard() {
             <h1 className={`text-4xl md:text-5xl font-extrabold ${THEME_BLUE} tracking-tight`}>
               {t("enterprise_analytics", "Enterprise Analytics")}
             </h1>
-            <p className="text-base text-slate-500 mt-3 max-w-2xl">
+            <p className="text-base text-slate-500 dark:text-slate-400 mt-3 max-w-2xl">
               {t(
                 "comprehensive_performance_report",
                 "Comprehensive performance report with revenue, operations, and workforce metrics for executive review."
@@ -595,21 +595,21 @@ export default function ReportsDashboard() {
         icon={FileText}
       >
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
-          <div className="p-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
+          <div className="p-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
             <p className={`text-xs font-bold ${THEME_BLUE} uppercase`}>{t("total_invoices", "Total invoices")}</p>
-            <p className="text-3xl font-bold text-slate-900 dark:text-white mt-2">{invoices.length}</p>
+            <p className="text-3xl font-bold text-slate-900 dark:text-slate-100 dark:text-white mt-2">{invoices.length}</p>
           </div>
-          <div className="p-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
+          <div className="p-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
             <p className={`text-xs font-bold ${THEME_BLUE} uppercase`}>{t("paid_invoices", "Paid invoices")}</p>
-            <p className="text-3xl font-bold text-slate-900 dark:text-white mt-2">{paidCount}</p>
+            <p className="text-3xl font-bold text-slate-900 dark:text-slate-100 dark:text-white mt-2">{paidCount}</p>
           </div>
-          <div className="p-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
+          <div className="p-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
             <p className={`text-xs font-bold ${THEME_BLUE} uppercase`}>{t("team_members", "Team members")}</p>
-            <p className="text-3xl font-bold text-slate-900 dark:text-white mt-2">{staff.length}</p>
+            <p className="text-3xl font-bold text-slate-900 dark:text-slate-100 dark:text-white mt-2">{staff.length}</p>
           </div>
-          <div className="p-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
+          <div className="p-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
             <p className={`text-xs font-bold ${THEME_BLUE} uppercase`}>{t("avg_monthly_revenue", "Avg monthly revenue")}</p>
-            <p className="text-3xl font-bold text-slate-900 dark:text-white mt-2">
+            <p className="text-3xl font-bold text-slate-900 dark:text-slate-100 dark:text-white mt-2">
               {formatCurrency(months ? Math.round(totalRevenue / months) : 0, currency)}
             </p>
           </div>

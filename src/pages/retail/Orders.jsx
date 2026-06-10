@@ -317,9 +317,9 @@ export default function Orders() {
                
                {isNewCustomer && (
                  <div className="p-3 bg-muted rounded-md space-y-3">
-                   <div><label className="text-xs font-bold text-muted-foreground uppercase">New Customer Name</label><Input value={newCustomerData.name} onChange={e => setNewCustomerData({...newCustomerData, name: e.target.value})} className="mt-1 bg-white" /></div>
-                   <div><label className="text-xs font-bold text-muted-foreground uppercase">Email</label><Input value={newCustomerData.email} onChange={e => setNewCustomerData({...newCustomerData, email: e.target.value})} className="mt-1 bg-white" /></div>
-                   <div><label className="text-xs font-bold text-muted-foreground uppercase">Phone</label><Input value={newCustomerData.phone} onChange={e => setNewCustomerData({...newCustomerData, phone: e.target.value})} className="mt-1 bg-white" /></div>
+                   <div><label className="text-xs font-bold text-muted-foreground uppercase">New Customer Name</label><Input value={newCustomerData.name} onChange={e => setNewCustomerData({...newCustomerData, name: e.target.value})} className="mt-1 bg-white dark:bg-slate-900/40" /></div>
+                   <div><label className="text-xs font-bold text-muted-foreground uppercase">Email</label><Input value={newCustomerData.email} onChange={e => setNewCustomerData({...newCustomerData, email: e.target.value})} className="mt-1 bg-white dark:bg-slate-900/40" /></div>
+                   <div><label className="text-xs font-bold text-muted-foreground uppercase">Phone</label><Input value={newCustomerData.phone} onChange={e => setNewCustomerData({...newCustomerData, phone: e.target.value})} className="mt-1 bg-white dark:bg-slate-900/40" /></div>
                  </div>
                )}
 
@@ -333,27 +333,27 @@ export default function Orders() {
                  </div>
                </div>
 
-               <div className="p-4 border rounded-xl bg-slate-50/50 space-y-4">
+               <div className="p-4 border rounded-xl bg-slate-50/50 dark:bg-transparent space-y-4">
                  <h4 className="font-semibold text-sm">Order Items</h4>
                  <div className="flex gap-2 items-end">
                    <div className="flex-1">
-                     <label className="text-xs font-medium text-slate-500 mb-1 block">Product</label>
+                     <label className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1 block">Product</label>
                      <select value={selectedProduct} onChange={e => setSelectedProduct(e.target.value)} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
                        <option value="">Select product...</option>
                        {products.map(p => <option key={p.id} value={p.id}>{p.name} (${p.price.toFixed(2)})</option>)}
                      </select>
                    </div>
                    <div className="w-24">
-                     <label className="text-xs font-medium text-slate-500 mb-1 block">Qty</label>
-                     <Input type="number" min="1" value={productQty} onChange={e => setProductQty(e.target.value)} className="bg-white" />
+                     <label className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1 block">Qty</label>
+                     <Input type="number" min="1" value={productQty} onChange={e => setProductQty(e.target.value)} className="bg-white dark:bg-slate-900/40" />
                    </div>
                    <Button type="button" onClick={handleAddItem} variant="secondary">Add</Button>
                  </div>
 
                  {formData.items.length > 0 && (
-                   <div className="mt-4 border rounded-lg bg-white overflow-hidden">
+                   <div className="mt-4 border rounded-lg bg-white dark:bg-slate-900/40 overflow-hidden">
                      <table className="w-full text-sm">
-                       <thead className="bg-slate-50 border-b">
+                       <thead className="bg-slate-50 dark:bg-slate-800/50 border-b">
                          <tr>
                            <th className="px-3 py-2 text-left">Item</th>
                            <th className="px-3 py-2 text-right">Price</th>

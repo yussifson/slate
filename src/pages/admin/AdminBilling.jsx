@@ -79,7 +79,7 @@ export default function AdminBilling() {
               </div>
             </div>
             <div className="mt-4 flex items-center gap-2 text-sm">
-              <span className="text-slate-500 font-medium">{t("all_time_collected_revenue", "All-time collected revenue")}</span>
+              <span className="text-slate-500 dark:text-slate-400 font-medium">{t("all_time_collected_revenue", "All-time collected revenue")}</span>
             </div>
           </CardContent>
         </Card>
@@ -96,7 +96,7 @@ export default function AdminBilling() {
               </div>
             </div>
             <div className="mt-4 flex items-center gap-2 text-sm">
-              <span className="text-slate-500 font-medium">{t("awaiting_payment_clearing", "Awaiting payment clearing")}</span>
+              <span className="text-slate-500 dark:text-slate-400 font-medium">{t("awaiting_payment_clearing", "Awaiting payment clearing")}</span>
             </div>
           </CardContent>
         </Card>
@@ -113,13 +113,13 @@ export default function AdminBilling() {
               </div>
             </div>
             <div className="mt-4 flex items-center gap-2 text-sm">
-              <span className="text-slate-500 font-medium">{t("action_required_on_accounts", "Action required on accounts")}</span>
+              <span className="text-slate-500 dark:text-slate-400 font-medium">{t("action_required_on_accounts", "Action required on accounts")}</span>
             </div>
           </CardContent>
         </Card>
       </div>
       <Card className="border-border shadow-sm rounded-2xl overflow-hidden">
-        <CardHeader className="bg-slate-50 border-b border-slate-100 flex flex-row items-center justify-between py-4">
+        <CardHeader className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 flex flex-row items-center justify-between py-4">
           <CardTitle className="text-lg font-bold text-slate-800">{t("global_invoices", "Global Invoices")}</CardTitle>
           <div className="relative w-64">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -135,7 +135,7 @@ export default function AdminBilling() {
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
-              <thead className="bg-slate-50/50 text-slate-500 font-medium border-b border-slate-100">
+              <thead className="bg-slate-50/50 dark:bg-transparent text-slate-500 dark:text-slate-400 font-medium border-b border-slate-100 dark:border-slate-800">
                 <tr>
                   <th className="px-6 py-4">{t("firm_company", "Firm / Company")}</th>
                   <th className="px-6 py-4">{t("amount", "Amount")}</th>
@@ -147,19 +147,19 @@ export default function AdminBilling() {
               <tbody className="divide-y divide-slate-100">
                 {loadingInvoices ? (
                   <tr>
-                    <td colSpan="5" className="px-6 py-8 text-center text-slate-500">{t("loading_invoices", "Loading invoices...")}</td>
+                    <td colSpan="5" className="px-6 py-8 text-center text-slate-500 dark:text-slate-400">{t("loading_invoices", "Loading invoices...")}</td>
                   </tr>
                 ) : filteredInvoices.length === 0 ? (
                   <tr>
-                    <td colSpan="5" className="px-6 py-8 text-center text-slate-500">{t("no_invoices_found", "No invoices found.")}</td>
+                    <td colSpan="5" className="px-6 py-8 text-center text-slate-500 dark:text-slate-400">{t("no_invoices_found", "No invoices found.")}</td>
                   </tr>
                 ) : (
                   filteredInvoices.map(inv => {
                     return (
-                      <tr key={inv.id} className="hover:bg-slate-50/50 transition-colors">
-                        <td className="px-6 py-4 font-semibold text-slate-900">{getCompanyName(inv.company_id)}</td>
+                      <tr key={inv.id} className="hover:bg-slate-50/50 dark:bg-transparent transition-colors">
+                        <td className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-100">{getCompanyName(inv.company_id)}</td>
                         <td className="px-6 py-4 font-bold">{formatCurrency(inv.total_amount || inv.amount || 0, 'USD')}</td>
-                        <td className="px-6 py-4 text-slate-500">{inv.created_at ? format(new Date(inv.created_at), 'MMM dd, yyyy') : 'N/A'}</td>
+                        <td className="px-6 py-4 text-slate-500 dark:text-slate-400">{inv.created_at ? format(new Date(inv.created_at), 'MMM dd, yyyy') : 'N/A'}</td>
                         <td className="px-6 py-4">
                           <Badge className={`${inv.status === 'paid' ? 'bg-slate-100 text-primary/90' : inv.status === 'pending' ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'} border-none`}>
                             {inv.status || 'unknown'}

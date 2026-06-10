@@ -19,7 +19,7 @@ export default function OnlineInstructor() {
         <Card className="border-0 shadow-sm rounded-xl">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-slate-50 text-primary rounded-lg">
+              <div className="p-3 bg-slate-50 dark:bg-slate-800/50 text-primary rounded-lg">
                 <Users className="h-6 w-6" />
               </div>
               <div>
@@ -36,7 +36,7 @@ export default function OnlineInstructor() {
         <Card className="border-0 shadow-sm rounded-xl">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-slate-50 text-primary rounded-lg">
+              <div className="p-3 bg-slate-50 dark:bg-slate-800/50 text-primary rounded-lg">
                 <DollarSign className="h-6 w-6" />
               </div>
               <div>

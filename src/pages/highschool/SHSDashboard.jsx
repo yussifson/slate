@@ -63,8 +63,8 @@ export default function SHSDashboard() {
           <Card key={i} className="border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-5 flex items-center justify-between">
               <div>
-                <p className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wide">{stat.title}</p>
-                <h3 className="text-2xl font-black text-slate-900 mt-1">{stat.value}</h3>
+                <p className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wide">{stat.title}</p>
+                <h3 className="text-2xl font-black text-slate-900 dark:text-slate-100 mt-1">{stat.value}</h3>
               </div>
               <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${stat.bg}`}>
                 <stat.icon className={`w-6 h-6 ${stat.color}`} />
@@ -78,7 +78,7 @@ export default function SHSDashboard() {
         <Card className="lg:col-span-2 border-slate-200 dark:border-slate-700 shadow-sm">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
                 <Activity className="w-5 h-5 text-primary" /> Academic Performance Trends
               </h3>
             </div>
@@ -100,7 +100,7 @@ export default function SHSDashboard() {
 
         <Card className="border-slate-200 dark:border-slate-700 shadow-sm">
           <CardContent className="p-6">
-            <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2 mb-6">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2 mb-6">
               <Clock className="w-5 h-5 text-amber-500" /> Recent Activities
             </h3>
             <div className="space-y-4">
@@ -109,8 +109,8 @@ export default function SHSDashboard() {
                   <CheckCircle2 className="w-4 h-4 text-primary dark:text-primary/70" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-slate-900">Term 3 Results Published</p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">2 hours ago</p>
+                  <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">Term 3 Results Published</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">2 hours ago</p>
                 </div>
               </div>
               <div className="flex gap-3">
@@ -118,8 +118,8 @@ export default function SHSDashboard() {
                   <UserPlus className="w-4 h-4 text-primary" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-slate-900">5 New CSSPS Placements</p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">5 hours ago</p>
+                  <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">5 New CSSPS Placements</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">5 hours ago</p>
                 </div>
               </div>
               <div className="flex gap-3">
@@ -127,8 +127,8 @@ export default function SHSDashboard() {
                   <Banknote className="w-4 h-4 text-red-600" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-slate-900">PTA Dues Deadline Reminder</p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">Yesterday</p>
+                  <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">PTA Dues Deadline Reminder</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Yesterday</p>
                 </div>
               </div>
             </div>

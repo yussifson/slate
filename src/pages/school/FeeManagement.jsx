@@ -166,7 +166,7 @@ export default function FeeManagement() {
         <div className="p-4 border-b border-border bg-muted/50">
           <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input placeholder="Search student tuition listings..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white/80 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary" />
+            <Input placeholder="Search student tuition listings..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white dark:bg-slate-900/40/80 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary" />
           </div>
         </div>
         <div className="overflow-x-auto">
@@ -241,7 +241,7 @@ export default function FeeManagement() {
       </div>
       {showPaymentModal && selectedStudent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
-          <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
+          <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><CreditCard className="w-5 h-5 text-primary dark:text-primary/70" /> {t("record_payment", "Record Payment")}</h2>
             <div className="bg-muted dark:bg-muted/30 p-3 rounded-lg border border-border text-sm mb-4">
               <p className="text-muted-foreground">{t("student", "Student:")} <strong className="text-card-foreground">{selectedStudent.student}</strong></p>
@@ -276,7 +276,7 @@ export default function FeeManagement() {
       )}
       {showEnrollModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
-          <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
+          <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><Plus className="w-5 h-5 text-primary dark:text-primary/70" /> {t("quick_enroll", "Quick Enroll Student")}</h2>
             <p className="text-sm text-muted-foreground">{t("quickly_register_a_student_to_", "Quickly register a student to generate their tuition billing profile.")}</p>
             <div className="space-y-3">
@@ -327,7 +327,7 @@ export default function FeeManagement() {
           {viewDetails && (
             <div className="mt-6 space-y-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-slate-50 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70 font-bold text-xl">
+                <div className="w-16 h-16 rounded-full bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70 font-bold text-xl">
                   {viewDetails.student.substring(0, 2).toUpperCase()}
                 </div>
                 <div>

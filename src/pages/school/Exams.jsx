@@ -270,7 +270,7 @@ export default function Exams() {
       )}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
-          <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
+          <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
               <Plus className="w-5 h-5 text-primary dark:text-primary/70" /> {editingId ? 'Edit Examination' : 'Schedule Examination'}
             </h2>
@@ -366,7 +366,7 @@ export default function Exams() {
           {viewDetails && (
             <div className="mt-6 space-y-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-slate-50 dark:bg-primary/20 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70 dark:text-primary/70">
+                <div className="w-16 h-16 rounded-full bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70 dark:text-primary/70">
                   <FileText className="w-8 h-8" />
                 </div>
                 <div>

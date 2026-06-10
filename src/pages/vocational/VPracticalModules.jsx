@@ -114,7 +114,7 @@ export default function VPracticalModules() {
 
       <div className="flex-1 flex gap-6 overflow-hidden">
         {/* Left Panel */}
-        <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-rose-100/50">
+        <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-rose-100/50">
           <div className="p-4 border-b border-rose-50 dark:border-slate-800">
             <div className="relative">
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-rose-500" />
@@ -140,17 +140,17 @@ export default function VPracticalModules() {
                     className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
                       selectedModule?.id === module.id 
                         ? 'bg-rose-600 text-white shadow-md shadow-rose-500/20' 
-                        : 'hover:bg-rose-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'
+                        : 'hover:bg-rose-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 dark:text-slate-200'
                     }`}
                   >
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-                      selectedModule?.id === module.id ? 'bg-white/20' : 'bg-rose-100 dark:bg-slate-800 text-rose-600'
+                      selectedModule?.id === module.id ? 'bg-white dark:bg-slate-900/40/20' : 'bg-rose-100 dark:bg-slate-800 text-rose-600'
                     }`}>
                       <Layers className="w-5 h-5" />
                     </div>
                     <div className="overflow-hidden">
                       <p className="font-bold truncate">{module.title}</p>
-                      <p className={`text-xs truncate ${selectedModule?.id === module.id ? 'text-rose-200' : 'text-slate-500'}`}>
+                      <p className={`text-xs truncate ${selectedModule?.id === module.id ? 'text-rose-200' : 'text-slate-500 dark:text-slate-400'}`}>
                         {module.data?.courseId || 'No Course'} • {module.data?.durationHours || '0'} Hrs
                       </p>
                     </div>
@@ -162,13 +162,13 @@ export default function VPracticalModules() {
         </Card>
 
         {/* Right Panel */}
-        <Card className="flex-1 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-rose-100/50 overflow-hidden relative">
+        <Card className="flex-1 flex flex-col rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-rose-100/50 overflow-hidden relative">
           {selectedModule ? (
             <>
               <div className="h-32 bg-gradient-to-r from-rose-500 to-primary relative shrink-0 flex items-center px-8">
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
                 <div className="relative z-10 flex items-center gap-6 translate-y-10">
-                  <div className="w-24 h-24 rounded-2xl bg-white dark:bg-slate-900 p-2 shadow-xl shrink-0">
+                  <div className="w-24 h-24 rounded-2xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-2 shadow-xl shrink-0">
                     <div className="w-full h-full rounded-xl bg-rose-50 dark:bg-slate-800 flex items-center justify-center text-rose-600">
                       <Layers className="w-10 h-10" />
                     </div>
@@ -230,8 +230,8 @@ export default function VPracticalModules() {
               <div className="w-20 h-20 rounded-full bg-rose-50 dark:bg-slate-800 flex items-center justify-center mb-6">
                 <Layers className="w-10 h-10 text-rose-300" />
               </div>
-              <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200">No Slate Selected</h3>
-              <p className="text-slate-500 dark:text-slate-400 max-w-sm mt-2">
+              <h3 className="text-xl font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">No Slate Selected</h3>
+              <p className="text-slate-500 dark:text-slate-400 dark:text-slate-400 max-w-sm mt-2">
                 Select a module from the list to view requirements or add a new practical module.
               </p>
             </div>

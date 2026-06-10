@@ -155,7 +155,7 @@ export default function ClientPortal() {
       {/* Welcome banner */}
       <div className="bg-gradient-to-r from-primary to-primary/80 rounded-xl p-5 text-white">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-lg font-bold">
+          <div className="w-12 h-12 rounded-full bg-white dark:bg-slate-900/40/20 flex items-center justify-center text-lg font-bold">
             {client.name?.[0]?.toUpperCase()}
           </div>
           <div>
@@ -166,9 +166,9 @@ export default function ClientPortal() {
       </div>
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <StatCard icon={Briefcase} label={`My ${getTerm(user?.company_industry, 'cases')}`} value={cases.length} color="bg-slate-50 text-primary" />
-        <StatCard icon={Calendar} label="Upcoming Appointments" value={upcomingHearings.length} color="bg-slate-50 text-primary" />
-        <StatCard icon={Receipt} label="Invoices Paid" value={invoices.filter(i => i.status === "paid").length} color="bg-slate-50 text-primary" />
+        <StatCard icon={Briefcase} label={`My ${getTerm(user?.company_industry, 'cases')}`} value={cases.length} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
+        <StatCard icon={Calendar} label="Upcoming Appointments" value={upcomingHearings.length} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
+        <StatCard icon={Receipt} label="Invoices Paid" value={invoices.filter(i => i.status === "paid").length} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
         <StatCard icon={FolderOpen} label="Documents" value={sharedDocs.length} color="bg-amber-50 text-amber-600" />
       </div>
       {/* At a Glance */}

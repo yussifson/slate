@@ -116,7 +116,7 @@ export default function Housekeeping() {
                      <div key={room.id} className="bg-card p-4 rounded-lg shadow-sm border border-border border-l-4 border-l-violet-500">
                        <p className="font-bold text-lg mb-1">{t("room", "Room")} {room.roomNumber}</p>
                        <p className="text-xs text-muted-foreground mb-3 flex items-center gap-1"><User className="w-3.5 h-3.5" /> {t("assigned", "Assigned:")} {room.cleaner}</p>
-                       <Button onClick={() => handleUpdateStatus(room, 'Inspecting')} size="sm" variant="outline" className="w-full text-xs border-primary/20 dark:border-primary/70 text-primary/90 dark:text-primary/70 hover:bg-slate-50 dark:hover:bg-primary/35">{t("mark_ready_for_inspection", "Mark Ready for Inspection")}</Button>
+                       <Button onClick={() => handleUpdateStatus(room, 'Inspecting')} size="sm" variant="outline" className="w-full text-xs border-primary/20 dark:border-primary/70 text-primary/90 dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 dark:hover:bg-primary/35">{t("mark_ready_for_inspection", "Mark Ready for Inspection")}</Button>
                      </div>
                    );
                  })}

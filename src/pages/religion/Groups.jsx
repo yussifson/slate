@@ -11,11 +11,11 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { Link } from 'react-router-dom';
 
 const COLOR_SCHEMES = [
-  { border: 'border-primary/20 dark:border-primary/70', bg: 'bg-slate-50 dark:bg-primary/20', text: 'text-primary', name: 'Blue' },
-  { border: 'border-primary/20 dark:border-primary/70', bg: 'bg-slate-50 dark:bg-primary/20', text: 'text-primary', name: 'Pink' },
-  { border: 'border-primary/20 dark:border-primary/70', bg: 'bg-slate-50 dark:bg-primary/20', text: 'text-primary', name: 'Purple' },
+  { border: 'border-primary/20 dark:border-primary/70', bg: 'bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20', text: 'text-primary', name: 'Blue' },
+  { border: 'border-primary/20 dark:border-primary/70', bg: 'bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20', text: 'text-primary', name: 'Pink' },
+  { border: 'border-primary/20 dark:border-primary/70', bg: 'bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20', text: 'text-primary', name: 'Purple' },
   { border: 'border-amber-200 dark:border-amber-900', bg: 'bg-amber-50 dark:bg-amber-950/20', text: 'text-amber-500', name: 'Amber' },
-  { border: 'border-primary/20 dark:border-primary/70', bg: 'bg-slate-50 dark:bg-primary/20', text: 'text-primary', name: 'Emerald' }
+  { border: 'border-primary/20 dark:border-primary/70', bg: 'bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20', text: 'text-primary', name: 'Emerald' }
 ];
 
 export default function Groups() {

@@ -103,7 +103,7 @@ export default function SHSMedicalRecords() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10">
           <CardContent className="p-5 flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
               <Stethoscope className="w-6 h-6" />
@@ -115,7 +115,7 @@ export default function SHSMedicalRecords() {
           </CardContent>
         </Card>
         
-        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-rose-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-rose-100">
           <CardContent className="p-5 flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-rose-100 flex items-center justify-center text-rose-600 shrink-0">
               <Activity className="w-6 h-6" />
@@ -129,7 +129,7 @@ export default function SHSMedicalRecords() {
           </CardContent>
         </Card>
         
-        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-amber-100">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-amber-100">
           <CardContent className="p-5 flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 shrink-0">
               <HeartPulse className="w-6 h-6" />
@@ -143,7 +143,7 @@ export default function SHSMedicalRecords() {
           </CardContent>
         </Card>
         
-        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10">
+        <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10">
           <CardContent className="p-5 flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-primary shrink-0">
               <Syringe className="w-6 h-6" />
@@ -158,18 +158,18 @@ export default function SHSMedicalRecords() {
         </Card>
       </div>
 
-      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
-        <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
+      <Card className="rounded-3xl border-none shadow-sm bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+        <CardHeader className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Clinic Log</CardTitle>
             </div>
             
             <div className="relative w-full sm:w-64">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
               <Input 
                 placeholder="Search visits or students..." 
-                className="pl-9 h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
+                className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -178,19 +178,19 @@ export default function SHSMedicalRecords() {
         </CardHeader>
         <CardContent className="p-0">
           {loading ? (
-            <div className="p-12 text-center text-slate-400 dark:text-slate-500">Loading records...</div>
+            <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading records...</div>
           ) : filteredRecords.length === 0 ? (
             <div className="p-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
                 <ClipboardPlus className="w-8 h-8 text-primary dark:text-primary" />
               </div>
-              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No medical visits logged</h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">No visits match your search, or the infirmary log is empty.</p>
+              <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">No medical visits logged</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">No visits match your search, or the infirmary log is empty.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left">
-                <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
+                <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-semibold uppercase text-[10px] tracking-wider">
                   <tr>
                     <th className="px-6 py-4 rounded-tl-xl">Date</th>
                     <th className="px-6 py-4">Student</th>
@@ -202,7 +202,7 @@ export default function SHSMedicalRecords() {
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {filteredRecords.map((record) => (
-                    <tr key={record.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
+                    <tr key={record.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap text-slate-600 dark:text-slate-300 font-medium">
                         {record.data?.date}
                       </td>
@@ -213,12 +213,12 @@ export default function SHSMedicalRecords() {
                         <Badge variant="outline" className={
                           record.data?.visitType === 'Emergency' ? 'bg-rose-50 text-rose-700 border-rose-200' :
                           record.data?.visitType === 'Routine' ? 'bg-orange-50 text-orange-700 border-primary/20' :
-                          'bg-slate-50 dark:bg-slate-800 text-primary/80 dark:text-primary/20 border-primary/20 dark:border-slate-600'
+                          'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-primary/80 dark:text-primary/20 border-primary/20 dark:border-slate-600'
                         }>
                           {record.data?.visitType}
                         </Badge>
                       </td>
-                      <td className="px-6 py-4 text-slate-700 dark:text-slate-200 max-w-[200px] truncate" title={record.data?.symptoms}>
+                      <td className="px-6 py-4 text-slate-700 dark:text-slate-300 dark:text-slate-200 max-w-[200px] truncate" title={record.data?.symptoms}>
                         {record.data?.symptoms}
                       </td>
                       <td className="px-6 py-4 text-slate-600 dark:text-slate-300 max-w-[200px] truncate" title={record.data?.treatment}>
@@ -226,9 +226,9 @@ export default function SHSMedicalRecords() {
                       </td>
                       <td className="px-6 py-4">
                         <Badge variant="outline" className={
-                          record.status === 'Treated' ? 'bg-slate-50 text-primary/90 border-primary/20' :
+                          record.status === 'Treated' ? 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-primary/20' :
                           record.status === 'Admitted' ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                          'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700'
+                          'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 dark:text-slate-200 border-slate-200 dark:border-slate-700'
                         }>
                           {record.status}
                         </Badge>
@@ -253,12 +253,12 @@ export default function SHSMedicalRecords() {
             </DialogHeader>
           </div>
           
-          <ScrollArea className="max-h-[60vh] p-6 bg-slate-50 dark:bg-slate-800">
+          <ScrollArea className="max-h-[60vh] p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800">
             <div className="space-y-4">
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Patient (Student)</label>
                 <select 
-                  className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+                  className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
                   value={newRecord.studentId}
                   onChange={e => setNewRecord({...newRecord, studentId: e.target.value})}
                 >
@@ -274,7 +274,7 @@ export default function SHSMedicalRecords() {
                   <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Date of Visit</label>
                   <Input 
                     type="date"
-                    className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+                    className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                     value={newRecord.date}
                     onChange={e => setNewRecord({...newRecord, date: e.target.value})}
                   />
@@ -282,7 +282,7 @@ export default function SHSMedicalRecords() {
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Visit Type</label>
                   <select 
-                    className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+                    className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
                     value={newRecord.visitType}
                     onChange={e => setNewRecord({...newRecord, visitType: e.target.value})}
                   >
@@ -297,7 +297,7 @@ export default function SHSMedicalRecords() {
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Presenting Symptoms</label>
                 <Input 
                   placeholder="e.g. Headache, Fever, Stomach pain"
-                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+                  className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                   value={newRecord.symptoms}
                   onChange={e => setNewRecord({...newRecord, symptoms: e.target.value})}
                 />
@@ -307,7 +307,7 @@ export default function SHSMedicalRecords() {
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Diagnosis</label>
                 <Input 
                   placeholder="e.g. Malaria, Common Cold"
-                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+                  className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                   value={newRecord.diagnosis}
                   onChange={e => setNewRecord({...newRecord, diagnosis: e.target.value})}
                 />
@@ -317,7 +317,7 @@ export default function SHSMedicalRecords() {
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Treatment Given</label>
                 <Input 
                   placeholder="e.g. Paracetamol, Rest in ward"
-                  className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+                  className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                   value={newRecord.treatment}
                   onChange={e => setNewRecord({...newRecord, treatment: e.target.value})}
                 />
@@ -326,7 +326,7 @@ export default function SHSMedicalRecords() {
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Outcome / Status</label>
                 <select 
-                  className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+                  className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
                   value={newRecord.status}
                   onChange={e => setNewRecord({...newRecord, status: e.target.value})}
                 >
@@ -338,7 +338,7 @@ export default function SHSMedicalRecords() {
             </div>
           </ScrollArea>
           
-          <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+          <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-end gap-3">
             <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
               Cancel
             </Button>

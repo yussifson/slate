@@ -90,7 +90,7 @@ export default function Pricing() {
   ];
 
   return (
-    <div className="overflow-x-hidden bg-slate-50 min-h-screen">
+    <div className="overflow-x-hidden bg-slate-50 dark:bg-slate-800/50 min-h-screen">
       <Helmet>
         <title>Pricing | Slate AI Workspace</title>
         <meta name="description" content="Transparent pricing for Slate. Scale your business with our unified workspace platform. Choose the plan that fits your team." />
@@ -98,7 +98,7 @@ export default function Pricing() {
       {/* Pricing Header */}
       <section className="pt-10 pb-12 md:pt-14 md:pb-16 bg-slate-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-4">
             {t("choose_the_right_plan_for_your", "Choose the Right Plan for Your Team")}
           </h1>
           <p className="text-xl text-slate-800 font-medium mb-10 flex items-center justify-center gap-2">
@@ -114,7 +114,7 @@ export default function Pricing() {
               className="relative inline-flex h-8 w-14 items-center rounded-full bg-primary transition-colors"
             >
               <span 
-                className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
+                className={`inline-block h-6 w-6 transform rounded-full bg-white dark:bg-slate-900/40 transition-transform ${
                   billingPeriod === 'yearly' ? 'translate-x-7' : 'translate-x-1'
                 }`} 
               />
@@ -132,36 +132,36 @@ export default function Pricing() {
       {/* Connected Pricing Cards */}
       <section className="pb-20 md:pb-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="relative flex flex-col lg:flex-row bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden lg:overflow-visible">
+          <div className="relative flex flex-col lg:flex-row bg-white dark:bg-slate-900/40 rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden lg:overflow-visible">
             {plans.map((p, i) => {
               return (
                 <div
                   key={i}
                   className={`relative flex-1 p-8 lg:p-10 ${
                     p.popular
-                      ? 'lg:scale-[1.03] lg:-my-4 lg:bg-white lg:rounded-[2rem] lg:border-2 lg:border-primary lg:shadow-xl z-10'
+                      ? 'lg:scale-[1.03] lg:-my-4 lg:bg-white dark:bg-slate-900/40 lg:rounded-[2rem] lg:border-2 lg:border-primary lg:shadow-xl z-10'
                       : `border-b lg:border-b-0 lg:border-r border-slate-200 last:border-0 ${i === 0 ? 'lg:rounded-l-[2rem]' : ''} ${i === plans.length - 1 ? 'lg:rounded-r-[2rem]' : ''}`
                   }`}
                 >
                   <div className="mb-6 h-[100px]">
                     <div className="flex items-center gap-3 mb-3">
-                      <h3 className="font-medium text-2xl text-slate-900">{p.name}</h3>
+                      <h3 className="font-medium text-2xl text-slate-900 dark:text-slate-100">{p.name}</h3>
                       {p.popular && (
                         <span className="bg-primary/70 text-white text-[11px] font-bold px-2 py-0.5 rounded-full">
                           {t("most_popular", "Most popular")}
                         </span>
                       )}
                     </div>
-                    <p className="text-sm text-slate-500 leading-relaxed max-w-[280px]">
+                    <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w-[280px]">
                       {p.description}
                     </p>
                   </div>
                   {/* Price section */}
                   <div className="mb-8">
-                    <span className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">
+                    <span className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
                       ${billingPeriod === 'monthly' ? p.price.monthly : p.price.yearly}
                     </span>
-                    <span className="text-slate-500 text-sm font-medium ml-1">{t("mo", "/ mo")}</span>
+                    <span className="text-slate-500 dark:text-slate-400 text-sm font-medium ml-1">{t("mo", "/ mo")}</span>
                   </div>
                   {/* CTA action */}
                   <div className="mb-10">
@@ -182,7 +182,7 @@ export default function Pricing() {
                   <ul className="space-y-4">
                     {p.features.map((feature, idx) => {
                       return (
-                        <li key={idx} className="flex items-start gap-3 text-sm text-slate-700 font-medium leading-snug">
+                        <li key={idx} className="flex items-start gap-3 text-sm text-slate-700 dark:text-slate-300 font-medium leading-snug">
                           <div className="mt-0.5 shrink-0 rounded-full border border-primary flex items-center justify-center p-[2px]">
                             <Check className="w-3 h-3 text-primary" strokeWidth={3} />
                           </div>
@@ -197,10 +197,10 @@ export default function Pricing() {
           </div>
 
           {/* Off-Cloud / Enterprise Horizontal Banner */}
-          <div className="mt-8 bg-white border border-slate-200 rounded-3xl p-8 lg:p-10 text-left flex flex-col md:flex-row items-center justify-between hover:shadow-xl transition-all duration-300 gap-8 relative z-0">
+          <div className="mt-8 bg-white dark:bg-slate-900/40 border border-slate-200 rounded-3xl p-8 lg:p-10 text-left flex flex-col md:flex-row items-center justify-between hover:shadow-xl transition-all duration-300 gap-8 relative z-0">
             <div className="flex-1">
-              <h3 className="font-bold text-2xl text-slate-900 mb-2">{t("off_cloud_on_premise", "Off-Cloud (On-Premise)")}</h3>
-              <p className="text-sm text-slate-500 leading-relaxed mb-6 max-w-xl">
+              <h3 className="font-bold text-2xl text-slate-900 dark:text-slate-100 mb-2">{t("off_cloud_on_premise", "Off-Cloud (On-Premise)")}</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-6 max-w-xl">
                 {t(
                   "for_organizations_with_strict_",
                   "For organizations with strict data sovereignty requirements. Deploy Slate entirely on your own private servers."
@@ -214,7 +214,7 @@ export default function Pricing() {
                   "Dedicated solution engineer"
                 ].map((feat, fIdx) => {
                   return (
-                    <div key={fIdx} className="flex items-center gap-2.5 text-sm text-slate-700 font-medium">
+                    <div key={fIdx} className="flex items-center gap-2.5 text-sm text-slate-700 dark:text-slate-300 font-medium">
                       <div className="shrink-0 rounded-full border border-primary flex items-center justify-center p-[2px]">
                         <Check className="w-3 h-3 text-primary" strokeWidth={3} />
                       </div>
@@ -224,12 +224,12 @@ export default function Pricing() {
                 })}
               </div>
             </div>
-            <div className="w-full md:w-72 shrink-0 flex flex-col items-center justify-center border-t md:border-t-0 md:border-l border-slate-100 pt-6 md:pt-0 md:pl-10">
-              <span className="text-3xl font-black text-slate-900 mb-6">{t("custom", "Custom")}</span>
+            <div className="w-full md:w-72 shrink-0 flex flex-col items-center justify-center border-t md:border-t-0 md:border-l border-slate-100 dark:border-slate-800 pt-6 md:pt-0 md:pl-10">
+              <span className="text-3xl font-black text-slate-900 dark:text-slate-100 mb-6">{t("custom", "Custom")}</span>
               <Button 
                 onClick={() => setShowOffCloudDialog(true)}
                 variant="outline"
-                className="w-full py-6 rounded-full font-bold text-sm border-2 border-slate-900 text-slate-900 hover:bg-slate-50"
+                className="w-full py-6 rounded-full font-bold text-sm border-2 border-slate-900 text-slate-900 dark:text-slate-100 hover:bg-slate-50"
               >
                 {t("learn_more", "Learn More")}
               </Button>
@@ -238,15 +238,15 @@ export default function Pricing() {
 
           {/* Off-Cloud Dialog Modal */}
           <Dialog open={showOffCloudDialog} onOpenChange={setShowOffCloudDialog}>
-            <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden bg-white border-0 rounded-[2rem] shadow-2xl flex flex-col max-h-[85vh]">
+            <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden bg-white dark:bg-slate-900/40 border-0 rounded-[2rem] shadow-2xl flex flex-col max-h-[85vh]">
               {/* Header */}
-              <div className="bg-slate-50 px-8 py-5 border-b border-slate-100 relative shrink-0">
-                <div className="mx-auto w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center mb-3 border border-slate-200 shadow-sm">
+              <div className="bg-slate-50 dark:bg-slate-800/50 px-8 py-5 border-b border-slate-100 dark:border-slate-800 relative shrink-0">
+                <div className="mx-auto w-12 h-12 bg-slate-50 dark:bg-slate-800/50 rounded-xl flex items-center justify-center mb-3 border border-slate-200 shadow-sm">
                   <Server className="w-6 h-6 text-primary" />
                 </div>
                 <div className="text-center">
-                  <DialogTitle className="text-2xl font-extrabold text-slate-900 mb-1 tracking-tight">{t("off_cloud_enterprise", "Off-Cloud Enterprise")}</DialogTitle>
-                  <DialogDescription className="text-slate-500 text-xs max-w-sm mx-auto leading-relaxed font-medium">
+                  <DialogTitle className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 mb-1 tracking-tight">{t("off_cloud_enterprise", "Off-Cloud Enterprise")}</DialogTitle>
+                  <DialogDescription className="text-slate-500 dark:text-slate-400 text-xs max-w-sm mx-auto leading-relaxed font-medium">
                     {t(
                       "deploy_slate_securely_on_y",
                       "Deploy Slate securely on your own private infrastructure."
@@ -256,30 +256,30 @@ export default function Pricing() {
               </div>
               
               {/* Scrollable Content */}
-              <div className="px-8 py-8 overflow-y-auto bg-white flex-1 custom-scrollbar">
+              <div className="px-8 py-8 overflow-y-auto bg-white dark:bg-slate-900/40 flex-1 custom-scrollbar">
                 <div className="space-y-8">
                   <div>
-                    <h4 className="font-bold text-slate-900 mb-4 uppercase tracking-wider text-xs border-b border-slate-100 pb-2">{t("deployment_architecture", "Deployment & Architecture")}</h4>
+                    <h4 className="font-bold text-slate-900 dark:text-slate-100 mb-4 uppercase tracking-wider text-xs border-b border-slate-100 dark:border-slate-800 pb-2">{t("deployment_architecture", "Deployment & Architecture")}</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="flex gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 shadow-sm">
-                          <Server className="w-5 h-5 text-slate-700" />
+                        <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 flex items-center justify-center shrink-0 shadow-sm">
+                          <Server className="w-5 h-5 text-slate-700 dark:text-slate-300" />
                         </div>
                         <div>
-                          <p className="text-sm font-bold text-slate-900">{t("self_hosted_on_premise", "Self-Hosted / On-Premise")}</p>
-                          <p className="text-xs text-slate-500 mt-1 leading-relaxed">{t(
+                          <p className="text-sm font-bold text-slate-900 dark:text-slate-100">{t("self_hosted_on_premise", "Self-Hosted / On-Premise")}</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">{t(
                             "deploy_the_platform_directly_t",
                             "Deploy the platform directly to your internal bare-metal servers or private AWS, Azure, and Google Cloud networks."
                           )}</p>
                         </div>
                       </div>
                       <div className="flex gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 shadow-sm">
-                          <Shield className="w-5 h-5 text-slate-700" />
+                        <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 flex items-center justify-center shrink-0 shadow-sm">
+                          <Shield className="w-5 h-5 text-slate-700 dark:text-slate-300" />
                         </div>
                         <div>
-                          <p className="text-sm font-bold text-slate-900">{t("air_gapped_operation", "Air-Gapped Operation")}</p>
-                          <p className="text-xs text-slate-500 mt-1 leading-relaxed">{t(
+                          <p className="text-sm font-bold text-slate-900 dark:text-slate-100">{t("air_gapped_operation", "Air-Gapped Operation")}</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">{t(
                             "slate_can_operate_fully_of",
                             "Slate can operate fully offline without external API dependencies, ensuring total data isolation for sensitive sectors."
                           )}</p>
@@ -289,27 +289,27 @@ export default function Pricing() {
                   </div>
 
                   <div>
-                    <h4 className="font-bold text-slate-900 mb-4 uppercase tracking-wider text-xs border-b border-slate-100 pb-2">{t("security_integration", "Security & Integration")}</h4>
+                    <h4 className="font-bold text-slate-900 dark:text-slate-100 mb-4 uppercase tracking-wider text-xs border-b border-slate-100 dark:border-slate-800 pb-2">{t("security_integration", "Security & Integration")}</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="flex gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 shadow-sm">
-                          <Database className="w-5 h-5 text-slate-700" />
+                        <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 flex items-center justify-center shrink-0 shadow-sm">
+                          <Database className="w-5 h-5 text-slate-700 dark:text-slate-300" />
                         </div>
                         <div>
-                          <p className="text-sm font-bold text-slate-900">{t("custom_db_integration", "Custom DB Integration")}</p>
-                          <p className="text-xs text-slate-500 mt-1 leading-relaxed">{t(
+                          <p className="text-sm font-bold text-slate-900 dark:text-slate-100">{t("custom_db_integration", "Custom DB Integration")}</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">{t(
                             "map_slate_to_your_existing",
                             "Map Slate to your existing legacy databases. We support PostgreSQL, SQL Server, and custom on-prem storage pipelines."
                           )}</p>
                         </div>
                       </div>
                       <div className="flex gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 shadow-sm">
-                          <Check className="w-5 h-5 text-slate-700" />
+                        <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 flex items-center justify-center shrink-0 shadow-sm">
+                          <Check className="w-5 h-5 text-slate-700 dark:text-slate-300" />
                         </div>
                         <div>
-                          <p className="text-sm font-bold text-slate-900">{t("sla_compliance", "SLA & Compliance")}</p>
-                          <p className="text-xs text-slate-500 mt-1 leading-relaxed">{t(
+                          <p className="text-sm font-bold text-slate-900 dark:text-slate-100">{t("sla_compliance", "SLA & Compliance")}</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">{t(
                             "guaranteed_99_99_uptime_sla_bu",
                             "Guaranteed 99.99% uptime SLA. Built to comply with GDPR, HIPAA, SOC2, and government data sovereignty laws."
                           )}</p>
@@ -319,15 +319,15 @@ export default function Pricing() {
                   </div>
 
                   <div>
-                    <h4 className="font-bold text-slate-900 mb-4 uppercase tracking-wider text-xs border-b border-slate-100 pb-2">{t("premium_support", "Premium Support")}</h4>
+                    <h4 className="font-bold text-slate-900 dark:text-slate-100 mb-4 uppercase tracking-wider text-xs border-b border-slate-100 dark:border-slate-800 pb-2">{t("premium_support", "Premium Support")}</h4>
                     <div className="grid grid-cols-1 gap-6">
                       <div className="flex gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 shadow-sm">
-                          <Headphones className="w-5 h-5 text-slate-700" />
+                        <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 flex items-center justify-center shrink-0 shadow-sm">
+                          <Headphones className="w-5 h-5 text-slate-700 dark:text-slate-300" />
                         </div>
                         <div>
-                          <p className="text-sm font-bold text-slate-900">{t("dedicated_solution_engineer", "Dedicated Solution Engineer")}</p>
-                          <p className="text-xs text-slate-500 mt-1 leading-relaxed">{t(
+                          <p className="text-sm font-bold text-slate-900 dark:text-slate-100">{t("dedicated_solution_engineer", "Dedicated Solution Engineer")}</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">{t(
                             "your_firm_will_be_assigned_a_d",
                             "Your firm will be assigned a dedicated engineer to handle deployment, white-labeling, maintenance, and custom feature development. Direct phone line and prioritized ticketing included."
                           )}</p>
@@ -339,8 +339,8 @@ export default function Pricing() {
               </div>
 
               {/* Footer CTA */}
-              <DialogFooter className="p-6 bg-slate-50 border-t border-slate-100 sm:justify-between items-center flex-col sm:flex-row gap-4 shrink-0">
-                <Button type="button" variant="ghost" onClick={() => setShowOffCloudDialog(false)} className="w-full sm:w-auto font-bold text-slate-600 hover:text-slate-900">
+              <DialogFooter className="p-6 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 sm:justify-between items-center flex-col sm:flex-row gap-4 shrink-0">
+                <Button type="button" variant="ghost" onClick={() => setShowOffCloudDialog(false)} className="w-full sm:w-auto font-bold text-slate-600 hover:text-slate-900 dark:text-slate-100">
                   {t("close", "Close")}
                 </Button>
                 <Link to="/enterprise-contact" onClick={() => setShowOffCloudDialog(false)} className="w-full sm:w-auto block">
@@ -354,42 +354,42 @@ export default function Pricing() {
 
           <div className="mt-24">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-slate-900 flex items-center justify-center gap-3">
+              <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 flex items-center justify-center gap-3">
                 {t("full_plan", "Full Plan")} <span className="bg-slate-100 text-primary/70 px-4 py-1 rounded-full">{t("comparison", "Comparison")}</span>
               </h2>
             </div>
             
-            <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white dark:bg-slate-900/40 shadow-sm">
               <table className="w-full text-left border-collapse min-w-[800px]">
                 <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50/50">
-                    <th className="py-5 px-6 font-bold text-slate-900 w-1/4">{t("features", "Features")}</th>
-                    <th className="py-5 px-6 font-bold text-slate-900 w-1/4 text-center">{t("starter", "Starter")}</th>
-                    <th className="py-5 px-6 font-bold text-slate-900 w-1/4 text-center">{t("professional", "Professional")}</th>
-                    <th className="py-5 px-6 font-bold text-slate-900 w-1/4 text-center">{t("enterprise", "Enterprise")}</th>
+                  <tr className="border-b border-slate-200 bg-slate-50/50 dark:bg-transparent">
+                    <th className="py-5 px-6 font-bold text-slate-900 dark:text-slate-100 w-1/4">{t("features", "Features")}</th>
+                    <th className="py-5 px-6 font-bold text-slate-900 dark:text-slate-100 w-1/4 text-center">{t("starter", "Starter")}</th>
+                    <th className="py-5 px-6 font-bold text-slate-900 dark:text-slate-100 w-1/4 text-center">{t("professional", "Professional")}</th>
+                    <th className="py-5 px-6 font-bold text-slate-900 dark:text-slate-100 w-1/4 text-center">{t("enterprise", "Enterprise")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {/* Category 1 */}
                   <tr>
-                    <td colSpan="4" className="bg-slate-50 py-3 px-6 text-sm font-bold text-slate-500 uppercase tracking-wider">
+                    <td colSpan="4" className="bg-slate-50 dark:bg-slate-800/50 py-3 px-6 text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                       {t("time_tracking", "Time Tracking")}
                     </td>
                   </tr>
-                  <tr className="hover:bg-slate-50/50 transition-colors">
-                    <td className="py-4 px-6 text-sm font-medium text-slate-700">{t("unlimited_time_tracking", "Unlimited time tracking")}</td>
+                  <tr className="hover:bg-slate-50/50 dark:bg-transparent transition-colors">
+                    <td className="py-4 px-6 text-sm font-medium text-slate-700 dark:text-slate-300">{t("unlimited_time_tracking", "Unlimited time tracking")}</td>
                     <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
                     <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
                     <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
                   </tr>
-                  <tr className="hover:bg-slate-50/50 transition-colors">
-                    <td className="py-4 px-6 text-sm font-medium text-slate-700">{t("timer_button_in_50_web_apps", "Timer button in 50+ web apps")}</td>
+                  <tr className="hover:bg-slate-50/50 dark:bg-transparent transition-colors">
+                    <td className="py-4 px-6 text-sm font-medium text-slate-700 dark:text-slate-300">{t("timer_button_in_50_web_apps", "Timer button in 50+ web apps")}</td>
                     <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
                     <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
                     <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
                   </tr>
-                  <tr className="hover:bg-slate-50/50 transition-colors">
-                    <td className="py-4 px-6 text-sm font-medium text-slate-700">{t("time_rounding", "Time rounding")}</td>
+                  <tr className="hover:bg-slate-50/50 dark:bg-transparent transition-colors">
+                    <td className="py-4 px-6 text-sm font-medium text-slate-700 dark:text-slate-300">{t("time_rounding", "Time rounding")}</td>
                     <td className="py-4 px-6 text-center text-slate-300 font-bold">—</td>
                     <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
                     <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
@@ -397,24 +397,24 @@ export default function Pricing() {
 
                   {/* Category 2 */}
                   <tr>
-                    <td colSpan="4" className="bg-slate-50 py-3 px-6 text-sm font-bold text-slate-500 uppercase tracking-wider">
+                    <td colSpan="4" className="bg-slate-50 dark:bg-slate-800/50 py-3 px-6 text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                       {t("project_management", "Project Management")}
                     </td>
                   </tr>
-                  <tr className="hover:bg-slate-50/50 transition-colors">
-                    <td className="py-4 px-6 text-sm font-medium text-slate-700">{t("unlimited_clients_projects", "Unlimited clients & projects")}</td>
+                  <tr className="hover:bg-slate-50/50 dark:bg-transparent transition-colors">
+                    <td className="py-4 px-6 text-sm font-medium text-slate-700 dark:text-slate-300">{t("unlimited_clients_projects", "Unlimited clients & projects")}</td>
                     <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
                     <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
                     <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
                   </tr>
-                  <tr className="hover:bg-slate-50/50 transition-colors">
-                    <td className="py-4 px-6 text-sm font-medium text-slate-700">{t("task_management", "Task management")}</td>
+                  <tr className="hover:bg-slate-50/50 dark:bg-transparent transition-colors">
+                    <td className="py-4 px-6 text-sm font-medium text-slate-700 dark:text-slate-300">{t("task_management", "Task management")}</td>
                     <td className="py-4 px-6 text-center text-slate-300 font-bold">—</td>
                     <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
                     <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
                   </tr>
-                  <tr className="hover:bg-slate-50/50 transition-colors">
-                    <td className="py-4 px-6 text-sm font-medium text-slate-700">{t("project_budgets_alerts", "Project budgets & alerts")}</td>
+                  <tr className="hover:bg-slate-50/50 dark:bg-transparent transition-colors">
+                    <td className="py-4 px-6 text-sm font-medium text-slate-700 dark:text-slate-300">{t("project_budgets_alerts", "Project budgets & alerts")}</td>
                     <td className="py-4 px-6 text-center text-slate-300 font-bold">—</td>
                     <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
                     <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
@@ -422,24 +422,24 @@ export default function Pricing() {
 
                   {/* Category 3 */}
                   <tr>
-                    <td colSpan="4" className="bg-slate-50 py-3 px-6 text-sm font-bold text-slate-500 uppercase tracking-wider">
+                    <td colSpan="4" className="bg-slate-50 dark:bg-slate-800/50 py-3 px-6 text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                       {t("team_security", "Team & Security")}
                     </td>
                   </tr>
-                  <tr className="hover:bg-slate-50/50 transition-colors">
-                    <td className="py-4 px-6 text-sm font-medium text-slate-700">{t("api_access", "API Access")}</td>
+                  <tr className="hover:bg-slate-50/50 dark:bg-transparent transition-colors">
+                    <td className="py-4 px-6 text-sm font-medium text-slate-700 dark:text-slate-300">{t("api_access", "API Access")}</td>
                     <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
                     <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
                     <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
                   </tr>
-                  <tr className="hover:bg-slate-50/50 transition-colors">
-                    <td className="py-4 px-6 text-sm font-medium text-slate-700">{t("time_off_module", "Time Off Module")}</td>
+                  <tr className="hover:bg-slate-50/50 dark:bg-transparent transition-colors">
+                    <td className="py-4 px-6 text-sm font-medium text-slate-700 dark:text-slate-300">{t("time_off_module", "Time Off Module")}</td>
                     <td className="py-4 px-6 text-center text-slate-300 font-bold">—</td>
                     <td className="py-4 px-6 text-center text-slate-300 font-bold">—</td>
                     <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
                   </tr>
-                  <tr className="hover:bg-slate-50/50 transition-colors">
-                    <td className="py-4 px-6 text-sm font-medium text-slate-700">{t("screenshot_capturing", "Screenshot capturing")}</td>
+                  <tr className="hover:bg-slate-50/50 dark:bg-transparent transition-colors">
+                    <td className="py-4 px-6 text-sm font-medium text-slate-700 dark:text-slate-300">{t("screenshot_capturing", "Screenshot capturing")}</td>
                     <td className="py-4 px-6 text-center text-slate-300 font-bold">—</td>
                     <td className="py-4 px-6 text-center text-slate-300 font-bold">—</td>
                     <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
@@ -451,10 +451,10 @@ export default function Pricing() {
         </div>
       </section>
       {/* FAQ Section */}
-      <section className="bg-white border-t border-slate-200 py-24 md:py-32">
+      <section className="bg-white dark:bg-slate-900/40 border-t border-slate-200 py-24 md:py-32">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
               {t("frequently_asked_questions", "Frequently Asked Questions")}
             </h2>
           </div>
@@ -463,7 +463,7 @@ export default function Pricing() {
             {faqs.map((faq, index) => {
               return (
                 <div key={index} className="space-y-3">
-                  <h4 className="font-bold text-slate-900 flex items-start gap-3 text-base leading-snug">
+                  <h4 className="font-bold text-slate-900 dark:text-slate-100 flex items-start gap-3 text-base leading-snug">
                     <Info className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                     <span>{faq.q}</span>
                   </h4>

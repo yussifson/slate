@@ -66,16 +66,16 @@ export default function CampusMarketplace() {
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         <div className="lg:col-span-1">
-          <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 p-8 shadow-sm sticky top-6">
+          <div className="bg-white dark:bg-slate-900/40/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 p-8 shadow-sm sticky top-6">
             <h3 className="text-xl font-extrabold mb-6 flex items-center gap-2"><Tag className="w-5 h-5 text-primary" /> Sell an Item</h3>
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-slate-500 uppercase">Item Name</label>
-                <Input value={newItemName} onChange={e => setNewItemName(e.target.value)} placeholder="e.g. Physics Textbook" className="mt-1 bg-white/50 dark:bg-background/50 border-slate-200 dark:border-slate-800 rounded-xl" />
+                <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">Item Name</label>
+                <Input value={newItemName} onChange={e => setNewItemName(e.target.value)} placeholder="e.g. Physics Textbook" className="mt-1 bg-white dark:bg-slate-900/40/50 dark:bg-background/50 border-slate-200 dark:border-slate-800 rounded-xl" />
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-500 uppercase">Price ($)</label>
-                <Input type="number" value={newItemPrice} onChange={e => setNewItemPrice(e.target.value)} placeholder="0.00" className="mt-1 bg-white/50 dark:bg-background/50 border-slate-200 dark:border-slate-800 rounded-xl" />
+                <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">Price ($)</label>
+                <Input type="number" value={newItemPrice} onChange={e => setNewItemPrice(e.target.value)} placeholder="0.00" className="mt-1 bg-white dark:bg-slate-900/40/50 dark:bg-background/50 border-slate-200 dark:border-slate-800 rounded-xl" />
               </div>
               <Button onClick={() => listItem.mutate()} disabled={listItem.isPending} className="w-full h-12 rounded-xl bg-primary hover:bg-primary text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold font-bold shadow-sm shadow-emerald-600/20 mt-4">
                 <Plus className="w-4 h-4 mr-2" /> List Item
@@ -87,19 +87,19 @@ export default function CampusMarketplace() {
         <div className="lg:col-span-3">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {displayItems.map(item => (
-              <div key={item.id} className="bg-white/60 dark:bg-card/60 backdrop-blur-md rounded-3xl border border-white/20 overflow-hidden shadow-sm hover:shadow-sm hover:-translate-y-1 transition-all group flex flex-col">
+              <div key={item.id} className="bg-white dark:bg-slate-900/40/60 dark:bg-card/60 backdrop-blur-md rounded-3xl border border-white/20 overflow-hidden shadow-sm hover:shadow-sm hover:-translate-y-1 transition-all group flex flex-col">
                 <div className="h-40 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center relative">
-                  <ShoppingBag className="w-12 h-12 text-slate-300 dark:text-slate-700" />
+                  <ShoppingBag className="w-12 h-12 text-slate-300 dark:text-slate-700 dark:text-slate-300" />
                   <div className="absolute top-4 right-4 bg-primary text-white text-xs font-black px-3 py-1 rounded-full shadow-sm">
                     ${item.data?.price?.toFixed(2) || '0.00'}
                   </div>
                 </div>
                 <div className="p-6 flex-1 flex flex-col justify-between">
                   <div>
-                    <h3 className="font-extrabold text-lg text-slate-900 dark:text-white mb-1 line-clamp-2">{item.title}</h3>
+                    <h3 className="font-extrabold text-lg text-slate-900 dark:text-slate-100 dark:text-white mb-1 line-clamp-2">{item.title}</h3>
                     <p className="text-xs font-bold text-primary dark:text-primary/70 uppercase tracking-wider mb-4">{item.status}</p>
                   </div>
-                  <Button variant="outline" className="w-full rounded-xl border-slate-200 dark:border-slate-800 font-bold hover:bg-slate-50 dark:bg-primary/20 hover:text-primary dark:text-primary/70 hover:border-primary/20 dark:hover:bg-primary/20 dark:hover:border-primary/80">
+                  <Button variant="outline" className="w-full rounded-xl border-slate-200 dark:border-slate-800 font-bold hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 hover:text-primary dark:text-primary/70 hover:border-primary/20 dark:hover:bg-primary/20 dark:hover:border-primary/80">
                     <MessageCircle className="w-4 h-4 mr-2" /> Contact Seller
                   </Button>
                 </div>

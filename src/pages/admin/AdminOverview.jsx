@@ -61,10 +61,10 @@ export default function AdminOverview() {
         <div className="bg-card border border-border p-6 rounded-2xl flex items-center justify-between shadow-sm">
           <div>
             <p className="text-sm text-muted-foreground mb-1">{t("total_mrr", "Total MRR")}</p>
-            <p className="text-3xl font-black text-slate-900">${mrr}</p>
+            <p className="text-3xl font-black text-slate-900 dark:text-slate-100">${mrr}</p>
             <p className="text-xs text-primary mt-2 font-semibold">{t("active_subscriptions", "Active Subscriptions")}</p>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-slate-50 text-primary flex items-center justify-center">
+          <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800/50 text-primary flex items-center justify-center">
             <DollarSign className="w-6 h-6" />
           </div>
         </div>
@@ -72,10 +72,10 @@ export default function AdminOverview() {
         <div className="bg-card border border-border p-6 rounded-2xl flex items-center justify-between shadow-sm">
           <div>
             <p className="text-sm text-muted-foreground mb-1">{t("total_firms", "Total Firms")}</p>
-            <p className="text-3xl font-black text-slate-900">{companies.length}</p>
-            <p className="text-xs text-slate-500 mt-2 font-medium">{activeFirmsCount} {t("active", "Active /")} {companies.filter(c => c.subscription_status === 'trial').length} {t("trials", "Trials")}</p>
+            <p className="text-3xl font-black text-slate-900 dark:text-slate-100">{companies.length}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">{activeFirmsCount} {t("active", "Active /")} {companies.filter(c => c.subscription_status === 'trial').length} {t("trials", "Trials")}</p>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-slate-50 text-primary flex items-center justify-center">
+          <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800/50 text-primary flex items-center justify-center">
             <Building2 className="w-6 h-6" />
           </div>
         </div>
@@ -83,10 +83,10 @@ export default function AdminOverview() {
         <div className="bg-card border border-border p-6 rounded-2xl flex items-center justify-between shadow-sm">
           <div>
             <p className="text-sm text-muted-foreground mb-1">{t("total_users", "Total Users")}</p>
-            <p className="text-3xl font-black text-slate-900">{totalUsersCount}</p>
-            <p className="text-xs text-slate-500 mt-2 font-medium">{t("across_all_firms", "Across all firms")}</p>
+            <p className="text-3xl font-black text-slate-900 dark:text-slate-100">{totalUsersCount}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">{t("across_all_firms", "Across all firms")}</p>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-slate-50 text-primary flex items-center justify-center">
+          <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800/50 text-primary flex items-center justify-center">
             <Users className="w-6 h-6" />
           </div>
         </div>
@@ -94,8 +94,8 @@ export default function AdminOverview() {
         <div className="bg-card border border-border p-6 rounded-2xl flex items-center justify-between shadow-sm">
           <div>
             <p className="text-sm text-muted-foreground mb-1">{t("total_cases", "Total Cases")}</p>
-            <p className="text-3xl font-black text-slate-900">{totalCasesCount}</p>
-            <p className="text-xs text-slate-500 mt-2 font-medium">{t("platform_wide_data", "Platform-wide data")}</p>
+            <p className="text-3xl font-black text-slate-900 dark:text-slate-100">{totalCasesCount}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">{t("platform_wide_data", "Platform-wide data")}</p>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
             <Scale className="w-6 h-6" />
