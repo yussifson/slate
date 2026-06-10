@@ -187,22 +187,24 @@ export default function OrbitBuildPage() {
         return <UnivSearch />;
         
       // Phase 3 Components
+      // Phase 1 Components (Core)
+      case 'dashboard_widgets':
+      case 'analytics':
+        return <UnivAnalytics />;
+      case 'document_manager':
+      case 'documents':
+      case 'file_manager':
+        return <UnivDocument companyId={companyId} pageName={pageDef.page_name} title={pageDef.page_name} />;
+      case 'kanban':
+      case 'tasks':
+      case 'projects':
+      case 'board':
+        return <UnivKanban companyId={companyId} pageName={pageDef.page_name} title={pageDef.page_name} />;
+      case 'calendar':
       case 'timeline':
-      case 'project_planning':
-      case 'milestones':
-        return <UnivTimeline />;
-      case 'document':
-      case 'files':
-      case 'storage':
-        return <UnivDocument />;
-      case 'messaging':
-      case 'chat':
-      case 'conversations':
-        return <UnivMessaging />;
-      case 'notification':
-      case 'alerts':
-      case 'reminders':
-        return <UnivNotification />;
+      case 'scheduling':
+      case 'appointment':
+        return <UnivCalendar companyId={companyId} pageName={pageDef.page_name} title={pageDef.page_name} />;
         
       // Phase 4 Components
       case 'contact_management':

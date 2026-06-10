@@ -1,21 +1,73 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { FileText, Folder, UploadCloud, Search, MoreVertical, Download, Trash2, FileImage, FileCode, CheckCircle2 } from 'lucide-react';
-import { toast } from 'react-hot-toast';
+import React, { useState, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FileText, Folder, UploadCloud, Search, MoreVertical, Download, Trash2, FileImage, FileCode, CheckCircle2, Loader2 } from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/api/supabaseClient';
+import { useToast } from '@/components/ui/use-toast';
 
 export default function UnivDocument({
   title = "Document Manager",
-  subtitle = "Store, organize, and preview your files securely."
+  subtitle = "Store, organize, and preview your files securely.",
+  companyId,
+  pageName
 }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [dragActive, setDragActive] = useState(false);
+  const fileInputRef = useRef(null);
+  
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
 
-  const mockFiles = [
-    { id: 1, name: 'Project Requirements.pdf', size: '2.4 MB', type: 'pdf', modified: '2 hrs ago', icon: FileText, color: 'text-red-500 bg-red-100 dark:bg-red-500/10' },
-    { id: 2, title: 'Design Assets', type: 'folder', items: 12, modified: '1 day ago', icon: Folder, color: 'text-blue-500 bg-blue-100 dark:bg-blue-500/10' },
-    { id: 3, name: 'Hero Image.png', size: '4.1 MB', type: 'image', modified: '3 days ago', icon: FileImage, color: 'text-emerald-500 bg-emerald-100 dark:bg-emerald-500/10' },
-    { id: 4, name: 'config.json', size: '12 KB', type: 'code', modified: '1 week ago', icon: FileCode, color: 'text-purple-500 bg-purple-100 dark:bg-purple-500/10' }
-  ];
+  const { data: records = [], isLoading } = useQuery({
+    queryKey: ['orbit_records', companyId, pageName],
+    queryFn: async () => {
+      if (!companyId || !pageName) return [];
+      const { data, error } = await supabase
+        .from('industry_records')
+        .select('*')
+        .eq('company_id', companyId)
+        .eq('industry', 'orbit_build_data')
+        .eq('record_type', pageName)
+        .order('created_at', { ascending: false });
+        
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!companyId && !!pageName
+  });
+
+  const uploadMutation = useMutation({
+    mutationFn: async (fileData) => {
+      const { data, error } = await supabase
+        .from('industry_records')
+        .insert([{
+          company_id: companyId,
+          industry: 'orbit_build_data',
+          record_type: pageName,
+          data: fileData,
+          search_text: Object.values(fileData).join(' ')
+        }]);
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['orbit_records', companyId, pageName]);
+      queryClient.invalidateQueries(['orbit_dynamic_records', companyId]);
+      toast({ title: 'Success', description: 'File uploaded successfully.' });
+    }
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id) => {
+      const { error } = await supabase.from('industry_records').delete().eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['orbit_records', companyId, pageName]);
+      queryClient.invalidateQueries(['orbit_dynamic_records', companyId]);
+      toast({ title: 'Deleted', description: 'File removed.' });
+    }
+  });
 
   const handleDrag = (e) => {
     e.preventDefault();
@@ -24,12 +76,63 @@ export default function UnivDocument({
     else if (e.type === "dragleave") setDragActive(false);
   };
 
+  const processFiles = (files) => {
+    Array.from(files).forEach(file => {
+      let type = 'document';
+      let icon = 'FileText';
+      let color = 'text-blue-500 bg-blue-100 dark:bg-blue-500/10';
+      
+      if (file.type.startsWith('image/')) {
+        type = 'image';
+        icon = 'FileImage';
+        color = 'text-emerald-500 bg-emerald-100 dark:bg-emerald-500/10';
+      } else if (file.type.includes('pdf')) {
+        type = 'pdf';
+        icon = 'FileText';
+        color = 'text-red-500 bg-red-100 dark:bg-red-500/10';
+      } else if (file.name.match(/\.(js|jsx|ts|tsx|json|html|css)$/i)) {
+        type = 'code';
+        icon = 'FileCode';
+        color = 'text-purple-500 bg-purple-100 dark:bg-purple-500/10';
+      }
+
+      uploadMutation.mutate({
+        name: file.name,
+        size: (file.size / (1024 * 1024)).toFixed(2) + ' MB',
+        type,
+        iconStr: icon,
+        color,
+        modified: new Date().toLocaleDateString()
+      });
+    });
+  };
+
   const handleDrop = (e) => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      toast.success(`${e.dataTransfer.files.length} file(s) uploaded successfully.`);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      processFiles(e.dataTransfer.files);
+    }
+  };
+
+  const handleFileInput = (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      processFiles(e.target.files);
+    }
+  };
+
+  const displayData = records.map(r => ({ id: r.id, ...r.data }));
+
+  const filteredData = displayData.filter(item => 
+    Object.values(item).some(val => String(val).toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+
+  const renderIcon = (iconStr) => {
+    switch(iconStr) {
+      case 'FileImage': return <FileImage className="w-5 h-5" />;
+      case 'FileCode': return <FileCode className="w-5 h-5" />;
+      default: return <FileText className="w-5 h-5" />;
     }
   };
 
@@ -55,20 +158,30 @@ export default function UnivDocument({
       <div className="flex-1 flex flex-col px-4 sm:px-6 pb-6 overflow-hidden">
         {/* Upload Zone */}
         <div 
-          className={`shrink-0 w-full border-2 border-dashed rounded-2xl p-8 mb-6 text-center transition-colors flex flex-col items-center justify-center ${dragActive ? 'border-primary bg-primary/5 scale-[1.01]' : 'border-border bg-card hover:bg-muted/30'}`}
+          className={`shrink-0 w-full border-2 border-dashed rounded-2xl p-8 mb-6 text-center transition-colors flex flex-col items-center justify-center cursor-pointer ${dragActive ? 'border-primary bg-primary/5 scale-[1.01]' : 'border-border bg-card hover:bg-muted/30'}`}
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}
           onDragOver={handleDrag}
           onDrop={handleDrop}
+          onClick={() => fileInputRef.current?.click()}
         >
           <div className="w-14 h-14 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-4">
             <UploadCloud className="w-7 h-7" />
           </div>
           <h3 className="text-lg font-bold text-foreground">Drag & drop files here</h3>
           <p className="text-sm text-muted-foreground mt-1">or click to browse from your computer</p>
-          <button className="mt-4 px-6 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm">
-            Browse Files
-          </button>
+          <input 
+            type="file" 
+            multiple 
+            ref={fileInputRef} 
+            className="hidden" 
+            onChange={handleFileInput}
+          />
+          {uploadMutation.isPending && (
+            <div className="mt-4 flex items-center gap-2 text-sm text-primary">
+              <Loader2 className="w-4 h-4 animate-spin" /> Uploading...
+            </div>
+          )}
         </div>
 
         {/* File Grid */}
@@ -79,35 +192,52 @@ export default function UnivDocument({
             <div className="col-span-3 hidden sm:block text-right">Last Modified</div>
             <div className="col-span-3 sm:col-span-1 text-right"></div>
           </div>
-          <div className="flex-1 overflow-y-auto custom-scrollbar">
-            {mockFiles.map((file, i) => (
-              <motion.div 
-                initial={{ opacity: 0, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-                key={file.id} 
-                className="grid grid-cols-12 gap-4 p-4 border-b border-border hover:bg-muted/30 transition-colors items-center group cursor-pointer"
-              >
-                <div className="col-span-6 sm:col-span-5 flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${file.color}`}>
-                    <file.icon className="w-5 h-5" />
-                  </div>
-                  <div className="truncate font-semibold text-sm text-foreground group-hover:text-primary transition-colors">
-                    {file.name || file.title}
-                  </div>
-                </div>
-                <div className="col-span-3 sm:col-span-3 text-right text-sm text-muted-foreground font-medium">
-                  {file.type === 'folder' ? `${file.items} items` : file.size}
-                </div>
-                <div className="col-span-3 hidden sm:block text-right text-sm text-muted-foreground">
-                  {file.modified}
-                </div>
-                <div className="col-span-3 sm:col-span-1 flex justify-end items-center gap-2">
-                  <button className="p-1.5 text-muted-foreground hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity"><Download className="w-4 h-4" /></button>
-                  <button className="p-1.5 text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity"><MoreVertical className="w-4 h-4" /></button>
-                </div>
-              </motion.div>
-            ))}
+          <div className="flex-1 overflow-y-auto custom-scrollbar relative">
+            {isLoading ? (
+               <div className="absolute inset-0 flex items-center justify-center">
+                 <Loader2 className="w-8 h-8 animate-spin text-primary/50" />
+               </div>
+            ) : (
+              <AnimatePresence>
+                {filteredData.map((file, i) => (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ delay: i * 0.05 }}
+                    key={file.id} 
+                    className="grid grid-cols-12 gap-4 p-4 border-b border-border hover:bg-muted/30 transition-colors items-center group cursor-pointer"
+                  >
+                    <div className="col-span-6 sm:col-span-5 flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${file.color}`}>
+                        {renderIcon(file.iconStr)}
+                      </div>
+                      <div className="truncate font-semibold text-sm text-foreground group-hover:text-primary transition-colors">
+                        {file.name || file.title}
+                      </div>
+                    </div>
+                    <div className="col-span-3 sm:col-span-3 text-right text-sm text-muted-foreground font-medium">
+                      {file.type === 'folder' ? `${file.items} items` : file.size}
+                    </div>
+                    <div className="col-span-3 hidden sm:block text-right text-sm text-muted-foreground">
+                      {file.modified}
+                    </div>
+                    <div className="col-span-3 sm:col-span-1 flex justify-end items-center gap-2">
+                      <button className="p-1.5 text-muted-foreground hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity"><Download className="w-4 h-4" /></button>
+                      <button onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(file.id); }} className="p-1.5 text-muted-foreground hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                        {deleteMutation.isPending && deleteMutation.variables === file.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            )}
+            {!isLoading && filteredData.length === 0 && (
+              <div className="h-full flex flex-col items-center justify-center text-muted-foreground p-8">
+                <Folder className="w-12 h-12 mb-4 opacity-20" />
+                <p>No files found.</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

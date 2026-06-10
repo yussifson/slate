@@ -11,33 +11,14 @@ CRITICAL INSTRUCTIONS:
 3. Assemble a list of pages for the workspace. For a standard industry, generate between 6 and 12 pages.
 4. Provide a domain-specific \`page_name\` (e.g., "Pet Records", "Invoicing", "Student Attendance") but map it to exactly one \`component_id\` from the allowed list.
 
-ALLOWED UNIVERSAL COMPONENT IDs:
-Core Components:
-- data_table
-- kanban
-- calendar
-- timeline
-- dashboard_widgets
-- analytics
-- document_manager
-- form_wizard
+14. ALLOWED UNIVERSAL COMPONENT IDs:
+You MUST ONLY choose from the following fully functional core components:
+- data_table (For any standard data listings, tables, ledgers, or CRUD requirements)
+- kanban (For workflows, pipelines, task management, statuses, or moving items through stages)
+- document_manager (For anything requiring file uploads, attachments, asset repositories, or document storage)
+- calendar (For scheduling, events, dates, or timelines)
 
-Business Components:
-- crm
-- contact_management
-- invoice
-- payment
-- inventory
-- pos
-- booking
-- scheduling
-- attendance
-- gradebook
-- appointment
-- asset_management
-- hr_employee
-- recruitment
-- approval
+CRITICAL: Do not make up your own component_ids. Only use the four exact string values listed above.
 
 JSON OUTPUT FORMAT:
 You must output EXACTLY a valid JSON object. DO NOT output any markdown tags like \`\`\`json. DO NOT output any conversational text.

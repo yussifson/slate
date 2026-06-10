@@ -62,10 +62,17 @@ export default function AdminUsers() {
     }
   };
 
-  const handleForceOnboarding = async (userId) => {
+  const handleForceOnboarding = async (userObj) => {
     try {
-      const { error } = await supabase.from('profiles').update({ company_id: null }).eq('id', userId);
+      // Unlink from profile
+      const { error } = await supabase.from('profiles').update({ company_id: null }).eq('id', userObj.id);
       if (error) throw error;
+      
+      // Prevent OnboardingWizard from finding and reusing the old company via email
+      if (userObj.company_id) {
+        await supabase.from('companies').update({ email: null }).eq('id', userObj.company_id);
+      }
+      
       toast({ title: "Success", description: "User forced to onboard on next login" });
       fetchProfiles();
     } catch (err) {
@@ -154,7 +161,7 @@ export default function AdminUsers() {
                             <Button 
                               variant="outline" 
                               size="sm"
-                              onClick={() => handleForceOnboarding(user.id)}
+                              onClick={() => handleForceOnboarding(user)}
                               className="h-8 px-3 rounded-lg border-slate-200 text-slate-600 hover:text-slate-900 dark:text-slate-100"
                             >
                               <RefreshCcw className="w-3.5 h-3.5 mr-1.5" /> {t("force_onboarding", "Force Onboard")}
