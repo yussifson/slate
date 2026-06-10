@@ -22,16 +22,26 @@ export default function Board() {
   const [isCreating, setIsCreating] = useState(false);
   const [quickConnectEmail, setQuickConnectEmail] = useState("");
 
-  const handleQuickConnect = () => {
+  const handleQuickConnect = async () => {
     if (!quickConnectEmail.trim()) {
       toast({ title: "Error", description: "Please enter an email address.", variant: "destructive" });
       return;
     }
-    toast({ title: "Invitation Sent", description: `A secure meeting link was sent to ${quickConnectEmail}.` });
-    setQuickConnectEmail("");
-    if (!activeRoomUrl) {
-      handleStartCall();
+    
+    let urlToShare = activeRoomUrl;
+    if (!urlToShare) {
+      urlToShare = await handleStartCall();
     }
+    
+    if (!urlToShare) return;
+
+    navigator.clipboard.writeText(urlToShare);
+    const subject = encodeURIComponent("You're invited to a secure video meeting");
+    const body = encodeURIComponent(`Please join my video meeting here:\n${urlToShare}\n\nNo account is required. When you click the link, just type your name to join!`);
+    window.location.href = `mailto:${quickConnectEmail}?subject=${subject}&body=${body}`;
+
+    toast({ title: "Email Client Opened", description: `Link copied to clipboard and drafted for ${quickConnectEmail}.` });
+    setQuickConnectEmail("");
   };
   
   // Generate a unique, secure Jitsi Meet room URL for the company using a public instance without embed limits
@@ -107,9 +117,11 @@ export default function Board() {
       }
 
       joinRoom(realUrl);
+      return realUrl;
     } catch (err) {
       console.error(err);
       toast({ title: "Error", description: err.message || "Failed to start call", variant: "destructive" });
+      return null;
     } finally {
       setIsCreating(false);
     }

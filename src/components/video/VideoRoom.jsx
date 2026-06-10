@@ -36,7 +36,13 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode }) {
 
   const handleInvite = () => {
     if (!inviteEmail.trim()) return;
-    toast({ title: "Invitation Sent", description: `A secure meeting link was sent to ${inviteEmail}.` });
+    
+    navigator.clipboard.writeText(roomUrl);
+    const subject = encodeURIComponent("You're invited to a secure video meeting");
+    const body = encodeURIComponent(`Please join my active video meeting here:\n${roomUrl}\n\nNo account is required. When you click the link, just type your name to join!`);
+    window.location.href = `mailto:${inviteEmail}?subject=${subject}&body=${body}`;
+    
+    toast({ title: "Email Client Opened", description: `Link copied and drafted for ${inviteEmail}.` });
     setInviteEmail("");
     setShowInvite(false);
   };
