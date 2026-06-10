@@ -49,7 +49,7 @@ function PipelineCard({ record, fieldDefinitions, stageFieldName, onView, colorT
         e.currentTarget.style.opacity = '1';
         e.currentTarget.style.transform = 'rotate(0deg)';
       }}
-      className="bg-white rounded-xl border border-slate-200/80 p-4 shadow-sm cursor-grab active:cursor-grabbing transition-all duration-200 hover:shadow-md hover:border-slate-300 group"
+      className="bg-card rounded-xl border border-border/80 p-4 shadow-sm cursor-grab active:cursor-grabbing transition-all duration-200 hover:shadow-md hover:border-slate-300 group"
     >
       <div className="flex items-start justify-between mb-2">
         <div className="flex items-center gap-2 min-w-0">

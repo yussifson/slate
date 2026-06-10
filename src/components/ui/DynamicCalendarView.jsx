@@ -327,7 +327,7 @@ export default function DynamicCalendarView({ data = [], fieldDefinitions = [], 
               return (
                 <div
                   key={idx}
-                  className={`p-4 rounded-xl border border-slate-200 bg-white hover:shadow-md transition-all group ring-1 ${color.ring}`}
+                  className={`p-4 rounded-xl border border-border bg-card hover:shadow-md transition-all group ring-1 ${color.ring}`}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1 min-w-0">
@@ -431,7 +431,7 @@ export default function DynamicCalendarView({ data = [], fieldDefinitions = [], 
                 return (
                   <div key={f.name} className="space-y-1">
                     <label className="text-xs font-semibold text-slate-600 uppercase tracking-wide">{label}</label>
-                    <select value={val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value })} className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary">
+                    <select value={val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value })} className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary">
                       <option value="">Select...</option>
                       {options.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
                     </select>

@@ -60,7 +60,7 @@ function HorizontalBarChart({ title, data, icon: Icon, maxVal }) {
   const total = data.reduce((sum, d) => sum + d.value, 0);
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md">
+    <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md">
       <button
         onClick={() => setCollapsed(!collapsed)}
         className="w-full flex items-center justify-between p-5 pb-4 hover:bg-slate-50/50 transition-colors"
@@ -126,7 +126,7 @@ function HorizontalBarChart({ title, data, icon: Icon, maxVal }) {
 function NumberAggCard({ fieldName, stats }) {
   const label = fieldName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   return (
-    <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 transition-all duration-300 hover:shadow-md">
+    <div className="bg-card rounded-2xl border border-border shadow-sm p-5 transition-all duration-300 hover:shadow-md">
       <div className="flex items-center gap-3 mb-4">
         <div className="p-2 rounded-xl bg-gradient-to-br from-primary/5 to-primary/5 border border-slate-200">
           <Hash className="w-4 h-4 text-primary" />

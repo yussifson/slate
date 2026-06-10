@@ -116,7 +116,7 @@ export default function DynamicKanbanView({ data, records, moduleDef, fieldDefin
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
-                          className={`bg-white p-3 rounded-lg shadow-sm border border-slate-200 group transition-all
+                          className={`bg-card p-3 rounded-lg shadow-sm border border-border group transition-all
                             ${snapshot.isDragging ? 'shadow-lg ring-2 ring-primary/20 rotate-2' : 'hover:border-primary/30'}
                           `}
                         >

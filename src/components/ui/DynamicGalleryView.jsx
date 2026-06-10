@@ -284,7 +284,7 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
             return (
               <div
                 key={record.id}
-                className="bg-white rounded-xl border border-slate-200/80 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group cursor-pointer"
+                className="bg-card rounded-xl border border-border/80 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group cursor-pointer"
                 onClick={() => setViewRecord(record)}
               >
                 {/* Gradient Header - varied heights for masonry effect */}
@@ -434,7 +434,7 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
                 return (
                   <div key={f.name} className="space-y-1">
                     <label className="text-xs font-semibold text-slate-600 uppercase tracking-wide">{label}</label>
-                    <select value={val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value })} className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary">
+                    <select value={val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value })} className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary">
                       <option value="">Select...</option>
                       {options.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
                     </select>

@@ -134,7 +134,7 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
           <select
             value={val}
             onChange={e => setEditData({ ...editData, [field.name]: e.target.value })}
-            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
           >
             <option value="">Select...</option>
             {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
@@ -193,7 +193,7 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
         <span className="text-xs text-muted-foreground">{data.length} record{data.length !== 1 ? 's' : ''}</span>
       </div>
 
-      <div className="rounded-md border border-slate-200 bg-white">
+      <div className="rounded-md border border-border bg-card">
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
             <thead className="text-xs text-slate-500 bg-slate-50 border-b border-slate-200 uppercase">

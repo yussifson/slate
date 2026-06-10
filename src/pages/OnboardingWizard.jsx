@@ -196,7 +196,7 @@ export default function OnboardingWizard() {
       if (setupMode === 'template') {
         localStorage.removeItem(`active_modules_${companyIdToUse}`); // Template implies all modules
       } else if (setupMode === 'orbit') {
-        // Orbit = blank slate — only dynamic modules appear, no predefined industry pages
+        // Orbit = blank slate ï¿½ only dynamic modules appear, no predefined industry pages
         localStorage.setItem(`active_modules_${companyIdToUse}`, JSON.stringify(['__orbit__']));
       } else if (setupMode === 'custom') {
         localStorage.setItem(`active_modules_${companyIdToUse}`, JSON.stringify(selectedModules));
@@ -270,7 +270,7 @@ export default function OnboardingWizard() {
                     <div 
                       className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ring-4 ring-white
                         ${isCompleted ? 'bg-primary text-white shadow-md' : 
-                          isCurrent ? 'bg-white dark:bg-slate-900/40 border-2 border-primary text-primary shadow-md' : 
+                          isCurrent ? 'bg-card border-2 border-primary text-primary shadow-md' : 
                           'bg-slate-100 text-slate-400 border-2 border-slate-100'}`}
                     >
                       {isCompleted ? <Check className="w-4 h-4" /> : s.num}
@@ -336,7 +336,7 @@ export default function OnboardingWizard() {
                       <SelectTrigger className="h-12 bg-white dark:bg-slate-900/40 border-slate-200 rounded-xl text-slate-900 focus:ring-primary">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="bg-white dark:bg-slate-900/40 text-slate-900 border-slate-200">
+                      <SelectContent className="bg-card text-slate-900 border-slate-200">
                         <SelectItem value="law">{t("law_firm", "Law Firm")}</SelectItem>
                         <SelectItem value="retail">{t("retail_pos", "Retail / POS")}</SelectItem>
                         <SelectItem value="school">{t("school_education", "School & Education")}</SelectItem>
@@ -357,7 +357,7 @@ export default function OnboardingWizard() {
                         <SelectTrigger className="w-full h-12 bg-slate-500 border-primary/20 rounded-xl text-slate-900 focus:ring-primary">
                           <SelectValue placeholder="Select level" />
                         </SelectTrigger>
-                        <SelectContent className="bg-white dark:bg-slate-900/40 text-slate-900 border-slate-200">
+                        <SelectContent className="bg-card text-slate-900 border-slate-200">
                           <SelectItem value="basic">Basic</SelectItem>
                           <SelectItem value="highschool">High School</SelectItem>
                           <SelectItem value="university">University</SelectItem>
@@ -378,7 +378,7 @@ export default function OnboardingWizard() {
                         <SelectTrigger className="h-12 bg-white dark:bg-slate-900/40 border-slate-200 rounded-xl text-slate-900 focus:ring-primary">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="bg-white dark:bg-slate-900/40 text-slate-900 border-slate-200">
+                        <SelectContent className="bg-card text-slate-900 border-slate-200">
                           {COUNTRIES_CURRENCIES.map((c) => (
                             <SelectItem key={c.country} value={c.country}>{c.country}</SelectItem>
                           ))}
@@ -392,7 +392,7 @@ export default function OnboardingWizard() {
                         <SelectTrigger className="h-12 bg-white dark:bg-slate-900/40 border-slate-200 rounded-xl text-slate-900 focus:ring-primary">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="bg-white dark:bg-slate-900/40 text-slate-900 border-slate-200">
+                        <SelectContent className="bg-card text-slate-900 border-slate-200">
                           {Array.from(new Set(COUNTRIES_CURRENCIES.map(c => c.currency))).sort().map(curr => (
                             <SelectItem key={curr} value={curr}>{curr}</SelectItem>
                           ))}
@@ -529,7 +529,7 @@ export default function OnboardingWizard() {
                   </p>
                 </div>
 
-                <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100 space-y-4">
+                <div className="bg-muted/30 rounded-2xl p-5 border border-slate-100 space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Full Name</label>
@@ -560,7 +560,7 @@ export default function OnboardingWizard() {
                         <SelectTrigger className="h-11 bg-white dark:bg-slate-900/40 border-slate-200 rounded-xl text-slate-900">
                           <SelectValue placeholder="Select a role" />
                         </SelectTrigger>
-                        <SelectContent className="bg-white dark:bg-slate-900/40 text-slate-900 border-slate-200 shadow-xl">
+                        <SelectContent className="bg-card text-slate-900 border-slate-200 shadow-xl">
                           {(INDUSTRIES[industry]?.roles || INDUSTRIES.law.roles)
                             .filter(r => r.value !== 'company_admin')
                             .map((r) => (
@@ -582,7 +582,7 @@ export default function OnboardingWizard() {
                 {/* Invited List */}
                 {invitedStaff.length > 0 ? (
                   <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white dark:bg-slate-900/40 shadow-sm">
-                    <div className="bg-slate-50 px-4 py-2 border-b border-slate-200">
+                    <div className="bg-muted/30 px-4 py-2 border-b border-slate-200">
                       <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Pending Invites ({invitedStaff.length})</h4>
                     </div>
                     <div className="divide-y divide-slate-100 max-h-48 overflow-y-auto">
@@ -633,7 +633,7 @@ export default function OnboardingWizard() {
                   </p>
                 </div>
 
-                <div className="bg-slate-500 border border-slate-200 rounded-2xl p-6 space-y-5">
+                <div className="bg-muted/300 border border-slate-200 rounded-2xl p-6 space-y-5">
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(industry, 'case')} {t("title", "Title")}</label>
                     <Input 
