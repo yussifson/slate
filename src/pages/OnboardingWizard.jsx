@@ -235,17 +235,17 @@ export default function OnboardingWizard() {
   ];
 
   return (
-    <div className="min-h-[100dvh] bg-[#f8fafc] flex flex-col justify-center items-center sm:py-12 sm:px-6 relative overflow-hidden font-sans">
+    <div className="min-h-[100dvh] bg-background flex flex-col justify-center items-center sm:py-12 sm:px-6 relative overflow-hidden font-sans">
       
       {/* Background Decorative Elements */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-slate-100 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-slate-100 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/20 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-primary/20 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
       {/* Main Container */}
-      <div className="w-full h-[100dvh] sm:h-auto sm:max-w-3xl bg-white dark:bg-slate-900/40 sm:rounded-3xl sm:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] sm:border border-slate-100 relative z-10 flex flex-col sm:my-10">
+      <div className="w-full h-[100dvh] sm:h-auto sm:max-w-3xl bg-card sm:rounded-3xl sm:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] sm:border border-border relative z-10 flex flex-col sm:my-10">
         
         {/* Header Section */}
-        <div className="px-5 sm:px-8 pt-6 sm:pt-8 pb-6 border-b border-slate-100 shrink-0">
+        <div className="px-5 sm:px-8 pt-6 sm:pt-8 pb-6 border-b border-border shrink-0">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
               <img src="/slate-logo.svg" alt="Slate" className="h-10" />
@@ -255,7 +255,7 @@ export default function OnboardingWizard() {
 
           {/* Progress Indicator */}
           <div className="relative">
-            <div className="absolute top-1/2 left-0 w-full h-1 bg-slate-100 -translate-y-1/2 rounded-full"></div>
+            <div className="absolute top-1/2 left-0 w-full h-1 bg-muted -translate-y-1/2 rounded-full"></div>
             <div 
               className="absolute top-1/2 left-0 h-1 bg-primary -translate-y-1/2 rounded-full transition-all duration-500 ease-in-out"
               style={{ width: `${((step - 1) / (steps.length - 1)) * 100}%` }}
@@ -268,10 +268,10 @@ export default function OnboardingWizard() {
                 return (
                   <div key={s.num} className="flex flex-col items-center">
                     <div 
-                      className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ring-4 ring-white
+                      className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ring-4 ring-background
                         ${isCompleted ? 'bg-primary text-white shadow-md' : 
                           isCurrent ? 'bg-card border-2 border-primary text-primary shadow-md' : 
-                          'bg-slate-100 text-slate-400 border-2 border-slate-100'}`}
+                          'bg-muted text-muted-foreground border-2 border-border'}`}
                     >
                       {isCompleted ? <Check className="w-4 h-4" /> : s.num}
                     </div>
@@ -301,7 +301,7 @@ export default function OnboardingWizard() {
                         value={workspaceName}
                         onChange={(e) => setWorkspaceName(e.target.value)}
                         placeholder="E.g. Slate Inc."
-                        className="mt-1 h-12 bg-white dark:bg-slate-900/40"
+                        className="mt-1 h-12 bg-card"
                       />
                     </div>
                     <div>
@@ -310,7 +310,7 @@ export default function OnboardingWizard() {
                         value={subdomain}
                         onChange={(e) => setSubdomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
                         placeholder="yourcompany"
-                        className="mt-1 h-12 bg-white dark:bg-slate-900/40"
+                        className="mt-1 h-12 bg-card"
                       />
                       <p className="text-xs text-slate-500 mt-1">This will be your dedicated login portal url.</p>
                     </div>
@@ -333,10 +333,10 @@ export default function OnboardingWizard() {
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("industry", "Workspace Selection")}</label>
                     <Select value={industry} onValueChange={setIndustry}>
-                      <SelectTrigger className="h-12 bg-white dark:bg-slate-900/40 border-slate-200 rounded-xl text-slate-900 focus:ring-primary">
+                      <SelectTrigger className="h-12 bg-card border-border rounded-xl text-slate-900 focus:ring-primary">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="bg-card text-slate-900 border-slate-200">
+                      <SelectContent className="bg-card text-slate-900 border-border">
                         <SelectItem value="law">{t("law_firm", "Law Firm")}</SelectItem>
                         <SelectItem value="retail">{t("retail_pos", "Retail / POS")}</SelectItem>
                         <SelectItem value="school">{t("school_education", "School & Education")}</SelectItem>
@@ -357,7 +357,7 @@ export default function OnboardingWizard() {
                         <SelectTrigger className="w-full h-12 bg-slate-500 border-primary/20 rounded-xl text-slate-900 focus:ring-primary">
                           <SelectValue placeholder="Select level" />
                         </SelectTrigger>
-                        <SelectContent className="bg-card text-slate-900 border-slate-200">
+                        <SelectContent className="bg-card text-slate-900 border-border">
                           <SelectItem value="basic">Basic</SelectItem>
                           <SelectItem value="highschool">High School</SelectItem>
                           <SelectItem value="university">University</SelectItem>
@@ -375,10 +375,10 @@ export default function OnboardingWizard() {
                       <Select value={country} onValueChange={(v) => {
                         setCountry(v);
                       }}>
-                        <SelectTrigger className="h-12 bg-white dark:bg-slate-900/40 border-slate-200 rounded-xl text-slate-900 focus:ring-primary">
+                        <SelectTrigger className="h-12 bg-card border-border rounded-xl text-slate-900 focus:ring-primary">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="bg-card text-slate-900 border-slate-200">
+                        <SelectContent className="bg-card text-slate-900 border-border">
                           {COUNTRIES_CURRENCIES.map((c) => (
                             <SelectItem key={c.country} value={c.country}>{c.country}</SelectItem>
                           ))}
@@ -389,10 +389,10 @@ export default function OnboardingWizard() {
                     <div className="space-y-2">
                       <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("currency", "Currency")}</label>
                       <Select value={currency} onValueChange={setCurrency}>
-                        <SelectTrigger className="h-12 bg-white dark:bg-slate-900/40 border-slate-200 rounded-xl text-slate-900 focus:ring-primary">
+                        <SelectTrigger className="h-12 bg-card border-border rounded-xl text-slate-900 focus:ring-primary">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="bg-card text-slate-900 border-slate-200">
+                        <SelectContent className="bg-card text-slate-900 border-border">
                           {Array.from(new Set(COUNTRIES_CURRENCIES.map(c => c.currency))).sort().map(curr => (
                             <SelectItem key={curr} value={curr}>{curr}</SelectItem>
                           ))}
@@ -418,7 +418,7 @@ export default function OnboardingWizard() {
 
                 <div className="space-y-4">
                   {/* Template Option */}
-                  <label className={`block relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${setupMode === 'template' ? 'border-primary bg-slate-500 shadow-sm' : 'border-slate-200 hover:border-primary/30 bg-white dark:bg-slate-900/40'}`}>
+                  <label className={`block relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${setupMode === 'template' ? 'border-primary bg-slate-500 shadow-sm' : 'border-border hover:border-primary/30 bg-card'}`}>
                     <input 
                       type="radio" 
                       name="setupMode" 
@@ -429,7 +429,7 @@ export default function OnboardingWizard() {
                     />
                     <div className="flex items-start gap-4">
                       <div className={`w-5 h-5 rounded-full border flex items-center justify-center mt-0.5 shrink-0 transition-colors ${setupMode === 'template' ? 'border-primary bg-primary' : 'border-slate-300'}`}>
-                        {setupMode === 'template' && <div className="w-2 h-2 rounded-full bg-white dark:bg-slate-900/40"></div>}
+                        {setupMode === 'template' && <div className="w-2 h-2 rounded-full bg-card"></div>}
                       </div>
                       <div>
                         <h3 className={`font-bold ${setupMode === 'template' ? 'text-primary/70' : 'text-slate-900'}`}>Build with Template</h3>
@@ -439,7 +439,7 @@ export default function OnboardingWizard() {
                   </label>
                   
                   {/* Orbit Option */}
-                  <label className={`block relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${setupMode === 'orbit' ? 'border-primary bg-slate-500 shadow-sm' : 'border-slate-200 hover:border-primary/30 bg-white dark:bg-slate-900/40'}`}>
+                  <label className={`block relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${setupMode === 'orbit' ? 'border-primary bg-slate-500 shadow-sm' : 'border-border hover:border-primary/30 bg-card'}`}>
                     <input 
                       type="radio" 
                       name="setupMode" 
@@ -450,7 +450,7 @@ export default function OnboardingWizard() {
                     />
                     <div className="flex items-start gap-4">
                       <div className={`w-5 h-5 rounded-full border flex items-center justify-center mt-0.5 shrink-0 transition-colors ${setupMode === 'orbit' ? 'border-primary bg-primary' : 'border-slate-300'}`}>
-                        {setupMode === 'orbit' && <div className="w-2 h-2 rounded-full bg-white dark:bg-slate-900/40"></div>}
+                        {setupMode === 'orbit' && <div className="w-2 h-2 rounded-full bg-card"></div>}
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
@@ -463,7 +463,7 @@ export default function OnboardingWizard() {
                   </label>
 
                   {/* Custom Option */}
-                  <div className={`relative p-5 rounded-2xl border-2 transition-all duration-200 ${setupMode === 'custom' ? 'border-slate-800 bg-slate-50' : 'border-slate-200 hover:border-slate-300 bg-white dark:bg-slate-900/40'}`}>
+                  <div className={`relative p-5 rounded-2xl border-2 transition-all duration-200 ${setupMode === 'custom' ? 'border-slate-800 bg-slate-50' : 'border-border hover:border-slate-300 bg-card'}`}>
                     <label className="flex items-start gap-4 cursor-pointer">
                       <input 
                         type="radio" 
@@ -474,7 +474,7 @@ export default function OnboardingWizard() {
                         className="sr-only" 
                       />
                       <div className={`w-5 h-5 rounded-full border flex items-center justify-center mt-0.5 shrink-0 transition-colors ${setupMode === 'custom' ? 'border-slate-800 bg-slate-800' : 'border-slate-300'}`}>
-                        {setupMode === 'custom' && <div className="w-2 h-2 rounded-full bg-white dark:bg-slate-900/40"></div>}
+                        {setupMode === 'custom' && <div className="w-2 h-2 rounded-full bg-card"></div>}
                       </div>
                       <div>
                         <h3 className={`font-bold ${setupMode === 'custom' ? 'text-slate-900' : 'text-slate-900'}`}>Custom Selection</h3>
@@ -483,10 +483,10 @@ export default function OnboardingWizard() {
                     </label>
                     
                     {setupMode === 'custom' && (
-                      <div className="mt-5 pt-5 border-t border-slate-200 pl-9">
+                      <div className="mt-5 pt-5 border-t border-border pl-9">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                           {INDUSTRIES[industry]?.nav?.filter(n => !['/', '/settings', '/integrations', '/admin'].includes(n.path)).map((navItem) => (
-                            <label key={navItem.path} className="flex items-center space-x-3 p-3 bg-white dark:bg-slate-900/40 border border-slate-200 rounded-xl cursor-pointer hover:border-slate-400 transition-colors group">
+                            <label key={navItem.path} className="flex items-center space-x-3 p-3 bg-card border border-border rounded-xl cursor-pointer hover:border-slate-400 transition-colors group">
                               <div className="relative flex items-center justify-center">
                                 <input 
                                   type="checkbox" 
@@ -529,7 +529,7 @@ export default function OnboardingWizard() {
                   </p>
                 </div>
 
-                <div className="bg-muted/30 rounded-2xl p-5 border border-slate-100 space-y-4">
+                <div className="bg-muted/30 rounded-2xl p-5 border border-border space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Full Name</label>
@@ -538,7 +538,7 @@ export default function OnboardingWizard() {
                         placeholder="e.g. Jane Doe"
                         value={staffName}
                         onChange={(e) => setStaffName(e.target.value)}
-                        className="h-11 bg-white dark:bg-slate-900/40 border-slate-200 focus:bg-white dark:bg-slate-900/40 focus-visible:bg-white dark:bg-slate-900/40 text-slate-900 rounded-xl"
+                        className="h-11 bg-card border-border focus:bg-card focus-visible:bg-card text-slate-900 rounded-xl"
                       />
                     </div>
                     <div className="space-y-2">
@@ -548,7 +548,7 @@ export default function OnboardingWizard() {
                         placeholder="jane@example.com"
                         value={staffEmail}
                         onChange={(e) => setStaffEmail(e.target.value)}
-                        className="h-11 bg-white dark:bg-slate-900/40 border-slate-200 focus:bg-white dark:bg-slate-900/40 focus-visible:bg-white dark:bg-slate-900/40 text-slate-900 rounded-xl"
+                        className="h-11 bg-card border-border focus:bg-card focus-visible:bg-card text-slate-900 rounded-xl"
                       />
                     </div>
                   </div>
@@ -557,10 +557,10 @@ export default function OnboardingWizard() {
                     <div className="flex-1 space-y-2">
                       <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Role</label>
                       <Select value={staffRole} onValueChange={setStaffRole}>
-                        <SelectTrigger className="h-11 bg-white dark:bg-slate-900/40 border-slate-200 rounded-xl text-slate-900">
+                        <SelectTrigger className="h-11 bg-card border-border rounded-xl text-slate-900">
                           <SelectValue placeholder="Select a role" />
                         </SelectTrigger>
-                        <SelectContent className="bg-card text-slate-900 border-slate-200 shadow-xl">
+                        <SelectContent className="bg-card text-slate-900 border-border shadow-xl">
                           {(INDUSTRIES[industry]?.roles || INDUSTRIES.law.roles)
                             .filter(r => r.value !== 'company_admin')
                             .map((r) => (
@@ -581,13 +581,13 @@ export default function OnboardingWizard() {
 
                 {/* Invited List */}
                 {invitedStaff.length > 0 ? (
-                  <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white dark:bg-slate-900/40 shadow-sm">
-                    <div className="bg-muted/30 px-4 py-2 border-b border-slate-200">
+                  <div className="border border-border rounded-2xl overflow-hidden bg-card shadow-sm">
+                    <div className="bg-muted/30 px-4 py-2 border-b border-border">
                       <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Pending Invites ({invitedStaff.length})</h4>
                     </div>
                     <div className="divide-y divide-slate-100 max-h-48 overflow-y-auto">
                       {invitedStaff.map((staff, idx) => (
-                        <div key={idx} className="flex justify-between items-center p-4 hover:bg-slate-50 transition-colors">
+                        <div key={idx} className="flex justify-between items-center p-4 hover:bg-muted/30 transition-colors">
                           <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-700 flex items-center justify-center font-bold text-xs">
                               {staff.name.charAt(0).toUpperCase()}
@@ -612,7 +612,7 @@ export default function OnboardingWizard() {
                     </div>
                   </div>
                 ) : (
-                  <div className="border-2 border-dashed border-slate-200 rounded-2xl p-8 text-center bg-slate-50/50 dark:bg-transparent">
+                  <div className="border-2 border-dashed border-border rounded-2xl p-8 text-center bg-muted/30 dark:bg-transparent">
                     <Users className="w-8 h-8 text-slate-300 mx-auto mb-3" />
                     <p className="text-sm text-slate-500 font-medium">No team members added yet.</p>
                     <p className="text-xs text-slate-400 mt-1">You can always invite them later from settings.</p>
@@ -633,7 +633,7 @@ export default function OnboardingWizard() {
                   </p>
                 </div>
 
-                <div className="bg-muted/300 border border-slate-200 rounded-2xl p-6 space-y-5">
+                <div className="bg-muted/300 border border-border rounded-2xl p-6 space-y-5">
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(industry, 'case')} {t("title", "Title")}</label>
                     <Input 
@@ -641,7 +641,7 @@ export default function OnboardingWizard() {
                       value={caseTitle}
                       onChange={(e) => setCaseTitle(e.target.value)}
                       placeholder={`E.g., Initial ${getTerm(industry, 'case')} for setup`}
-                      className="h-12 bg-white dark:bg-slate-900/40 border-primary/20 focus:bg-white dark:bg-slate-900/40 focus-visible:bg-white dark:bg-slate-900/40 focus:border-primary text-slate-900 rounded-xl"
+                      className="h-12 bg-card border-primary/20 focus:bg-card focus-visible:bg-card focus:border-primary text-slate-900 rounded-xl"
                     />
                   </div>
 
@@ -653,7 +653,7 @@ export default function OnboardingWizard() {
                         value={clientName}
                         onChange={(e) => setClientName(e.target.value)}
                         placeholder="Adama Mensah"
-                        className="h-12 bg-white dark:bg-slate-900/40 border-primary/20 focus:bg-white dark:bg-slate-900/40 focus-visible:bg-white dark:bg-slate-900/40 focus:border-primary text-slate-900 rounded-xl"
+                        className="h-12 bg-card border-primary/20 focus:bg-card focus-visible:bg-card focus:border-primary text-slate-900 rounded-xl"
                       />
                     </div>
                     <div className="space-y-2">
@@ -663,7 +663,7 @@ export default function OnboardingWizard() {
                         value={clientEmail}
                         onChange={(e) => setClientEmail(e.target.value)}
                         placeholder="contact@email.com"
-                        className="h-12 bg-white dark:bg-slate-900/40 border-primary/20 focus:bg-white dark:bg-slate-900/40 focus-visible:bg-white dark:bg-slate-900/40 focus:border-primary text-slate-900 rounded-xl"
+                        className="h-12 bg-card border-primary/20 focus:bg-card focus-visible:bg-card focus:border-primary text-slate-900 rounded-xl"
                       />
                     </div>
                   </div>
@@ -675,13 +675,13 @@ export default function OnboardingWizard() {
         </div>
 
         {/* Footer Navigation */}
-        <div className="px-5 sm:px-8 py-4 sm:py-5 border-t border-slate-100 bg-slate-50/50 dark:bg-transparent sm:rounded-b-3xl shrink-0">
+        <div className="px-5 sm:px-8 py-4 sm:py-5 border-t border-border bg-muted/30 dark:bg-transparent sm:rounded-b-3xl shrink-0">
           <div className="flex justify-between items-center gap-4">
             {step > 1 ? (
               <Button 
                 variant="outline"
                 onClick={() => setStep(step - 1)}
-                className="h-12 px-6 rounded-xl text-slate-700 border-slate-200 bg-white dark:bg-slate-900/40 hover:bg-slate-50 transition-colors"
+                className="h-12 px-6 rounded-xl text-slate-700 border-border bg-card hover:bg-muted/30 transition-colors"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" /> {t("back", "Back")}
               </Button>
@@ -743,7 +743,7 @@ function Badge({ role, industry }) {
   const label = roleDef ? roleDef.label : role;
   
   return (
-    <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-orange-50 text-orange-700 border border-slate-200">
+    <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-orange-50 text-orange-700 border border-border">
       {label}
     </span>
   );
