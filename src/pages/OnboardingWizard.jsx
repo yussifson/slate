@@ -12,6 +12,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { getSubdomainAndBase } from '@/lib/domainUtils';
 import { getTerm, INDUSTRIES } from '@/config/industries';
 import { COUNTRIES_CURRENCIES } from '@/config/countries';
+import { generateOrbitBuildWorkspace } from '@/lib/orbitBuildGenerator';
 
 export default function OnboardingWizard() {
   const { t } = useTranslation();
@@ -38,6 +39,8 @@ export default function OnboardingWizard() {
   const [currency, setCurrency] = useState('USD');
   const [industry, setIndustry] = useState(user?.company_industry || 'law');
   const [educationLevel, setEducationLevel] = useState('');
+  const [orbitPrompt, setOrbitPrompt] = useState('');
+  const [orbitProgress, setOrbitProgress] = useState('');
 
   useEffect(() => {
     const selected = COUNTRIES_CURRENCIES.find(c => c.country === country);
@@ -185,6 +188,18 @@ export default function OnboardingWizard() {
         origin: { y: 0.5 }
       });
 
+      // Handle OrbitBuild if selected
+      if (setupMode === 'orbit' && orbitPrompt) {
+         setOrbitProgress("Analyzing Industry & Assembling Workspace...");
+         try {
+             await generateOrbitBuildWorkspace(orbitPrompt, companyIdToUse);
+         } catch (err) {
+             console.error("OrbitBuild Error", err);
+             toast({ title: "OrbitBuild Failed", description: err.message, variant: "destructive" });
+         }
+         setOrbitProgress("");
+      }
+
       // 5. Refresh user session and go to dashboard
       await refreshUser();
       
@@ -228,8 +243,8 @@ export default function OnboardingWizard() {
   };
 
   const steps = [
-    { num: 1, title: 'Profile' },
-    { num: 2, title: 'Setup' },
+    { num: 1, title: 'Setup Mode' },
+    { num: 2, title: 'Profile' },
     { num: 3, title: 'Team' },
     { num: 4, title: 'Launch' }
   ];
@@ -291,121 +306,6 @@ export default function OnboardingWizard() {
             
             {/* Step 1: Company Profile */}
             {step === 1 && (
-              <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
-                
-                {isMissingMetadata && (
-                  <div className="space-y-4">
-                    <div>
-                      <label className="text-sm font-semibold text-slate-700">WorkSlate Name</label>
-                      <Input 
-                        value={workspaceName}
-                        onChange={(e) => setWorkspaceName(e.target.value)}
-                        placeholder="E.g. Slate Inc."
-                        className="mt-1 h-12 bg-card"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-sm font-semibold text-slate-700">Subdomain</label>
-                      <Input 
-                        value={subdomain}
-                        onChange={(e) => setSubdomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
-                        placeholder="yourcompany"
-                        className="mt-1 h-12 bg-card"
-                      />
-                      <p className="text-xs text-slate-500 mt-1">This will be your dedicated login portal url.</p>
-                    </div>
-                  </div>
-                )}
-
-                <div className="space-y-2">
-                  <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
-                    {t("setup_your", "Setup your")} {INDUSTRIES[industry]?.name || 'Workspace'}
-                  </h2>
-                  <p className="text-slate-500 text-sm leading-relaxed">
-                    {t(
-                      "provide_your_organization_s_ph",
-                      "Provide your organization's physical coordinates and standard operating currency for dynamic billing templates."
-                    )}
-                  </p>
-                </div>
-
-                <div className="space-y-5">
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("industry", "Workspace Selection")}</label>
-                    <Select value={industry} onValueChange={setIndustry}>
-                      <SelectTrigger className="h-12 bg-card border-border rounded-xl text-slate-900 focus:ring-primary">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="bg-card text-slate-900 border-border">
-                        <SelectItem value="law">{t("law_firm", "Law Firm")}</SelectItem>
-                        <SelectItem value="retail">{t("retail_pos", "Retail / POS")}</SelectItem>
-                        <SelectItem value="school">{t("school_education", "School & Education")}</SelectItem>
-                        <SelectItem value="hospital">{t("hospital_healthcare", "Hospital & Healthcare")}</SelectItem>
-                        <SelectItem value="hotel">{t("hotel_hospitality", "Hotel & Hospitality")}</SelectItem>
-                        <SelectItem value="logistics">{t("logistics_delivery", "Logistics & Delivery")}</SelectItem>
-                        <SelectItem value="insurance">{t("insurance", "Insurance Agency")}</SelectItem>
-                        <SelectItem value="religion">{t("religion_religion", "Religious Organization")}</SelectItem>
-                        <SelectItem value="hr">{t("hr_erp", "HR & ERP")}</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {industry === 'school' && (
-                    <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Education Level</label>
-                      <Select value={educationLevel} onValueChange={setEducationLevel}>
-                        <SelectTrigger className="w-full h-12 bg-slate-500 border-primary/20 rounded-xl text-slate-900 focus:ring-primary">
-                          <SelectValue placeholder="Select level" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-card text-slate-900 border-border">
-                          <SelectItem value="basic">Basic</SelectItem>
-                          <SelectItem value="highschool">High School</SelectItem>
-                          <SelectItem value="university">University</SelectItem>
-                          <SelectItem value="college">College</SelectItem>
-                          <SelectItem value="online">Online Learning Platform</SelectItem>
-                          <SelectItem value="vocational">Vocational / Technical</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
-
-                  <div className="grid grid-cols-2 gap-5">
-                    <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("country", "Country")}</label>
-                      <Select value={country} onValueChange={(v) => {
-                        setCountry(v);
-                      }}>
-                        <SelectTrigger className="h-12 bg-card border-border rounded-xl text-slate-900 focus:ring-primary">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-card text-slate-900 border-border">
-                          {COUNTRIES_CURRENCIES.map((c) => (
-                            <SelectItem key={c.country} value={c.country}>{c.country}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("currency", "Currency")}</label>
-                      <Select value={currency} onValueChange={setCurrency}>
-                        <SelectTrigger className="h-12 bg-card border-border rounded-xl text-slate-900 focus:ring-primary">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-card text-slate-900 border-border">
-                          {Array.from(new Set(COUNTRIES_CURRENCIES.map(c => c.currency))).sort().map(curr => (
-                            <SelectItem key={curr} value={curr}>{curr}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Step 2: Setup Mode */}
-            {step === 2 && (
               <div className="space-y-8">
                 <div className="space-y-2">
                   <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
@@ -515,6 +415,137 @@ export default function OnboardingWizard() {
             )}
 
             {/* Step 3: Invite Team */}
+            {step === 2 && (
+              <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
+                
+                {isMissingMetadata && (
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-sm font-semibold text-slate-700">WorkSlate Name</label>
+                      <Input 
+                        value={workspaceName}
+                        onChange={(e) => setWorkspaceName(e.target.value)}
+                        placeholder="E.g. Slate Inc."
+                        className="mt-1 h-12 bg-card"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-semibold text-slate-700">Subdomain</label>
+                      <Input 
+                        value={subdomain}
+                        onChange={(e) => setSubdomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+                        placeholder="yourcompany"
+                        className="mt-1 h-12 bg-card"
+                      />
+                      <p className="text-xs text-slate-500 mt-1">This will be your dedicated login portal url.</p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="space-y-2">
+                  <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+                    {t("setup_your", "Setup your")} {INDUSTRIES[industry]?.name || 'Workspace'}
+                  </h2>
+                  <p className="text-slate-500 text-sm leading-relaxed">
+                    {t(
+                      "provide_your_organization_s_ph",
+                      "Provide your organization's physical coordinates and standard operating currency for dynamic billing templates."
+                    )}
+                  </p>
+                </div>
+
+                <div className="space-y-5">
+                  <div className="space-y-2">
+
+                  {setupMode === 'orbit' && (
+                    <div className="space-y-3 mt-6 p-6 rounded-2xl bg-gradient-to-br from-primary/5 to-transparent border border-primary/20">
+                      <div>
+                        <h3 className="text-lg font-bold text-slate-900 tracking-tight">Describe Your Workspace</h3>
+                        <p className="text-sm text-slate-500 mt-1">OrbitBuild will assemble the perfect workspace for you.</p>
+                      </div>
+                      <textarea
+                        value={orbitPrompt}
+                        onChange={(e) => setOrbitPrompt(e.target.value)}
+                        placeholder="E.g., Build a veterinary clinic management system with pet records, appointments, and billing..."
+                        className="w-full h-32 p-4 rounded-xl border border-primary/20 bg-card text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none"
+                      />
+                    </div>
+                  )}
+
+                    {setupMode !== "orbit" && <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("industry", "Workspace Selection")}</label>}
+                    {setupMode !== "orbit" && <Select value={industry} onValueChange={setIndustry}>
+                      <SelectTrigger className="h-12 bg-card border-border rounded-xl text-slate-900 focus:ring-primary">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card text-slate-900 border-border">
+                        <SelectItem value="law">{t("law_firm", "Law Firm")}</SelectItem>
+                        <SelectItem value="retail">{t("retail_pos", "Retail / POS")}</SelectItem>
+                        <SelectItem value="school">{t("school_education", "School & Education")}</SelectItem>
+                        <SelectItem value="hospital">{t("hospital_healthcare", "Hospital & Healthcare")}</SelectItem>
+                        <SelectItem value="hotel">{t("hotel_hospitality", "Hotel & Hospitality")}</SelectItem>
+                        <SelectItem value="logistics">{t("logistics_delivery", "Logistics & Delivery")}</SelectItem>
+                        <SelectItem value="insurance">{t("insurance", "Insurance Agency")}</SelectItem>
+                        <SelectItem value="religion">{t("religion_religion", "Religious Organization")}</SelectItem>
+                        <SelectItem value="hr">{t("hr_erp", "HR & ERP")}</SelectItem>
+                      </SelectContent>
+                    </Select>}
+                  </div>
+
+                  {industry === 'school' && (
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Education Level</label>
+                      <Select value={educationLevel} onValueChange={setEducationLevel}>
+                        <SelectTrigger className="w-full h-12 bg-slate-500 border-primary/20 rounded-xl text-slate-900 focus:ring-primary">
+                          <SelectValue placeholder="Select level" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-card text-slate-900 border-border">
+                          <SelectItem value="basic">Basic</SelectItem>
+                          <SelectItem value="highschool">High School</SelectItem>
+                          <SelectItem value="university">University</SelectItem>
+                          <SelectItem value="college">College</SelectItem>
+                          <SelectItem value="online">Online Learning Platform</SelectItem>
+                          <SelectItem value="vocational">Vocational / Technical</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-2 gap-5">
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("country", "Country")}</label>
+                      <Select value={country} onValueChange={(v) => {
+                        setCountry(v);
+                      }}>
+                        <SelectTrigger className="h-12 bg-card border-border rounded-xl text-slate-900 focus:ring-primary">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-card text-slate-900 border-border">
+                          {COUNTRIES_CURRENCIES.map((c) => (
+                            <SelectItem key={c.country} value={c.country}>{c.country}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("currency", "Currency")}</label>
+                      <Select value={currency} onValueChange={setCurrency}>
+                        <SelectTrigger className="h-12 bg-card border-border rounded-xl text-slate-900 focus:ring-primary">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-card text-slate-900 border-border">
+                          {Array.from(new Set(COUNTRIES_CURRENCIES.map(c => c.currency))).sort().map(curr => (
+                            <SelectItem key={curr} value={curr}>{curr}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Step 2: Setup Mode */}
             {step === 3 && (
               <div className="space-y-8">
                 <div className="space-y-2">
@@ -692,18 +723,18 @@ export default function OnboardingWizard() {
             {step < 4 ? (
               <Button 
                 onClick={() => {
-                  if (step === 1 && industry === 'school' && !educationLevel) {
+                  if (step === 2 && setupMode !== 'orbit' && industry === 'school' && !educationLevel) {
                     toast({ title: "Required", description: "Please select an education level.", variant: "destructive" });
                     return;
                   }
-                  if (step === 1 && isMissingMetadata && (!workspaceName || !subdomain)) {
+                  if (step === 2 && isMissingMetadata && (!workspaceName || !subdomain)) {
                     toast({ title: "Required", description: "Please enter your workslate name and subdomain.", variant: "destructive" });
                     return;
                   }
                   setStep(step + 1);
                 }}
                 disabled={
-                  (step === 2 && setupMode === 'custom' && selectedModules.length === 0)
+                  (step === 1 && !setupMode) || (step === 2 && setupMode === 'custom' && selectedModules.length === 0) || (step === 2 && setupMode === 'orbit' && !orbitPrompt)
                 }
                 className="h-12 px-8 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl shadow-md shadow-emerald-600/20 group transition-all"
               >
@@ -713,13 +744,13 @@ export default function OnboardingWizard() {
             ) : (
               <Button 
                 onClick={handleCompleteOnboarding}
-                disabled={loading}
+                disabled={loading || !!orbitProgress}
                 className="h-12 px-8 bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/20 flex items-center gap-2 transition-all hover:-translate-y-0.5 active:translate-y-0"
               >
-                {loading ? (
+                {loading || orbitProgress ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>{t("finalizing_workspace", "Finalizing Workspace...")}</span>
+                    <span>{orbitProgress || t("finalizing_workspace", "Finalizing Workspace...")}</span>
                   </>
                 ) : (
                   <>

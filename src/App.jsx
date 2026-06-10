@@ -295,6 +295,7 @@ import SHSBorrowing from './pages/highschool/SHSBorrowing';
 import SHSReturns from './pages/highschool/SHSReturns';
 import SHSDigitalResources from './pages/highschool/SHSDigitalResources';
 import SHSBuses from './pages/highschool/SHSBuses';
+import OrbitBuildPage from './pages/OrbitBuildPage';
 import SHSRoutes from './pages/highschool/SHSRoutes';
 import SHSStudentAssignments from './pages/highschool/SHSStudentAssignments';
 import SHSNotices from './pages/highschool/SHSNotices';
@@ -335,6 +336,7 @@ function PlatformRoutes() {
   return (
     <>
       {/* Core / Shared Pages */}
+      <Route path="/ob/:pageName" element={<OrbitBuildPage />} />
       <Route path="/" element={<Dashboard />} />
       <Route path="/cases" element={<Cases />} />
       <Route path="/clients" element={<Clients />} />

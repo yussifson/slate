@@ -226,6 +226,32 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
     isDynamic: true
   }));
 
+  
+  const { data: orbitBuildConfig } = useQuery({
+    queryKey: ['orbit_build_config', companyId],
+    queryFn: async () => {
+      if (activeIndustry !== 'orbit_build') return null;
+      const { data } = await supabase
+        .from('industry_records')
+        .select('data')
+        .eq('company_id', companyId)
+        .eq('industry', 'orbit_build')
+        .eq('record_type', 'workspace_config')
+        .single();
+      return data?.data?.pages || [];
+    },
+    enabled: !!companyId && activeIndustry === 'orbit_build'
+  });
+
+  const orbitBuildNavItems = (orbitBuildConfig || []).map(p => ({
+    id: p.page_name,
+    label: p.page_name,
+    icon: p.icon || "LayoutDashboard",
+    path: /ob/,
+    isDynamic: true,
+    component_id: p.component_id
+  }));
+
   const customPageItems = customPages.map(p => ({
     id: p.id,
     label: p.data?.pageTitle || p.search_text,
@@ -234,12 +260,12 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
     isDynamic: true
   }));
 
-  const baseNav = user?.role === "client" ? clientNav : filteredCompanyNav;
+  const baseNav = user?.role === "client" ? clientNav : (activeIndustry === 'orbit_build' ? coreOrbitNav : filteredCompanyNav);
   const createSlateItem = { label: "Create Slate", icon: "PlusCircle", path: "/slate/create" };
   const marketplaceItem = { label: "Marketplace", icon: "Store", path: "/marketplace" };
   let navItems = isAdmin
-    ? [...baseNav, ...dynamicNavItems, ...customPageItems, createSlateItem, marketplaceItem, { label: "Firm Setup", icon: "Settings", path: "/firm-setup" }]
-    : [...baseNav, ...dynamicNavItems, ...customPageItems, marketplaceItem];
+    ? [...baseNav, ...orbitBuildNavItems, ...dynamicNavItems, ...customPageItems, createSlateItem, marketplaceItem, { label: "Firm Setup", icon: "Settings", path: "/firm-setup" }]
+    : [...baseNav, ...orbitBuildNavItems, ...dynamicNavItems, ...customPageItems, marketplaceItem];
 
   const handleDeleteModule = (id, name) => {
     setDeleteData({ id, name });
