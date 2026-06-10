@@ -233,12 +233,11 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   }));
 
   const baseNav = user?.role === "client" ? clientNav : filteredCompanyNav;
-  const appBuilderItem = { label: "OrbitBolt AI Builder", icon: "Zap", path: "/modules/BOLT" };
-  const pagesItem = { label: "AI Pages (Beta)", icon: "LayoutDashboard", path: "/pages/fleet-dashboard" };
+  const createSlateItem = { label: "Create Slate", icon: "PlusCircle", path: "/slate/create" };
   const marketplaceItem = { label: "Marketplace", icon: "Store", path: "/marketplace" };
   let navItems = isAdmin
-    ? [...baseNav, ...dynamicNavItems, ...customPageItems, pagesItem, appBuilderItem, marketplaceItem, { label: "Firm Setup", icon: "Settings", path: "/firm-setup" }]
-    : [...baseNav, ...dynamicNavItems, ...customPageItems, pagesItem, marketplaceItem];
+    ? [...baseNav, ...dynamicNavItems, ...customPageItems, createSlateItem, marketplaceItem, { label: "Firm Setup", icon: "Settings", path: "/firm-setup" }]
+    : [...baseNav, ...dynamicNavItems, ...customPageItems, marketplaceItem];
 
   const handleDeleteModule = (id, name) => {
     setDeleteData({ id, name });
@@ -305,12 +304,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
             <div className="text-2xl mb-1">⚡</div>
             <p className="text-xs font-bold text-primary/90 mb-1">Orbit Mode Active</p>
             <p className="text-[11px] text-primary leading-snug mb-2">Use the Slate Builder to create your custom pages with AI.</p>
-            {/* Call to action for OrbitBolt */}
-            <div className="mt-8 px-4 pb-6">
-              <Link to="/modules/BOLT" className="inline-block text-[11px] font-bold px-3 py-1.5 rounded-lg bg-primary text-white hover:bg-primary/90 transition-colors">
-                <Zap className="w-3.5 h-3.5 inline-block mr-1" /> Try OrbitBolt AI
-              </Link>
-            </div>
+
           </div>
         )}
         {navItems.map((item, idx) => {
@@ -367,7 +361,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
                           <button onClick={(e) => { e.preventDefault(); handleRenameModule(item.id, item.label); setOpenMenuId(null); }} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors">
                             <Pencil className="w-3 h-3" /> Rename
                           </button>
-                          <button onClick={(e) => { e.preventDefault(); navigate(`/modules/edit/${item.id}`); setOpenMenuId(null); }} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors">
+                          <button onClick={(e) => { e.preventDefault(); navigate(`/slate/edit/${item.id}`); setOpenMenuId(null); }} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors">
                             <Settings className="w-3 h-3" /> Customize
                           </button>
                           <button onClick={(e) => { e.preventDefault(); handleDeleteModule(item.id, item.label); setOpenMenuId(null); }} className="w-full text-left px-3 py-2 text-xs text-red-500 hover:bg-red-500/10 flex items-center gap-2 transition-colors">
@@ -517,7 +511,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
       <Dialog open={!!renameData} onOpenChange={(open) => !open && setRenameData(null)}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Rename Module</DialogTitle>
+            <DialogTitle>Rename Slate</DialogTitle>
             <DialogDescription>
               Enter a new name for this module.
             </DialogDescription>
@@ -526,7 +520,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
             <Input 
               value={renameData?.newName || ''} 
               onChange={e => setRenameData({...renameData, newName: e.target.value})}
-              placeholder="Module Name"
+              placeholder="Slate Name"
               onKeyDown={e => {
                 if (e.key === 'Enter') confirmRename();
               }}
@@ -542,14 +536,14 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
       <Dialog open={!!deleteData} onOpenChange={(open) => !open && setDeleteData(null)}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Delete Module</DialogTitle>
+            <DialogTitle>Delete Slate</DialogTitle>
             <DialogDescription>
               Are you sure you want to delete '{deleteData?.name}' and all its records? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-4">
             <Button variant="outline" onClick={() => setDeleteData(null)}>Cancel</Button>
-            <Button variant="destructive" onClick={confirmDelete}>Delete Module</Button>
+            <Button variant="destructive" onClick={confirmDelete}>Delete Slate</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -79,7 +79,7 @@ export function useNavigation(user, impersonatedCompany) {
   }));
 
   const baseNav = user?.role === "client" ? clientNav : filteredCompanyNav;
-  const appBuilderItem = { label: "OrbitBolt AI Builder", icon: "Zap", path: "/modules/BOLT" };
+  const appBuilderItem = { label: "OrbitBolt AI Builder", icon: "Zap", path: "/slate/BOLT" };
   const marketplaceItem = { label: "Marketplace", icon: "ShoppingCart", path: "/marketplace" };
   
   let navItems = isAdmin

@@ -61,7 +61,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false }
   const { user } = useAuth();
   const { toast } = useToast();
 
-  const [isBoltOpen, setIsBoltOpen] = useState(initialBoltOpen || location.pathname === '/modules/BOLT');
+  const [isBoltOpen, setIsBoltOpen] = useState(initialBoltOpen || location.pathname === '/slate/BOLT');
   const { impersonatedCompany } = useImpersonation();
   const activeIndustry = sessionStorage.getItem('slate_industry_override') || impersonatedCompany?.industry_type || user?.company_industry || 'law';
 
@@ -263,7 +263,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false }
         {/* Top bar */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <PageHeader
-            title={isEditing ? "Edit Module" : "Module Builder"}
+            title={isEditing ? "Edit Slate" : "Module Builder"}
             subtitle="Design custom records and workflows."
           />
           <div className="flex gap-2 items-center">

@@ -609,9 +609,9 @@ function PlatformRoutes() {
 
       
       {/* OrbitBolt & Builder */}
-      <Route path="/modules/BOLT" element={<CreateModulePage isBoltOpen={true} />} />
-      <Route path="/modules/create" element={<CreateModulePage />} />
-      <Route path="/modules/edit/:id" element={<CreateModulePage />} />
+      <Route path="/slate/BOLT" element={<CreateModulePage isBoltOpen={true} />} />
+      <Route path="/slate/create" element={<CreateModulePage />} />
+      <Route path="/slate/edit/:id" element={<CreateModulePage />} />
       <Route path="/marketplace" element={<Marketplace />} />
       <Route path="/m/*" element={<GenericModulePage />} />
     </>
