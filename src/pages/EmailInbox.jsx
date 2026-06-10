@@ -113,7 +113,7 @@ export default function EmailInbox() {
   return (
     <div className="flex h-[calc(100vh-140px)] md:h-[calc(100vh-100px)] -mt-4 -mb-6 md:-mb-0 md:-mt-0 md:rounded-xl overflow-hidden bg-background border border-border shadow-sm">
       {/* Left Sidebar - Navigation */}
-      <div className="w-16 md:w-56 border-r border-border bg-slate-50/50 flex flex-col py-4 flex-shrink-0 transition-all z-10">
+      <div className="w-16 md:w-56 border-r border-border bg-slate-50/50 dark:bg-slate-900/30 flex flex-col py-4 flex-shrink-0 transition-all z-10">
         <div className="px-2 md:px-4 mb-6">
           <Button 
             className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold shadow-md flex justify-center items-center"
@@ -136,11 +136,11 @@ export default function EmailInbox() {
       </div>
 
       {/* Middle Pane - Email List */}
-      <div className={cn("flex flex-col border-r border-border bg-white transition-all", selectedEmail ? "hidden lg:flex w-[350px] xl:w-[400px] shrink-0" : "flex-1")}>
-        <div className="h-14 border-b border-border flex items-center px-4 bg-white shrink-0">
+      <div className={cn("flex flex-col border-r border-border bg-white dark:bg-transparent transition-all", selectedEmail ? "hidden lg:flex w-[350px] xl:w-[400px] shrink-0" : "flex-1")}>
+        <div className="h-14 border-b border-border flex items-center px-4 bg-white dark:bg-transparent shrink-0">
           <div className="relative w-full">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input placeholder="Search mail..." className="pl-9 h-9 bg-slate-100/50 border-transparent focus-visible:ring-1 focus-visible:bg-white" value={search} onChange={(e) => setSearch(e.target.value)} />
+            <Input placeholder="Search mail..." className="pl-9 h-9 bg-slate-100 dark:bg-slate-800/50 border-transparent focus-visible:ring-1 focus-visible:bg-white dark:bg-transparent" value={search} onChange={(e) => setSearch(e.target.value)} />
           </div>
         </div>
         
@@ -149,10 +149,10 @@ export default function EmailInbox() {
             <div className="p-8 text-center text-muted-foreground">Loading...</div>
           ) : displayedEmails.length === 0 ? (
             <div className="p-12 text-center flex flex-col items-center">
-              <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
-                <Inbox className="w-8 h-8 text-slate-300" />
+              <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4">
+                <Inbox className="w-8 h-8 text-slate-300 dark:text-slate-600" />
               </div>
-              <h3 className="text-lg font-semibold text-slate-700">No messages</h3>
+              <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200 dark:text-slate-700">No messages</h3>
             </div>
           ) : (
             <div className="divide-y divide-slate-100">
@@ -172,7 +172,7 @@ export default function EmailInbox() {
       </div>
 
       {/* Right Pane - Email Reader */}
-      <div className={cn("flex-1 flex-col bg-white min-w-0 relative", selectedEmail ? "flex" : "hidden lg:flex")}>
+      <div className={cn("flex-1 flex-col bg-white dark:bg-transparent min-w-0 relative", selectedEmail ? "flex" : "hidden lg:flex")}>
         {selectedEmail ? (
           <EmailDetail 
             email={selectedEmail} 
@@ -203,12 +203,12 @@ export default function EmailInbox() {
             }}
           />
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-slate-50/30">
-            <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-6">
+          <div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-slate-50/30 dark:bg-transparent">
+            <div className="w-24 h-24 bg-slate-50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mb-6">
               <Mail className="w-10 h-10 text-primary/30" />
             </div>
-            <h2 className="text-xl font-medium text-slate-600 mb-2">Select an item to read</h2>
-            <p className="text-slate-400 text-sm">Nothing is selected</p>
+            <h2 className="text-xl font-medium text-slate-600 dark:text-slate-300 dark:text-slate-600 mb-2">Select an item to read</h2>
+            <p className="text-slate-400 dark:text-slate-500 text-sm">Nothing is selected</p>
           </div>
         )}
       </div>
@@ -235,11 +235,11 @@ function TabButton({ icon: Icon, label, active, onClick, count }) {
     <button
       onClick={onClick}
       className={`w-full flex items-center md:justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-        active ? "bg-primary/10 text-primary font-bold shadow-sm" : "text-slate-600 hover:bg-slate-100"
+        active ? "bg-primary/10 text-primary font-bold shadow-sm" : "text-slate-600 dark:text-slate-300 dark:text-slate-600 hover:bg-slate-100 dark:bg-slate-800"
       }`}
     >
       <div className="flex items-center gap-3 mx-auto md:mx-0">
-        <Icon className={`w-4 h-4 ${active ? "text-primary" : "text-slate-400"}`} />
+        <Icon className={`w-4 h-4 ${active ? "text-primary" : "text-slate-400 dark:text-slate-500"}`} />
         <span className="hidden md:inline">{label}</span>
       </div>
       {(count > 0 && active) && (
@@ -264,7 +264,7 @@ function EmailRow({ email, isSelected, onClick, isStarred, onToggleStar }) {
       onClick={onClick}
       className={cn(
         "flex flex-col px-4 py-3 cursor-pointer transition-colors group relative border-l-4",
-        isSelected ? "bg-slate-500 border-primary" : "bg-white hover:bg-slate-50 border-transparent"
+        isSelected ? "bg-slate-500 border-primary" : "bg-white dark:bg-transparent hover:bg-slate-50 dark:bg-slate-800/50 border-transparent"
       )}
     >
       <div className="flex items-center gap-3 mb-1">
@@ -272,19 +272,19 @@ function EmailRow({ email, isSelected, onClick, isStarred, onToggleStar }) {
           <img src={avatarUrl} alt={senderName} className="w-full h-full object-cover" />
         </div>
         <div className="flex-1 flex items-center justify-between min-w-0">
-          <span className={cn("truncate text-[15px]", isUnread && !isSelected ? "font-bold text-slate-900" : "font-medium text-slate-700")}>
+          <span className={cn("truncate text-[15px]", isUnread && !isSelected ? "font-bold text-slate-900" : "font-medium text-slate-700 dark:text-slate-200 dark:text-slate-700")}>
             {senderName}
           </span>
-          <span className={cn("text-[11px] shrink-0 ml-2", isUnread && !isSelected ? "font-bold text-primary" : "text-slate-400 font-medium")}>
+          <span className={cn("text-[11px] shrink-0 ml-2", isUnread && !isSelected ? "font-bold text-primary" : "text-slate-400 dark:text-slate-500 font-medium")}>
             {email.created_date ? formatDistanceToNow(new Date(email.created_date), { addSuffix: false }) : ''}
           </span>
-          <button onClick={onToggleStar} className={cn("ml-2 p-1 rounded-full transition-colors", isStarred ? "text-amber-400" : "text-slate-200 hover:text-slate-400")}>
+          <button onClick={onToggleStar} className={cn("ml-2 p-1 rounded-full transition-colors", isStarred ? "text-amber-400" : "text-slate-200 dark:text-slate-700 hover:text-slate-400 dark:text-slate-500")}>
              <Star className="w-4 h-4" fill={isStarred ? "currentColor" : "none"} />
           </button>
         </div>
       </div>
       <div className="pl-9 pr-2">
-        <div className={cn("truncate text-sm mb-0.5", isUnread && !isSelected ? "font-semibold text-slate-800" : "text-slate-700")}>
+        <div className={cn("truncate text-sm mb-0.5", isUnread && !isSelected ? "font-semibold text-slate-800" : "text-slate-700 dark:text-slate-200 dark:text-slate-700")}>
           {email.subject || '(No subject)'}
         </div>
         <div className="truncate text-sm text-slate-500 leading-snug">
@@ -300,23 +300,23 @@ export function EmailDetail({ email, onBack, isStarred, onToggleStar, onDelete, 
   const avatarUrl = `https://api.dicebear.com/7.x/initials/svg?seed=${senderName}&backgroundColor=e2e8f0,bfdbfe`;
 
   return (
-    <div className="flex flex-col h-full bg-white relative">
+    <div className="flex flex-col h-full bg-white dark:bg-transparent relative">
       {/* Detail Toolbar */}
-      <div className="h-14 border-b border-border flex items-center px-2 lg:px-4 gap-2 bg-white sticky top-0 z-10 shrink-0">
-        <button onClick={onBack} className="lg:hidden p-2 hover:bg-slate-100 rounded-full text-slate-500 transition-colors mr-1">
+      <div className="h-14 border-b border-border flex items-center px-2 lg:px-4 gap-2 bg-white dark:bg-transparent sticky top-0 z-10 shrink-0">
+        <button onClick={onBack} className="lg:hidden p-2 hover:bg-slate-100 dark:bg-slate-800 rounded-full text-slate-500 transition-colors mr-1">
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <button onClick={onReply} className="p-2 hover:bg-slate-100 rounded-full text-slate-500 transition-colors" title="Reply">
+        <button onClick={onReply} className="p-2 hover:bg-slate-100 dark:bg-slate-800 rounded-full text-slate-500 transition-colors" title="Reply">
           <Reply className="w-4 h-4" />
         </button>
-        <button onClick={onForward} className="p-2 hover:bg-slate-100 rounded-full text-slate-500 transition-colors" title="Forward">
+        <button onClick={onForward} className="p-2 hover:bg-slate-100 dark:bg-slate-800 rounded-full text-slate-500 transition-colors" title="Forward">
           <CornerUpRight className="w-4 h-4" />
         </button>
         <div className="h-5 w-px bg-border mx-1"></div>
         <button onClick={onDelete} className="p-2 hover:bg-red-50 text-red-500 rounded-full transition-colors" title="Delete">
           <Trash2 className="w-4 h-4" />
         </button>
-        <button className="p-2 hover:bg-slate-100 rounded-full text-slate-500 transition-colors ml-auto">
+        <button className="p-2 hover:bg-slate-100 dark:bg-slate-800 rounded-full text-slate-500 transition-colors ml-auto">
           <MoreVertical className="w-4 h-4" />
         </button>
       </div>
@@ -324,7 +324,7 @@ export function EmailDetail({ email, onBack, isStarred, onToggleStar, onDelete, 
       <div className="flex-1 overflow-y-auto px-6 py-8 md:px-10">
         <div className="flex items-start justify-between gap-4 mb-8">
           <h1 className="text-2xl font-semibold text-slate-900 leading-tight">{email.subject || '(No subject)'}</h1>
-          <button onClick={onToggleStar} className={cn("mt-1 p-1.5 transition-colors shrink-0", isStarred ? "text-amber-400" : "text-slate-300 hover:text-amber-400")}>
+          <button onClick={onToggleStar} className={cn("mt-1 p-1.5 transition-colors shrink-0", isStarred ? "text-amber-400" : "text-slate-300 dark:text-slate-600 hover:text-amber-400")}>
             <Star className="w-5 h-5" fill={isStarred ? "currentColor" : "none"} />
           </button>
         </div>
@@ -350,13 +350,13 @@ export function EmailDetail({ email, onBack, isStarred, onToggleStar, onDelete, 
           {email.body_preview ? (
              <div className="whitespace-pre-wrap">{email.body_preview}</div>
           ) : (
-             <div className="italic text-slate-400">No message content.</div>
+             <div className="italic text-slate-400 dark:text-slate-500">No message content.</div>
           )}
         </div>
 
         {email.attachments && (
           <div className="border-t border-slate-100 pt-6 mt-6">
-             <h4 className="text-sm font-semibold text-slate-700 mb-4 flex items-center gap-2">
+             <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-200 dark:text-slate-700 mb-4 flex items-center gap-2">
                <Paperclip className="w-4 h-4" /> Attachments
              </h4>
              <div className="flex flex-wrap gap-3">
@@ -364,13 +364,13 @@ export function EmailDetail({ email, onBack, isStarred, onToggleStar, onDelete, 
                   try {
                     const atts = typeof email.attachments === 'string' ? JSON.parse(email.attachments) : email.attachments;
                     return atts.map((att, i) => (
-                      <a key={i} href={att.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors max-w-xs group">
-                        <div className="w-10 h-10 rounded-lg bg-slate-50 text-primary flex items-center justify-center shrink-0">
+                      <a key={i} href={att.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 dark:bg-slate-800/50 transition-colors max-w-xs group">
+                        <div className="w-10 h-10 rounded-lg bg-slate-50 dark:bg-slate-800/50 text-primary flex items-center justify-center shrink-0">
                           <Paperclip className="w-5 h-5" />
                         </div>
                         <div className="min-w-0">
-                          <p className="text-sm font-medium text-slate-700 truncate group-hover:text-primary transition-colors">{att.name}</p>
-                          <p className="text-xs text-slate-400">{(att.size / 1024).toFixed(1)} KB</p>
+                          <p className="text-sm font-medium text-slate-700 dark:text-slate-200 dark:text-slate-700 truncate group-hover:text-primary transition-colors">{att.name}</p>
+                          <p className="text-xs text-slate-400 dark:text-slate-500">{(att.size / 1024).toFixed(1)} KB</p>
                         </div>
                       </a>
                     ));
@@ -493,12 +493,12 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
 
   return (
     <div className={cn(
-      "fixed right-4 sm:right-16 md:right-24 bottom-0 bg-white rounded-t-xl shadow-[0_8px_30px_rgb(0,0,0,0.24)] flex flex-col z-50 transition-all duration-200 overflow-hidden",
+      "fixed right-4 sm:right-16 md:right-24 bottom-0 bg-white dark:bg-transparent rounded-t-xl shadow-[0_8px_30px_rgb(0,0,0,0.24)] flex flex-col z-50 transition-all duration-200 overflow-hidden",
       isMinimized ? "w-72 h-12" : "w-full sm:w-[500px] h-[550px] max-h-[85vh]"
     )}>
       {/* Header */}
       <div 
-        className="h-10 bg-[#f2f6fc] text-slate-700 flex items-center justify-between px-4 cursor-pointer shrink-0 rounded-t-xl"
+        className="h-10 bg-[#f2f6fc] text-slate-700 dark:text-slate-200 dark:text-slate-700 flex items-center justify-between px-4 cursor-pointer shrink-0 rounded-t-xl"
         onClick={onToggleMinimize}
       >
         <span className="font-semibold text-sm truncate">{isMinimized ? "New Message" : "New Message"}</span>
@@ -513,23 +513,23 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
       </div>
 
       {!isMinimized && (
-        <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0 bg-white">
+        <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0 bg-white dark:bg-transparent">
           
           <div className="px-4 py-2 border-b border-border flex items-center gap-2 text-sm">
              <span className="text-slate-500 shrink-0 w-8">To</span>
              <div className="flex-1 flex flex-wrap gap-1 items-center relative">
                {/* Selected Chips */}
                {staff.filter(s => selectedStaffIds.includes(s.id)).map(s => (
-                  <div key={s.id} className="bg-white border border-slate-300 text-slate-700 px-2 py-0.5 rounded-full text-xs flex items-center gap-1 hover:bg-slate-50">
+                  <div key={s.id} className="bg-white dark:bg-transparent border border-slate-300 text-slate-700 dark:text-slate-200 dark:text-slate-700 px-2 py-0.5 rounded-full text-xs flex items-center gap-1 hover:bg-slate-50">
                     {s.full_name || s.email}
-                    <X className="w-3 h-3 cursor-pointer text-slate-400 hover:text-slate-700" onClick={() => toggleStaff(s.id)} />
+                    <X className="w-3 h-3 cursor-pointer text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:text-slate-200 dark:text-slate-700" onClick={() => toggleStaff(s.id)} />
                   </div>
                ))}
                
                {externalEmails.split(',').map(e => e.trim()).filter(Boolean).map(email => (
-                  <div key={email} className="bg-white border border-slate-300 text-slate-700 px-2 py-0.5 rounded-full text-xs flex items-center gap-1 hover:bg-slate-50">
+                  <div key={email} className="bg-white dark:bg-transparent border border-slate-300 text-slate-700 dark:text-slate-200 dark:text-slate-700 px-2 py-0.5 rounded-full text-xs flex items-center gap-1 hover:bg-slate-50">
                     {email}
-                    <X className="w-3 h-3 cursor-pointer text-slate-400 hover:text-slate-700" onClick={() => {
+                    <X className="w-3 h-3 cursor-pointer text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:text-slate-200 dark:text-slate-700" onClick={() => {
                        setExternalEmails(prev => prev.split(',').map(e=>e.trim()).filter(e => e !== email).join(', '));
                     }} />
                   </div>
@@ -554,12 +554,12 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
                />
                
                {recipientPickerOpen && (
-                 <div className="absolute top-full left-0 w-full max-h-48 overflow-y-auto bg-white border border-border shadow-lg rounded-md mt-1 z-20">
+                 <div className="absolute top-full left-0 w-full max-h-48 overflow-y-auto bg-white dark:bg-transparent border border-border shadow-lg rounded-md mt-1 z-20">
                     <div className="p-1">
                       {staff.filter(s => !recipientQuery || (s.full_name || s.email || "").toLowerCase().includes(recipientQuery.toLowerCase())).map(member => (
                         <div 
                           key={member.id} 
-                          className="flex flex-col px-3 py-2 hover:bg-slate-100 cursor-pointer rounded-sm"
+                          className="flex flex-col px-3 py-2 hover:bg-slate-100 dark:bg-slate-800 cursor-pointer rounded-sm"
                           onClick={() => { toggleStaff(member.id); setRecipientQuery(""); setRecipientPickerOpen(false); }}
                         >
                           <span className="text-sm font-semibold text-slate-800">{member.full_name || member.email}</span>
@@ -585,7 +585,7 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
             <input 
               type="text"
               placeholder="Subject"
-              className="w-full text-sm font-semibold text-slate-800 placeholder:text-slate-400 outline-none bg-transparent py-1"
+              className="w-full text-sm font-semibold text-slate-800 placeholder:text-slate-400 dark:text-slate-500 outline-none bg-transparent py-1"
               value={subject}
               onChange={e => setSubject(e.target.value)}
               required
@@ -603,13 +603,13 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
             />
           </div>
 
-          <div className="px-4 py-3 border-t border-border flex items-center justify-between bg-white shrink-0">
+          <div className="px-4 py-3 border-t border-border flex items-center justify-between bg-white dark:bg-transparent shrink-0">
             <div className="flex items-center gap-3">
               <Button type="submit" disabled={isLoading || isUploading} className="bg-primary hover:bg-primary/90 text-white px-6 rounded-full font-bold shadow-sm h-9">
                 {isLoading || isUploading ? "Sending..." : t("send", "Send")}
               </Button>
               <input type="file" multiple ref={fileInputRef} className="hidden" onChange={handleFileChange} />
-              <button type="button" onClick={() => fileInputRef.current?.click()} className="w-8 h-8 flex items-center justify-center text-slate-500 hover:bg-slate-100 rounded-full transition-colors relative">
+              <button type="button" onClick={() => fileInputRef.current?.click()} className="w-8 h-8 flex items-center justify-center text-slate-500 hover:bg-slate-100 dark:bg-slate-800 rounded-full transition-colors relative">
                 <Paperclip className="w-5 h-5" />
                 {attachments.length > 0 && <span className="absolute -top-1 -right-1 w-4 h-4 bg-primary text-white text-[10px] font-bold rounded-full flex items-center justify-center">{attachments.length}</span>}
               </button>
@@ -620,11 +620,11 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
                 type="button" 
                 onClick={handleAiAssist} 
                 disabled={isAiLoading || !message.trim()} 
-                className="bg-slate-50 text-primary/90 hover:bg-slate-100 border border-primary/20 rounded-full h-8 px-3 flex items-center gap-1 shadow-sm font-medium text-xs"
+                className="bg-slate-50 dark:bg-slate-800/50 text-primary/90 hover:bg-slate-100 dark:bg-slate-800 border border-primary/20 rounded-full h-8 px-3 flex items-center gap-1 shadow-sm font-medium text-xs"
               >
                 <Sparkles className="w-3 h-3" /> AI Polish
               </Button>
-               <button type="button" className="w-8 h-8 flex items-center justify-center text-slate-500 hover:bg-slate-100 rounded-full transition-colors" onClick={onClose}><Trash2 className="w-5 h-5" /></button>
+               <button type="button" className="w-8 h-8 flex items-center justify-center text-slate-500 hover:bg-slate-100 dark:bg-slate-800 rounded-full transition-colors" onClick={onClose}><Trash2 className="w-5 h-5" /></button>
             </div>
           </div>
         </form>
