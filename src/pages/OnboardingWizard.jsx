@@ -334,7 +334,7 @@ export default function OnboardingWizard() {
 
                 <div className="space-y-4">
                   {/* Template Option */}
-                  <label className={`block relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${setupMode === 'template' ? 'border-primary bg-slate-500 shadow-sm' : 'border-border hover:border-primary/30 bg-card'}`}>
+                  <label className={`block relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${setupMode === 'template' ? 'border-primary bg-primary/5 shadow-sm' : 'border-border hover:border-primary/30 bg-card'}`}>
                     <input 
                       type="radio" 
                       name="setupMode" 
@@ -348,14 +348,14 @@ export default function OnboardingWizard() {
                         {setupMode === 'template' && <div className="w-2 h-2 rounded-full bg-card"></div>}
                       </div>
                       <div>
-                        <h3 className={`font-bold ${setupMode === 'template' ? 'text-primary/70' : 'text-slate-900'}`}>Build with Template</h3>
+                        <h3 className={`font-bold ${setupMode === 'template' ? 'text-primary' : 'text-slate-900'}`}>Build with Template</h3>
                         <p className="text-sm text-slate-500 mt-1 leading-relaxed">Initializes your dashboard with all standard predefined pages and modules for a {INDUSTRIES[industry]?.name || 'business'}. Recommended for quick starts.</p>
                       </div>
                     </div>
                   </label>
                   
                   {/* Orbit Option */}
-                  <label className={`block relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${setupMode === 'orbit' ? 'border-primary bg-slate-500 shadow-sm' : 'border-border hover:border-primary/30 bg-card'}`}>
+                  <label className={`block relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${setupMode === 'orbit' ? 'border-primary bg-primary/5 shadow-sm' : 'border-border hover:border-primary/30 bg-card'}`}>
                     <input 
                       type="radio" 
                       name="setupMode" 
@@ -370,7 +370,7 @@ export default function OnboardingWizard() {
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <h3 className={`font-bold ${setupMode === 'orbit' ? 'text-primary/70' : 'text-slate-900'}`}>Build with Orbit</h3>
+                          <h3 className={`font-bold ${setupMode === 'orbit' ? 'text-primary' : 'text-slate-900'}`}>Build with Orbit</h3>
                           <span className="px-2 py-0.5 rounded-md bg-slate-100 text-primary/90 text-[10px] font-bold uppercase tracking-wider">AI Powered</span>
                         </div>
                         <p className="text-sm text-slate-500 mt-1 leading-relaxed">Start fresh with a blank slate. Use Orbit AI to dynamically generate custom pages and databases exactly how you want them.</p>
@@ -379,7 +379,7 @@ export default function OnboardingWizard() {
                   </label>
 
                   {/* Custom Option */}
-                  <div className={`relative p-5 rounded-2xl border-2 transition-all duration-200 ${setupMode === 'custom' ? 'border-slate-800 bg-slate-50' : 'border-border hover:border-slate-300 bg-card'}`}>
+                  <div className={`relative p-5 rounded-2xl border-2 transition-all duration-200 ${setupMode === 'custom' ? 'border-primary bg-primary/5' : 'border-border hover:border-slate-300 bg-card'}`}>
                     <label className="flex items-start gap-4 cursor-pointer">
                       <input 
                         type="radio" 
@@ -389,11 +389,11 @@ export default function OnboardingWizard() {
                         onChange={() => setSetupMode('custom')} 
                         className="sr-only" 
                       />
-                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center mt-0.5 shrink-0 transition-colors ${setupMode === 'custom' ? 'border-slate-800 bg-slate-800' : 'border-slate-300'}`}>
+                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center mt-0.5 shrink-0 transition-colors ${setupMode === 'custom' ? 'border-primary bg-primary' : 'border-slate-300'}`}>
                         {setupMode === 'custom' && <div className="w-2 h-2 rounded-full bg-card"></div>}
                       </div>
                       <div>
-                        <h3 className={`font-bold ${setupMode === 'custom' ? 'text-slate-900' : 'text-slate-900'}`}>Custom Selection</h3>
+                        <h3 className={`font-bold ${setupMode === 'custom' ? 'text-primary' : 'text-slate-900'}`}>Custom Selection</h3>
                         <p className="text-sm text-slate-500 mt-1 leading-relaxed">Hand-pick exactly which predefined pages you want to include in your workslate.</p>
                       </div>
                     </label>
