@@ -27,8 +27,8 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode }) {
   const [joined, setJoined] = useState(false);
   const { toast } = useToast();
   const [isAiLoading, setIsAiLoading] = useState(false);
-  
   const [aiResponse, setAiResponse] = useState(null);
+  const [transcriptData, setTranscriptData] = useState([]);
 
   useDailyEvent('joined-meeting', () => {
     setJoined(true);
@@ -100,20 +100,57 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode }) {
     daily.leave();
   };
 
+  // --- REAL-TIME AI TRANSCRIPTION ---
+  useEffect(() => {
+    if (!joined || isMuted || !window.webkitSpeechRecognition) return;
+    
+    let recognition;
+    try {
+      const SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
+      recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = false;
+      
+      recognition.onresult = (event) => {
+        const lastResult = event.results[event.results.length - 1];
+        if (lastResult.isFinal) {
+          const text = lastResult[0].transcript;
+          const msg = { type: 'transcription', text, name: 'Me' };
+          if (daily) daily.sendAppMessage(msg, '*');
+          setTranscriptData(prev => [...prev, { name: 'Me', text }]);
+        }
+      };
+      
+      recognition.start();
+    } catch (e) {
+      console.warn("Speech recognition error:", e);
+    }
+    
+    return () => {
+      if (recognition) {
+        try { recognition.stop(); } catch (e) { }
+      }
+    };
+  }, [joined, isMuted, daily]);
+
   const handleAiAssist = async () => {
     setIsAiLoading(true);
     setAiResponse(null);
-    toast({ title: "Orbit Meeting AI", description: "Generating meeting summary via Cloudflare AI..." });
+    toast({ title: "Orbit Meeting AI", description: "Generating meeting summary from live transcription..." });
     try {
+      const meetingContext = transcriptData.length > 0 
+        ? transcriptData.map(t => `${t.name}: ${t.text}`).join('\n')
+        : "No transcription data available. Either the meeting just started or participants haven't spoken loudly.";
+
       const messages = [
-        { role: 'system', content: 'You are an AI meeting assistant. Summarize the following mock meeting transcription into 3 bullet points.' },
-        { role: 'user', content: 'John: We need to finalize the quarterly report by Friday. Jane: I have the numbers ready, just need to format the charts. John: Great, lets review it Thursday morning. Jane: Sounds good.' }
+        { role: 'system', content: 'You are an AI meeting assistant. Summarize the following meeting transcript into 3 concise bullet points or action items. If there is no meaningful conversation, state that no conversation was detected.' },
+        { role: 'user', content: meetingContext }
       ];
       const response = await generateText(messages);
       setAiResponse(response || "Meeting concluded without action items.");
     } catch (err) {
       console.error(err);
-      toast({ title: "AI Error", description: "Failed to connect to Cloudflare AI.", variant: "destructive" });
+      toast({ title: "AI Error", description: "Failed to connect to AI backend.", variant: "destructive" });
     } finally {
       setIsAiLoading(false);
     }
@@ -127,6 +164,9 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode }) {
   useDailyEvent('app-message', (ev) => {
     if (ev.data && ev.data.type === 'chat') {
       setChatMessages(prev => [...prev, { from: ev.fromId, name: ev.data.name, text: ev.data.text, time: new Date() }]);
+    }
+    if (ev.data && ev.data.type === 'transcription') {
+      setTranscriptData(prev => [...prev, { name: 'Participant', text: ev.data.text }]);
     }
   });
 
@@ -417,13 +457,25 @@ export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePi
     import('@daily-co/daily-js').then((DailyIframe) => {
       if (cancelled) return;
       callObject = DailyIframe.default.createCallObject();
-      const joinOpts = { url: roomUrl };
+      
+      const joinOpts = { url: roomUrl, audioSource: true, videoSource: true };
       if (typeof token === 'string' && token.length > 0) {
         joinOpts.token = token;
       }
-      callObject
-        .join(joinOpts)
-        .catch((err) => console.error('Daily join failed:', err));
+      
+      // Explicitly request permissions before joining to fix production issues
+      callObject.startCamera()
+        .then(() => {
+          if (cancelled) return;
+          callObject.join(joinOpts).catch(console.error);
+        })
+        .catch((err) => {
+          console.warn('Camera/Mic permission denied or not found. Joining without local media.', err);
+          if (cancelled) return;
+          // Fallback: join without enforcing strict local media
+          callObject.join({ url: roomUrl }).catch(console.error);
+        });
+
       setDaily(callObject);
     });
 
