@@ -189,8 +189,10 @@ export default function OrbitBuildPage() {
       // Phase 3 Components
       // Phase 1 Components (Core)
       case 'dashboard_widgets':
+      case 'dashboard':
+        return <UnivDashboard companyId={companyId} pageName={pageDef.page_name} title={pageDef.page_name} />;
       case 'analytics':
-        return <UnivAnalytics />;
+        return <UnivAnalytics companyId={companyId} pageName={pageDef.page_name} title={pageDef.page_name} />;
       case 'document_manager':
       case 'documents':
       case 'file_manager':

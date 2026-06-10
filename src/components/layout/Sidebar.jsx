@@ -243,14 +243,21 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
       enabled: !!companyId && activeIndustry === 'orbit_build'
     });
   
-    const orbitBuildNavItems = (orbitBuildData?.pages || []).map(p => ({
+      const orbitBuildNavItemsRaw = (orbitBuildData?.pages || []).map(p => ({
         id: p.page_name,
-        label: p.page_name,
-        icon: p.icon || "LayoutDashboard",
+        label: p.component_id === 'dashboard' ? 'Dashboard' : p.page_name,
+        icon: p.component_id === 'dashboard' ? 'LayoutDashboard' : (p.icon || "LayoutDashboard"),
         path: `/ob/${p.page_name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
         isDynamic: true,
         component_id: p.component_id
       }));
+
+      // Force dashboard to be at the top
+      const orbitBuildNavItems = orbitBuildNavItemsRaw.sort((a, b) => {
+        if (a.component_id === 'dashboard') return -1;
+        if (b.component_id === 'dashboard') return 1;
+        return 0;
+      });
   
     const customPageItems = customPages.map(p => ({
       id: p.id,

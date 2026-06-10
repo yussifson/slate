@@ -1,20 +1,89 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Plus, Calendar as CalendarIcon, Clock, Users, Video } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronLeft, ChevronRight, Plus, Calendar as CalendarIcon, Clock, Users, Video, Loader2, Trash2 } from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/api/supabaseClient';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/use-toast';
 
 export default function UnivCalendar({
-  events = [],
   title = "Calendar",
-  subtitle = "Manage your schedule and appointments."
+  subtitle = "Manage your schedule and appointments.",
+  companyId,
+  pageName
 }) {
   const [view, setView] = useState('Month'); // Month, Week, Day
+  const [isAdding, setIsAdding] = useState(false);
+  const [newEventTitle, setNewEventTitle] = useState('');
+  
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
 
-  // Mock events if none provided
-  const displayEvents = events.length > 0 ? events : [
-    { id: 1, title: 'Team Standup', time: '10:00 AM', type: 'internal' },
-    { id: 2, title: 'Client Meeting', time: '02:00 PM', type: 'external' },
-    { id: 3, title: 'Project Review', time: '04:30 PM', type: 'internal' }
-  ];
+  const { data: records = [], isLoading } = useQuery({
+    queryKey: ['orbit_records', companyId, pageName],
+    queryFn: async () => {
+      if (!companyId || !pageName) return [];
+      const { data, error } = await supabase
+        .from('industry_records')
+        .select('*')
+        .eq('company_id', companyId)
+        .eq('industry', 'orbit_build_data')
+        .eq('record_type', pageName)
+        .order('created_at', { ascending: false });
+        
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!companyId && !!pageName
+  });
+
+  const addMutation = useMutation({
+    mutationFn: async (newData) => {
+      const { data, error } = await supabase
+        .from('industry_records')
+        .insert([{
+          company_id: companyId,
+          industry: 'orbit_build_data',
+          record_type: pageName,
+          data: newData,
+          search_text: Object.values(newData).join(' ')
+        }]);
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['orbit_records', companyId, pageName]);
+      queryClient.invalidateQueries(['orbit_dynamic_records', companyId]);
+      setIsAdding(false);
+      setNewEventTitle('');
+      toast({ title: 'Success', description: 'Event added successfully.' });
+    }
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id) => {
+      const { error } = await supabase.from('industry_records').delete().eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['orbit_records', companyId, pageName]);
+      queryClient.invalidateQueries(['orbit_dynamic_records', companyId]);
+      toast({ title: 'Deleted', description: 'Event removed.' });
+    }
+  });
+
+  const handleAdd = (e) => {
+    e.preventDefault();
+    if (!newEventTitle.trim()) return;
+    addMutation.mutate({
+      title: newEventTitle,
+      time: '12:00 PM',
+      type: 'internal',
+      day: 10 // Mock placing it on the 10th for demonstration
+    });
+  };
+
+  const displayEvents = records.map(r => ({ id: r.id, ...r.data }));
 
   // Simple mock month view generation
   const days = Array.from({ length: 35 }, (_, i) => {
@@ -54,16 +123,42 @@ export default function UnivCalendar({
             <span className="text-xs font-semibold px-3">Today</span>
             <button className="p-1.5 hover:bg-background rounded-md text-slate-500 transition-colors"><ChevronRight className="w-4 h-4" /></button>
           </div>
-          <button className="flex items-center gap-2 px-3 py-1.5 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm">
+          <button onClick={() => setIsAdding(!isAdding)} className="flex items-center gap-2 px-3 py-1.5 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm">
             <Plus className="w-4 h-4" /> New
           </button>
         </div>
       </div>
 
+      {isAdding && (
+        <div className="p-4 bg-card border-b border-border shadow-sm shrink-0">
+          <form onSubmit={handleAdd} className="flex items-end gap-4 max-w-2xl">
+            <div className="flex-1">
+              <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Event Title</label>
+              <input 
+                autoFocus
+                type="text" 
+                value={newEventTitle} 
+                onChange={e => setNewEventTitle(e.target.value)} 
+                placeholder="Enter event title..." 
+                className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" 
+              />
+            </div>
+            <Button type="button" variant="outline" onClick={() => setIsAdding(false)} className="h-10 rounded-xl">Cancel</Button>
+            <Button type="submit" disabled={addMutation.isPending} className="h-10 bg-primary text-white rounded-xl">
+              {addMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Event'}
+            </Button>
+          </form>
+        </div>
+      )}
+
       <div className="flex-1 flex overflow-hidden">
         {/* Main Calendar Area */}
         <div className="flex-1 flex flex-col bg-card overflow-y-auto">
-           {view === 'Month' && (
+           {isLoading ? (
+             <div className="flex-1 flex items-center justify-center">
+               <Loader2 className="w-8 h-8 animate-spin text-primary/50" />
+             </div>
+           ) : view === 'Month' && (
              <div className="flex-1 flex flex-col min-w-[600px]">
                {/* Days of week header */}
                <div className="grid grid-cols-7 border-b border-border bg-muted/30 shrink-0">
@@ -75,30 +170,35 @@ export default function UnivCalendar({
                </div>
                {/* Calendar Grid */}
                <div className="flex-1 grid grid-cols-7 grid-rows-5">
-                 {days.map((d, i) => (
-                   <div key={i} className={`border-r border-b border-border p-2 ${d.inactive ? 'bg-muted/10' : 'bg-card hover:bg-muted/5'} transition-colors relative min-h-[100px]`}>
-                     {d.day && (
-                       <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-sm font-semibold ${d.isToday ? 'bg-primary text-white shadow-sm' : 'text-slate-700 dark:text-slate-300'}`}>
-                         {d.day}
-                       </span>
-                     )}
-                     {/* Mock events on day 10 */}
-                     {d.isToday && (
-                       <div className="mt-2 space-y-1">
-                         {displayEvents.map(ev => (
-                           <motion.div 
-                             initial={{ opacity: 0, scale: 0.95 }}
-                             animate={{ opacity: 1, scale: 1 }}
-                             key={ev.id} 
-                             className={`px-2 py-1 text-[10px] font-bold rounded truncate cursor-pointer ${ev.type === 'internal' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400'}`}
-                           >
-                             {ev.time} {ev.title}
-                           </motion.div>
-                         ))}
-                       </div>
-                     )}
-                   </div>
-                 ))}
+                 {days.map((d, i) => {
+                   const dayEvents = displayEvents.filter(ev => (ev.day || 10) === d.day);
+                   return (
+                     <div key={i} className={`border-r border-b border-border p-2 ${d.inactive ? 'bg-muted/10' : 'bg-card hover:bg-muted/5'} transition-colors relative min-h-[100px]`}>
+                       {d.day && (
+                         <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-sm font-semibold ${d.isToday ? 'bg-primary text-white shadow-sm' : 'text-slate-700 dark:text-slate-300'}`}>
+                           {d.day}
+                         </span>
+                       )}
+                       {!d.inactive && dayEvents.length > 0 && (
+                         <div className="mt-2 space-y-1">
+                           {dayEvents.map(ev => (
+                             <motion.div 
+                               initial={{ opacity: 0, scale: 0.95 }}
+                               animate={{ opacity: 1, scale: 1 }}
+                               key={ev.id} 
+                               className={`px-2 py-1 flex justify-between items-center text-[10px] font-bold rounded group cursor-pointer ${ev.type === 'internal' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400'}`}
+                             >
+                               <span className="truncate">{ev.time} {ev.title}</span>
+                               <button onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(ev.id); }} className="opacity-0 group-hover:opacity-100 hover:text-red-500 ml-1">
+                                 <Trash2 className="w-3 h-3" />
+                               </button>
+                             </motion.div>
+                           ))}
+                         </div>
+                       )}
+                     </div>
+                   );
+                 })}
                </div>
              </div>
            )}
@@ -116,9 +216,12 @@ export default function UnivCalendar({
             <h3 className="font-bold text-sm text-foreground">Upcoming Today</h3>
           </div>
           <div className="p-4 space-y-4 overflow-y-auto custom-scrollbar">
-             {displayEvents.map((ev, i) => (
-               <div key={i} className="bg-card border border-border p-3 rounded-xl shadow-sm hover:border-primary/30 transition-colors group cursor-pointer">
-                 <h4 className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors">{ev.title}</h4>
+             {displayEvents.filter(ev => (ev.day || 10) === 10).map((ev, i) => (
+               <div key={ev.id} className="bg-card border border-border p-3 rounded-xl shadow-sm hover:border-primary/30 transition-colors group cursor-pointer relative">
+                 <button onClick={() => deleteMutation.mutate(ev.id)} className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-red-500">
+                    <Trash2 className="w-4 h-4" />
+                 </button>
+                 <h4 className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors pr-6">{ev.title}</h4>
                  <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
                    <Clock className="w-3.5 h-3.5" /> {ev.time}
                  </div>
@@ -128,6 +231,9 @@ export default function UnivCalendar({
                  </div>
                </div>
              ))}
+             {!isLoading && displayEvents.length === 0 && (
+                <div className="text-center text-sm text-muted-foreground py-8">No upcoming events.</div>
+             )}
           </div>
         </div>
       </div>
