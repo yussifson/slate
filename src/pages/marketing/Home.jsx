@@ -307,11 +307,11 @@ const suites = [
     const [isModalOpen, setIsModalOpen] = useState(false);
   
     return (
-      <section className="py-16 md:py-24 lg:py-32 bg-slate-50 dark:bg-slate-800/50 relative overflow-hidden">
+      <section className="py-16 md:py-24 lg:py-32 bg-slate-50 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <FadeIn>
             <div className="text-center max-w-3xl mx-auto mb-16">
-              <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100 mb-6">
+              <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 mb-6">
                 {t("tailored_suites_for_your_indus", "Tailored suites for your industry")}
               </h2>
               <p className="text-lg text-slate-600 leading-relaxed font-medium">
@@ -334,7 +334,7 @@ const suites = [
                   className={`flex-none flex items-center gap-2 px-6 py-3.5 rounded-full font-bold text-sm whitespace-nowrap transition-all duration-300 transform shadow-sm ${
                     isActive
                       ? 'bg-primary text-white shadow-lg shadow-primary/30 scale-105'
-                      : 'bg-white dark:bg-slate-900/40 text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-100 border border-slate-200'
+                      : 'bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-900 border border-slate-200'
                   }`}
                 >
                   {suite.name.replace(' WorkSlate', '')}
@@ -345,26 +345,26 @@ const suites = [
 
           <div className="max-w-5xl mx-auto relative items-start">
             {/* Content Container */}
-            <div className="bg-white dark:bg-slate-900/40 border border-slate-200/60 rounded-[2.5rem] p-8 md:p-14 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] relative overflow-hidden">
+            <div className="bg-white border border-slate-200/60 rounded-[2.5rem] p-8 md:p-14 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] relative overflow-hidden">
               <div className="relative z-10">
                 <FadeIn key={activeSuite.id}>
                   <div className="flex flex-col md:flex-row gap-10 items-start">
                     <div className="flex-1">
                       <div className="flex flex-wrap items-center gap-3 mb-6">
-                        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800/50 text-primary shadow-sm border border-slate-200">
+                        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 text-primary shadow-sm border border-slate-200">
                           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                           </svg>
                         </span>
-                        <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-slate-100 text-slate-700 dark:text-slate-300 text-xs font-bold uppercase tracking-widest">
+                        <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold uppercase tracking-widest">
                           {activeSuite.name}
                         </div>
-                        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 text-primary/90 text-xs font-bold uppercase tracking-widest">
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-50 border border-slate-200 text-primary/90 text-xs font-bold uppercase tracking-widest">
                           <Sparkles className="w-3.5 h-3.5" /> {t("orbit_ai_powered", "Orbit AI Powered")}
                         </div>
                       </div>
                       
-                      <h3 className="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-slate-100 mb-6 leading-[1.1] tracking-tight">
+                      <h3 className="text-3xl md:text-5xl font-extrabold text-slate-900 mb-6 leading-[1.1] tracking-tight">
                         {activeSuite.tagline}
                       </h3>
                       
@@ -376,19 +376,19 @@ const suites = [
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {activeSuite.features.map((feat, idx) => {
                           return (
-                            <div key={idx} className="flex items-start gap-3 bg-white dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800 p-4 rounded-xl shadow-sm hover:shadow-md hover:border-slate-200 transition-all">
-                              <div className="mt-0.5 w-6 h-6 rounded-full bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center text-primary shrink-0">
+                            <div key={idx} className="flex items-start gap-3 bg-white border border-slate-100 p-4 rounded-xl shadow-sm hover:shadow-md hover:border-slate-200 transition-all">
+                              <div className="mt-0.5 w-6 h-6 rounded-full bg-slate-50 flex items-center justify-center text-primary shrink-0">
                                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                                 </svg>
                               </div>
-                              <span className="font-bold text-slate-700 dark:text-slate-300 text-sm leading-snug">{feat}</span>
+                              <span className="font-bold text-slate-700 text-sm leading-snug">{feat}</span>
                             </div>
                           );
                         })}
                       </div>
                       
-                      <div className="mt-12 pt-8 border-t border-slate-100 dark:border-slate-800 flex items-center">
+                      <div className="mt-12 pt-8 border-t border-slate-100 flex items-center">
                         <Button 
                           onClick={() => setIsModalOpen(true)}
                           className="bg-primary text-white hover:bg-primary/90 font-bold py-6 px-10 rounded-full shadow-lg shadow-emerald-600/20 transition-all hover:-translate-y-0.5"
@@ -412,15 +412,15 @@ const suites = [
               onClick={() => setIsModalOpen(false)}
             ></div>
             
-            <div className="relative bg-white dark:bg-slate-900/40 w-full max-w-4xl max-h-[90vh] rounded-[2rem] overflow-hidden flex flex-col transform transition-all animate-in fade-in zoom-in-95 duration-200">
+            <div className="relative bg-white w-full max-w-4xl max-h-[90vh] rounded-[2rem] overflow-hidden flex flex-col transform transition-all animate-in fade-in zoom-in-95 duration-200">
               {/* Header */}
-              <div className="flex-none p-6 sm:p-8 border-b border-slate-100 dark:border-slate-800 flex justify-between items-start bg-slate-50/50 dark:bg-transparent">
+              <div className="flex-none p-6 sm:p-8 border-b border-slate-100 flex justify-between items-start bg-slate-50/50">
                 <div>
                   <div className="inline-flex items-center px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-[10px] font-bold uppercase tracking-widest mb-3">
                     {t("workslate_module", "WorkSlate Module")}
                   </div>
-                  <h3 className="text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">{activeSuite.name}</h3>
-                  <p className="text-slate-500 dark:text-slate-400 font-medium mt-2 max-w-2xl">{activeSuite.description}</p>
+                  <h3 className="text-3xl font-extrabold text-slate-900 tracking-tight">{activeSuite.name}</h3>
+                  <p className="text-slate-500 font-medium mt-2 max-w-2xl">{activeSuite.description}</p>
                 </div>
                 <button 
                   onClick={() => setIsModalOpen(false)}
@@ -433,10 +433,10 @@ const suites = [
               </div>
               
               {/* Body */}
-              <div className="flex-1 overflow-y-auto p-6 sm:p-8 bg-white dark:bg-slate-900/40">
+              <div className="flex-1 overflow-y-auto p-6 sm:p-8 bg-white">
                 <div className="max-w-3xl mx-auto">
-                  <h4 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-6 flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center text-primary">
+                  <h4 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-primary">
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                       </svg>
@@ -447,9 +447,9 @@ const suites = [
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
                     {activeSuite.features.map((feat, idx) => {
                       return (
-                        <div key={idx} className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-6 border border-slate-100 dark:border-slate-800 hover:border-slate-200 transition-colors">
-                          <h5 className="font-bold text-slate-900 dark:text-slate-100 text-lg mb-2">{feat}</h5>
-                          <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed font-medium">
+                        <div key={idx} className="bg-slate-50 rounded-2xl p-6 border border-slate-100 hover:border-slate-200 transition-colors">
+                          <h5 className="font-bold text-slate-900 text-lg mb-2">{feat}</h5>
+                          <p className="text-slate-500 text-sm leading-relaxed font-medium">
                             {t(
                               "powerful_tools_to_automate_thi",
                               "Powerful tools to automate this aspect of your business, integrating seamlessly with your broader operations."
@@ -461,7 +461,7 @@ const suites = [
                   </div>
                   
                   <div className="bg-primary rounded-3xl p-8 sm:p-10 text-white relative overflow-hidden mt-6">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-white dark:bg-slate-900/40/10 rounded-full blur-[50px] -translate-y-1/2 translate-x-1/3"></div>
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full blur-[50px] -translate-y-1/2 translate-x-1/3"></div>
                     <h4 className="text-2xl font-bold mb-4 relative z-10">{t("ready_to_transform_your_workfl", "Ready to transform your workflow?")}</h4>
                     <p className="text-primary/10 font-medium mb-8 max-w-lg relative z-10 text-white/80">
                       {t("get_started_today_and_see_how", "Get started today and see how")} {activeSuite.name} {t(
@@ -470,7 +470,7 @@ const suites = [
                       )}
                     </p>
                     <Link to="/signup">
-                      <Button className="bg-white dark:bg-slate-900/40 text-primary hover:bg-slate-50 dark:bg-slate-800/50 font-bold py-6 px-8 rounded-xl shadow-lg relative z-10">
+                      <Button className="bg-white text-primary hover:bg-slate-50 font-bold py-6 px-8 rounded-xl shadow-lg relative z-10">
                         {t("start_your_free_trial", "Start Your Free Trial")}
                       </Button>
                     </Link>
@@ -503,12 +503,12 @@ export default function Home() {
       {/* ============================================================ */}
       <section className="relative py-10 md:py-14 lg:py-16">
         {/* Soft light background */}
-        <div className="absolute inset-0 bg-slate-50 dark:bg-slate-800/50 pointer-events-none" />
+        <div className="absolute inset-0 bg-slate-50 pointer-events-none" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Badge */}
           <FadeIn>
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white dark:bg-slate-900/40 border border-slate-200 text-xs font-semibold text-slate-600 mb-8 shadow-sm">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 text-xs font-semibold text-slate-600 mb-8 shadow-sm">
               <span className="flex h-2 w-2 rounded-full bg-primary" />
               {t("trusted_by_500_enterprise_team", "Trusted by 500+ Enterprise Teams  •")}  <span className="font-bold text-primary flex items-center gap-1"><Sparkles className="w-3 h-3"/> {t("powered_by_orbit_ai", "Powered by Orbit AI")}</span>
             </div>
@@ -516,12 +516,12 @@ export default function Home() {
 
           {/* Headline */}
           <FadeIn delay="delay-100">
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 dark:text-slate-100 leading-[1.1] max-w-4xl mx-auto mb-6">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1] max-w-4xl mx-auto mb-6">
               {t(
                 "the_work_made_effortless_that_tur",
                 "The unified workspace that turns hours into"
               )}{' '}
-              <span className="bg-slate-100 text-slate-900 dark:text-slate-100 px-4 py-1 rounded-[1.5rem] inline-block mt-2">
+              <span className="bg-slate-100 text-slate-900 px-4 py-1 rounded-[1.5rem] inline-block mt-2">
                 {t("clear_profit", "clear profit")}
               </span>
             </h1>
@@ -541,18 +541,18 @@ export default function Home() {
           <FadeIn delay="delay-300">
             <div className="flex flex-col items-center justify-center mb-16">
               <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
-                <div className="bg-white dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 shadow-sm">{t("project_profitability", "Project Profitability")}</div>
-                <div className="bg-white dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 shadow-sm">{t("billing_invoicing", "Billing & Invoicing")}</div>
-                <div className="bg-white dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 shadow-sm">{t("client_portal", "Client Portal")}</div>
-                <div className="bg-white dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 shadow-sm">{t("hr_payroll", "HR & Payroll")}</div>
-                <div className="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 text-primary px-6 py-2.5 rounded-xl text-sm font-semibold shadow-sm">{t("all_features", "All Features")}</div>
+                <div className="bg-white border border-slate-100 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 shadow-sm">{t("project_profitability", "Project Profitability")}</div>
+                <div className="bg-white border border-slate-100 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 shadow-sm">{t("billing_invoicing", "Billing & Invoicing")}</div>
+                <div className="bg-white border border-slate-100 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 shadow-sm">{t("client_portal", "Client Portal")}</div>
+                <div className="bg-white border border-slate-100 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 shadow-sm">{t("hr_payroll", "HR & Payroll")}</div>
+                <div className="bg-slate-50 border border-slate-200 text-primary px-6 py-2.5 rounded-xl text-sm font-semibold shadow-sm">{t("all_features", "All Features")}</div>
               </div>
             </div>
           </FadeIn>
 
           {/* Dashboard mockup */}
           <FadeIn delay="delay-500">
-            <div className="relative w-full max-w-6xl mx-auto h-[400px] md:h-[550px] rounded-2xl border border-slate-200/80 bg-slate-50 dark:bg-slate-800/50 overflow-hidden h-[400px] md:h-[550px] flex items-center justify-center">
+            <div className="relative w-full max-w-6xl mx-auto h-[400px] md:h-[550px] rounded-2xl border border-slate-200/80 bg-slate-50 overflow-hidden h-[400px] md:h-[550px] flex items-center justify-center">
               <img src="/images/hero_dashboard_ui.png" alt="Slate Dashboard Mockup" className="w-full h-full object-cover object-top" />
             </div>
           </FadeIn>
@@ -561,13 +561,13 @@ export default function Home() {
       {/* ============================================================ */}
       {/*  ORBIT AI HERO (INTERACTIVE DEMO)                            */}
       {/* ============================================================ */}
-      <section className="py-20 md:py-24 bg-white dark:bg-slate-900/40 text-slate-900 dark:text-slate-100 relative overflow-hidden border-t border-slate-100 dark:border-slate-800">
+      <section className="py-20 md:py-24 bg-white text-slate-900 relative overflow-hidden border-t border-slate-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             
             <FadeIn>
               <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 text-primary/90 text-xs font-bold uppercase tracking-widest mb-6">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-50 border border-slate-200 text-primary/90 text-xs font-bold uppercase tracking-widest mb-6">
                   <Sparkles className="w-3.5 h-3.5" />
                   {t("your_intelligent_agent", "Your Intelligent Agent")}
                 </div>
@@ -583,10 +583,10 @@ export default function Home() {
                     "Orbit isn't just a chatbot. It's an intelligent agent embedded directly into your workflow. \n                  Ask it to analyze data, schedule appointments, or draft emails — it executes actions automatically across the entire Slate suite."
                   )}
                 </p>
-                <ul className="space-y-4 mb-10 text-slate-700 dark:text-slate-300 font-medium">
-                  <li className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center text-primary shrink-0"><Clock className="w-4 h-4" /></div> {t("saves_an_average_of_14_hours_p", "Saves an average of 14 hours per week")}</li>
-                  <li className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center text-primary shrink-0"><Shield className="w-4 h-4" /></div> {t("bank_grade_secure_long_term_me", "Bank-grade secure long-term memory")}</li>
-                  <li className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center text-primary shrink-0"><Briefcase className="w-4 h-4" /></div> {t(
+                <ul className="space-y-4 mb-10 text-slate-700 font-medium">
+                  <li className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-primary shrink-0"><Clock className="w-4 h-4" /></div> {t("saves_an_average_of_14_hours_p", "Saves an average of 14 hours per week")}</li>
+                  <li className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-primary shrink-0"><Shield className="w-4 h-4" /></div> {t("bank_grade_secure_long_term_me", "Bank-grade secure long-term memory")}</li>
+                  <li className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-primary shrink-0"><Briefcase className="w-4 h-4" /></div> {t(
                       "understands_all_9_industry_sec",
                       "Understands all 9 industry sectors natively"
                     )}</li>
@@ -595,7 +595,7 @@ export default function Home() {
             </FadeIn>
 
             <FadeIn delay="delay-200">
-              <div className="relative rounded-2xl border border-slate-200/60 bg-white dark:bg-slate-900/40 overflow-hidden transform rotate-1 hover:rotate-0 transition-transform duration-500 group">
+              <div className="relative rounded-2xl border border-slate-200/60 bg-white overflow-hidden transform rotate-1 hover:rotate-0 transition-transform duration-500 group">
                 <img 
                   src="/images/orbit_dashboard_mockup.png" 
                   alt="Slate Dashboard featuring Orbit AI Panel" 
@@ -616,13 +616,13 @@ export default function Home() {
       {/* ============================================================ */}
       {/*  HOW IT WORKS                                                */}
       {/* ============================================================ */}
-      <section className="py-16 md:py-24 lg:py-32 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800">
+      <section className="py-16 md:py-24 lg:py-32 bg-slate-50 border-t border-slate-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16 md:mb-24">
-            <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white dark:bg-slate-900/40 border border-slate-200 text-slate-600 text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
+            <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-600 text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
               {t("workflow", "Workflow")}
             </span>
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-6">
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-slate-900 mb-6">
               {t("how_slate_works", "How Slate works")}
             </h2>
             <p className="text-lg text-slate-600 leading-relaxed font-medium">
@@ -659,14 +659,14 @@ export default function Home() {
             ].map((step, i) => {
               return (
                 <FadeIn key={i} delay={`delay-${(i + 1) * 100}`}>
-                  <div className="relative bg-white dark:bg-slate-900/40 rounded-3xl p-8 border border-slate-100 dark:border-slate-800 shadow-sm text-center z-10 group hover:shadow-md transition-shadow">
-                    <div className="w-16 h-16 mx-auto bg-slate-50 dark:bg-slate-800/50 text-primary rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-inner">
+                  <div className="relative bg-white rounded-3xl p-8 border border-slate-100 shadow-sm text-center z-10 group hover:shadow-md transition-shadow">
+                    <div className="w-16 h-16 mx-auto bg-slate-50 text-primary rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-inner">
                       <step.icon className="w-8 h-8" />
                     </div>
                     <div className="absolute -top-4 -right-4 w-12 h-12 bg-primary text-white font-black rounded-xl flex items-center justify-center text-lg shadow-lg transform rotate-6 group-hover:rotate-12 transition-transform">
                       {step.step}
                     </div>
-                    <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">{step.title}</h3>
+                    <h3 className="text-2xl font-bold text-slate-900 mb-4">{step.title}</h3>
                     <p className="text-slate-600 font-medium leading-relaxed">
                       {step.desc}
                     </p>
@@ -680,10 +680,10 @@ export default function Home() {
       {/* ============================================================ */}
       {/*  SOCIAL PROOF STRIP                                          */}
       {/* ============================================================ */}
-      <section className="py-20 md:py-24 bg-white dark:bg-slate-900/40">
+      <section className="py-20 md:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
-            <p className="text-xl font-medium text-slate-500 dark:text-slate-400 text-center mb-10">
+            <p className="text-xl font-medium text-slate-500 text-center mb-10">
               {t(
                 "trusted_by_over_10_000_compani",
                 "Trusted by over 10 000 companies worldwide"
@@ -700,7 +700,7 @@ export default function Home() {
                     className="flex items-center cursor-default select-none hover:scale-105 transition-transform duration-300"
                   >
                     {firm.logo}
-                    <span className={`text-slate-900 dark:text-slate-100 ${firm.font}`}>
+                    <span className={`text-slate-900 ${firm.font}`}>
                       {firm.name}
                     </span>
                   </div>
@@ -716,17 +716,17 @@ export default function Home() {
       {/* ============================================================ */}
       {/*  FEATURES GRID (Bento Box Style)                           */}
       {/* ============================================================ */}
-      <section className="py-16 md:py-24 lg:py-32 bg-slate-50 dark:bg-slate-800/50 border-y border-slate-100 dark:border-slate-800 relative overflow-hidden">
+      <section className="py-16 md:py-24 lg:py-32 bg-slate-50 border-y border-slate-100 relative overflow-hidden">
         {/* Decorative Grid */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <FadeIn>
             <div className="text-center max-w-2xl mx-auto mb-20">
-              <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white dark:bg-slate-900/40 border border-slate-200 text-primary text-xs font-bold uppercase tracking-widest mb-6 shadow-sm">
+              <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-slate-200 text-primary text-xs font-bold uppercase tracking-widest mb-6 shadow-sm">
                 {t("unified_architecture", "Unified Architecture")}
               </span>
-              <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight mb-6">
+              <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-6">
                 {t(
                   "built_for_the_complexities_of_",
                   "Built for the complexities of modern business"
@@ -746,7 +746,7 @@ export default function Home() {
               const isWide = i === 0 || i === 3;
               return (
                 <FadeIn key={i} delay={`delay-[${i * 80}ms]`} className={isWide ? "lg:col-span-2" : "col-span-1"}>
-                  <div className="group relative bg-white dark:bg-slate-900/40 rounded-[2.5rem] border border-primary/60 shadow-[0_8px_30px_-12px_rgba(37,99,235,0.08)] hover:shadow-2xl hover:shadow-emerald-900/15 transition-all duration-500 overflow-hidden h-full flex flex-col p-10 md:p-12 z-0">
+                  <div className="group relative bg-white rounded-[2.5rem] border border-primary/60 shadow-[0_8px_30px_-12px_rgba(37,99,235,0.08)] hover:shadow-2xl hover:shadow-emerald-900/15 transition-all duration-500 overflow-hidden h-full flex flex-col p-10 md:p-12 z-0">
                     
                     {/* Subtle Background Gradient */}
                     <div className="absolute inset-0 bg-gradient-to-br from-white via-white to-primary/5 opacity-100 group-hover:from-primary/5 group-hover:via-white group-hover:to-primary/10 transition-colors duration-700 -z-10"></div>
@@ -763,7 +763,7 @@ export default function Home() {
                       </div>
                       
                       {/* Premium Typography */}
-                      <h4 className="text-[28px] leading-[1.2] font-black text-slate-900 dark:text-slate-100 tracking-tight mb-5 group-hover:text-primary transition-all duration-300">
+                      <h4 className="text-[28px] leading-[1.2] font-black text-slate-900 tracking-tight mb-5 group-hover:text-primary transition-all duration-300">
                         {feature.title}
                       </h4>
                       <p className="text-slate-600 leading-[1.7] font-medium text-lg">
@@ -794,14 +794,14 @@ export default function Home() {
       {/* ============================================================ */}
       {/*  TESTIMONIALS                                                */}
       {/* ============================================================ */}
-      <section className="py-16 md:py-24 lg:py-32 bg-white dark:bg-slate-900/40 relative">
+      <section className="py-16 md:py-24 lg:py-32 bg-white relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <FadeIn>
             <div className="text-center max-w-2xl mx-auto mb-20">
-              <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 text-primary/90 text-xs font-bold uppercase tracking-widest mb-6">
+              <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-slate-50 border border-slate-200 text-primary/90 text-xs font-bold uppercase tracking-widest mb-6">
                 {t("client_success", "Client Success")}
               </span>
-              <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
+              <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
                 {t("what_our_customers_say", "What our customers say")}
               </h2>
             </div>
@@ -811,7 +811,7 @@ export default function Home() {
             {testimonials.map((item, idx) => {
               return (
                 <FadeIn key={idx} delay={`delay-[${idx * 120}ms]`}>
-                  <div className="bg-white dark:bg-slate-900/40 border border-slate-200 rounded-[2rem] p-10 flex flex-col justify-between hover:border-primary/30 hover:shadow-2xl hover:shadow-emerald-900/5 transition-all duration-300 h-full group relative overflow-hidden">
+                  <div className="bg-white border border-slate-200 rounded-[2rem] p-10 flex flex-col justify-between hover:border-primary/30 hover:shadow-2xl hover:shadow-emerald-900/5 transition-all duration-300 h-full group relative overflow-hidden">
                     <div className="absolute top-0 right-0 p-8 opacity-5 text-[8rem] font-serif leading-none font-black text-primary/70 group-hover:text-primary group-hover:opacity-10 transition-colors duration-500">"</div>
                     
                     <div className="relative z-10">
@@ -825,12 +825,12 @@ export default function Home() {
                           );
                         })}
                       </div>
-                      <blockquote className="text-lg text-slate-700 dark:text-slate-300 leading-relaxed font-medium mb-10">
+                      <blockquote className="text-lg text-slate-700 leading-relaxed font-medium mb-10">
                         "{item.quote}"
                       </blockquote>
                     </div>
 
-                    <div className="flex items-center gap-4 pt-6 border-t border-slate-100 dark:border-slate-800 relative z-10">
+                    <div className="flex items-center gap-4 pt-6 border-t border-slate-100 relative z-10">
                       <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/10 to-primary/20 flex items-center justify-center text-primary/90 font-bold text-lg shadow-inner">
                         {item.author
                           .split(' ')
@@ -838,10 +838,10 @@ export default function Home() {
                           .join('')}
                       </div>
                       <div>
-                        <p className="text-base font-bold text-slate-900 dark:text-slate-100">
+                        <p className="text-base font-bold text-slate-900">
                           {item.author}
                         </p>
-                        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+                        <p className="text-sm font-medium text-slate-500">
                           {item.role}, {item.firm}
                         </p>
                       </div>
@@ -862,7 +862,7 @@ export default function Home() {
             <div className="relative bg-gradient-to-br from-primary to-primary/90 rounded-3xl px-6 py-20 md:py-24 md:px-12 text-center overflow-hidden shadow-[0_20px_60px_hsl(var(--primary)/0.3)]">
               {/* Decorative glow circles */}
               <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.2)_0%,transparent_50%)] pointer-events-none" />
-              <div className="absolute -bottom-32 -left-20 w-96 h-96 rounded-full bg-white dark:bg-slate-900/40/[0.07] blur-3xl pointer-events-none" />
+              <div className="absolute -bottom-32 -left-20 w-96 h-96 rounded-full bg-white blur-3xl pointer-events-none" />
 
               <div className="relative z-10 max-w-3xl mx-auto space-y-8">
                 <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter leading-[1.1]">
@@ -877,7 +877,7 @@ export default function Home() {
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
                   <Link to="/signup">
-                    <Button className="bg-white dark:bg-slate-900/40 text-primary hover:bg-white dark:bg-slate-900/40/90 font-bold text-base py-6 px-10 rounded-xl shadow-xl group transition-all hover:scale-[1.02]">
+                    <Button className="bg-white text-primary hover:bg-white font-bold text-base py-6 px-10 rounded-xl shadow-xl group transition-all hover:scale-[1.02]">
                       {t("start_your_free_trial", "Start Your Free Trial")}
                       <ChevronRight className="w-5 h-5 ml-1 transition-transform group-hover:translate-x-1" />
                     </Button>
@@ -885,7 +885,7 @@ export default function Home() {
                   <Link to="/contact">
                     <Button
                       variant="outline"
-                      className="border-white/30 text-white hover:bg-white dark:bg-slate-900/40/10 font-bold text-base py-6 px-10 rounded-xl transition-all hover:scale-[1.02] bg-transparent"
+                      className="border-white/30 text-white hover:bg-white font-bold text-base py-6 px-10 rounded-xl transition-all hover:scale-[1.02] bg-transparent"
                     >
                       {t("contact_sales", "Contact Sales")}
                     </Button>

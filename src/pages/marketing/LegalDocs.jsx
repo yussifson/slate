@@ -30,12 +30,12 @@ export default function LegalDocs() {
             "these_terms_of_service_terms_g",
             "These Terms of Service (\"Terms\") govern your access to and use of the Slate services, including our various websites, SMS, APIs, email notifications, applications, buttons, and widgets (the \"Services\")."
           )}</p>
-          <h4 className="font-bold text-slate-900 dark:text-slate-100 mt-6 mb-2">{t("1_your_acceptance", "1. Your Acceptance")}</h4>
+          <h4 className="font-bold text-slate-900 mt-6 mb-2">{t("1_your_acceptance", "1. Your Acceptance")}</h4>
           <p>{t(
             "by_using_or_accessing_the_serv",
             "By using or accessing the Services, you agree to these Terms. If you do not agree to these Terms, you may not use or access the Services."
           )}</p>
-          <h4 className="font-bold text-slate-900 dark:text-slate-100 mt-6 mb-2">{t("2_privacy", "2. Privacy")}</h4>
+          <h4 className="font-bold text-slate-900 mt-6 mb-2">{t("2_privacy", "2. Privacy")}</h4>
           <p>{t(
             "your_privacy_is_important_to_u",
             "Your privacy is important to us. Please read our Privacy Policy to understand how we collect, use, and share information about you."
@@ -54,12 +54,12 @@ export default function LegalDocs() {
             "slate_we_our_or_us_is_comm",
             "Slate (\"we\", \"our\", or \"us\") is committed to protecting your privacy. This Privacy Policy explains how your personal information is collected, used, and disclosed by Slate."
           )}</p>
-          <h4 className="font-bold text-slate-900 dark:text-slate-100 mt-6 mb-2">{t("information_we_collect", "Information We Collect")}</h4>
+          <h4 className="font-bold text-slate-900 mt-6 mb-2">{t("information_we_collect", "Information We Collect")}</h4>
           <p>{t(
             "we_collect_information_you_pro",
             "We collect information you provide directly to us, such as when you create or modify your account, request on-demand services, contact customer support, or otherwise communicate with us."
           )}</p>
-          <h4 className="font-bold text-slate-900 dark:text-slate-100 mt-6 mb-2">{t("how_we_use_information", "How We Use Information")}</h4>
+          <h4 className="font-bold text-slate-900 mt-6 mb-2">{t("how_we_use_information", "How We Use Information")}</h4>
           <p>{t(
             "we_may_use_the_information_we_",
             "We may use the information we collect about you to provide, maintain, and improve our Services, including, for example, to facilitate payments, send receipts, provide products and services you request (and send related information), develop new features, provide customer support, develop safety features, authenticate users, and send product updates and administrative messages."
@@ -122,7 +122,7 @@ export default function LegalDocs() {
   return (
     <div className="py-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto min-h-screen">
       <div className="text-center mb-16">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight mb-4">{t("legal_security", "Legal & Security")}</h1>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-4">{t("legal_security", "Legal & Security")}</h1>
         <p className="text-xl text-slate-600">{t(
           "everything_you_need_to_know_ab",
           "Everything you need to know about our policies and terms."
@@ -133,12 +133,12 @@ export default function LegalDocs() {
           return (
             <div key={section.id} id={section.id} className="scroll-mt-32">
               <div className="flex items-center gap-4 mb-6 pb-4 border-b border-slate-200">
-                <div className="w-12 h-12 bg-slate-100 text-slate-700 dark:text-slate-300 rounded-xl flex items-center justify-center shrink-0">
+                <div className="w-12 h-12 bg-slate-100 text-slate-700 rounded-xl flex items-center justify-center shrink-0">
                   <section.icon className="w-6 h-6" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{section.title}</h2>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">{t("last_updated", "Last updated:")} {section.lastUpdated}</p>
+                  <h2 className="text-2xl font-bold text-slate-900">{section.title}</h2>
+                  <p className="text-sm text-slate-500 font-medium">{t("last_updated", "Last updated:")} {section.lastUpdated}</p>
                 </div>
               </div>
               <div className="prose prose-slate max-w-none">

@@ -32,21 +32,21 @@ export default function About() {
   ];
 
   return (
-    <div className="overflow-x-hidden bg-white dark:bg-slate-900/40 min-h-screen">
+    <div className="overflow-x-hidden bg-white min-h-screen">
       <Helmet>
         <title>About Us | Slate AI Workspace</title>
         <meta name="description" content="Learn more about Slate. We are a team of engineers building the ultimate AI WorkSlate for modern businesses." />
       </Helmet>
       {/* Hero Section */}
       <section className="relative py-10 md:py-14 lg:py-16">
-        <div className="absolute inset-0 bg-slate-50 dark:bg-slate-800/50 pointer-events-none" />
+        <div className="absolute inset-0 bg-slate-50 pointer-events-none" />
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white dark:bg-slate-900/40 border border-slate-200 text-xs font-semibold text-slate-600 mb-8 shadow-sm">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 text-xs font-semibold text-slate-600 mb-8 shadow-sm">
             <span className="flex h-2 w-2 rounded-full bg-primary" />
             {t("our_story", "Our Story")}
           </div>
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 dark:text-slate-100 leading-[1.1] max-w-4xl mx-auto mb-6">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1] max-w-4xl mx-auto mb-6">
             {t("digitizing_business_operations", "Digitizing business operations")}{' '}
             <span className="bg-slate-100 text-primary/70 px-4 py-1 rounded-[1.5rem] inline-block mt-2">
               {t("globally", "globally")}
@@ -61,12 +61,12 @@ export default function About() {
         </div>
       </section>
       {/* Story Section — Two Column */}
-      <section className="py-24 md:py-32 bg-white dark:bg-slate-900/40 relative">
+      <section className="py-24 md:py-32 bg-white relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
             {/* Left — Narrative */}
             <div className="space-y-8">
-              <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-slate-100 leading-tight tracking-tight">
+              <h2 className="text-4xl md:text-5xl font-bold text-slate-900 leading-tight tracking-tight">
                 {t("why_we_built", "Why we built")} <span className="text-primary">{t("slate", "Slate")}</span>
               </h2>
               <div className="space-y-6 text-lg text-slate-600 font-medium leading-relaxed">
@@ -86,22 +86,22 @@ export default function About() {
               
               <div className="pt-6 grid grid-cols-2 gap-8">
                 <div>
-                  <div className="font-black text-5xl text-slate-900 dark:text-slate-100 mb-2">{t("500", "500+")}</div>
-                  <div className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{t("organizations", "Organizations")}</div>
+                  <div className="font-black text-5xl text-slate-900 mb-2">{t("500", "500+")}</div>
+                  <div className="text-sm font-bold text-slate-500 uppercase tracking-wider">{t("organizations", "Organizations")}</div>
                 </div>
                 <div>
-                  <div className="font-black text-5xl text-slate-900 dark:text-slate-100 mb-2">{t("12", "12")}</div>
-                  <div className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{t("countries_active", "Countries Active")}</div>
+                  <div className="font-black text-5xl text-slate-900 mb-2">{t("12", "12")}</div>
+                  <div className="text-sm font-bold text-slate-500 uppercase tracking-wider">{t("countries_active", "Countries Active")}</div>
                 </div>
               </div>
             </div>
 
             {/* Right — Visual Collage */}
             <div className="relative">
-              <div className="relative rounded-[2rem] border border-slate-200/60 bg-white dark:bg-slate-900/40 p-2 shadow-2xl overflow-hidden aspect-[4/5] transform lg:rotate-2 hover:rotate-0 transition-transform duration-700">
+              <div className="relative rounded-[2rem] border border-slate-200/60 bg-white p-2 shadow-2xl overflow-hidden aspect-[4/5] transform lg:rotate-2 hover:rotate-0 transition-transform duration-700">
                 <img src="/images/hero_dashboard_ui.png" alt="Slate Interface" className="w-full h-full object-cover rounded-[1.5rem]" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent flex items-end p-8">
-                  <div className="bg-white dark:bg-slate-900/40/10 backdrop-blur-md border border-white/20 p-6 rounded-2xl w-full">
+                  <div className="bg-white backdrop-blur-md border border-white/20 p-6 rounded-2xl w-full">
                     <p className="text-white font-medium italic">{t(
                       "the_single_best_decision_our_o",
                       "\"The single best decision our operations team has made this decade.\""
@@ -114,13 +114,13 @@ export default function About() {
         </div>
       </section>
       {/* Core Values Section */}
-      <section className="bg-slate-50 dark:bg-slate-800/50 border-y border-slate-100 dark:border-slate-800 py-24 md:py-32 relative overflow-hidden">
+      <section className="bg-slate-50 border-y border-slate-100 py-24 md:py-32 relative overflow-hidden">
         {/* Subtle grid pattern background */}
         <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(148, 163, 184, 0.15) 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-slate-100 tracking-tight mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-6">
               {t("the_values_that_drive_us", "The values that drive us")}
             </h2>
             <p className="text-xl text-slate-600 font-medium max-w-2xl mx-auto">
@@ -136,12 +136,12 @@ export default function About() {
               return (
                 <div
                   key={i}
-                  className="bg-white dark:bg-slate-900/40 border border-slate-200/60 rounded-[2rem] p-10 shadow-xl shadow-slate-200/20 hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-900/5 transition-all duration-300 group"
+                  className="bg-white border border-slate-200/60 rounded-[2rem] p-10 shadow-xl shadow-slate-200/20 hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-900/5 transition-all duration-300 group"
                 >
-                  <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 group-hover:bg-primary flex items-center justify-center text-primary group-hover:text-white mb-8 transition-colors duration-300">
+                  <div className="w-16 h-16 rounded-2xl bg-slate-50 group-hover:bg-primary flex items-center justify-center text-primary group-hover:text-white mb-8 transition-colors duration-300">
                     <v.icon className="w-8 h-8" strokeWidth={2} />
                   </div>
-                  <h3 className="font-bold text-2xl text-slate-900 dark:text-slate-100 mb-4">{v.title}</h3>
+                  <h3 className="font-bold text-2xl text-slate-900 mb-4">{v.title}</h3>
                   <p className="text-base text-slate-600 font-medium leading-relaxed">{v.description}</p>
                 </div>
               );
@@ -150,9 +150,9 @@ export default function About() {
         </div>
       </section>
       {/* CTA Section */}
-      <section className="py-32 bg-white dark:bg-slate-900/40 relative overflow-hidden">
+      <section className="py-32 bg-white relative overflow-hidden">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <h2 className="text-5xl md:text-6xl font-bold text-slate-900 dark:text-slate-100 tracking-tight mb-8">
+          <h2 className="text-5xl md:text-6xl font-bold text-slate-900 tracking-tight mb-8">
             {t("join_the_future_of_business_op", "Join the future of business operations")}
           </h2>
           <p className="text-xl text-slate-600 font-medium max-w-2xl mx-auto leading-relaxed mb-12">

@@ -42,7 +42,7 @@ export default function Changelog() {
   return (
     <div className="py-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto min-h-screen">
       <div className="mb-16">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight mb-4">{t("changelog", "Changelog")}</h1>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-4">{t("changelog", "Changelog")}</h1>
         <p className="text-xl text-slate-600">{t(
           "new_updates_and_improvements_t",
           "New updates and improvements to Slate."
@@ -55,12 +55,12 @@ export default function Changelog() {
               <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-slate-100 text-primary shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-sm relative z-10">
                 {update.type === 'feature' ? <Star className="w-4 h-4 fill-current" /> : <Zap className="w-4 h-4 fill-current" />}
               </div>
-              <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white dark:bg-slate-900/40 p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-bold text-primary bg-slate-50 dark:bg-slate-800/50 px-3 py-1 rounded-full">{update.version}</span>
-                  <time className="text-sm font-medium text-slate-500 dark:text-slate-400">{update.date}</time>
+                  <span className="text-sm font-bold text-primary bg-slate-50 px-3 py-1 rounded-full">{update.version}</span>
+                  <time className="text-sm font-medium text-slate-500">{update.date}</time>
                 </div>
-                <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">{update.title}</h3>
+                <h3 className="text-xl font-bold text-slate-900 mb-4">{update.title}</h3>
                 <ul className="space-y-2">
                   {update.changes.map((change, i) => {
                     return (
