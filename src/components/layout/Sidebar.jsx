@@ -125,11 +125,10 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   const industryNav = getIndustryNav(activeIndustry, activeEducationLevel);
   
   const savedModulesStr = localStorage.getItem(`active_modules_${companyId}`);
-  const activeModules = savedModulesStr ? JSON.parse(savedModulesStr) : null;
-  const isOrbitMode = activeModules?.length === 1 && activeModules[0] === '__orbit__';
+  const localModules = savedModulesStr ? JSON.parse(savedModulesStr) : null;
   
   // Silent background sync for active modules
-  useQuery({
+  const { data: dbModules } = useQuery({
     queryKey: ['active_modules_sync', companyId],
     queryFn: async () => {
       if (!companyId) return null;
@@ -151,6 +150,9 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
     },
     enabled: !!companyId
   });
+
+  const activeModules = dbModules || localModules;
+  const isOrbitMode = activeModules?.length === 1 && activeModules[0] === '__orbit__';
   
   const ROLE_PERMISSIONS = {
     // Law Firm Roles
