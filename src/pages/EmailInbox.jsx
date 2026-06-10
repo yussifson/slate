@@ -235,7 +235,7 @@ function TabButton({ icon: Icon, label, active, onClick, count }) {
     <button
       onClick={onClick}
       className={`w-full flex items-center md:justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-        active ? "bg-slate-500 text-primary/80 font-semibold" : "text-slate-600 hover:bg-slate-100"
+        active ? "bg-primary/10 text-primary font-bold shadow-sm" : "text-slate-600 hover:bg-slate-100"
       }`}
     >
       <div className="flex items-center gap-3 mx-auto md:mx-0">
