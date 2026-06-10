@@ -20,6 +20,22 @@ export default function OnboardingWizard() {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
+
+  // Disconnect Auth Pages from Dashboard Theme Switcher
+  useEffect(() => {
+    const root = window.document.documentElement;
+    const originalClass = root.className;
+    
+    root.classList.remove('dark');
+    root.classList.add('light');
+    root.style.colorScheme = 'light';
+
+    return () => {
+      root.className = originalClass;
+      root.style.colorScheme = '';
+    };
+  }, []);
+
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef(null);
 
@@ -643,7 +659,7 @@ export default function OnboardingWizard() {
                     </div>
                   </div>
                 ) : (
-                  <div className="border-2 border-dashed border-border rounded-2xl p-8 text-center bg-muted/30 dark:bg-transparent">
+                  <div className="border-2 border-dashed border-border rounded-2xl p-8 text-center bg-muted/30">
                     <Users className="w-8 h-8 text-slate-300 mx-auto mb-3" />
                     <p className="text-sm text-slate-500 font-medium">No team members added yet.</p>
                     <p className="text-xs text-slate-400 mt-1">You can always invite them later from settings.</p>
@@ -706,7 +722,7 @@ export default function OnboardingWizard() {
         </div>
 
         {/* Footer Navigation */}
-        <div className="px-5 sm:px-8 py-4 sm:py-5 border-t border-border bg-muted/30 dark:bg-transparent sm:rounded-b-3xl shrink-0">
+        <div className="px-5 sm:px-8 py-4 sm:py-5 border-t border-border bg-muted/30 sm:rounded-b-3xl shrink-0">
           <div className="flex justify-between items-center gap-4">
             {step > 1 ? (
               <Button 
