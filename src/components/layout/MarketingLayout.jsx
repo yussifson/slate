@@ -42,6 +42,24 @@ export default function MarketingLayout({ children }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Disconnect Marketing Pages from Dashboard Theme Switcher
+  useEffect(() => {
+    const root = window.document.documentElement;
+    // Store original theme to restore if navigating back to dashboard
+    const originalClass = root.className;
+    
+    // Force light mode
+    root.classList.remove('dark');
+    root.classList.add('light');
+    root.style.colorScheme = 'light';
+
+    return () => {
+      // Restore the dashboard theme when leaving marketing pages
+      root.className = originalClass;
+      root.style.colorScheme = '';
+    };
+  }, []);
+
   // Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false);
