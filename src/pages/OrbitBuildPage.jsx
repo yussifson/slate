@@ -64,6 +64,13 @@ const UnivLab = React.lazy(() => import("@/components/universal/UnivLab"));
 const UnivWard = React.lazy(() => import("@/components/universal/UnivWard"));
 const UnivTelemedicine = React.lazy(() => import("@/components/universal/UnivTelemedicine"));
 
+// Phase 7 Universal Components (Hospitality Suite)
+const UnivBooking = React.lazy(() => import("@/components/universal/UnivBooking"));
+const UnivRoom = React.lazy(() => import("@/components/universal/UnivRoom"));
+const UnivHousekeeping = React.lazy(() => import("@/components/universal/UnivHousekeeping"));
+const UnivMenu = React.lazy(() => import("@/components/universal/UnivMenu"));
+const UnivDining = React.lazy(() => import("@/components/universal/UnivDining"));
+
 // Basic dummy data generator for these components since they might not be hooked to real tables yet if they are purely UI templates in OrbitBuild
 const DUMMY_DATA = Array(5).fill(0).map((_, i) => ({
   id: `id-${i}`,
@@ -260,6 +267,24 @@ export default function OrbitBuildPage() {
       case 'video_consult':
       case 'virtual_visit':
         return <UnivTelemedicine />;
+
+      // Phase 7 Components (Hospitality Suite)
+      case 'bookings':
+      case 'reservations':
+        return <UnivBooking />;
+      case 'rooms':
+      case 'room_inventory':
+        return <UnivRoom />;
+      case 'housekeeping':
+      case 'cleaning':
+        return <UnivHousekeeping />;
+      case 'menu':
+      case 'restaurant_menu':
+        return <UnivMenu />;
+      case 'dining_orders':
+      case 'restaurant_orders':
+      case 'pos_orders':
+        return <UnivDining />;
 
       case 'data_table':
       case 'pos':
