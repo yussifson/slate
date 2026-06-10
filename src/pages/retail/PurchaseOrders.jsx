@@ -193,7 +193,7 @@ export default function PurchaseOrders() {
     switch (status) {
       case 'received': return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-primary/90">Received</span>;
       case 'sent': return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-100 text-orange-700">Sent</span>;
-      default: return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 dark:text-slate-300">Draft</span>;
+      default: return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 dark:text-slate-300 dark:text-slate-300">Draft</span>;
     }
   };
 
@@ -223,14 +223,14 @@ export default function PurchaseOrders() {
   }
 
   return (
-    <div className="flex-1 p-6 overflow-y-auto bg-slate-50/50 dark:bg-transparent">
+    <div className="flex-1 p-6 overflow-y-auto bg-background">
       <div className="max-w-7xl mx-auto space-y-6">
         
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">{t("purchase_orders", "Purchase Orders")}</h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500 mt-1">{t("po_desc", "Manage supplier orders and restock inventory.")}</p>
+            <h1 className="text-2xl font-bold text-foreground tracking-tight">{t("purchase_orders", "Purchase Orders")}</h1>
+            <p className="text-sm text-muted-foreground mt-1">{t("po_desc", "Manage supplier orders and restock inventory.")}</p>
           </div>
           <Button onClick={() => setIsNewDialogOpen(true)} className="bg-orange-600 hover:bg-orange-700 text-white shadow-sm">
             <Plus className="w-4 h-4 mr-2" /> {t("new_po", "New PO")}
@@ -240,21 +240,21 @@ export default function PurchaseOrders() {
         {/* Search */}
         <div className="flex items-center gap-2">
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-500" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input 
               placeholder={t("search_pos", "Search by PO number or supplier...")} 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 bg-white dark:bg-slate-900/40 border-slate-200 shadow-sm"
+              className="pl-9 bg-background border-border shadow-sm"
             />
           </div>
         </div>
 
         {/* Table */}
-        <div className="bg-white dark:bg-slate-900/40 border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+        <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
-              <thead className="bg-slate-50/80 text-slate-500 dark:text-slate-400 dark:text-slate-500 text-xs uppercase font-semibold border-b border-slate-200">
+              <thead className="bg-muted/50 text-muted-foreground text-xs uppercase font-semibold border-b border-border">
                 <tr>
                   <th className="px-6 py-4">{t("po_number", "PO Number")}</th>
                   <th className="px-6 py-4">{t("supplier", "Supplier")}</th>
@@ -264,12 +264,12 @@ export default function PurchaseOrders() {
                   <th className="px-6 py-4 text-right">{t("actions", "Actions")}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-border">
                 {filteredOrders.map((po) => (
-                  <tr key={po.id} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="px-6 py-4 font-medium text-slate-900 dark:text-slate-100">{po.data?.poNumber}</td>
-                    <td className="px-6 py-4 text-slate-700 dark:text-slate-300">{po.data?.supplierName || 'Unknown'}</td>
-                    <td className="px-6 py-4 text-slate-500 dark:text-slate-400 dark:text-slate-500">
+                  <tr key={po.id} className="hover:bg-muted/30 transition-colors dark:hover:bg-muted/10">
+                    <td className="px-6 py-4 font-medium text-slate-900 dark:text-slate-100 dark:text-slate-100">{po.data?.poNumber}</td>
+                    <td className="px-6 py-4 text-slate-700 dark:text-slate-300 dark:text-slate-300">{po.data?.supplierName || 'Unknown'}</td>
+                    <td className="px-6 py-4 text-slate-500 dark:text-slate-400 dark:text-muted-foreground">
                       {po.data?.orderDate ? format(new Date(po.data.orderDate), 'MMM d, yyyy') : '-'}
                     </td>
                     <td className="px-6 py-4 font-medium">${Number(po.data?.total || 0).toFixed(2)}</td>
@@ -299,7 +299,7 @@ export default function PurchaseOrders() {
                 ))}
                 {filteredOrders.length === 0 && (
                   <tr>
-                    <td colSpan="6" className="px-6 py-12 text-center text-slate-500 dark:text-slate-400 dark:text-slate-500 bg-slate-50/30">
+                    <td colSpan="6" className="px-6 py-12 text-center text-slate-500 dark:text-slate-400 dark:text-muted-foreground bg-slate-50/30">
                       <ShoppingCart className="w-10 h-10 mx-auto mb-3 text-slate-300" />
                       <p>{t("no_pos", "No purchase orders found.")}</p>
                     </td>
@@ -350,15 +350,15 @@ export default function PurchaseOrders() {
           
           <div className="py-6 space-y-6">
             <div>
-              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3 uppercase tracking-wider">{t("order_items", "Order Items")}</h3>
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 dark:text-slate-100 mb-3 uppercase tracking-wider">{t("order_items", "Order Items")}</h3>
               <div className="border rounded-lg overflow-hidden">
                 <table className="w-full text-sm">
-                  <thead className="bg-slate-50 border-b">
+                  <thead className="bg-slate-50 dark:bg-slate-800/50 border-b">
                     <tr>
-                      <th className="px-4 py-2 text-left font-medium text-slate-500 dark:text-slate-400 dark:text-slate-500">Item</th>
-                      <th className="px-4 py-2 text-right font-medium text-slate-500 dark:text-slate-400 dark:text-slate-500">Qty</th>
-                      <th className="px-4 py-2 text-right font-medium text-slate-500 dark:text-slate-400 dark:text-slate-500">Cost</th>
-                      <th className="px-4 py-2 text-right font-medium text-slate-500 dark:text-slate-400 dark:text-slate-500">Subtotal</th>
+                      <th className="px-4 py-2 text-left font-medium text-slate-500 dark:text-slate-400 dark:text-muted-foreground">Item</th>
+                      <th className="px-4 py-2 text-right font-medium text-slate-500 dark:text-slate-400 dark:text-muted-foreground">Qty</th>
+                      <th className="px-4 py-2 text-right font-medium text-slate-500 dark:text-slate-400 dark:text-muted-foreground">Cost</th>
+                      <th className="px-4 py-2 text-right font-medium text-slate-500 dark:text-slate-400 dark:text-muted-foreground">Subtotal</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y">
@@ -366,7 +366,7 @@ export default function PurchaseOrders() {
                       <tr key={i}>
                         <td className="px-4 py-3">
                           <div className="font-medium">{item.name}</div>
-                          <div className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">{item.sku}</div>
+                          <div className="text-xs text-slate-500 dark:text-slate-400 dark:text-muted-foreground">{item.sku}</div>
                         </td>
                         <td className="px-4 py-3 text-right">{item.quantity}</td>
                         <td className="px-4 py-3 text-right">${Number(item.unitCost).toFixed(2)}</td>
@@ -374,7 +374,7 @@ export default function PurchaseOrders() {
                       </tr>
                     ))}
                   </tbody>
-                  <tfoot className="bg-slate-50 border-t font-semibold">
+                  <tfoot className="bg-slate-50 dark:bg-slate-800/50 border-t font-semibold">
                     <tr>
                       <td colSpan="3" className="px-4 py-3 text-right">Total</td>
                       <td className="px-4 py-3 text-right">${Number(selectedPO?.data?.total || 0).toFixed(2)}</td>
@@ -386,8 +386,8 @@ export default function PurchaseOrders() {
 
             {selectedPO?.data?.notes && (
               <div>
-                <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2 uppercase tracking-wider">{t("notes", "Notes")}</h3>
-                <p className="text-sm text-slate-600 bg-slate-50 p-3 rounded-lg border">{selectedPO.data.notes}</p>
+                <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 dark:text-slate-100 mb-2 uppercase tracking-wider">{t("notes", "Notes")}</h3>
+                <p className="text-sm text-slate-600 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg border">{selectedPO.data.notes}</p>
               </div>
             )}
             
@@ -424,7 +424,7 @@ export default function PurchaseOrders() {
               <div>
                 <label className="text-sm font-medium mb-1.5 block">{t("supplier", "Supplier")}</label>
                 <Select value={newPO.supplierId} onValueChange={(v) => setNewPO({...newPO, supplierId: v})}>
-                  <SelectTrigger className="bg-white dark:bg-slate-900/40">
+                  <SelectTrigger className="bg-white dark:bg-slate-900/40 dark:bg-slate-900/40">
                     <SelectValue placeholder="Select supplier..." />
                   </SelectTrigger>
                   <SelectContent>
@@ -438,7 +438,7 @@ export default function PurchaseOrders() {
               <div>
                 <label className="text-sm font-medium mb-1.5 block">{t("status", "Status")}</label>
                 <Select value={newPO.status} onValueChange={(v) => setNewPO({...newPO, status: v})}>
-                  <SelectTrigger className="bg-white dark:bg-slate-900/40">
+                  <SelectTrigger className="bg-white dark:bg-slate-900/40 dark:bg-slate-900/40">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -449,13 +449,13 @@ export default function PurchaseOrders() {
               </div>
             </div>
 
-            <div className="p-4 border rounded-xl bg-slate-50/50 dark:bg-transparent space-y-4">
+            <div className="p-4 border rounded-xl bg-slate-50/50 dark:bg-transparent dark:bg-transparent space-y-4">
               <h4 className="font-semibold text-sm">{t("add_items", "Add Items")}</h4>
               <div className="flex gap-2 items-end">
                 <div className="flex-1">
-                  <label className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-slate-500 mb-1 block">Product</label>
+                  <label className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-muted-foreground mb-1 block">Product</label>
                   <Select value={selectedProduct} onValueChange={setSelectedProduct}>
-                    <SelectTrigger className="bg-white dark:bg-slate-900/40">
+                    <SelectTrigger className="bg-white dark:bg-slate-900/40 dark:bg-slate-900/40">
                       <SelectValue placeholder="Select product..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -466,20 +466,20 @@ export default function PurchaseOrders() {
                   </Select>
                 </div>
                 <div className="w-24">
-                  <label className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-slate-500 mb-1 block">Qty</label>
-                  <Input type="number" min="1" value={orderQuantity} onChange={e => setOrderQuantity(e.target.value)} className="bg-white dark:bg-slate-900/40" />
+                  <label className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-muted-foreground mb-1 block">Qty</label>
+                  <Input type="number" min="1" value={orderQuantity} onChange={e => setOrderQuantity(e.target.value)} className="bg-white dark:bg-slate-900/40 dark:bg-slate-900/40" />
                 </div>
                 <div className="w-32">
-                  <label className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-slate-500 mb-1 block">Unit Cost ($)</label>
-                  <Input type="number" min="0" step="0.01" value={orderCost} onChange={e => setOrderCost(e.target.value)} className="bg-white dark:bg-slate-900/40" />
+                  <label className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-muted-foreground mb-1 block">Unit Cost ($)</label>
+                  <Input type="number" min="0" step="0.01" value={orderCost} onChange={e => setOrderCost(e.target.value)} className="bg-white dark:bg-slate-900/40 dark:bg-slate-900/40" />
                 </div>
                 <Button type="button" onClick={handleAddItem} variant="secondary">Add</Button>
               </div>
 
               {newPO.items.length > 0 && (
-                <div className="mt-4 border rounded-lg bg-white dark:bg-slate-900/40 overflow-hidden">
+                <div className="mt-4 border rounded-lg bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 overflow-hidden">
                   <table className="w-full text-sm">
-                    <thead className="bg-slate-50 border-b">
+                    <thead className="bg-slate-50 dark:bg-slate-800/50 border-b">
                       <tr>
                         <th className="px-3 py-2 text-left">Item</th>
                         <th className="px-3 py-2 text-right">Qty</th>
@@ -514,7 +514,7 @@ export default function PurchaseOrders() {
                 value={newPO.notes} 
                 onChange={(e) => setNewPO({...newPO, notes: e.target.value})}
                 placeholder="Optional notes for this order..."
-                className="bg-white dark:bg-slate-900/40"
+                className="bg-white dark:bg-slate-900/40 dark:bg-slate-900/40"
               />
             </div>
 

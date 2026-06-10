@@ -1,10 +1,27 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const VideoContext = createContext();
 
+const STORAGE_KEY = 'slate_active_call_url';
+
 export function VideoProvider({ children }) {
-  const [activeRoomUrl, setActiveRoomUrl] = useState(null);
+  // Initialize from sessionStorage so call survives page refresh
+  const [activeRoomUrl, setActiveRoomUrl] = useState(() => {
+    try { return sessionStorage.getItem(STORAGE_KEY) || null; }
+    catch { return null; }
+  });
   const [isPipMode, setIsPipMode] = useState(false);
+
+  // Keep sessionStorage in sync with state
+  useEffect(() => {
+    try {
+      if (activeRoomUrl) {
+        sessionStorage.setItem(STORAGE_KEY, activeRoomUrl);
+      } else {
+        sessionStorage.removeItem(STORAGE_KEY);
+      }
+    } catch { /* ignore */ }
+  }, [activeRoomUrl]);
 
   const joinRoom = (url) => {
     setActiveRoomUrl(url);
@@ -14,6 +31,7 @@ export function VideoProvider({ children }) {
   const leaveRoom = () => {
     setActiveRoomUrl(null);
     setIsPipMode(false);
+    try { sessionStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
   };
 
   const togglePipMode = () => {
