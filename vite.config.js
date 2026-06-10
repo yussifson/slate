@@ -13,7 +13,13 @@ export default defineConfig({
       '/api/ai': {
         target: 'https://api.cloudflare.com',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/ai/, '/client/v4/accounts/bf5126510c1f8f2759cc81c4e7d795ef/ai/run'),
+        rewrite: (path) => {
+          const match = path.match(/^\/api\/ai\/([^\/]+)\/(.+)$/);
+          if (match) {
+            return `/client/v4/accounts/${match[1]}/ai/run/${match[2]}`;
+          }
+          return path.replace(/^\/api\/ai/, '/client/v4/accounts/bf5126510c1f8f2759cc81c4e7d795ef/ai/run');
+        },
       }
     }
   },
