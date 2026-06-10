@@ -1,0 +1,169 @@
+import React, { useState, useEffect } from 'react';
+import { supabase } from '@/api/supabaseClient';
+import { useCompanyId } from '@/hooks/useCompanyId';
+import { motion } from 'framer-motion';
+import { Search, BookOpen, Video, FileText, CheckSquare, Plus, Clock, MoreHorizontal, FileDown } from 'lucide-react';
+import { toast } from 'react-hot-toast';
+
+export default function UnivLMS() {
+  const companyId = useCompanyId();
+  const [lessons, setLessons] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    if (companyId) {
+      fetchLessons();
+      const channel = supabase.channel('lms_changes')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'univ_lms_lessons', filter: `company_id=eq.${companyId}` }, () => {
+          fetchLessons();
+        }).subscribe();
+      return () => { supabase.removeChannel(channel); };
+    }
+  }, [companyId]);
+
+  const fetchLessons = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('univ_lms_lessons')
+        .select('*')
+        .eq('company_id', companyId)
+        .order('created_at', { ascending: false });
+      if (error && error.code !== '42P01') throw error;
+      setLessons(data || []);
+    } catch (err) {
+      if (err.code === '42P01') {
+        setLessons([
+          { id: '1', title: 'Week 1: Introduction to Algorithms', content_type: 'Lesson', course_name: 'CS101', status: 'Published', due_date: null },
+          { id: '2', title: 'Assignment 1: Data Structures', content_type: 'Assignment', course_name: 'CS101', status: 'Published', due_date: '2026-10-10' },
+          { id: '3', title: 'Midterm Review Quiz', content_type: 'Quiz', course_name: 'CS101', status: 'Draft', due_date: '2026-10-15' },
+          { id: '4', title: 'Chapter 4 Notes', content_type: 'Document', course_name: 'PHY201', status: 'Published', due_date: null }
+        ]);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddContent = async (type) => {
+    const newContent = {
+      company_id: companyId,
+      course_id: 'temp-course-id',
+      title: `New ${type}`,
+      content_type: type,
+      status: 'Draft'
+    };
+    try {
+      const { error } = await supabase.from('univ_lms_lessons').insert(newContent);
+      if (error) throw error;
+      toast.success(`${type} added to LMS`);
+    } catch (err) {
+      if (err.code === '42P01') toast.error("Database table not initialized yet.");
+      else toast.error('Failed to add content');
+    }
+  };
+
+  const filtered = lessons.filter(l => 
+    `${l.title} ${l.content_type} ${l.course_name}`.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const getIcon = (type) => {
+    switch(type) {
+      case 'Lesson': return <Video className="w-5 h-5 text-blue-500" />;
+      case 'Assignment': return <FileText className="w-5 h-5 text-purple-500" />;
+      case 'Quiz': return <CheckSquare className="w-5 h-5 text-emerald-500" />;
+      case 'Document': default: return <FileDown className="w-5 h-5 text-orange-500" />;
+    }
+  };
+
+  return (
+    <div className="flex flex-col h-full bg-background overflow-hidden">
+      <div className="flex items-center justify-between mb-6 shrink-0 pt-2 px-1">
+        <div>
+           <h2 className="text-2xl font-bold text-foreground tracking-tight">Learning Management System</h2>
+           <p className="text-sm text-muted-foreground mt-1">Manage lessons, assignments, quizzes, and course materials.</p>
+        </div>
+        <div className="flex gap-2">
+          <button onClick={() => handleAddContent('Lesson')} className="flex items-center gap-2 px-3 py-2 bg-blue-50 text-blue-700 border border-blue-200 rounded-xl text-sm font-semibold hover:bg-blue-100 transition-colors">
+            <Video className="w-4 h-4" /> Lesson
+          </button>
+          <button onClick={() => handleAddContent('Assignment')} className="flex items-center gap-2 px-3 py-2 bg-purple-50 text-purple-700 border border-purple-200 rounded-xl text-sm font-semibold hover:bg-purple-100 transition-colors">
+            <FileText className="w-4 h-4" /> Assignment
+          </button>
+          <button onClick={() => handleAddContent('Quiz')} className="flex items-center gap-2 px-3 py-2 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl text-sm font-semibold hover:bg-emerald-100 transition-colors">
+            <CheckSquare className="w-4 h-4" /> Quiz
+          </button>
+        </div>
+      </div>
+
+      <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden shadow-sm flex flex-col">
+        <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
+          <div className="relative w-72">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input 
+              type="text"
+              placeholder="Search content..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+            />
+          </div>
+        </div>
+
+        <div className="flex-1 overflow-auto custom-scrollbar">
+          <table className="w-full text-left text-sm whitespace-nowrap">
+            <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground sticky top-0 z-10 backdrop-blur-md">
+              <tr>
+                <th className="p-4 font-semibold w-16">Type</th>
+                <th className="p-4 font-semibold">Title</th>
+                <th className="p-4 font-semibold">Course</th>
+                <th className="p-4 font-semibold">Due Date</th>
+                <th className="p-4 font-semibold">Status</th>
+                <th className="p-4 font-semibold text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {filtered.map((l, idx) => (
+                <motion.tr 
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.02 }}
+                  key={l.id} 
+                  className="hover:bg-muted/30 transition-colors group cursor-pointer"
+                >
+                  <td className="p-4">
+                    <div className="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg w-fit">
+                      {getIcon(l.content_type)}
+                    </div>
+                  </td>
+                  <td className="p-4 font-semibold text-foreground">
+                    {l.title}
+                  </td>
+                  <td className="p-4 text-muted-foreground font-medium">
+                    <div className="flex items-center gap-1.5"><BookOpen className="w-3.5 h-3.5" /> {l.course_name || 'Course'}</div>
+                  </td>
+                  <td className="p-4 text-muted-foreground text-sm">
+                    {l.due_date ? <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> {l.due_date}</span> : '—'}
+                  </td>
+                  <td className="p-4">
+                    <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border ${
+                      l.status === 'Published' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
+                      l.status === 'Archived' ? 'bg-slate-50 text-slate-700 border-slate-200' : 
+                      'bg-orange-50 text-orange-700 border-orange-200'
+                    }`}>
+                      {l.status}
+                    </span>
+                  </td>
+                  <td className="p-4 text-right">
+                    <button className="text-muted-foreground hover:text-primary transition-colors p-2"><MoreHorizontal className="w-4 h-4" /></button>
+                  </td>
+                </motion.tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}

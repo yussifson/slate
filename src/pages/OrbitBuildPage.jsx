@@ -47,6 +47,15 @@ const UnivPayroll = React.lazy(() => import("@/components/universal/UnivPayroll"
 const UnivRecruitment = React.lazy(() => import("@/components/universal/UnivRecruitment"));
 const UnivLeaveManagement = React.lazy(() => import("@/components/universal/UnivLeaveManagement"));
 
+// Phase 5 Universal Components (Education Suite)
+const UnivStudent = React.lazy(() => import("@/components/universal/UnivStudent"));
+const UnivFaculty = React.lazy(() => import("@/components/universal/UnivFaculty"));
+const UnivCourse = React.lazy(() => import("@/components/universal/UnivCourse"));
+const UnivGradebook = React.lazy(() => import("@/components/universal/UnivGradebook"));
+const UnivClassAttendance = React.lazy(() => import("@/components/universal/UnivClassAttendance"));
+const UnivLMS = React.lazy(() => import("@/components/universal/UnivLMS"));
+const UnivParentPortal = React.lazy(() => import("@/components/universal/UnivParentPortal"));
+
 // Basic dummy data generator for these components since they might not be hooked to real tables yet if they are purely UI templates in OrbitBuild
 const DUMMY_DATA = Array(5).fill(0).map((_, i) => ({
   id: `id-${i}`,
@@ -193,6 +202,31 @@ export default function OrbitBuildPage() {
       case 'leaves':
       case 'time_off':
         return <UnivLeaveManagement />;
+
+      // Phase 5 Components (Education Suite)
+      case 'student_records':
+      case 'students':
+        return <UnivStudent />;
+      case 'faculty':
+      case 'teachers':
+        return <UnivFaculty />;
+      case 'courses':
+      case 'subjects':
+      case 'classes':
+        return <UnivCourse />;
+      case 'gradebook':
+      case 'grades':
+      case 'results':
+        return <UnivGradebook />;
+      case 'class_attendance':
+        return <UnivClassAttendance />;
+      case 'lms':
+      case 'lessons':
+      case 'assignments':
+        return <UnivLMS />;
+      case 'parent_portal':
+      case 'guardians':
+        return <UnivParentPortal />;
 
       case 'data_table':
       case 'pos':
