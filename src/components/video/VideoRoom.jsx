@@ -22,8 +22,10 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode }) {
   const localSessionId = useLocalSessionId();
   const participantIds = useParticipantIds();
   const { screens, isSharingScreen, startScreenShare, stopScreenShare } = useScreenShare();
-  const [isMuted, setIsMuted] = useState(false);
-  const [isVideoOff, setIsVideoOff] = useState(false);
+  const localAudioTrack = useAudioTrack(localSessionId);
+  const localVideoTrack = useVideoTrack(localSessionId);
+  const isMuted = localAudioTrack?.state !== 'playable';
+  const isVideoOff = localVideoTrack?.state !== 'playable';
   const [joined, setJoined] = useState(false);
   const { toast } = useToast();
   const [isAiLoading, setIsAiLoading] = useState(false);
@@ -59,10 +61,8 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode }) {
 
   const toggleAudio = async () => {
     if (!ensureJoined()) return;
-    const newMutedState = !isMuted;
     try {
-      await daily.setLocalAudio(!newMutedState);
-      setIsMuted(newMutedState);
+      await daily.setLocalAudio(isMuted);
     } catch (err) {
       console.error(err);
       toast({ title: 'Microphone error', description: err?.message || 'Could not access microphone.', variant: 'destructive' });
@@ -71,10 +71,8 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode }) {
 
   const toggleVideo = async () => {
     if (!ensureJoined()) return;
-    const newVideoOffState = !isVideoOff;
     try {
-      await daily.setLocalVideo(!newVideoOffState);
-      setIsVideoOff(newVideoOffState);
+      await daily.setLocalVideo(isVideoOff);
     } catch (err) {
       console.error(err);
       toast({ title: 'Camera error', description: err?.message || 'Could not access camera.', variant: 'destructive' });
@@ -134,16 +132,19 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode }) {
   }, [joined, isMuted, daily]);
 
   const handleAiAssist = async () => {
+    if (transcriptData.length === 0) {
+      setAiResponse("No meaningful conversation detected yet. Please make sure your microphone is unmuted and speak clearly to generate a meeting transcript.");
+      return;
+    }
+
     setIsAiLoading(true);
     setAiResponse(null);
     toast({ title: "Orbit Meeting AI", description: "Generating meeting summary from live transcription..." });
     try {
-      const meetingContext = transcriptData.length > 0 
-        ? transcriptData.map(t => `${t.name}: ${t.text}`).join('\n')
-        : "No transcription data available. Either the meeting just started or participants haven't spoken loudly.";
+      const meetingContext = transcriptData.map(t => `${t.name}: ${t.text}`).join('\n');
 
       const messages = [
-        { role: 'system', content: 'You are an AI meeting assistant. Summarize the following meeting transcript into 3 concise bullet points or action items. If there is no meaningful conversation, state that no conversation was detected.' },
+        { role: 'system', content: 'You are an AI meeting assistant. Summarize the following meeting transcript into 3 concise bullet points or action items.' },
         { role: 'user', content: meetingContext }
       ];
       const response = await generateText(messages);
