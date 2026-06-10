@@ -9,17 +9,13 @@ CRITICAL INSTRUCTIONS:
 1. Analyze the industry and identify the required business capabilities.
 2. Select the most appropriate Universal Components to fulfill those capabilities.
 3. Assemble a list of pages for the workspace. For a standard industry, generate between 6 and 12 pages.
-4. Provide a domain-specific \`page_name\` (e.g., "Pet Records", "Invoicing", "Student Attendance") but map it to exactly one \`component_id\` from the ALLOWED COMPONENTS list.
+4. Provide a domain-specific \`page_name\` (e.g., "Pet Records", "Invoicing", "Student Attendance") but map it to exactly one \`component_id\` from the allowed list.
 5. THE FIRST PAGE MUST ALWAYS BE A DASHBOARD. Set \`page_name\` to "Dashboard" and \`component_id\` to "dashboard".
 
-ALLOWED COMPONENTS (YOU MUST ONLY USE THESE EXACT IDs):
-- "dashboard" : For high-level overviews and KPIs
-- "data_table" : For generic lists, registries, and records (e.g., patients, inventory, invoices)
-- "kanban" : For pipeline tracking, task boards, or stages (e.g., CRM, project management)
-- "calendar" : For scheduling, bookings, and timelines
-- "form" : For data entry, surveys, or approvals
-- "document_manager" : For files and resources
-- "analytics" : For detailed reporting and charts
+COMPONENT MAPPING:
+For each page, select a conceptually matching \`component_id\` that reflects the UI needed (e.g., "inventory", "patient_records", "pos", "crm", "contacts"). Use descriptive string IDs.
+
+CRITICAL: Do not use spaces in \`component_id\`. Use snake_case.
 
 ALLOWED ICONS (YOU MUST CHOOSE A UNIQUE ICON FOR EACH PAGE FROM THIS EXACT LIST):
 LayoutDashboard, Briefcase, Users, Calendar, Receipt, CheckSquare, FolderOpen, Settings,
@@ -46,21 +42,21 @@ ONLY the JSON object.
     },
     {
       "page_name": "Pet Records",
-      "component_id": "data_table",
+      "component_id": "contact_management",
       "icon": "HeartPulse",
       "description": "Manage pet and owner profiles."
     },
     {
       "page_name": "Appointments",
-      "component_id": "calendar",
+      "component_id": "appointment",
       "icon": "Calendar",
       "description": "Schedule clinic visits."
     },
     {
-      "page_name": "Treatment Pipeline",
-      "component_id": "kanban",
-      "icon": "Activity",
-      "description": "Track pets through treatment stages."
+      "page_name": "Billing",
+      "component_id": "invoice",
+      "icon": "Receipt",
+      "description": "Generate invoices and track payments."
     }
   ]
 }
