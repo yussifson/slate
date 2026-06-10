@@ -178,12 +178,12 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false }
       fields: mappedFields
     });
 
-    toast({ title: "⚡ OrbitBolt Schema Applied!", description: "Review and customize your module, then publish." });
+    toast({ title: "⚡ OrbitBolt Schema Applied!", description: "Review and customize your slate, then publish." });
   };
 
   const saveModule = async (status = 'published') => {
     if (!name.trim() || fields.length === 0) {
-      toast({ title: "Validation Error", description: "Module Name and at least 1 field are required.", variant: "destructive" });
+      toast({ title: "Validation Error", description: "Slate Name and at least 1 field are required.", variant: "destructive" });
       return;
     }
 
@@ -243,7 +243,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false }
       navigate(`/m/${slug}`);
     } catch (err) {
       console.error(err);
-      toast({ title: "Error", description: err.message || "Failed to save module.", variant: "destructive" });
+      toast({ title: "Error", description: err.message || "Failed to save slate.", variant: "destructive" });
     } finally {
       setIsSubmitting(false);
     }
@@ -296,9 +296,9 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false }
               <div className="bg-card rounded-xl border border-border p-5 shadow-sm space-y-6">
                 {/* Slate Details */}
                 <div className="space-y-4">
-                  <h3 className="font-semibold text-foreground border-b border-border pb-2">Module Details</h3>
+                  <h3 className="font-semibold text-foreground border-b border-border pb-2">Slate Details</h3>
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-1">Module Name</label>
+                    <label className="block text-sm font-medium text-foreground mb-1">Slate Name</label>
                     <input
                       type="text"
                       value={name}
@@ -308,7 +308,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false }
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-1">Module Type</label>
+                    <label className="block text-sm font-medium text-foreground mb-1">Slate Type</label>
                     <select
                       value={moduleType}
                       onChange={(e) => setState({ ...state, moduleType: e.target.value })}
@@ -335,7 +335,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false }
                     <textarea
                       value={description}
                       onChange={(e) => setState({ ...state, description: e.target.value })}
-                      placeholder="Brief description of what this module tracks..."
+                      placeholder="Brief description of what this slate tracks..."
                       className="w-full rounded-md border border-input bg-background text-foreground px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring h-20"
                     />
                   </div>
@@ -466,7 +466,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false }
                     {isSubmitting ? "Saving..." : "Save Draft"}
                   </Button>
                   <Button type="button" onClick={() => saveModule('published')} disabled={isSubmitting} className="bg-primary hover:bg-primary/90 text-primary-foreground flex-1">
-                    {isSubmitting ? "Saving..." : (isEditing ? "Update Module" : "Publish")}
+                    {isSubmitting ? "Saving..." : (isEditing ? "Update Slate" : "Publish")}
                   </Button>
                 </div>
               </div>
@@ -502,7 +502,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false }
                         <Blocks className="w-5 h-5" />
                       </div>
                       <div>
-                        <h2 className="text-xl font-bold text-foreground">{name || "Untitled Module"}</h2>
+                        <h2 className="text-xl font-bold text-foreground">{name || "Untitled Slate"}</h2>
                         <p className="text-sm text-muted-foreground">{description || "No description provided."}</p>
                       </div>
                     </div>
@@ -555,7 +555,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false }
                 ) : (
                   <div className="h-full flex flex-col items-center justify-center text-muted-foreground">
                     <Zap className="w-12 h-12 mb-4 opacity-20 text-primary" />
-                    <p className="font-medium">Add fields or use OrbitBolt to generate your module</p>
+                    <p className="font-medium">Add fields or use OrbitBolt to generate your slate</p>
                     <button
                       onClick={() => setIsBoltOpen(true)}
                       className="mt-4 px-5 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary text-white text-sm font-bold hover:from-primary/90 hover:to-primary/90 transition-all shadow-lg hover:shadow-emerald-500/30"
@@ -570,7 +570,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false }
         </div>
       </div>
 
-      {/* OrbitBolt AI Full WorkSlate — sits as an overlay for generating modules */}
+      {/* OrbitBolt AI Full WorkSlate — sits as an overlay for generating slates */}
       {isBoltOpen && (
         <OrbitBoltWorkspace
           onClose={() => setIsBoltOpen(false)}

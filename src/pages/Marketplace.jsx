@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -73,7 +73,7 @@ export default function Marketplace() {
       setInstalledMap(installed);
     } catch (err) {
       console.error(err);
-      toast({ title: "Error", description: "Failed to load marketplace modules.", variant: "destructive" });
+      toast({ title: "Error", description: "Failed to load marketplace slates.", variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -125,7 +125,7 @@ export default function Marketplace() {
       setInstalledMap(prev => ({ ...prev, [mod.id]: newModuleId }));
       setInstallSuccessModal(mod);
       toast({
-        title: "🎉 Slate Installed!",
+        title: "?? Slate Installed!",
         description: `${mod.name} is now in your workslate sidebar.`,
       });
 
@@ -189,18 +189,18 @@ export default function Marketplace() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
         <PageHeader
-          title="Module Marketplace"
-          subtitle="Discover and install community-built modules for your workslate."
+          title="Slate Marketplace"
+          subtitle="Discover and install community-built slates for your workslate."
         />
         <div className="flex items-center gap-3">
-          <Badge variant="outline" className="h-8 gap-1.5 bg-slate-50 text-primary/90 border-primary/20">
+          <Badge variant="outline" className="h-8 gap-1.5 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 text-primary/90 border-primary/20">
             <ShieldCheck className="w-3.5 h-3.5" /> Free to Install
           </Badge>
         </div>
       </div>
 
       {/* Filter Bar */}
-      <div className="bg-white dark:bg-slate-900/50 dark:backdrop-blur-xl rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm dark:shadow-lg flex flex-col md:flex-row gap-4 items-center justify-between">
+      <div className="bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:bg-slate-900/50 dark:backdrop-blur-xl rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm dark:shadow-lg flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 hide-scrollbar">
           {categories.map(cat => (
             <button
@@ -209,7 +209,7 @@ export default function Marketplace() {
               className={`px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all ${
                 activeCategory === cat
                   ? 'bg-primary text-white shadow-md shadow-emerald-600/20'
-                  : 'bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
+                  : 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
               }`}
             >
               {cat}
@@ -219,10 +219,10 @@ export default function Marketplace() {
         <div className="relative w-full md:w-80">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <Input
-            placeholder="Search modules..."
+            placeholder="Search slates..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 h-11 bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 rounded-xl w-full focus:bg-white dark:focus:bg-slate-800 transition-colors"
+            className="pl-10 h-11 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-white placeholder:text-slate-400 rounded-xl w-full focus:bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:focus:bg-slate-800 transition-colors"
           />
         </div>
       </div>
@@ -233,12 +233,12 @@ export default function Marketplace() {
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
       ) : filteredModules.length === 0 ? (
-        <div className="py-24 flex flex-col items-center justify-center text-center px-4 bg-white rounded-2xl border border-slate-200 border-dashed">
-          <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-5 border border-slate-100">
+        <div className="py-24 flex flex-col items-center justify-center text-center px-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 rounded-2xl border border-slate-200 border-dashed">
+          <div className="w-20 h-20 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mb-5 border border-slate-100 dark:border-slate-800 dark:border-slate-800">
             <Blocks className="w-8 h-8 text-slate-400" />
           </div>
-          <h3 className="text-xl font-extrabold text-slate-900 dark:text-white mb-2">No modules found</h3>
-          <p className="text-slate-500 max-w-md leading-relaxed">
+          <h3 className="text-xl font-extrabold text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-white mb-2">No modules found</h3>
+          <p className="text-slate-500 dark:text-slate-400 dark:text-slate-400 max-w-md leading-relaxed">
             {searchQuery
               ? "No modules match your search. Try a different term."
               : "No public modules available yet. Check back soon or publish your own!"}
@@ -256,7 +256,7 @@ export default function Marketplace() {
             return (
               <div
                 key={mod.id}
-                className={`bg-white dark:bg-slate-900 rounded-2xl border transition-all duration-300 flex flex-col overflow-hidden ${
+                className={`bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:bg-slate-900 rounded-2xl border transition-all duration-300 flex flex-col overflow-hidden ${
                   isInstalled || isOwned
                     ? 'border-primary shadow-lg shadow-emerald-500/10 ring-1 ring-primary/20'
                     : 'border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-700 hover:-translate-y-1'
@@ -264,23 +264,23 @@ export default function Marketplace() {
               >
                 <div className="p-6 sm:p-7 flex-1">
                   <div className="flex justify-between items-start mb-6">
-                    <div className="w-16 h-16 rounded-2xl bg-white border border-slate-200 dark:border-slate-700 flex items-center justify-center p-3 shadow-sm">
+                    <div className="w-16 h-16 rounded-2xl bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-700 flex items-center justify-center p-3 shadow-sm">
                       <IconComp className="w-8 h-8 text-primary" />
                     </div>
 
                     {(isInstalled || isOwned) ? (
-                      <Badge className="bg-slate-50 dark:bg-slate-100 text-primary/90 dark:text-primary/70 border-primary/20 dark:border-primary/20 font-extrabold gap-1.5 px-3 py-1.5 rounded-full shadow-sm">
+                      <Badge className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-100 text-primary/90 dark:text-primary/70 border-primary/20 dark:border-primary/20 font-extrabold gap-1.5 px-3 py-1.5 rounded-full shadow-sm">
                         <CheckCircle2 className="w-4 h-4" /> {isOwned ? 'Owned' : 'Installed'}
                       </Badge>
                     ) : (
-                      <Badge variant="outline" className="text-xs font-bold text-primary dark:text-primary/70 border-primary/20 dark:border-primary/20 bg-slate-50 dark:bg-slate-100 px-3 py-1 rounded-full">
+                      <Badge variant="outline" className="text-xs font-bold text-primary dark:text-primary/70 border-primary/20 dark:border-primary/20 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-100 px-3 py-1 rounded-full">
                         Free
                       </Badge>
                     )}
                   </div>
 
-                  <h3 className="text-xl font-extrabold text-slate-900 dark:text-white mb-1.5">{mod.name}</h3>
-                  <p className="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3.5">
+                  <h3 className="text-xl font-extrabold text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-white mb-1.5">{mod.name}</h3>
+                  <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 uppercase tracking-widest mb-3.5">
                     Community Template
                   </p>
                   <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-3">
@@ -289,13 +289,13 @@ export default function Marketplace() {
                 </div>
 
                 {/* Card Footer */}
-                <div className="px-6 py-5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/50 flex items-center justify-between">
-                  <span className="text-sm font-bold text-slate-500 dark:text-slate-400">
+                <div className="px-6 py-5 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/50 flex items-center justify-between">
+                  <span className="text-sm font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-400">
                     {mod.fields_count ? `${mod.fields_count} fields` : 'Custom module'}
                   </span>
 
                   {isOwned ? (
-                    <Badge variant="outline" className="font-bold text-slate-500 border-slate-200 px-4 py-2 rounded-xl">
+                    <Badge variant="outline" className="font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 border-slate-200 px-4 py-2 rounded-xl">
                       Your Module
                     </Badge>
                   ) : isInstalled ? (
@@ -356,9 +356,9 @@ export default function Marketplace() {
             <CheckCircle2 className="w-8 h-8 text-primary" />
           </div>
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-slate-900 dark:text-white text-center">Installation Successful!</DialogTitle>
+            <DialogTitle className="text-2xl font-bold text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-white text-center">Installation Successful!</DialogTitle>
           </DialogHeader>
-          <div className="text-slate-500 mt-2 text-[15px] leading-relaxed">
+          <div className="text-slate-500 dark:text-slate-400 dark:text-slate-400 mt-2 text-[15px] leading-relaxed">
             <strong>{installSuccessModal?.name}</strong> has been successfully installed and added to your Slate sidebar. You can now start using it immediately.
           </div>
           <div className="mt-8 w-full">

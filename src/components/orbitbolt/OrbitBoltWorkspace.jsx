@@ -73,7 +73,7 @@ CRITICAL RULE FOR MODULE TYPES: You MUST intelligently select the most appropria
 The JSON inside <SCHEMA> must follow this exact structure:
 {
   "module": {
-    "name": "Module Name",
+    "name": "Slate Name",
     "description": "Brief description",
     "icon": "Layers",
     "layout": "table" | "grid",
