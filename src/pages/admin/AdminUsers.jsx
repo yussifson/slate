@@ -1,10 +1,10 @@
-﻿import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { ShieldAlert, Trash2, Search, Loader2, KeyRound } from 'lucide-react';
+import { ShieldAlert, Trash2, Search, Loader2, KeyRound, RefreshCcw } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import PageHeader from '@/components/shared/PageHeader';
 
@@ -59,6 +59,17 @@ export default function AdminUsers() {
       toast({ title: "Password Reset Sent", description: `A recovery email has been sent to ${email}.` });
     } catch (err) {
       toast({ title: "Reset failed", description: err.message, variant: "destructive" });
+    }
+  };
+
+  const handleForceOnboarding = async (userId) => {
+    try {
+      const { error } = await supabase.from('profiles').update({ onboarding_completed: false }).eq('id', userId);
+      if (error) throw error;
+      toast({ title: "Success", description: "User will be redirected to onboarding on next login." });
+      fetchProfiles();
+    } catch (err) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
     }
   };
 
@@ -131,6 +142,14 @@ export default function AdminUsers() {
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handleForceOnboarding(user.id)}
+                            className="h-8 px-3 rounded-lg border-slate-200 text-slate-600 hover:text-slate-900 dark:text-slate-100"
+                          >
+                            <RefreshCcw className="w-3.5 h-3.5 mr-1.5" /> {t("force_onboarding", "Force Onboard")}
+                          </Button>
                           <Button 
                             variant="outline" 
                             size="sm"

@@ -1,4 +1,4 @@
-﻿import React, { createContext, useState, useContext, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { createContext, useState, useContext, useEffect, useRef, useCallback, useMemo } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { getSubdomainAndBase } from './domainUtils';
 
@@ -231,7 +231,14 @@ export const AuthProvider = ({ children }) => {
           link.href = companyData.favicon_url;
         }
         if (companyData.name) {
-          document.title = `${companyData.name} - Law Management`;
+          let suffix = "Workspace";
+          if (companyData.industry_type === 'law') suffix = "Law Management";
+          else if (companyData.industry_type === 'school' || companyData.industry_type === 'highschool') suffix = "Education Platform";
+          else if (companyData.industry_type === 'hospital') suffix = "Hospital System";
+          else if (companyData.industry_type === 'hotel') suffix = "Property Management";
+          else if (companyData.industry_type === 'orbit_build') suffix = "Digital Workspace";
+          
+          document.title = `${companyData.name} - ${suffix}`;
         }
       }
 

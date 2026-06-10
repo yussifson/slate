@@ -170,7 +170,13 @@ export default function Login() {
     
     if (targetSubdomain) {
       // Check if user belongs to this subdomain
-      const { data: profile } = await supabase.from('profiles').select('company_id, role').eq('id', authData.user.id).single();
+      const { data: profile } = await supabase.from('profiles').select('company_id, role, onboarding_completed').eq('id', authData.user.id).single();
+      
+      if (profile && profile.onboarding_completed === false) {
+        window.location.href = '/onboarding';
+        return;
+      }
+
       if (profile?.company_id) {
         const { data: company } = await supabase.from('companies').select('name, subdomain').eq('id', profile.company_id).single();
         const companySubdomain = company?.subdomain || company?.name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
@@ -211,6 +217,11 @@ export default function Login() {
       // Base domain login
       const { data: profile } = await supabase.from('profiles').select('company_id, role, onboarding_completed').eq('id', authData.user.id).single();
       
+      if (profile && profile.onboarding_completed === false) {
+        window.location.href = '/onboarding';
+        return;
+      }
+
       // If Super Admin logs into the Base Domain, route directly to the admin command center
       if (profile?.role === 'super_admin') {
         window.location.href = '/admin';
@@ -235,8 +246,9 @@ export default function Login() {
           return;
         }
       }
-      // Only send to onboarding if they don't have a company AND haven't completed it
-      if (!profile?.company_id && !profile?.onboarding_completed) {
+      
+      // Fallback: send to onboarding if they don't have a company
+      if (!profile?.company_id) {
         window.location.href = '/onboarding';
       } else {
         window.location.href = '/';
