@@ -93,10 +93,10 @@ export default function DynamicKanbanView({ data, records, moduleDef, fieldDefin
     <div className="flex gap-6 overflow-x-auto pb-4 h-[650px] items-start pt-2 px-1">
       <DragDropContext onDragEnd={onDragEnd}>
         {Object.entries(columns).map(([colId, colRecords]) => (
-          <div key={colId} className="w-[300px] flex-shrink-0 bg-slate-100/80 rounded-xl flex flex-col max-h-full shadow-sm border border-slate-200/60">
-            <div className="p-3 border-b border-slate-200/80 flex items-center justify-between bg-slate-100 rounded-t-xl">
-              <h3 className="font-semibold text-slate-700 text-sm">{colId}</h3>
-              <span className="bg-slate-200 text-slate-600 text-xs font-medium px-2 py-0.5 rounded-full">
+          <div key={colId} className="w-[300px] flex-shrink-0 bg-muted/80 rounded-xl flex flex-col max-h-full shadow-sm border border-border/60">
+            <div className="p-3 border-b border-border/80 flex items-center justify-between bg-muted rounded-t-xl">
+              <h3 className="font-semibold text-foreground text-sm">{colId}</h3>
+              <span className="bg-muted text-muted-foreground text-xs font-medium px-2 py-0.5 rounded-full">
                 {colRecords.length}
               </span>
             </div>
@@ -106,7 +106,7 @@ export default function DynamicKanbanView({ data, records, moduleDef, fieldDefin
                 <div 
                   {...provided.droppableProps}
                   ref={provided.innerRef}
-                  className={`flex-1 overflow-y-auto p-3 space-y-3 transition-colors ${snapshot.isDraggingOver ? 'bg-slate-50' : ''}`}
+                  className={`flex-1 overflow-y-auto p-3 space-y-3 transition-colors ${snapshot.isDraggingOver ? 'bg-muted/50' : ''}`}
                   style={{ minHeight: '150px' }}
                 >
                   {colRecords.map((item, index) => (
@@ -124,7 +124,7 @@ export default function DynamicKanbanView({ data, records, moduleDef, fieldDefin
                             <h4 className="font-medium text-slate-800 text-sm line-clamp-2">
                               {item.data?.name || item.data?.title || Object.values(item.data)[0] || 'Untitled'}
                             </h4>
-                            <button className="text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button className="text-muted-foreground hover:text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
                               <MoreHorizontal className="w-4 h-4" />
                             </button>
                           </div>
@@ -134,7 +134,7 @@ export default function DynamicKanbanView({ data, records, moduleDef, fieldDefin
                               const val = item.data[f.name];
                               if (!val || f.name === 'status' || f.name === 'stage') return null;
                               return (
-                                <span key={f.name} className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded truncate max-w-full">
+                                <span key={f.name} className="text-[10px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded truncate max-w-full">
                                   {String(val)}
                                 </span>
                               );
@@ -148,8 +148,8 @@ export default function DynamicKanbanView({ data, records, moduleDef, fieldDefin
                 </div>
               )}
             </Droppable>
-            <div className="p-2 border-t border-slate-200/80 bg-slate-50/50 rounded-b-xl">
-               <button className="w-full flex items-center justify-center gap-1.5 text-xs font-medium text-slate-500 hover:text-primary transition-colors py-1.5 rounded-lg hover:bg-slate-100">
+            <div className="p-2 border-t border-border/80 bg-muted/50/50 rounded-b-xl">
+               <button className="w-full flex items-center justify-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-primary transition-colors py-1.5 rounded-lg hover:bg-muted">
                  <Plus className="w-3.5 h-3.5" /> Add card
                </button>
             </div>

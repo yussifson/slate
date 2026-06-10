@@ -29,7 +29,7 @@ const STATUS_CONFIG = {
   submitted: {
     icon: Send,
     color: 'text-primary',
-    bg: 'bg-slate-50',
+    bg: 'bg-muted/50',
     border: 'border-primary/20',
     gradient: 'from-primary to-primary',
     badgeCls: 'bg-orange-100 text-orange-700',
@@ -47,10 +47,10 @@ const STATUS_CONFIG = {
   approved: {
     icon: CheckCircle2,
     color: 'text-primary',
-    bg: 'bg-slate-50',
+    bg: 'bg-muted/50',
     border: 'border-primary/20',
     gradient: 'from-primary to-primary',
-    badgeCls: 'bg-slate-100 text-primary/90',
+    badgeCls: 'bg-primary/10 text-primary',
     ring: 'ring-primary/20',
   },
   rejected: {
@@ -66,11 +66,11 @@ const STATUS_CONFIG = {
 
 const FALLBACK_CONFIG = {
   icon: FileText,
-  color: 'text-slate-600',
-  bg: 'bg-slate-50',
-  border: 'border-slate-200',
+  color: 'text-muted-foreground',
+  bg: 'bg-muted/50',
+  border: 'border-border',
   gradient: 'from-slate-500 to-slate-600',
-  badgeCls: 'bg-slate-100 text-slate-700',
+  badgeCls: 'bg-muted text-muted-foreground',
   ring: 'ring-slate-200',
 };
 
@@ -102,16 +102,16 @@ function ProgressionBar({ currentStatus, statuses }) {
                     ? `bg-gradient-to-br ${config.gradient} shadow-lg ring-2 ${config.ring} ring-offset-1`
                     : isPast
                       ? `bg-gradient-to-br ${config.gradient} opacity-60`
-                      : 'bg-slate-100 border border-slate-200'
+                      : 'bg-muted border border-border'
                 }`}
               >
                 <StatusIcon
-                  className={`w-3.5 h-3.5 ${isActive || isPast ? 'text-white' : 'text-slate-400'}`}
+                  className={`w-3.5 h-3.5 ${isActive || isPast ? 'text-white' : 'text-muted-foreground'}`}
                 />
               </div>
               <span
                 className={`text-[9px] mt-1.5 font-semibold text-center leading-tight max-w-[60px] ${
-                  isActive ? config.color : isPast ? 'text-slate-500' : 'text-slate-400'
+                  isActive ? config.color : isPast ? 'text-muted-foreground' : 'text-muted-foreground'
                 }`}
               >
                 {status}
@@ -120,7 +120,7 @@ function ProgressionBar({ currentStatus, statuses }) {
             {idx < statuses.length - 1 && (
               <div
                 className={`flex-1 h-0.5 rounded-full transition-all duration-300 mt-[-12px] ${
-                  isPast ? 'bg-gradient-to-r from-primary/70 to-primary/30' : 'bg-slate-200'
+                  isPast ? 'bg-gradient-to-r from-primary/70 to-primary/30' : 'bg-muted'
                 }`}
               />
             )}
@@ -157,16 +157,16 @@ function ApprovalCard({ record, fieldDefinitions, statusFieldName, statuses, onA
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3 min-w-0">
-            <div className={`p-2 rounded-xl bg-white shadow-sm border ${config.border}`}>
+            <div className={`p-2 rounded-xl bg-card shadow-sm border ${config.border}`}>
               <StatusIcon className={`w-4 h-4 ${config.color}`} />
             </div>
             <div className="min-w-0">
-              <h4 className="text-sm font-bold text-slate-900 truncate">{title}</h4>
+              <h4 className="text-sm font-bold text-foreground truncate">{title}</h4>
               <div className="flex items-center gap-2 mt-0.5">
                 <Badge className={`text-[10px] font-semibold ${config.badgeCls} border-0`}>
                   {status}
                 </Badge>
-                <span className="text-[10px] text-slate-400">
+                <span className="text-[10px] text-muted-foreground">
                   {record.created_at ? format(new Date(record.created_at), 'MMM d, yyyy') : ''}
                 </span>
               </div>
@@ -174,7 +174,7 @@ function ApprovalCard({ record, fieldDefinitions, statusFieldName, statuses, onA
           </div>
           <button
             onClick={() => onView(record)}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-white opacity-0 group-hover:opacity-100 transition-all"
+            className="p-1.5 rounded-lg text-muted-foreground hover:text-muted-foreground hover:bg-card opacity-0 group-hover:opacity-100 transition-all"
           >
             <Eye className="w-4 h-4" />
           </button>
@@ -186,8 +186,8 @@ function ApprovalCard({ record, fieldDefinitions, statusFieldName, statuses, onA
             const val = record.data?.[f.name];
             if (!val) return null;
             return (
-              <p key={f.name} className="text-xs text-slate-600 line-clamp-1">
-                <span className="text-slate-400 font-medium">
+              <p key={f.name} className="text-xs text-muted-foreground line-clamp-1">
+                <span className="text-muted-foreground font-medium">
                   {f.name.replace(/_/g, ' ')}:
                 </span>{' '}
                 {val}
@@ -197,7 +197,7 @@ function ApprovalCard({ record, fieldDefinitions, statusFieldName, statuses, onA
         </div>
 
         {/* Progression Bar */}
-        <div className="bg-white rounded-xl p-3 border border-slate-100 mb-4">
+        <div className="bg-card rounded-xl p-3 border border-border mb-4">
           <ProgressionBar currentStatus={status} statuses={statuses} />
         </div>
 
@@ -226,7 +226,7 @@ function ApprovalCard({ record, fieldDefinitions, statusFieldName, statuses, onA
                 size="sm"
                 variant="outline"
                 onClick={() => onAction(record, 'Submitted')}
-                className="text-slate-600 border-slate-200 hover:bg-slate-50 text-xs h-8 gap-1.5"
+                className="text-muted-foreground border-border hover:bg-muted/50 text-xs h-8 gap-1.5"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 Return
@@ -345,11 +345,11 @@ export default function DynamicApprovalView({ data = [], fieldDefinitions = [], 
   if (!data || data.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
-        <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/5 border border-slate-200 mb-5">
+        <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/5 border border-border mb-5">
           <Inbox className="w-12 h-12 text-primary/30" />
         </div>
-        <h3 className="text-lg font-semibold text-slate-700 mb-2">No Approval Items</h3>
-        <p className="text-sm text-slate-500 max-w-sm">
+        <h3 className="text-lg font-semibold text-foreground mb-2">No Approval Items</h3>
+        <p className="text-sm text-muted-foreground max-w-sm">
           There are no records awaiting approval. Create a new record to start the approval workflow.
         </p>
       </div>
@@ -369,8 +369,8 @@ export default function DynamicApprovalView({ data = [], fieldDefinitions = [], 
             <Shield className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-slate-900 tracking-tight">Approvals</h2>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <h2 className="text-xl font-bold text-foreground tracking-tight">Approvals</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
               {data.length} total • {totalPending} pending
             </p>
           </div>
@@ -482,12 +482,12 @@ export default function DynamicApprovalView({ data = [], fieldDefinitions = [], 
               {fieldDefinitions.map(f => (
                 <div
                   key={f.name}
-                  className="flex justify-between items-center py-2.5 border-b border-slate-100 last:border-0"
+                  className="flex justify-between items-center py-2.5 border-b border-border last:border-0"
                 >
-                  <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
                     {f.name.replace(/_/g, ' ')}
                   </span>
-                  <span className="text-sm font-medium text-slate-900 max-w-[60%] text-right break-words">
+                  <span className="text-sm font-medium text-foreground max-w-[60%] text-right break-words">
                     {f.field_type === 'boolean'
                       ? viewRecord.data?.[f.name]
                         ? 'Yes'
@@ -498,7 +498,7 @@ export default function DynamicApprovalView({ data = [], fieldDefinitions = [], 
                   </span>
                 </div>
               ))}
-              <p className="text-[11px] text-slate-400 pt-2">
+              <p className="text-[11px] text-muted-foreground pt-2">
                 Created: {viewRecord.created_at ? new Date(viewRecord.created_at).toLocaleString() : '-'}
               </p>
             </div>

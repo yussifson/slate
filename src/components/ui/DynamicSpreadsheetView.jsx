@@ -236,12 +236,12 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
 
   if (!data || data.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-2xl border border-slate-200/60">
+      <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-2xl border border-border/60">
         <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary flex items-center justify-center mb-4 shadow-lg shadow-green-500/20">
           <Table2 className="w-8 h-8 text-white" />
         </div>
         <h3 className="text-lg font-semibold text-slate-800 mb-1">No Data Yet</h3>
-        <p className="text-sm text-slate-500 max-w-sm text-center">
+        <p className="text-sm text-muted-foreground max-w-sm text-center">
           Add records to start working with the spreadsheet.
         </p>
       </div>
@@ -258,7 +258,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
           </div>
           <div>
             <h2 className="text-lg font-bold text-slate-800">Spreadsheet</h2>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-muted-foreground">
               {sortedData.length} row{sortedData.length !== 1 ? 's' : ''} · {fieldDefinitions.length} column{fieldDefinitions.length !== 1 ? 's' : ''}
               {selectedRows.size > 0 && (
                 <span className="ml-2 text-primary font-medium">
@@ -294,12 +294,12 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
           <table className="w-full text-sm border-collapse">
             {/* Header */}
             <thead>
-              <tr className="bg-gradient-to-r from-slate-50 to-slate-100/80 border-b border-slate-200">
+              <tr className="bg-gradient-to-r from-slate-50 to-slate-100/80 border-b border-border">
                 {/* Checkbox column */}
-                <th className="w-12 px-3 py-3 text-center border-r border-slate-200/60 sticky left-0 bg-slate-50 z-10">
+                <th className="w-12 px-3 py-3 text-center border-r border-border/60 sticky left-0 bg-muted/50 z-10">
                   <button
                     onClick={toggleSelectAll}
-                    className="text-slate-400 hover:text-slate-600 transition-colors"
+                    className="text-muted-foreground hover:text-muted-foreground transition-colors"
                   >
                     {allSelected ? (
                       <CheckSquare className="w-4 h-4 text-primary" />
@@ -311,18 +311,18 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
                   </button>
                 </th>
                 {/* Row number */}
-                <th className="w-12 px-3 py-3 text-center text-[10px] font-bold text-slate-400 uppercase tracking-wider border-r border-slate-200/60">
+                <th className="w-12 px-3 py-3 text-center text-[10px] font-bold text-muted-foreground uppercase tracking-wider border-r border-border/60">
                   #
                 </th>
                 {/* Field columns */}
                 {fieldDefinitions.map((field) => (
                   <th
                     key={field.name}
-                    className="px-4 py-3 text-left border-r border-slate-200/60 last:border-r-0"
+                    className="px-4 py-3 text-left border-r border-border/60 last:border-r-0"
                   >
                     <button
                       onClick={() => toggleSort(field.name)}
-                      className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 uppercase tracking-wider hover:text-slate-900 transition-colors group"
+                      className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider hover:text-foreground transition-colors group"
                     >
                       {getColumnLabel(field.name)}
                       <span className="flex-shrink-0">
@@ -333,10 +333,10 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
                             <ArrowDown className="w-3 h-3 text-primary" />
                           )
                         ) : (
-                          <ArrowUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-400" />
+                          <ArrowUpDown className="w-3 h-3 text-slate-300 group-hover:text-muted-foreground" />
                         )}
                       </span>
-                      <span className="text-[9px] text-slate-400 font-normal normal-case ml-1">
+                      <span className="text-[9px] text-muted-foreground font-normal normal-case ml-1">
                         {field.field_type}
                       </span>
                     </button>
@@ -344,7 +344,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
                 ))}
                 {/* Created at */}
                 <th className="px-4 py-3 text-left">
-                  <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Created</span>
+                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Created</span>
                 </th>
               </tr>
             </thead>
@@ -356,17 +356,17 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
                 return (
                   <tr
                     key={record.id}
-                    className={`border-b border-slate-100 transition-colors ${
+                    className={`border-b border-border transition-colors ${
                       isSelected
-                        ? 'bg-slate-500'
+                        ? 'bg-muted/500'
                         : rowIdx % 2 === 0
-                        ? 'bg-white'
-                        : 'bg-slate-50/30'
+                        ? 'bg-card'
+                        : 'bg-muted/50/30'
                     } hover:bg-primary/40`}
                   >
                     {/* Checkbox */}
-                    <td className="px-3 py-2 text-center border-r border-slate-100/60 sticky left-0 bg-inherit z-10">
-                      <button onClick={() => toggleSelect(record.id)} className="text-slate-400 hover:text-slate-600">
+                    <td className="px-3 py-2 text-center border-r border-border/60 sticky left-0 bg-inherit z-10">
+                      <button onClick={() => toggleSelect(record.id)} className="text-muted-foreground hover:text-muted-foreground">
                         {isSelected ? (
                           <CheckSquare className="w-4 h-4 text-primary" />
                         ) : (
@@ -375,7 +375,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
                       </button>
                     </td>
                     {/* Row number */}
-                    <td className="px-3 py-2 text-center text-xs text-slate-400 font-mono border-r border-slate-100/60">
+                    <td className="px-3 py-2 text-center text-xs text-muted-foreground font-mono border-r border-border/60">
                       {rowIdx + 1}
                     </td>
                     {/* Field cells */}
@@ -386,8 +386,8 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
                       return (
                         <td
                           key={field.name}
-                          className={`px-1 py-1 border-r border-slate-100/60 last:border-r-0 ${
-                            isEditing ? 'bg-slate-50 ring-2 ring-inset ring-primary/70' : ''
+                          className={`px-1 py-1 border-r border-border/60 last:border-r-0 ${
+                            isEditing ? 'bg-muted/50 ring-2 ring-inset ring-primary/70' : ''
                           }`}
                         >
                           {/* Boolean - toggle immediately */}
@@ -400,7 +400,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
                                 {val ? (
                                   <CheckSquare className="w-4 h-4 text-primary" />
                                 ) : (
-                                  <Square className="w-4 h-4 text-slate-300 hover:text-slate-400" />
+                                  <Square className="w-4 h-4 text-slate-300 hover:text-muted-foreground" />
                                 )}
                               </button>
                             </div>
@@ -414,7 +414,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
                               <select
                                 value={val || ''}
                                 onChange={(e) => handleSelectChange(record.id, field.name, e.target.value)}
-                                className="w-full bg-transparent border-0 px-3 py-1.5 text-sm text-slate-700 focus:outline-none focus:ring-0 cursor-pointer"
+                                className="w-full bg-transparent border-0 px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-0 cursor-pointer"
                               >
                                 <option value="">—</option>
                                 {options.map((opt) => (
@@ -436,13 +436,13 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
                                     onKeyDown={handleKeyDown}
                                     onBlur={saveCell}
                                     autoFocus
-                                    className="w-full bg-white border border-primary/30 rounded px-2 py-1 text-sm text-slate-800 focus:outline-none focus:ring-1 focus:ring-primary/70"
+                                    className="w-full bg-card border border-primary/30 rounded px-2 py-1 text-sm text-slate-800 focus:outline-none focus:ring-1 focus:ring-primary/70"
                                   />
                                 </div>
                               ) : (
                                 <div
                                   onClick={() => startEdit(record.id, field.name, val)}
-                                  className="px-3 py-1.5 text-sm text-slate-700 cursor-text hover:bg-slate-50 rounded min-h-[32px] flex items-center"
+                                  className="px-3 py-1.5 text-sm text-foreground cursor-text hover:bg-muted/50 rounded min-h-[32px] flex items-center"
                                   title="Click to edit"
                                 >
                                   {field.field_type === 'date' && val ? (
@@ -460,7 +460,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
                       );
                     })}
                     {/* Created at */}
-                    <td className="px-4 py-2 text-xs text-slate-400 whitespace-nowrap">
+                    <td className="px-4 py-2 text-xs text-muted-foreground whitespace-nowrap">
                       {record.created_at ? format(new Date(record.created_at), 'MMM d, yyyy') : '-'}
                     </td>
                   </tr>
@@ -471,11 +471,11 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
         </div>
 
         {/* Footer */}
-        <div className="px-4 py-3 bg-slate-50/80 border-t border-slate-200/60 flex items-center justify-between">
-          <div className="text-xs text-slate-500">
+        <div className="px-4 py-3 bg-muted/50/80 border-t border-border/60 flex items-center justify-between">
+          <div className="text-xs text-muted-foreground">
             {sortedData.length} row{sortedData.length !== 1 ? 's' : ''} · Click any cell to edit
           </div>
-          <div className="flex items-center gap-3 text-xs text-slate-400">
+          <div className="flex items-center gap-3 text-xs text-muted-foreground">
             <span className="flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-primary" /> Sorted by: {sortField ? getColumnLabel(sortField) : 'Default'}
             </span>

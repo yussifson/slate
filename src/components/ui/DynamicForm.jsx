@@ -147,7 +147,7 @@ export default function DynamicForm({ moduleDef, fieldDefinitions = [], onSucces
         {fieldDefinitions.map(renderField)}
       </div>
 
-      <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+      <div className="flex justify-end gap-3 pt-4 border-t border-border">
         <Button type="button" variant="outline" onClick={onCancel}>
           Cancel
         </Button>

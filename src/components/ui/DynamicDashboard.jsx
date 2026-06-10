@@ -25,9 +25,9 @@ export default function DynamicDashboard({ data, records, moduleDef }) {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-      <Card className="shadow-sm border-slate-200">
+      <Card className="shadow-sm border-border">
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-semibold text-slate-700">Records by Status</CardTitle>
+          <CardTitle className="text-sm font-semibold text-foreground">Records by Status</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="h-[250px] w-full">
@@ -44,9 +44,9 @@ export default function DynamicDashboard({ data, records, moduleDef }) {
         </CardContent>
       </Card>
 
-      <Card className="shadow-sm border-slate-200">
+      <Card className="shadow-sm border-border">
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-semibold text-slate-700">Creation Timeline</CardTitle>
+          <CardTitle className="text-sm font-semibold text-foreground">Creation Timeline</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="h-[250px] w-full">

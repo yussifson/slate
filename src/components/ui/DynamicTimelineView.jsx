@@ -24,12 +24,12 @@ import { supabase } from '@/api/supabaseClient';
 import { useToast } from '@/components/ui/use-toast';
 
 const TIMELINE_COLORS = [
-  { dot: 'bg-primary', border: 'border-primary/20', gradient: 'from-primary to-primary', lightBg: 'bg-slate-50', text: 'text-primary/90' },
-  { dot: 'bg-primary', border: 'border-primary/20', gradient: 'from-primary to-primary', lightBg: 'bg-slate-50', text: 'text-primary/90' },
-  { dot: 'bg-primary', border: 'border-primary/20', gradient: 'from-primary to-primary', lightBg: 'bg-slate-50', text: 'text-primary/90' },
+  { dot: 'bg-primary', border: 'border-primary/20', gradient: 'from-primary to-primary', lightBg: 'bg-muted/50', text: 'text-primary/90' },
+  { dot: 'bg-primary', border: 'border-primary/20', gradient: 'from-primary to-primary', lightBg: 'bg-muted/50', text: 'text-primary/90' },
+  { dot: 'bg-primary', border: 'border-primary/20', gradient: 'from-primary to-primary', lightBg: 'bg-muted/50', text: 'text-primary/90' },
   { dot: 'bg-amber-500', border: 'border-amber-200', gradient: 'from-amber-500 to-amber-600', lightBg: 'bg-amber-50', text: 'text-amber-700' },
   { dot: 'bg-rose-500', border: 'border-rose-200', gradient: 'from-rose-500 to-rose-600', lightBg: 'bg-rose-50', text: 'text-rose-700' },
-  { dot: 'bg-primary', border: 'border-primary/20', gradient: 'from-primary to-primary', lightBg: 'bg-slate-50', text: 'text-primary/90' },
+  { dot: 'bg-primary', border: 'border-primary/20', gradient: 'from-primary to-primary', lightBg: 'bg-muted/50', text: 'text-primary/90' },
 ];
 
 function getRecordTitle(record, fieldDefinitions) {
@@ -122,12 +122,12 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
 
   if (!data || data.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-2xl border border-slate-200/60">
+      <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-2xl border border-border/60">
         <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary flex items-center justify-center mb-4 shadow-lg shadow-violet-500/20">
           <Activity className="w-8 h-8 text-white" />
         </div>
         <h3 className="text-lg font-semibold text-slate-800 mb-1">No Activity Yet</h3>
-        <p className="text-sm text-slate-500 max-w-sm text-center">
+        <p className="text-sm text-muted-foreground max-w-sm text-center">
           Add records to see them appear on the timeline.
         </p>
       </div>
@@ -146,7 +146,7 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
           </div>
           <div>
             <h2 className="text-lg font-bold text-slate-800">Activity Timeline</h2>
-            <p className="text-xs text-slate-500">{data.length} record{data.length !== 1 ? 's' : ''}</p>
+            <p className="text-xs text-muted-foreground">{data.length} record{data.length !== 1 ? 's' : ''}</p>
           </div>
         </div>
         <Button
@@ -208,7 +208,7 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
                         )}
                         {!isLeft && (
                           <div className="flex items-center justify-end h-full pt-4">
-                            <span className="text-xs text-slate-400 font-medium flex items-center gap-1.5">
+                            <span className="text-xs text-muted-foreground font-medium flex items-center gap-1.5">
                               <Clock className="w-3 h-3" />
                               {record.created_at ? format(new Date(record.created_at), 'h:mm a') : ''}
                             </span>
@@ -238,7 +238,7 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
                         )}
                         {isLeft && (
                           <div className="flex items-center h-full pt-4">
-                            <span className="text-xs text-slate-400 font-medium flex items-center gap-1.5">
+                            <span className="text-xs text-muted-foreground font-medium flex items-center gap-1.5">
                               <Clock className="w-3 h-3" />
                               {record.created_at ? format(new Date(record.created_at), 'h:mm a') : ''}
                             </span>
@@ -275,8 +275,8 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
 
         {/* End marker */}
         <div className="flex justify-center md:justify-center">
-          <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center">
-            <GitCommitHorizontal className="w-4 h-4 text-slate-400" />
+          <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+            <GitCommitHorizontal className="w-4 h-4 text-muted-foreground" />
           </div>
         </div>
       </div>
@@ -291,16 +291,16 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
           {viewRecord && (
             <div className="mt-2 space-y-2">
               {fieldDefinitions.map((f) => (
-                <div key={f.name} className="flex justify-between items-center py-2 border-b border-slate-100 last:border-0">
-                  <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">{f.name.replace(/_/g, ' ')}</span>
-                  <span className="text-sm font-medium text-slate-900 max-w-[60%] text-right break-words">
+                <div key={f.name} className="flex justify-between items-center py-2 border-b border-border last:border-0">
+                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{f.name.replace(/_/g, ' ')}</span>
+                  <span className="text-sm font-medium text-foreground max-w-[60%] text-right break-words">
                     {f.field_type === 'boolean' ? (viewRecord.data[f.name] ? 'Yes' : 'No') :
                      f.field_type === 'date' && viewRecord.data[f.name] ? format(new Date(viewRecord.data[f.name]), 'MMM d, yyyy') :
                      String(viewRecord.data[f.name] ?? '-')}
                   </span>
                 </div>
               ))}
-              <p className="text-[11px] text-slate-400 pt-2">Created: {new Date(viewRecord.created_at).toLocaleString()}</p>
+              <p className="text-[11px] text-muted-foreground pt-2">Created: {new Date(viewRecord.created_at).toLocaleString()}</p>
             </div>
           )}
           <DialogFooter className="mt-4">
@@ -325,9 +325,9 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
               const val = editData[f.name] ?? '';
               if (f.field_type === 'boolean') {
                 return (
-                  <div key={f.name} className="flex items-center justify-between py-2 border-b border-slate-100 last:border-0">
-                    <label className="text-sm font-medium text-slate-700">{label}</label>
-                    <input type="checkbox" checked={!!val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.checked })} className="h-4 w-4 rounded border-slate-300" />
+                  <div key={f.name} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+                    <label className="text-sm font-medium text-foreground">{label}</label>
+                    <input type="checkbox" checked={!!val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.checked })} className="h-4 w-4 rounded border-border" />
                   </div>
                 );
               }
@@ -336,7 +336,7 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
                 try { options = typeof f.options === 'string' ? JSON.parse(f.options) : (f.options || []); } catch { options = []; }
                 return (
                   <div key={f.name} className="space-y-1">
-                    <label className="text-xs font-semibold text-slate-600 uppercase tracking-wide">{label}</label>
+                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{label}</label>
                     <select value={val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value })} className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary">
                       <option value="">Select...</option>
                       {options.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
@@ -346,13 +346,13 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
               }
               return (
                 <div key={f.name} className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-600 uppercase tracking-wide">{label}</label>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{label}</label>
                   <Input type={f.field_type === 'date' ? 'date' : f.field_type === 'number' ? 'number' : 'text'} value={val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value })} />
                 </div>
               );
             })}
           </div>
-          <DialogFooter className="mt-6 pt-4 border-t border-slate-100">
+          <DialogFooter className="mt-6 pt-4 border-t border-border">
             <Button variant="outline" onClick={() => setEditRecord(null)}>Cancel</Button>
             <Button onClick={handleSaveEdit} disabled={isSaving} className="bg-primary hover:bg-primary/90 text-white">
               {isSaving ? 'Saving...' : 'Save Changes'}
@@ -407,17 +407,17 @@ function TimelineCard({ record, fieldDefinitions, colorSet, onView, onEdit, onDe
           <div className="flex-1 min-w-0">
             <h4 className="font-semibold text-slate-800 text-sm truncate">{title}</h4>
             {subtitle && (
-              <p className="text-xs text-slate-500 mt-0.5 truncate">{subtitle}</p>
+              <p className="text-xs text-muted-foreground mt-0.5 truncate">{subtitle}</p>
             )}
           </div>
           <div className="flex gap-1 opacity-0 group-hover/card:opacity-100 transition-opacity ml-2 flex-shrink-0">
-            <button onClick={onView} className="p-1.5 rounded-lg bg-slate-100 text-slate-500 hover:text-primary hover:bg-slate-50 transition-colors">
+            <button onClick={onView} className="p-1.5 rounded-lg bg-muted text-muted-foreground hover:text-primary hover:bg-muted/50 transition-colors">
               <Eye className="w-3.5 h-3.5" />
             </button>
-            <button onClick={onEdit} className="p-1.5 rounded-lg bg-slate-100 text-slate-500 hover:text-amber-600 hover:bg-amber-50 transition-colors">
+            <button onClick={onEdit} className="p-1.5 rounded-lg bg-muted text-muted-foreground hover:text-amber-600 hover:bg-amber-50 transition-colors">
               <Pencil className="w-3.5 h-3.5" />
             </button>
-            <button onClick={onDelete} className="p-1.5 rounded-lg bg-slate-100 text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors">
+            <button onClick={onDelete} className="p-1.5 rounded-lg bg-muted text-muted-foreground hover:text-red-600 hover:bg-red-50 transition-colors">
               <Trash2 className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -431,7 +431,7 @@ function TimelineCard({ record, fieldDefinitions, colorSet, onView, onEdit, onDe
               if (val === undefined || val === null || val === '') return null;
               return (
                 <span key={f.name} className={`inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-md ${colorSet.lightBg} ${colorSet.text}`}>
-                  <span className="text-slate-400">{f.name.replace(/_/g, ' ')}:</span>
+                  <span className="text-muted-foreground">{f.name.replace(/_/g, ' ')}:</span>
                   {f.field_type === 'boolean' ? (val ? 'Yes' : 'No') :
                    f.field_type === 'date' ? (() => { try { return format(new Date(val), 'MMM d'); } catch { return String(val); } })() :
                    String(val)}
@@ -442,7 +442,7 @@ function TimelineCard({ record, fieldDefinitions, colorSet, onView, onEdit, onDe
         )}
 
         {/* Timestamp */}
-        <div className="mt-3 pt-2 border-t border-slate-100 flex items-center gap-1.5 text-[10px] text-slate-400">
+        <div className="mt-3 pt-2 border-t border-border flex items-center gap-1.5 text-[10px] text-muted-foreground">
           <Clock className="w-3 h-3" />
           {record.created_at ? format(new Date(record.created_at), 'MMM d, yyyy · h:mm a') : 'Unknown'}
         </div>

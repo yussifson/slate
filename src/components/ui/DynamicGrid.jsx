@@ -87,21 +87,21 @@ export default function DynamicGrid({ data, fieldDefinitions, theme, onRefresh }
             <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
               <button
                 onClick={() => setViewRecord(record)}
-                className="p-1.5 rounded-lg bg-white/80 backdrop-blur border border-slate-200 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors shadow-sm"
+                className="p-1.5 rounded-lg bg-card/80 backdrop-blur border border-border text-muted-foreground hover:text-primary hover:border-primary/30 transition-colors shadow-sm"
                 title="View"
               >
                 <Eye className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={() => openEdit(record)}
-                className="p-1.5 rounded-lg bg-white/80 backdrop-blur border border-slate-200 text-slate-500 hover:text-amber-600 hover:border-amber-300 transition-colors shadow-sm"
+                className="p-1.5 rounded-lg bg-card/80 backdrop-blur border border-border text-muted-foreground hover:text-amber-600 hover:border-amber-300 transition-colors shadow-sm"
                 title="Edit"
               >
                 <Pencil className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={() => setDeleteRecord(record)}
-                className="p-1.5 rounded-lg bg-white/80 backdrop-blur border border-slate-200 text-slate-500 hover:text-red-600 hover:border-red-300 transition-colors shadow-sm"
+                className="p-1.5 rounded-lg bg-card/80 backdrop-blur border border-border text-muted-foreground hover:text-red-600 hover:border-red-300 transition-colors shadow-sm"
                 title="Delete"
               >
                 <Trash2 className="w-3.5 h-3.5" />
@@ -146,12 +146,12 @@ export default function DynamicGrid({ data, fieldDefinitions, theme, onRefresh }
           {viewRecord && (
             <div className="mt-2 space-y-2">
               {fieldDefinitions.map(f => (
-                <div key={f.name} className="flex justify-between items-center py-2 border-b border-slate-100 last:border-0">
-                  <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">{f.name.replace(/_/g, ' ')}</span>
-                  <span className="text-sm font-medium text-slate-900 max-w-[60%] text-right break-words">{String(viewRecord.data[f.name] ?? '-')}</span>
+                <div key={f.name} className="flex justify-between items-center py-2 border-b border-border last:border-0">
+                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{f.name.replace(/_/g, ' ')}</span>
+                  <span className="text-sm font-medium text-foreground max-w-[60%] text-right break-words">{String(viewRecord.data[f.name] ?? '-')}</span>
                 </div>
               ))}
-              <p className="text-[11px] text-slate-400 pt-2">Created: {new Date(viewRecord.created_at).toLocaleString()}</p>
+              <p className="text-[11px] text-muted-foreground pt-2">Created: {new Date(viewRecord.created_at).toLocaleString()}</p>
             </div>
           )}
           <DialogFooter className="mt-4">
@@ -177,9 +177,9 @@ export default function DynamicGrid({ data, fieldDefinitions, theme, onRefresh }
 
               if (f.field_type === 'boolean') {
                 return (
-                  <div key={f.name} className="flex items-center justify-between py-2 border-b border-slate-100 last:border-0">
-                    <label className="text-sm font-medium text-slate-700">{label}</label>
-                    <input type="checkbox" checked={!!val} onChange={e => setEditData({ ...editData, [f.name]: e.target.checked })} className="h-4 w-4 rounded border-slate-300" />
+                  <div key={f.name} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+                    <label className="text-sm font-medium text-foreground">{label}</label>
+                    <input type="checkbox" checked={!!val} onChange={e => setEditData({ ...editData, [f.name]: e.target.checked })} className="h-4 w-4 rounded border-border" />
                   </div>
                 );
               }
@@ -188,7 +188,7 @@ export default function DynamicGrid({ data, fieldDefinitions, theme, onRefresh }
                 try { options = typeof f.options === 'string' ? JSON.parse(f.options) : (f.options || []); } catch { options = []; }
                 return (
                   <div key={f.name} className="space-y-1">
-                    <label className="text-xs font-semibold text-slate-600 uppercase tracking-wide">{label}</label>
+                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{label}</label>
                     <select value={val} onChange={e => setEditData({ ...editData, [f.name]: e.target.value })} className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary">
                       <option value="">Select...</option>
                       {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
@@ -198,13 +198,13 @@ export default function DynamicGrid({ data, fieldDefinitions, theme, onRefresh }
               }
               return (
                 <div key={f.name} className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-600 uppercase tracking-wide">{label}</label>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{label}</label>
                   <Input type={f.field_type === 'date' ? 'date' : f.field_type === 'number' ? 'number' : 'text'} value={val} onChange={e => setEditData({ ...editData, [f.name]: e.target.value })} />
                 </div>
               );
             })}
           </div>
-          <DialogFooter className="mt-6 pt-4 border-t border-slate-100">
+          <DialogFooter className="mt-6 pt-4 border-t border-border">
             <Button variant="outline" onClick={() => setEditRecord(null)}>Cancel</Button>
             <Button onClick={handleSaveEdit} disabled={isSaving} className="bg-primary hover:bg-primary/90 text-white">
               {isSaving ? 'Saving...' : 'Save Changes'}

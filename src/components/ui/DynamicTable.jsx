@@ -33,7 +33,7 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className="-ml-4 hover:bg-slate-100/50"
+          className="-ml-4 hover:bg-muted/50"
         >
           {field.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -43,9 +43,9 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
         const val = row.original.data?.[field.name];
         if (field.field_type === 'boolean') {
           return val ? (
-            <span className="px-2 py-1 bg-slate-100 text-primary/90 text-xs rounded-full">Yes</span>
+            <span className="px-2 py-1 bg-primary/10 text-primary text-xs rounded-full">Yes</span>
           ) : (
-            <span className="px-2 py-1 bg-slate-100 text-slate-700 text-xs rounded-full">No</span>
+            <span className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full">No</span>
           );
         }
         return <div className="text-sm max-w-[200px] truncate" title={val}>{val || '-'}</div>;
@@ -114,13 +114,13 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
 
     if (field.field_type === 'boolean') {
       return (
-        <div key={field.name} className="flex items-center justify-between py-2 border-b border-slate-100 last:border-0">
-          <label className="text-sm font-medium text-slate-700">{label}</label>
+        <div key={field.name} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+          <label className="text-sm font-medium text-foreground">{label}</label>
           <input
             type="checkbox"
             checked={!!val}
             onChange={e => setEditData({ ...editData, [field.name]: e.target.checked })}
-            className="h-4 w-4 rounded border-slate-300"
+            className="h-4 w-4 rounded border-border"
           />
         </div>
       );
@@ -130,7 +130,7 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
       try { options = typeof field.options === 'string' ? JSON.parse(field.options) : (field.options || []); } catch { options = []; }
       return (
         <div key={field.name} className="space-y-1">
-          <label className="text-xs font-semibold text-slate-600 uppercase tracking-wide">{label}</label>
+          <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{label}</label>
           <select
             value={val}
             onChange={e => setEditData({ ...editData, [field.name]: e.target.value })}
@@ -145,7 +145,7 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
     if (field.field_type === 'date') {
       return (
         <div key={field.name} className="space-y-1">
-          <label className="text-xs font-semibold text-slate-600 uppercase tracking-wide">{label}</label>
+          <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{label}</label>
           <Input
             type="date"
             value={val}
@@ -157,7 +157,7 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
     if (field.field_type === 'number') {
       return (
         <div key={field.name} className="space-y-1">
-          <label className="text-xs font-semibold text-slate-600 uppercase tracking-wide">{label}</label>
+          <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{label}</label>
           <Input
             type="number"
             value={val}
@@ -168,7 +168,7 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
     }
     return (
       <div key={field.name} className="space-y-1">
-        <label className="text-xs font-semibold text-slate-600 uppercase tracking-wide">{label}</label>
+        <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{label}</label>
         <Input
           type="text"
           value={val}
@@ -182,7 +182,7 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="relative w-72">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-400" />
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search all columns..."
             value={globalFilter ?? ''}
@@ -196,7 +196,7 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
       <div className="rounded-md border border-border bg-card">
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
-            <thead className="text-xs text-slate-500 bg-slate-50 border-b border-slate-200 uppercase">
+            <thead className="text-xs text-muted-foreground bg-muted/50 border-b border-border uppercase">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
@@ -208,24 +208,24 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
                 </tr>
               ))}
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-border">
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} className="hover:bg-slate-50 transition-colors">
+                  <tr key={row.id} className="hover:bg-muted/50 transition-colors">
                     {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id} className="px-4 py-3 align-middle text-slate-700">
+                      <td key={cell.id} className="px-4 py-3 align-middle text-foreground">
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </td>
                     ))}
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-1">
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-slate-500 hover:text-primary" title="View" onClick={() => setSelectedRecord(row.original)}>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-primary" title="View" onClick={() => setSelectedRecord(row.original)}>
                           <Eye className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-slate-500 hover:text-amber-600" title="Edit" onClick={() => openEdit(row.original)}>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-amber-600" title="Edit" onClick={() => openEdit(row.original)}>
                           <Pencil className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-slate-500 hover:text-red-600" title="Delete" onClick={() => setDeleteRecord(row.original)}>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-red-600" title="Delete" onClick={() => setDeleteRecord(row.original)}>
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
@@ -234,7 +234,7 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
                 ))
               ) : (
                 <tr>
-                  <td colSpan={columns.length + 1} className="h-24 text-center text-slate-500">
+                  <td colSpan={columns.length + 1} className="h-24 text-center text-muted-foreground">
                     No records found. Add your first record using the button above.
                   </td>
                 </tr>
@@ -266,12 +266,12 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
           {selectedRecord && (
             <div className="mt-2 space-y-2">
               {fieldDefinitions.map(f => (
-                <div key={f.name} className="flex justify-between items-center py-2 border-b border-slate-100 last:border-0">
-                  <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">{f.name.replace(/_/g, ' ')}</span>
-                  <span className="text-sm font-medium text-slate-900 max-w-[60%] text-right break-words">{String(selectedRecord.data[f.name] ?? '-')}</span>
+                <div key={f.name} className="flex justify-between items-center py-2 border-b border-border last:border-0">
+                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{f.name.replace(/_/g, ' ')}</span>
+                  <span className="text-sm font-medium text-foreground max-w-[60%] text-right break-words">{String(selectedRecord.data[f.name] ?? '-')}</span>
                 </div>
               ))}
-              <p className="text-[11px] text-slate-400 pt-2">Created: {new Date(selectedRecord.created_at).toLocaleString()}</p>
+              <p className="text-[11px] text-muted-foreground pt-2">Created: {new Date(selectedRecord.created_at).toLocaleString()}</p>
             </div>
           )}
           <DialogFooter className="mt-4">
@@ -293,7 +293,7 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
           <div className="mt-4 space-y-4">
             {fieldDefinitions.map(f => renderEditField(f))}
           </div>
-          <DialogFooter className="mt-6 pt-4 border-t border-slate-100">
+          <DialogFooter className="mt-6 pt-4 border-t border-border">
             <Button variant="outline" onClick={() => setEditRecord(null)}>Cancel</Button>
             <Button onClick={handleSaveEdit} disabled={isSaving} className="bg-primary hover:bg-primary/90 text-white">
               {isSaving ? 'Saving...' : 'Save Changes'}

@@ -21,12 +21,12 @@ import {
 } from 'lucide-react';
 
 const STAGE_COLORS = [
-  { bg: 'from-slate-500 to-slate-600', light: 'bg-slate-50', border: 'border-slate-200', text: 'text-slate-700', badge: 'bg-slate-100 text-slate-600' },
-  { bg: 'from-primary to-primary', light: 'bg-slate-50', border: 'border-primary/20', text: 'text-primary/90', badge: 'bg-slate-100 text-primary' },
-  { bg: 'from-primary to-primary', light: 'bg-slate-50', border: 'border-primary/20', text: 'text-primary/90', badge: 'bg-slate-100 text-primary' },
-  { bg: 'from-primary to-primary', light: 'bg-slate-50', border: 'border-primary/20', text: 'text-primary/90', badge: 'bg-slate-100 text-primary' },
-  { bg: 'from-primary to-primary', light: 'bg-slate-50', border: 'border-primary/20', text: 'text-primary/90', badge: 'bg-slate-100 text-primary' },
-  { bg: 'from-primary to-primary', light: 'bg-slate-50', border: 'border-primary/20', text: 'text-primary/90', badge: 'bg-slate-100 text-primary' },
+  { bg: 'from-slate-500 to-slate-600', light: 'bg-muted/50', border: 'border-border', text: 'text-foreground', badge: 'bg-muted text-muted-foreground' },
+  { bg: 'from-primary to-primary', light: 'bg-muted/50', border: 'border-primary/20', text: 'text-primary/90', badge: 'bg-muted text-primary' },
+  { bg: 'from-primary to-primary', light: 'bg-muted/50', border: 'border-primary/20', text: 'text-primary/90', badge: 'bg-muted text-primary' },
+  { bg: 'from-primary to-primary', light: 'bg-muted/50', border: 'border-primary/20', text: 'text-primary/90', badge: 'bg-muted text-primary' },
+  { bg: 'from-primary to-primary', light: 'bg-muted/50', border: 'border-primary/20', text: 'text-primary/90', badge: 'bg-muted text-primary' },
+  { bg: 'from-primary to-primary', light: 'bg-muted/50', border: 'border-primary/20', text: 'text-primary/90', badge: 'bg-muted text-primary' },
   { bg: 'from-amber-500 to-amber-600', light: 'bg-amber-50', border: 'border-amber-200', text: 'text-amber-700', badge: 'bg-amber-100 text-amber-600' },
   { bg: 'from-rose-500 to-rose-600', light: 'bg-rose-50', border: 'border-rose-200', text: 'text-rose-700', badge: 'bg-rose-100 text-rose-600' },
 ];
@@ -49,7 +49,7 @@ function PipelineCard({ record, fieldDefinitions, stageFieldName, onView, colorT
         e.currentTarget.style.opacity = '1';
         e.currentTarget.style.transform = 'rotate(0deg)';
       }}
-      className="bg-card rounded-xl border border-border/80 p-4 shadow-sm cursor-grab active:cursor-grabbing transition-all duration-200 hover:shadow-md hover:border-slate-300 group"
+      className="bg-card rounded-xl border border-border/80 p-4 shadow-sm cursor-grab active:cursor-grabbing transition-all duration-200 hover:shadow-md hover:border-border group"
     >
       <div className="flex items-start justify-between mb-2">
         <div className="flex items-center gap-2 min-w-0">
@@ -60,14 +60,14 @@ function PipelineCard({ record, fieldDefinitions, stageFieldName, onView, colorT
         </div>
         <button
           onClick={(e) => { e.stopPropagation(); onView(record); }}
-          className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 opacity-0 group-hover:opacity-100 transition-all"
+          className="p-1 rounded-lg text-muted-foreground hover:text-muted-foreground hover:bg-muted opacity-0 group-hover:opacity-100 transition-all"
         >
           <Eye className="w-3.5 h-3.5" />
         </button>
       </div>
 
       {textFields.length > 1 && record.data?.[textFields[1]?.name] && (
-        <p className="text-xs text-slate-500 mb-3 line-clamp-2 pl-5">
+        <p className="text-xs text-muted-foreground mb-3 line-clamp-2 pl-5">
           {record.data[textFields[1].name]}
         </p>
       )}
@@ -90,12 +90,12 @@ function PipelineCard({ record, fieldDefinitions, stageFieldName, onView, colorT
         </div>
       )}
 
-      <div className="flex items-center justify-between mt-3 pt-2 border-t border-slate-100">
-        <span className="text-[10px] text-slate-400">
+      <div className="flex items-center justify-between mt-3 pt-2 border-t border-border">
+        <span className="text-[10px] text-muted-foreground">
           {record.created_at ? format(new Date(record.created_at), 'MMM d, yyyy') : ''}
         </span>
         <div className="w-5 h-5 rounded-full bg-gradient-to-br from-slate-200 to-slate-300 flex items-center justify-center">
-          <User className="w-3 h-3 text-slate-500" />
+          <User className="w-3 h-3 text-muted-foreground" />
         </div>
       </div>
     </div>
@@ -200,11 +200,11 @@ export default function DynamicPipelineView({ data = [], fieldDefinitions = [], 
   if (!stageField && fieldDefinitions.length > 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
-        <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/5 border border-slate-200 mb-5">
+        <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/5 border border-border mb-5">
           <Layers className="w-12 h-12 text-primary/30" />
         </div>
-        <h3 className="text-lg font-semibold text-slate-700 mb-2">No Pipeline Field Found</h3>
-        <p className="text-sm text-slate-500 max-w-sm">
+        <h3 className="text-lg font-semibold text-foreground mb-2">No Pipeline Field Found</h3>
+        <p className="text-sm text-muted-foreground max-w-sm">
           Add a select field (e.g., "stage" or "status") to your module to enable the pipeline view.
         </p>
       </div>
@@ -214,11 +214,11 @@ export default function DynamicPipelineView({ data = [], fieldDefinitions = [], 
   if (!data || data.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
-        <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/5 border border-slate-200 mb-5">
+        <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/5 border border-border mb-5">
           <Sparkles className="w-12 h-12 text-primary/30" />
         </div>
-        <h3 className="text-lg font-semibold text-slate-700 mb-2">Empty Pipeline</h3>
-        <p className="text-sm text-slate-500 max-w-sm">
+        <h3 className="text-lg font-semibold text-foreground mb-2">Empty Pipeline</h3>
+        <p className="text-sm text-muted-foreground max-w-sm">
           No records yet. Add your first record to see it in the pipeline.
         </p>
       </div>
@@ -234,7 +234,7 @@ export default function DynamicPipelineView({ data = [], fieldDefinitions = [], 
             <TrendingUp className="w-4 h-4 text-white" />
           </div>
           <div>
-            <p className="text-xs text-slate-500 font-medium">Pipeline</p>
+            <p className="text-xs text-muted-foreground font-medium">Pipeline</p>
             <p className="text-sm font-bold text-slate-800">{data.length} deals</p>
           </div>
         </div>
@@ -246,7 +246,7 @@ export default function DynamicPipelineView({ data = [], fieldDefinitions = [], 
                 <DollarSign className="w-4 h-4 text-white" />
               </div>
               <div>
-                <p className="text-xs text-slate-500 font-medium">Total {nf.name.replace(/_/g, ' ')}</p>
+                <p className="text-xs text-muted-foreground font-medium">Total {nf.name.replace(/_/g, ' ')}</p>
                 <p className="text-sm font-bold text-slate-800">{total.toLocaleString()}</p>
               </div>
             </div>
@@ -267,7 +267,7 @@ export default function DynamicPipelineView({ data = [], fieldDefinitions = [], 
               className={`w-[300px] flex-shrink-0 rounded-2xl flex flex-col max-h-[700px] border transition-all duration-200 ${
                 isDragOver
                   ? `${color.border} shadow-lg ring-2 ring-offset-2 ring-primary/30`
-                  : 'border-slate-200/80 shadow-sm'
+                  : 'border-border/80 shadow-sm'
               }`}
               style={{ backgroundColor: isDragOver ? '#f0f4ff' : '#fafbfc' }}
               onDragOver={(e) => {
@@ -282,7 +282,7 @@ export default function DynamicPipelineView({ data = [], fieldDefinitions = [], 
               <div className={`p-4 rounded-t-2xl bg-gradient-to-r ${color.bg}`}>
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-bold text-white truncate">{stage}</h3>
-                  <Badge className="bg-white/20 text-white border-0 text-xs font-bold backdrop-blur-sm">
+                  <Badge className="bg-card/20 text-white border-0 text-xs font-bold backdrop-blur-sm">
                     {records.length}
                   </Badge>
                 </div>
@@ -300,10 +300,10 @@ export default function DynamicPipelineView({ data = [], fieldDefinitions = [], 
               <div className="flex-1 overflow-y-auto p-3 space-y-3" style={{ minHeight: '120px' }}>
                 {records.length === 0 && (
                   <div className="flex flex-col items-center justify-center py-8 text-center">
-                    <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center mb-2">
-                      <Plus className="w-4 h-4 text-slate-400" />
+                    <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center mb-2">
+                      <Plus className="w-4 h-4 text-muted-foreground" />
                     </div>
-                    <p className="text-xs text-slate-400">Drop cards here</p>
+                    <p className="text-xs text-muted-foreground">Drop cards here</p>
                   </div>
                 )}
                 {records.map(record => (
@@ -319,10 +319,10 @@ export default function DynamicPipelineView({ data = [], fieldDefinitions = [], 
               </div>
 
               {/* Column Footer */}
-              <div className="p-3 border-t border-slate-200/60">
+              <div className="p-3 border-t border-border/60">
                 <div className="flex items-center justify-center">
-                  <ChevronRight className="w-3.5 h-3.5 text-slate-400 mr-1" />
-                  <span className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">
+                  <ChevronRight className="w-3.5 h-3.5 text-muted-foreground mr-1" />
+                  <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
                     {idx < stages.length - 1 ? `→ ${stages[idx + 1]}` : 'Final stage'}
                   </span>
                 </div>
@@ -342,11 +342,11 @@ export default function DynamicPipelineView({ data = [], fieldDefinitions = [], 
           {viewRecord && (
             <div className="mt-2 space-y-2">
               {fieldDefinitions.map(f => (
-                <div key={f.name} className="flex justify-between items-center py-2.5 border-b border-slate-100 last:border-0">
-                  <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                <div key={f.name} className="flex justify-between items-center py-2.5 border-b border-border last:border-0">
+                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
                     {f.name.replace(/_/g, ' ')}
                   </span>
-                  <span className="text-sm font-medium text-slate-900 max-w-[60%] text-right break-words">
+                  <span className="text-sm font-medium text-foreground max-w-[60%] text-right break-words">
                     {f.field_type === 'boolean'
                       ? (viewRecord.data?.[f.name] ? 'Yes' : 'No')
                       : f.field_type === 'date' && viewRecord.data?.[f.name]
@@ -355,7 +355,7 @@ export default function DynamicPipelineView({ data = [], fieldDefinitions = [], 
                   </span>
                 </div>
               ))}
-              <p className="text-[11px] text-slate-400 pt-2">
+              <p className="text-[11px] text-muted-foreground pt-2">
                 Created: {viewRecord.created_at ? new Date(viewRecord.created_at).toLocaleString() : '-'}
               </p>
             </div>

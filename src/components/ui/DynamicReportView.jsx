@@ -38,10 +38,10 @@ function StatCard({ icon: Icon, label, value, subtitle, gradient, delay }) {
         animationDelay: `${delay}ms`,
       }}
     >
-      <div className="absolute top-0 right-0 w-24 h-24 rounded-full opacity-10 -mr-8 -mt-8 bg-white" />
+      <div className="absolute top-0 right-0 w-24 h-24 rounded-full opacity-10 -mr-8 -mt-8 bg-card" />
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-3">
-          <div className="p-2 rounded-xl bg-white/20 backdrop-blur-sm">
+          <div className="p-2 rounded-xl bg-card/20 backdrop-blur-sm">
             <Icon className="w-5 h-5 text-white" />
           </div>
           {subtitle && (
@@ -63,10 +63,10 @@ function HorizontalBarChart({ title, data, icon: Icon, maxVal }) {
     <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md">
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="w-full flex items-center justify-between p-5 pb-4 hover:bg-slate-50/50 transition-colors"
+        className="w-full flex items-center justify-between p-5 pb-4 hover:bg-muted/50/50 transition-colors"
       >
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-gradient-to-br from-primary/5 to-primary/5 border border-slate-200">
+          <div className="p-2 rounded-xl bg-gradient-to-br from-primary/5 to-primary/5 border border-border">
             <Icon className="w-4 h-4 text-primary" />
           </div>
           <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
@@ -75,9 +75,9 @@ function HorizontalBarChart({ title, data, icon: Icon, maxVal }) {
           </Badge>
         </div>
         {collapsed ? (
-          <ChevronDown className="w-4 h-4 text-slate-400" />
+          <ChevronDown className="w-4 h-4 text-muted-foreground" />
         ) : (
-          <ChevronUp className="w-4 h-4 text-slate-400" />
+          <ChevronUp className="w-4 h-4 text-muted-foreground" />
         )}
       </button>
 
@@ -94,18 +94,18 @@ function HorizontalBarChart({ title, data, icon: Icon, maxVal }) {
                       className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                       style={{ backgroundColor: color }}
                     />
-                    <span className="text-sm text-slate-700 font-medium truncate max-w-[200px]">
+                    <span className="text-sm text-foreground font-medium truncate max-w-[200px]">
                       {item.label || '(empty)'}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-slate-900">{item.value}</span>
-                    <span className="text-xs text-slate-400">
+                    <span className="text-sm font-bold text-foreground">{item.value}</span>
+                    <span className="text-xs text-muted-foreground">
                       ({total > 0 ? Math.round((item.value / total) * 100) : 0}%)
                     </span>
                   </div>
                 </div>
-                <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                <div className="w-full h-2.5 bg-muted rounded-full overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all duration-700 ease-out"
                     style={{
@@ -128,28 +128,28 @@ function NumberAggCard({ fieldName, stats }) {
   return (
     <div className="bg-card rounded-2xl border border-border shadow-sm p-5 transition-all duration-300 hover:shadow-md">
       <div className="flex items-center gap-3 mb-4">
-        <div className="p-2 rounded-xl bg-gradient-to-br from-primary/5 to-primary/5 border border-slate-200">
+        <div className="p-2 rounded-xl bg-gradient-to-br from-primary/5 to-primary/5 border border-border">
           <Hash className="w-4 h-4 text-primary" />
         </div>
         <h3 className="text-sm font-semibold text-slate-800">{label}</h3>
       </div>
       <div className="grid grid-cols-2 gap-3">
         {[
-          { k: 'Sum', v: stats.sum, icon: TrendingUp, color: 'text-primary bg-slate-50' },
-          { k: 'Average', v: stats.avg, icon: Activity, color: 'text-primary bg-slate-50' },
+          { k: 'Sum', v: stats.sum, icon: TrendingUp, color: 'text-primary bg-muted/50' },
+          { k: 'Average', v: stats.avg, icon: Activity, color: 'text-primary bg-muted/50' },
           { k: 'Min', v: stats.min, icon: ArrowDownRight, color: 'text-amber-600 bg-amber-50' },
-          { k: 'Max', v: stats.max, icon: ArrowUpRight, color: 'text-primary bg-slate-50' },
+          { k: 'Max', v: stats.max, icon: ArrowUpRight, color: 'text-primary bg-muted/50' },
         ].map(({ k, v, icon: Ic, color }) => (
           <div
             key={k}
-            className="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50/80 border border-slate-100"
+            className="flex items-center gap-2.5 p-3 rounded-xl bg-muted/50/80 border border-border"
           >
             <div className={`p-1.5 rounded-lg ${color}`}>
               <Ic className="w-3.5 h-3.5" />
             </div>
             <div>
-              <p className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">{k}</p>
-              <p className="text-sm font-bold text-slate-900">
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{k}</p>
+              <p className="text-sm font-bold text-foreground">
                 {typeof v === 'number' ? (Number.isInteger(v) ? v.toLocaleString() : v.toFixed(2)) : '-'}
               </p>
             </div>
@@ -295,11 +295,11 @@ export default function DynamicReportView({ data = [], fieldDefinitions = [], on
   if (!data || data.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
-        <div className="p-5 rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 mb-5">
+        <div className="p-5 rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 border border-border mb-5">
           <BarChart3 className="w-12 h-12 text-slate-300" />
         </div>
-        <h3 className="text-lg font-semibold text-slate-700 mb-2">No Data to Analyze</h3>
-        <p className="text-sm text-slate-500 max-w-sm">
+        <h3 className="text-lg font-semibold text-foreground mb-2">No Data to Analyze</h3>
+        <p className="text-sm text-muted-foreground max-w-sm">
           Add some records to see auto-generated statistics, breakdowns, and distribution charts.
         </p>
       </div>
@@ -317,10 +317,10 @@ export default function DynamicReportView({ data = [], fieldDefinitions = [], on
             <BarChart3 className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-slate-900 tracking-tight">
+            <h2 className="text-xl font-bold text-foreground tracking-tight">
               {moduleName} Report
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-muted-foreground mt-0.5">
               Auto-generated analytics •{' '}
               {dateRange
                 ? `${format(dateRange.earliest, 'MMM d, yyyy')} — ${format(dateRange.latest, 'MMM d, yyyy')}`
@@ -331,7 +331,7 @@ export default function DynamicReportView({ data = [], fieldDefinitions = [], on
         <Button
           variant="outline"
           onClick={handlePrint}
-          className="gap-2 text-slate-600 border-slate-200 hover:bg-slate-50 shadow-sm"
+          className="gap-2 text-muted-foreground border-border hover:bg-muted/50 shadow-sm"
         >
           <Printer className="w-4 h-4" />
           Print Report
@@ -392,7 +392,7 @@ export default function DynamicReportView({ data = [], fieldDefinitions = [], on
       {/* Select Field Breakdowns */}
       {selectBreakdowns.length > 0 && (
         <div>
-          <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
             <PieChart className="w-4 h-4" />
             Categorical Breakdowns
           </h3>
@@ -413,7 +413,7 @@ export default function DynamicReportView({ data = [], fieldDefinitions = [], on
       {/* Boolean Breakdowns */}
       {booleanStats.length > 0 && (
         <div>
-          <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
             <Activity className="w-4 h-4" />
             Boolean Fields
           </h3>
@@ -434,7 +434,7 @@ export default function DynamicReportView({ data = [], fieldDefinitions = [], on
       {/* Number Aggregations */}
       {numberAggs.length > 0 && (
         <div>
-          <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
             <TrendingUp className="w-4 h-4" />
             Numeric Summaries
           </h3>
@@ -453,7 +453,7 @@ export default function DynamicReportView({ data = [], fieldDefinitions = [], on
       {/* Date Distributions */}
       {dateFields.length > 0 && (
         <div>
-          <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
             <Calendar className="w-4 h-4" />
             Date Distributions
           </h3>
