@@ -179,7 +179,7 @@ export default function UnivCRM() {
   const winRate = leads.length > 0 ? Math.round((wonLeads / leads.length) * 100) : 0;
 
   return (
-    <div className="flex flex-col h-full overflow-hidden bg-background">
+    <div className="min-h-[80vh] h-full flex flex-col gap-6 w-full bg-background">
       
       {/* Top Header Controls */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 shrink-0 gap-4 px-1">
@@ -254,7 +254,7 @@ export default function UnivCRM() {
       {/* Main Content Area */}
       {viewMode === 'kanban' ? (
         <DragDropContext onDragEnd={onDragEnd}>
-          <div className="flex-1 overflow-x-auto flex gap-5 pb-4 snap-x px-1 min-h-0 h-full custom-scrollbar items-start">
+          <div className="flex-1 overflow-x-auto overflow-y-hidden flex gap-5 pb-4 snap-x px-1 min-h-[500px] items-stretch custom-scrollbar">
             {loading && leads.length === 0 ? (
               <div className="w-full h-full flex items-center justify-center">
                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
@@ -264,7 +264,7 @@ export default function UnivCRM() {
                 {stages.map(stage => {
                   const stageLeads = filteredLeads.filter(l => l.status === stage);
                   return (
-                    <div key={stage} className="flex-shrink-0 w-[320px] max-w-[85vw] max-h-full bg-muted/40 border border-border rounded-2xl flex flex-col snap-center shadow-sm">
+                    <div key={stage} className="flex-shrink-0 w-[320px] max-w-[85vw] bg-muted/40 border border-border rounded-2xl flex flex-col snap-center shadow-sm h-full">
                       <div className="p-4 border-b border-border/50 flex justify-between items-center bg-card/60 rounded-t-2xl shrink-0">
                         <h3 className="font-bold text-sm text-foreground tracking-tight">{stage}</h3>
                         <span className="px-2.5 py-0.5 rounded-full bg-background border border-border text-xs font-bold text-muted-foreground shadow-sm">
