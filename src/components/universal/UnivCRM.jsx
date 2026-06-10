@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Search, Filter, MoreHorizontal, User, Mail, Phone, Calendar as CalendarIcon, Loader2, DollarSign } from 'lucide-react';
+import { Plus, Search, Filter, MoreHorizontal, User, Mail, Phone, Calendar as CalendarIcon, Loader2, DollarSign, Trash2, X } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 const STAGES = ['New', 'Contacted', 'Qualified', 'Proposal', 'Won', 'Lost'];
@@ -12,6 +12,9 @@ export default function UnivCRM() {
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+
+  const [isAdding, setIsAdding] = useState(false);
+  const [newLeadName, setNewLeadName] = useState('');
 
   useEffect(() => {
     if (companyId) {
@@ -36,18 +39,18 @@ export default function UnivCRM() {
       setLeads(data || []);
     } catch (err) {
       console.error('Error fetching leads:', err);
-      // Fallback for UI testing if table isn't created yet
-      // Mock data removed for production empty states
     } finally {
       setLoading(false);
     }
   };
 
-  const handleAddLead = async () => {
+  const handleAddLead = async (e) => {
+    if (e) e.preventDefault();
+    if (!newLeadName.trim()) return;
     const newLead = {
       company_id: companyId,
-      first_name: 'New',
-      last_name: 'Lead',
+      first_name: newLeadName,
+      last_name: '',
       status: 'New',
       value: 0
     };
@@ -55,9 +58,20 @@ export default function UnivCRM() {
       const { error } = await supabase.from('univ_crm_leads').insert(newLead);
       if (error) throw error;
       toast.success('Lead added');
+      setIsAdding(false);
+      setNewLeadName('');
     } catch (err) {
-      if (err.code === '42P01') toast.error("Database table not initialized yet. Apply Phase 1 SQL.");
-      else toast.error('Failed to add lead');
+      toast.error('Failed to add lead');
+    }
+  };
+
+  const handleDeleteLead = async (id) => {
+    try {
+      const { error } = await supabase.from('univ_crm_leads').delete().eq('id', id);
+      if (error) throw error;
+      toast.success('Lead deleted');
+    } catch (err) {
+      toast.error('Failed to delete lead');
     }
   };
 
@@ -93,11 +107,31 @@ export default function UnivCRM() {
           <button className="flex items-center gap-2 px-4 py-2 bg-card border border-border rounded-xl text-sm font-medium hover:bg-muted/50 transition-colors">
             <Filter className="w-4 h-4" /> Filter
           </button>
-          <button onClick={handleAddLead} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm shadow-primary/20">
+          <button onClick={() => setIsAdding(true)} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm shadow-primary/20">
             <Plus className="w-4 h-4" /> Add Lead
           </button>
         </div>
       </div>
+
+      {isAdding && (
+        <div className="mb-6 p-4 bg-card border border-primary/20 rounded-2xl shadow-sm mx-1">
+          <form onSubmit={handleAddLead} className="flex flex-col sm:flex-row sm:items-end gap-4">
+            <div className="flex-1">
+              <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Lead Name</label>
+              <input 
+                autoFocus
+                type="text" 
+                value={newLeadName} 
+                onChange={e => setNewLeadName(e.target.value)} 
+                placeholder="Enter lead name..." 
+                className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" 
+              />
+            </div>
+            <button type="submit" className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90">Save Lead</button>
+            <button type="button" onClick={() => setIsAdding(false)} className="h-10 px-4 bg-muted text-foreground rounded-xl text-sm font-medium hover:bg-muted/80 border border-border">Cancel</button>
+          </form>
+        </div>
+      )}
 
       {/* Kanban Board */}
       <div className="flex-1 overflow-x-auto flex gap-4 pb-4 snap-x">
@@ -132,9 +166,14 @@ export default function UnivCRM() {
                             <h4 className="font-semibold text-sm text-foreground">{lead.first_name} {lead.last_name}</h4>
                             {lead.email && <p className="text-xs text-muted-foreground flex items-center gap-1.5 mt-1"><Mail className="w-3 h-3" /> {lead.email}</p>}
                           </div>
-                          <button className="text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity p-1">
-                            <MoreHorizontal className="w-4 h-4" />
-                          </button>
+                          <div className="flex gap-1">
+                            <button onClick={() => handleDeleteLead(lead.id)} className="text-red-500 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity p-1">
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                            <button className="text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity p-1">
+                              <MoreHorizontal className="w-4 h-4" />
+                            </button>
+                          </div>
                         </div>
                         <div className="flex items-center justify-between text-xs font-medium text-slate-500 bg-muted/50 p-2 rounded-lg">
                           <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">

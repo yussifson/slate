@@ -2,13 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
-import { Plus, ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, MapPin, User, Video } from 'lucide-react';
+import { Plus, ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, MapPin, User, Video, Trash2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 export default function UnivAppointments() {
   const companyId = useCompanyId();
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const [isAdding, setIsAdding] = useState(false);
+  const [newTitle, setNewTitle] = useState('');
+  const [newAttendee, setNewAttendee] = useState('');
 
   useEffect(() => {
     if (companyId) {
@@ -32,25 +36,20 @@ export default function UnivAppointments() {
       if (error && error.code !== '42P01') throw error;
       setAppointments(data || []);
     } catch (err) {
-      if (err.code === '42P01') {
-        // Fallback mockup data
-        const today = new Date();
-        setAppointments([
-          { id: '1', title: 'Consultation', attendee_name: 'Sarah Connor', start_time: new Date(today.setHours(10, 0, 0)).toISOString(), end_time: new Date(today.setHours(11, 0, 0)).toISOString(), status: 'Scheduled', location: 'Zoom Room' },
-          { id: '2', title: 'Follow-up', attendee_name: 'Kyle Reese', start_time: new Date(today.setHours(14, 30, 0)).toISOString(), end_time: new Date(today.setHours(15, 0, 0)).toISOString(), status: 'Completed', location: 'Office 4B' }
-        ]);
-      }
+      // Mock data removed
     } finally {
       setLoading(false);
     }
   };
 
-  const handleAddAppointment = async () => {
+  const handleAddAppointment = async (e) => {
+    if (e) e.preventDefault();
+    if (!newTitle.trim() || !newAttendee.trim()) return;
     const today = new Date();
     const newAppt = {
       company_id: companyId,
-      title: 'New Appointment',
-      attendee_name: 'Client Name',
+      title: newTitle,
+      attendee_name: newAttendee,
       start_time: new Date(today.setHours(12, 0, 0)).toISOString(),
       end_time: new Date(today.setHours(13, 0, 0)).toISOString(),
       status: 'Scheduled'
@@ -59,9 +58,21 @@ export default function UnivAppointments() {
       const { error } = await supabase.from('univ_appointments').insert(newAppt);
       if (error) throw error;
       toast.success('Appointment created');
+      setIsAdding(false);
+      setNewTitle('');
+      setNewAttendee('');
     } catch (err) {
-      if (err.code === '42P01') toast.error("Database table not initialized yet.");
-      else toast.error('Failed to create appointment');
+      toast.error('Failed to create appointment');
+    }
+  };
+
+  const handleDeleteAppointment = async (id) => {
+    try {
+      const { error } = await supabase.from('univ_appointments').delete().eq('id', id);
+      if (error) throw error;
+      toast.success('Appointment deleted');
+    } catch (err) {
+      toast.error('Failed to delete appointment');
     }
   };
 
@@ -84,11 +95,43 @@ export default function UnivAppointments() {
             <span className="text-xs font-semibold px-3">Today</span>
             <button className="p-1.5 hover:bg-background rounded-md text-slate-500 transition-colors"><ChevronRight className="w-4 h-4" /></button>
           </div>
-          <button onClick={handleAddAppointment} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors">
+          <button onClick={() => setIsAdding(true)} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors">
             <Plus className="w-4 h-4" /> Book Slot
           </button>
         </div>
       </div>
+
+      {isAdding && (
+        <div className="p-4 bg-card border-b border-border shadow-sm">
+          <form onSubmit={handleAddAppointment} className="flex flex-col sm:flex-row sm:items-end gap-4 max-w-4xl mx-auto">
+            <div className="flex-1">
+              <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Title</label>
+              <input 
+                autoFocus
+                type="text" 
+                value={newTitle} 
+                onChange={e => setNewTitle(e.target.value)} 
+                placeholder="Consultation..." 
+                className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" 
+              />
+            </div>
+            <div className="flex-1">
+              <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Attendee</label>
+              <input 
+                type="text" 
+                value={newAttendee} 
+                onChange={e => setNewAttendee(e.target.value)} 
+                placeholder="Client name..." 
+                className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" 
+              />
+            </div>
+            <div className="flex gap-2">
+              <button type="submit" className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90">Save</button>
+              <button type="button" onClick={() => setIsAdding(false)} className="h-10 px-4 bg-muted text-foreground rounded-xl text-sm font-medium hover:bg-muted/80 border border-border">Cancel</button>
+            </div>
+          </form>
+        </div>
+      )}
 
       {/* Calendar View (List style for generic component) */}
       <div className="flex-1 overflow-y-auto p-6 bg-muted/20">
@@ -124,7 +167,10 @@ export default function UnivAppointments() {
                     </div>
                   </div>
                 </div>
-                <div>
+                <div className="flex gap-2">
+                  <button onClick={() => handleDeleteAppointment(appt.id)} className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-red-500 hover:bg-red-50 hover:border-red-200 transition-colors">
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                   <button className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-colors">
                     <Video className="w-4 h-4" />
                   </button>

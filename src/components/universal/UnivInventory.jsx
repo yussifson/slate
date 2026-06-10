@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
-import { Plus, Search, Filter, Package, AlertTriangle, ArrowUpRight, ArrowDownRight, Edit2 } from 'lucide-react';
+import { Plus, Search, Filter, Package, AlertTriangle, ArrowUpRight, ArrowDownRight, Edit2, Trash2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 export default function UnivInventory() {
@@ -10,6 +10,12 @@ export default function UnivInventory() {
   const [inventory, setInventory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+
+  const [isAdding, setIsAdding] = useState(false);
+  const [newItemName, setNewItemName] = useState('');
+  const [newSku, setNewSku] = useState('');
+  const [newQuantity, setNewQuantity] = useState(0);
+  const [newPrice, setNewPrice] = useState(0);
 
   useEffect(() => {
     if (companyId) {
@@ -33,28 +39,44 @@ export default function UnivInventory() {
       if (error && error.code !== '42P01') throw error;
       setInventory(data || []);
     } catch (err) {
-      // Mock data removed for production empty states
+      // Mock data removed
     } finally {
       setLoading(false);
     }
   };
 
-  const handleAddItem = async () => {
+  const handleAddItem = async (e) => {
+    if (e) e.preventDefault();
+    if (!newItemName.trim()) return;
     const newItem = {
       company_id: companyId,
-      item_name: 'New Item',
-      sku: `SKU-${Math.floor(Math.random() * 10000)}`,
-      quantity: 0,
-      unit_price: 0,
-      status: 'Out of Stock'
+      item_name: newItemName,
+      sku: newSku || `SKU-${Math.floor(Math.random() * 10000)}`,
+      quantity: Number(newQuantity),
+      unit_price: Number(newPrice),
+      status: Number(newQuantity) > 0 ? 'In Stock' : 'Out of Stock'
     };
     try {
       const { error } = await supabase.from('univ_inventory').insert(newItem);
       if (error) throw error;
       toast.success('Item added to inventory');
+      setIsAdding(false);
+      setNewItemName('');
+      setNewSku('');
+      setNewQuantity(0);
+      setNewPrice(0);
     } catch (err) {
-      if (err.code === '42P01') toast.error("Database table not initialized yet.");
-      else toast.error('Failed to add item');
+      toast.error('Failed to add item');
+    }
+  };
+
+  const handleDeleteItem = async (id) => {
+    try {
+      const { error } = await supabase.from('univ_inventory').delete().eq('id', id);
+      if (error) throw error;
+      toast.success('Item deleted');
+    } catch (err) {
+      toast.error('Failed to delete item');
     }
   };
 
@@ -84,11 +106,62 @@ export default function UnivInventory() {
           <button className="flex items-center gap-2 px-4 py-2 bg-card border border-border rounded-xl text-sm font-medium hover:bg-muted/50 transition-colors">
             <Filter className="w-4 h-4" /> Filter
           </button>
-          <button onClick={handleAddItem} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm shadow-primary/20">
+          <button onClick={() => setIsAdding(true)} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm shadow-primary/20">
             <Plus className="w-4 h-4" /> Add Item
           </button>
         </div>
       </div>
+
+      {isAdding && (
+        <div className="mb-6 p-4 bg-card border border-primary/20 rounded-2xl shadow-sm mx-1">
+          <form onSubmit={handleAddItem} className="flex flex-col sm:flex-row sm:items-end gap-4">
+            <div className="flex-[2]">
+              <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Item Name</label>
+              <input 
+                autoFocus
+                type="text" 
+                value={newItemName} 
+                onChange={e => setNewItemName(e.target.value)} 
+                placeholder="Product name..." 
+                className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" 
+              />
+            </div>
+            <div className="flex-1">
+              <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">SKU</label>
+              <input 
+                type="text" 
+                value={newSku} 
+                onChange={e => setNewSku(e.target.value)} 
+                placeholder="SKU-123..." 
+                className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" 
+              />
+            </div>
+            <div className="flex-1">
+              <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Qty</label>
+              <input 
+                type="number" 
+                value={newQuantity} 
+                onChange={e => setNewQuantity(e.target.value)} 
+                className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" 
+              />
+            </div>
+            <div className="flex-1">
+              <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Price ($)</label>
+              <input 
+                type="number" 
+                step="0.01"
+                value={newPrice} 
+                onChange={e => setNewPrice(e.target.value)} 
+                className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" 
+              />
+            </div>
+            <div className="flex gap-2">
+              <button type="submit" className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90">Save</button>
+              <button type="button" onClick={() => setIsAdding(false)} className="h-10 px-4 bg-muted text-foreground rounded-xl text-sm font-medium hover:bg-muted/80 border border-border">Cancel</button>
+            </div>
+          </form>
+        </div>
+      )}
 
       {/* KPI Row */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 shrink-0">
@@ -158,8 +231,8 @@ export default function UnivInventory() {
                   }`}>
                     {item.quantity === 0 ? 'Out of Stock' : isLow ? 'Low Stock' : 'In Stock'}
                   </span>
-                  <button className="text-muted-foreground hover:text-primary transition-colors">
-                    <Edit2 className="w-4 h-4" />
+                  <button onClick={() => handleDeleteItem(item.id)} className="text-red-500 hover:text-red-600 transition-colors">
+                    <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
               </div>
