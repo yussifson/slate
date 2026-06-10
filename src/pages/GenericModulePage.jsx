@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Suspense, lazy } from "react";
 import PageHeader from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Plus, RefreshCw, BarChart2, ShieldCheck, FileText } from "lucide-react";
+import { Sparkles, Plus, RefreshCw, BarChart2, ShieldCheck, FileText, Table, Trello, Calendar, Clock, BarChart, Users, Grid, FileSpreadsheet, Filter, PieChart } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import DynamicTable from "@/components/ui/DynamicTable";
 import DynamicGrid from "@/components/ui/DynamicGrid";
@@ -43,6 +43,8 @@ export default function GenericModulePage({ title: propTitle, description: propD
   const [isLoading, setIsLoading] = useState(true);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [activeView, setActiveView] = useState('default');
+
   const [isBoltOpen, setIsBoltOpen] = useState(false);
   const [visibility, setVisibility] = useState('private');
   const [sharedWith, setSharedWith] = useState('');
@@ -226,7 +228,11 @@ export default function GenericModulePage({ title: propTitle, description: propD
       </div>
     );
 
-    switch (pageType) {
+    
+    const currentView = activeView === 'default' ? pageType : activeView;
+    switch (currentView) {
+      case 'analytics':
+
       case 'dashboard':
         return (
           <div className="mt-6">
@@ -354,6 +360,43 @@ export default function GenericModulePage({ title: propTitle, description: propD
           </div>
         </div>
       </div>
+
+      
+      {/* 10 Views Switcher */}
+      {moduleDef && (
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-4 scrollbar-hide border-b border-border">
+          {[
+            { id: 'default', label: 'Default', icon: Sparkles },
+            { id: 'table', label: 'Table', icon: Table },
+            { id: 'kanban', label: 'Kanban', icon: Trello },
+            { id: 'calendar', label: 'Calendar', icon: Calendar },
+            { id: 'timeline', label: 'Timeline', icon: Clock },
+            { id: 'analytics', label: 'Analytics', icon: BarChart },
+            { id: 'directory', label: 'Directory', icon: Users },
+            { id: 'gallery', label: 'Gallery', icon: Grid },
+            { id: 'spreadsheet', label: 'Spreadsheet', icon: FileSpreadsheet },
+            { id: 'pipeline', label: 'Pipeline', icon: Filter },
+            { id: 'report', label: 'Report', icon: PieChart }
+          ].map(view => {
+            const Icon = view.icon;
+            const isActive = activeView === view.id;
+            return (
+              <button
+                key={view.id}
+                onClick={() => setActiveView(view.id)}
+                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium whitespace-nowrap rounded-t-lg border-b-2 transition-colors ${
+                  isActive 
+                    ? 'border-primary text-primary bg-primary/5' 
+                    : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-slate-50'
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                {view.label}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {renderModuleContent()}
 
