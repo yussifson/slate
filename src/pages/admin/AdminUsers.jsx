@@ -64,9 +64,9 @@ export default function AdminUsers() {
 
   const handleForceOnboarding = async (userId) => {
     try {
-      const { error } = await supabase.from('profiles').update({ onboarding_completed: false }).eq('id', userId);
+      const { error } = await supabase.from('profiles').update({ company_id: null }).eq('id', userId);
       if (error) throw error;
-      toast({ title: "Success", description: "User will be redirected to onboarding on next login." });
+      toast({ title: "Success", description: "User forced to onboard on next login" });
       fetchProfiles();
     } catch (err) {
       toast({ title: "Error", description: err.message, variant: "destructive" });

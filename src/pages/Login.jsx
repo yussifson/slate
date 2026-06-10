@@ -215,13 +215,8 @@ export default function Login() {
       window.location.href = '/';
     } else {
       // Base domain login
-      const { data: profile } = await supabase.from('profiles').select('company_id, role, onboarding_completed').eq('id', authData.user.id).single();
+      const { data: profile } = await supabase.from('profiles').select('company_id, role').eq('id', authData.user.id).single();
       
-      if (profile && profile.onboarding_completed === false) {
-        window.location.href = '/onboarding';
-        return;
-      }
-
       // If Super Admin logs into the Base Domain, route directly to the admin command center
       if (profile?.role === 'super_admin') {
         window.location.href = '/admin';
