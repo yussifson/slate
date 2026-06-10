@@ -193,7 +193,7 @@ export default function Marketplace() {
           subtitle="Discover and install community-built slates for your workslate."
         />
         <div className="flex items-center gap-3">
-          <Badge variant="outline" className="h-8 gap-1.5 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 text-primary/90 border-primary/20">
+          <Badge variant="outline" className="h-8 gap-1.5 bg-primary/10 dark:bg-primary/20 text-primary border-primary/20">
             <ShieldCheck className="w-3.5 h-3.5" /> Free to Install
           </Badge>
         </div>
@@ -269,11 +269,11 @@ export default function Marketplace() {
                     </div>
 
                     {(isInstalled || isOwned) ? (
-                      <Badge className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-100 text-primary/90 dark:text-primary/70 border-primary/20 dark:border-primary/20 font-extrabold gap-1.5 px-3 py-1.5 rounded-full shadow-sm">
+                      <Badge className="bg-primary/10 dark:bg-primary/20 text-primary border-primary/20 hover:bg-primary/20 font-extrabold gap-1.5 px-3 py-1.5 rounded-full shadow-sm">
                         <CheckCircle2 className="w-4 h-4" /> {isOwned ? 'Owned' : 'Installed'}
                       </Badge>
                     ) : (
-                      <Badge variant="outline" className="text-xs font-bold text-primary dark:text-primary/70 border-primary/20 dark:border-primary/20 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-100 px-3 py-1 rounded-full">
+                      <Badge variant="outline" className="text-xs font-bold text-primary border-primary/20 bg-primary/10 dark:bg-primary/20 hover:bg-primary/20 px-3 py-1 rounded-full">
                         Free
                       </Badge>
                     )}
