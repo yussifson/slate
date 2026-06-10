@@ -251,29 +251,51 @@ export default function OnboardingWizard() {
       // Store onboarding completion in localStorage to prevent repeat redirects
       localStorage.setItem(`onboarding_done_${companyIdToUse}`, 'true');
 
+      // Prepare the modules to save
+      let activeModulesToSave = null;
+      if (setupMode === 'orbit') {
+        activeModulesToSave = ['__orbit__'];
+      } else if (setupMode === 'custom') {
+        activeModulesToSave = selectedModules;
+      }
+
       // Store setup mode and selected modules in localStorage
       localStorage.setItem(`setup_mode_${companyIdToUse}`, setupMode);
-      if (setupMode === 'template') {
+      if (activeModulesToSave) {
+        localStorage.setItem(`active_modules_${companyIdToUse}`, JSON.stringify(activeModulesToSave));
+        
+        // Save to database for cross-device persistence
+        await supabase.from('industry_records').upsert({
+          id: `${companyIdToUse}_active_modules`,
+          company_id: companyIdToUse,
+          industry: 'all',
+          record_type: 'active_modules',
+          data: activeModulesToSave,
+          search_text: 'active modules configuration'
+        });
+      } else {
         localStorage.removeItem(`active_modules_${companyIdToUse}`); // Template implies all modules
-      } else if (setupMode === 'orbit') {
-        // Orbit = blank slate � only dynamic modules appear, no predefined industry pages
-        localStorage.setItem(`active_modules_${companyIdToUse}`, JSON.stringify(['__orbit__']));
-      } else if (setupMode === 'custom') {
-        localStorage.setItem(`active_modules_${companyIdToUse}`, JSON.stringify(selectedModules));
       }
       
       toast({ title: "Setup Complete!", description: "Welcome to your new digital workspace." });
       
+      // Build cross-subdomain transfer params
+      const transferParams = new URLSearchParams();
+      transferParams.set('setup_mode', setupMode);
+      if (activeModulesToSave) {
+        transferParams.set('active_modules', JSON.stringify(activeModulesToSave));
+      }
+
       const { currentSubdomain, baseDomain } = getSubdomainAndBase();
       if (!currentSubdomain) {
          const { data: company } = await supabase.from('companies').select('subdomain').eq('id', companyIdToUse).single();
          if (company?.subdomain) {
              const port = window.location.port ? `:${window.location.port}` : '';
-             window.location.href = `${window.location.protocol}//${company.subdomain}.${baseDomain}${port}/`;
+             window.location.href = `${window.location.protocol}//${company.subdomain}.${baseDomain}${port}/?${transferParams.toString()}`;
              return;
          }
       }
-      navigate('/');
+      navigate(`/?${transferParams.toString()}`);
     } catch (err) {
       console.error("Onboarding failed:", err);
       // Give a better error message if it's a fetch error
@@ -362,9 +384,9 @@ export default function OnboardingWizard() {
                 </div>
 
                 <div className="space-y-4">
-                  {setupMode !== "orbit" && (
+                  {(setupMode === 'template' || setupMode === 'custom') && (
                     <div className="space-y-3 p-5 rounded-2xl bg-slate-50 border border-slate-200">
-                      <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("industry", "Workspace Selection")}</label>
+                      <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("industry", "Workspace")}</label>
                       <Select value={industry} onValueChange={setIndustry}>
                         <SelectTrigger className="h-12 bg-card border-border rounded-xl text-slate-900 focus:ring-primary">
                           <SelectValue />

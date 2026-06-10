@@ -128,6 +128,30 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   const activeModules = savedModulesStr ? JSON.parse(savedModulesStr) : null;
   const isOrbitMode = activeModules?.length === 1 && activeModules[0] === '__orbit__';
   
+  // Silent background sync for active modules
+  useQuery({
+    queryKey: ['active_modules_sync', companyId],
+    queryFn: async () => {
+      if (!companyId) return null;
+      const { data, error } = await supabase
+        .from('industry_records')
+        .select('data')
+        .eq('company_id', companyId)
+        .eq('record_type', 'active_modules')
+        .maybeSingle();
+      
+      if (!error && data?.data) {
+        const currentStr = localStorage.getItem(`active_modules_${companyId}`);
+        const newStr = JSON.stringify(data.data);
+        if (currentStr !== newStr) {
+          localStorage.setItem(`active_modules_${companyId}`, newStr);
+        }
+      }
+      return data?.data || null;
+    },
+    enabled: !!companyId
+  });
+  
   const ROLE_PERMISSIONS = {
     // Law Firm Roles
     lawyer: ["/my-dashboard", "/cases", "/leads", "/clients", "/calendar", "/tasks", "/documents", "/conflict-check", "/research", "/email-inbox", "/chat", "/board", "/team"],

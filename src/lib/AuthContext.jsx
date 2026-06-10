@@ -79,6 +79,11 @@ export const AuthProvider = ({ children }) => {
         throw new Error("Not logged in");
       }
 
+      // Handle cross-subdomain onboarding config transfer
+      const params = new URLSearchParams(window.location.search);
+      const setupModeParam = params.get('setup_mode');
+      const activeModulesParam = params.get('active_modules');
+      
       // Optimization: If already authenticated with the same user ID and not forcing a refresh, return immediately.
       // This prevents redundant database queries and layout/sidebar flickering on window refocus.
       const currentUser = userRef.current;
@@ -93,6 +98,20 @@ export const AuthProvider = ({ children }) => {
       setAuthStep("Fetching profile...");
       let { data: profile, error: profileError } = await supabase.from('profiles').select('*').eq('id', sessionUser.id).single();
       
+      // Save transferred config to local storage using the correct company ID
+      if (setupModeParam && profile?.company_id) {
+          localStorage.setItem(`setup_mode_${profile.company_id}`, setupModeParam);
+          if (activeModulesParam) {
+             localStorage.setItem(`active_modules_${profile.company_id}`, activeModulesParam);
+          } else {
+             localStorage.removeItem(`active_modules_${profile.company_id}`);
+          }
+          
+          // Clean the URL without reloading
+          const newUrl = window.location.pathname + window.location.hash;
+          window.history.replaceState({}, document.title, newUrl);
+      }
+
       setAuthStep("Checking invite/staff records...");
       const { data: staffRecord } = await supabase
         .from('staff_records')
