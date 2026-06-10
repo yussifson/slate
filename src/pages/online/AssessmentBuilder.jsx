@@ -68,7 +68,7 @@ export default function AssessmentBuilder() {
           type="text" 
           value={assessmentTitle}
           onChange={(e) => setAssessmentTitle(e.target.value)}
-          placeholder="e.g., Module 1 Final Quiz" 
+          placeholder="e.g., Slate 1 Final Quiz" 
           className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-4 py-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
         />
       </div>

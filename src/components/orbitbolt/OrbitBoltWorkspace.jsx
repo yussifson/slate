@@ -87,7 +87,7 @@ The JSON inside <SCHEMA> must follow this exact structure:
 
 If the user asks to refine an existing module (like changing a name or adding a field), modify the previous JSON schema and output the NEW updated schema inside the <SCHEMA> tags.`;
 
-// The IDE-like Workspace for building modules - Vercel v0 Dark Aesthetic
+// The IDE-like WorkSlate for building modules - Vercel v0 Dark Aesthetic
 export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
   const { user } = useAuth();
   const companyId = useCompanyId();
@@ -314,7 +314,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
           </div>
           <div className="flex-1 overflow-y-auto py-2 scrollbar-thin">
             <div className="px-3 mb-2">
-              <h3 className="text-[10px] font-semibold text-muted-foreground uppercase tracking-[0.12em]">Workspaces</h3>
+              <h3 className="text-[10px] font-semibold text-muted-foreground uppercase tracking-[0.12em]">WorkSlates</h3>
             </div>
             <div className="space-y-0.5 px-2">
               {sessions.map(s => (
@@ -458,7 +458,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
                                  <Layers className="w-6 h-6 text-primary" />
                                </div>
                                <div>
-                                 <h2 className="text-2xl font-semibold text-foreground tracking-tight">{previewSchema.module?.name || previewSchema.title || "Module"}</h2>
+                                 <h2 className="text-2xl font-semibold text-foreground tracking-tight">{previewSchema.module?.name || previewSchema.title || "Slate"}</h2>
                                  <p className="text-muted-foreground text-sm mt-1">{previewSchema.module?.description || "Dynamic module preview"}</p>
                                </div>
                              </div>

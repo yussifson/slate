@@ -86,7 +86,7 @@ export default function SignUp() {
 
       if (profError) throw profError;
 
-      setSuccess("Account and Workspace successfully created! Redirecting to your onboarding portal...");
+      setSuccess("Account and WorkSlate successfully created! Redirecting to your onboarding portal...");
       
       // Auto-redirect to their new subdomain
       setTimeout(() => {

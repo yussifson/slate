@@ -202,7 +202,7 @@ export default function MarketingLayout({ children }) {
               <a href={workspaceUrl}>
                   <Button className="bg-primary hover:bg-primary/90 text-white font-semibold rounded-full px-6 h-10 flex items-center gap-2 transition-all">
                     <Building className="w-4 h-4" />
-                    {t("go_to_workspace", "Go to Workspace")}
+                    {t("go_to_workspace", "Go to WorkSlate")}
                     <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
                   </Button>
               </a>
@@ -285,7 +285,7 @@ export default function MarketingLayout({ children }) {
                   <a href={workspaceUrl} className="w-full">
                     <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-md h-11 flex items-center justify-center gap-2 rounded-xl">
                       <Building className="w-4 h-4" />
-                      {t("go_to_workspace", "Go to Workspace")}
+                      {t("go_to_workspace", "Go to WorkSlate")}
                     </Button>
                   </a>
                 ) : (

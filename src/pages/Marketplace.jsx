@@ -125,7 +125,7 @@ export default function Marketplace() {
       setInstalledMap(prev => ({ ...prev, [mod.id]: newModuleId }));
       setInstallSuccessModal(mod);
       toast({
-        title: "🎉 Module Installed!",
+        title: "🎉 Slate Installed!",
         description: `${mod.name} is now in your workspace sidebar.`,
       });
 
@@ -227,7 +227,7 @@ export default function Marketplace() {
         </div>
       </div>
 
-      {/* Module Grid */}
+      {/* Slate Grid */}
       {loading ? (
         <div className="py-24 flex justify-center">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />

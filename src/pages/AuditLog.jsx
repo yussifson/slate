@@ -65,7 +65,7 @@ export default function AuditLog() {
       render: (row) => <span className="text-sm font-medium">{row.action}</span>,
     },
     {
-      header: "Module",
+      header: "Slate",
       render: (row) => <span className="text-xs uppercase bg-muted px-2 py-0.5 rounded-full">{row.module}</span>,
     },
     {

@@ -128,7 +128,7 @@ export default function Features() {
       image: "/images/internationalization_ui.png"
     },
     {
-      badge: "AI Workspace Generation",
+      badge: "AI WorkSlate Generation",
       title: "Build complex modules using natural language",
       description:
         "Describe your custom industry requirement or pipeline in natural language, and Slate instantly builds the forms, data structures, workflows, and navigation routes for you—no coding required.",

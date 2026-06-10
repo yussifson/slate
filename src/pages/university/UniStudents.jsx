@@ -117,7 +117,7 @@ export default function UniStudents() {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       
-      {/* Module Header */}
+      {/* Slate Header */}
       <div className="flex items-end justify-between border-b border-[var(--color-border-subtle)] pb-4">
         <div>
           <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Student Population</h1>

@@ -237,7 +237,7 @@ export default function VTraineeProfiles() {
                 <div className="w-5 h-5 rounded-full bg-gradient-to-br from-primary/20 to-primary flex items-center justify-center"><BarChart3 className="w-3 h-3 text-white" /></div>
                 <h3 className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#F0F6FC]" style={{ fontFamily: F.label }}>Orbit AI Summary</h3>
               </div>
-              <p className="text-[12px] text-[#C9D1D9] leading-relaxed relative z-10">"{selected.title} is performing above cohort average in structural skills but shows a gap in safety documentation. Recommend targeting OSH Module 3 before the Level 3 assessment."</p>
+              <p className="text-[12px] text-[#C9D1D9] leading-relaxed relative z-10">"{selected.title} is performing above cohort average in structural skills but shows a gap in safety documentation. Recommend targeting OSH Slate 3 before the Level 3 assessment."</p>
             </div>
 
             {/* Upcoming */}

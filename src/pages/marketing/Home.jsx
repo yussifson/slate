@@ -436,7 +436,7 @@ function SuitesSection() {
           </div>
         </div>
       </div>
-      {/* Modal / Popup for Workspace Details */}
+      {/* Modal / Popup for WorkSlate Details */}
       {isModalOpen && typeof document !== 'undefined' && createPortal(
         <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6">
           <div 

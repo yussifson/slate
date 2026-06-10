@@ -230,7 +230,7 @@ export default function VPracticalModules() {
               <div className="w-20 h-20 rounded-full bg-rose-50 dark:bg-slate-800 flex items-center justify-center mb-6">
                 <Layers className="w-10 h-10 text-rose-300" />
               </div>
-              <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200">No Module Selected</h3>
+              <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200">No Slate Selected</h3>
               <p className="text-slate-500 dark:text-slate-400 max-w-sm mt-2">
                 Select a module from the list to view requirements or add a new practical module.
               </p>

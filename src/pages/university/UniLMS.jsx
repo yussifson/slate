@@ -69,7 +69,7 @@ export default function UniLMS() {
                     <h4 className="font-semibold text-[var(--color-text-primary)] mt-2">{course.name}</h4>
                     <p className="text-[var(--text-xs)] text-[var(--color-text-secondary)] mt-1">{course.teacher}</p>
                     <button className="mt-3 w-full flex items-center justify-center gap-1 px-3 py-1.5 bg-[var(--color-accent-primary)] hover:opacity-90 text-white text-xs font-medium rounded-[var(--radius-md)] transition-all">
-                      Enter Workspace <Play className="w-3 h-3 fill-white" />
+                      Enter WorkSlate <Play className="w-3 h-3 fill-white" />
                     </button>
                   </div>
                 ))}

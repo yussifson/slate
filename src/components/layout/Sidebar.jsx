@@ -304,7 +304,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
           <div className="mx-1 my-3 p-3 rounded-xl bg-slate-50 border border-slate-200 text-center">
             <div className="text-2xl mb-1">⚡</div>
             <p className="text-xs font-bold text-primary/90 mb-1">Orbit Mode Active</p>
-            <p className="text-[11px] text-primary leading-snug mb-2">Use the Module Builder to create your custom pages with AI.</p>
+            <p className="text-[11px] text-primary leading-snug mb-2">Use the Slate Builder to create your custom pages with AI.</p>
             {/* Call to action for OrbitBolt */}
             <div className="mt-8 px-4 pb-6">
               <Link to="/modules/BOLT" className="inline-block text-[11px] font-bold px-3 py-1.5 rounded-lg bg-primary text-white hover:bg-primary/90 transition-colors">

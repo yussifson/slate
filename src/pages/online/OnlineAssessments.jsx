@@ -31,7 +31,7 @@ export default function OnlineAssessments() {
             <BookOpen className="w-8 h-8" />
           </div>
           <h1 className="text-2xl font-bold font-display text-[var(--color-text-primary)] mb-2">Module 1 Final Assessment</h1>
-          <p className="text-[var(--color-text-secondary)] mb-8">Test your knowledge on the foundational concepts covered in Module 1. You must score 80% to pass.</p>
+          <p className="text-[var(--color-text-secondary)] mb-8">Test your knowledge on the foundational concepts covered in Slate 1. You must score 80% to pass.</p>
           
           <div className="flex justify-center gap-8 mb-8 text-sm text-[var(--color-text-secondary)]">
             <div className="flex items-center gap-2"><Clock className="w-4 h-4 text-[var(--color-text-tertiary)]"/> 15 Minutes</div>

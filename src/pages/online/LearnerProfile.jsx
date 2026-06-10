@@ -99,7 +99,7 @@ export default function LearnerProfile() {
           <div className="relative pl-6 border-l-2 border-[var(--color-border-default)] space-y-8">
             <div className="relative">
               <div className="absolute w-3 h-3 bg-[var(--primary)] rounded-full -left-[31px] top-1.5 ring-4 ring-[var(--color-surface-0)]"></div>
-              <h4 className="font-semibold text-[var(--color-text-primary)]">Completed Module 4 Assessment</h4>
+              <h4 className="font-semibold text-[var(--color-text-primary)]">Completed Slate 4 Assessment</h4>
               <p className="text-xs text-[var(--color-text-secondary)] mt-1">Today at 10:45 AM</p>
             </div>
             <div className="relative">

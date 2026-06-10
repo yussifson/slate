@@ -74,7 +74,7 @@ Available components:
 
 If the user asks to refine an existing page, modify the previous JSON schema and output the NEW updated schema inside the <SCHEMA> tags.`;
 
-// The IDE-like Workspace for building modules - Vercel v0 Dark Aesthetic
+// The IDE-like WorkSlate for building modules - Vercel v0 Dark Aesthetic
 export default function OrbitBoltPagesWorkspace({ onClose, onApplySchema }) {
   const { user } = useAuth();
   const companyId = useCompanyId();
@@ -301,7 +301,7 @@ export default function OrbitBoltPagesWorkspace({ onClose, onApplySchema }) {
           </div>
           <div className="flex-1 overflow-y-auto py-2 scrollbar-thin">
             <div className="px-3 mb-2">
-              <h3 className="text-[10px] font-semibold text-muted-foreground uppercase tracking-[0.12em]">Workspaces</h3>
+              <h3 className="text-[10px] font-semibold text-muted-foreground uppercase tracking-[0.12em]">WorkSlates</h3>
             </div>
             <div className="space-y-0.5 px-2">
               {sessions.map(s => (

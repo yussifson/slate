@@ -235,7 +235,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false }
       }
 
       toast({
-        title: status === 'draft' ? "📝 Saved as Draft" : (isEditing ? "✨ Module Updated!" : "✨ Module Published!"),
+        title: status === 'draft' ? "📝 Saved as Draft" : (isEditing ? "✨ Slate Updated!" : "✨ Slate Published!"),
         description: `'${name}' is ready. Redirecting...`,
       });
 
@@ -294,7 +294,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false }
           {isSidebarOpen && (
             <div className="xl:col-span-1 space-y-6 animate-in slide-in-from-left duration-300">
               <div className="bg-card rounded-xl border border-border p-5 shadow-sm space-y-6">
-                {/* Module Details */}
+                {/* Slate Details */}
                 <div className="space-y-4">
                   <h3 className="font-semibold text-foreground border-b border-border pb-2">Module Details</h3>
                   <div>
@@ -314,7 +314,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false }
                       onChange={(e) => setState({ ...state, moduleType: e.target.value })}
                       className="w-full rounded-md border border-input bg-background text-foreground px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                     >
-                      <option value="data_module">Data Module (Table/Grid)</option>
+                      <option value="data_module">Data Slate (Table/Grid)</option>
                       <option value="dashboard">Dashboard (Charts & Stats)</option>
                       <option value="kanban">Kanban Board (Workflow)</option>
                       <option value="document_manager">Document Manager</option>
@@ -570,7 +570,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false }
         </div>
       </div>
 
-      {/* OrbitBolt AI Full Workspace — sits as an overlay for generating modules */}
+      {/* OrbitBolt AI Full WorkSlate — sits as an overlay for generating modules */}
       {isBoltOpen && (
         <OrbitBoltWorkspace
           onClose={() => setIsBoltOpen(false)}
