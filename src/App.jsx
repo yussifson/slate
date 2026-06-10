@@ -70,6 +70,7 @@ import HRDashboard from './pages/HRDashboard';
 import Chat from './pages/Chat';
 import Board from './pages/Board';
 import CustomPageViewer from './pages/CustomPageViewer';
+import OrbitComponentTester from './pages/admin/OrbitComponentTester';
 
 // School Pages
 import SchoolStudents from './pages/school/Students';
@@ -369,6 +370,9 @@ function PlatformRoutes() {
       <Route path="/chat" element={<Chat />} />
       <Route path="/board" element={<Board />} />
       <Route path="/pages/:pageId" element={<CustomPageViewer />} />
+
+      {/* Orbit Component Tester (Super Admin Only) */}
+      <Route path="/orbit-test/:componentName" element={<OrbitComponentTester />} />
 
       {/* School Routes */}
       <Route path="/students" element={<SchoolStudents />} />

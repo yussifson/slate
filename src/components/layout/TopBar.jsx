@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { LayoutDashboard, RefreshCw, Globe, PanelLeft, Sparkles, Layers } from "lucide-react";
+import { LayoutDashboard, RefreshCw, Globe, PanelLeft, Sparkles, Layers, Component } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { isSuperAdmin } from "@/lib/constants";
 import { useQueryClient } from "@tanstack/react-query";
@@ -12,6 +12,7 @@ import TimeTracker from "../shared/TimeTracker";
 import { useCompany } from "@/hooks/useCompanyId";
 import { INDUSTRIES } from "@/config/industries";
 import ProfileAvatarDialog from "@/components/shared/ProfileAvatarDialog";
+import { ORBIT_COMPONENTS_LIST } from "@/pages/admin/OrbitComponentTester";
 
 const PAGE_TITLES = {
   "/": "Dashboard",
@@ -132,6 +133,25 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
                   </option>
                 );
               })}
+            </select>
+          </div>
+        )}
+
+        {/* Super Admin Orbit Component Tester Switcher */}
+        {user?.role === 'super_admin' && (
+          <div className="hidden md:flex items-center gap-1.5 border border-indigo-200 dark:border-indigo-900 bg-indigo-500/10 dark:bg-indigo-950/20 px-2 py-1 rounded-md text-xs font-bold text-indigo-700 dark:text-indigo-400">
+            <Component className="w-3.5 h-3.5" />
+            <select
+              value=""
+              onChange={e => { if (e.target.value) navigate(`/orbit-test/${e.target.value}`) }}
+              className="bg-transparent border-none outline-none font-bold text-xs pr-2 cursor-pointer text-indigo-700 dark:text-indigo-400 max-w-[140px]"
+            >
+              <option value="" disabled>Orbit Build Components</option>
+              {ORBIT_COMPONENTS_LIST.map(compName => (
+                <option key={compName} value={compName} className="bg-card text-foreground">
+                  {compName}
+                </option>
+              ))}
             </select>
           </div>
         )}
