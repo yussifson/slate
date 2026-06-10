@@ -13,6 +13,13 @@ const DynamicCalendarView = React.lazy(() => import("@/components/ui/DynamicCale
 const DynamicDirectoryView = React.lazy(() => import("@/components/ui/DynamicDirectoryView"));
 const DynamicFormWizard = React.lazy(() => import("@/components/ui/DynamicFormWizard"));
 
+// New Universal Components
+const UnivCRM = React.lazy(() => import("@/components/universal/UnivCRM"));
+const UnivInvoice = React.lazy(() => import("@/components/universal/UnivInvoice"));
+const UnivAppointments = React.lazy(() => import("@/components/universal/UnivAppointments"));
+const UnivInventory = React.lazy(() => import("@/components/universal/UnivInventory"));
+const UnivHREmployee = React.lazy(() => import("@/components/universal/UnivHREmployee"));
+
 // Basic dummy data generator for these components since they might not be hooked to real tables yet if they are purely UI templates in OrbitBuild
 const DUMMY_DATA = Array(5).fill(0).map((_, i) => ({
   id: `id-${i}`,
@@ -71,30 +78,35 @@ export default function OrbitBuildPage() {
 
   // Map the component_id to the actual universal component
   const renderComponent = () => {
-    switch (pageDef.component_id) {
+        switch (pageDef.component_id) {
+      case 'crm':
+        return <UnivCRM />;
+      case 'invoice':
+      case 'payment':
+        return <UnivInvoice />;
+      case 'appointment':
+      case 'calendar':
+      case 'booking':
+      case 'scheduling':
+        return <UnivAppointments />;
+      case 'inventory':
+      case 'asset_management':
+        return <UnivInventory />;
+      case 'hr_employee':
+      case 'contact_management':
+        return <UnivHREmployee />;
+        
+      // Fallbacks to Generic Dynamic Views
       case 'dashboard_widgets':
       case 'analytics':
         return <DynamicDashboard data={DUMMY_DATA} fieldDefinitions={DUMMY_FIELDS} />;
       case 'kanban':
         return <DynamicKanbanView data={DUMMY_DATA} fieldDefinitions={DUMMY_FIELDS} />;
-      case 'calendar':
-      case 'appointment':
-      case 'scheduling':
-      case 'booking':
-        return <DynamicCalendarView data={DUMMY_DATA} fieldDefinitions={DUMMY_FIELDS} />;
-      case 'contact_management':
-      case 'hr_employee':
-      case 'crm':
-        return <DynamicDirectoryView data={DUMMY_DATA} fieldDefinitions={DUMMY_FIELDS} />;
       case 'form_wizard':
       case 'approval':
         return <DynamicFormWizard data={DUMMY_DATA} fieldDefinitions={DUMMY_FIELDS} />;
       case 'data_table':
-      case 'invoice':
-      case 'payment':
-      case 'inventory':
       case 'pos':
-      case 'asset_management':
       default:
         return <DynamicTable data={DUMMY_DATA} fieldDefinitions={DUMMY_FIELDS} />;
     }
