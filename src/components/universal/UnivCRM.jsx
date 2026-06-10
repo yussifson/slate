@@ -10,7 +10,7 @@ import {
 import { toast } from 'react-hot-toast';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 
-const STAGES = ['New', 'Contacted', 'Qualified', 'Proposal', 'Won', 'Lost'];
+const DEFAULT_STAGES = ['New', 'Contacted', 'Qualified', 'Proposal', 'Won', 'Lost'];
 
 export default function UnivCRM() {
   const companyId = useCompanyId();
@@ -18,6 +18,10 @@ export default function UnivCRM() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState('kanban'); // 'kanban' | 'list'
+
+  const [stages, setStages] = useState(DEFAULT_STAGES);
+  const [newStageName, setNewStageName] = useState('');
+  const [isAddingStage, setIsAddingStage] = useState(false);
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,6 +36,8 @@ export default function UnivCRM() {
 
   useEffect(() => {
     if (companyId) {
+      const savedStages = localStorage.getItem(`crm_stages_${companyId}`);
+      if (savedStages) setStages(JSON.parse(savedStages));
       fetchLeads();
       const channel = supabase.channel('crm_changes')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'univ_crm_leads', filter: `company_id=eq.${companyId}` }, () => {
@@ -125,9 +131,21 @@ export default function UnivCRM() {
     try {
       const { error } = await supabase.from('univ_crm_leads').update({ status: newStatus }).eq('id', id);
       if (error) throw error;
+      toast.success('Lead status updated');
     } catch (err) {
       toast.error("Failed to update status");
     }
+  };
+
+  const handleAddStage = (e) => {
+    e.preventDefault();
+    if (!newStageName.trim() || stages.includes(newStageName.trim())) return;
+    const newStages = [...stages, newStageName.trim()];
+    setStages(newStages);
+    localStorage.setItem(`crm_stages_${companyId}`, JSON.stringify(newStages));
+    setNewStageName('');
+    setIsAddingStage(false);
+    toast.success('Pipeline stage added');
   };
 
   const filteredLeads = leads.filter(l => 
@@ -213,17 +231,18 @@ export default function UnivCRM() {
 
       {/* Main Content Area */}
       {viewMode === 'kanban' ? (
-        <div className="flex-1 overflow-x-auto flex gap-5 pb-4 snap-x px-1">
+        <div className="flex-1 overflow-x-auto flex gap-5 pb-4 snap-x px-1 min-h-0 h-full">
           {loading && leads.length === 0 ? (
-            <div className="w-full flex items-center justify-center">
+            <div className="w-full h-full flex items-center justify-center">
               <Loader2 className="w-8 h-8 animate-spin text-primary" />
             </div>
           ) : (
-            STAGES.map(stage => {
-              const stageLeads = filteredLeads.filter(l => l.status === stage);
-              return (
-                <div key={stage} className="flex-shrink-0 w-[320px] bg-muted/40 border border-border rounded-2xl flex flex-col snap-center">
-                  <div className="p-4 border-b border-border/50 flex justify-between items-center bg-card/60 rounded-t-2xl">
+            <>
+              {stages.map(stage => {
+                const stageLeads = filteredLeads.filter(l => l.status === stage);
+                return (
+                  <div key={stage} className="flex-shrink-0 w-[320px] max-w-[85vw] h-full bg-muted/40 border border-border rounded-2xl flex flex-col snap-center">
+                    <div className="p-4 border-b border-border/50 flex justify-between items-center bg-card/60 rounded-t-2xl shrink-0">
                     <h3 className="font-bold text-sm text-foreground tracking-tight">{stage}</h3>
                     <span className="px-2.5 py-0.5 rounded-full bg-background border border-border text-xs font-bold text-muted-foreground shadow-sm">
                       {stageLeads.length}
@@ -262,8 +281,8 @@ export default function UnivCRM() {
                               <DollarSign className="w-3.5 h-3.5" /> {Number(lead.value || 0).toLocaleString()}
                             </span>
                             <div className="flex gap-1.5">
-                               {stage !== 'New' && <button onClick={(e) => updateLeadStatus(lead.id, STAGES[STAGES.indexOf(stage)-1], e)} className="w-6 h-6 rounded flex items-center justify-center hover:bg-background border border-transparent hover:border-border text-slate-500 hover:text-primary transition-all">&larr;</button>}
-                               {stage !== 'Lost' && <button onClick={(e) => updateLeadStatus(lead.id, STAGES[STAGES.indexOf(stage)+1], e)} className="w-6 h-6 rounded flex items-center justify-center hover:bg-background border border-transparent hover:border-border text-slate-500 hover:text-primary transition-all">&rarr;</button>}
+                               {stages.indexOf(stage) > 0 && <button onClick={(e) => updateLeadStatus(lead.id, stages[stages.indexOf(stage)-1], e)} className="w-6 h-6 rounded flex items-center justify-center hover:bg-background border border-transparent hover:border-border text-slate-500 hover:text-primary transition-all">&larr;</button>}
+                               {stages.indexOf(stage) < stages.length - 1 && <button onClick={(e) => updateLeadStatus(lead.id, stages[stages.indexOf(stage)+1], e)} className="w-6 h-6 rounded flex items-center justify-center hover:bg-background border border-transparent hover:border-border text-slate-500 hover:text-primary transition-all">&rarr;</button>}
                             </div>
                           </div>
                         </motion.div>
@@ -277,7 +296,25 @@ export default function UnivCRM() {
                   </div>
                 </div>
               );
-            })
+            })}
+              {/* Add Stage Column */}
+              <div className="flex-shrink-0 w-[320px] max-w-[85vw] h-[150px] rounded-2xl flex flex-col snap-center border-2 border-dashed border-border/60 hover:border-border transition-colors">
+                {isAddingStage ? (
+                  <form onSubmit={handleAddStage} className="p-4 flex flex-col gap-3 h-full justify-center">
+                    <input autoFocus type="text" value={newStageName} onChange={e=>setNewStageName(e.target.value)} placeholder="Stage Name..." className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
+                    <div className="flex gap-2">
+                      <button type="submit" className="flex-1 h-9 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90">Save</button>
+                      <button type="button" onClick={()=>setIsAddingStage(false)} className="flex-1 h-9 bg-muted text-foreground rounded-lg text-sm font-medium hover:bg-muted/80">Cancel</button>
+                    </div>
+                  </form>
+                ) : (
+                  <button onClick={()=>setIsAddingStage(true)} className="flex-1 flex flex-col items-center justify-center gap-2 text-muted-foreground hover:text-foreground">
+                    <Plus className="w-6 h-6" />
+                    <span className="text-sm font-medium">Add Pipeline Stage</span>
+                  </button>
+                )}
+              </div>
+            </>
           )}
         </div>
       ) : (
@@ -352,10 +389,10 @@ export default function UnivCRM() {
 
       {/* Add / Edit Modal (Tailwind CSS Modal to ensure zero dependency issues) */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="flex justify-between items-center p-6 border-b border-border bg-muted/30">
-              <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="flex justify-between items-center p-5 sm:p-6 border-b border-border bg-muted/30 shrink-0">
+              <h2 className="text-lg sm:text-xl font-bold text-foreground flex items-center gap-2">
                 {editingLeadId ? <Edit2 className="w-5 h-5 text-primary" /> : <Plus className="w-5 h-5 text-primary" />}
                 {editingLeadId ? 'Edit Lead' : 'Add New Lead'}
               </h2>
@@ -364,8 +401,8 @@ export default function UnivCRM() {
               </button>
             </div>
             
-            <form onSubmit={handleSaveLead} className="p-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-6">
+            <form onSubmit={handleSaveLead} className="p-5 sm:p-6 overflow-y-auto custom-scrollbar flex-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-6">
                 <div>
                   <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">First Name *</label>
                   <input required autoFocus type="text" value={formData.first_name} onChange={e => setFormData({...formData, first_name: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="John" />
@@ -393,7 +430,7 @@ export default function UnivCRM() {
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Pipeline Stage</label>
                   <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">
-                    {STAGES.map(s => <option key={s} value={s}>{s}</option>)}
+                    {stages.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </div>
                 <div className="sm:col-span-2">
@@ -401,7 +438,7 @@ export default function UnivCRM() {
                   <textarea rows="3" value={formData.notes} onChange={e => setFormData({...formData, notes: e.target.value})} className="w-full p-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm resize-none" placeholder="Add any background info here..."></textarea>
                 </div>
               </div>
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
+              <div className="flex items-center justify-end gap-3 pt-4 mt-auto border-t border-border">
                 <button type="button" onClick={() => setIsModalOpen(false)} className="h-10 px-5 bg-muted text-foreground rounded-xl text-sm font-medium hover:bg-muted/80 transition-colors">Cancel</button>
                 <button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary/90 transition-colors shadow-sm shadow-primary/20">
                   {editingLeadId ? 'Save Changes' : 'Create Lead'}
