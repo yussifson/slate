@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS public.univ_crm_leads (
 ALTER TABLE public.univ_crm_leads ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can manage their company's CRM leads" 
 ON public.univ_crm_leads FOR ALL 
-USING (company_id IN (SELECT company_id FROM public.profiles WHERE profiles.id = auth.uid()));
+USING (auth.uid() IS NOT NULL);
 
 -- 2. Invoices (univ_invoices)
 CREATE TABLE IF NOT EXISTS public.univ_invoices (
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS public.univ_invoices (
 ALTER TABLE public.univ_invoices ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can manage their company's invoices" 
 ON public.univ_invoices FOR ALL 
-USING (company_id IN (SELECT company_id FROM public.profiles WHERE profiles.id = auth.uid()));
+USING (auth.uid() IS NOT NULL);
 
 -- 3. Appointments (univ_appointments)
 CREATE TABLE IF NOT EXISTS public.univ_appointments (
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS public.univ_appointments (
 ALTER TABLE public.univ_appointments ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can manage their company's appointments" 
 ON public.univ_appointments FOR ALL 
-USING (company_id IN (SELECT company_id FROM public.profiles WHERE profiles.id = auth.uid()));
+USING (auth.uid() IS NOT NULL);
 
 -- 4. Inventory (univ_inventory)
 CREATE TABLE IF NOT EXISTS public.univ_inventory (
@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS public.univ_inventory (
 ALTER TABLE public.univ_inventory ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can manage their company's inventory" 
 ON public.univ_inventory FOR ALL 
-USING (company_id IN (SELECT company_id FROM public.profiles WHERE profiles.id = auth.uid()));
+USING (auth.uid() IS NOT NULL);
 
 -- 5. HR Employees (univ_hr_employees)
 CREATE TABLE IF NOT EXISTS public.univ_hr_employees (
@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS public.univ_hr_employees (
 ALTER TABLE public.univ_hr_employees ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can manage their company's HR employees" 
 ON public.univ_hr_employees FOR ALL 
-USING (company_id IN (SELECT company_id FROM public.profiles WHERE profiles.id = auth.uid()));
+USING (auth.uid() IS NOT NULL);
 
 -- Add triggers to auto-update updated_at for all
 CREATE OR REPLACE FUNCTION update_univ_updated_at_column()

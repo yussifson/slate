@@ -29,6 +29,12 @@ const UnivAnalytics = React.lazy(() => import("@/components/universal/UnivAnalyt
 const UnivForm = React.lazy(() => import("@/components/universal/UnivForm"));
 const UnivSearch = React.lazy(() => import("@/components/universal/UnivSearch"));
 
+// Phase 3 Universal Components
+const UnivTimeline = React.lazy(() => import("@/components/universal/UnivTimeline"));
+const UnivDocument = React.lazy(() => import("@/components/universal/UnivDocument"));
+const UnivMessaging = React.lazy(() => import("@/components/universal/UnivMessaging"));
+const UnivNotification = React.lazy(() => import("@/components/universal/UnivNotification"));
+
 // Basic dummy data generator for these components since they might not be hooked to real tables yet if they are purely UI templates in OrbitBuild
 const DUMMY_DATA = Array(5).fill(0).map((_, i) => ({
   id: `id-${i}`,
@@ -121,6 +127,25 @@ export default function OrbitBuildPage() {
         return <UnivForm />;
       case 'search':
         return <UnivSearch />;
+        
+      // Phase 3 Components
+      case 'timeline':
+      case 'project_planning':
+      case 'milestones':
+        return <UnivTimeline />;
+      case 'document':
+      case 'files':
+      case 'storage':
+        return <UnivDocument />;
+      case 'messaging':
+      case 'chat':
+      case 'conversations':
+        return <UnivMessaging />;
+      case 'notification':
+      case 'alerts':
+      case 'reminders':
+        return <UnivNotification />;
+        
       case 'data_table':
       case 'pos':
       default:
