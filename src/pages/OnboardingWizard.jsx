@@ -616,13 +616,13 @@ export default function OnboardingWizard() {
                         </SelectContent>
                       </Select>
                     </div>
-                    <Button 
-                      onClick={handleAddStaff}
-                      disabled={!staffEmail || !staffName || !staffRole}
-                      className="h-11 px-6 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold shadow-sm transition-all active:scale-95"
-                    >
-                      {t("add_team", "Add")}
-                    </Button>
+                      <Button 
+                        onClick={handleAddStaff}
+                        disabled={!staffEmail || !staffName || !staffRole}
+                        className="h-11 px-6 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-bold shadow-sm transition-all active:scale-95"
+                      >
+                        {t("add_team", "Add")}
+                      </Button>
                   </div>
                 </div>
 
