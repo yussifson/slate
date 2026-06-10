@@ -20,8 +20,8 @@ export default function AdminUsers() {
     try {
       const { data: profData, error: profErr } = await supabase
         .from('profiles')
-        .select('id, email, full_name, role, created_at, company_id')
-        .order('created_at', { ascending: false })
+        .select('id, email, role, created_date, company_id')
+        .order('created_date', { ascending: false })
         .limit(100);
 
       if (profErr) throw profErr;
@@ -40,14 +40,9 @@ export default function AdminUsers() {
         }
       }));
 
-      if (joinedData.length === 0) {
-        setProfiles([{ id: 'debug-empty', full_name: `DEBUG: profData=${profData?.length || 0}, compData=${compData?.length || 0}`, email: 'No data returned from DB', role: 'debug' }]);
-      } else {
-        setProfiles(joinedData);
-      }
+      setProfiles(joinedData);
     } catch (err) {
       toast({ title: "Failed to load users", description: err.message, variant: "destructive" });
-      setProfiles([{ id: 'debug-error', full_name: 'ERROR', email: err.message, role: 'error' }]);
     } finally {
       setLoading(false);
     }
@@ -152,7 +147,7 @@ export default function AdminUsers() {
                           </Badge>
                         </td>
                         <td className="px-6 py-4 text-xs text-slate-500 dark:text-slate-400 font-medium">
-                          {user.created_at ? new Date(user.created_at).toLocaleDateString() : 'Unknown'}
+                          {user.created_date ? new Date(user.created_date).toLocaleDateString() : 'Unknown'}
                         </td>
                         <td className="px-6 py-4 text-right">
                           <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
