@@ -54,6 +54,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useVideo } from "@/lib/VideoContext";
 
 export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   const { t } = useTranslation();
@@ -67,6 +68,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   const [renameData, setRenameData] = useState(null);
   const [deleteData, setDeleteData] = useState(null);
   const [showAvatarDialog, setShowAvatarDialog] = useState(false);
+  const { activeRoomUrl } = useVideo();
   const isAdmin = ["super_admin", "admin", "company_admin", "managing_partner"].includes(user?.role);
   const activeIndustry = sessionStorage.getItem('slate_industry_override') || impersonatedCompany?.industry_type || user?.company_industry || 'law';
   
@@ -312,6 +314,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
           const isActive = location.pathname === item.path || (!isRootPath && location.pathname.startsWith(item.path));
           const IconComp = typeof item.icon === 'string' ? ICON_MAP[item.icon] || LayoutDashboard : item.icon;
           const showSection = item.section && !collapsed;
+          const isVideoCallItem = item.path === '/board' || item.label?.toLowerCase().includes('video');
+          const showLiveDot = isVideoCallItem && !!activeRoomUrl;
           return (
             <div key={item.path}>
               {showSection && (
@@ -332,7 +336,15 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
                   )}
                 >
                   {isActive && !collapsed && <div className="absolute left-0 top-1.5 bottom-1.5 w-1 bg-white rounded-r-full" />}
-                  <IconComp className={cn("flex-shrink-0 transition-all", collapsed ? "w-5 h-5" : "w-4 h-4")} />
+                  <span className="relative flex-shrink-0">
+                    <IconComp className={cn("transition-all", collapsed ? "w-5 h-5" : "w-4 h-4")} />
+                    {showLiveDot && (
+                      <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500" />
+                      </span>
+                    )}
+                  </span>
                   {!collapsed && (
                     <div className="flex items-center gap-2 overflow-hidden flex-1 animate-in fade-in duration-200">
                       <span className="whitespace-nowrap truncate">{t(item.label.toLowerCase().replace(/\s+/g, '_'), item.label)}</span>
@@ -377,6 +389,25 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
           );
         })}
       </nav>
+
+      {/* Ongoing Call Banner */}
+      {activeRoomUrl && (
+        <div
+          onClick={() => navigate('/board')}
+          className="mx-3 mb-3 cursor-pointer rounded-xl bg-green-500/10 border border-green-500/30 p-3 flex items-center gap-2.5 hover:bg-green-500/20 transition-colors"
+        >
+          <span className="relative flex h-3 w-3 shrink-0">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500" />
+          </span>
+          {!collapsed && (
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-bold text-green-600 dark:text-green-400 leading-tight">Live Call Active</p>
+              <p className="text-[10px] text-green-600/70 dark:text-green-400/70 truncate">Click to return to call</p>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Modern User Profile & Dropdown Section */}
       <div className="mt-auto p-3 border-t border-sidebar-border bg-sidebar">
