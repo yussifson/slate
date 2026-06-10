@@ -130,8 +130,8 @@ export default function Events() {
         <div>
           <h1 className="text-2xl font-bold text-card-foreground">{t("events_services", "Events & Services")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t(
-            "church_calendar_and_upcoming_g",
-            "Church calendar and upcoming gatherings"
+            "religion_calendar_and_upcoming_g",
+            "Religion calendar and upcoming gatherings"
           )}</p>
         </div>
         <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">

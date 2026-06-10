@@ -786,7 +786,7 @@ export const AppSchema = new Schema({
         notes: column.text,
         outcome: column.text,
     }),
-    church_members: new Table({
+    religion_members: new Table({
         id: column.text,
         created_date: column.text,
         updated_date: column.text,
@@ -805,7 +805,7 @@ export const AppSchema = new Schema({
         total_cases: column.text,
         total_billed: column.text,
     }),
-    church_ministries: new Table({
+    religion_groups: new Table({
         id: column.text,
         created_date: column.text,
         updated_date: column.text,
@@ -826,7 +826,7 @@ export const AppSchema = new Schema({
         notes: column.text,
         tags: column.text,
     }),
-    church_events: new Table({
+    religion_events: new Table({
         id: column.text,
         created_date: column.text,
         updated_date: column.text,

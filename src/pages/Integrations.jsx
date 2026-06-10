@@ -100,7 +100,7 @@ const INTEGRATION_CATALOG = [
     description: 'Send automated SMS and WhatsApp reminders for appointments, hearings, and overdue invoices.',
     logo: whatsappLogo,
     learnMore: 'https://business.whatsapp.com/',
-    industries: ['hospital', 'law', 'school', 'church'],
+    industries: ['hospital', 'law', 'school', 'religion'],
     popular: true
   },
   {

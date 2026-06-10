@@ -159,7 +159,7 @@ export default function SmallGroups() {
                   </div>
                 </div>
                 <h3 className="text-xl font-bold text-card-foreground mb-1">{group.name}</h3>
-                <p className="text-sm text-muted-foreground mb-4">{t("leader", "Leader:")} <Link to="/church/members" className="font-bold text-primary hover:underline">{group.leader}</Link></p>
+                <p className="text-sm text-muted-foreground mb-4">{t("leader", "Leader:")} <Link to="/religion/members" className="font-bold text-primary hover:underline">{group.leader}</Link></p>
                 <div className="space-y-3 text-sm text-muted-foreground bg-muted dark:bg-muted/30 p-4 rounded-lg border border-border">
                   <div className="flex items-center gap-3">
                     <MapPin className="w-4 h-4 text-primary" />
@@ -258,7 +258,7 @@ export default function SmallGroups() {
                   <p className="text-sm font-medium text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
                   <p className="mt-1 text-base text-foreground font-semibold">
                     {key === 'leader' ? (
-                      <Link to="/church/members" className="text-primary hover:underline">{String(value)}</Link>
+                      <Link to="/religion/members" className="text-primary hover:underline">{String(value)}</Link>
                     ) : typeof value === 'object' ? JSON.stringify(value) : String(value)}
                   </p>
                 </div>

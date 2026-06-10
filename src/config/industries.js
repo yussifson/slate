@@ -403,12 +403,12 @@ export const INDUSTRIES = {
     ],
   },
 
-  church: {
-    name: 'Church',
+  religion: {
+    name: 'Religion',
     icon: '⛪',
     terms: {
       client: 'Member', clients: 'Members',
-      case: 'Ministry', cases: 'Ministries',
+      case: 'Group', cases: 'Groups',
       staff: 'Pastor', staffPlural: 'Pastors',
       venue: 'Branch', intake: 'Member Registration',
       hearing: 'Event', hearings: 'Events',
@@ -416,7 +416,7 @@ export const INDUSTRIES = {
     roles: [
       { value: 'company_admin', label: 'Senior Pastor' },
       { value: 'elder', label: 'Elder / Deacon' },
-      { value: 'ministry_leader', label: 'Ministry Leader' },
+      { value: 'group_leader', label: 'Group Leader' },
       { value: 'treasurer', label: 'Treasurer' },
       { value: 'volunteer', label: 'Volunteer' },
       { value: 'member', label: 'Member' },
@@ -424,9 +424,9 @@ export const INDUSTRIES = {
     nav: [
       { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
       { label: 'Members', path: '/members', icon: 'Users' },
-      { label: 'Ministries', path: '/ministries', icon: 'Layers' },
+      { label: 'Groups', path: '/groups', icon: 'Layers' },
       { label: 'Events & Services', path: '/events', icon: 'Calendar' },
-      { label: 'Tithe & Offerings', path: '/tithes', icon: 'HandCoins' },
+      { label: 'Donation & Offerings', path: '/donations', icon: 'HandCoins' },
       { label: 'Volunteers', path: '/volunteers', icon: 'HeartHandshake' },
       { label: 'Sermon Library', path: '/sermons', icon: 'BookOpen' },
       { label: 'Small Groups', path: '/small-groups', icon: 'Users2' },

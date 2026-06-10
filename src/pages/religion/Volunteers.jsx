@@ -31,7 +31,7 @@ export default function Volunteers() {
   // Form State
   const [formData, setFormData] = useState({
     name: '',
-    ministry: 'Ushers',
+    group: 'Ushers',
     role: 'Usher',
     availability: 'Sundays',
     nextService: new Date().toISOString().split('T')[0]
@@ -51,7 +51,7 @@ export default function Volunteers() {
 
     const payload = {
       name: formData.name,
-      ministry: formData.ministry,
+      group: formData.group,
       role: formData.role,
       availability: formData.availability,
       nextService: formData.nextService
@@ -62,13 +62,13 @@ export default function Volunteers() {
       recordType: 'volunteer',
       payload,
       status: 'active',
-      searchText: `${formData.name} ${formData.ministry} ${formData.role}`
+      searchText: `${formData.name} ${formData.group} ${formData.role}`
     }, {
       onSuccess: () => {
         toast.success('Volunteer scheduled successfully!');
         setShowModal(false);
         setEditRecord(null);
-        setFormData({ name: '', ministry: 'Ushers', role: 'Usher', availability: 'Sundays', nextService: new Date().toISOString().split('T')[0] });
+        setFormData({ name: '', group: 'Ushers', role: 'Usher', availability: 'Sundays', nextService: new Date().toISOString().split('T')[0] });
       },
       onError: (err) => {
         toast.error('Failed to schedule volunteer: ' + err.message);
@@ -92,7 +92,7 @@ export default function Volunteers() {
 
   const filtered = volunteers.filter(v =>
     v.name?.toLowerCase().includes(search.toLowerCase()) ||
-    v.ministry?.toLowerCase().includes(search.toLowerCase()) ||
+    v.group?.toLowerCase().includes(search.toLowerCase()) ||
     v.role?.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -102,8 +102,8 @@ export default function Volunteers() {
         <div>
           <h1 className="text-2xl font-bold text-card-foreground">{t("volunteer_roster", "Volunteer Roster")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{t(
-            "manage_church_service_voluntee",
-            "Manage church service volunteers and schedules"
+            "manage_religion_service_voluntee",
+            "Manage religion service volunteers and schedules"
           )}</p>
         </div>
         <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
@@ -113,7 +113,7 @@ export default function Volunteers() {
       <div className="flex items-center gap-3">
         <div className="relative max-w-md flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Search volunteers, ministries, or roles..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
+          <Input placeholder="Search volunteers, groups, or roles..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
         </div>
       </div>
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
@@ -125,8 +125,8 @@ export default function Volunteers() {
               <ClipboardCheck className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary" />
               <p className="font-semibold text-lg text-card-foreground">{t("no_volunteers_scheduled", "No volunteers scheduled")}</p>
               <p className="text-xs mt-1">{t(
-                "add_church_members_to_ushers_t",
-                "Add church members to ushers, tech booths, or teachers using the top right button."
+                "add_religion_members_to_ushers_t",
+                "Add religion members to ushers, tech booths, or teachers using the top right button."
               )}</p>
             </div>
           ) : (
@@ -134,7 +134,7 @@ export default function Volunteers() {
               <thead className="bg-muted border-b border-border">
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("volunteer", "Volunteer")}</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("ministry_role", "Ministry / Role")}</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("group_role", "Group / Role")}</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("availability", "Availability")}</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("next_service_date", "Next Service Date")}</th>
                   <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("action", "Action")}</th>
@@ -145,10 +145,10 @@ export default function Volunteers() {
                   return (
                     <tr key={v.id} className="hover:bg-muted/50 transition-colors">
                       <td className="px-6 py-4 font-bold text-card-foreground flex items-center gap-2">
-                        <Users className="w-4 h-4 text-muted-foreground" /> <Link to="/church/members" className="text-primary hover:underline">{v.name}</Link>
+                        <Users className="w-4 h-4 text-muted-foreground" /> <Link to="/religion/members" className="text-primary hover:underline">{v.name}</Link>
                       </td>
                       <td className="px-6 py-4">
-                        <Link to="/church/ministries" className="font-semibold text-primary/90 dark:text-primary/70 hover:underline block">{v.ministry}</Link>
+                        <Link to="/religion/groups" className="font-semibold text-primary/90 dark:text-primary/70 hover:underline block">{v.group}</Link>
                         <p className="text-xs text-muted-foreground">{v.role}</p>
                       </td>
                       <td className="px-6 py-4 text-muted-foreground font-medium">{v.availability}</td>
@@ -189,7 +189,7 @@ export default function Volunteers() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-border">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-              <ClipboardCheck className="w-5 h-5 text-primary" /> {t("schedule_church_volunteer", "Schedule Church Volunteer")}
+              <ClipboardCheck className="w-5 h-5 text-primary" /> {t("schedule_religion_volunteer", "Schedule Religion Volunteer")}
             </h2>
             <div className="space-y-3">
               <div>
@@ -203,10 +203,10 @@ export default function Volunteers() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("ministry", "Ministry")}</label>
+                  <label className="text-xs font-bold text-muted-foreground uppercase">{t("group", "Group")}</label>
                   <select
-                    value={formData.ministry}
-                    onChange={e => setFormData({ ...formData, ministry: e.target.value })}
+                    value={formData.group}
+                    onChange={e => setFormData({ ...formData, group: e.target.value })}
                     className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
                   >
                     <option>{t("ushers", "Ushers")}</option>
@@ -274,9 +274,9 @@ export default function Volunteers() {
                   <p className="text-sm font-medium text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
                   <p className="mt-1 text-base text-foreground font-semibold">
                     {key === 'name' ? (
-                      <Link to="/church/members" className="text-primary hover:underline">{String(value)}</Link>
-                    ) : key === 'ministry' ? (
-                      <Link to="/church/ministries" className="text-primary hover:underline">{String(value)}</Link>
+                      <Link to="/religion/members" className="text-primary hover:underline">{String(value)}</Link>
+                    ) : key === 'group' ? (
+                      <Link to="/religion/groups" className="text-primary hover:underline">{String(value)}</Link>
                     ) : typeof value === 'object' ? JSON.stringify(value) : String(value)}
                   </p>
                 </div>

@@ -174,7 +174,7 @@ export default function Prayers() {
                     {prayer.name === 'Anonymous' ? (
                       <span className="font-bold text-card-foreground">{prayer.name}</span>
                     ) : (
-                      <Link to="/church/members" className="font-bold text-primary hover:underline">{prayer.name}</Link>
+                      <Link to="/religion/members" className="font-bold text-primary hover:underline">{prayer.name}</Link>
                     )}
                     <span className="text-muted-foreground">•</span>
                     <span className="text-xs text-muted-foreground">{prayer.date}</span>
@@ -283,7 +283,7 @@ export default function Prayers() {
                   <p className="text-sm font-medium text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
                   <p className="mt-1 text-base text-foreground font-semibold">
                     {key === 'name' && value !== 'Anonymous' ? (
-                      <Link to="/church/members" className="text-primary hover:underline">{String(value)}</Link>
+                      <Link to="/religion/members" className="text-primary hover:underline">{String(value)}</Link>
                     ) : typeof value === 'object' ? JSON.stringify(value) : String(value)}
                   </p>
                 </div>

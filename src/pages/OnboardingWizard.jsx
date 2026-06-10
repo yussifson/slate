@@ -1,4 +1,4 @@
-﻿import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
@@ -196,7 +196,7 @@ export default function OnboardingWizard() {
       if (setupMode === 'template') {
         localStorage.removeItem(`active_modules_${companyIdToUse}`); // Template implies all modules
       } else if (setupMode === 'orbit') {
-        // Orbit = blank slate — only dynamic modules appear, no predefined industry pages
+        // Orbit = blank slate � only dynamic modules appear, no predefined industry pages
         localStorage.setItem(`active_modules_${companyIdToUse}`, JSON.stringify(['__orbit__']));
       } else if (setupMode === 'custom') {
         localStorage.setItem(`active_modules_${companyIdToUse}`, JSON.stringify(selectedModules));
@@ -344,7 +344,7 @@ export default function OnboardingWizard() {
                         <SelectItem value="hotel">{t("hotel_hospitality", "Hotel & Hospitality")}</SelectItem>
                         <SelectItem value="logistics">{t("logistics_delivery", "Logistics & Delivery")}</SelectItem>
                         <SelectItem value="insurance">{t("insurance", "Insurance Agency")}</SelectItem>
-                        <SelectItem value="church">{t("church_religion", "Church & Religion")}</SelectItem>
+                        <SelectItem value="religion">{t("religion_religion", "Religious Organization")}</SelectItem>
                         <SelectItem value="hr">{t("hr_erp", "HR & ERP")}</SelectItem>
                       </SelectContent>
                     </Select>

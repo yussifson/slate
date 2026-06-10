@@ -13,15 +13,15 @@ import { Link } from 'react-router-dom';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { CreditCard } from "lucide-react";
 
-export default function Tithes() {
+export default function Donations() {
   const { t } = useTranslation();
   const companyId = useCompanyId();
   const { processPayment, isProcessing } = usePayment();
-  const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('tithe');
+  const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('donation');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
 
-  const tithes = dbRecords.map(r => ({
+  const donations = dbRecords.map(r => ({
     id: r.id,
     status: r.status || 'Active',
     ...r.data
@@ -36,7 +36,7 @@ export default function Tithes() {
   // Form State
   const [formData, setFormData] = useState({
     member: '',
-    type: 'Tithe',
+    type: 'Donation',
     amount: 100,
     method: 'Mobile Money'
   });
@@ -48,7 +48,7 @@ export default function Tithes() {
     setShowModal(true);
   };
 
-  const handleCreateTithe = async () => {
+  const handleCreateDonation = async () => {
     if (!formData.member.trim() || formData.amount <= 0) {
       return toast.error("Please enter a donor name and positive amount");
     }
@@ -74,7 +74,7 @@ export default function Tithes() {
 
         mutateRecord.mutate({
           ...(editRecord ? { id: editRecord.id } : {}),
-          recordType: 'tithe',
+          recordType: 'donation',
           payload,
           status: 'active',
           searchText: `${trxId} ${formData.member} ${formData.type}`
@@ -83,7 +83,7 @@ export default function Tithes() {
             toast.success('Giving transaction logged successfully!');
             setShowModal(false);
             setEditRecord(null);
-            setFormData({ member: '', type: 'Tithe', amount: 100, method: 'Mobile Money' });
+            setFormData({ member: '', type: 'Donation', amount: 100, method: 'Mobile Money' });
           },
           onError: (err) => {
             toast.error('Failed to log giving: ' + err.message);
@@ -95,9 +95,9 @@ export default function Tithes() {
     }
   };
 
-  const handleDeleteTithe = () => {
+  const handleDeleteDonation = () => {
     if (!deleteTargetId) return;
-    deleteRecord.mutate({ id: deleteTargetId, recordType: 'tithe' }, {
+    deleteRecord.mutate({ id: deleteTargetId, recordType: 'donation' }, {
       onSuccess: () => {
         toast.success('Giving record retracted successfully!');
         setDeleteTargetId(null);
@@ -109,22 +109,22 @@ export default function Tithes() {
     });
   };
 
-  const filtered = tithes.filter(item =>
+  const filtered = donations.filter(item =>
     item.member?.toLowerCase().includes(search.toLowerCase()) ||
     item.trxId?.toLowerCase().includes(search.toLowerCase()) ||
     item.type?.toLowerCase().includes(search.toLowerCase())
   );
 
-  const totalTithes = tithes.filter(item => item.type === 'Tithe').reduce((acc, c) => acc + (c.amount || 0), 0);
-  const totalOfferings = tithes.filter(item => item.type === 'Offering').reduce((acc, c) => acc + (c.amount || 0), 0);
-  const totalOthers = tithes.filter(item => item.type !== 'Tithe' && item.type !== 'Offering').reduce((acc, c) => acc + (c.amount || 0), 0);
+  const totalDonations = donations.filter(item => item.type === 'Donation').reduce((acc, c) => acc + (c.amount || 0), 0);
+  const totalOfferings = donations.filter(item => item.type === 'Offering').reduce((acc, c) => acc + (c.amount || 0), 0);
+  const totalOthers = donations.filter(item => item.type !== 'Donation' && item.type !== 'Offering').reduce((acc, c) => acc + (c.amount || 0), 0);
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground">{t("tithes_offerings", "Tithes & Offerings")}</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">{t("manage_church_financial_contri", "Manage church financial contributions")}</p>
+          <h1 className="text-2xl font-bold text-card-foreground">{t("donations_offerings", "Donations & Offerings")}</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{t("manage_religion_financial_contri", "Manage religion financial contributions")}</p>
         </div>
         <div className="flex gap-3">
           <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
@@ -138,9 +138,9 @@ export default function Tithes() {
             <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70">
               <DollarSign className="w-4 h-4" />
             </div>
-            <h3 className="font-semibold text-foreground text-sm">{t("total_tithes_logged", "Total Tithes logged")}</h3>
+            <h3 className="font-semibold text-foreground text-sm">{t("total_donations_logged", "Total Donations logged")}</h3>
           </div>
-          <p className="text-3xl font-bold text-card-foreground">${totalTithes.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+          <p className="text-3xl font-bold text-card-foreground">${totalDonations.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
         </div>
         <div className="bg-card rounded-xl border border-border p-5 shadow-sm">
           <div className="flex items-center gap-3 mb-2">
@@ -176,8 +176,8 @@ export default function Tithes() {
               <DollarSign className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary" />
               <p className="font-semibold text-lg text-card-foreground">{t("no_financial_ledger_entries", "No financial ledger entries")}</p>
               <p className="text-xs mt-1">{t(
-                "record_a_new_tithe_weekly_offe",
-                "Record a new tithe, weekly offering, or building pledge using the top right button."
+                "record_a_new_donation_weekly_offe",
+                "Record a new donation, weekly offering, or building pledge using the top right button."
               )}</p>
             </div>
           ) : (
@@ -199,7 +199,7 @@ export default function Tithes() {
                     <tr key={item.id} className="hover:bg-muted/50 transition-colors">
                       <td className="px-6 py-4 font-mono text-xs text-muted-foreground">{item.trxId}</td>
                       <td className="px-6 py-4 font-bold text-card-foreground">
-                        <Link to="/church/members" className="text-primary hover:underline">{item.member}</Link>
+                        <Link to="/religion/members" className="text-primary hover:underline">{item.member}</Link>
                       </td>
                       <td className="px-6 py-4">
                         <span className="bg-slate-100 dark:bg-slate-500 text-primary/90 dark:text-primary/70 px-2.5 py-1 rounded-full text-xs font-bold">
@@ -263,7 +263,7 @@ export default function Tithes() {
                     onChange={e => setFormData({ ...formData, type: e.target.value })}
                     className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
                   >
-                    <option>{t("tithe", "Tithe")}</option>
+                    <option>{t("donation", "Donation")}</option>
                     <option>{t("offering", "Offering")}</option>
                     <option>{t("building_fund", "Building Fund")}</option>
                     <option>{t("pledge_payment", "Pledge Payment")}</option>
@@ -297,7 +297,7 @@ export default function Tithes() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditRecord(null); }}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleCreateTithe}>{editRecord ? 'Update' : 'Submit Ledger'}</Button>
+              <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleCreateDonation}>{editRecord ? 'Update' : 'Submit Ledger'}</Button>
             </div>
           </div>
         </div>
@@ -305,9 +305,9 @@ export default function Tithes() {
       <ConfirmationModal
         isOpen={deleteTargetId !== null}
         onClose={() => setDeleteTargetId(null)}
-        onConfirm={handleDeleteTithe}
+        onConfirm={handleDeleteDonation}
         title="Retract Offering Record"
-        message="Are you sure you want to completely delete/retract this logged giving transaction from the church ledgers? This will directly adjust all dynamic monthly calculations."
+        message="Are you sure you want to completely delete/retract this logged giving transaction from the religion ledgers? This will directly adjust all dynamic monthly calculations."
       />
       <Sheet open={!!viewRecord} onOpenChange={(open) => !open && setViewRecord(null)}>
         <SheetContent className="sm:max-w-md overflow-y-auto">
@@ -322,7 +322,7 @@ export default function Tithes() {
                   <p className="text-sm font-medium text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
                   <p className="mt-1 text-base text-foreground font-semibold">
                     {key === 'member' ? (
-                      <Link to="/church/members" className="text-primary hover:underline">{String(value)}</Link>
+                      <Link to="/religion/members" className="text-primary hover:underline">{String(value)}</Link>
                     ) : typeof value === 'object' ? JSON.stringify(value) : String(value)}
                   </p>
                 </div>

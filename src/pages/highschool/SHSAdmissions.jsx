@@ -302,7 +302,7 @@ export default function SHSAdmissions() {
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">JHS Attended</label>
                   <Input 
-                    placeholder="e.g. Ridge Church School"
+                    placeholder="e.g. Ridge Religion School"
                     className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
                     value={newApplicant.jhsAttended}
                     onChange={e => setNewApplicant({...newApplicant, jhsAttended: e.target.value})}

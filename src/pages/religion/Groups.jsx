@@ -18,13 +18,13 @@ const COLOR_SCHEMES = [
   { border: 'border-primary/20 dark:border-primary/70', bg: 'bg-slate-50 dark:bg-primary/20', text: 'text-primary', name: 'Emerald' }
 ];
 
-export default function Ministries() {
+export default function Groups() {
   const { t } = useTranslation();
-  const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('ministry');
+  const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('group');
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
 
-  const ministries = dbRecords.map(r => ({
+  const groups = dbRecords.map(r => ({
     id: r.id,
     status: r.status || 'Active',
     ...r.data
@@ -52,9 +52,9 @@ export default function Ministries() {
     setShowModal(true);
   };
 
-  const handleCreateMinistry = () => {
+  const handleCreateGroup = () => {
     if (!formData.name.trim() || !formData.leader.trim()) {
-      return toast.error("Please enter a ministry name and leader");
+      return toast.error("Please enter a group name and leader");
     }
 
     const scheme = COLOR_SCHEMES[formData.schemeIndex];
@@ -69,32 +69,32 @@ export default function Ministries() {
 
     mutateRecord.mutate({
       ...(editRecord ? { id: editRecord.id } : {}),
-      recordType: 'ministry',
+      recordType: 'group',
       payload,
       status: 'active',
       searchText: `${formData.name} ${formData.leader}`
     }, {
       onSuccess: () => {
-        toast.success('Ministry department configured successfully!');
+        toast.success('Group department configured successfully!');
         setShowModal(false);
         setEditRecord(null);
         setFormData({ name: '', leader: '', members: 10, schedule: 'Sundays, 9:00 AM', schemeIndex: 0 });
       },
       onError: (err) => {
-        toast.error('Failed to configure ministry: ' + err.message);
+        toast.error('Failed to configure group: ' + err.message);
       }
     });
   };
 
-  const handleDeleteMinistry = () => {
+  const handleDeleteGroup = () => {
     if (!deleteTargetId) return;
-    deleteRecord.mutate({ id: deleteTargetId, recordType: 'ministry' }, {
+    deleteRecord.mutate({ id: deleteTargetId, recordType: 'group' }, {
       onSuccess: () => {
-        toast.success('Ministry department deleted successfully!');
+        toast.success('Group department deleted successfully!');
         setDeleteTargetId(null);
       },
       onError: (err) => {
-        toast.error('Failed to delete ministry: ' + err.message);
+        toast.error('Failed to delete group: ' + err.message);
         setDeleteTargetId(null);
       }
     });
@@ -110,7 +110,7 @@ export default function Ministries() {
     }
   };
 
-  const filtered = ministries.filter(min =>
+  const filtered = groups.filter(min =>
     min.name?.toLowerCase().includes(search.toLowerCase()) ||
     min.leader?.toLowerCase().includes(search.toLowerCase())
   );
@@ -119,17 +119,17 @@ export default function Ministries() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground">{t("ministries", "Ministries")}</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">{t("manage_church_departments_and_", "Manage church departments and groups")}</p>
+          <h1 className="text-2xl font-bold text-card-foreground">{t("groups", "Groups")}</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{t("manage_religion_departments_and_", "Manage religion departments and groups")}</p>
         </div>
         <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
-          <Plus className="w-4 h-4" /> {t("add_ministry", "Add Ministry")}
+          <Plus className="w-4 h-4" /> {t("add_group", "Add Group")}
         </Button>
       </div>
       <div className="flex items-center gap-3">
         <div className="relative max-w-md flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Search ministries and leaders..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
+          <Input placeholder="Search groups and leaders..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
         </div>
       </div>
       {isDbLoading ? (
@@ -137,7 +137,7 @@ export default function Ministries() {
       ) : filtered.length === 0 ? (
         <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-border">
           <HeartHandshake className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary" />
-          <p className="font-semibold text-lg text-card-foreground">{t("no_ministries_configured", "No ministries configured")}</p>
+          <p className="font-semibold text-lg text-card-foreground">{t("no_groups_configured", "No groups configured")}</p>
           <p className="text-sm mt-1 max-w-md mx-auto">{t(
             "establish_departments_choir_le",
             "Establish departments, choir leaders, youth fellowships, and meeting routines using the top-right button."
@@ -172,7 +172,7 @@ export default function Ministries() {
                   </DropdownMenu>
                 </div>
                 <h3 className="text-xl font-bold text-card-foreground mb-1">{min.name}</h3>
-                <p className="text-sm text-muted-foreground mb-4">{t("leader", "Leader:")} <Link to="/church/members" className="font-bold text-primary hover:underline">{min.leader}</Link></p>
+                <p className="text-sm text-muted-foreground mb-4">{t("leader", "Leader:")} <Link to="/religion/members" className="font-bold text-primary hover:underline">{min.leader}</Link></p>
                 <div className="space-y-2 text-sm text-muted-foreground">
                   <div className="flex justify-between items-center py-2 border-t border-border">
                     <span>{t("members", "Members")}</span>
@@ -192,11 +192,11 @@ export default function Ministries() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-border">
             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-              <HeartHandshake className="w-5 h-5 text-primary" /> {t("create_ministry_dept", "Create Ministry Dept")}
+              <HeartHandshake className="w-5 h-5 text-primary" /> {t("create_group_dept", "Create Group")}
             </h2>
             <div className="space-y-3">
               <div>
-                <label className="text-xs font-bold text-muted-foreground uppercase">{t("ministry_name", "Ministry Name")}</label>
+                <label className="text-xs font-bold text-muted-foreground uppercase">{t("group_name", "Group Name")}</label>
                 <Input
                   value={formData.name}
                   onChange={e => setFormData({ ...formData, name: e.target.value })}
@@ -249,7 +249,7 @@ export default function Ministries() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditRecord(null); }}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleCreateMinistry}>{editRecord ? 'Update' : 'Save Dept'}</Button>
+              <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleCreateGroup}>{editRecord ? 'Update' : 'Save Dept'}</Button>
             </div>
           </div>
         </div>
@@ -257,9 +257,9 @@ export default function Ministries() {
       <ConfirmationModal
         isOpen={deleteTargetId !== null}
         onClose={() => setDeleteTargetId(null)}
-        onConfirm={handleDeleteMinistry}
-        title="Delete Ministry"
-        message="Are you sure you want to completely disband this ministry group? This will remove all associated meeting schedules permanently."
+        onConfirm={handleDeleteGroup}
+        title="Delete Group"
+        message="Are you sure you want to completely disband this group group? This will remove all associated meeting schedules permanently."
       />
       <Sheet open={!!viewRecord} onOpenChange={(open) => !open && setViewRecord(null)}>
         <SheetContent className="sm:max-w-md overflow-y-auto">
@@ -274,7 +274,7 @@ export default function Ministries() {
                   <p className="text-sm font-medium text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
                   <p className="mt-1 text-base text-foreground font-semibold">
                     {key === 'leader' ? (
-                      <Link to="/church/members" className="text-primary hover:underline">{String(value)}</Link>
+                      <Link to="/religion/members" className="text-primary hover:underline">{String(value)}</Link>
                     ) : typeof value === 'object' ? JSON.stringify(value) : String(value)}
                   </p>
                 </div>

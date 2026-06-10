@@ -14,7 +14,7 @@ export default function MemberPortal() {
 
   // Real Database Hooks
   const { data: dbEvents = [], isLoading: isEventsLoading } = useIndustryRecords('event');
-  const { data: dbTithes = [], isLoading: isTithesLoading } = useIndustryRecords('tithe');
+  const { data: dbDonations = [], isLoading: isDonationsLoading } = useIndustryRecords('donation');
   const mutateRecord = useMutateIndustryRecord();
 
   const [showPrayerModal, setShowPrayerModal] = useState(false);
@@ -22,9 +22,9 @@ export default function MemberPortal() {
 
   const events = dbEvents.map(r => ({ id: r.id, status: r.status, ...r.data }));
 
-  // For demo, we filter tithes for a mock user name. In a real app this uses user.email or user.id
-  const myTithes = dbTithes.map(r => ({ id: r.id, ...r.data }));
-  const totalGiven = myTithes.reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
+  // For demo, we filter donations for a mock user name. In a real app this uses user.email or user.id
+  const myDonations = dbDonations.map(r => ({ id: r.id, ...r.data }));
+  const totalGiven = myDonations.reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
 
   const handleCreatePrayer = () => {
     if (!prayerData.title.trim()) return toast.error("Please provide a prayer title");
@@ -48,7 +48,7 @@ export default function MemberPortal() {
     });
   };
 
-  const isLoading = isEventsLoading || isTithesLoading;
+  const isLoading = isEventsLoading || isDonationsLoading;
 
   if (isLoading) {
     return <div className="py-12 text-center text-muted-foreground">{t("loading_your_member_profile", "Loading your member profile...")}</div>;
@@ -59,10 +59,10 @@ export default function MemberPortal() {
       {/* Header */}
       <div className="bg-gradient-to-r from-primary to-primary/90 rounded-2xl p-6 md:p-8 text-white shadow-md relative overflow-hidden">
         <div className="relative z-10">
-          <h1 className="text-2xl md:text-3xl font-bold mb-2">{t("welcome_to_your_church_portal", "Welcome to Your Church Portal")}</h1>
+          <h1 className="text-2xl md:text-3xl font-bold mb-2">{t("welcome_to_your_religion_portal", "Welcome to Your Religion Portal")}</h1>
           <p className="text-primary/10 max-w-xl">{t(
             "stay_connected_with_your_churc",
-            "Stay connected with your church family. View upcoming events, track your giving, and submit prayer requests."
+            "Stay connected with your religious community. View upcoming events, track your giving, and submit prayer requests."
           )}</p>
         </div>
         <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none transform translate-x-1/4 translate-y-1/4">
@@ -129,17 +129,17 @@ export default function MemberPortal() {
             </div>
             <div className="p-4 space-y-3">
                <h4 className="font-semibold text-sm mb-2">{t("recent_giving", "Recent Giving")}</h4>
-               {myTithes.length === 0 ? (
+               {myDonations.length === 0 ? (
                  <p className="text-xs text-muted-foreground text-center">{t("no_giving_history_found", "No giving history found.")}</p>
                ) : (
-                 myTithes.slice(0, 3).map(tithe => {
+                 myDonations.slice(0, 3).map(donation => {
                    return (
-                     <div key={tithe.id} className="flex justify-between items-center text-sm">
+                     <div key={donation.id} className="flex justify-between items-center text-sm">
                        <div>
-                         <p className="font-medium">{tithe.type}</p>
-                         <p className="text-[10px] text-muted-foreground">{tithe.date}</p>
+                         <p className="font-medium">{donation.type}</p>
+                         <p className="text-[10px] text-muted-foreground">{donation.date}</p>
                        </div>
-                       <span className="font-bold">${tithe.amount}</span>
+                       <span className="font-bold">${donation.amount}</span>
                      </div>
                    );
                  })

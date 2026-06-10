@@ -40,8 +40,8 @@ const PAGE_CONTEXT = {
   '/classes': { title: 'Classes', suite: 'School', desc: 'class management' },
   '/grades': { title: 'Grades', suite: 'School', desc: 'student grades' },
   '/attendance': { title: 'Attendance', suite: 'School', desc: 'attendance tracking' },
-  '/members': { title: 'Members', suite: 'Church', desc: 'church member directory' },
-  '/tithes': { title: 'Tithes', suite: 'Church', desc: 'tithe and offering records' },
+  '/members': { title: 'Members', suite: 'Religion', desc: 'religion member directory' },
+  '/donations': { title: 'Donations', suite: 'Religion', desc: 'donation and offering records' },
   '/employees': { title: 'Employees', suite: 'HR', desc: 'HR employee management' },
   '/payroll': { title: 'Payroll', suite: 'HR', desc: 'payroll processing' },
   '/recruitment': { title: 'Recruitment', suite: 'HR', desc: 'job applications and hiring' },
@@ -503,11 +503,11 @@ EXACT VERIFIED ROUTE MAP — ALWAYS USE THESE EXACT PATHS FOR navigate_to. NEVER
 /restaurant → Restaurant
 /guest-requests → Guest Requests
 
-# Church Suite
+# Religion Suite
 /members → Members
-/ministries → Ministries
+/groups → Groups
 /events → Events
-/tithes → Tithes
+/donations → Donations
 /volunteers → Volunteers
 /sermons → Sermons
 /small-groups → Small Groups

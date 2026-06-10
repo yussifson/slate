@@ -40,8 +40,8 @@ const PAGE_CONTEXT = {
   '/classes': { title: 'Classes', suite: 'School', desc: 'class management' },
   '/grades': { title: 'Grades', suite: 'School', desc: 'student grades' },
   '/attendance': { title: 'Attendance', suite: 'School', desc: 'attendance tracking' },
-  '/members': { title: 'Members', suite: 'Church', desc: 'church member directory' },
-  '/tithes': { title: 'Tithes', suite: 'Church', desc: 'tithe and offering records' },
+  '/members': { title: 'Members', suite: 'Religion', desc: 'religion member directory' },
+  '/donations': { title: 'Donations', suite: 'Religion', desc: 'donation and offering records' },
   '/employees': { title: 'Employees', suite: 'HR', desc: 'HR employee management' },
   '/payroll': { title: 'Payroll', suite: 'HR', desc: 'payroll processing' },
   '/recruitment': { title: 'Recruitment', suite: 'HR', desc: 'job applications and hiring' },
@@ -462,11 +462,11 @@ EXACT VERIFIED ROUTE MAP ΓÇö ALWAYS USE THESE EXACT PATHS FOR navigate_to. NE
 /restaurant ΓåÆ Restaurant
 /guest-requests ΓåÆ Guest Requests
 
-# Church Suite
+# Religion Suite
 /members ΓåÆ Members
-/ministries ΓåÆ Ministries
+/groups ΓåÆ Groups
 /events ΓåÆ Events
-/tithes ΓåÆ Tithes
+/donations ΓåÆ Donations
 /volunteers ΓåÆ Volunteers
 /sermons ΓåÆ Sermons
 /small-groups ΓåÆ Small Groups

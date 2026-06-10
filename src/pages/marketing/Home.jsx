@@ -265,11 +265,11 @@ const suites = [
       features: ['Booking & Reservations', 'Housekeeping Manager', 'Restaurant POS', 'Guest CRM']
     },
     {
-      id: 'church',
-      name: 'Ministry WorkSlate',
-      tagline: 'Church & Congregation Management',
+      id: 'religion',
+      name: 'Religion WorkSlate',
+      tagline: 'Religious Organization Management',
       description: 'Engage your congregation with powerful tools for donation tracking, event scheduling, and member communication.',
-      features: ['Member Database', 'Donation & Tithing', 'Event Management', 'Volunteer Scheduling']
+      features: ['Member Database', 'Donations & Contributions', 'Event Management', 'Volunteer Scheduling']
     },
     {
       id: 'insurance',

@@ -155,12 +155,12 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
     waiter: ["/", "/restaurant", "/guest-requests", "/chat"],
     maintenance: ["/", "/rooms", "/guest-requests", "/tasks", "/chat"],
 
-    // Church Roles
-    elder: ["/", "/members", "/ministries", "/events", "/tithes", "/volunteers", "/prayers", "/attendance", "/documents", "/chat", "/board"],
-    ministry_leader: ["/", "/ministries", "/events", "/volunteers", "/small-groups", "/prayers", "/attendance", "/documents", "/chat"],
-    treasurer: ["/", "/tithes", "/reports", "/documents", "/chat"],
+    // Religion Roles
+    elder: ["/", "/members", "/groups", "/events", "/donations", "/volunteers", "/prayers", "/attendance", "/documents", "/chat", "/board"],
+    group_leader: ["/", "/groups", "/events", "/volunteers", "/small-groups", "/prayers", "/attendance", "/documents", "/chat"],
+    treasurer: ["/", "/donations", "/reports", "/documents", "/chat"],
     volunteer: ["/", "/events", "/volunteers", "/tasks", "/chat"],
-    member: ["/", "/events", "/small-groups", "/prayers", "/sermons", "/tithes"],
+    member: ["/", "/events", "/small-groups", "/prayers", "/sermons", "/donations"],
 
     // Insurance Agency Roles
     underwriter: ["/", "/policies", "/claims", "/underwriting", "/documents", "/chat", "/email-inbox"],

@@ -117,16 +117,16 @@ import HotelRestaurant from './pages/hotel/Restaurant';
 import HotelGuestRequests from './pages/hotel/GuestRequests';
 import HotelGuestPortal from './pages/hotel/GuestPortal';
 
-// Church Pages
-import ChurchMembers from './pages/church/Members';
-import ChurchMinistries from './pages/church/Ministries';
-import ChurchEvents from './pages/church/Events';
-import ChurchTithes from './pages/church/Tithes';
-import ChurchVolunteers from './pages/church/Volunteers';
-import ChurchSermons from './pages/church/Sermons';
-import ChurchSmallGroups from './pages/church/SmallGroups';
-import ChurchPrayers from './pages/church/Prayers';
-import ChurchMemberPortal from './pages/church/MemberPortal';
+// Religion Pages
+import ReligionMembers from './pages/religion/Members';
+import ReligionGroups from './pages/religion/Groups';
+import ReligionEvents from './pages/religion/Events';
+import ReligionDonations from './pages/religion/Donations';
+import ReligionVolunteers from './pages/religion/Volunteers';
+import ReligionSermons from './pages/religion/Sermons';
+import ReligionSmallGroups from './pages/religion/SmallGroups';
+import ReligionPrayers from './pages/religion/Prayers';
+import ReligionMemberPortal from './pages/religion/MemberPortal';
 
 // Insurance Pages
 import InsurancePolicies from './pages/insurance/Policies';
@@ -492,16 +492,16 @@ function PlatformRoutes() {
       <Route path="/guest-requests" element={<HotelGuestRequests />} />
       <Route path="/guest-portal" element={<HotelGuestPortal />} />
 
-      {/* Church Suite */}
-      <Route path="/members" element={<ChurchMembers />} />
-      <Route path="/ministries" element={<ChurchMinistries />} />
-      <Route path="/events" element={<ChurchEvents />} />
-      <Route path="/tithes" element={<ChurchTithes />} />
-      <Route path="/volunteers" element={<ChurchVolunteers />} />
-      <Route path="/sermons" element={<ChurchSermons />} />
-      <Route path="/small-groups" element={<ChurchSmallGroups />} />
-      <Route path="/prayers" element={<ChurchPrayers />} />
-      <Route path="/member-portal" element={<ChurchMemberPortal />} />
+      {/* Religion Suite */}
+      <Route path="/members" element={<ReligionMembers />} />
+      <Route path="/groups" element={<ReligionGroups />} />
+      <Route path="/events" element={<ReligionEvents />} />
+      <Route path="/donations" element={<ReligionDonations />} />
+      <Route path="/volunteers" element={<ReligionVolunteers />} />
+      <Route path="/sermons" element={<ReligionSermons />} />
+      <Route path="/small-groups" element={<ReligionSmallGroups />} />
+      <Route path="/prayers" element={<ReligionPrayers />} />
+      <Route path="/member-portal" element={<ReligionMemberPortal />} />
 
       {/* Insurance Suite */}
       <Route path="/policies" element={<InsurancePolicies />} />

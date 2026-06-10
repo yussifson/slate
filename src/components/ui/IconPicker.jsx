@@ -18,7 +18,7 @@ const VALID_ICON_NAMES = [
   'Smile', 'Star', 'Sun', 'Tablet', 'Tag', 'Target', 'Wrench', 'Trash2',
   'TrendingUp', 'Type', 'Umbrella', 'Unlock', 'Upload', 'User', 'UserCheck',
   'UserPlus', 'Video', 'Volume2', 'Watch', 'Wifi', 'Zap', 'Award', 'Truck',
-  'Stethoscope', 'GraduationCap', 'ChurchIcon', 'FlaskConical', 'Pill', 'Bed',
+  'Stethoscope', 'GraduationCap', 'HeartHandshake', 'FlaskConical', 'Pill', 'Bed',
   'Users2', 'Network', 'MapPin', 'Warehouse', 'Car', 'HandCoins', 'Banknote',
   'FileSearch', 'Receipt', 'Package2', 'LayoutGrid', 'Table2', 'Kanban',
   'ClipboardList', 'ClipboardCheck', 'CheckSquare', 'Scale', 'BookMarked',

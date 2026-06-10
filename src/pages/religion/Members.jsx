@@ -123,7 +123,7 @@ export default function Members() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-card-foreground">{t("member_directory", "Member Directory")}</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">{t("manage_church_congregants_and_", "Manage church congregants and visitors")}</p>
+          <p className="text-sm text-muted-foreground mt-0.5">{t("manage_religion_congregants_and_", "Manage religion congregants and visitors")}</p>
         </div>
         <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
           <UserPlus className="w-4 h-4" /> {t("add_member", "Add Member")}
@@ -189,7 +189,7 @@ export default function Members() {
                       </td>
                       <td className="px-6 py-4">
                         <p className="text-card-foreground font-medium">{m.type}</p>
-                        <Link to="/church/small-groups" className="text-xs text-primary hover:underline">{m.group}</Link>
+                        <Link to="/religion/small-groups" className="text-xs text-primary hover:underline">{m.group}</Link>
                       </td>
                       <td className="px-6 py-4 text-muted-foreground">
                         <div className="flex items-center gap-2">
@@ -237,7 +237,7 @@ export default function Members() {
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 border border-border">
-            <h2 className="text-lg font-bold text-card-foreground">{t("add_church_member", "Add Church Member")}</h2>
+            <h2 className="text-lg font-bold text-card-foreground">{t("add_religion_member", "Add Religion Member")}</h2>
             <div className="space-y-3">
               <div>
                 <label className="text-xs font-bold text-muted-foreground uppercase">{t("full_name", "Full Name")}</label>
@@ -306,7 +306,7 @@ export default function Members() {
                   <p className="text-sm font-medium text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
                   <p className="mt-1 text-base text-foreground font-semibold">
                     {key === 'group' ? (
-                      <Link to="/church/small-groups" className="text-primary hover:underline">{String(value)}</Link>
+                      <Link to="/religion/small-groups" className="text-primary hover:underline">{String(value)}</Link>
                     ) : typeof value === 'object' ? JSON.stringify(value) : String(value)}
                   </p>
                 </div>

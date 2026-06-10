@@ -156,7 +156,7 @@ export default function Sermons() {
                   <div className="p-5">
                     <span className="text-xs font-bold uppercase tracking-wider text-primary dark:text-primary/70 mb-2 inline-block">{sermon.series}</span>
                     <h3 className="text-lg font-bold text-card-foreground mb-1 leading-tight">{sermon.title}</h3>
-                    <p className="text-sm text-muted-foreground mb-4"><Link to="/church/members" className="hover:underline text-primary">{sermon.preacher}</Link> • {sermon.date}</p>
+                    <p className="text-sm text-muted-foreground mb-4"><Link to="/religion/members" className="hover:underline text-primary">{sermon.preacher}</Link> • {sermon.date}</p>
 
                     <div className="flex items-center gap-2 bg-muted dark:bg-muted/30 p-2.5 rounded-lg border border-border mb-4">
                       <BookOpen className="w-4 h-4 text-muted-foreground" />
@@ -255,7 +255,7 @@ export default function Sermons() {
                   <p className="text-sm font-medium text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
                   <p className="mt-1 text-base text-foreground font-semibold">
                     {key === 'preacher' ? (
-                      <Link to="/church/members" className="text-primary hover:underline">{String(value)}</Link>
+                      <Link to="/religion/members" className="text-primary hover:underline">{String(value)}</Link>
                     ) : typeof value === 'object' ? JSON.stringify(value) : String(value)}
                   </p>
                 </div>
