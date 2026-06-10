@@ -83,6 +83,16 @@ const UnivSiteInspection = React.lazy(() => import("@/components/universal/UnivS
 const UnivSafety = React.lazy(() => import("@/components/universal/UnivSafety"));
 const UnivContractor = React.lazy(() => import("@/components/universal/UnivContractor"));
 
+// Phase 9 Universal Components (Legal & Manufacturing Suites)
+const UnivCaseManagement = React.lazy(() => import("@/components/universal/UnivCaseManagement"));
+const UnivLegalDocument = React.lazy(() => import("@/components/universal/UnivLegalDocument"));
+const UnivCourtCalendar = React.lazy(() => import("@/components/universal/UnivCourtCalendar"));
+const UnivClientPortal = React.lazy(() => import("@/components/universal/UnivClientPortal"));
+const UnivProduction = React.lazy(() => import("@/components/universal/UnivProduction"));
+const UnivBOM = React.lazy(() => import("@/components/universal/UnivBOM"));
+const UnivMachine = React.lazy(() => import("@/components/universal/UnivMachine"));
+const UnivQualityControl = React.lazy(() => import("@/components/universal/UnivQualityControl"));
+
 // Basic dummy data generator for these components since they might not be hooked to real tables yet if they are purely UI templates in OrbitBuild
 const DUMMY_DATA = Array(5).fill(0).map((_, i) => ({
   id: `id-${i}`,
@@ -329,6 +339,34 @@ export default function OrbitBuildPage() {
       case 'contractors':
       case 'subcontractors':
         return <UnivContractor />;
+
+      // Phase 9 Components (Legal & Manufacturing)
+      case 'cases':
+      case 'case_management':
+        return <UnivCaseManagement />;
+      case 'legal_documents':
+      case 'contracts':
+        return <UnivLegalDocument />;
+      case 'court_calendar':
+      case 'hearings':
+        return <UnivCourtCalendar />;
+      case 'client_portal':
+      case 'client_access':
+        return <UnivClientPortal />;
+      case 'production':
+      case 'manufacturing':
+      case 'production_runs':
+        return <UnivProduction />;
+      case 'bom':
+      case 'bill_of_materials':
+        return <UnivBOM />;
+      case 'machines':
+      case 'equipment_maintenance':
+        return <UnivMachine />;
+      case 'quality_control':
+      case 'qc':
+      case 'inspections':
+        return <UnivQualityControl />;
 
       case 'data_table':
       case 'pos':
