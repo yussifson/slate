@@ -6,7 +6,7 @@
 -- 1. CRM Leads (univ_crm_leads)
 CREATE TABLE IF NOT EXISTS public.univ_crm_leads (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    company_id UUID NOT NULL REFERENCES public.companies(id) ON DELETE CASCADE,
+    company_id UUID NOT NULL,
     first_name TEXT NOT NULL,
     last_name TEXT NOT NULL,
     email TEXT,
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS public.univ_crm_leads (
     value NUMERIC DEFAULT 0,
     source TEXT,
     notes TEXT,
-    assigned_to UUID REFERENCES auth.users(id),
+    assigned_to UUID,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -27,7 +27,7 @@ USING (company_id IN (SELECT company_id FROM public.profiles WHERE profiles.id =
 -- 2. Invoices (univ_invoices)
 CREATE TABLE IF NOT EXISTS public.univ_invoices (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    company_id UUID NOT NULL REFERENCES public.companies(id) ON DELETE CASCADE,
+    company_id UUID NOT NULL,
     client_name TEXT NOT NULL,
     client_email TEXT,
     invoice_number TEXT NOT NULL,
@@ -48,7 +48,7 @@ USING (company_id IN (SELECT company_id FROM public.profiles WHERE profiles.id =
 -- 3. Appointments (univ_appointments)
 CREATE TABLE IF NOT EXISTS public.univ_appointments (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    company_id UUID NOT NULL REFERENCES public.companies(id) ON DELETE CASCADE,
+    company_id UUID NOT NULL,
     title TEXT NOT NULL,
     description TEXT,
     attendee_name TEXT NOT NULL,
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS public.univ_appointments (
     end_time TIMESTAMPTZ NOT NULL,
     status TEXT DEFAULT 'Scheduled', -- Scheduled, Completed, Cancelled, No-Show
     location TEXT,
-    assigned_staff UUID REFERENCES auth.users(id),
+    assigned_staff UUID,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -69,7 +69,7 @@ USING (company_id IN (SELECT company_id FROM public.profiles WHERE profiles.id =
 -- 4. Inventory (univ_inventory)
 CREATE TABLE IF NOT EXISTS public.univ_inventory (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    company_id UUID NOT NULL REFERENCES public.companies(id) ON DELETE CASCADE,
+    company_id UUID NOT NULL,
     item_name TEXT NOT NULL,
     sku TEXT,
     category TEXT,
@@ -90,7 +90,7 @@ USING (company_id IN (SELECT company_id FROM public.profiles WHERE profiles.id =
 -- 5. HR Employees (univ_hr_employees)
 CREATE TABLE IF NOT EXISTS public.univ_hr_employees (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    company_id UUID NOT NULL REFERENCES public.companies(id) ON DELETE CASCADE,
+    company_id UUID NOT NULL,
     first_name TEXT NOT NULL,
     last_name TEXT NOT NULL,
     email TEXT NOT NULL,
@@ -100,8 +100,8 @@ CREATE TABLE IF NOT EXISTS public.univ_hr_employees (
     status TEXT DEFAULT 'Active', -- Active, On Leave, Terminated, Onboarding
     hire_date DATE,
     salary NUMERIC,
-    manager_id UUID REFERENCES public.univ_hr_employees(id),
-    user_id UUID REFERENCES auth.users(id), -- If they have an account
+    manager_id UUID,
+    user_id UUID, -- If they have an account
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );

@@ -20,6 +20,15 @@ const UnivAppointments = React.lazy(() => import("@/components/universal/UnivApp
 const UnivInventory = React.lazy(() => import("@/components/universal/UnivInventory"));
 const UnivHREmployee = React.lazy(() => import("@/components/universal/UnivHREmployee"));
 
+// Phase 2 Universal Components
+const UnivDataGrid = React.lazy(() => import("@/components/universal/UnivDataGrid"));
+const UnivKanban = React.lazy(() => import("@/components/universal/UnivKanban"));
+const UnivCalendar = React.lazy(() => import("@/components/universal/UnivCalendar"));
+const UnivDashboard = React.lazy(() => import("@/components/universal/UnivDashboard"));
+const UnivAnalytics = React.lazy(() => import("@/components/universal/UnivAnalytics"));
+const UnivForm = React.lazy(() => import("@/components/universal/UnivForm"));
+const UnivSearch = React.lazy(() => import("@/components/universal/UnivSearch"));
+
 // Basic dummy data generator for these components since they might not be hooked to real tables yet if they are purely UI templates in OrbitBuild
 const DUMMY_DATA = Array(5).fill(0).map((_, i) => ({
   id: `id-${i}`,
@@ -78,7 +87,7 @@ export default function OrbitBuildPage() {
 
   // Map the component_id to the actual universal component
   const renderComponent = () => {
-        switch (pageDef.component_id) {
+            switch (pageDef.component_id) {
       case 'crm':
         return <UnivCRM />;
       case 'invoice':
@@ -96,19 +105,26 @@ export default function OrbitBuildPage() {
       case 'contact_management':
         return <UnivHREmployee />;
         
-      // Fallbacks to Generic Dynamic Views
+      // Generic Generic Views (Phase 2)
       case 'dashboard_widgets':
+      case 'dashboard':
+        return <UnivDashboard />;
       case 'analytics':
-        return <DynamicDashboard data={DUMMY_DATA} fieldDefinitions={DUMMY_FIELDS} />;
+      case 'reports':
+        return <UnivAnalytics />;
       case 'kanban':
-        return <DynamicKanbanView data={DUMMY_DATA} fieldDefinitions={DUMMY_FIELDS} />;
+      case 'pipeline':
+        return <UnivKanban />;
       case 'form_wizard':
       case 'approval':
-        return <DynamicFormWizard data={DUMMY_DATA} fieldDefinitions={DUMMY_FIELDS} />;
+      case 'form':
+        return <UnivForm />;
+      case 'search':
+        return <UnivSearch />;
       case 'data_table':
       case 'pos':
       default:
-        return <DynamicTable data={DUMMY_DATA} fieldDefinitions={DUMMY_FIELDS} />;
+        return <UnivDataGrid title={pageDef.page_name} />;
     }
   };
 
