@@ -97,7 +97,7 @@ async function runAI(model, payload, retryCount = 0) {
  * @param {Array} messages - Array of {role, content} objects
  */
 export async function generateText(messages) {
-  const result = await runAI(MODELS.text, { messages });
+  const result = await runAI(MODELS.text, { messages, max_tokens: 2500 });
   return result.response;
 }
 
