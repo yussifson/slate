@@ -115,7 +115,11 @@ export default function OnboardingWizard() {
              const cName = workspaceName || md.company_name || 'My Workspace';
              const cSubdomain = subdomain || md.subdomain || `workspace-${Date.now()}`;
              
-             const finalIndustry = (industry === 'school' && educationLevel !== 'basic') ? educationLevel : industry;
+             let finalIndustry = (industry === 'school' && educationLevel !== 'basic') ? educationLevel : industry;
+             if (setupMode === 'orbit') {
+               finalIndustry = 'orbit_build';
+             }
+             
              const finalEduLevel = (industry === 'school' && educationLevel === 'basic') ? 'basic' : null;
 
              const { data: newComp, error: newCompErr } = await supabase.from('companies').insert({
@@ -144,7 +148,10 @@ export default function OnboardingWizard() {
       }
 
       // 1. Update company details
-      const finalIndustry = (industry === 'school' && educationLevel !== 'basic') ? educationLevel : industry;
+      let finalIndustry = (industry === 'school' && educationLevel !== 'basic') ? educationLevel : industry;
+      if (setupMode === 'orbit') {
+         finalIndustry = 'orbit_build';
+      }
 
       const { error: compError } = await supabase
         .from('companies')
