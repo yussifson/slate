@@ -56,6 +56,14 @@ const UnivClassAttendance = React.lazy(() => import("@/components/universal/Univ
 const UnivLMS = React.lazy(() => import("@/components/universal/UnivLMS"));
 const UnivParentPortal = React.lazy(() => import("@/components/universal/UnivParentPortal"));
 
+// Phase 6 Universal Components (Healthcare Suite)
+const UnivPatient = React.lazy(() => import("@/components/universal/UnivPatient"));
+const UnivEMR = React.lazy(() => import("@/components/universal/UnivEMR"));
+const UnivPrescription = React.lazy(() => import("@/components/universal/UnivPrescription"));
+const UnivLab = React.lazy(() => import("@/components/universal/UnivLab"));
+const UnivWard = React.lazy(() => import("@/components/universal/UnivWard"));
+const UnivTelemedicine = React.lazy(() => import("@/components/universal/UnivTelemedicine"));
+
 // Basic dummy data generator for these components since they might not be hooked to real tables yet if they are purely UI templates in OrbitBuild
 const DUMMY_DATA = Array(5).fill(0).map((_, i) => ({
   id: `id-${i}`,
@@ -227,6 +235,31 @@ export default function OrbitBuildPage() {
       case 'parent_portal':
       case 'guardians':
         return <UnivParentPortal />;
+
+      // Phase 6 Components (Healthcare Suite)
+      case 'patient_records':
+      case 'patients':
+        return <UnivPatient />;
+      case 'emr':
+      case 'medical_records':
+      case 'clinical_notes':
+        return <UnivEMR />;
+      case 'prescriptions':
+      case 'medications':
+      case 'pharmacy':
+        return <UnivPrescription />;
+      case 'lab_results':
+      case 'labs':
+      case 'diagnostics':
+        return <UnivLab />;
+      case 'ward_management':
+      case 'wards':
+      case 'beds':
+        return <UnivWard />;
+      case 'telemedicine':
+      case 'video_consult':
+      case 'virtual_visit':
+        return <UnivTelemedicine />;
 
       case 'data_table':
       case 'pos':
