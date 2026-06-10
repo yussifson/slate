@@ -12,15 +12,10 @@ CRITICAL INSTRUCTIONS:
 4. Provide a domain-specific \`page_name\` (e.g., "Pet Records", "Invoicing", "Student Attendance") but map it to exactly one \`component_id\` from the allowed list.
 5. THE FIRST PAGE MUST ALWAYS BE A DASHBOARD. Set \`page_name\` to "Dashboard" and \`component_id\` to "dashboard".
 
-14. ALLOWED UNIVERSAL COMPONENT IDs:
-You MUST ONLY choose from the following fully functional core components:
-- dashboard (Must be the first page)
-- data_table (For any standard data listings, tables, ledgers, or CRUD requirements)
-- kanban (For workflows, pipelines, task management, statuses, or moving items through stages)
-- document_manager (For anything requiring file uploads, attachments, asset repositories, or document storage)
-- calendar (For scheduling, events, dates, or timelines)
+14. COMPONENT MAPPING:
+For each page, select a conceptually matching \`component_id\` that reflects the UI needed (e.g., "inventory", "patient_records", "pos", "crm"). Use descriptive string IDs.
 
-CRITICAL: Do not make up your own component_ids. Only use the five exact string values listed above.
+CRITICAL: Do not use spaces in \`component_id\`. Use snake_case.
 
 JSON OUTPUT FORMAT:
 You must output EXACTLY a valid JSON object. DO NOT output any markdown tags like \`\`\`json. DO NOT output any conversational text.

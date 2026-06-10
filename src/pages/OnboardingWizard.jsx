@@ -122,21 +122,43 @@ export default function OnboardingWizard() {
              
              const finalEduLevel = (industry === 'school' && educationLevel === 'basic') ? 'basic' : null;
 
-             const { data: newComp, error: newCompErr } = await supabase.from('companies').insert({
-                 name: cName,
-                 subdomain: cSubdomain,
-                 email: user.email,
-                 industry_type: finalIndustry || 'law',
-                 education_level: finalEduLevel,
-                 country: country,
-                 currency: currency,
-                 subscription_plan: 'starter',
-                 subscription_status: 'trial',
-                 status: 'active'
-             }).select().single();
-             
-             if (newCompErr) throw newCompErr;
-             companyIdToUse = newComp.id;
+               let insertSuccess = false;
+               let attempt = 0;
+               let finalSubdomain = cSubdomain;
+               let newCompData = null;
+
+               while (!insertSuccess && attempt < 3) {
+                 const { data: newComp, error: newCompErr } = await supabase.from('companies').insert({
+                     name: cName,
+                     subdomain: finalSubdomain,
+                     email: user.email,
+                     industry_type: finalIndustry || 'law',
+                     education_level: finalEduLevel,
+                     country: country,
+                     currency: currency,
+                     subscription_plan: 'starter',
+                     subscription_status: 'trial',
+                     status: 'active'
+                 }).select().single();
+
+                 if (newCompErr) {
+                   if (newCompErr.code === '23505') {
+                     // Duplicate subdomain, try appending a random string
+                     finalSubdomain = `${cSubdomain}-${Math.random().toString(36).substring(2, 6)}`;
+                     attempt++;
+                   } else {
+                     throw newCompErr;
+                   }
+                 } else {
+                   insertSuccess = true;
+                   newCompData = newComp;
+                 }
+               }
+
+               if (!insertSuccess) {
+                 throw new Error("Could not generate a unique subdomain. Please try again.");
+               }
+               companyIdToUse = newCompData.id;
           }
 
          const { error: profErr } = await supabase.from('profiles').update({
