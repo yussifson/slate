@@ -24,6 +24,21 @@ export default function Login() {
   const [checkingSubdomain, setCheckingSubdomain] = useState(!!currentSubdomain);
   const [invalidSubdomain, setInvalidSubdomain] = useState(false);
 
+  // Disconnect Auth Pages from Dashboard Theme Switcher
+  useEffect(() => {
+    const root = window.document.documentElement;
+    const originalClass = root.className;
+    
+    root.classList.remove('dark');
+    root.classList.add('light');
+    root.style.colorScheme = 'light';
+
+    return () => {
+      root.className = originalClass;
+      root.style.colorScheme = '';
+    };
+  }, []);
+
   useEffect(() => {
     const fetchBranding = async () => {
       if (currentSubdomain) {
@@ -268,7 +283,7 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-white dark:bg-slate-900/40 dark:bg-slate-900/40">
+    <div className="min-h-screen flex flex-col lg:flex-row bg-white">
       {/* Left Side: Form */}
       <div className="flex-1 flex flex-col justify-center px-8 lg:px-16 py-12">
         <div className="max-w-md w-full mx-auto">
@@ -278,28 +293,28 @@ export default function Login() {
           </div>
           
           <div className="mb-8">
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 dark:text-slate-100">{t("welcome_back", "Welcome back")}</h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">{t("enter_your_credentials_to_acce", "Enter your credentials to access your workslate")}</p>
+            <h1 className="text-2xl font-bold text-slate-900">{t("welcome_back", "Welcome back")}</h1>
+            <p className="text-xs text-slate-500 font-medium mt-1">{t("enter_your_credentials_to_acce", "Enter your credentials to access your workslate")}</p>
           </div>
           
           <form className="space-y-4" onSubmit={handleLogin}>
-            {error && <div className="rounded-xl bg-red-50 dark:bg-red-950/30 p-3 text-xs text-red-600 dark:text-red-400 border border-red-100 dark:border-red-900/50 font-medium">{error}</div>}
+            {error && <div className="rounded-xl bg-red-50 p-3 text-xs text-red-600 border border-red-100 font-medium">{error}</div>}
             
             <div className="space-y-4">
               <div>
-                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5">{t("email", "Email Address")}</label>
+                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">{t("email", "Email Address")}</label>
                 <Input
                   type="email"
                   required
                   placeholder="john@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-11 text-sm bg-slate-50 dark:bg-slate-800/50 border-slate-200 text-slate-900 dark:text-slate-100 dark:text-slate-100 focus:bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 focus:ring-2 focus:ring-primary/20"
+                  className="w-full h-11 text-sm bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
                 />
               </div>
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">{t("password", "Password")}</label>
+                  <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest">{t("password", "Password")}</label>
                   <a href="#" className="text-[11px] font-bold text-primary hover:underline">{t("forgot_password", "Forgot password?")}</a>
                 </div>
                 <Input
@@ -308,7 +323,7 @@ export default function Login() {
                   placeholder="••••••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full h-11 text-sm bg-slate-50 dark:bg-slate-800/50 border-slate-200 text-slate-900 dark:text-slate-100 dark:text-slate-100 focus:bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 focus:ring-2 focus:ring-primary/20"
+                  className="w-full h-11 text-sm bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
                 />
               </div>
             </div>
@@ -318,7 +333,7 @@ export default function Login() {
             </Button>
 
             <div className="text-center mt-6">
-              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">{t("don_t_have_an_account", "Don't have an account?")} </span>
+              <span className="text-xs text-slate-500 font-medium">{t("don_t_have_an_account", "Don't have an account?")} </span>
               <a href="/signup" className="text-xs font-bold text-primary hover:underline">
                 {t("create_workspace", "Create Workspace")}
               </a>
@@ -327,11 +342,11 @@ export default function Login() {
         </div>
       </div>
       {/* Right Side: Marketing Visual */}
-      <div className="hidden lg:flex flex-1 relative items-center justify-center bg-slate-50 dark:bg-slate-800/50 overflow-hidden">
+      <div className="hidden lg:flex flex-1 relative items-center justify-center bg-slate-50 overflow-hidden">
         {/* Abstract Pattern Background */}
         <div className="absolute inset-0 bg-slate-900/5 mix-blend-overlay"></div>
 
-        <div className="relative z-10 w-full max-w-2xl bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 rounded-[2rem] border border-slate-200/60 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] p-12 lg:p-16 flex flex-col justify-center relative group">
+        <div className="relative z-10 w-full max-w-2xl bg-white rounded-[2rem] border border-slate-200/60 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] p-12 lg:p-16 flex flex-col justify-center relative group">
           <div className="absolute top-0 right-0 p-8 opacity-[0.03] text-[10rem] font-serif leading-none font-black text-primary/70 group-hover:text-primary group-hover:opacity-10 transition-colors duration-700 pointer-events-none">"</div>
           
           <div className="relative z-10">
@@ -353,8 +368,8 @@ export default function Login() {
                 {t("mk", "MK")}
               </div>
               <div>
-                <p className="text-xl font-bold text-slate-900 dark:text-slate-100 dark:text-slate-100 tracking-tight">{t("mariama_kamara", "Mariama Kamara")}</p>
-                <p className="text-base font-medium text-slate-500 dark:text-slate-400">{t("managing_partner_kamara_group", "Managing Partner, Kamara Group")}</p>
+                <p className="text-xl font-bold text-slate-900 tracking-tight">{t("mariama_kamara", "Mariama Kamara")}</p>
+                <p className="text-base font-medium text-slate-500">{t("managing_partner_kamara_group", "Managing Partner, Kamara Group")}</p>
               </div>
             </div>
           </div>
