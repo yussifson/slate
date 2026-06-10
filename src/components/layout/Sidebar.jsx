@@ -227,45 +227,47 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   }));
 
   
-  const { data: orbitBuildConfig } = useQuery({
-    queryKey: ['orbit_build_config', companyId],
-    queryFn: async () => {
-      if (activeIndustry !== 'orbit_build') return null;
-      const { data } = await supabase
-        .from('industry_records')
-        .select('data')
-        .eq('company_id', companyId)
-        .eq('industry', 'orbit_build')
-        .eq('record_type', 'workspace_config')
-        .single();
-      return data?.data?.pages || [];
-    },
-    enabled: !!companyId && activeIndustry === 'orbit_build'
-  });
-
-  const orbitBuildNavItems = (orbitBuildConfig || []).map(p => ({
-      id: p.page_name,
-      label: p.page_name,
-      icon: p.icon || "LayoutDashboard",
-      path: `/ob/${p.page_name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
-      isDynamic: true,
-      component_id: p.component_id
+    const { data: orbitBuildData } = useQuery({
+      queryKey: ['orbit_build_config', companyId],
+      queryFn: async () => {
+        if (activeIndustry !== 'orbit_build') return null;
+        const { data } = await supabase
+          .from('industry_records')
+          .select('data')
+          .eq('company_id', companyId)
+          .eq('industry', 'orbit_build')
+          .eq('record_type', 'workspace_config')
+          .single();
+        return data?.data || null;
+      },
+      enabled: !!companyId && activeIndustry === 'orbit_build'
+    });
+  
+    const orbitBuildNavItems = (orbitBuildData?.pages || []).map(p => ({
+        id: p.page_name,
+        label: p.page_name,
+        icon: p.icon || "LayoutDashboard",
+        path: `/ob/${p.page_name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+        isDynamic: true,
+        component_id: p.component_id
+      }));
+  
+    const customPageItems = customPages.map(p => ({
+      id: p.id,
+      label: p.data?.pageTitle || p.search_text,
+      icon: "LayoutDashboard",
+      path: `/pages/${p.search_text}`,
+      isDynamic: true
     }));
-
-  const customPageItems = customPages.map(p => ({
-    id: p.id,
-    label: p.data?.pageTitle || p.search_text,
-    icon: "LayoutDashboard",
-    path: `/pages/${p.search_text}`,
-    isDynamic: true
-  }));
-
-  const baseNav = user?.role === "client" ? clientNav : (activeIndustry === 'orbit_build' ? coreOrbitNav : filteredCompanyNav);
-  const createSlateItem = { label: "Create Slate", icon: "PlusCircle", path: "/slate/create" };
-  const marketplaceItem = { label: "Marketplace", icon: "Store", path: "/marketplace" };
-  let navItems = isAdmin
-    ? [...baseNav, ...orbitBuildNavItems, ...dynamicNavItems, ...customPageItems, createSlateItem, marketplaceItem, { label: "Firm Setup", icon: "Settings", path: "/firm-setup" }]
-    : [...baseNav, ...orbitBuildNavItems, ...dynamicNavItems, ...customPageItems, marketplaceItem];
+  
+    const baseNav = user?.role === "client" ? clientNav : (activeIndustry === 'orbit_build' ? coreOrbitNav : filteredCompanyNav);
+    const createSlateItem = { label: "Create Slate", icon: "PlusCircle", path: "/slate/create" };
+    const marketplaceItem = { label: "Marketplace", icon: "Store", path: "/marketplace" };
+    
+    // Put AI pages FIRST, then dynamic modules, custom pages, and FINALLY the baseNav (Chat, Board, Settings)
+    let navItems = isAdmin
+      ? [...orbitBuildNavItems, ...dynamicNavItems, ...customPageItems, ...baseNav, createSlateItem, marketplaceItem, { label: "Firm Setup", icon: "Settings", path: "/firm-setup" }]
+      : [...orbitBuildNavItems, ...dynamicNavItems, ...customPageItems, ...baseNav, marketplaceItem];
 
   const handleDeleteModule = (id, name) => {
     setDeleteData({ id, name });
@@ -312,7 +314,9 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
         {!collapsed && (
           <div className="animate-in fade-in zoom-in duration-200">
             <h1 className="text-sm font-bold text-sidebar-foreground tracking-tight leading-tight whitespace-nowrap truncate max-w-[140px]">{activeCompanyName}</h1>
-            <p className="text-[10px] text-muted-foreground uppercase tracking-wider whitespace-nowrap">{industryData.name}</p>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider whitespace-nowrap">
+              {activeIndustry === 'orbit_build' ? (orbitBuildData?.industry_name || 'Custom Workspace') : industryData.name}
+            </p>
           </div>
         )}
       </div>

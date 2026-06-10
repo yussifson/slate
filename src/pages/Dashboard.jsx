@@ -11,7 +11,7 @@ export default function Dashboard() {
 
   const savedModulesStr = localStorage.getItem(`active_modules_${user?.company_id}`);
   const activeModules = savedModulesStr ? JSON.parse(savedModulesStr) : null;
-  const isOrbitMode = activeModules?.length === 1 && activeModules[0] === '__orbit__';
+  const isOrbitMode = user?.company_industry === 'orbit_build' || (activeModules?.length === 1 && activeModules[0] === '__orbit__');
 
   useEffect(() => {
     if (!isAdmin) {

@@ -40,29 +40,32 @@ Business Components:
 - approval
 
 JSON OUTPUT FORMAT:
-You must output EXACTLY a valid JSON array of page objects. DO NOT output any markdown tags like \`\`\`json. DO NOT output any conversational text.
-ONLY the JSON array.
+You must output EXACTLY a valid JSON object. DO NOT output any markdown tags like \`\`\`json. DO NOT output any conversational text.
+ONLY the JSON object.
 
-[
-  {
-    "page_name": "Pet Records",
-    "component_id": "contact_management",
-    "icon": "PawPrint",
-    "description": "Manage pet and owner profiles."
-  },
-  {
-    "page_name": "Appointments",
-    "component_id": "appointment",
-    "icon": "Calendar",
-    "description": "Schedule clinic visits."
-  },
-  {
-    "page_name": "Billing",
-    "component_id": "invoice",
-    "icon": "Receipt",
-    "description": "Generate invoices and track payments."
-  }
-]
+{
+  "industry_name": "Veterinary Clinic",
+  "pages": [
+    {
+      "page_name": "Pet Records",
+      "component_id": "contact_management",
+      "icon": "PawPrint",
+      "description": "Manage pet and owner profiles."
+    },
+    {
+      "page_name": "Appointments",
+      "component_id": "appointment",
+      "icon": "Calendar",
+      "description": "Schedule clinic visits."
+    },
+    {
+      "page_name": "Billing",
+      "component_id": "invoice",
+      "icon": "Receipt",
+      "description": "Generate invoices and track payments."
+    }
+  ]
+}
 `;
 
 /**
@@ -88,16 +91,31 @@ export async function generateOrbitBuildWorkspace(prompt, companyId) {
       jsonStr = jsonStr.replace(/^\`\`\`/, '').replace(/\`\`\`$/, '').trim();
     }
 
+    let parsedData = null;
     let assembledPages = [];
+    let industryName = 'Custom Workspace';
+
     try {
-      assembledPages = JSON.parse(jsonStr);
+      parsedData = JSON.parse(jsonStr);
+      
+      // Handle fallback for older generated arrays vs the new object structure
+      if (Array.isArray(parsedData)) {
+        assembledPages = parsedData;
+      } else if (parsedData && Array.isArray(parsedData.pages)) {
+        assembledPages = parsedData.pages;
+        if (parsedData.industry_name) {
+          industryName = parsedData.industry_name;
+        }
+      } else {
+        throw new Error("OrbitBuild returned invalid format (expected array of pages or object with pages array).");
+      }
     } catch (parseErr) {
       console.error("Failed to parse OrbitBuild JSON:", parseErr, "\nRaw text:", jsonStr);
       throw new Error("OrbitBuild failed to assemble the workspace correctly. Please try again.");
     }
 
-    if (!Array.isArray(assembledPages)) {
-      throw new Error("OrbitBuild returned invalid format (expected array).");
+    if (!assembledPages || assembledPages.length === 0) {
+      throw new Error("OrbitBuild returned no pages.");
     }
 
     // Save the assembly configuration to industry_records
@@ -107,7 +125,7 @@ export async function generateOrbitBuildWorkspace(prompt, companyId) {
       company_id: companyId,
       industry: 'orbit_build',
       record_type: 'workspace_config',
-      data: { pages: assembledPages },
+      data: { pages: assembledPages, industry_name: industryName, prompt: prompt },
       search_text: 'orbit build assembly configuration',
       created_at: new Date().toISOString()
     });

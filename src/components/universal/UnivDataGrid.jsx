@@ -1,36 +1,102 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Filter, ChevronDown, MoreHorizontal, Download, ArrowUpDown, Plus } from 'lucide-react';
+import { Search, Filter, ChevronDown, MoreHorizontal, Download, ArrowUpDown, Plus, Loader2, Trash2 } from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/api/supabaseClient';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/use-toast';
 
 export default function UnivDataGrid({ 
-  data = [], 
-  columns = [], 
-  onAdd = null,
   title = "Data Grid",
-  searchPlaceholder = "Search records..."
+  searchPlaceholder = "Search records...",
+  companyId,
+  pageName
 }) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+  const [sortConfig, setSortConfig] = useState({ key: 'date', direction: 'desc' });
+  const [isAdding, setIsAdding] = useState(false);
+  const [newRecordName, setNewRecordName] = useState('');
+  
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
 
-  // Default mock data if none provided
-  const displayData = data.length > 0 ? data : [
-    { id: 1, name: 'Sample Record A', status: 'Active', value: 1200, date: '2026-06-10' },
-    { id: 2, name: 'Sample Record B', status: 'Pending', value: 850, date: '2026-06-11' },
-    { id: 3, name: 'Sample Record C', status: 'Active', value: 3200, date: '2026-06-12' },
-  ];
+  const { data: records = [], isLoading } = useQuery({
+    queryKey: ['orbit_records', companyId, pageName],
+    queryFn: async () => {
+      if (!companyId || !pageName) return [];
+      const { data, error } = await supabase
+        .from('industry_records')
+        .select('*')
+        .eq('company_id', companyId)
+        .eq('industry', 'orbit_build_data')
+        .eq('record_type', pageName)
+        .order('created_at', { ascending: false });
+        
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!companyId && !!pageName
+  });
 
-  const displayColumns = columns.length > 0 ? columns : [
+  const addMutation = useMutation({
+    mutationFn: async (newData) => {
+      const { data, error } = await supabase
+        .from('industry_records')
+        .insert([{
+          company_id: companyId,
+          industry: 'orbit_build_data',
+          record_type: pageName,
+          data: newData,
+          search_text: Object.values(newData).join(' ')
+        }]);
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['orbit_records', companyId, pageName]);
+      queryClient.invalidateQueries(['orbit_dynamic_records', companyId]);
+      setIsAdding(false);
+      setNewRecordName('');
+      toast({ title: 'Success', description: 'Record added successfully.' });
+    },
+    onError: (err) => {
+      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    }
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id) => {
+      const { error } = await supabase.from('industry_records').delete().eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['orbit_records', companyId, pageName]);
+      queryClient.invalidateQueries(['orbit_dynamic_records', companyId]);
+      toast({ title: 'Deleted', description: 'Record removed.' });
+    }
+  });
+
+  const handleAdd = (e) => {
+    e.preventDefault();
+    if (!newRecordName.trim()) return;
+    addMutation.mutate({
+      name: newRecordName,
+      status: 'Active',
+      date: new Date().toISOString().split('T')[0]
+    });
+  };
+
+  const displayData = records.map(r => ({ id: r.id, ...r.data }));
+
+  const displayColumns = [
     { key: 'name', label: 'Name' },
     { key: 'status', label: 'Status' },
-    { key: 'value', label: 'Value' },
     { key: 'date', label: 'Date' }
   ];
 
   const handleSort = (key) => {
     let direction = 'asc';
-    if (sortConfig.key === key && sortConfig.direction === 'asc') {
-      direction = 'desc';
-    }
+    if (sortConfig.key === key && sortConfig.direction === 'asc') direction = 'desc';
     setSortConfig({ key, direction });
   };
 
@@ -38,26 +104,20 @@ export default function UnivDataGrid({
     let sortableItems = [...displayData];
     if (sortConfig.key !== null) {
       sortableItems.sort((a, b) => {
-        if (a[sortConfig.key] < b[sortConfig.key]) {
-          return sortConfig.direction === 'asc' ? -1 : 1;
-        }
-        if (a[sortConfig.key] > b[sortConfig.key]) {
-          return sortConfig.direction === 'asc' ? 1 : -1;
-        }
+        if (a[sortConfig.key] < b[sortConfig.key]) return sortConfig.direction === 'asc' ? -1 : 1;
+        if (a[sortConfig.key] > b[sortConfig.key]) return sortConfig.direction === 'asc' ? 1 : -1;
         return 0;
       });
     }
     return sortableItems;
   }, [displayData, sortConfig]);
 
-  const filteredData = sortedData.filter(item => {
-    return Object.values(item).some(val => 
-      String(val).toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  });
+  const filteredData = sortedData.filter(item => 
+    Object.values(item).some(val => String(val).toLowerCase().includes(searchTerm.toLowerCase()))
+  );
 
   return (
-    <div className="flex flex-col h-full overflow-hidden bg-background">
+    <div className="flex flex-col h-full overflow-hidden bg-background relative">
       <div className="flex items-center justify-between mb-6 shrink-0 px-1">
         <div>
            <h2 className="text-2xl font-bold text-foreground tracking-tight">{title}</h2>
@@ -67,16 +127,35 @@ export default function UnivDataGrid({
           <button className="flex items-center gap-2 px-4 py-2 bg-card border border-border rounded-xl text-sm font-medium hover:bg-muted/50 transition-colors">
             <Download className="w-4 h-4" /> Export
           </button>
-          {onAdd && (
-            <button onClick={onAdd} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm shadow-primary/20">
-              <Plus className="w-4 h-4" /> Add Record
-            </button>
-          )}
+          <button onClick={() => setIsAdding(true)} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm shadow-primary/20">
+            <Plus className="w-4 h-4" /> Add Record
+          </button>
         </div>
       </div>
 
+      {isAdding && (
+        <div className="mb-6 p-4 bg-card border border-primary/20 rounded-2xl shadow-sm">
+          <form onSubmit={handleAdd} className="flex items-end gap-4">
+            <div className="flex-1">
+              <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Record Name</label>
+              <input 
+                autoFocus
+                type="text" 
+                value={newRecordName} 
+                onChange={e => setNewRecordName(e.target.value)} 
+                placeholder="Enter record name..." 
+                className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" 
+              />
+            </div>
+            <Button type="button" variant="outline" onClick={() => setIsAdding(false)} className="h-10 rounded-xl">Cancel</Button>
+            <Button type="submit" disabled={addMutation.isPending} className="h-10 bg-primary text-white rounded-xl">
+              {addMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Record'}
+            </Button>
+          </form>
+        </div>
+      )}
+
       <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden shadow-sm flex flex-col">
-        {/* Toolbar */}
         <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
           <div className="relative w-72">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -93,68 +172,69 @@ export default function UnivDataGrid({
           </button>
         </div>
 
-        {/* Table */}
         <div className="flex-1 overflow-auto">
-          <table className="w-full text-left text-sm whitespace-nowrap">
-            <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground sticky top-0 z-10 backdrop-blur-md">
-              <tr>
-                <th className="p-4 w-10">
-                  <input type="checkbox" className="rounded border-slate-300 text-primary focus:ring-primary" />
-                </th>
-                {displayColumns.map(col => (
-                  <th key={col.key} className="p-4 font-semibold cursor-pointer hover:text-foreground transition-colors group" onClick={() => handleSort(col.key)}>
-                    <div className="flex items-center gap-2">
-                      {col.label}
-                      <ArrowUpDown className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </div>
-                  </th>
-                ))}
-                <th className="p-4 font-semibold text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {filteredData.map((row, idx) => (
-                <motion.tr 
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.05 }}
-                  key={row.id || idx} 
-                  className="hover:bg-muted/30 transition-colors group"
-                >
-                  <td className="p-4">
-                    <input type="checkbox" className="rounded border-slate-300 text-primary focus:ring-primary" />
-                  </td>
-                  {displayColumns.map(col => (
-                    <td key={col.key} className="p-4 text-foreground">
-                      {col.key === 'status' ? (
-                        <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border ${
-                          row[col.key] === 'Active' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
-                          'bg-slate-50 text-slate-700 border-slate-200'
-                        }`}>
-                          {row[col.key]}
-                        </span>
-                      ) : (
-                        row[col.key]
-                      )}
-                    </td>
-                  ))}
-                  <td className="p-4 text-right">
-                    <button className="text-muted-foreground hover:text-primary transition-colors p-2"><MoreHorizontal className="w-4 h-4" /></button>
-                  </td>
-                </motion.tr>
-              ))}
-              {filteredData.length === 0 && (
+          {isLoading ? (
+            <div className="flex h-full items-center justify-center">
+               <Loader2 className="w-8 h-8 animate-spin text-primary/50" />
+            </div>
+          ) : (
+            <table className="w-full text-left text-sm whitespace-nowrap">
+              <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground sticky top-0 z-10 backdrop-blur-md">
                 <tr>
-                  <td colSpan={displayColumns.length + 2} className="p-8 text-center text-muted-foreground">
-                    No records found matching your search.
-                  </td>
+                  <th className="p-4 font-semibold cursor-pointer hover:text-foreground transition-colors group w-[50%]" onClick={() => handleSort('name')}>
+                    <div className="flex items-center gap-2">Name <ArrowUpDown className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" /></div>
+                  </th>
+                  <th className="p-4 font-semibold cursor-pointer hover:text-foreground transition-colors group" onClick={() => handleSort('status')}>
+                    <div className="flex items-center gap-2">Status <ArrowUpDown className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" /></div>
+                  </th>
+                  <th className="p-4 font-semibold cursor-pointer hover:text-foreground transition-colors group" onClick={() => handleSort('date')}>
+                    <div className="flex items-center gap-2">Date <ArrowUpDown className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" /></div>
+                  </th>
+                  <th className="p-4 font-semibold text-right">Actions</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {filteredData.map((row, idx) => (
+                  <motion.tr 
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: Math.min(idx * 0.05, 0.5) }}
+                    key={row.id || idx} 
+                    className="hover:bg-muted/30 transition-colors group"
+                  >
+                    {displayColumns.map(col => (
+                      <td key={col.key} className="p-4 text-foreground">
+                        {col.key === 'status' ? (
+                          <span className="px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border bg-emerald-50 text-emerald-700 border-emerald-200">
+                            {row[col.key] || 'Active'}
+                          </span>
+                        ) : (
+                          row[col.key]
+                        )}
+                      </td>
+                    ))}
+                    <td className="p-4 text-right">
+                      <button onClick={() => deleteMutation.mutate(row.id)} className="text-muted-foreground hover:text-red-500 transition-colors p-2" title="Delete">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </td>
+                  </motion.tr>
+                ))}
+                {filteredData.length === 0 && (
+                  <tr>
+                    <td colSpan={4} className="p-12 text-center text-muted-foreground">
+                      <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-muted mb-4">
+                        <Search className="w-5 h-5 opacity-50" />
+                      </div>
+                      <p>No records found. Click "Add Record" to start.</p>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          )}
         </div>
         
-        {/* Pagination */}
         <div className="p-4 border-t border-border flex justify-between items-center text-sm text-muted-foreground bg-muted/20">
           <div>Showing 1 to {filteredData.length} of {filteredData.length} entries</div>
           <div className="flex gap-1">

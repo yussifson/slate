@@ -371,7 +371,7 @@ export default function OrbitBuildPage() {
       case 'data_table':
       case 'pos':
       default:
-        return <UnivDataGrid title={pageDef.page_name} />;
+        return <UnivDataGrid title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} />;
     }
   };
 
@@ -381,7 +381,7 @@ export default function OrbitBuildPage() {
         <h1 className="text-2xl font-bold text-foreground tracking-tight">{pageDef.page_name}</h1>
         <p className="text-sm text-muted-foreground mt-1">{pageDef.description}</p>
       </div>
-      <div className="flex-1 overflow-y-auto p-6 bg-muted/20">
+      <div className="flex-1 overflow-hidden p-6 bg-muted/20">
         <React.Suspense fallback={<div className="p-8 text-center"><Loader2 className="w-6 h-6 animate-spin text-primary mx-auto" /></div>}>
           {renderComponent()}
         </React.Suspense>
