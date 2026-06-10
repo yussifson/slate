@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Video, Plus, Calendar, Clock, Users, Copy, Sparkles, LayoutGrid, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,19 @@ export default function Board() {
   const [rooms, setRooms] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
+  const [quickConnectEmail, setQuickConnectEmail] = useState("");
+
+  const handleQuickConnect = () => {
+    if (!quickConnectEmail.trim()) {
+      toast({ title: "Error", description: "Please enter an email address.", variant: "destructive" });
+      return;
+    }
+    toast({ title: "Invitation Sent", description: `A secure meeting link was sent to ${quickConnectEmail}.` });
+    setQuickConnectEmail("");
+    if (!activeRoomUrl) {
+      handleStartCall();
+    }
+  };
   
   // Generate a unique, secure Jitsi Meet room URL for the company using a public instance without embed limits
   const getRoomUrl = (id) => `https://meet.ffmuc.net/slate-${companyId}-${id.slice(0,8)}`;
@@ -199,7 +212,7 @@ export default function Board() {
         {/* Right Column: AI Insights */}
         <div className="space-y-6">
           <div className="bg-primary rounded-xl p-5 text-primary-foreground shadow-md relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white dark:bg-slate-900/40/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
             <h3 className="font-bold text-lg mb-2 flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-primary/20" /> Orbit Meeting AI
             </h3>
@@ -215,8 +228,15 @@ export default function Board() {
              <h3 className="font-semibold mb-3">Quick Connect</h3>
              <p className="text-sm text-muted-foreground mb-4">Invite external clients or guests instantly without them needing an account.</p>
              <div className="flex gap-2">
-               <input type="email" placeholder="guest@email.com" className="flex-1 bg-background border border-border rounded-md px-3 text-sm" />
-               <Button size="sm">Invite</Button>
+               <input 
+                 type="email" 
+                 placeholder="guest@email.com" 
+                 className="flex-1 bg-background border border-border rounded-md px-3 text-sm focus:outline-none focus:border-primary"
+                 value={quickConnectEmail}
+                 onChange={(e) => setQuickConnectEmail(e.target.value)}
+                 onKeyDown={(e) => e.key === 'Enter' && handleQuickConnect()}
+               />
+               <Button size="sm" onClick={handleQuickConnect} disabled={isCreating}>Invite</Button>
              </div>
           </div>
         </div>

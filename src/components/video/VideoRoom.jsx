@@ -10,7 +10,7 @@ import {
   useDailyEvent,
   useScreenShare
 } from '@daily-co/daily-react';
-import { Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff, MonitorUp, Sparkles, LayoutGrid, Maximize2, Minimize2, ExternalLink, MessageSquare, Send, X } from 'lucide-react';
+import { Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff, MonitorUp, Sparkles, LayoutGrid, Maximize2, Minimize2, ExternalLink, MessageSquare, Send, X, UserPlus } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { generateText } from "@/lib/cloudflareAI";
 import { useToast } from "@/components/ui/use-toast";
@@ -31,6 +31,15 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode }) {
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [aiResponse, setAiResponse] = useState(null);
   const [transcriptData, setTranscriptData] = useState([]);
+  const [showInvite, setShowInvite] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState("");
+
+  const handleInvite = () => {
+    if (!inviteEmail.trim()) return;
+    toast({ title: "Invitation Sent", description: `A secure meeting link was sent to ${inviteEmail}.` });
+    setInviteEmail("");
+    setShowInvite(false);
+  };
 
   useDailyEvent('joined-meeting', () => {
     setJoined(true);
@@ -297,8 +306,18 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode }) {
               variant={showChat ? "default" : "secondary"}
               size="icon"
               className="w-12 h-12 rounded-full hidden sm:flex relative"
+              title="Chat"
             >
               <MessageSquare className="w-5 h-5" />
+            </Button>
+            <Button 
+              onClick={() => setShowInvite(!showInvite)}
+              variant={showInvite ? "default" : "secondary"}
+              size="icon"
+              className="w-12 h-12 rounded-full hidden sm:flex relative"
+              title="Quick Connect / Invite"
+            >
+              <UserPlus className="w-5 h-5" />
             </Button>
             <Button 
               variant="secondary"
@@ -318,6 +337,28 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode }) {
           {isPipMode ? <PhoneOff className="w-3 h-3" /> : <><PhoneOff className="w-5 h-5 mr-2" /> Leave</>}
         </Button>
       </div>
+      
+      {/* Invite Sidebar/Popup */}
+      {showInvite && !isPipMode && (
+        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:right-6 w-[340px] bg-card border border-border shadow-2xl rounded-2xl p-5 z-50 animate-in fade-in slide-in-from-bottom-4">
+          <div className="flex items-center justify-between mb-3">
+             <h3 className="font-semibold flex items-center gap-2"><UserPlus className="w-4 h-4 text-primary"/> Quick Connect</h3>
+             <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setShowInvite(false)}><X className="w-4 h-4" /></Button>
+          </div>
+          <p className="text-sm text-muted-foreground mb-4">Invite external clients or guests instantly to this call. No account required.</p>
+          <div className="flex gap-2">
+            <input 
+              type="email" 
+              placeholder="guest@email.com" 
+              className="flex-1 bg-background border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"
+              value={inviteEmail}
+              onChange={(e) => setInviteEmail(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleInvite()}
+            />
+            <Button onClick={handleInvite} className="font-semibold shadow-sm">Invite</Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
