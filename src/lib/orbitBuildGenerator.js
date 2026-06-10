@@ -9,13 +9,27 @@ CRITICAL INSTRUCTIONS:
 1. Analyze the industry and identify the required business capabilities.
 2. Select the most appropriate Universal Components to fulfill those capabilities.
 3. Assemble a list of pages for the workspace. For a standard industry, generate between 6 and 12 pages.
-4. Provide a domain-specific \`page_name\` (e.g., "Pet Records", "Invoicing", "Student Attendance") but map it to exactly one \`component_id\` from the allowed list.
+4. Provide a domain-specific \`page_name\` (e.g., "Pet Records", "Invoicing", "Student Attendance") but map it to exactly one \`component_id\` from the ALLOWED COMPONENTS list.
 5. THE FIRST PAGE MUST ALWAYS BE A DASHBOARD. Set \`page_name\` to "Dashboard" and \`component_id\` to "dashboard".
 
-14. COMPONENT MAPPING:
-For each page, select a conceptually matching \`component_id\` that reflects the UI needed (e.g., "inventory", "patient_records", "pos", "crm"). Use descriptive string IDs.
+ALLOWED COMPONENTS (YOU MUST ONLY USE THESE EXACT IDs):
+- "dashboard" : For high-level overviews and KPIs
+- "data_table" : For generic lists, registries, and records (e.g., patients, inventory, invoices)
+- "kanban" : For pipeline tracking, task boards, or stages (e.g., CRM, project management)
+- "calendar" : For scheduling, bookings, and timelines
+- "form" : For data entry, surveys, or approvals
+- "document_manager" : For files and resources
+- "analytics" : For detailed reporting and charts
 
-CRITICAL: Do not use spaces in \`component_id\`. Use snake_case.
+ALLOWED ICONS (YOU MUST CHOOSE A UNIQUE ICON FOR EACH PAGE FROM THIS EXACT LIST):
+LayoutDashboard, Briefcase, Users, Calendar, Receipt, CheckSquare, FolderOpen, Settings,
+Scale, UserCog, CreditCard, UserCircle, UserPlus, BookOpen, Shield, TrendingUp, Trophy,
+Search, Mail, BarChart2, Download, MessageCircle, HeartHandshake, GraduationCap, BookMarked,
+ClipboardList, Bus, FileText, Stethoscope, Bed, Pill, FlaskConical, Activity, Sparkles,
+UtensilsCrossed, Star, ShoppingCart, Package, Truck, Tag, Layers, Bell, Award, Library,
+Building2, AlertCircle, Clock, Network, Gift, Banknote, Map, Warehouse, Car, MapPin, Zap,
+Store, ShieldAlert, HeartPulse, FilePlus, FileCheck, Gavel, Target, Calculator, Home, Wallet,
+PieChart, Laptop, Smartphone, MessageSquare, LineChart
 
 JSON OUTPUT FORMAT:
 You must output EXACTLY a valid JSON object. DO NOT output any markdown tags like \`\`\`json. DO NOT output any conversational text.
@@ -25,22 +39,28 @@ ONLY the JSON object.
   "industry_name": "Veterinary Clinic",
   "pages": [
     {
+      "page_name": "Dashboard",
+      "component_id": "dashboard",
+      "icon": "LayoutDashboard",
+      "description": "Clinic performance and overview."
+    },
+    {
       "page_name": "Pet Records",
-      "component_id": "contact_management",
-      "icon": "PawPrint",
+      "component_id": "data_table",
+      "icon": "HeartPulse",
       "description": "Manage pet and owner profiles."
     },
     {
       "page_name": "Appointments",
-      "component_id": "appointment",
+      "component_id": "calendar",
       "icon": "Calendar",
       "description": "Schedule clinic visits."
     },
     {
-      "page_name": "Billing",
-      "component_id": "invoice",
-      "icon": "Receipt",
-      "description": "Generate invoices and track payments."
+      "page_name": "Treatment Pipeline",
+      "component_id": "kanban",
+      "icon": "Activity",
+      "description": "Track pets through treatment stages."
     }
   ]
 }

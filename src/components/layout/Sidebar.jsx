@@ -310,9 +310,13 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
     const marketplaceItem = { label: "Marketplace", icon: "Store", path: "/marketplace" };
     
     // Put AI pages FIRST, then dynamic modules, custom pages, and FINALLY the baseNav (Chat, Board, Settings)
+    // Extract dashboard from baseNav to put it at the very top
+    const dashboardNav = baseNav.filter(item => item.label === "Dashboard" || item.path === "/");
+    const remainingBaseNav = baseNav.filter(item => item.label !== "Dashboard" && item.path !== "/");
+    
     let navItems = isAdmin
-      ? [...orbitBuildNavItems, ...dynamicNavItems, ...customPageItems, ...baseNav, createSlateItem, marketplaceItem, { label: "Firm Setup", icon: "Settings", path: "/firm-setup" }]
-      : [...orbitBuildNavItems, ...dynamicNavItems, ...customPageItems, ...baseNav, marketplaceItem];
+      ? [...dashboardNav, ...orbitBuildNavItems, ...dynamicNavItems, ...customPageItems, ...remainingBaseNav, createSlateItem, marketplaceItem, { label: "Firm Setup", icon: "Settings", path: "/firm-setup" }]
+      : [...dashboardNav, ...orbitBuildNavItems, ...dynamicNavItems, ...customPageItems, ...remainingBaseNav, marketplaceItem];
 
   const handleDeleteModule = (id, name) => {
     setDeleteData({ id, name });
