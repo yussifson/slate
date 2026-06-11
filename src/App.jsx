@@ -23,6 +23,11 @@ const UnivHREmployee = React.lazy(() => import('@/components/universal/UnivHREmp
 const UnivInvoice = React.lazy(() => import('@/components/universal/UnivInvoice'));
 const UnivPayroll = React.lazy(() => import('@/components/universal/UnivPayroll'));
 const UnivRecruitment = React.lazy(() => import('@/components/universal/UnivRecruitment'));
+const UnivAttendance = React.lazy(() => import('@/components/universal/UnivAttendance'));
+const UnivLeaveManagement = React.lazy(() => import('@/components/universal/UnivLeaveManagement'));
+const UnivPayment = React.lazy(() => import('@/components/universal/UnivPayment'));
+const UnivAssetManagement = React.lazy(() => import('@/components/universal/UnivAssetManagement'));
+const UnivProcurement = React.lazy(() => import('@/components/universal/UnivProcurement'));
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -381,6 +386,11 @@ function PlatformRoutes() {
       <Route path="/recruitment" element={<UnivRecruitment />} />
       <Route path="/inventory" element={<UnivInventory />} />
       <Route path="/payroll" element={<UnivPayroll />} />
+      <Route path="/attendance" element={<UnivAttendance />} />
+      <Route path="/leave-mgmt" element={<UnivLeaveManagement />} />
+      <Route path="/payments" element={<UnivPayment />} />
+      <Route path="/assets" element={<UnivAssetManagement />} />
+      <Route path="/procurement" element={<UnivProcurement />} />
       <Route path="/firm-setup" element={<OnboardingWizard />} />
       <Route path="/chat" element={<Chat />} />
       <Route path="/board" element={<Board />} />

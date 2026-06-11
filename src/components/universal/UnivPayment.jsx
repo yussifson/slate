@@ -1,185 +1,191 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { motion } from 'framer-motion';
-import { Search, CreditCard, DollarSign, ArrowUpRight, ArrowDownRight, RefreshCcw, MoreHorizontal, Download } from 'lucide-react';
+import { DollarSign, Plus, Search, Trash2, Edit2, Loader2, XCircle, CreditCard, Building2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+
+const STATUS_COLORS = { Completed: 'bg-emerald-50 text-emerald-700 border-emerald-200', Pending: 'bg-amber-50 text-amber-700 border-amber-200', Failed: 'bg-red-50 text-red-700 border-red-200', Refunded: 'bg-blue-50 text-blue-700 border-blue-200' };
+const EMPTY_FORM = { customer_name: '', amount: 0, method: 'Credit Card', status: 'Completed', reference_id: '' };
 
 export default function UnivPayment() {
   const companyId = useCompanyId();
-  const [payments, setPayments] = useState([]);
+  const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [search, setSearch] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [form, setForm] = useState(EMPTY_FORM);
 
   useEffect(() => {
     if (companyId) {
-      fetchPayments();
-      const channel = supabase.channel('payments_changes')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'univ_payments', filter: `company_id=eq.${companyId}` }, () => {
-          fetchPayments();
-        }).subscribe();
-      return () => { supabase.removeChannel(channel); };
+      fetchRecords();
+      const ch = supabase.channel('payments_ch').on('postgres_changes', { event: '*', schema: 'public', table: 'univ_payments', filter: `company_id=eq.${companyId}` }, fetchRecords).subscribe();
+      return () => supabase.removeChannel(ch);
     }
   }, [companyId]);
 
-  const fetchPayments = async () => {
+  const fetchRecords = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('univ_payments')
-        .select('*')
-        .eq('company_id', companyId)
-        .order('created_at', { ascending: false });
+      const { data, error } = await supabase.from('univ_payments').select('*').eq('company_id', companyId).order('created_at', { ascending: false });
       if (error && error.code !== '42P01') throw error;
-      setPayments(data || []);
-    } catch (err) {
-      // Mock data removed for production empty states
-    } finally {
-      setLoading(false);
-    }
+      setRecords(data || []);
+    } catch (e) { console.error(e); } finally { setLoading(false); }
   };
 
-  const handleCharge = async () => {
-    const newPayment = {
-      company_id: companyId,
-      amount: Math.floor(Math.random() * 500) + 10,
-      method: 'Credit Card',
-      status: 'Completed',
-      reference_id: `ch_mock_${Math.floor(Math.random() * 10000)}`
-    };
+  const saveRecord = async (e) => {
+    e.preventDefault();
     try {
-      const { error } = await supabase.from('univ_payments').insert(newPayment);
-      if (error) throw error;
-      toast.success('Payment processed successfully');
-    } catch (err) {
-      if (err.code === '42P01') toast.error("Database table not initialized yet.");
-      else toast.error('Failed to process payment');
-    }
+      const payload = { 
+        company_id: companyId,
+        amount: Number(form.amount) || 0,
+        currency: 'USD',
+        method: form.method,
+        status: form.status,
+        reference_id: `[${form.customer_name}] ${form.reference_id}`.trim()
+      };
+      
+      if (editingId) {
+        const { error } = await supabase.from('univ_payments').update(payload).eq('id', editingId);
+        if (error) throw error;
+        toast.success('Updated!');
+      } else {
+        const { error } = await supabase.from('univ_payments').insert(payload);
+        if (error) throw error;
+        toast.success('Payment added!');
+      }
+      closeModal(); fetchRecords();
+    } catch (err) { console.error(err); toast.error(err.message || 'Failed to save'); }
   };
 
-  const filtered = payments.filter(p => 
-    `${p.reference_id} ${p.method} ${p.status}`.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const deleteRecord = async (id) => {
+    const { error } = await supabase.from('univ_payments').delete().eq('id', id);
+    if (error) toast.error('Failed to delete'); else { toast.success('Deleted'); fetchRecords(); }
+  };
 
-  const totalVolume = payments.filter(p => p.status === 'Completed').reduce((sum, p) => sum + Number(p.amount), 0);
+  const updateStatus = async (id, status) => {
+    const { error } = await supabase.from('univ_payments').update({ status }).eq('id', id);
+    if (error) toast.error('Failed to update status'); else fetchRecords();
+  };
+
+  const extractName = (reference) => {
+    const match = reference?.match(/^\[(.*?)\]/);
+    return match ? match[1] : 'Unknown';
+  };
+
+  const openModal = (r = null) => { 
+    if (r) {
+      const cName = extractName(r.reference_id);
+      const actualRef = r.reference_id?.replace(/^\[.*?\]\s*/, '') || '';
+      setForm({
+        customer_name: cName,
+        amount: r.amount || 0,
+        method: r.method,
+        status: r.status,
+        reference_id: actualRef
+      });
+    } else {
+      setForm(EMPTY_FORM);
+    }
+    setEditingId(r?.id || null); 
+    setIsModalOpen(true); 
+  };
+  const closeModal = () => { setIsModalOpen(false); setEditingId(null); setForm(EMPTY_FORM); };
+
+  const filtered = records.filter(r => {
+    const cName = extractName(r.reference_id);
+    return `${cName} ${r.status} ${r.reference_id}`.toLowerCase().includes(search.toLowerCase());
+  });
 
   return (
-    <div className="flex flex-col h-full bg-background overflow-hidden">
-      <div className="flex items-center justify-between mb-6 shrink-0 pt-2 px-1">
+    <div className="h-full flex flex-col gap-6 w-full bg-background p-4 sm:p-6 lg:p-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0">
         <div>
-           <h2 className="text-2xl font-bold text-foreground tracking-tight">Payments</h2>
-           <p className="text-sm text-muted-foreground mt-1">Manage transactions and payment gateways.</p>
+          <h1 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-2"><DollarSign className="w-7 h-7 text-primary" /> Payments</h1>
+          <p className="text-muted-foreground text-sm font-medium mt-1">Manage incoming and outgoing transactions.</p>
         </div>
-        <div className="flex gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 bg-card border border-border rounded-xl text-sm font-medium hover:bg-muted/50 transition-colors">
-            <Download className="w-4 h-4" /> Export
-          </button>
-          <button onClick={handleCharge} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm shadow-primary/20">
-            <CreditCard className="w-4 h-4" /> New Charge
-          </button>
+        <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-sm"><Plus className="w-4 h-4" /> Record Payment</button>
+      </div>
+
+      <div className="flex gap-3 shrink-0">
+        <div className="relative flex-1">
+          <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search payments..." className="w-full h-11 pl-10 pr-4 bg-card border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm shadow-sm" />
         </div>
       </div>
 
-      {/* KPI Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 shrink-0">
-        <div className="bg-card border border-border rounded-2xl p-4 flex items-center justify-between shadow-sm">
-          <div>
-            <p className="text-sm text-muted-foreground font-medium">Net Volume</p>
-            <h3 className="text-2xl font-bold text-foreground mt-1">${totalVolume.toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
-          </div>
-          <div className="p-3 bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 rounded-xl"><DollarSign className="w-5 h-5" /></div>
-        </div>
-        <div className="bg-card border border-border rounded-2xl p-4 flex items-center justify-between shadow-sm">
-          <div>
-            <p className="text-sm text-muted-foreground font-medium">Successful Txns</p>
-            <h3 className="text-2xl font-bold text-foreground mt-1">{payments.filter(p => p.status === 'Completed').length}</h3>
-          </div>
-          <div className="p-3 bg-blue-100 dark:bg-blue-500/10 text-blue-600 rounded-xl"><ArrowUpRight className="w-5 h-5" /></div>
-        </div>
-        <div className="bg-card border border-border rounded-2xl p-4 flex items-center justify-between shadow-sm">
-          <div>
-            <p className="text-sm text-muted-foreground font-medium">Refunds</p>
-            <h3 className="text-2xl font-bold text-foreground mt-1">{payments.filter(p => p.status === 'Refunded').length}</h3>
-          </div>
-          <div className="p-3 bg-red-100 dark:bg-red-500/10 text-red-600 rounded-xl"><RefreshCcw className="w-5 h-5" /></div>
-        </div>
-      </div>
-
-      <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden shadow-sm flex flex-col">
-        {/* Toolbar */}
-        <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
-          <div className="relative w-72">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input 
-              type="text"
-              placeholder="Search reference, method..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
-            />
-          </div>
-        </div>
-
-        {/* Table */}
-        <div className="flex-1 overflow-auto custom-scrollbar">
-          <table className="w-full text-left text-sm whitespace-nowrap">
-            <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground sticky top-0 z-10 backdrop-blur-md">
+      <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden shadow-sm flex flex-col min-h-0">
+        <div className="overflow-auto flex-1 custom-scrollbar">
+          <table className="w-full text-sm">
+            <thead className="bg-muted/50 border-b border-border sticky top-0 z-10">
               <tr>
-                <th className="p-4 font-semibold">Amount</th>
-                <th className="p-4 font-semibold">Status</th>
-                <th className="p-4 font-semibold">Method</th>
-                <th className="p-4 font-semibold">Reference</th>
-                <th className="p-4 font-semibold">Date</th>
-                <th className="p-4 font-semibold text-right">Actions</th>
+                {['Customer', 'Amount', 'Method', 'Reference', 'Status', 'Date', 'Actions'].map((h, i) => (
+                  <th key={i} className="p-4 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">{h}</th>
+                ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {filtered.map((p, idx) => (
-                <motion.tr 
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.02 }}
-                  key={p.id} 
-                  className="hover:bg-muted/30 transition-colors group cursor-pointer"
-                >
-                  <td className="p-4 font-bold text-foreground">
-                    ${Number(p.amount).toFixed(2)} <span className="text-xs text-muted-foreground font-medium">{p.currency}</span>
-                  </td>
-                  <td className="p-4">
-                    <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border ${
-                      p.status === 'Completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
-                      p.status === 'Refunded' ? 'bg-red-50 text-red-700 border-red-200' : 
-                      'bg-orange-50 text-orange-700 border-orange-200'
-                    }`}>
-                      {p.status}
-                    </span>
-                  </td>
-                  <td className="p-4 text-muted-foreground font-medium flex items-center gap-2">
-                    <CreditCard className="w-4 h-4" /> {p.method}
-                  </td>
-                  <td className="p-4 text-xs font-mono text-muted-foreground">
-                    {p.reference_id}
-                  </td>
-                  <td className="p-4 text-muted-foreground text-sm">
-                    {new Date(p.created_at).toLocaleDateString()}
-                  </td>
-                  <td className="p-4 text-right">
-                    <button className="text-muted-foreground hover:text-primary transition-colors p-2"><MoreHorizontal className="w-4 h-4" /></button>
-                  </td>
-                </motion.tr>
-              ))}
-              {filtered.length === 0 && (
-                <tr>
-                  <td colSpan="6" className="p-12 text-center text-muted-foreground">
-                    <CreditCard className="w-8 h-8 mx-auto text-slate-300 mb-3" />
-                    No payments found.
-                  </td>
-                </tr>
+              {loading ? (
+                <tr><td colSpan={7} className="p-8 text-center"><Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" /></td></tr>
+              ) : filtered.length === 0 ? (
+                <tr><td colSpan={7} className="p-12 text-center text-muted-foreground">No payments found.</td></tr>
+              ) : (
+                filtered.map(r => {
+                  const cName = extractName(r.reference_id);
+                  const displayRef = r.reference_id?.replace(/^\[.*?\]\s*/, '') || '—';
+                  return (
+                  <tr key={r.id} className="hover:bg-muted/30 transition-colors group">
+                    <td className="p-4"><div className="flex items-center gap-2"><div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">{cName.charAt(0).toUpperCase()}</div><span className="font-bold text-foreground">{cName}</span></div></td>
+                    <td className="p-4 font-black">${Number(r.amount).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                    <td className="p-4 text-muted-foreground">{r.method}</td>
+                    <td className="p-4 text-muted-foreground">{displayRef}</td>
+                    <td className="p-4">
+                      <select value={r.status} onChange={(e) => updateStatus(r.id, e.target.value)} className={`px-3 py-1 rounded-full text-xs font-bold border outline-none cursor-pointer ${STATUS_COLORS[r.status] || 'bg-muted text-muted-foreground'}`}>
+                        {Object.keys(STATUS_COLORS).map(s => <option key={s} value={s}>{s}</option>)}
+                      </select>
+                    </td>
+                    <td className="p-4 text-muted-foreground whitespace-nowrap">{new Date(r.created_at).toLocaleDateString()}</td>
+                    <td className="p-4">
+                      <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onClick={() => openModal(r)} className="p-1.5 bg-muted rounded-md text-muted-foreground hover:text-primary transition-colors"><Edit2 className="w-4 h-4" /></button>
+                        <button onClick={() => deleteRecord(r.id)} className="p-1.5 bg-red-50 rounded-md text-red-400 hover:text-red-600 transition-colors"><Trash2 className="w-4 h-4" /></button>
+                      </div>
+                    </td>
+                  </tr>
+                  )
+                })
               )}
             </tbody>
           </table>
         </div>
       </div>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-card w-full max-w-md rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+            <div className="p-5 border-b border-border flex justify-between items-center bg-muted/20">
+              <h2 className="text-xl font-black text-foreground flex items-center gap-2"><DollarSign className="w-5 h-5 text-primary" /> {editingId ? 'Edit Payment' : 'New Payment'}</h2>
+              <button onClick={closeModal} className="p-2 hover:bg-muted rounded-full text-muted-foreground transition-colors"><XCircle className="w-5 h-5" /></button>
+            </div>
+            <form onSubmit={saveRecord} className="p-5 flex flex-col gap-4">
+              <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Customer Name *</label><div className="relative"><Building2 className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" /><input required type="text" value={form.customer_name} onChange={e => setForm({...form, customer_name: e.target.value})} className="w-full h-10 pl-9 pr-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" /></div></div>
+              <div className="grid grid-cols-2 gap-4">
+                <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Amount *</label><input required type="number" step="0.01" value={form.amount} onChange={e => setForm({...form, amount: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" /></div>
+                <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Method</label><select value={form.method} onChange={e => setForm({...form, method: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"><option>Credit Card</option><option>Bank Transfer</option><option>Cash</option><option>Cheque</option></select></div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Reference ID</label><div className="relative"><CreditCard className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" /><input type="text" value={form.reference_id} onChange={e => setForm({...form, reference_id: e.target.value})} className="w-full h-10 pl-9 pr-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" /></div></div>
+                <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Status</label><select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">{Object.keys(STATUS_COLORS).map(s => <option key={s} value={s}>{s}</option>)}</select></div>
+              </div>
+              
+              <div className="flex justify-end gap-3 mt-2 pt-5 border-t border-border">
+                <button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium hover:bg-muted/80 transition-colors">Cancel</button>
+                <button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold shadow-sm hover:bg-primary/90 transition-colors">{editingId ? 'Update' : 'Save Payment'}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
