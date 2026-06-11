@@ -314,9 +314,20 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
     const dashboardNav = baseNav.filter(item => item.label === "Dashboard" || item.path === "/");
     const remainingBaseNav = baseNav.filter(item => item.label !== "Dashboard" && item.path !== "/");
     
-    let navItems = isAdmin
+    let rawNavItems = isAdmin
       ? [...dashboardNav, ...orbitBuildNavItems, ...dynamicNavItems, ...customPageItems, ...remainingBaseNav, createSlateItem, marketplaceItem, { label: "Firm Setup", icon: "Settings", path: "/firm-setup" }]
       : [...dashboardNav, ...orbitBuildNavItems, ...dynamicNavItems, ...customPageItems, ...remainingBaseNav, marketplaceItem];
+
+    // Deduplicate by label to prevent double Dashboards
+    const seenLabels = new Set();
+    let navItems = [];
+    for (const item of rawNavItems) {
+      const key = item.label?.toLowerCase() || '';
+      if (!seenLabels.has(key)) {
+        seenLabels.add(key);
+        navItems.push(item);
+      }
+    }
 
   const handleDeleteModule = (id, name) => {
     setDeleteData({ id, name });
@@ -612,7 +623,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
 
       {/* Desktop sidebar */}
       <aside className={cn(
-        "hidden lg:flex flex-col h-screen sticky top-0 border-e-[3px] border-e-primary shadow-sm transition-all duration-300 relative z-40",
+        "hidden lg:flex flex-col h-screen sticky top-0 border-e border-sidebar-border shadow-sm transition-all duration-300 relative z-40",
         isCollapsed ? "w-[80px] min-w-[80px] max-w-[80px]" : "w-[256px] min-w-[256px] max-w-[256px]"
       )}>
         {renderNavContent(isCollapsed)}
