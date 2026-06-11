@@ -12,6 +12,13 @@ import React, { useEffect } from 'react';
 import { PowerSyncContext } from '@powersync/react';
 import { HelmetProvider } from 'react-helmet-async';
 import { powerSync, initPowerSync } from './api/PowerSyncConnector';
+
+const UnivCRM = React.lazy(() => import('@/components/universal/UnivCRM'));
+const UnivProject = React.lazy(() => import('@/components/universal/UnivProject'));
+const UnivContactManagement = React.lazy(() => import('@/components/universal/UnivContactManagement'));
+const UnivKanban = React.lazy(() => import('@/components/universal/UnivKanban'));
+const UnivDocument = React.lazy(() => import('@/components/universal/UnivDocument'));
+
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -339,12 +346,12 @@ function PlatformRoutes() {
       {/* Core / Shared Pages */}
       <Route path="/ob/:pageName" element={<OrbitBuildPage />} />
       <Route path="/" element={<Dashboard />} />
-      <Route path="/cases" element={<Cases />} />
-      <Route path="/clients" element={<Clients />} />
+      <Route path="/cases" element={<UnivProject />} />
+      <Route path="/clients" element={<UnivContactManagement />} />
       <Route path="/calendar" element={<CalendarPage />} />
       <Route path="/invoices" element={<Invoices />} />
-      <Route path="/tasks" element={<Tasks />} />
-      <Route path="/documents" element={<Documents />} />
+      <Route path="/tasks" element={<UnivKanban />} />
+      <Route path="/documents" element={<UnivDocument />} />
       <Route path="/team" element={<Team />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/settings/custom-fields" element={<CustomFieldsSettings />} />
@@ -352,7 +359,7 @@ function PlatformRoutes() {
       <Route path="/client-portal" element={<ClientPortal />} />
       <Route path="/cases/:id" element={<CaseDetail />} />
       <Route path="/my-dashboard" element={<StaffDashboard />} />
-      <Route path="/leads" element={<Leads />} />
+      <Route path="/leads" element={<UnivCRM />} />
       <Route path="/billing" element={<BillingDashboard />} />
       <Route path="/pipeline" element={<CasePipelinePage />} />
       <Route path="/research" element={<LegalResearch />} />

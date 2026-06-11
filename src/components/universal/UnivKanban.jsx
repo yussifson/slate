@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useCompanyId } from '@/lib/hooks/useCompanyId';
+import { useCompanyId } from '@/hooks/useCompanyId';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { DragDropContext, Droppable, Draggable } from 'hello-pangea/dnd';
