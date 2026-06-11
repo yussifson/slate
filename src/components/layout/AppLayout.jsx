@@ -245,7 +245,7 @@ export default function AppLayout() {
           toggleChat={toggleChat}
         />
         <div className="flex-1 relative flex flex-col overflow-hidden">
-          <main className="flex-1 p-2 sm:p-4 lg:p-6 max-w-[1400px] w-full mx-auto pb-24 md:pb-6 overflow-y-auto">
+          <main className="flex-1 w-full mx-auto pb-24 md:pb-6 overflow-y-auto">
             <Outlet />
           </main>
           <GlobalVideoOverlay />

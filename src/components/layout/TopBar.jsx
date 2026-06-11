@@ -100,7 +100,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
   const currentLang = LANGUAGES[i18n.language?.split('-')[0]] || LANGUAGES.en;
 
   return (
-    <div className="h-12 border-b border-border bg-card sticky top-0 z-30 flex items-center pl-4 pr-5 lg:px-5 gap-3">
+    <div className="h-12 border-t-[3px] border-t-primary border-b border-border bg-card sticky top-0 z-30 flex items-center pl-4 pr-5 lg:px-5 gap-3">
       {/* Sidebar Toggle & Breadcrumb */}
       {/* Sidebar Toggle & Breadcrumb */}
       <div className="flex items-center gap-2 sm:gap-3 text-sm flex-1 min-w-0">

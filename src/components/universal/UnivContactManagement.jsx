@@ -1,184 +1,203 @@
-import React, { useState, useEffect } from 'react';
-import { supabase } from '@/api/supabaseClient';
-import { useCompanyId } from '@/hooks/useCompanyId';
-import { motion } from 'framer-motion';
-import { Search, Plus, Filter, User, Building2, Phone, Mail, MoreHorizontal, Download } from 'lucide-react';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useCompanyId } from '@/lib/hooks/useCompanyId';
+import { base44 } from '@/api/base44Client';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { 
+  Users, Mail, Phone, Building2, Plus, Search, 
+  Trash2, Edit2, Loader2, User, XCircle
+} from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 
 export default function UnivContactManagement() {
+  const { t } = useTranslation();
   const companyId = useCompanyId();
-  const [contacts, setContacts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
+  const queryClient = useQueryClient();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [viewingData, setViewingData] = useState(null);
+  const [formData, setFormData] = useState({ first_name: '', last_name: '', email: '', phone: '', type: 'client', company_name: '' });
 
-  useEffect(() => {
-    if (companyId) {
-      fetchContacts();
-      const channel = supabase.channel('contacts_changes')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'univ_contacts', filter: `company_id=eq.${companyId}` }, () => {
-          fetchContacts();
-        }).subscribe();
-      return () => { supabase.removeChannel(channel); };
-    }
-  }, [companyId]);
+  const { data: contacts = [], isLoading } = useQuery({
+    queryKey: ['univ_contacts', companyId],
+    queryFn: async () => {
+      const res = await base44.db.from('univ_contacts').select('*').eq('company_id', companyId).order('first_name', { ascending: true });
+      if (res.error) throw res.error;
+      return res.data;
+    },
+    enabled: !!companyId
+  });
 
-  const fetchContacts = async () => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from('univ_contacts')
-        .select('*')
-        .eq('company_id', companyId)
-        .order('first_name', { ascending: true });
-      if (error && error.code !== '42P01') throw error;
-      setContacts(data || []);
-    } catch (err) {
-      // Mock data removed for production empty states
-    } finally {
-      setLoading(false);
+  const mutateRecord = useMutation({
+    mutationFn: async (payload) => {
+      if (editingId) return await base44.db.from('univ_contacts').update(payload).eq('id', editingId);
+      return await base44.db.from('univ_contacts').insert([{ ...payload, company_id: companyId }]);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['univ_contacts']);
+      toast.success(editingId ? "Contact updated" : "Contact added");
+      setIsModalOpen(false);
+      setEditingId(null);
     }
+  });
+
+  const deleteRecord = useMutation({
+    mutationFn: async (id) => await base44.db.from('univ_contacts').delete().eq('id', id),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['univ_contacts']);
+      toast.success("Contact deleted");
+      setViewingData(null);
+    }
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    mutateRecord.mutate(formData);
   };
 
-  const handleAddContact = async () => {
-    const newContact = {
-      company_id: companyId,
-      first_name: 'New',
-      last_name: 'Contact',
-      email: `contact${Math.floor(Math.random() * 1000)}@example.com`,
-      type: 'Customer'
-    };
-    try {
-      const { error } = await supabase.from('univ_contacts').insert(newContact);
-      if (error) throw error;
-      toast.success('Contact added');
-    } catch (err) {
-      if (err.code === '42P01') toast.error("Database table not initialized yet.");
-      else toast.error('Failed to add contact');
+  const openModal = (record = null) => {
+    if (record) {
+      setFormData(record);
+      setEditingId(record.id);
+    } else {
+      setFormData({ first_name: '', last_name: '', email: '', phone: '', type: 'client', company_name: '' });
+      setEditingId(null);
     }
+    setIsModalOpen(true);
   };
 
-  const filtered = contacts.filter(c => 
-    `${c.first_name} ${c.last_name} ${c.email} ${c.organization}`.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredData = contacts.filter(c => 
+    c.first_name?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    c.last_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    c.company_name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
-    <div className="flex flex-col h-full bg-background overflow-hidden">
-      <div className="flex items-center justify-between mb-6 shrink-0 pt-2 px-1">
+    <div className="h-full flex flex-col gap-6 w-full bg-background p-4 sm:p-6 lg:p-8">
+      
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0">
         <div>
-           <h2 className="text-2xl font-bold text-foreground tracking-tight">Contacts</h2>
-           <p className="text-sm text-muted-foreground mt-1">Manage people and organizations.</p>
+          <h1 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-2">
+            <Users className="w-7 h-7 text-primary" /> Contacts Directory
+          </h1>
+          <p className="text-muted-foreground text-sm font-medium mt-1">Manage your clients, vendors, and partners.</p>
         </div>
-        <div className="flex gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 bg-card border border-border rounded-xl text-sm font-medium hover:bg-muted/50 transition-colors">
-            <Download className="w-4 h-4" /> Export
-          </button>
-          <button onClick={handleAddContact} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm shadow-primary/20">
-            <Plus className="w-4 h-4" /> Add Contact
-          </button>
-        </div>
+        <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-sm">
+          <Plus className="w-4 h-4" /> Add Contact
+        </button>
       </div>
 
-      {/* KPI Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 shrink-0">
-        {[
-          { label: 'Total Contacts', value: contacts.length, icon: User, color: 'text-blue-600', bg: 'bg-blue-100 dark:bg-blue-500/10' },
-          { label: 'Customers', value: contacts.filter(c => c.type === 'Customer').length, icon: Building2, color: 'text-emerald-600', bg: 'bg-emerald-100 dark:bg-emerald-500/10' },
-          { label: 'Partners & Vendors', value: contacts.filter(c => c.type !== 'Customer').length, icon: User, color: 'text-purple-600', bg: 'bg-purple-100 dark:bg-purple-500/10' }
-        ].map((k, i) => (
-          <div key={i} className="bg-card border border-border rounded-2xl p-4 flex items-center justify-between shadow-sm">
-            <div>
-              <p className="text-sm text-muted-foreground font-medium">{k.label}</p>
-              <h3 className="text-2xl font-bold text-foreground mt-1">{k.value}</h3>
+      <div className="relative shrink-0">
+        <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+        <input 
+          type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
+          placeholder="Search contacts..." 
+          className="w-full h-12 pl-10 pr-4 bg-card border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm shadow-sm"
+        />
+      </div>
+
+      <div className="flex-1 overflow-auto custom-scrollbar bg-card border border-border rounded-2xl shadow-sm">
+        {isLoading ? (
+          <div className="flex h-full items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4">
+            {filteredData.map(c => (
+              <div key={c.id} onClick={() => setViewingData(c)} className="bg-background border border-border p-5 rounded-2xl shadow-sm hover:shadow-md cursor-pointer transition-all flex flex-col items-center text-center">
+                <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xl font-black mb-3">
+                  {c.first_name?.[0]}{c.last_name?.[0]}
+                </div>
+                <h3 className="font-bold text-foreground">{c.first_name} {c.last_name}</h3>
+                <p className="text-xs text-muted-foreground font-medium mt-1">{c.company_name || 'No Company'}</p>
+                <span className={`mt-3 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                  c.type === 'client' ? 'bg-blue-100 text-blue-700' : 
+                  c.type === 'vendor' ? 'bg-amber-100 text-amber-700' : 'bg-purple-100 text-purple-700'
+                }`}>{c.type}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="bg-card w-full max-w-lg rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
+            <div className="p-5 border-b border-border flex justify-between items-center shrink-0">
+              <h2 className="text-xl font-black text-foreground">{editingId ? 'Edit Contact' : 'New Contact'}</h2>
+              <button onClick={() => setIsModalOpen(false)} className="p-2 bg-muted hover:bg-muted/80 rounded-full text-muted-foreground transition-colors"><XCircle className="w-5 h-5" /></button>
             </div>
-            <div className={`p-3 rounded-xl ${k.bg} ${k.color}`}><k.icon className="w-5 h-5" /></div>
+            <form onSubmit={handleSubmit} className="p-5 overflow-y-auto flex-1 custom-scrollbar">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">First Name</label>
+                  <input required type="text" value={formData.first_name} onChange={e => setFormData({...formData, first_name: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Last Name</label>
+                  <input required type="text" value={formData.last_name} onChange={e => setFormData({...formData, last_name: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Email</label>
+                  <input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Phone</label>
+                  <input type="text" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Company</label>
+                  <input type="text" value={formData.company_name} onChange={e => setFormData({...formData, company_name: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Type</label>
+                  <select value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">
+                    <option value="client">Client</option>
+                    <option value="vendor">Vendor</option>
+                    <option value="partner">Partner</option>
+                    <option value="lead">Lead</option>
+                  </select>
+                </div>
+              </div>
+              <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-border">
+                <button type="button" onClick={() => setIsModalOpen(false)} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium">Cancel</button>
+                <button type="submit" disabled={mutateRecord.isPending} className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold shadow-sm">{mutateRecord.isPending ? 'Saving...' : 'Save Contact'}</button>
+              </div>
+            </form>
           </div>
-        ))}
-      </div>
-
-      <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden shadow-sm flex flex-col">
-        {/* Toolbar */}
-        <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
-          <div className="relative w-72">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input 
-              type="text"
-              placeholder="Search contacts..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
-            />
-          </div>
-          <button className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-muted">
-            <Filter className="w-4 h-4" /> Filter
-          </button>
         </div>
+      )}
 
-        {/* Table */}
-        <div className="flex-1 overflow-auto custom-scrollbar">
-          <table className="w-full text-left text-sm whitespace-nowrap">
-            <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground sticky top-0 z-10 backdrop-blur-md">
-              <tr>
-                <th className="p-4 font-semibold">Name</th>
-                <th className="p-4 font-semibold">Organization</th>
-                <th className="p-4 font-semibold">Contact Info</th>
-                <th className="p-4 font-semibold">Type</th>
-                <th className="p-4 font-semibold text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {filtered.map((c, idx) => (
-                <motion.tr 
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.02 }}
-                  key={c.id} 
-                  className="hover:bg-muted/30 transition-colors group cursor-pointer"
-                >
-                  <td className="p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs shrink-0">
-                        {c.first_name.charAt(0)}{c.last_name.charAt(0)}
-                      </div>
-                      <div className="font-semibold text-foreground">{c.first_name} {c.last_name}</div>
-                    </div>
-                  </td>
-                  <td className="p-4 text-muted-foreground font-medium">
-                    {c.organization ? (
-                      <span className="flex items-center gap-1.5"><Building2 className="w-3.5 h-3.5" /> {c.organization}</span>
-                    ) : '—'}
-                  </td>
-                  <td className="p-4">
-                     <div className="flex flex-col gap-1 text-xs text-muted-foreground">
-                        {c.email && <span className="flex items-center gap-1.5"><Mail className="w-3 h-3" /> {c.email}</span>}
-                        {c.phone && <span className="flex items-center gap-1.5"><Phone className="w-3 h-3" /> {c.phone}</span>}
-                     </div>
-                  </td>
-                  <td className="p-4">
-                    <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border ${
-                      c.type === 'Customer' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
-                      c.type === 'Partner' ? 'bg-purple-50 text-purple-700 border-purple-200' : 
-                      'bg-slate-50 text-slate-700 border-slate-200'
-                    }`}>
-                      {c.type}
-                    </span>
-                  </td>
-                  <td className="p-4 text-right">
-                    <button className="text-muted-foreground hover:text-primary transition-colors p-2"><MoreHorizontal className="w-4 h-4" /></button>
-                  </td>
-                </motion.tr>
-              ))}
-              {filtered.length === 0 && (
-                <tr>
-                  <td colSpan="5" className="p-12 text-center text-muted-foreground">
-                    <User className="w-8 h-8 mx-auto text-slate-300 mb-3" />
-                    No contacts found.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      {/* Sheet */}
+      <Sheet open={!!viewingData} onOpenChange={(open) => !open && setViewingData(null)}>
+        <SheetContent className="overflow-y-auto sm:max-w-md border-l border-border">
+          <SheetHeader className="pb-6 border-b border-border text-center flex flex-col items-center">
+            <div className="w-24 h-24 bg-primary/10 text-primary rounded-full flex items-center justify-center text-4xl font-black mb-2">
+              {viewingData?.first_name?.[0]}{viewingData?.last_name?.[0]}
+            </div>
+            <SheetTitle className="text-2xl font-black">{viewingData?.first_name} {viewingData?.last_name}</SheetTitle>
+            <SheetDescription className="text-sm font-medium mt-1">{viewingData?.company_name || 'Independent'}</SheetDescription>
+            <span className={`mt-2 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+              viewingData?.type === 'client' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'
+            }`}>{viewingData?.type}</span>
+          </SheetHeader>
+          {viewingData && (
+            <div className="mt-6 space-y-4">
+              <div className="bg-muted/50 p-4 rounded-xl border border-border space-y-4">
+                <div className="flex items-center gap-3"><Mail className="w-4 h-4 text-muted-foreground" /><span className="text-sm font-medium">{viewingData.email || '-'}</span></div>
+                <div className="flex items-center gap-3"><Phone className="w-4 h-4 text-muted-foreground" /><span className="text-sm font-medium">{viewingData.phone || '-'}</span></div>
+                <div className="flex items-center gap-3"><Building2 className="w-4 h-4 text-muted-foreground" /><span className="text-sm font-medium">{viewingData.company_name || '-'}</span></div>
+              </div>
+              <div className="flex gap-2 pt-4">
+                <button onClick={() => { openModal(viewingData); setViewingData(null); }} className="flex-1 h-11 bg-primary text-white rounded-xl text-sm font-bold flex items-center justify-center gap-2"><Edit2 className="w-4 h-4" /> Edit Contact</button>
+                <button onClick={() => deleteRecord.mutate(viewingData.id)} className="w-11 h-11 bg-red-50 text-red-600 rounded-xl flex items-center justify-center"><Trash2 className="w-4 h-4" /></button>
+              </div>
+            </div>
+          )}
+        </SheetContent>
+      </Sheet>
+
     </div>
   );
 }
