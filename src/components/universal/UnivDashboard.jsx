@@ -59,22 +59,28 @@ export default function UnivDashboard({
         fetchAllWidgetData(parsed);
       }
 
-      // 2. Try to get from Supabase (may fail if table doesn't exist yet)
-      const { data, error } = await supabase
-        .from('univ_dashboard_configs')
-        .select('layout')
-        .eq('company_id', companyId)
-        .maybeSingle();
+      // 2. Try to get from Supabase — silently ignore if table doesn't exist (406/404)
+      try {
+        const { data, error } = await supabase
+          .from('univ_dashboard_configs')
+          .select('layout')
+          .eq('company_id', companyId)
+          .maybeSingle();
 
-      if (!error && data?.layout && data.layout.length > 0) {
-        // Supabase has data — use it and update localStorage
-        localStorage.setItem(LOCAL_KEY, JSON.stringify(data.layout));
-        setLayout(data.layout);
-        fetchAllWidgetData(data.layout);
-      } else if (!local) {
-        // No local and no DB — use default
-        setLayout(DEFAULT_LAYOUT);
-        fetchAllWidgetData(DEFAULT_LAYOUT);
+        if (!error && data?.layout && data.layout.length > 0) {
+          localStorage.setItem(LOCAL_KEY, JSON.stringify(data.layout));
+          setLayout(data.layout);
+          fetchAllWidgetData(data.layout);
+        } else if (!local) {
+          setLayout(DEFAULT_LAYOUT);
+          fetchAllWidgetData(DEFAULT_LAYOUT);
+        }
+      } catch (_supaErr) {
+        // Table doesn't exist yet — localStorage already loaded above
+        if (!local) {
+          setLayout(DEFAULT_LAYOUT);
+          fetchAllWidgetData(DEFAULT_LAYOUT);
+        }
       }
     } catch (err) {
       console.error('Dashboard load error:', err);

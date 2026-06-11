@@ -623,7 +623,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
 
       {/* Desktop sidebar */}
       <aside className={cn(
-        "hidden lg:flex flex-col h-screen sticky top-0 border-e border-sidebar-border shadow-sm transition-all duration-300 relative z-40",
+        "hidden lg:flex flex-col h-screen sticky top-0 border-r-2 border-r-primary/30 shadow-[2px_0_16px_-2px_hsl(158,68%,38%,0.2)] transition-all duration-300 relative z-20 bg-sidebar",
         isCollapsed ? "w-[80px] min-w-[80px] max-w-[80px]" : "w-[256px] min-w-[256px] max-w-[256px]"
       )}>
         {renderNavContent(isCollapsed)}

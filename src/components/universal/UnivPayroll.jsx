@@ -52,7 +52,6 @@ export default function UnivPayroll() {
     const { id, created_at, updated_at, ...cleanForm } = form;
     const payload = {
       ...cleanForm,
-      tax_amount: calculated_tax,
       net_pay,
       payment_date: form.payment_date || null,
       period_start: form.period_start || null,
