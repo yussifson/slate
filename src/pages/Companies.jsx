@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Building2, Search, Users } from "lucide-react";
+import { Plus, Building2, Search, Users, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +11,7 @@ import PageHeader from "@/components/shared/PageHeader";
 import DataTable from "@/components/shared/DataTable";
 import CompanyFormDialog from "@/components/superadmin/CompanyFormDialog";
 import FirmStaffManager from "@/components/superadmin/FirmStaffManager";
+import FirmFeaturesManager from "@/components/superadmin/FirmFeaturesManager";
 import { SUBSCRIPTION_PLANS } from "@/lib/constants";
 import { format } from "date-fns";
 
@@ -22,6 +23,7 @@ export default function Companies() {
   const [showForm, setShowForm] = useState(false);
   const [editingCompany, setEditingCompany] = useState(null);
   const [managingStaffFirm, setManagingStaffFirm] = useState(null);
+  const [managingFeaturesFirm, setManagingFeaturesFirm] = useState(null);
   const [search, setSearch] = useState("");
   const [countryFilter, setCountryFilter] = useState("all");
 
@@ -114,15 +116,23 @@ export default function Companies() {
       }
     },
     {
-      header: "",
+      header: "Actions",
       render: row => {
         return (
-          <Button
-            variant="outline" size="sm" className="gap-1.5 h-7 text-xs"
-            onClick={(e) => { e.stopPropagation(); setManagingStaffFirm(row); }}
-          >
-            <Users className="w-3 h-3" /> {t("team", "Team")}
-          </Button>
+          <div className="flex gap-2 justify-end">
+            <Button
+              variant="outline" size="sm" className="gap-1.5 h-7 text-xs"
+              onClick={(e) => { e.stopPropagation(); setManagingFeaturesFirm(row); }}
+            >
+              <Layers className="w-3 h-3" /> {t("features", "Features")}
+            </Button>
+            <Button
+              variant="outline" size="sm" className="gap-1.5 h-7 text-xs"
+              onClick={(e) => { e.stopPropagation(); setManagingStaffFirm(row); }}
+            >
+              <Users className="w-3 h-3" /> {t("team", "Team")}
+            </Button>
+          </div>
         );
       }
     },
@@ -169,6 +179,12 @@ export default function Companies() {
         <FirmStaffManager
           firm={managingStaffFirm}
           onClose={() => setManagingStaffFirm(null)}
+        />
+      )}
+      {managingFeaturesFirm && (
+        <FirmFeaturesManager
+          firm={managingFeaturesFirm}
+          onClose={() => setManagingFeaturesFirm(null)}
         />
       )}
     </div>

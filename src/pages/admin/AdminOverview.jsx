@@ -1,8 +1,9 @@
-﻿import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { Scale, Users, Building2, DollarSign, Loader2 } from 'lucide-react';
 import PageHeader from '@/components/shared/PageHeader';
+import Companies from '@/pages/Companies';
 
 export default function AdminOverview() {
   const { t } = useTranslation();
@@ -101,6 +102,10 @@ export default function AdminOverview() {
             <Scale className="w-6 h-6" />
           </div>
         </div>
+      </div>
+      
+      <div className="mt-8 pt-8 border-t border-border">
+        <Companies />
       </div>
     </div>
   );

@@ -1,14 +1,15 @@
-﻿import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Edit2, CheckCircle2, AlertOctagon, Loader2, Search, UserCheck, MessageSquare } from 'lucide-react';
+import { Edit2, CheckCircle2, AlertOctagon, Loader2, Search, UserCheck, MessageSquare, Layers } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { useImpersonation } from '@/lib/ImpersonationContext';
 import PageHeader from '@/components/shared/PageHeader';
+import FirmFeaturesManager from '@/components/superadmin/FirmFeaturesManager';
 import { useNotifications } from '@/hooks/useNotifications';
 
 export default function AdminFirms() {
@@ -24,6 +25,7 @@ export default function AdminFirms() {
   const [searchQuery, setSearchQuery] = useState('');
 
   const [selectedCompany, setSelectedCompany] = useState(null);
+  const [featuresCompany, setFeaturesCompany] = useState(null);
 
   // Quota Modal
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -225,6 +227,14 @@ export default function AdminFirms() {
                             <Button 
                               variant="outline" 
                               size="sm" 
+                              onClick={() => setFeaturesCompany(c)}
+                              className="h-8 text-xs gap-1.5 px-3 rounded-lg border-primary/20 text-violet-700 bg-violet-50 hover:bg-violet-100"
+                            >
+                              <Layers className="w-3.5 h-3.5" /> Features
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
                               onClick={() => handleImpersonate(c)}
                               className="h-8 text-xs gap-1.5 px-3 rounded-lg border-primary/20 text-primary/90 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 hover:text-primary/80"
                             >
@@ -398,6 +408,13 @@ export default function AdminFirms() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {featuresCompany && (
+        <FirmFeaturesManager
+          firm={featuresCompany}
+          onClose={() => setFeaturesCompany(null)}
+        />
+      )}
     </div>
   );
 }

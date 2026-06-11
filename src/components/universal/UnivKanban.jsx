@@ -17,6 +17,7 @@ const COL_COLORS = ['border-border', 'border-blue-400', 'border-violet-400', 'bo
 const EMPTY_FORM = { title: '', description: '', status: 'To Do', priority: 'Medium', assignee: '', due_date: '', labels: '' };
 
 export default function UnivKanban({ title = "Kanban Board", companyId, pageName, tableName }) {
+  const [view, setView] = useState('Default');
 
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);

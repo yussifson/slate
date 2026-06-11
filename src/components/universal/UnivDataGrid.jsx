@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 
 import GenericGrid from '@/components/views/GenericGrid';
 import GenericKanban from '@/components/views/GenericKanban';
@@ -20,6 +20,7 @@ export default function UnivDataGrid({
   pageName,
   tableName
 }) {
+  const [view, setView] = useState('Default');
 
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: 'date', direction: 'desc' });

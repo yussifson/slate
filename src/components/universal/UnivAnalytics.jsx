@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import GenericGrid from '@/components/views/GenericGrid';
 import GenericKanban from '@/components/views/GenericKanban';
