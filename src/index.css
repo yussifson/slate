@@ -116,31 +116,24 @@
     scrollbar-width: none;
   }
   
-  /* Global Scrollbar Hiding */
-  *::-webkit-scrollbar {
-    display: none;
+  /* Premium Global Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
   }
-  * {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar {
-    display: block;
-    width: 4px;
-  }
-  .custom-scrollbar {
-    scrollbar-width: thin;
-  }
-  .custom-scrollbar::-webkit-scrollbar-track {
+  ::-webkit-scrollbar-track {
     background: transparent;
   }
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: hsl(var(--primary) / 0.5);
+  ::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
     border-radius: 10px;
   }
-  .custom-scrollbar:hover::-webkit-scrollbar-thumb {
-    background-color: hsl(var(--primary));
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground) / 0.5);
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
   }
 
   /* Premium Stat Card Effects */
@@ -190,21 +183,36 @@
 
 
 
-  /* Global Enterprise Table Styling */
+  /* Global Enterprise Table & Material Design 3 Styling */
   table {
-    @apply w-full border-collapse;
+    @apply w-full border-collapse border-spacing-0;
   }
   thead {
-    @apply bg-muted/40 backdrop-blur-sm sticky top-0 z-10;
+    @apply bg-muted/40 backdrop-blur-md sticky top-0 z-20 shadow-sm;
   }
   th {
-    @apply px-6 py-4 text-left text-[10px] uppercase tracking-widest font-black text-muted-foreground border-b border-border;
+    @apply px-6 py-4 text-left text-[11px] uppercase tracking-[0.1em] font-bold text-muted-foreground border-b border-border;
   }
   td {
-    @apply px-6 py-4 border-b border-border/40 text-sm align-middle;
+    @apply px-6 py-4 border-b border-border/40 text-sm align-middle transition-colors duration-200;
   }
   tbody tr {
-    @apply transition-colors duration-200 hover:bg-muted/30;
+    @apply transition-all duration-300 hover:bg-primary/5 hover:shadow-sm relative z-0 hover:z-10 bg-card;
+  }
+  
+  /* Global Input and Button Google/Material Reskin */
+  button {
+    @apply transition-all duration-200 ease-out active:scale-[0.98];
+  }
+  button:not([class*="p-1.5"]):not([class*="p-2"]) {
+    /* Exclude small icon buttons from being pill-shaped universally to preserve layouts */
+    @apply rounded-full;
+  }
+  button[class*="bg-primary"], button[class*="bg-blue"] {
+    @apply shadow-[0_2px_8px_-2px_rgba(var(--primary),0.4)] hover:shadow-[0_6px_16px_-4px_rgba(var(--primary),0.6)] hover:-translate-y-0.5;
+  }
+  input, select, textarea {
+    @apply transition-all duration-200 ease-out hover:border-primary/40 focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-2xl;
   }
 }
 

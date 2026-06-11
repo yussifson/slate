@@ -62,6 +62,18 @@ export default function UnivCourtCalendar() {
     `${e.event_title} ${e.event_type} ${e.location}`.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  
+  const handleExport = () => {
+    const exportData = (typeof records !== 'undefined' ? records : (typeof data !== 'undefined' ? data : []));
+    if (!exportData || exportData.length === 0) return alert('No data to export');
+    const keys = Object.keys(exportData[0]).filter(k => k !== 'company_id' && k !== 'id');
+    const csv = [keys.join(','), ...exportData.map(r => keys.map(k => '"' + (r[k]||'').toString().replace(/"/g, '""') + '"').join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'export.csv'; a.click();
+  };
+
   return (
     <div className="flex flex-col h-full bg-background overflow-hidden">
       <div className="flex items-center justify-between mb-6 shrink-0 pt-2 px-1">
@@ -70,9 +82,17 @@ export default function UnivCourtCalendar() {
            <p className="text-sm text-muted-foreground mt-1">Manage hearings, trials, depositions, and filing deadlines.</p>
         </div>
         <div className="flex gap-3">
-          <button onClick={handleAddEvent} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm shadow-primary/20">
+          <div className="flex items-center gap-2">
+
+        <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          Export CSV
+        </button>
+
+        <button onClick={handleAddEvent} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm shadow-primary/20">
             <Plus className="w-4 h-4" /> Schedule Event
           </button>
+      </div>
         </div>
       </div>
 

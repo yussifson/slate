@@ -178,6 +178,18 @@ export default function UnivCRM() {
   const wonLeads = leads.filter(l => l.status === 'Won').length;
   const winRate = leads.length > 0 ? Math.round((wonLeads / leads.length) * 100) : 0;
 
+  
+  const handleExport = () => {
+    const exportData = (typeof records !== 'undefined' ? records : (typeof data !== 'undefined' ? data : []));
+    if (!exportData || exportData.length === 0) return alert('No data to export');
+    const keys = Object.keys(exportData[0]).filter(k => k !== 'company_id' && k !== 'id');
+    const csv = [keys.join(','), ...exportData.map(r => keys.map(k => '"' + (r[k]||'').toString().replace(/"/g, '""') + '"').join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'export.csv'; a.click();
+  };
+
   return (
     <div className="min-h-[80vh] h-full flex flex-col gap-6 w-full bg-background">
       
@@ -189,7 +201,14 @@ export default function UnivCRM() {
         </div>
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <div className="flex items-center p-1 bg-muted rounded-lg shrink-0">
-            <button 
+            <div className="flex items-center gap-2">
+
+        <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          Export CSV
+        </button>
+
+        <button 
               onClick={() => setViewMode('kanban')} 
               className={`p-1.5 rounded-md flex items-center gap-1.5 text-xs font-medium transition-all ${viewMode === 'kanban' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
             >
@@ -205,6 +224,7 @@ export default function UnivCRM() {
           <button onClick={() => handleOpenModal()} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm shadow-primary/20 whitespace-nowrap">
             <Plus className="w-4 h-4" /> Add Lead
           </button>
+      </div>
         </div>
       </div>
 

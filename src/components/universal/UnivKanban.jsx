@@ -107,11 +107,31 @@ export default function UnivKanban({ title = "Kanban Board", companyId, pageName
 
   const filtered = tasks.filter(t => `${t.title} ${t.assignee} ${t.labels}`.toLowerCase().includes(search.toLowerCase()));
 
+  
+  const handleExport = () => {
+    const exportData = (typeof records !== 'undefined' ? records : (typeof data !== 'undefined' ? data : []));
+    if (!exportData || exportData.length === 0) return alert('No data to export');
+    const keys = Object.keys(exportData[0]).filter(k => k !== 'company_id' && k !== 'id');
+    const csv = [keys.join(','), ...exportData.map(r => keys.map(k => '"' + (r[k]||'').toString().replace(/"/g, '""') + '"').join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'export.csv'; a.click();
+  };
+
   return (
     <div className="h-full flex flex-col gap-4 w-full bg-background p-4 sm:p-6 lg:p-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0">
         <div><h1 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-2"><LayoutGrid className="w-7 h-7 text-primary" />Kanban Board</h1><p className="text-muted-foreground text-sm font-medium mt-1">{tasks.length} tasks across {columns.length} columns.</p></div>
+        <div className="flex items-center gap-2">
+
+        <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          Export CSV
+        </button>
+
         <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 shadow-sm"><Plus className="w-4 h-4" />Add Task</button>
+      </div>
       </div>
 
       <div className="relative shrink-0 max-w-md"><Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" /><input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search tasks..." className="w-full h-10 pl-10 pr-4 bg-card border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm shadow-sm" /></div>

@@ -89,6 +89,18 @@ export default function UnivAssetManagement() {
     return `${r.name} ${r.category} ${r.status}`.toLowerCase().includes(search.toLowerCase());
   });
 
+  
+  const handleExport = () => {
+    const exportData = (typeof records !== 'undefined' ? records : (typeof data !== 'undefined' ? data : []));
+    if (!exportData || exportData.length === 0) return alert('No data to export');
+    const keys = Object.keys(exportData[0]).filter(k => k !== 'company_id' && k !== 'id');
+    const csv = [keys.join(','), ...exportData.map(r => keys.map(k => '"' + (r[k]||'').toString().replace(/"/g, '""') + '"').join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'export.csv'; a.click();
+  };
+
   return (
     <div className="h-full flex flex-col gap-6 w-full bg-background p-4 sm:p-6 lg:p-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0">
@@ -96,7 +108,15 @@ export default function UnivAssetManagement() {
           <h1 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-2"><Monitor className="w-7 h-7 text-primary" /> Asset Management</h1>
           <p className="text-muted-foreground text-sm font-medium mt-1">Manage company equipment and physical assets.</p>
         </div>
+        <div className="flex items-center gap-2">
+
+        <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          Export CSV
+        </button>
+
         <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-sm"><Plus className="w-4 h-4" /> Add Asset</button>
+      </div>
       </div>
 
       <div className="flex gap-3 shrink-0">

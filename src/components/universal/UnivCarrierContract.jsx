@@ -62,6 +62,18 @@ const UnivCarrierContract = () => {
     else fetchData();
   };
 
+  
+  const handleExport = () => {
+    const exportData = (typeof records !== 'undefined' ? records : (typeof data !== 'undefined' ? data : []));
+    if (!exportData || exportData.length === 0) return alert('No data to export');
+    const keys = Object.keys(exportData[0]).filter(k => k !== 'company_id' && k !== 'id');
+    const csv = [keys.join(','), ...exportData.map(r => keys.map(k => '"' + (r[k]||'').toString().replace(/"/g, '""') + '"').join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'export.csv'; a.click();
+  };
+
   return (
     <div className="p-6 max-w-6xl mx-auto bg-slate-50 min-h-screen font-sans">
       <motion.div 
@@ -78,6 +90,13 @@ const UnivCarrierContract = () => {
             <p className="text-slate-500 text-sm mt-1">Manage and track carrier contracts records</p>
           </div>
         </div>
+        <div className="flex items-center gap-2">
+
+        <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          Export CSV
+        </button>
+
         <button
           onClick={() => { setIsEditing(true); setEditId(null); setFormData({carrier_name: '', valid_until: '', rate_per_mile: '', status: ''}); }}
           className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
@@ -85,6 +104,7 @@ const UnivCarrierContract = () => {
           <Plus size={18} />
           <span>New Record</span>
         </button>
+      </div>
       </motion.div>
 
       {isEditing && (
