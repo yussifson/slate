@@ -203,7 +203,7 @@ export default function UnivMessaging() {
         <div className="p-4 border-b border-border">
           <h2 className="text-lg font-bold text-foreground">Messages</h2>
           <div className="relative mt-3">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input 
               type="text"
               placeholder="Search chats..."
@@ -221,7 +221,7 @@ export default function UnivMessaging() {
               className={`p-3 rounded-xl flex items-center gap-3 cursor-pointer transition-colors ${activeContact?.id === c.id ? 'bg-primary/10' : 'hover:bg-muted'}`}
             >
                <div className="relative">
-                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center font-bold text-slate-500 dark:text-slate-300">
+                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center font-bold text-muted-foreground dark:text-slate-300">
                    {(c.email || 'U').charAt(0).toUpperCase()}
                  </div>
                </div>
@@ -263,7 +263,7 @@ export default function UnivMessaging() {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar bg-slate-50/50 dark:bg-background/50">
+            <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar bg-background/50 dark:bg-background/50">
               {loadingMessages ? (
                 <div className="flex h-full items-center justify-center">
                   <Loader2 className="w-6 h-6 animate-spin text-primary" />
@@ -279,7 +279,7 @@ export default function UnivMessaging() {
                   >
                     <div className="flex items-end gap-2 mb-1">
                       {!isMe && <span className="text-xs font-semibold text-muted-foreground ml-1">{activeContact.email}</span>}
-                      <span className="text-[10px] text-slate-400">
+                      <span className="text-[10px] text-muted-foreground">
                         {msg.created_at ? new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
                       </span>
                     </div>

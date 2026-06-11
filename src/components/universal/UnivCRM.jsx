@@ -261,7 +261,7 @@ export default function UnivCRM() {
 
       {/* Search Bar */}
       <div className="relative mb-6 shrink-0 px-1 max-w-md">
-        <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+        <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
         <input 
           type="text"
           placeholder="Search by name, email, phone, or source..."
@@ -314,10 +314,10 @@ export default function UnivCRM() {
                                     <div className="flex justify-between items-start mb-2 pl-2">
                                       <h4 className="font-bold text-[15px] text-foreground tracking-tight">{lead.first_name} {lead.last_name}</h4>
                                       <div className="flex gap-1">
-                                        <button onClick={(e) => { e.stopPropagation(); setViewingLead(lead); }} className="text-slate-400 hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity p-1 bg-muted rounded-md">
+                                        <button onClick={(e) => { e.stopPropagation(); setViewingLead(lead); }} className="text-muted-foreground hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity p-1 bg-muted rounded-md">
                                           <Eye className="w-3.5 h-3.5" />
                                         </button>
-                                        <button onClick={(e) => { e.stopPropagation(); handleOpenModal(lead); }} className="text-slate-400 hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity p-1 bg-muted rounded-md">
+                                        <button onClick={(e) => { e.stopPropagation(); handleOpenModal(lead); }} className="text-muted-foreground hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity p-1 bg-muted rounded-md">
                                           <Edit2 className="w-3.5 h-3.5" />
                                         </button>
                                         <button onClick={(e) => handleDeleteLead(lead.id, e)} className="text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity p-1 bg-red-50 dark:bg-red-900/20 rounded-md">
@@ -422,10 +422,10 @@ export default function UnivCRM() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        <button onClick={(e) => { e.stopPropagation(); handleOpenModal(lead); }} className="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors">
+                        <button onClick={(e) => { e.stopPropagation(); handleOpenModal(lead); }} className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors">
                           <Edit2 className="w-4 h-4" />
                         </button>
-                        <button onClick={(e) => handleDeleteLead(lead.id, e)} className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">
+                        <button onClick={(e) => handleDeleteLead(lead.id, e)} className="p-2 text-muted-foreground hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>

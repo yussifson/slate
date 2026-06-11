@@ -173,7 +173,7 @@ export default function UnivTimeline({
                 'bg-muted border-2 border-border text-transparent'
               }`}>
                 {ms.status === 'completed' && <CheckCircle2 className="w-3 h-3" />}
-                {ms.status === 'current' && <div className="w-2 h-2 bg-white rounded-full animate-pulse" />}
+                {ms.status === 'current' && <div className="w-2 h-2 bg-card rounded-full animate-pulse" />}
               </div>
 
               {/* Content Card */}

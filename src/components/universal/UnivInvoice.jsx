@@ -5,7 +5,7 @@ import { FileText, Plus, Search, Trash2, Edit2, Loader2, XCircle, Send, Download
 import { toast } from 'react-hot-toast';
 
 const EMPTY_FORM = { client_name: '', client_email: '', invoice_number: '', amount: '', currency: 'USD', status: 'Draft', due_date: '', issue_date: '', notes: '' };
-const STATUS_COLORS = { Draft: 'bg-slate-100 text-slate-700 border-slate-200', Sent: 'bg-blue-50 text-blue-700 border-blue-200', Paid: 'bg-emerald-50 text-emerald-700 border-emerald-200', Overdue: 'bg-red-50 text-red-700 border-red-200', Cancelled: 'bg-zinc-100 text-zinc-600 border-zinc-200' };
+const STATUS_COLORS = { Draft: 'bg-muted text-foreground border-border', Sent: 'bg-blue-50 text-blue-700 border-blue-200', Paid: 'bg-emerald-50 text-emerald-700 border-emerald-200', Overdue: 'bg-red-50 text-red-700 border-red-200', Cancelled: 'bg-zinc-100 text-zinc-600 border-zinc-200' };
 
 export default function UnivInvoice() {
   const companyId = useCompanyId();

@@ -109,7 +109,7 @@ export default function UnivBudgetPlan() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto text-slate-800 dark:text-slate-200">
+    <div className="p-6 max-w-7xl mx-auto text-foreground dark:text-slate-200">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
         <div className="flex items-center gap-3">
           <div className="p-3 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl">
@@ -117,19 +117,19 @@ export default function UnivBudgetPlan() {
           </div>
           <div>
             <h1 className="text-2xl font-bold">Budget Plan Management</h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Manage your budget plan records efficiently</p>
+            <p className="text-sm text-muted-foreground dark:text-muted-foreground">Manage your budget plan records efficiently</p>
           </div>
         </div>
         
         <div className="flex items-center gap-3">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
             <input 
               type="text"
               placeholder="Search..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none w-full md:w-64"
+              className="pl-10 pr-4 py-2 bg-card dark:bg-slate-800 border border-border dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none w-full md:w-64"
             />
           </div>
           <div className="flex items-center gap-2">
@@ -141,7 +141,7 @@ export default function UnivBudgetPlan() {
 
         <button 
             onClick={fetchData}
-            className="p-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+            className="p-2 bg-card dark:bg-slate-800 border border-border dark:border-slate-700 rounded-lg hover:bg-background dark:hover:bg-slate-700 transition-colors"
           >
             <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
           </button>
@@ -163,30 +163,30 @@ export default function UnivBudgetPlan() {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+      <div className="bg-card dark:bg-slate-800 rounded-xl shadow-sm border border-border dark:border-slate-700 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
-                <th className="p-4 font-medium text-slate-500 dark:text-slate-400">Department</th>
-                <th className="p-4 font-medium text-slate-500 dark:text-slate-400">Allocated Budget</th>
-                <th className="p-4 font-medium text-slate-500 dark:text-slate-400">Spent</th>
-                <th className="p-4 font-medium text-slate-500 dark:text-slate-400">Fiscal Year</th>
-                <th className="p-4 font-medium text-slate-500 dark:text-slate-400">Actions</th>
+              <tr className="bg-background dark:bg-slate-800/50 border-b border-border dark:border-slate-700">
+                <th className="p-4 font-medium text-muted-foreground dark:text-muted-foreground">Department</th>
+                <th className="p-4 font-medium text-muted-foreground dark:text-muted-foreground">Allocated Budget</th>
+                <th className="p-4 font-medium text-muted-foreground dark:text-muted-foreground">Spent</th>
+                <th className="p-4 font-medium text-muted-foreground dark:text-muted-foreground">Fiscal Year</th>
+                <th className="p-4 font-medium text-muted-foreground dark:text-muted-foreground">Actions</th>
               </tr>
             </thead>
             <tbody>
               <AnimatePresence>
                 {loading ? (
                   <tr>
-                    <td colSpan="5" className="p-8 text-center text-slate-500">
+                    <td colSpan="5" className="p-8 text-center text-muted-foreground">
                       <RefreshCw className="animate-spin mx-auto mb-2" />
                       Loading records...
                     </td>
                   </tr>
                 ) : filteredData.length === 0 ? (
                   <tr>
-                    <td colSpan="5" className="p-8 text-center text-slate-500">
+                    <td colSpan="5" className="p-8 text-center text-muted-foreground">
                       No records found.
                     </td>
                   </tr>
@@ -198,7 +198,7 @@ export default function UnivBudgetPlan() {
                       exit={{ opacity: 0 }}
                       transition={{ delay: idx * 0.05 }}
                       key={item.id}
-                      className="border-b border-slate-100 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700/20 transition-colors"
+                      className="border-b border-border dark:border-slate-700/50 hover:bg-background dark:hover:bg-slate-700/20 transition-colors"
                     >
                       <td className="p-4">{item.department}</td>
                       <td className="p-4">{item.allocated_budget}</td>
@@ -241,15 +241,15 @@ export default function UnivBudgetPlan() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-md overflow-hidden border border-slate-200 dark:border-slate-700"
+              className="bg-card dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-md overflow-hidden border border-border dark:border-slate-700"
             >
-              <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-700">
+              <div className="flex items-center justify-between p-6 border-b border-border dark:border-slate-700">
                 <h2 className="text-xl font-semibold">
                   {editingId ? 'Edit Record' : 'Add New Record'}
                 </h2>
                 <button 
                   onClick={() => setIsModalOpen(false)}
-                  className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition-colors"
+                  className="p-2 text-muted-foreground hover:text-muted-foreground hover:bg-muted dark:hover:bg-slate-700 rounded-full transition-colors"
                 >
                   <X size={20} />
                 </button>
@@ -257,46 +257,46 @@ export default function UnivBudgetPlan() {
               
               <form onSubmit={handleSubmit} className="p-6 space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Department</label>
+                  <label className="block text-sm font-medium text-foreground dark:text-slate-300 mb-1">Department</label>
                   <input 
                     type="text"
                     name="department"
                     value={formData.department}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="w-full px-3 py-2 bg-background dark:bg-slate-900/50 border border-border dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Allocated Budget</label>
+                  <label className="block text-sm font-medium text-foreground dark:text-slate-300 mb-1">Allocated Budget</label>
                   <input 
                     type="number"
                     name="allocated_budget"
                     value={formData.allocated_budget}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="w-full px-3 py-2 bg-background dark:bg-slate-900/50 border border-border dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Spent</label>
+                  <label className="block text-sm font-medium text-foreground dark:text-slate-300 mb-1">Spent</label>
                   <input 
                     type="number"
                     name="spent"
                     value={formData.spent}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="w-full px-3 py-2 bg-background dark:bg-slate-900/50 border border-border dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Fiscal Year</label>
+                  <label className="block text-sm font-medium text-foreground dark:text-slate-300 mb-1">Fiscal Year</label>
                   <input 
                     type="text"
                     name="fiscal_year"
                     value={formData.fiscal_year}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="w-full px-3 py-2 bg-background dark:bg-slate-900/50 border border-border dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                     required
                   />
                 </div>
@@ -306,7 +306,7 @@ export default function UnivBudgetPlan() {
                   <button 
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="flex-1 px-4 py-2 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                    className="flex-1 px-4 py-2 border border-border dark:border-slate-700 text-muted-foreground dark:text-slate-300 rounded-lg hover:bg-background dark:hover:bg-slate-700 transition-colors"
                   >
                     Cancel
                   </button>

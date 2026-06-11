@@ -70,7 +70,7 @@ const UnivTourPackage = () => {
       </motion.div>
 
       <div className="grid lg:grid-cols-3 gap-8">
-        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="lg:col-span-1 bg-white p-8 rounded-3xl shadow-sm border border-orange-100 h-fit">
+        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="lg:col-span-1 bg-card p-8 rounded-3xl shadow-sm border border-orange-100 h-fit">
           <h2 className="text-2xl font-bold mb-6 text-orange-900 border-b border-orange-50 pb-2">New Package</h2>
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
@@ -124,11 +124,11 @@ const UnivTourPackage = () => {
           {loading ? (
             <div className="flex justify-center py-20"><Plane className="w-12 h-12 text-orange-400 animate-bounce" /></div>
           ) : packages.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-3xl border border-orange-100 text-orange-400 font-medium">No tour packages created yet.</div>
+            <div className="text-center py-20 bg-card rounded-3xl border border-orange-100 text-orange-400 font-medium">No tour packages created yet.</div>
           ) : (
             <div className="grid sm:grid-cols-2 gap-6">
               {packages.map((pkg, index) => (
-                <motion.div key={pkg.id || index} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: index * 0.05 }} className="bg-white rounded-3xl shadow-sm border border-orange-100 overflow-hidden group hover:shadow-md transition-all">
+                <motion.div key={pkg.id || index} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: index * 0.05 }} className="bg-card rounded-3xl shadow-sm border border-orange-100 overflow-hidden group hover:shadow-md transition-all">
                   <div className="h-32 bg-orange-100 relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
                     {/* Placeholder abstract pattern for image */}
@@ -159,19 +159,19 @@ const UnivTourPackage = () => {
                     </div>
 
                     <div className="mb-4">
-                      <p className="text-xs font-bold text-slate-400 uppercase mb-2 flex items-center gap-1"><Info className="w-3 h-3"/> Highlights</p>
+                      <p className="text-xs font-bold text-muted-foreground uppercase mb-2 flex items-center gap-1"><Info className="w-3 h-3"/> Highlights</p>
                       <div className="flex flex-wrap gap-2">
                         {pkg.inclusions ? pkg.inclusions.split(',').map((inc, i) => (
-                          <span key={i} className="text-xs font-medium text-slate-600 bg-slate-100 px-2 py-1 rounded-md flex items-center gap-1 border border-slate-200">
+                          <span key={i} className="text-xs font-medium text-muted-foreground bg-muted px-2 py-1 rounded-md flex items-center gap-1 border border-border">
                             <Check className="w-3 h-3 text-emerald-500" /> {inc.trim()}
                           </span>
-                        )) : <span className="text-xs text-slate-400">None specified</span>}
+                        )) : <span className="text-xs text-muted-foreground">None specified</span>}
                       </div>
                     </div>
 
-                    <div className="pt-4 border-t border-slate-100 flex justify-between items-center text-sm">
-                      <span className="text-slate-500 font-medium">Departure</span>
-                      <span className="font-bold text-slate-800">{new Date(pkg.start_date).toLocaleDateString()}</span>
+                    <div className="pt-4 border-t border-border flex justify-between items-center text-sm">
+                      <span className="text-muted-foreground font-medium">Departure</span>
+                      <span className="font-bold text-foreground">{new Date(pkg.start_date).toLocaleDateString()}</span>
                     </div>
                   </div>
                 </motion.div>

@@ -57,7 +57,7 @@ export default function UnivAdvocacy() {
   return (
     <div className="p-6 max-w-4xl mx-auto font-sans">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
+        <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
           <User className="text-blue-600" /> Advocacy
         </h1>
         <div className="flex gap-2">
@@ -68,7 +68,7 @@ export default function UnivAdvocacy() {
           Export CSV
         </button>
 
-        <button onClick={fetchItems} className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors">
+        <button onClick={fetchItems} className="p-2 bg-muted hover:bg-muted/60 rounded-full transition-colors">
             <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
           </button>
           <button onClick={() => setShowForm(true)} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition-colors shadow-md">
@@ -79,60 +79,60 @@ export default function UnivAdvocacy() {
       </div>
 
       {showForm && (
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 mb-8 relative">
-          <button onClick={() => setShowForm(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="bg-card p-6 rounded-xl shadow-lg border border-border mb-8 relative">
+          <button onClick={() => setShowForm(false)} className="absolute top-4 right-4 text-muted-foreground hover:text-muted-foreground">
             <X size={20} />
           </button>
-          <h2 className="text-xl font-semibold mb-4 text-gray-700">New Advocacy Entry</h2>
+          <h2 className="text-xl font-semibold mb-4 text-foreground">New Advocacy Entry</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             
             <div className="flex flex-col">
-              <label className="text-sm font-medium text-gray-600 mb-1 capitalize">campaign name</label>
+              <label className="text-sm font-medium text-muted-foreground mb-1 capitalize">campaign name</label>
               <input
                 type="text"
                 value={formData.campaign_name}
                 onChange={(e) => setFormData({ ...formData, campaign_name: e.target.value })}
-                className="border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                className="border border-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                 placeholder={`Enter campaign name`}
               />
             </div>
             <div className="flex flex-col">
-              <label className="text-sm font-medium text-gray-600 mb-1 capitalize">issue</label>
+              <label className="text-sm font-medium text-muted-foreground mb-1 capitalize">issue</label>
               <input
                 type="text"
                 value={formData.issue}
                 onChange={(e) => setFormData({ ...formData, issue: e.target.value })}
-                className="border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                className="border border-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                 placeholder={`Enter issue`}
               />
             </div>
             <div className="flex flex-col">
-              <label className="text-sm font-medium text-gray-600 mb-1 capitalize">target audience</label>
+              <label className="text-sm font-medium text-muted-foreground mb-1 capitalize">target audience</label>
               <input
                 type="text"
                 value={formData.target_audience}
                 onChange={(e) => setFormData({ ...formData, target_audience: e.target.value })}
-                className="border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                className="border border-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                 placeholder={`Enter target audience`}
               />
             </div>
             <div className="flex flex-col">
-              <label className="text-sm font-medium text-gray-600 mb-1 capitalize">actions taken</label>
+              <label className="text-sm font-medium text-muted-foreground mb-1 capitalize">actions taken</label>
               <input
                 type="text"
                 value={formData.actions_taken}
                 onChange={(e) => setFormData({ ...formData, actions_taken: e.target.value })}
-                className="border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                className="border border-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                 placeholder={`Enter actions taken`}
               />
             </div>
             <div className="flex flex-col">
-              <label className="text-sm font-medium text-gray-600 mb-1 capitalize">impact</label>
+              <label className="text-sm font-medium text-muted-foreground mb-1 capitalize">impact</label>
               <input
                 type="text"
                 value={formData.impact}
                 onChange={(e) => setFormData({ ...formData, impact: e.target.value })}
-                className="border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                className="border border-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                 placeholder={`Enter impact`}
               />
             </div>
@@ -145,34 +145,34 @@ export default function UnivAdvocacy() {
 
       <div className="grid gap-4">
         {items.map((item) => (
-          <motion.div key={item.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+          <motion.div key={item.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card p-5 rounded-xl shadow-sm border border-border hover:shadow-md transition-shadow">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               
               <div>
-                <p className="text-xs text-gray-500 uppercase font-semibold">campaign name</p>
-                <p className="text-gray-800 font-medium">{item.campaign_name || '-'}</p>
+                <p className="text-xs text-muted-foreground uppercase font-semibold">campaign name</p>
+                <p className="text-foreground font-medium">{item.campaign_name || '-'}</p>
               </div>
               <div>
-                <p className="text-xs text-gray-500 uppercase font-semibold">issue</p>
-                <p className="text-gray-800 font-medium">{item.issue || '-'}</p>
+                <p className="text-xs text-muted-foreground uppercase font-semibold">issue</p>
+                <p className="text-foreground font-medium">{item.issue || '-'}</p>
               </div>
               <div>
-                <p className="text-xs text-gray-500 uppercase font-semibold">target audience</p>
-                <p className="text-gray-800 font-medium">{item.target_audience || '-'}</p>
+                <p className="text-xs text-muted-foreground uppercase font-semibold">target audience</p>
+                <p className="text-foreground font-medium">{item.target_audience || '-'}</p>
               </div>
               <div>
-                <p className="text-xs text-gray-500 uppercase font-semibold">actions taken</p>
-                <p className="text-gray-800 font-medium">{item.actions_taken || '-'}</p>
+                <p className="text-xs text-muted-foreground uppercase font-semibold">actions taken</p>
+                <p className="text-foreground font-medium">{item.actions_taken || '-'}</p>
               </div>
               <div>
-                <p className="text-xs text-gray-500 uppercase font-semibold">impact</p>
-                <p className="text-gray-800 font-medium">{item.impact || '-'}</p>
+                <p className="text-xs text-muted-foreground uppercase font-semibold">impact</p>
+                <p className="text-foreground font-medium">{item.impact || '-'}</p>
               </div>
             </div>
           </motion.div>
         ))}
         {items.length === 0 && !loading && (
-          <div className="text-center py-12 text-gray-400 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+          <div className="text-center py-12 text-muted-foreground bg-background rounded-xl border border-dashed border-border">
             <p>No advocacy records found. Create one to get started.</p>
           </div>
         )}

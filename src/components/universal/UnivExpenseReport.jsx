@@ -98,7 +98,7 @@ export default function UnivExpenseReport() {
             <tbody>
               {filtered.map(r => (
                 <motion.tr key={r.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="border-b border-border/50 hover:bg-muted/20">
-                  <td className="px-4 py-3 font-semibold">{r['employee_name']}</td><td className="px-4 py-3 text-muted-foreground">{r['expense_category']}</td><td className="px-4 py-3 text-muted-foreground">{r['amount']}</td><td className="px-4 py-3 text-muted-foreground">{r['expense_date']}</td><td className="px-4 py-3"><span className={`px-2 py-0.5 rounded-full text-xs font-bold ${STATUS_COLORS[r['status']] || 'bg-slate-100 text-slate-700'}`}>{r['status']}</span></td>
+                  <td className="px-4 py-3 font-semibold">{r['employee_name']}</td><td className="px-4 py-3 text-muted-foreground">{r['expense_category']}</td><td className="px-4 py-3 text-muted-foreground">{r['amount']}</td><td className="px-4 py-3 text-muted-foreground">{r['expense_date']}</td><td className="px-4 py-3"><span className={`px-2 py-0.5 rounded-full text-xs font-bold ${STATUS_COLORS[r['status']] || 'bg-muted text-foreground'}`}>{r['status']}</span></td>
                   <td className="px-4 py-3">
                     <div className="flex gap-1">
                       <button onClick={() => openModal(r)} className="p-1.5 bg-muted rounded-lg hover:bg-muted/80"><Edit2 className="w-3.5 h-3.5" /></button>

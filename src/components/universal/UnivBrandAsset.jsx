@@ -62,7 +62,7 @@ export default function UnivBrandAsset() {
       case 'Logo': return <ImageIcon className="w-8 h-8 text-blue-500" />;
       case 'Font': return <Type className="w-8 h-8 text-orange-500" />;
       case 'Guidelines': return <File className="w-8 h-8 text-purple-500" />;
-      default: return <ImageIcon className="w-8 h-8 text-gray-500" />;
+      default: return <ImageIcon className="w-8 h-8 text-muted-foreground" />;
     }
   };
 
@@ -79,14 +79,14 @@ export default function UnivBrandAsset() {
   };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto bg-gray-50 min-h-screen">
+    <div className="p-6 max-w-6xl mx-auto bg-background min-h-screen">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
             <UploadCloud className="text-pink-600 w-8 h-8" />
             Brand Assets
           </h1>
-          <p className="text-gray-500 mt-2">Centralized hub for logos, fonts, and brand guidelines.</p>
+          <p className="text-muted-foreground mt-2">Centralized hub for logos, fonts, and brand guidelines.</p>
         </div>
         {!isEditing && (
           <div className="flex items-center gap-2">
@@ -113,14 +113,14 @@ export default function UnivBrandAsset() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="bg-white p-6 rounded-xl shadow-md border border-gray-100 mb-8"
+            className="bg-card p-6 rounded-xl shadow-md border border-border mb-8"
           >
-            <h2 className="text-xl font-semibold mb-4 text-gray-700">
+            <h2 className="text-xl font-semibold mb-4 text-foreground">
               {editingId ? 'Edit Asset' : 'Upload New Asset'}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Asset Name</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Asset Name</label>
                 <input
                   type="text"
                   className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:outline-none"
@@ -130,9 +130,9 @@ export default function UnivBrandAsset() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Asset Type</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Asset Type</label>
                 <select
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:outline-none bg-white"
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:outline-none bg-card"
                   value={formData.asset_type}
                   onChange={(e) => setFormData({ ...formData, asset_type: e.target.value })}
                 >
@@ -143,9 +143,9 @@ export default function UnivBrandAsset() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">File URL</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">File URL</label>
                 <div className="relative">
-                  <Link className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
+                  <Link className="absolute left-3 top-2.5 w-5 h-5 text-muted-foreground" />
                   <input
                     type="url"
                     className="w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:outline-none"
@@ -156,7 +156,7 @@ export default function UnivBrandAsset() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Uploaded By</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Uploaded By</label>
                 <input
                   type="text"
                   className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:outline-none"
@@ -172,7 +172,7 @@ export default function UnivBrandAsset() {
                   setEditingId(null);
                   setFormData({ asset_name: '', asset_type: 'Logo', file_url: '', uploaded_by: '' });
                 }}
-                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                className="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors"
               >
                 <X className="w-4 h-4" /> Cancel
               </button>
@@ -198,24 +198,24 @@ export default function UnivBrandAsset() {
               key={item.id}
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all group"
+              className="bg-card rounded-xl shadow-sm border border-border overflow-hidden hover:shadow-lg transition-all group"
             >
-              <div className="h-32 bg-gray-50 border-b border-gray-100 flex items-center justify-center relative">
+              <div className="h-32 bg-background border-b border-border flex items-center justify-center relative">
                 {getAssetIcon(item.asset_type)}
-                <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 rounded-lg p-1 shadow-sm">
-                  <button onClick={() => handleEdit(item)} className="p-1.5 text-gray-500 hover:text-pink-600 rounded-md hover:bg-pink-50 transition-colors">
+                <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-card/90 rounded-lg p-1 shadow-sm">
+                  <button onClick={() => handleEdit(item)} className="p-1.5 text-muted-foreground hover:text-pink-600 rounded-md hover:bg-pink-50 transition-colors">
                     <Edit2 className="w-3.5 h-3.5" />
                   </button>
-                  <button onClick={() => handleDelete(item.id)} className="p-1.5 text-gray-500 hover:text-red-600 rounded-md hover:bg-red-50 transition-colors">
+                  <button onClick={() => handleDelete(item.id)} className="p-1.5 text-muted-foreground hover:text-red-600 rounded-md hover:bg-red-50 transition-colors">
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>
               <div className="p-4">
-                <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider block mb-1">{item.asset_type}</span>
-                <h3 className="font-semibold text-gray-800 line-clamp-1 mb-2" title={item.asset_name}>{item.asset_name || 'Unnamed Asset'}</h3>
+                <span className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider block mb-1">{item.asset_type}</span>
+                <h3 className="font-semibold text-foreground line-clamp-1 mb-2" title={item.asset_name}>{item.asset_name || 'Unnamed Asset'}</h3>
                 <div className="flex justify-between items-center mt-3">
-                  <span className="text-xs text-gray-500 truncate pr-2">By {item.uploaded_by || 'Unknown'}</span>
+                  <span className="text-xs text-muted-foreground truncate pr-2">By {item.uploaded_by || 'Unknown'}</span>
                   {item.file_url && (
                     <a href={item.file_url} target="_blank" rel="noreferrer" className="text-pink-600 hover:text-pink-800 text-xs font-medium flex items-center gap-1">
                       <Link className="w-3 h-3" /> View
@@ -226,9 +226,9 @@ export default function UnivBrandAsset() {
             </motion.div>
           ))}
           {data.length === 0 && !isEditing && (
-            <div className="col-span-full py-16 text-center bg-white rounded-xl border border-dashed border-gray-300">
+            <div className="col-span-full py-16 text-center bg-card rounded-xl border border-dashed border-border">
               <UploadCloud className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-500 text-lg">No brand assets uploaded.</p>
+              <p className="text-muted-foreground text-lg">No brand assets uploaded.</p>
             </div>
           )}
         </div>

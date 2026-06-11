@@ -5,7 +5,7 @@ import { DollarSign, Plus, Search, Trash2, Edit2, Loader2, XCircle, CheckCircle2
 import { toast } from 'react-hot-toast';
 
 const EMPTY_FORM = { employee_name: '', period_start: '', period_end: '', basic_salary: 0, allowances: 0, deductions: 0, status: 'Draft', payment_date: '' };
-const STATUS_COLORS = { Draft: 'bg-slate-100 text-slate-700 border-slate-200', Processed: 'bg-blue-50 text-blue-700 border-blue-200', Paid: 'bg-emerald-50 text-emerald-700 border-emerald-200' };
+const STATUS_COLORS = { Draft: 'bg-muted text-foreground border-border', Processed: 'bg-blue-50 text-blue-700 border-blue-200', Paid: 'bg-emerald-50 text-emerald-700 border-emerald-200' };
 
 export default function UnivPayroll() {
   const companyId = useCompanyId();
@@ -113,7 +113,7 @@ export default function UnivPayroll() {
         {[
           {label:'Total Payroll Value',value:`$${totalPayroll.toLocaleString()}`,icon:<DollarSign className="w-5 h-5"/>,ib:'bg-blue-100 text-blue-600'},
           {label:'Total Paid',value:`$${paidPayroll.toLocaleString()}`,icon:<CheckCircle2 className="w-5 h-5"/>,ib:'bg-emerald-100 text-emerald-600'},
-          {label:'Drafts',value:payrolls.filter(p=>p.status==='Draft').length,icon:<FileText className="w-5 h-5"/>,ib:'bg-slate-100 text-slate-600'},
+          {label:'Drafts',value:payrolls.filter(p=>p.status==='Draft').length,icon:<FileText className="w-5 h-5"/>,ib:'bg-muted text-muted-foreground'},
           {label:'Processed',value:payrolls.filter(p=>p.status==='Processed').length,icon:<Clock className="w-5 h-5"/>,ib:'bg-amber-100 text-amber-600'},
         ].map((k,i)=>(
           <div key={i} className="bg-card border border-border p-4 rounded-2xl shadow-sm flex items-center gap-3">

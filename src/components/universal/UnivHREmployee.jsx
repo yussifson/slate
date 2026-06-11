@@ -9,7 +9,7 @@ const DEPARTMENTS = ['General','Engineering','Marketing','Sales','Finance','HR',
 const gradients = ['from-violet-500 to-purple-600','from-cyan-500 to-blue-600','from-emerald-500 to-teal-600','from-orange-500 to-amber-600','from-pink-500 to-rose-600','from-indigo-500 to-blue-700'];
 const grad = (n) => gradients[(n||'A').charCodeAt(0) % gradients.length];
 const initials = (e) => `${(e.first_name||'?').charAt(0)}${(e.last_name||'?').charAt(0)}`.toUpperCase();
-const statusColor = (s) => s==='Active'?'bg-emerald-50 text-emerald-700 border-emerald-200':s==='Onboarding'?'bg-blue-50 text-blue-700 border-blue-200':'bg-slate-100 text-slate-600 border-slate-200';
+const statusColor = (s) => s==='Active'?'bg-emerald-50 text-emerald-700 border-emerald-200':s==='Onboarding'?'bg-blue-50 text-blue-700 border-blue-200':'bg-muted text-muted-foreground border-border';
 
 export default function UnivHREmployee() {
   const companyId = useCompanyId();

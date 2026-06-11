@@ -77,7 +77,7 @@ export default function UnivPOS() {
       {/* Product Grid Area */}
       <div className="flex-1 flex flex-col min-h-[400px]">
         <div className="mb-6 relative">
-          <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input 
             type="text"
             placeholder="Search products..."
@@ -98,7 +98,7 @@ export default function UnivPOS() {
                 onClick={() => addToCart(p)}
                 className={`p-4 rounded-2xl border border-border/50 shadow-sm flex flex-col items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all ${p.color}`}
               >
-                <div className="w-12 h-12 rounded-full bg-white/50 dark:bg-black/20 flex items-center justify-center shrink-0">
+                <div className="w-12 h-12 rounded-full bg-card/50 dark:bg-black/20 flex items-center justify-center shrink-0">
                   <ShoppingBag className="w-6 h-6 opacity-70" />
                 </div>
                 <div className="text-center">
@@ -127,9 +127,9 @@ export default function UnivPOS() {
               </div>
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-2 bg-muted rounded-lg p-1">
-                  <button onClick={() => updateQty(item.id, -1)} className="w-6 h-6 flex items-center justify-center bg-background rounded shadow-sm text-foreground hover:bg-slate-100 transition-colors">-</button>
+                  <button onClick={() => updateQty(item.id, -1)} className="w-6 h-6 flex items-center justify-center bg-background rounded shadow-sm text-foreground hover:bg-muted transition-colors">-</button>
                   <span className="text-xs font-bold w-4 text-center">{item.qty}</span>
-                  <button onClick={() => updateQty(item.id, 1)} className="w-6 h-6 flex items-center justify-center bg-background rounded shadow-sm text-foreground hover:bg-slate-100 transition-colors">+</button>
+                  <button onClick={() => updateQty(item.id, 1)} className="w-6 h-6 flex items-center justify-center bg-background rounded shadow-sm text-foreground hover:bg-muted transition-colors">+</button>
                 </div>
                 <div className="font-bold text-sm w-12 text-right text-foreground">
                   ${(item.price * item.qty).toFixed(2)}

@@ -75,19 +75,19 @@ const UnivAssemblyLine = () => {
   };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto bg-slate-50 min-h-screen font-sans">
+    <div className="p-6 max-w-6xl mx-auto bg-background min-h-screen font-sans">
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex items-center justify-between mb-8 bg-white p-6 rounded-2xl shadow-sm border border-slate-100"
+        className="flex items-center justify-between mb-8 bg-card p-6 rounded-2xl shadow-sm border border-border"
       >
         <div className="flex items-center gap-4">
           <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
             <Factory size={28} />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-slate-800">Assembly Line Monitor</h1>
-            <p className="text-slate-500 text-sm mt-1">Manage and track assembly line monitor records</p>
+            <h1 className="text-2xl font-bold text-foreground">Assembly Line Monitor</h1>
+            <p className="text-muted-foreground text-sm mt-1">Manage and track assembly line monitor records</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -111,56 +111,56 @@ const UnivAssemblyLine = () => {
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="mb-8 bg-white p-6 rounded-2xl shadow-sm border border-slate-100"
+          className="mb-8 bg-card p-6 rounded-2xl shadow-sm border border-border"
         >
-          <h2 className="text-lg font-semibold text-slate-800 mb-4">
+          <h2 className="text-lg font-semibold text-foreground mb-4">
             {editId ? 'Edit Record' : 'Create New Record'}
           </h2>
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-slate-600">Line Name</label>
+              <label className="text-sm font-medium text-muted-foreground">Line Name</label>
               <input
                 type="text"
                 name="line_name"
                 value={formData.line_name}
                 onChange={handleInputChange}
-                className="p-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="p-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Enter line name"
                 required
               />
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-slate-600">Current Product</label>
+              <label className="text-sm font-medium text-muted-foreground">Current Product</label>
               <input
                 type="text"
                 name="current_product"
                 value={formData.current_product}
                 onChange={handleInputChange}
-                className="p-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="p-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Enter current product"
                 required
               />
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-slate-600">Output Rate (/hr)</label>
+              <label className="text-sm font-medium text-muted-foreground">Output Rate (/hr)</label>
               <input
                 type="number"
                 name="output_rate"
                 value={formData.output_rate}
                 onChange={handleInputChange}
-                className="p-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="p-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Enter output rate (/hr)"
                 required
               />
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-slate-600">Line Status</label>
+              <label className="text-sm font-medium text-muted-foreground">Line Status</label>
               <select
                 name="status"
                 value={formData.status}
                 onChange={handleInputChange}
-                className="p-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                className="p-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-card"
                 required
               >
                 <option value="">Select Line Status...</option>
@@ -171,7 +171,7 @@ const UnivAssemblyLine = () => {
               <button
                 type="button"
                 onClick={() => { setIsEditing(false); setEditId(null); setFormData({line_name: '', current_product: '', output_rate: '', status: ''}); }}
-                className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors flex items-center gap-2"
+                className="px-4 py-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors flex items-center gap-2"
               >
                 <X size={18} /> Cancel
               </button>
@@ -186,21 +186,21 @@ const UnivAssemblyLine = () => {
         </motion.div>
       )}
 
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-        <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-          <h3 className="font-semibold text-slate-700">Recent Records</h3>
-          <button onClick={fetchData} className="text-slate-400 hover:text-blue-600 transition-colors p-2 rounded-lg hover:bg-blue-50">
+      <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
+        <div className="p-4 border-b border-border flex justify-between items-center bg-background/50">
+          <h3 className="font-semibold text-foreground">Recent Records</h3>
+          <button onClick={fetchData} className="text-muted-foreground hover:text-blue-600 transition-colors p-2 rounded-lg hover:bg-blue-50">
             <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
           </button>
         </div>
         
         {loading ? (
-          <div className="p-8 text-center text-slate-400 flex flex-col items-center">
+          <div className="p-8 text-center text-muted-foreground flex flex-col items-center">
             <RefreshCw size={32} className="animate-spin mb-3 text-blue-500" />
             <p>Loading data...</p>
           </div>
         ) : data.length === 0 ? (
-          <div className="p-12 text-center text-slate-400 flex flex-col items-center">
+          <div className="p-12 text-center text-muted-foreground flex flex-col items-center">
             <Factory size={48} className="mb-4 text-slate-300 stroke-[1.5]" />
             <p className="text-lg">No records found</p>
             <p className="text-sm mt-1">Click 'New Record' to get started</p>
@@ -209,7 +209,7 @@ const UnivAssemblyLine = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50 text-slate-500 text-sm uppercase tracking-wider">
+                <tr className="bg-background text-muted-foreground text-sm uppercase tracking-wider">
                   <th className="p-4 font-medium">Line Name</th><th className="p-4 font-medium">Current Product</th><th className="p-4 font-medium">Output Rate (/hr)</th><th className="p-4 font-medium">Line Status</th>
                   <th className="p-4 font-medium rounded-tr-xl">Actions</th>
                 </tr>
@@ -220,14 +220,14 @@ const UnivAssemblyLine = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     key={record.id} 
-                    className="hover:bg-slate-50/80 transition-colors group"
+                    className="hover:bg-background/80 transition-colors group"
                   >
                     
-                    <td className="p-4 text-slate-700">{record.line_name}</td>
-                    <td className="p-4 text-slate-700">{record.current_product}</td>
-                    <td className="p-4 text-slate-700">{record.output_rate}</td>
-                    <td className="p-4 text-slate-700">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">
+                    <td className="p-4 text-foreground">{record.line_name}</td>
+                    <td className="p-4 text-foreground">{record.current_product}</td>
+                    <td className="p-4 text-foreground">{record.output_rate}</td>
+                    <td className="p-4 text-foreground">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-muted text-foreground">
                         {record.status}
                       </span>
                     </td>
@@ -235,14 +235,14 @@ const UnivAssemblyLine = () => {
                       <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() => handleEdit(record)}
-                          className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          className="p-1.5 text-muted-foreground hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                           title="Edit"
                         >
                           <Edit2 size={16} />
                         </button>
                         <button
                           onClick={() => handleDelete(record.id)}
-                          className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-1.5 text-muted-foreground hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                           title="Delete"
                         >
                           <Trash2 size={16} />

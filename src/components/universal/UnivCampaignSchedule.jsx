@@ -80,14 +80,14 @@ export default function UnivCampaignSchedule() {
   };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto bg-gray-50 min-h-screen">
+    <div className="p-6 max-w-6xl mx-auto bg-background min-h-screen">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
             <Calendar className="text-indigo-600 w-8 h-8" />
             Campaign Schedule
           </h1>
-          <p className="text-gray-500 mt-2">Plan and track your marketing campaigns.</p>
+          <p className="text-muted-foreground mt-2">Plan and track your marketing campaigns.</p>
         </div>
         {!isEditing && (
           <div className="flex items-center gap-2">
@@ -114,14 +114,14 @@ export default function UnivCampaignSchedule() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="bg-white p-6 rounded-xl shadow-md border border-gray-100 mb-8 overflow-hidden"
+            className="bg-card p-6 rounded-xl shadow-md border border-border mb-8 overflow-hidden"
           >
-            <h2 className="text-xl font-semibold mb-4 text-gray-700">
+            <h2 className="text-xl font-semibold mb-4 text-foreground">
               {editingId ? 'Edit Campaign' : 'Create Campaign'}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="lg:col-span-2">
-                <label className="block text-sm font-medium text-gray-600 mb-1">Campaign Name</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Campaign Name</label>
                 <input
                   type="text"
                   className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
@@ -131,9 +131,9 @@ export default function UnivCampaignSchedule() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Status</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Status</label>
                 <select
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white"
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-card"
                   value={formData.status}
                   onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                 >
@@ -143,7 +143,7 @@ export default function UnivCampaignSchedule() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Start Date</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Start Date</label>
                 <input
                   type="date"
                   className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
@@ -152,7 +152,7 @@ export default function UnivCampaignSchedule() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">End Date</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">End Date</label>
                 <input
                   type="date"
                   className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
@@ -161,9 +161,9 @@ export default function UnivCampaignSchedule() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Budget ($)</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Budget ($)</label>
                 <div className="relative">
-                  <DollarSign className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
+                  <DollarSign className="absolute left-3 top-2.5 w-5 h-5 text-muted-foreground" />
                   <input
                     type="number"
                     className="w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
@@ -181,7 +181,7 @@ export default function UnivCampaignSchedule() {
                   setEditingId(null);
                   setFormData({ campaign_name: '', start_date: '', end_date: '', budget: '', status: 'Planned' });
                 }}
-                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                className="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors"
               >
                 <X className="w-4 h-4" /> Cancel
               </button>
@@ -201,10 +201,10 @@ export default function UnivCampaignSchedule() {
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
         </div>
       ) : (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-100 text-sm font-medium text-gray-500">
+              <tr className="bg-background border-b border-border text-sm font-medium text-muted-foreground">
                 <th className="p-4">Campaign Info</th>
                 <th className="p-4 hidden md:table-cell">Duration</th>
                 <th className="p-4">Budget</th>
@@ -214,14 +214,14 @@ export default function UnivCampaignSchedule() {
             </thead>
             <tbody>
               {data.map((item) => (
-                <tr key={item.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+                <tr key={item.id} className="border-b border-gray-50 hover:bg-background/50 transition-colors">
                   <td className="p-4">
-                    <div className="font-semibold text-gray-800">{item.campaign_name || 'Unnamed Campaign'}</div>
+                    <div className="font-semibold text-foreground">{item.campaign_name || 'Unnamed Campaign'}</div>
                   </td>
-                  <td className="p-4 hidden md:table-cell text-sm text-gray-600">
-                    {item.start_date} <span className="mx-1 text-gray-400">→</span> {item.end_date}
+                  <td className="p-4 hidden md:table-cell text-sm text-muted-foreground">
+                    {item.start_date} <span className="mx-1 text-muted-foreground">→</span> {item.end_date}
                   </td>
-                  <td className="p-4 font-medium text-gray-700">
+                  <td className="p-4 font-medium text-foreground">
                     ${Number(item.budget).toLocaleString()}
                   </td>
                   <td className="p-4">
@@ -231,10 +231,10 @@ export default function UnivCampaignSchedule() {
                   </td>
                   <td className="p-4 text-right">
                     <div className="flex justify-end gap-2">
-                      <button onClick={() => handleEdit(item)} className="p-1.5 text-gray-400 hover:text-indigo-600 rounded-md hover:bg-indigo-50 transition-colors">
+                      <button onClick={() => handleEdit(item)} className="p-1.5 text-muted-foreground hover:text-indigo-600 rounded-md hover:bg-indigo-50 transition-colors">
                         <Edit2 className="w-4 h-4" />
                       </button>
-                      <button onClick={() => handleDelete(item.id)} className="p-1.5 text-gray-400 hover:text-red-600 rounded-md hover:bg-red-50 transition-colors">
+                      <button onClick={() => handleDelete(item.id)} className="p-1.5 text-muted-foreground hover:text-red-600 rounded-md hover:bg-red-50 transition-colors">
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
@@ -246,7 +246,7 @@ export default function UnivCampaignSchedule() {
           {data.length === 0 && !isEditing && (
             <div className="py-12 text-center">
               <Activity className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500">No campaigns scheduled.</p>
+              <p className="text-muted-foreground">No campaigns scheduled.</p>
             </div>
           )}
         </div>

@@ -106,7 +106,7 @@ export default function UnivSeoKeyword() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="bg-white p-6 rounded-xl shadow-md border border-stone-200 mb-8"
+            className="bg-card p-6 rounded-xl shadow-md border border-stone-200 mb-8"
           >
             <h2 className="text-xl font-semibold mb-4 text-stone-700">
               {editingId ? 'Edit Keyword' : 'Add New Keyword'}
@@ -196,7 +196,7 @@ export default function UnivSeoKeyword() {
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-teal-600"></div>
         </div>
       ) : (
-        <div className="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden">
+        <div className="bg-card rounded-xl shadow-sm border border-stone-200 overflow-hidden">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-stone-50 border-b border-stone-200 text-sm font-medium text-stone-500">

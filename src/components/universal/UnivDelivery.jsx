@@ -78,7 +78,7 @@ export default function UnivDelivery() {
       <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden shadow-sm flex flex-col">
         <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
           <div className="relative w-72">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input 
               type="text"
               placeholder="Search tracking numbers..."
@@ -126,7 +126,7 @@ export default function UnivDelivery() {
                     <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border flex items-center gap-1 w-fit ${
                       d.status === 'Delivered' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
                       d.status === 'In Transit' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
-                      'bg-slate-50 text-slate-700 border-slate-200'
+                      'bg-background text-foreground border-border'
                     }`}>
                       {d.status === 'Delivered' && <CheckCircle2 className="w-3 h-3" />}
                       {d.status === 'In Transit' && <Truck className="w-3 h-3" />}

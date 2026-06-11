@@ -6,8 +6,8 @@ import { LayoutGrid, Plus, Search, Trash2, Edit2, Loader2, XCircle, User, Calend
 import { toast } from 'react-hot-toast';
 
 const DEFAULT_COLS = ['To Do', 'In Progress', 'Review', 'Done'];
-const PRIORITY_COLORS = { Low: 'bg-slate-100 text-slate-600', Medium: 'bg-amber-50 text-amber-700', High: 'bg-orange-50 text-orange-700', Urgent: 'bg-red-50 text-red-700' };
-const COL_COLORS = ['border-slate-300', 'border-blue-400', 'border-violet-400', 'border-emerald-400'];
+const PRIORITY_COLORS = { Low: 'bg-muted text-muted-foreground', Medium: 'bg-amber-50 text-amber-700', High: 'bg-orange-50 text-orange-700', Urgent: 'bg-red-50 text-red-700' };
+const COL_COLORS = ['border-border', 'border-blue-400', 'border-violet-400', 'border-emerald-400'];
 const EMPTY_FORM = { title: '', description: '', status: 'To Do', priority: 'Medium', assignee: '', due_date: '', labels: '' };
 
 export default function UnivKanban({ title = "Kanban Board", companyId, pageName, tableName }) {

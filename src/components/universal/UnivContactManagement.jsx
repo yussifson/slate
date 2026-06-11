@@ -5,7 +5,7 @@ import { Users, Plus, Search, Trash2, Edit2, Loader2, XCircle, Mail, Phone, Buil
 import { toast } from 'react-hot-toast';
 
 const EMPTY_FORM = { name: '', email: '', phone: '', company: '', type: 'Client', address: '', notes: '' };
-const TYPE_COLORS = { Client: 'bg-blue-50 text-blue-700 border-blue-200', Vendor: 'bg-violet-50 text-violet-700 border-violet-200', Partner: 'bg-emerald-50 text-emerald-700 border-emerald-200', Other: 'bg-slate-100 text-slate-600 border-slate-200' };
+const TYPE_COLORS = { Client: 'bg-blue-50 text-blue-700 border-blue-200', Vendor: 'bg-violet-50 text-violet-700 border-violet-200', Partner: 'bg-emerald-50 text-emerald-700 border-emerald-200', Other: 'bg-muted text-muted-foreground border-border' };
 
 export default function UnivContactManagement() {
   const companyId = useCompanyId();

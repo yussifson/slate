@@ -72,14 +72,14 @@ export default function UnivAffiliateProgram() {
   };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto bg-slate-50 min-h-screen">
+    <div className="p-6 max-w-6xl mx-auto bg-background min-h-screen">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-slate-800 flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
             <Share2 className="text-indigo-500 w-8 h-8" />
             Affiliate Program
           </h1>
-          <p className="text-slate-500 mt-2">Manage partners, track links, and monitor payouts.</p>
+          <p className="text-muted-foreground mt-2">Manage partners, track links, and monitor payouts.</p>
         </div>
         {!isEditing && (
           <div className="flex items-center gap-2">
@@ -106,14 +106,14 @@ export default function UnivAffiliateProgram() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="bg-white p-6 rounded-xl shadow-md border border-slate-200 mb-8 overflow-hidden"
+            className="bg-card p-6 rounded-xl shadow-md border border-border mb-8 overflow-hidden"
           >
-            <h2 className="text-xl font-semibold mb-4 text-slate-700">
+            <h2 className="text-xl font-semibold mb-4 text-foreground">
               {editingId ? 'Edit Affiliate' : 'New Affiliate Partner'}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="lg:col-span-2">
-                <label className="block text-sm font-medium text-slate-600 mb-1">Affiliate Name</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Affiliate Name</label>
                 <input
                   type="text"
                   className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
@@ -123,9 +123,9 @@ export default function UnivAffiliateProgram() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-600 mb-1">Tracking Link</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Tracking Link</label>
                 <div className="relative">
-                  <Link className="absolute left-3 top-2.5 w-5 h-5 text-slate-400" />
+                  <Link className="absolute left-3 top-2.5 w-5 h-5 text-muted-foreground" />
                   <input
                     type="text"
                     className="w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
@@ -136,9 +136,9 @@ export default function UnivAffiliateProgram() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-600 mb-1">Clicks</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Clicks</label>
                 <div className="relative">
-                  <MousePointerClick className="absolute left-3 top-2.5 w-5 h-5 text-slate-400" />
+                  <MousePointerClick className="absolute left-3 top-2.5 w-5 h-5 text-muted-foreground" />
                   <input
                     type="number"
                     className="w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
@@ -148,7 +148,7 @@ export default function UnivAffiliateProgram() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-600 mb-1">Conversions</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Conversions</label>
                 <input
                   type="number"
                   className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
@@ -157,9 +157,9 @@ export default function UnivAffiliateProgram() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-600 mb-1">Total Payout ($)</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Total Payout ($)</label>
                 <div className="relative">
-                  <DollarSign className="absolute left-3 top-2.5 w-5 h-5 text-slate-400" />
+                  <DollarSign className="absolute left-3 top-2.5 w-5 h-5 text-muted-foreground" />
                   <input
                     type="number"
                     step="0.01"
@@ -177,7 +177,7 @@ export default function UnivAffiliateProgram() {
                   setEditingId(null);
                   setFormData({ affiliate_name: '', tracking_link: '', click_count: '', conversion_count: '', payout_amount: '' });
                 }}
-                className="flex items-center gap-2 px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                className="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors"
               >
                 <X className="w-4 h-4" /> Cancel
               </button>
@@ -197,10 +197,10 @@ export default function UnivAffiliateProgram() {
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-500"></div>
         </div>
       ) : (
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-100 border-b border-slate-200 text-sm font-medium text-slate-600 uppercase tracking-wider">
+              <tr className="bg-muted border-b border-border text-sm font-medium text-muted-foreground uppercase tracking-wider">
                 <th className="p-4">Affiliate Partner</th>
                 <th className="p-4 text-center">Performance (Clicks / Conv)</th>
                 <th className="p-4 text-right">Total Payout</th>
@@ -209,9 +209,9 @@ export default function UnivAffiliateProgram() {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {data.map((item) => (
-                <tr key={item.id} className="hover:bg-slate-50 transition-colors">
+                <tr key={item.id} className="hover:bg-background transition-colors">
                   <td className="p-4">
-                    <div className="font-bold text-slate-800 text-base">{item.affiliate_name || 'Unnamed Affiliate'}</div>
+                    <div className="font-bold text-foreground text-base">{item.affiliate_name || 'Unnamed Affiliate'}</div>
                     <div className="text-sm text-indigo-500 font-mono flex items-center gap-1 mt-1">
                       <Link className="w-3 h-3" /> {item.tracking_link || 'No link setup'}
                     </div>
@@ -219,27 +219,27 @@ export default function UnivAffiliateProgram() {
                   <td className="p-4">
                     <div className="flex items-center justify-center gap-4">
                       <div className="text-center">
-                        <span className="block font-bold text-slate-700">{Number(item.click_count).toLocaleString() || 0}</span>
-                        <span className="text-[10px] text-slate-400 uppercase">Clicks</span>
+                        <span className="block font-bold text-foreground">{Number(item.click_count).toLocaleString() || 0}</span>
+                        <span className="text-[10px] text-muted-foreground uppercase">Clicks</span>
                       </div>
                       <div className="text-slate-300">|</div>
                       <div className="text-center">
                         <span className="block font-bold text-emerald-600">{Number(item.conversion_count).toLocaleString() || 0}</span>
-                        <span className="text-[10px] text-slate-400 uppercase">Conv.</span>
+                        <span className="text-[10px] text-muted-foreground uppercase">Conv.</span>
                       </div>
                     </div>
                   </td>
                   <td className="p-4 text-right">
-                    <span className="font-black text-slate-800 text-lg">
+                    <span className="font-black text-foreground text-lg">
                       ${Number(item.payout_amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
                   </td>
                   <td className="p-4 text-center">
                     <div className="flex justify-center gap-2">
-                      <button onClick={() => handleEdit(item)} className="p-1.5 text-slate-400 hover:text-indigo-600 bg-white shadow-sm border border-slate-100 rounded-md hover:bg-indigo-50 transition-all">
+                      <button onClick={() => handleEdit(item)} className="p-1.5 text-muted-foreground hover:text-indigo-600 bg-card shadow-sm border border-border rounded-md hover:bg-indigo-50 transition-all">
                         <Edit2 className="w-4 h-4" />
                       </button>
-                      <button onClick={() => handleDelete(item.id)} className="p-1.5 text-slate-400 hover:text-rose-600 bg-white shadow-sm border border-slate-100 rounded-md hover:bg-rose-50 transition-all">
+                      <button onClick={() => handleDelete(item.id)} className="p-1.5 text-muted-foreground hover:text-rose-600 bg-card shadow-sm border border-border rounded-md hover:bg-rose-50 transition-all">
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
@@ -251,7 +251,7 @@ export default function UnivAffiliateProgram() {
           {data.length === 0 && !isEditing && (
             <div className="py-16 text-center">
               <Share2 className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-              <p className="text-slate-500">No active affiliate programs.</p>
+              <p className="text-muted-foreground">No active affiliate programs.</p>
             </div>
           )}
         </div>

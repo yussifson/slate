@@ -70,14 +70,14 @@ export default function UnivCommissionStructure() {
   };
 
   return (
-    <div className="p-6 max-w-5xl mx-auto bg-gray-50 min-h-screen">
+    <div className="p-6 max-w-5xl mx-auto bg-background min-h-screen">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
             <Percent className="text-blue-600 w-8 h-8" />
             Commission Structures
           </h1>
-          <p className="text-gray-500 mt-2">Manage sales roles, base rates, and quota bonuses.</p>
+          <p className="text-muted-foreground mt-2">Manage sales roles, base rates, and quota bonuses.</p>
         </div>
         {!isEditing && (
           <div className="flex items-center gap-2">
@@ -104,16 +104,16 @@ export default function UnivCommissionStructure() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="bg-white p-6 rounded-xl shadow-md border border-gray-100 mb-8"
+            className="bg-card p-6 rounded-xl shadow-md border border-border mb-8"
           >
-            <h2 className="text-xl font-semibold mb-4 text-gray-700">
+            <h2 className="text-xl font-semibold mb-4 text-foreground">
               {editingId ? 'Edit Structure' : 'New Structure'}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Role Name</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Role Name</label>
                 <div className="relative">
-                  <Briefcase className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
+                  <Briefcase className="absolute left-3 top-2.5 w-5 h-5 text-muted-foreground" />
                   <input
                     type="text"
                     className="w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -124,7 +124,7 @@ export default function UnivCommissionStructure() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Base Rate (%)</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Base Rate (%)</label>
                 <input
                   type="number"
                   className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -134,9 +134,9 @@ export default function UnivCommissionStructure() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Quota Amount ($)</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Quota Amount ($)</label>
                 <div className="relative">
-                  <Target className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
+                  <Target className="absolute left-3 top-2.5 w-5 h-5 text-muted-foreground" />
                   <input
                     type="number"
                     className="w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -147,7 +147,7 @@ export default function UnivCommissionStructure() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Bonus Rate (%)</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Bonus Rate (%)</label>
                 <input
                   type="number"
                   className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -164,7 +164,7 @@ export default function UnivCommissionStructure() {
                   setEditingId(null);
                   setFormData({ role_name: '', base_rate: '', quota_amount: '', bonus_percentage: '' });
                 }}
-                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                className="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors"
               >
                 <X className="w-4 h-4" /> Cancel
               </button>
@@ -190,31 +190,31 @@ export default function UnivCommissionStructure() {
               key={item.id}
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow"
+              className="bg-card rounded-xl shadow-sm border border-border overflow-hidden hover:shadow-md transition-shadow"
             >
               <div className="p-5">
                 <div className="flex justify-between items-start mb-4">
-                  <h3 className="font-semibold text-lg text-gray-800">{item.role_name || 'Unnamed Role'}</h3>
+                  <h3 className="font-semibold text-lg text-foreground">{item.role_name || 'Unnamed Role'}</h3>
                   <div className="flex gap-2">
-                    <button onClick={() => handleEdit(item)} className="p-1.5 text-gray-400 hover:text-blue-600 rounded-md hover:bg-blue-50 transition-colors">
+                    <button onClick={() => handleEdit(item)} className="p-1.5 text-muted-foreground hover:text-blue-600 rounded-md hover:bg-blue-50 transition-colors">
                       <Edit2 className="w-4 h-4" />
                     </button>
-                    <button onClick={() => handleDelete(item.id)} className="p-1.5 text-gray-400 hover:text-red-600 rounded-md hover:bg-red-50 transition-colors">
+                    <button onClick={() => handleDelete(item.id)} className="p-1.5 text-muted-foreground hover:text-red-600 rounded-md hover:bg-red-50 transition-colors">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-500">Base Rate:</span>
-                    <span className="font-medium text-gray-700">{item.base_rate}%</span>
+                    <span className="text-muted-foreground">Base Rate:</span>
+                    <span className="font-medium text-foreground">{item.base_rate}%</span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-500">Quota Amount:</span>
-                    <span className="font-medium text-gray-700">${Number(item.quota_amount).toLocaleString()}</span>
+                    <span className="text-muted-foreground">Quota Amount:</span>
+                    <span className="font-medium text-foreground">${Number(item.quota_amount).toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between items-center text-sm pt-3 border-t border-gray-50">
-                    <span className="text-gray-500">Bonus Rate:</span>
+                    <span className="text-muted-foreground">Bonus Rate:</span>
                     <span className="font-bold text-green-600">{item.bonus_percentage}%</span>
                   </div>
                 </div>
@@ -222,9 +222,9 @@ export default function UnivCommissionStructure() {
             </motion.div>
           ))}
           {data.length === 0 && !isEditing && (
-            <div className="col-span-full py-12 text-center bg-white rounded-xl border border-dashed border-gray-300">
+            <div className="col-span-full py-12 text-center bg-card rounded-xl border border-dashed border-border">
               <Percent className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500">No commission structures found.</p>
+              <p className="text-muted-foreground">No commission structures found.</p>
             </div>
           )}
         </div>

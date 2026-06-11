@@ -6,7 +6,7 @@ import { toast } from 'react-hot-toast';
 
 const EMPTY_FORM = { name: '', description: '', client_name: '', status: 'Active', priority: 'Medium', start_date: '', due_date: '', budget: '', assigned_to: '' };
 const STATUS_COLORS = { Active: 'bg-blue-50 text-blue-700 border-blue-200', Completed: 'bg-emerald-50 text-emerald-700 border-emerald-200', 'On Hold': 'bg-amber-50 text-amber-700 border-amber-200', Cancelled: 'bg-red-50 text-red-700 border-red-200', Planning: 'bg-violet-50 text-violet-700 border-violet-200' };
-const PRIORITY_COLORS = { Low: 'bg-slate-100 text-slate-600', Medium: 'bg-amber-50 text-amber-700', High: 'bg-orange-50 text-orange-700', Urgent: 'bg-red-50 text-red-700' };
+const PRIORITY_COLORS = { Low: 'bg-muted text-muted-foreground', Medium: 'bg-amber-50 text-amber-700', High: 'bg-orange-50 text-orange-700', Urgent: 'bg-red-50 text-red-700' };
 
 export default function UnivProject() {
   const companyId = useCompanyId();

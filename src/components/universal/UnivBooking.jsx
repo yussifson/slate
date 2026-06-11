@@ -155,7 +155,7 @@ export default function UnivBooking() {
       <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden shadow-sm flex flex-col">
         <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
           <div className="relative w-72">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input 
               type="text"
               placeholder="Search bookings..."
@@ -207,7 +207,7 @@ export default function UnivBooking() {
                     <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
                       b.status === 'Confirmed' ? 'bg-emerald-100 text-emerald-700' :
                       b.status === 'Checked In' ? 'bg-purple-100 text-purple-700' :
-                      b.status === 'Checked Out' ? 'bg-slate-100 text-slate-700' :
+                      b.status === 'Checked Out' ? 'bg-muted text-foreground' :
                       b.status === 'Cancelled' ? 'bg-red-100 text-red-700' :
                       'bg-amber-100 text-amber-700'
                     }`}>

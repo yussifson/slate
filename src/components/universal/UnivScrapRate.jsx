@@ -75,19 +75,19 @@ const UnivScrapRate = () => {
   };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto bg-slate-50 min-h-screen font-sans">
+    <div className="p-6 max-w-6xl mx-auto bg-background min-h-screen font-sans">
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex items-center justify-between mb-8 bg-white p-6 rounded-2xl shadow-sm border border-slate-100"
+        className="flex items-center justify-between mb-8 bg-card p-6 rounded-2xl shadow-sm border border-border"
       >
         <div className="flex items-center gap-4">
           <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
             <Trash2 size={28} />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-slate-800">Scrap Rate Analysis</h1>
-            <p className="text-slate-500 text-sm mt-1">Manage and track scrap rate analysis records</p>
+            <h1 className="text-2xl font-bold text-foreground">Scrap Rate Analysis</h1>
+            <p className="text-muted-foreground text-sm mt-1">Manage and track scrap rate analysis records</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -111,57 +111,57 @@ const UnivScrapRate = () => {
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="mb-8 bg-white p-6 rounded-2xl shadow-sm border border-slate-100"
+          className="mb-8 bg-card p-6 rounded-2xl shadow-sm border border-border"
         >
-          <h2 className="text-lg font-semibold text-slate-800 mb-4">
+          <h2 className="text-lg font-semibold text-foreground mb-4">
             {editId ? 'Edit Record' : 'Create New Record'}
           </h2>
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-slate-600">Batch Number</label>
+              <label className="text-sm font-medium text-muted-foreground">Batch Number</label>
               <input
                 type="text"
                 name="batch_number"
                 value={formData.batch_number}
                 onChange={handleInputChange}
-                className="p-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="p-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Enter batch number"
                 required
               />
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-slate-600">Defect Count</label>
+              <label className="text-sm font-medium text-muted-foreground">Defect Count</label>
               <input
                 type="number"
                 name="defect_count"
                 value={formData.defect_count}
                 onChange={handleInputChange}
-                className="p-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="p-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Enter defect count"
                 required
               />
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-slate-600">Total Produced</label>
+              <label className="text-sm font-medium text-muted-foreground">Total Produced</label>
               <input
                 type="number"
                 name="total_produced"
                 value={formData.total_produced}
                 onChange={handleInputChange}
-                className="p-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="p-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Enter total produced"
                 required
               />
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-slate-600">Scrap %</label>
+              <label className="text-sm font-medium text-muted-foreground">Scrap %</label>
               <input
                 type="number"
                 name="scrap_pct"
                 value={formData.scrap_pct}
                 onChange={handleInputChange}
-                className="p-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="p-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Enter scrap %"
                 required
               />
@@ -170,7 +170,7 @@ const UnivScrapRate = () => {
               <button
                 type="button"
                 onClick={() => { setIsEditing(false); setEditId(null); setFormData({batch_number: '', defect_count: '', total_produced: '', scrap_pct: ''}); }}
-                className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors flex items-center gap-2"
+                className="px-4 py-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors flex items-center gap-2"
               >
                 <X size={18} /> Cancel
               </button>
@@ -185,21 +185,21 @@ const UnivScrapRate = () => {
         </motion.div>
       )}
 
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-        <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-          <h3 className="font-semibold text-slate-700">Recent Records</h3>
-          <button onClick={fetchData} className="text-slate-400 hover:text-blue-600 transition-colors p-2 rounded-lg hover:bg-blue-50">
+      <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
+        <div className="p-4 border-b border-border flex justify-between items-center bg-background/50">
+          <h3 className="font-semibold text-foreground">Recent Records</h3>
+          <button onClick={fetchData} className="text-muted-foreground hover:text-blue-600 transition-colors p-2 rounded-lg hover:bg-blue-50">
             <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
           </button>
         </div>
         
         {loading ? (
-          <div className="p-8 text-center text-slate-400 flex flex-col items-center">
+          <div className="p-8 text-center text-muted-foreground flex flex-col items-center">
             <RefreshCw size={32} className="animate-spin mb-3 text-blue-500" />
             <p>Loading data...</p>
           </div>
         ) : data.length === 0 ? (
-          <div className="p-12 text-center text-slate-400 flex flex-col items-center">
+          <div className="p-12 text-center text-muted-foreground flex flex-col items-center">
             <Trash2 size={48} className="mb-4 text-slate-300 stroke-[1.5]" />
             <p className="text-lg">No records found</p>
             <p className="text-sm mt-1">Click 'New Record' to get started</p>
@@ -208,7 +208,7 @@ const UnivScrapRate = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50 text-slate-500 text-sm uppercase tracking-wider">
+                <tr className="bg-background text-muted-foreground text-sm uppercase tracking-wider">
                   <th className="p-4 font-medium">Batch Number</th><th className="p-4 font-medium">Defect Count</th><th className="p-4 font-medium">Total Produced</th><th className="p-4 font-medium">Scrap %</th>
                   <th className="p-4 font-medium rounded-tr-xl">Actions</th>
                 </tr>
@@ -219,25 +219,25 @@ const UnivScrapRate = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     key={record.id} 
-                    className="hover:bg-slate-50/80 transition-colors group"
+                    className="hover:bg-background/80 transition-colors group"
                   >
                     
-                    <td className="p-4 text-slate-700">{record.batch_number}</td>
-                    <td className="p-4 text-slate-700">{record.defect_count}</td>
-                    <td className="p-4 text-slate-700">{record.total_produced}</td>
-                    <td className="p-4 text-slate-700">{record.scrap_pct}</td>
+                    <td className="p-4 text-foreground">{record.batch_number}</td>
+                    <td className="p-4 text-foreground">{record.defect_count}</td>
+                    <td className="p-4 text-foreground">{record.total_produced}</td>
+                    <td className="p-4 text-foreground">{record.scrap_pct}</td>
                     <td className="p-4">
                       <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() => handleEdit(record)}
-                          className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          className="p-1.5 text-muted-foreground hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                           title="Edit"
                         >
                           <Edit2 size={16} />
                         </button>
                         <button
                           onClick={() => handleDelete(record.id)}
-                          className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-1.5 text-muted-foreground hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                           title="Delete"
                         >
                           <Trash2 size={16} />

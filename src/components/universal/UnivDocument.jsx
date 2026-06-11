@@ -6,7 +6,7 @@ import { toast } from 'react-hot-toast';
 
 const EMPTY_FORM = { name: '', type: 'Document', description: '', file_url: '', status: 'Active', tags: '' };
 const TYPE_ICONS = { Document: '📄', Spreadsheet: '📊', Image: '🖼️', PDF: '📋', Contract: '📝', Report: '📈', Other: '📁' };
-const STATUS_COLORS = { Active: 'bg-emerald-50 text-emerald-700 border-emerald-200', Archived: 'bg-slate-100 text-slate-600 border-slate-200', Draft: 'bg-amber-50 text-amber-700 border-amber-200' };
+const STATUS_COLORS = { Active: 'bg-emerald-50 text-emerald-700 border-emerald-200', Archived: 'bg-muted text-muted-foreground border-border', Draft: 'bg-amber-50 text-amber-700 border-amber-200' };
 
 export default function UnivDocument() {
   const companyId = useCompanyId();

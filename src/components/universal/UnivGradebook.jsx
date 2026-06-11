@@ -109,7 +109,7 @@ export default function UnivGradebook() {
       <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden shadow-sm flex flex-col">
         <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
           <div className="relative w-72">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input 
               type="text"
               placeholder="Search students, courses..."
@@ -152,7 +152,7 @@ export default function UnivGradebook() {
                   </td>
                   <td className="p-4">
                     <div className="flex items-center gap-2">
-                      <div className="w-16 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                      <div className="w-16 h-2 bg-muted dark:bg-slate-800 rounded-full overflow-hidden">
                         <div className="h-full bg-primary rounded-full" style={{ width: `${(g.score / g.max_score) * 100}%` }}></div>
                       </div>
                       <span className="font-bold text-foreground text-xs">{g.score}/{g.max_score}</span>

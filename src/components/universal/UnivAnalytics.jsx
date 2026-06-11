@@ -65,7 +65,7 @@ export default function UnivAnalytics({
                  points="0,250 50,220 100,150 150,170 200,130 250,200 300,100 350,140 400,60" 
                  fill="none" 
                  stroke="currentColor" 
-                 className="text-slate-400/30"
+                 className="text-muted-foreground/30"
                  strokeWidth="2" 
                  strokeLinejoin="round"
                  vectorEffect="non-scaling-stroke"

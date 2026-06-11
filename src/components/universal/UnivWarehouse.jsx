@@ -179,7 +179,7 @@ export default function UnivWarehouse() {
       <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden shadow-sm flex flex-col">
         <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
           <div className="relative w-72">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input 
               type="text"
               placeholder="Search zones, bays..."
@@ -226,7 +226,7 @@ export default function UnivWarehouse() {
                     <span className="text-xs font-medium text-muted-foreground">Capacity Used</span>
                     <span className={`text-xs font-bold ${isHighUtil ? 'text-red-500' : 'text-emerald-500'}`}>{utilPercent}%</span>
                   </div>
-                  <div className="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                  <div className="h-2 w-full bg-muted dark:bg-slate-800 rounded-full overflow-hidden">
                     <div className={`h-full rounded-full ${isHighUtil ? 'bg-red-500' : 'bg-emerald-500'}`} style={{ width: `${utilPercent}%` }}></div>
                   </div>
                   <div className="text-[10px] text-muted-foreground mt-1 text-right">
@@ -237,7 +237,7 @@ export default function UnivWarehouse() {
                 <div className="mt-4 pt-3 border-t border-border flex justify-between items-center">
                   <span className={`px-2 py-0.5 text-[10px] uppercase tracking-wider font-bold rounded border ${
                     z.status === 'Active' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
-                    'bg-slate-50 text-slate-700 border-slate-200'
+                    'bg-background text-foreground border-border'
                   }`}>
                     {z.status}
                   </span>

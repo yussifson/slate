@@ -103,7 +103,7 @@ export default function UnivFaculty() {
       <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden shadow-sm flex flex-col">
         <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
           <div className="relative w-72">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input 
               type="text"
               placeholder="Search faculty..."
@@ -158,7 +158,7 @@ export default function UnivFaculty() {
                     <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border ${
                       f.status === 'Active' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
                       f.status === 'On Leave' ? 'bg-orange-50 text-orange-700 border-orange-200' : 
-                      'bg-slate-50 text-slate-700 border-slate-200'
+                      'bg-background text-foreground border-border'
                     }`}>
                       {f.status}
                     </span>

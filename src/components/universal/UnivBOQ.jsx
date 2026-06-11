@@ -117,7 +117,7 @@ export default function UnivBOQ() {
       <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden shadow-sm flex flex-col">
         <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
           <div className="relative w-72">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input 
               type="text"
               placeholder="Search descriptions..."
@@ -166,7 +166,7 @@ export default function UnivBOQ() {
                     ${Number(b.total_amount).toFixed(2)}
                   </td>
                   <td className="p-4">
-                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${b.status === 'Approved' ? 'bg-emerald-100 text-emerald-700' : b.status === 'Procuring' ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-700'}`}>
+                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${b.status === 'Approved' ? 'bg-emerald-100 text-emerald-700' : b.status === 'Procuring' ? 'bg-blue-100 text-blue-700' : 'bg-muted text-foreground'}`}>
                       {b.status === 'Approved' ? <CheckCircle2 className="w-3 h-3" /> : b.status === 'Procuring' ? <Clock className="w-3 h-3" /> : <Calculator className="w-3 h-3" />}
                       {b.status}
                     </span>

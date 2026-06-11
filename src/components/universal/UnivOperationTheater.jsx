@@ -76,7 +76,7 @@ const UnivOperationTheater = () => {
             <Scissors className="w-8 h-8 text-teal-400" />
             Operation Theater Manager
           </h1>
-          <p className="text-slate-400 mt-1">Schedule and monitor surgical procedures</p>
+          <p className="text-muted-foreground mt-1">Schedule and monitor surgical procedures</p>
         </div>
       </motion.div>
 
@@ -133,7 +133,7 @@ const UnivOperationTheater = () => {
           {loading ? (
             <div className="text-center py-20"><Activity className="w-10 h-10 text-teal-500 animate-spin mx-auto" /></div>
           ) : operations.length === 0 ? (
-            <div className="text-center py-20 bg-slate-800 rounded-2xl border border-slate-700 text-slate-400">No operations scheduled.</div>
+            <div className="text-center py-20 bg-slate-800 rounded-2xl border border-slate-700 text-muted-foreground">No operations scheduled.</div>
           ) : (
             <div className="grid md:grid-cols-2 gap-4">
               {operations.map((op, index) => (
@@ -142,9 +142,9 @@ const UnivOperationTheater = () => {
                     {op.status}
                   </div>
                   <h3 className="text-xl font-bold text-teal-300 mb-1 mt-2">{op.procedure_name}</h3>
-                  <div className="text-slate-300 flex items-center gap-2 mb-4"><User className="w-4 h-4 text-slate-500" /> Patient: {op.patient_name}</div>
+                  <div className="text-slate-300 flex items-center gap-2 mb-4"><User className="w-4 h-4 text-muted-foreground" /> Patient: {op.patient_name}</div>
                   
-                  <div className="space-y-2 mt-auto text-sm text-slate-400 bg-slate-900/50 p-4 rounded-xl">
+                  <div className="space-y-2 mt-auto text-sm text-muted-foreground bg-slate-900/50 p-4 rounded-xl">
                     <div className="flex items-center justify-between">
                       <span className="flex items-center gap-2"><User className="w-4 h-4" /> Surgeon:</span>
                       <span className="text-slate-200">{op.surgeon}</span>

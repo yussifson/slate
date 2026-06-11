@@ -60,7 +60,7 @@ const UnivTableReservation = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case 'Seated': return 'bg-emerald-100 text-emerald-800 border-emerald-200';
-      case 'Completed': return 'bg-slate-100 text-slate-800 border-slate-200';
+      case 'Completed': return 'bg-muted text-foreground border-border';
       case 'Cancelled': return 'bg-red-100 text-red-800 border-red-200';
       default: return 'bg-amber-100 text-amber-800 border-amber-200';
     }
@@ -77,7 +77,7 @@ const UnivTableReservation = () => {
       </motion.div>
 
       <div className="grid lg:grid-cols-3 gap-8">
-        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="lg:col-span-1 bg-white p-8 rounded-xl shadow-md border border-stone-200 h-fit">
+        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="lg:col-span-1 bg-card p-8 rounded-xl shadow-md border border-stone-200 h-fit">
           <h2 className="text-xl font-bold mb-6 text-stone-800 border-b border-stone-100 pb-3 font-sans">Book a Table</h2>
           <form onSubmit={handleSubmit} className="space-y-5 font-sans">
             <div>
@@ -130,11 +130,11 @@ const UnivTableReservation = () => {
           {loading ? (
             <div className="flex justify-center py-20"><Utensils className="w-10 h-10 text-stone-400 animate-pulse" /></div>
           ) : reservations.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-xl shadow-sm border border-stone-200 text-stone-400 font-sans">No reservations for today.</div>
+            <div className="text-center py-20 bg-card rounded-xl shadow-sm border border-stone-200 text-stone-400 font-sans">No reservations for today.</div>
           ) : (
             <div className="grid sm:grid-cols-2 gap-4 font-sans">
               {reservations.map((res, index) => (
-                <motion.div key={res.id || index} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: index * 0.05 }} className="bg-white p-5 rounded-xl shadow-sm border border-stone-200 relative overflow-hidden group">
+                <motion.div key={res.id || index} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: index * 0.05 }} className="bg-card p-5 rounded-xl shadow-sm border border-stone-200 relative overflow-hidden group">
                   <div className={`absolute top-0 right-0 px-3 py-1 text-xs font-bold rounded-bl-lg border-b border-l ${getStatusColor(res.status)}`}>
                     {res.status}
                   </div>

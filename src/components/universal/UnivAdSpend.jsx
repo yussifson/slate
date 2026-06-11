@@ -72,14 +72,14 @@ export default function UnivAdSpend() {
   };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto bg-gray-50 min-h-screen">
+    <div className="p-6 max-w-6xl mx-auto bg-background min-h-screen">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
             <TrendingUp className="text-emerald-600 w-8 h-8" />
             Ad Spend & ROAS
           </h1>
-          <p className="text-gray-500 mt-2">Track advertising expenditures and return on investment.</p>
+          <p className="text-muted-foreground mt-2">Track advertising expenditures and return on investment.</p>
         </div>
         {!isEditing && (
           <div className="flex items-center gap-2">
@@ -106,16 +106,16 @@ export default function UnivAdSpend() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="bg-white p-6 rounded-xl shadow-md border border-gray-100 mb-8"
+            className="bg-card p-6 rounded-xl shadow-md border border-border mb-8"
           >
-            <h2 className="text-xl font-semibold mb-4 text-gray-700">
+            <h2 className="text-xl font-semibold mb-4 text-foreground">
               {editingId ? 'Edit Ad Spend Record' : 'Log Ad Spend'}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Platform</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Platform</label>
                 <select
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white"
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-card"
                   value={formData.platform}
                   onChange={(e) => setFormData({ ...formData, platform: e.target.value })}
                 >
@@ -127,7 +127,7 @@ export default function UnivAdSpend() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Spend ($)</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Spend ($)</label>
                 <input
                   type="number"
                   className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
@@ -136,7 +136,7 @@ export default function UnivAdSpend() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Clicks</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Clicks</label>
                 <input
                   type="number"
                   className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
@@ -145,7 +145,7 @@ export default function UnivAdSpend() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Conversions</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Conversions</label>
                 <input
                   type="number"
                   className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
@@ -154,7 +154,7 @@ export default function UnivAdSpend() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">ROAS (x)</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">ROAS (x)</label>
                 <input
                   type="number"
                   step="0.01"
@@ -171,7 +171,7 @@ export default function UnivAdSpend() {
                   setEditingId(null);
                   setFormData({ platform: 'Google', amount_spent: '', clicks: '', conversions: '', roas: '' });
                 }}
-                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                className="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors"
               >
                 <X className="w-4 h-4" /> Cancel
               </button>
@@ -197,35 +197,35 @@ export default function UnivAdSpend() {
               key={item.id}
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow relative"
+              className="bg-card rounded-xl shadow-sm border border-border overflow-hidden hover:shadow-md transition-shadow relative"
             >
               <div className="absolute top-0 right-0 p-3 flex gap-2">
-                <button onClick={() => handleEdit(item)} className="p-1.5 bg-white/80 text-gray-500 hover:text-emerald-600 rounded-full shadow-sm hover:bg-emerald-50 transition-colors">
+                <button onClick={() => handleEdit(item)} className="p-1.5 bg-card/80 text-muted-foreground hover:text-emerald-600 rounded-full shadow-sm hover:bg-emerald-50 transition-colors">
                   <Edit2 className="w-3 h-3" />
                 </button>
-                <button onClick={() => handleDelete(item.id)} className="p-1.5 bg-white/80 text-gray-500 hover:text-red-600 rounded-full shadow-sm hover:bg-red-50 transition-colors">
+                <button onClick={() => handleDelete(item.id)} className="p-1.5 bg-card/80 text-muted-foreground hover:text-red-600 rounded-full shadow-sm hover:bg-red-50 transition-colors">
                   <Trash2 className="w-3 h-3" />
                 </button>
               </div>
               <div className="p-6">
-                <h3 className="font-bold text-xl text-gray-800 mb-4">{item.platform}</h3>
+                <h3 className="font-bold text-xl text-foreground mb-4">{item.platform}</h3>
                 <div className="space-y-4">
-                  <div className="bg-gray-50 p-3 rounded-lg border border-gray-100">
-                    <span className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Spend</span>
-                    <span className="text-2xl font-bold text-gray-700">${Number(item.amount_spent).toLocaleString()}</span>
+                  <div className="bg-background p-3 rounded-lg border border-border">
+                    <span className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Spend</span>
+                    <span className="text-2xl font-bold text-foreground">${Number(item.amount_spent).toLocaleString()}</span>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="flex flex-col">
-                      <span className="flex items-center gap-1 text-xs text-gray-500 mb-1"><MousePointerClick className="w-3 h-3"/> Clicks</span>
-                      <span className="font-medium text-gray-800">{Number(item.clicks).toLocaleString()}</span>
+                      <span className="flex items-center gap-1 text-xs text-muted-foreground mb-1"><MousePointerClick className="w-3 h-3"/> Clicks</span>
+                      <span className="font-medium text-foreground">{Number(item.clicks).toLocaleString()}</span>
                     </div>
                     <div className="flex flex-col">
-                      <span className="flex items-center gap-1 text-xs text-gray-500 mb-1"><CheckCircle className="w-3 h-3"/> Conv.</span>
-                      <span className="font-medium text-gray-800">{Number(item.conversions).toLocaleString()}</span>
+                      <span className="flex items-center gap-1 text-xs text-muted-foreground mb-1"><CheckCircle className="w-3 h-3"/> Conv.</span>
+                      <span className="font-medium text-foreground">{Number(item.conversions).toLocaleString()}</span>
                     </div>
                   </div>
-                  <div className="pt-3 border-t border-gray-100 flex justify-between items-center">
-                    <span className="text-sm font-medium text-gray-500">ROAS</span>
+                  <div className="pt-3 border-t border-border flex justify-between items-center">
+                    <span className="text-sm font-medium text-muted-foreground">ROAS</span>
                     <span className="text-lg font-bold text-emerald-600">{Number(item.roas).toFixed(2)}x</span>
                   </div>
                 </div>
@@ -233,9 +233,9 @@ export default function UnivAdSpend() {
             </motion.div>
           ))}
           {data.length === 0 && !isEditing && (
-            <div className="col-span-full py-12 text-center bg-white rounded-xl border border-dashed border-gray-300">
+            <div className="col-span-full py-12 text-center bg-card rounded-xl border border-dashed border-border">
               <TrendingUp className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500">No ad spend data available.</p>
+              <p className="text-muted-foreground">No ad spend data available.</p>
             </div>
           )}
         </div>

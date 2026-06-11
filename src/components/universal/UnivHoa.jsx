@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const TABLE = 'univ_hoas';
 const EMPTY = { community_name: '', unit_number: '', owner_name: '', dues_amount: '', due_date: '', status: 'Unpaid', violation_notes: '' };
 const STATUSES = ['Unpaid', 'Paid', 'Overdue', 'Waived'];
-const STATUS_COLORS = { Unpaid: 'bg-amber-100 text-amber-700', Paid: 'bg-emerald-100 text-emerald-700', Overdue: 'bg-red-100 text-red-700', Waived: 'bg-slate-100 text-slate-600' };
+const STATUS_COLORS = { Unpaid: 'bg-amber-100 text-amber-700', Paid: 'bg-emerald-100 text-emerald-700', Overdue: 'bg-red-100 text-red-700', Waived: 'bg-muted text-muted-foreground' };
 
 export default function UnivHoa() {
   const companyId = useCompanyId();

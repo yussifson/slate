@@ -134,7 +134,7 @@ export default function UnivSearch() {
         {/* Search Input */}
         <div className="w-full max-w-2xl relative">
           <div className={`relative flex items-center bg-card border-2 rounded-2xl shadow-sm transition-all duration-300 ${isFocused ? 'border-primary ring-4 ring-primary/10 shadow-md' : 'border-border hover:border-border/80'}`}>
-            <Search className={`w-6 h-6 absolute left-4 ${isFocused ? 'text-primary' : 'text-slate-400'} transition-colors`} />
+            <Search className={`w-6 h-6 absolute left-4 ${isFocused ? 'text-primary' : 'text-muted-foreground'} transition-colors`} />
             <input 
               type="text"
               placeholder="Search anything..."
@@ -142,14 +142,14 @@ export default function UnivSearch() {
               onChange={(e) => setQuery(e.target.value)}
               onFocus={() => setIsFocused(true)}
               onBlur={() => setTimeout(() => setIsFocused(false), 250)}
-              className="w-full h-16 pl-14 pr-14 bg-transparent rounded-2xl text-lg focus:outline-none text-foreground placeholder:text-slate-400"
+              className="w-full h-16 pl-14 pr-14 bg-transparent rounded-2xl text-lg focus:outline-none text-foreground placeholder:text-muted-foreground"
             />
             {query && (
-              <button onClick={() => setQuery('')} className="absolute right-12 p-1 text-slate-400 hover:text-foreground transition-colors">
+              <button onClick={() => setQuery('')} className="absolute right-12 p-1 text-muted-foreground hover:text-foreground transition-colors">
                  <X className="w-5 h-5" />
               </button>
             )}
-            <div className="absolute right-4 text-xs font-semibold text-slate-400 border border-border rounded px-1.5 py-0.5 bg-muted hidden sm:block">⌘K</div>
+            <div className="absolute right-4 text-xs font-semibold text-muted-foreground border border-border rounded px-1.5 py-0.5 bg-muted hidden sm:block">⌘K</div>
           </div>
 
           {/* Dropdown Results */}

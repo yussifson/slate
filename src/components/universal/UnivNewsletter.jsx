@@ -72,14 +72,14 @@ export default function UnivNewsletter() {
   };
 
   return (
-    <div className="p-6 max-w-5xl mx-auto bg-gray-50 min-h-screen">
+    <div className="p-6 max-w-5xl mx-auto bg-background min-h-screen">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
             <Mail className="text-purple-600 w-8 h-8" />
             Newsletter Performance
           </h1>
-          <p className="text-gray-500 mt-2">Analyze engagement metrics for your campaigns.</p>
+          <p className="text-muted-foreground mt-2">Analyze engagement metrics for your campaigns.</p>
         </div>
         {!isEditing && (
           <div className="flex items-center gap-2">
@@ -106,14 +106,14 @@ export default function UnivNewsletter() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="bg-white p-6 rounded-xl shadow-md border border-gray-100 mb-8"
+            className="bg-card p-6 rounded-xl shadow-md border border-border mb-8"
           >
-            <h2 className="text-xl font-semibold mb-4 text-gray-700">
+            <h2 className="text-xl font-semibold mb-4 text-foreground">
               {editingId ? 'Edit Newsletter' : 'Record Newsletter'}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-600 mb-1">Subject Line</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Subject Line</label>
                 <input
                   type="text"
                   className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
@@ -123,7 +123,7 @@ export default function UnivNewsletter() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Send Date</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Send Date</label>
                 <input
                   type="date"
                   className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
@@ -132,9 +132,9 @@ export default function UnivNewsletter() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Recipients</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Recipients</label>
                 <div className="relative">
-                  <Users className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
+                  <Users className="absolute left-3 top-2.5 w-5 h-5 text-muted-foreground" />
                   <input
                     type="number"
                     className="w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
@@ -144,9 +144,9 @@ export default function UnivNewsletter() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Open Rate (%)</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Open Rate (%)</label>
                 <div className="relative">
-                  <Eye className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
+                  <Eye className="absolute left-3 top-2.5 w-5 h-5 text-muted-foreground" />
                   <input
                     type="number"
                     step="0.1"
@@ -157,9 +157,9 @@ export default function UnivNewsletter() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Click Rate (%)</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Click Rate (%)</label>
                 <div className="relative">
-                  <Pointer className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
+                  <Pointer className="absolute left-3 top-2.5 w-5 h-5 text-muted-foreground" />
                   <input
                     type="number"
                     step="0.1"
@@ -177,7 +177,7 @@ export default function UnivNewsletter() {
                   setEditingId(null);
                   setFormData({ subject_line: '', send_date: '', recipient_count: '', open_rate: '', click_rate: '' });
                 }}
-                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                className="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors"
               >
                 <X className="w-4 h-4" /> Cancel
               </button>
@@ -203,23 +203,23 @@ export default function UnivNewsletter() {
               key={item.id}
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow flex flex-col"
+              className="bg-card rounded-xl shadow-sm border border-border overflow-hidden hover:shadow-md transition-shadow flex flex-col"
             >
               <div className="p-5 flex-grow">
                 <div className="flex justify-between items-start mb-3">
-                  <h3 className="font-semibold text-lg text-gray-800 line-clamp-2" title={item.subject_line}>
+                  <h3 className="font-semibold text-lg text-foreground line-clamp-2" title={item.subject_line}>
                     "{item.subject_line || 'Untitled Newsletter'}"
                   </h3>
                   <div className="flex gap-2 shrink-0 ml-4">
-                    <button onClick={() => handleEdit(item)} className="p-1 text-gray-400 hover:text-purple-600 transition-colors">
+                    <button onClick={() => handleEdit(item)} className="p-1 text-muted-foreground hover:text-purple-600 transition-colors">
                       <Edit2 className="w-4 h-4" />
                     </button>
-                    <button onClick={() => handleDelete(item.id)} className="p-1 text-gray-400 hover:text-red-600 transition-colors">
+                    <button onClick={() => handleDelete(item.id)} className="p-1 text-muted-foreground hover:text-red-600 transition-colors">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
-                <div className="text-sm text-gray-500 mb-5">Sent: {item.send_date}</div>
+                <div className="text-sm text-muted-foreground mb-5">Sent: {item.send_date}</div>
                 
                 <div className="grid grid-cols-3 gap-4 text-center mt-auto">
                   <div className="bg-purple-50 rounded-lg p-3">
@@ -239,9 +239,9 @@ export default function UnivNewsletter() {
             </motion.div>
           ))}
           {data.length === 0 && !isEditing && (
-            <div className="col-span-full py-12 text-center bg-white rounded-xl border border-dashed border-gray-300">
+            <div className="col-span-full py-12 text-center bg-card rounded-xl border border-dashed border-border">
               <Mail className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500">No newsletter data available.</p>
+              <p className="text-muted-foreground">No newsletter data available.</p>
             </div>
           )}
         </div>

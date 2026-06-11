@@ -6,7 +6,7 @@ import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const TABLE = 'univ_changerequests';
-const STATUS_COLORS = {"Submitted":"bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400","Under Review":"bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400","Approved":"bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400","Rejected":"bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400","Implemented":"bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400","Rolled Back":"bg-slate-100 text-slate-600 dark:bg-slate-700/30 dark:text-slate-400"};
+const STATUS_COLORS = {"Submitted":"bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400","Under Review":"bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400","Approved":"bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400","Rejected":"bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400","Implemented":"bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400","Rolled Back":"bg-muted text-muted-foreground dark:bg-slate-700/30 dark:text-muted-foreground"};
 const EMPTY = {"request_title":"","requested_by":"","change_type":"","impact_level":"","request_date":"","implementation_date":"","description":"","rollback_plan":"","status":"Submitted"};
 
 export default function UnivChangeRequest() {
@@ -140,7 +140,7 @@ export default function UnivChangeRequest() {
                   <td className="px-4 py-3 text-muted-foreground">{r.change_type}</td>
                   <td className="px-4 py-3 text-muted-foreground">{r.impact_level}</td>
                   <td className="px-4 py-3 text-muted-foreground">{r.request_date}</td>
-                  <td className="px-4 py-3"><span className={`px-2 py-0.5 rounded-full text-xs font-bold ${STATUS_COLORS[r.status] || 'bg-slate-100 text-slate-700'}`}>{r.status}</span></td>
+                  <td className="px-4 py-3"><span className={`px-2 py-0.5 rounded-full text-xs font-bold ${STATUS_COLORS[r.status] || 'bg-muted text-foreground'}`}>{r.status}</span></td>
                   <td className="px-4 py-3">
                     <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button onClick={() => openEdit(r)} className="p-1.5 bg-muted rounded-lg hover:bg-muted/80 transition-colors"><Edit2 className="w-3.5 h-3.5" /></button>
@@ -173,9 +173,9 @@ export default function UnivChangeRequest() {
               return acc;
             }, {})
           ).map(([s, count]) => (
-            <div key={s} className={`px-4 py-2 rounded-xl border text-xs font-bold flex items-center gap-2 ${STATUS_COLORS[s] || 'bg-slate-100 text-slate-600'}`}>
+            <div key={s} className={`px-4 py-2 rounded-xl border text-xs font-bold flex items-center gap-2 ${STATUS_COLORS[s] || 'bg-muted text-muted-foreground'}`}>
               <span>{s}</span>
-              <span className="bg-white/40 rounded-full px-1.5">{count}</span>
+              <span className="bg-card/40 rounded-full px-1.5">{count}</span>
             </div>
           ))}
           <div className="px-4 py-2 rounded-xl border border-border bg-card text-xs font-bold text-muted-foreground flex items-center gap-2">

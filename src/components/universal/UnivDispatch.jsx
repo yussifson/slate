@@ -114,14 +114,14 @@ export default function UnivDispatch() {
             <p className="text-sm text-muted-foreground font-medium">Off Duty</p>
             <h3 className="text-2xl font-bold text-foreground mt-1">{dispatch.filter(d => d.status === 'Off Duty').length}</h3>
           </div>
-          <div className="p-3 bg-slate-100 dark:bg-slate-800 text-slate-600 rounded-xl"><Clock className="w-5 h-5" /></div>
+          <div className="p-3 bg-muted dark:bg-slate-800 text-muted-foreground rounded-xl"><Clock className="w-5 h-5" /></div>
         </div>
       </div>
 
       <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden shadow-sm flex flex-col">
         <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
           <div className="relative w-72">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input 
               type="text"
               placeholder="Search drivers, locations..."
@@ -163,7 +163,7 @@ export default function UnivDispatch() {
                       d.status === 'Available' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
                       d.status === 'On Route' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
                       d.status === 'Resting' ? 'bg-orange-50 text-orange-700 border-orange-200' : 
-                      'bg-slate-50 text-slate-700 border-slate-200'
+                      'bg-background text-foreground border-border'
                     }`}>
                       {d.status === 'Available' && <CheckCircle2 className="w-3 h-3" />}
                       {d.status === 'On Route' && <Navigation className="w-3 h-3" />}

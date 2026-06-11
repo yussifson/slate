@@ -75,7 +75,7 @@ const UnivInsurancePolicy = () => {
       </motion.div>
 
       <div className="grid lg:grid-cols-3 gap-8">
-        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="lg:col-span-1 bg-white p-6 rounded-3xl shadow-sm border border-blue-100 h-fit">
+        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="lg:col-span-1 bg-card p-6 rounded-3xl shadow-sm border border-blue-100 h-fit">
           <h2 className="text-xl font-bold mb-6 text-blue-900 border-b border-blue-50 pb-3">Add Policy</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -129,13 +129,13 @@ const UnivInsurancePolicy = () => {
           {loading ? (
             <div className="flex justify-center py-20"><Shield className="w-12 h-12 text-blue-400 animate-pulse" /></div>
           ) : policies.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-3xl border border-blue-100 text-blue-400 font-medium">No policies stored yet.</div>
+            <div className="text-center py-20 bg-card rounded-3xl border border-blue-100 text-blue-400 font-medium">No policies stored yet.</div>
           ) : (
             <div className="grid md:grid-cols-2 gap-6">
               {policies.map((policy, index) => {
                 const expired = isExpired(policy.end_date);
                 return (
-                  <motion.div key={policy.id || index} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: index * 0.05 }} className={`relative bg-gradient-to-br ${expired ? 'from-slate-50 to-slate-100 border-slate-200' : 'from-blue-600 to-blue-800 text-white border-transparent'} p-6 rounded-3xl shadow-lg border overflow-hidden`}>
+                  <motion.div key={policy.id || index} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: index * 0.05 }} className={`relative bg-gradient-to-br ${expired ? 'from-slate-50 to-slate-100 border-border' : 'from-blue-600 to-blue-800 text-white border-transparent'} p-6 rounded-3xl shadow-lg border overflow-hidden`}>
                     {/* Background decoration */}
                     <div className="absolute -right-6 -top-6 opacity-10">
                       <Shield className="w-32 h-32" />
@@ -144,8 +144,8 @@ const UnivInsurancePolicy = () => {
                     <div className="relative z-10">
                       <div className="flex justify-between items-start mb-6">
                         <div>
-                          <h3 className={`font-black text-xl ${expired ? 'text-slate-800' : 'text-white'}`}>{policy.provider_name}</h3>
-                          <span className={`text-xs font-bold uppercase tracking-wider ${expired ? 'text-slate-500' : 'text-blue-200'}`}>{policy.coverage_type} Coverage</span>
+                          <h3 className={`font-black text-xl ${expired ? 'text-foreground' : 'text-white'}`}>{policy.provider_name}</h3>
+                          <span className={`text-xs font-bold uppercase tracking-wider ${expired ? 'text-muted-foreground' : 'text-blue-200'}`}>{policy.coverage_type} Coverage</span>
                         </div>
                         {expired ? (
                           <span className="bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded-md">EXPIRED</span>
@@ -156,23 +156,23 @@ const UnivInsurancePolicy = () => {
 
                       <div className="space-y-4">
                         <div>
-                          <p className={`text-xs uppercase font-bold ${expired ? 'text-slate-400' : 'text-blue-300'}`}>Policy Holder</p>
-                          <p className={`font-medium text-lg ${expired ? 'text-slate-700' : 'text-white'}`}>{policy.policy_holder}</p>
+                          <p className={`text-xs uppercase font-bold ${expired ? 'text-muted-foreground' : 'text-blue-300'}`}>Policy Holder</p>
+                          <p className={`font-medium text-lg ${expired ? 'text-foreground' : 'text-white'}`}>{policy.policy_holder}</p>
                         </div>
                         
-                        <div className={`p-3 rounded-xl ${expired ? 'bg-slate-200/50' : 'bg-white/10 backdrop-blur-sm'}`}>
-                          <p className={`text-xs uppercase font-bold ${expired ? 'text-slate-400' : 'text-blue-200'}`}>Policy Number</p>
-                          <p className={`font-mono text-lg tracking-widest ${expired ? 'text-slate-700' : 'text-white'}`}>{policy.policy_number}</p>
+                        <div className={`p-3 rounded-xl ${expired ? 'bg-muted/60/50' : 'bg-card/10 backdrop-blur-sm'}`}>
+                          <p className={`text-xs uppercase font-bold ${expired ? 'text-muted-foreground' : 'text-blue-200'}`}>Policy Number</p>
+                          <p className={`font-mono text-lg tracking-widest ${expired ? 'text-foreground' : 'text-white'}`}>{policy.policy_number}</p>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <p className={`text-xs uppercase font-bold ${expired ? 'text-slate-400' : 'text-blue-300'}`}>Valid Thru</p>
-                            <p className={`font-medium ${expired ? 'text-slate-700' : 'text-white'}`}>{policy.end_date}</p>
+                            <p className={`text-xs uppercase font-bold ${expired ? 'text-muted-foreground' : 'text-blue-300'}`}>Valid Thru</p>
+                            <p className={`font-medium ${expired ? 'text-foreground' : 'text-white'}`}>{policy.end_date}</p>
                           </div>
                           <div>
-                            <p className={`text-xs uppercase font-bold ${expired ? 'text-slate-400' : 'text-blue-300'}`}>Premium</p>
-                            <p className={`font-medium ${expired ? 'text-slate-700' : 'text-white'}`}>${policy.premium_amount}</p>
+                            <p className={`text-xs uppercase font-bold ${expired ? 'text-muted-foreground' : 'text-blue-300'}`}>Premium</p>
+                            <p className={`font-medium ${expired ? 'text-foreground' : 'text-white'}`}>${policy.premium_amount}</p>
                           </div>
                         </div>
                       </div>

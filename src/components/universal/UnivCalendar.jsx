@@ -129,9 +129,9 @@ export default function UnivCalendar({
             ))}
           </div>
           <div className="flex items-center bg-muted rounded-lg p-1">
-            <button className="p-1.5 hover:bg-background rounded-md text-slate-500 transition-colors"><ChevronLeft className="w-4 h-4" /></button>
+            <button className="p-1.5 hover:bg-background rounded-md text-muted-foreground transition-colors"><ChevronLeft className="w-4 h-4" /></button>
             <span className="text-xs font-semibold px-3">Today</span>
-            <button className="p-1.5 hover:bg-background rounded-md text-slate-500 transition-colors"><ChevronRight className="w-4 h-4" /></button>
+            <button className="p-1.5 hover:bg-background rounded-md text-muted-foreground transition-colors"><ChevronRight className="w-4 h-4" /></button>
           </div>
           <button onClick={() => setIsAdding(!isAdding)} className="flex items-center gap-2 px-3 py-1.5 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm">
             <Plus className="w-4 h-4" /> New
@@ -185,7 +185,7 @@ export default function UnivCalendar({
                    return (
                      <div key={i} className={`border-r border-b border-border p-2 ${d.inactive ? 'bg-muted/10' : 'bg-card hover:bg-muted/5'} transition-colors relative min-h-[100px]`}>
                        {d.day && (
-                         <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-sm font-semibold ${d.isToday ? 'bg-primary text-white shadow-sm' : 'text-slate-700 dark:text-slate-300'}`}>
+                         <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-sm font-semibold ${d.isToday ? 'bg-primary text-white shadow-sm' : 'text-foreground dark:text-slate-300'}`}>
                            {d.day}
                          </span>
                        )}

@@ -4,7 +4,7 @@ import { useCompanyId } from '@/hooks/useCompanyId';
 import { Monitor, Plus, Search, Trash2, Edit2, Loader2, XCircle, Package } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
-const STATUS_COLORS = { Active: 'bg-emerald-50 text-emerald-700 border-emerald-200', 'Under Maintenance': 'bg-amber-50 text-amber-700 border-amber-200', Retired: 'bg-slate-100 text-slate-600 border-slate-200' };
+const STATUS_COLORS = { Active: 'bg-emerald-50 text-emerald-700 border-emerald-200', 'Under Maintenance': 'bg-amber-50 text-amber-700 border-amber-200', Retired: 'bg-muted text-muted-foreground border-border' };
 const EMPTY_FORM = { name: '', category: 'Equipment', status: 'Active', purchase_date: new Date().toISOString().split('T')[0], purchase_value: 0 };
 
 export default function UnivAssetManagement() {
