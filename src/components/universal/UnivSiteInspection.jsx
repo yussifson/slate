@@ -33,7 +33,7 @@ export default function UnivSiteInspection() {
       if (error && error.code !== '42P01') throw error;
       setInspections(data || []);
     } catch (err) {
-      // Mock data removed for production empty states
+      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -42,9 +42,9 @@ export default function UnivSiteInspection() {
   const handleAddInspection = async () => {
     const newInspection = {
       company_id: companyId,
-      project_id: 'temp-project-id',
+      project_id: '00000000-0000-0000-0000-000000000000',
       inspector_name: 'Current User',
-      inspection_date: new Date().toISOString().split('T')[0],
+      inspection_date: new Date().toISOString().split('T')[0] || null,
       findings: 'Initial site walkthrough completed',
       snag_list: 'List items here...',
       status: 'Pending Review'
@@ -54,13 +54,13 @@ export default function UnivSiteInspection() {
       if (error) throw error;
       toast.success('Inspection logged');
     } catch (err) {
-      if (err.code === '42P01') toast.error("Database table not initialized yet.");
-      else toast.error('Failed to log inspection');
+      console.error(err);
+      toast.error(err.message || 'Failed to log inspection');
     }
   };
 
   const filtered = inspections.filter(i => 
-    `${i.inspector_name} ${i.findings} ${i.status}`.toLowerCase().includes(searchTerm.toLowerCase())
+    `${i.inspector_name || ''} ${i.findings || ''} ${i.status || ''}`.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -111,7 +111,7 @@ export default function UnivSiteInspection() {
                       <div className="flex items-center gap-3 text-sm text-muted-foreground mt-0.5">
                         <span className="font-medium">By: {insp.inspector_name}</span>
                         <span>•</span>
-                        <span>Date: {insp.inspection_date}</span>
+                        <span>Date: {insp.inspection_date || '—'}</span>
                       </div>
                     </div>
                   </div>

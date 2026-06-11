@@ -23,7 +23,7 @@ export default function UnivAppointments() {
       const channel = supabase.channel('appt_changes')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'univ_appointments', filter: `company_id=eq.${companyId}` }, fetchRecords)
         .subscribe();
-      return () => supabase.removeChannel(channel);
+      return () => { supabase.removeChannel(channel); };
     }
   }, [companyId]);
 
@@ -33,32 +33,68 @@ export default function UnivAppointments() {
       const { data, error } = await supabase.from('univ_appointments').select('*').eq('company_id', companyId).order('date', { ascending: true });
       if (error && error.code !== '42P01') throw error;
       setRecords(data || []);
-    } catch (err) { console.error(err); } finally { setLoading(false); }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const save = async (e) => {
     e.preventDefault();
     try {
+      const payload = {
+        title: form.title,
+        client_name: form.client_name || null,
+        client_email: form.client_email || null,
+        client_phone: form.client_phone || null,
+        date: form.date || null,
+        time: form.time || null,
+        duration_minutes: Number(form.duration_minutes) || 0,
+        location: form.location || null,
+        notes: form.notes || null,
+        status: form.status,
+        company_id: companyId
+      };
+
       if (editingId) {
-        const { error } = await supabase.from('univ_appointments').update(form).eq('id', editingId);
+        const { error } = await supabase.from('univ_appointments').update(payload).eq('id', editingId);
         if (error) throw error;
         toast.success('Appointment updated!');
       } else {
-        const { error } = await supabase.from('univ_appointments').insert({ ...form, company_id: companyId });
+        const { error } = await supabase.from('univ_appointments').insert(payload);
         if (error) throw error;
         toast.success('Appointment scheduled!');
       }
       closeModal();
-    } catch (err) { toast.error('Failed to save'); }
+      fetchRecords();
+    } catch (err) {
+      console.error(err);
+      toast.error(err.message || 'Failed to save');
+    }
   };
 
   const remove = async (id) => {
-    const { error } = await supabase.from('univ_appointments').delete().eq('id', id);
-    if (error) toast.error('Failed to delete'); else toast.success('Deleted');
+    try {
+      const { error } = await supabase.from('univ_appointments').delete().eq('id', id);
+      if (error) throw error;
+      toast.success('Deleted');
+      fetchRecords();
+    } catch (err) {
+      console.error(err);
+      toast.error(err.message || 'Failed to delete');
+    }
   };
 
   const updateStatus = async (id, status) => {
-    await supabase.from('univ_appointments').update({ status }).eq('id', id);
+    try {
+      const { error } = await supabase.from('univ_appointments').update({ status }).eq('id', id);
+      if (error) throw error;
+      fetchRecords();
+    } catch (err) {
+      console.error(err);
+      toast.error(err.message || 'Failed to update status');
+    }
   };
 
   const openModal = (r = null) => { setForm(r ? { ...r } : EMPTY_FORM); setEditingId(r?.id || null); setIsModalOpen(true); };
@@ -168,7 +204,7 @@ export default function UnivAppointments() {
                 </div>
                 <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Date *</label><input required type="date" value={form.date} onChange={e => setForm({...form, date: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" /></div>
                 <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Time</label><input type="time" value={form.time} onChange={e => setForm({...form, time: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" /></div>
-                <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Duration (minutes)</label><input type="number" min="15" value={form.duration_minutes} onChange={e => setForm({...form, duration_minutes: parseInt(e.target.value)})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" /></div>
+                <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Duration (minutes)</label><input type="number" min="15" value={form.duration_minutes} onChange={e => setForm({...form, duration_minutes: parseInt(e.target.value) || 0})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" /></div>
                 <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Location</label><input type="text" value={form.location} onChange={e => setForm({...form, location: e.target.value})} placeholder="Office, Zoom, etc." className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" /></div>
                 <div className="col-span-2"><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Notes</label><textarea rows="3" value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} className="w-full p-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm resize-none" /></div>
               </div>

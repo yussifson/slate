@@ -33,7 +33,7 @@ export default function UnivRoute() {
       if (error && error.code !== '42P01') throw error;
       setRoutes(data || []);
     } catch (err) {
-      // Mock data removed for production empty states
+      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -45,7 +45,7 @@ export default function UnivRoute() {
       route_name: `Route ${Math.floor(100 + Math.random() * 900)}`,
       start_location: 'Warehouse',
       end_location: 'Destination',
-      estimated_distance: Math.floor(20 + Math.random() * 200),
+      estimated_distance: Number(Math.floor(20 + Math.random() * 200)) || 0,
       estimated_duration: '2h',
       status: 'Planned'
     };
@@ -54,13 +54,13 @@ export default function UnivRoute() {
       if (error) throw error;
       toast.success('Route added');
     } catch (err) {
-      if (err.code === '42P01') toast.error("Database table not initialized yet.");
-      else toast.error('Failed to add route');
+      console.error(err);
+      toast.error(err.message || 'Failed to add route');
     }
   };
 
   const filtered = routes.filter(r => 
-    `${r.route_name} ${r.start_location} ${r.end_location} ${r.status}`.toLowerCase().includes(searchTerm.toLowerCase())
+    `${r.route_name || ''} ${r.start_location || ''} ${r.end_location || ''} ${r.status || ''}`.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (

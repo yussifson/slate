@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
-import { Search, Repeat, CreditCard, ArrowUpRight, ArrowDownRight, User, MoreHorizontal, Download, Calendar } from 'lucide-react';
+import { Search, Repeat, CreditCard, ArrowUpRight, ArrowDownRight, User, MoreHorizontal, Download, Calendar, Plus, X, Trash2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 export default function UnivSubscription() {
@@ -10,6 +10,18 @@ export default function UnivSubscription() {
   const [subscriptions, setSubscriptions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  
+  // Modal states
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingSub, setEditingSub] = useState(null);
+  const [form, setForm] = useState({
+    plan_name: '',
+    customer_name: '',
+    status: 'Active',
+    billing_cycle: 'Monthly',
+    amount: '',
+    next_billing_date: ''
+  });
 
   useEffect(() => {
     if (companyId) {
@@ -33,29 +45,91 @@ export default function UnivSubscription() {
       if (error && error.code !== '42P01') throw error;
       setSubscriptions(data || []);
     } catch (err) {
-      // Mock data removed for production empty states
+      console.error(err);
+      toast.error(err.message || 'Failed to fetch subscriptions');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleAddSub = async () => {
-    const newSub = {
-      company_id: companyId,
+  const handleOpenAdd = () => {
+    setEditingSub(null);
+    setForm({
       plan_name: 'Pro Tier',
-      customer_name: 'New Customer',
+      customer_name: '',
       status: 'Active',
       billing_cycle: 'Monthly',
-      amount: 99.00,
+      amount: '99.00',
       next_billing_date: new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0]
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleOpenEdit = (sub) => {
+    setEditingSub(sub);
+    setForm({
+      plan_name: sub.plan_name || '',
+      customer_name: sub.customer_name || '',
+      status: sub.status || 'Active',
+      billing_cycle: sub.billing_cycle || 'Monthly',
+      amount: sub.amount ? String(sub.amount) : '',
+      next_billing_date: sub.next_billing_date || ''
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    if (!form.plan_name.trim()) {
+      toast.error('Plan Name is required');
+      return;
+    }
+    const payload = {
+      company_id: companyId,
+      plan_name: form.plan_name.trim(),
+      customer_name: form.customer_name.trim() || null,
+      status: form.status,
+      billing_cycle: form.billing_cycle,
+      amount: Number(form.amount) || 0,
+      next_billing_date: form.next_billing_date || null
     };
+
     try {
-      const { error } = await supabase.from('univ_subscriptions').insert(newSub);
-      if (error) throw error;
-      toast.success('Subscription added');
+      if (editingSub) {
+        const { error } = await supabase
+          .from('univ_subscriptions')
+          .update(payload)
+          .eq('id', editingSub.id);
+        if (error) throw error;
+        toast.success('Subscription updated');
+      } else {
+        const { error } = await supabase
+          .from('univ_subscriptions')
+          .insert(payload);
+        if (error) throw error;
+        toast.success('Subscription created');
+      }
+      setIsModalOpen(false);
+      fetchSubscriptions();
     } catch (err) {
-      if (err.code === '42P01') toast.error("Database table not initialized yet.");
-      else toast.error('Failed to add subscription');
+      console.error(err);
+      toast.error(err.message || 'Failed to save');
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this subscription?')) return;
+    try {
+      const { error } = await supabase
+        .from('univ_subscriptions')
+        .delete()
+        .eq('id', id);
+      if (error) throw error;
+      toast.success('Subscription deleted');
+      fetchSubscriptions();
+    } catch (err) {
+      console.error(err);
+      toast.error(err.message || 'Failed to delete');
     }
   };
 
@@ -75,8 +149,8 @@ export default function UnivSubscription() {
            <p className="text-sm text-muted-foreground mt-1">Manage recurring billing and plans.</p>
         </div>
         <div className="flex gap-3">
-          <button onClick={handleAddSub} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm shadow-primary/20">
-            <Repeat className="w-4 h-4" /> New Subscription
+          <button onClick={handleOpenAdd} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm shadow-primary/20">
+            <Plus className="w-4 h-4" /> New Subscription
           </button>
         </div>
       </div>
@@ -142,9 +216,10 @@ export default function UnivSubscription() {
                   transition={{ delay: idx * 0.02 }}
                   key={s.id} 
                   className="hover:bg-muted/30 transition-colors group cursor-pointer"
+                  onClick={() => handleOpenEdit(s)}
                 >
                   <td className="p-4">
-                    <div className="font-semibold text-foreground">{s.customer_name}</div>
+                    <div className="font-semibold text-foreground">{s.customer_name || 'Anonymous'}</div>
                   </td>
                   <td className="p-4 text-muted-foreground font-medium">
                     {s.plan_name} <span className="text-xs ml-1 opacity-70">({s.billing_cycle})</span>
@@ -164,8 +239,19 @@ export default function UnivSubscription() {
                   <td className="p-4 text-muted-foreground text-sm flex items-center gap-2">
                     {s.next_billing_date ? <><Calendar className="w-3.5 h-3.5" /> {s.next_billing_date}</> : '—'}
                   </td>
-                  <td className="p-4 text-right">
-                    <button className="text-muted-foreground hover:text-primary transition-colors p-2"><MoreHorizontal className="w-4 h-4" /></button>
+                  <td className="p-4 text-right" onClick={(e) => e.stopPropagation()}>
+                    <button 
+                      onClick={() => handleOpenEdit(s)}
+                      className="text-muted-foreground hover:text-primary transition-colors p-2"
+                    >
+                      <MoreHorizontal className="w-4 h-4" />
+                    </button>
+                    <button 
+                      onClick={() => handleDelete(s.id)}
+                      className="text-muted-foreground hover:text-red-500 transition-colors p-2"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                   </td>
                 </motion.tr>
               ))}
@@ -181,6 +267,118 @@ export default function UnivSubscription() {
           </table>
         </div>
       </div>
+
+      {/* Subscription Form Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-card border border-border rounded-2xl max-w-md w-full p-6 shadow-xl relative"
+          >
+            <button 
+              onClick={() => setIsModalOpen(false)}
+              className="absolute right-4 top-4 text-muted-foreground hover:text-foreground"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            
+            <h3 className="text-lg font-bold text-foreground mb-4">
+              {editingSub ? 'Edit Subscription' : 'New Subscription'}
+            </h3>
+            
+            <form onSubmit={handleSave} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1">Customer Name</label>
+                <input 
+                  type="text" 
+                  value={form.customer_name}
+                  onChange={(e) => setForm({ ...form, customer_name: e.target.value })}
+                  placeholder="e.g. Acme Corp"
+                  className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1">Plan Name *</label>
+                <input 
+                  type="text" 
+                  value={form.plan_name}
+                  onChange={(e) => setForm({ ...form, plan_name: e.target.value })}
+                  placeholder="e.g. Pro Tier"
+                  required
+                  className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1">Billing Cycle</label>
+                  <select 
+                    value={form.billing_cycle}
+                    onChange={(e) => setForm({ ...form, billing_cycle: e.target.value })}
+                    className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+                  >
+                    <option value="Monthly">Monthly</option>
+                    <option value="Annually">Annually</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1">Amount *</label>
+                  <input 
+                    type="number" 
+                    step="0.01"
+                    value={form.amount}
+                    onChange={(e) => setForm({ ...form, amount: e.target.value })}
+                    required
+                    className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1">Status</label>
+                  <select 
+                    value={form.status}
+                    onChange={(e) => setForm({ ...form, status: e.target.value })}
+                    className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+                  >
+                    <option value="Active">Active</option>
+                    <option value="Canceled">Canceled</option>
+                    <option value="Past Due">Past Due</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1">Next Billing Date</label>
+                  <input 
+                    type="date" 
+                    value={form.next_billing_date}
+                    onChange={(e) => setForm({ ...form, next_billing_date: e.target.value })}
+                    className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-2 flex justify-end gap-3">
+                <button 
+                  type="button" 
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 border border-border text-foreground hover:bg-muted/50 rounded-xl text-sm font-medium transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  className="px-4 py-2 bg-primary text-white hover:bg-primary/90 rounded-xl text-sm font-medium transition-colors shadow-sm"
+                >
+                  Save
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }

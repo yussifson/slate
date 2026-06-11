@@ -33,7 +33,7 @@ export default function UnivStudent() {
       if (error && error.code !== '42P01') throw error;
       setStudents(data || []);
     } catch (err) {
-      // Mock data removed for production empty states
+      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -47,20 +47,20 @@ export default function UnivStudent() {
       last_name: 'Student',
       grade_level: '9th Grade',
       status: 'Enrolled',
-      enrollment_date: new Date().toISOString().split('T')[0]
+      enrollment_date: new Date().toISOString().split('T')[0] || null
     };
     try {
       const { error } = await supabase.from('univ_students').insert(newStudent);
       if (error) throw error;
       toast.success('Student added');
     } catch (err) {
-      if (err.code === '42P01') toast.error("Database table not initialized yet.");
-      else toast.error('Failed to add student');
+      console.error(err);
+      toast.error(err.message || 'Failed to add student');
     }
   };
 
   const filtered = students.filter(s => 
-    `${s.first_name} ${s.last_name} ${s.student_id_number} ${s.grade_level}`.toLowerCase().includes(searchTerm.toLowerCase())
+    `${s.first_name || ''} ${s.last_name || ''} ${s.student_id_number || ''} ${s.grade_level || ''}`.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -145,7 +145,7 @@ export default function UnivStudent() {
                   <td className="p-4">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs shrink-0">
-                        {s.first_name.charAt(0)}{s.last_name.charAt(0)}
+                        {(s.first_name || '').charAt(0)}{(s.last_name || '').charAt(0)}
                       </div>
                       <div className="font-semibold text-foreground">{s.first_name} {s.last_name}</div>
                     </div>

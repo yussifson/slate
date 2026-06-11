@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
-import { ShoppingBag, CreditCard, Banknote, Search, Plus, Trash2, Printer } from 'lucide-react';
+import { ShoppingBag, CreditCard, Banknote, Search, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 export default function UnivPOS() {
@@ -48,29 +48,24 @@ export default function UnivPOS() {
 
   const handleCheckout = async (method) => {
     if (cart.length === 0) return toast.error('Cart is empty');
+    if (!companyId) return toast.error('No company selected');
     
     const newReceipt = {
       company_id: companyId,
       receipt_number: `REC-${Math.floor(Math.random() * 1000000)}`,
-      total_amount: totalAmount,
+      total_amount: Number(totalAmount) || 0,
       payment_method: method,
       items: cart
     };
 
     try {
-      if (companyId) {
-        const { error } = await supabase.from('univ_pos').insert(newReceipt);
-        if (error && error.code !== '42P01') throw error;
-      }
+      const { error } = await supabase.from('univ_pos').insert(newReceipt);
+      if (error) throw error;
       toast.success(`Payment of $${totalAmount.toFixed(2)} successful!`);
       setCart([]);
     } catch (err) {
-      if (err.code === '42P01') {
-        toast.success(`(Mock Mode) Payment of $${totalAmount.toFixed(2)} successful!`);
-        setCart([]);
-      } else {
-        toast.error('Checkout failed');
-      }
+      console.error(err);
+      toast.error(err.message || 'Checkout failed');
     }
   };
 
@@ -139,6 +134,9 @@ export default function UnivPOS() {
                 <div className="font-bold text-sm w-12 text-right text-foreground">
                   ${(item.price * item.qty).toFixed(2)}
                 </div>
+                <button onClick={() => removeFromCart(item.id)} className="text-muted-foreground hover:text-red-500 transition-colors p-1" title="Remove item">
+                  <Trash2 className="w-4 h-4" />
+                </button>
               </div>
             </div>
           ))}

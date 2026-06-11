@@ -1,23 +1,126 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { supabase } from '@/api/supabaseClient';
+import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, History, ArrowRight, Filter, Folder, User, FileText, Settings, X } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 export default function UnivSearch() {
+  const companyId = useCompanyId();
   const [query, setQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const recentSearches = ['Acme Corp Invoice', 'Sarah Connor Contact', 'Q3 Marketing Plan', 'API Documentation'];
-  
-  const mockResults = [
-    { id: 1, title: 'Acme Corp Q2 Invoice', subtitle: 'Invoices / INV-2026-001', type: 'file', icon: FileText, color: 'text-blue-500 bg-blue-100 dark:bg-blue-900/30' },
-    { id: 2, title: 'Sarah Connor', subtitle: 'Contacts / Leads', type: 'contact', icon: User, color: 'text-emerald-500 bg-emerald-100 dark:bg-emerald-900/30' },
-    { id: 3, title: 'Marketing Assets 2026', subtitle: 'Files / Marketing', type: 'folder', icon: Folder, color: 'text-orange-500 bg-orange-100 dark:bg-orange-900/30' },
-    { id: 4, title: 'Security Settings', subtitle: 'Preferences / Admin', type: 'setting', icon: Settings, color: 'text-purple-500 bg-purple-100 dark:bg-purple-900/30' }
-  ];
 
-  const filteredResults = query.length > 0 
-    ? mockResults.filter(r => r.title.toLowerCase().includes(query.toLowerCase()) || r.subtitle.toLowerCase().includes(query.toLowerCase()))
-    : [];
+  useEffect(() => {
+    if (!companyId || query.trim().length === 0) {
+      setResults([]);
+      return;
+    }
+
+    const fetchResults = async () => {
+      setLoading(true);
+      try {
+        const searchStr = `%${query}%`;
+        const resultsArray = [];
+
+        // 1. Search Contacts
+        const { data: contacts, error: contactsErr } = await supabase
+          .from('univ_contacts')
+          .select('*')
+          .eq('company_id', companyId)
+          .or(`first_name.ilike.${searchStr},last_name.ilike.${searchStr},company_name.ilike.${searchStr}`);
+        
+        if (contacts && !contactsErr) {
+          contacts.forEach(c => {
+            resultsArray.push({
+              id: c.id,
+              title: `${c.first_name} ${c.last_name}`,
+              subtitle: `Contacts / ${c.company_name || c.type || 'Lead'}`,
+              type: 'contact',
+              icon: User,
+              color: 'text-emerald-500 bg-emerald-100 dark:bg-emerald-900/30'
+            });
+          });
+        }
+
+        // 2. Search Invoices
+        const { data: invoices, error: invoicesErr } = await supabase
+          .from('univ_invoices')
+          .select('*')
+          .eq('company_id', companyId)
+          .or(`client_name.ilike.${searchStr},invoice_number.ilike.${searchStr}`);
+
+        if (invoices && !invoicesErr) {
+          invoices.forEach(inv => {
+            resultsArray.push({
+              id: inv.id,
+              title: `${inv.client_name} - ${inv.invoice_number}`,
+              subtitle: `Invoices / ${inv.status} - $${inv.amount}`,
+              type: 'file',
+              icon: FileText,
+              color: 'text-blue-500 bg-blue-100 dark:bg-blue-900/30'
+            });
+          });
+        }
+
+        // 3. Search Projects
+        const { data: projects, error: projectsErr } = await supabase
+          .from('univ_projects')
+          .select('*')
+          .eq('company_id', companyId)
+          .ilike('name', searchStr);
+
+        if (projects && !projectsErr) {
+          projects.forEach(p => {
+            resultsArray.push({
+              id: p.id,
+              title: p.name,
+              subtitle: `Projects / ${p.status || 'Active'}`,
+              type: 'project',
+              icon: Folder,
+              color: 'text-orange-500 bg-orange-100 dark:bg-orange-900/30'
+            });
+          });
+        }
+
+        // 4. Search Documents
+        const { data: docs, error: docsErr } = await supabase
+          .from('univ_documents')
+          .select('*')
+          .eq('company_id', companyId)
+          .ilike('name', searchStr);
+
+        if (docs && !docsErr) {
+          docs.forEach(d => {
+            resultsArray.push({
+              id: d.id,
+              title: d.name,
+              subtitle: `Files / ${d.type || 'Document'}`,
+              type: 'file',
+              icon: FileText,
+              color: 'text-purple-500 bg-purple-100 dark:bg-purple-900/30'
+            });
+          });
+        }
+
+        setResults(resultsArray);
+      } catch (err) {
+        console.error(err);
+        toast.error(err.message || 'Search failed');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const debounceTimer = setTimeout(() => {
+      fetchResults();
+    }, 300);
+
+    return () => clearTimeout(debounceTimer);
+  }, [query, companyId]);
 
   return (
     <div className="flex flex-col h-full bg-background overflow-hidden relative">
@@ -25,7 +128,7 @@ export default function UnivSearch() {
         
         <div className="text-center mb-8">
            <h2 className="text-3xl font-bold text-foreground tracking-tight">Global Search</h2>
-           <p className="text-sm text-muted-foreground mt-2 max-w-lg mx-auto">Find records, contacts, files, and settings instantly across your entire workspace.</p>
+           <p className="text-sm text-muted-foreground mt-2 max-w-lg mx-auto">Find records, contacts, files, and projects instantly across your entire workspace.</p>
         </div>
 
         {/* Search Input */}
@@ -38,7 +141,7 @@ export default function UnivSearch() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onFocus={() => setIsFocused(true)}
-              onBlur={() => setTimeout(() => setIsFocused(false), 200)}
+              onBlur={() => setTimeout(() => setIsFocused(false), 250)}
               className="w-full h-16 pl-14 pr-14 bg-transparent rounded-2xl text-lg focus:outline-none text-foreground placeholder:text-slate-400"
             />
             {query && (
@@ -80,9 +183,13 @@ export default function UnivSearch() {
                   </div>
                 ) : (
                   <div className="flex flex-col max-h-[400px] overflow-y-auto custom-scrollbar">
-                    {filteredResults.length > 0 ? (
+                    {loading ? (
+                      <div className="p-8 text-center text-muted-foreground">
+                        <p className="text-sm">Searching workspace...</p>
+                      </div>
+                    ) : results.length > 0 ? (
                       <div className="p-2">
-                        {filteredResults.map((res, i) => (
+                        {results.map((res, i) => (
                           <button key={i} className="w-full text-left p-3 hover:bg-muted/50 rounded-xl transition-colors flex items-center gap-4 group">
                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${res.color}`}>
                               <res.icon className="w-5 h-5" />
@@ -117,7 +224,7 @@ export default function UnivSearch() {
 
         {/* Quick Filters */}
         <div className="flex gap-2 mt-6 overflow-x-auto max-w-2xl w-full pb-2 hide-scrollbar justify-center">
-           {['All', 'Contacts', 'Invoices', 'Files', 'Projects', 'Tasks'].map(filter => (
+           {['All', 'Contacts', 'Invoices', 'Files', 'Projects'].map(filter => (
              <button key={filter} className="px-4 py-1.5 rounded-full border border-border bg-card text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors whitespace-nowrap">
                {filter}
              </button>

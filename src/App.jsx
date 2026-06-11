@@ -53,6 +53,28 @@ const UnivHousekeeping = React.lazy(() => import('@/components/universal/UnivHou
 const UnivLMS = React.lazy(() => import('@/components/universal/UnivLMS'));
 const UnivLab = React.lazy(() => import('@/components/universal/UnivLab'));
 const UnivLegalDocument = React.lazy(() => import('@/components/universal/UnivLegalDocument'));
+const UnivAppointments = React.lazy(() => import('@/components/universal/UnivAppointments'));
+const UnivMachine = React.lazy(() => import('@/components/universal/UnivMachine'));
+const UnivMenu = React.lazy(() => import('@/components/universal/UnivMenu'));
+const UnivMessaging = React.lazy(() => import('@/components/universal/UnivMessaging'));
+const UnivNotification = React.lazy(() => import('@/components/universal/UnivNotification'));
+const UnivParentPortal = React.lazy(() => import('@/components/universal/UnivParentPortal'));
+const UnivPatient = React.lazy(() => import('@/components/universal/UnivPatient'));
+const UnivPOS = React.lazy(() => import('@/components/universal/UnivPOS'));
+const UnivPrescription = React.lazy(() => import('@/components/universal/UnivPrescription'));
+const UnivProduction = React.lazy(() => import('@/components/universal/UnivProduction'));
+const UnivQualityControl = React.lazy(() => import('@/components/universal/UnivQualityControl'));
+const UnivRoom = React.lazy(() => import('@/components/universal/UnivRoom'));
+const UnivRoute = React.lazy(() => import('@/components/universal/UnivRoute'));
+const UnivSafety = React.lazy(() => import('@/components/universal/UnivSafety'));
+const UnivSearch = React.lazy(() => import('@/components/universal/UnivSearch'));
+const UnivSiteInspection = React.lazy(() => import('@/components/universal/UnivSiteInspection'));
+const UnivStudent = React.lazy(() => import('@/components/universal/UnivStudent'));
+const UnivSubscription = React.lazy(() => import('@/components/universal/UnivSubscription'));
+const UnivTelemedicine = React.lazy(() => import('@/components/universal/UnivTelemedicine'));
+const UnivTimeline = React.lazy(() => import('@/components/universal/UnivTimeline'));
+const UnivWard = React.lazy(() => import('@/components/universal/UnivWard'));
+const UnivWarehouse = React.lazy(() => import('@/components/universal/UnivWarehouse'));
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -441,6 +463,28 @@ function PlatformRoutes() {
       <Route path="/lms" element={<UnivLMS />} />
       <Route path="/lab" element={<UnivLab />} />
       <Route path="/legal-docs" element={<UnivLegalDocument />} />
+      <Route path="/univ-appointments" element={<UnivAppointments />} />
+      <Route path="/univ-machines" element={<UnivMachine />} />
+      <Route path="/univ-menus" element={<UnivMenu />} />
+      <Route path="/univ-messaging" element={<UnivMessaging />} />
+      <Route path="/univ-notifications" element={<UnivNotification />} />
+      <Route path="/univ-parent-portal" element={<UnivParentPortal />} />
+      <Route path="/univ-patients" element={<UnivPatient />} />
+      <Route path="/univ-pos" element={<UnivPOS />} />
+      <Route path="/univ-prescriptions" element={<UnivPrescription />} />
+      <Route path="/univ-production" element={<UnivProduction />} />
+      <Route path="/univ-quality-control" element={<UnivQualityControl />} />
+      <Route path="/univ-rooms" element={<UnivRoom />} />
+      <Route path="/univ-routes" element={<UnivRoute />} />
+      <Route path="/univ-safety" element={<UnivSafety />} />
+      <Route path="/univ-search" element={<UnivSearch />} />
+      <Route path="/univ-site-inspections" element={<UnivSiteInspection />} />
+      <Route path="/univ-students" element={<UnivStudent />} />
+      <Route path="/univ-subscriptions" element={<UnivSubscription />} />
+      <Route path="/univ-telemedicine" element={<UnivTelemedicine />} />
+      <Route path="/univ-timelines" element={<UnivTimeline />} />
+      <Route path="/univ-wards" element={<UnivWard />} />
+      <Route path="/univ-warehouses" element={<UnivWarehouse />} />
       <Route path="/firm-setup" element={<OnboardingWizard />} />
       <Route path="/chat" element={<Chat />} />
       <Route path="/board" element={<Board />} />

@@ -33,7 +33,7 @@ export default function UnivSafety() {
       if (error && error.code !== '42P01') throw error;
       setIncidents(data || []);
     } catch (err) {
-      // Mock data removed for production empty states
+      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -53,13 +53,13 @@ export default function UnivSafety() {
       if (error) throw error;
       toast.success('Incident logged');
     } catch (err) {
-      if (err.code === '42P01') toast.error("Database table not initialized yet.");
-      else toast.error('Failed to log incident');
+      console.error(err);
+      toast.error(err.message || 'Failed to log incident');
     }
   };
 
   const filtered = incidents.filter(i => 
-    `${i.incident_type} ${i.description} ${i.status} ${i.severity}`.toLowerCase().includes(searchTerm.toLowerCase())
+    `${i.incident_type || ''} ${i.description || ''} ${i.status || ''} ${i.severity || ''}`.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -132,7 +132,7 @@ export default function UnivSafety() {
                     {i.reported_by}
                   </td>
                   <td className="p-4 text-muted-foreground text-xs">
-                    {new Date(i.report_date).toLocaleString()}
+                    {i.report_date ? new Date(i.report_date).toLocaleString() : '—'}
                   </td>
                   <td className="p-4">
                     <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border flex items-center gap-1 w-fit ${

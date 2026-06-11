@@ -1,15 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { motion } from 'framer-motion';
-import { Search, ClipboardList, Plus, CheckCircle2, XCircle, AlertTriangle, Clock, MoreHorizontal } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Search, ClipboardList, Plus, CheckCircle2, XCircle, AlertTriangle, Clock, Edit2, Trash2, XCircle as CloseIcon } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+
+const EMPTY_FORM = {
+  batch_number: '',
+  inspector_name: '',
+  inspection_date: '',
+  result: 'Pending',
+  notes: ''
+};
 
 export default function UnivQualityControl() {
   const companyId = useCompanyId();
   const [inspections, setInspections] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [form, setForm] = useState(EMPTY_FORM);
+  const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
     if (companyId) {
@@ -33,28 +44,83 @@ export default function UnivQualityControl() {
       if (error && error.code !== '42P01') throw error;
       setInspections(data || []);
     } catch (err) {
-      // Mock data removed for production empty states
+      console.error(err);
+      toast.error(err.message || 'Failed to fetch inspections');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleAddInspection = async () => {
-    const newInspection = {
-      company_id: companyId,
-      batch_number: `BATCH-${Math.floor(1000 + Math.random() * 9000)}`,
-      inspector_name: 'Current Inspector',
-      inspection_date: new Date().toISOString().split('T')[0],
-      result: 'Pending',
-      notes: ''
-    };
+  const handleOpenModal = (i = null) => {
+    if (i) {
+      setEditingId(i.id);
+      setForm({
+        batch_number: i.batch_number || '',
+        inspector_name: i.inspector_name || '',
+        inspection_date: i.inspection_date || '',
+        result: i.result || 'Pending',
+        notes: i.notes || ''
+      });
+    } else {
+      setEditingId(null);
+      setForm({
+        ...EMPTY_FORM,
+        batch_number: `BATCH-${Math.floor(1000 + Math.random() * 9000)}`,
+        inspection_date: new Date().toISOString().split('T')[0]
+      });
+    }
+    setIsModalOpen(true);
+  };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
     try {
-      const { error } = await supabase.from('univ_quality_control').insert(newInspection);
-      if (error) throw error;
-      toast.success('Inspection logged');
+      const payload = {
+        company_id: companyId,
+        batch_number: form.batch_number.trim(),
+        inspector_name: form.inspector_name.trim(),
+        inspection_date: form.inspection_date || null,
+        result: form.result,
+        notes: form.notes.trim()
+      };
+
+      if (editingId) {
+        const { error } = await supabase
+          .from('univ_quality_control')
+          .update(payload)
+          .eq('id', editingId);
+        if (error) throw error;
+        toast.success('Inspection updated');
+      } else {
+        const { error } = await supabase
+          .from('univ_quality_control')
+          .insert(payload);
+        if (error) throw error;
+        toast.success('Inspection logged');
+      }
+
+      setIsModalOpen(false);
+      setForm(EMPTY_FORM);
+      fetchInspections();
     } catch (err) {
-      if (err.code === '42P01') toast.error("Database table not initialized yet.");
-      else toast.error('Failed to log inspection');
+      console.error(err);
+      toast.error(err.message || 'Failed to save inspection');
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this inspection?')) return;
+    try {
+      const { error } = await supabase
+        .from('univ_quality_control')
+        .delete()
+        .eq('id', id);
+      if (error) throw error;
+      toast.success('Inspection deleted');
+      fetchInspections();
+    } catch (err) {
+      console.error(err);
+      toast.error(err.message || 'Failed to delete');
     }
   };
 
@@ -63,14 +129,14 @@ export default function UnivQualityControl() {
   );
 
   return (
-    <div className="flex flex-col h-full bg-background overflow-hidden">
+    <div className="flex flex-col h-full bg-background overflow-hidden relative">
       <div className="flex items-center justify-between mb-6 shrink-0 pt-2 px-1">
         <div>
            <h2 className="text-2xl font-bold text-foreground tracking-tight">Quality Control</h2>
            <p className="text-sm text-muted-foreground mt-1">Log QA inspections, test results, and compliance.</p>
         </div>
         <div className="flex gap-3">
-          <button onClick={handleAddInspection} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm shadow-primary/20">
+          <button onClick={() => handleOpenModal()} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm shadow-primary/20">
             <Plus className="w-4 h-4" /> New Inspection
           </button>
         </div>
@@ -98,45 +164,56 @@ export default function UnivQualityControl() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: idx * 0.05 }}
                 key={i.id} 
-                className="bg-background border border-border rounded-2xl p-5 hover:border-primary/40 transition-colors shadow-sm flex flex-col h-full group"
+                className="bg-background border border-border rounded-2xl p-5 hover:border-primary/40 transition-colors shadow-sm flex flex-col h-full justify-between group relative"
               >
-                <div className="flex justify-between items-start mb-4 border-b border-border pb-4">
-                  <div>
-                    <h3 className="font-bold text-lg text-foreground flex items-center gap-2">
-                      <ClipboardList className="w-5 h-5 text-primary" /> <span className="line-clamp-1">{i.batch_number}</span>
-                    </h3>
-                    <div className="text-sm font-medium text-muted-foreground mt-1">
-                      Inspector: {i.inspector_name || '—'}
+                <div>
+                  <div className="flex justify-between items-start mb-4 border-b border-border pb-4">
+                    <div>
+                      <h3 className="font-bold text-lg text-foreground flex items-center gap-2">
+                        <ClipboardList className="w-5 h-5 text-primary" /> <span className="line-clamp-1">{i.batch_number}</span>
+                      </h3>
+                      <div className="text-sm font-medium text-muted-foreground mt-1">
+                        Inspector: {i.inspector_name || '—'}
+                      </div>
                     </div>
                   </div>
-                  <button className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-primary"><MoreHorizontal className="w-4 h-4" /></button>
+
+                  <div className="mb-4">
+                     <div className="mb-3">
+                       <span className={`px-3 py-1.5 text-xs uppercase tracking-wider font-bold rounded-md border flex items-center justify-center gap-1.5 w-full ${
+                         i.result === 'Pass' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
+                         i.result === 'Fail' ? 'bg-red-50 text-red-700 border-red-200' : 
+                         i.result === 'Rework' ? 'bg-orange-50 text-orange-700 border-orange-200' : 
+                         'bg-slate-50 text-slate-700 border-slate-200'
+                       }`}>
+                         {i.result === 'Pass' && <CheckCircle2 className="w-4 h-4" />}
+                         {i.result === 'Fail' && <XCircle className="w-4 h-4" />}
+                         {i.result === 'Rework' && <AlertTriangle className="w-4 h-4" />}
+                         {i.result === 'Pending' && <Clock className="w-4 h-4" />}
+                         Result: {i.result}
+                       </span>
+                     </div>
+                     
+                     <div className="text-sm text-foreground bg-muted/30 p-3 rounded-lg border border-border/50">
+                       <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Notes</div>
+                       {i.notes || <span className="text-muted-foreground italic">No notes provided.</span>}
+                     </div>
+                  </div>
                 </div>
 
-                <div className="flex-1 mb-4">
-                   <div className="mb-3">
-                     <span className={`px-3 py-1.5 text-xs uppercase tracking-wider font-bold rounded-md border flex items-center justify-center gap-1.5 w-full ${
-                       i.result === 'Pass' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
-                       i.result === 'Fail' ? 'bg-red-50 text-red-700 border-red-200' : 
-                       i.result === 'Rework' ? 'bg-orange-50 text-orange-700 border-orange-200' : 
-                       'bg-slate-50 text-slate-700 border-slate-200'
-                     }`}>
-                       {i.result === 'Pass' && <CheckCircle2 className="w-4 h-4" />}
-                       {i.result === 'Fail' && <XCircle className="w-4 h-4" />}
-                       {i.result === 'Rework' && <AlertTriangle className="w-4 h-4" />}
-                       {i.result === 'Pending' && <Clock className="w-4 h-4" />}
-                       Result: {i.result}
-                     </span>
-                   </div>
-                   
-                   <div className="text-sm text-foreground bg-muted/30 p-3 rounded-lg border border-border/50">
-                     <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Notes</div>
-                     {i.notes || <span className="text-muted-foreground italic">No notes provided.</span>}
-                   </div>
-                </div>
-
-                <div className="pt-4 border-t border-border flex justify-between items-center text-sm">
-                   <span className="text-muted-foreground">Date:</span>
-                   <span className="font-semibold text-foreground">{i.inspection_date || '—'}</span>
+                <div>
+                  <div className="pt-4 border-t border-border flex justify-between items-center text-sm mb-2">
+                     <span className="text-muted-foreground">Date:</span>
+                     <span className="font-semibold text-foreground">{i.inspection_date || '—'}</span>
+                  </div>
+                  <div className="flex justify-end gap-2 pt-2">
+                    <button onClick={() => handleOpenModal(i)} className="p-1.5 hover:bg-muted rounded-md text-muted-foreground hover:text-primary transition-colors">
+                      <Edit2 className="w-4 h-4" />
+                    </button>
+                    <button onClick={() => handleDelete(i.id)} className="p-1.5 hover:bg-muted rounded-md text-muted-foreground hover:text-destructive transition-colors">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             ))}
@@ -150,6 +227,64 @@ export default function UnivQualityControl() {
            )}
         </div>
       </div>
+
+      <AnimatePresence>
+        {isModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-card border border-border rounded-2xl shadow-xl w-full max-w-md overflow-hidden"
+            >
+              <div className="flex items-center justify-between p-4 border-b border-border">
+                <h3 className="font-semibold text-foreground">{editingId ? 'Edit QA Inspection' : 'New QA Inspection'}</h3>
+                <button onClick={() => setIsModalOpen(false)} className="text-muted-foreground hover:text-foreground">
+                  <CloseIcon className="w-5 h-5" />
+                </button>
+              </div>
+              <form onSubmit={handleSave} className="p-4 space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-medium text-muted-foreground mb-1">Batch Number</label>
+                    <input required value={form.batch_number} onChange={e => setForm({...form, batch_number: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-muted-foreground mb-1">Result</label>
+                    <select value={form.result} onChange={e => setForm({...form, result: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm">
+                      <option value="Pending">Pending</option>
+                      <option value="Pass">Pass</option>
+                      <option value="Fail">Fail</option>
+                      <option value="Rework">Rework</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-medium text-muted-foreground mb-1">Inspector Name</label>
+                    <input value={form.inspector_name} onChange={e => setForm({...form, inspector_name: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-muted-foreground mb-1">Inspection Date</label>
+                    <input type="date" value={form.inspection_date} onChange={e => setForm({...form, inspection_date: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-muted-foreground mb-1">Notes / Remarks</label>
+                  <textarea rows={3} value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" placeholder="Details of inspection findings..." />
+                </div>
+
+                <div className="pt-4 flex justify-end gap-2">
+                  <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted rounded-lg">Cancel</button>
+                  <button type="submit" className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90">Save Inspection</button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

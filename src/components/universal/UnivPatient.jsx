@@ -33,13 +33,15 @@ export default function UnivPatient() {
       if (error && error.code !== '42P01') throw error;
       setPatients(data || []);
     } catch (err) {
-      // Mock data removed for production empty states
+      console.error(err);
+      toast.error(err.message || 'Failed to fetch patients');
     } finally {
       setLoading(false);
     }
   };
 
   const handleAddPatient = async () => {
+    if (!companyId) return;
     const newPatient = {
       company_id: companyId,
       patient_number: `PT-${Math.floor(1000 + Math.random() * 9000)}`,
@@ -52,9 +54,10 @@ export default function UnivPatient() {
       const { error } = await supabase.from('univ_patients').insert(newPatient);
       if (error) throw error;
       toast.success('Patient added');
+      fetchPatients();
     } catch (err) {
-      if (err.code === '42P01') toast.error("Database table not initialized yet.");
-      else toast.error('Failed to add patient');
+      console.error(err);
+      toast.error(err.message || 'Failed to add patient');
     }
   };
 
@@ -118,69 +121,73 @@ export default function UnivPatient() {
         </div>
 
         <div className="flex-1 overflow-auto custom-scrollbar">
-          <table className="w-full text-left text-sm whitespace-nowrap">
-            <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground sticky top-0 z-10 backdrop-blur-md">
-              <tr>
-                <th className="p-4 font-semibold">Patient ID</th>
-                <th className="p-4 font-semibold">Name</th>
-                <th className="p-4 font-semibold">DOB / Age</th>
-                <th className="p-4 font-semibold">Blood Group</th>
-                <th className="p-4 font-semibold">Status</th>
-                <th className="p-4 font-semibold text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {filtered.map((p, idx) => (
-                <motion.tr 
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.02 }}
-                  key={p.id} 
-                  className="hover:bg-muted/30 transition-colors group cursor-pointer"
-                >
-                  <td className="p-4 font-mono font-semibold text-primary">
-                    {p.patient_number}
-                  </td>
-                  <td className="p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs shrink-0">
-                        {p.first_name.charAt(0)}{p.last_name.charAt(0)}
+          {loading ? (
+            <div className="text-center p-12 text-muted-foreground">Loading patients...</div>
+          ) : (
+            <table className="w-full text-left text-sm whitespace-nowrap">
+              <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground sticky top-0 z-10 backdrop-blur-md">
+                <tr>
+                  <th className="p-4 font-semibold">Patient ID</th>
+                  <th className="p-4 font-semibold">Name</th>
+                  <th className="p-4 font-semibold">DOB / Age</th>
+                  <th className="p-4 font-semibold">Blood Group</th>
+                  <th className="p-4 font-semibold">Status</th>
+                  <th className="p-4 font-semibold text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {filtered.map((p, idx) => (
+                  <motion.tr 
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.02 }}
+                    key={p.id} 
+                    className="hover:bg-muted/30 transition-colors group cursor-pointer"
+                  >
+                    <td className="p-4 font-mono font-semibold text-primary">
+                      {p.patient_number}
+                    </td>
+                    <td className="p-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs shrink-0">
+                          {p.first_name.charAt(0)}{p.last_name.charAt(0)}
+                        </div>
+                        <div>
+                          <div className="font-semibold text-foreground">{p.first_name} {p.last_name}</div>
+                          <div className="text-[11px] text-muted-foreground">{p.gender || 'U'} • {p.phone || 'No phone'}</div>
+                        </div>
                       </div>
-                      <div>
-                        <div className="font-semibold text-foreground">{p.first_name} {p.last_name}</div>
-                        <div className="text-[11px] text-muted-foreground">{p.gender || 'U'} • {p.phone || 'No phone'}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="p-4 text-muted-foreground font-medium">
-                    {p.date_of_birth || '—'}
-                  </td>
-                  <td className="p-4">
-                    {p.blood_group ? (
-                      <span className="px-2 py-1 rounded bg-red-50 text-red-700 dark:bg-red-500/10 border border-red-200 font-bold text-xs">
-                        {p.blood_group}
+                    </td>
+                    <td className="p-4 text-muted-foreground font-medium">
+                      {p.date_of_birth || '—'}
+                    </td>
+                    <td className="p-4">
+                      {p.blood_group ? (
+                        <span className="px-2 py-1 rounded bg-red-50 text-red-700 dark:bg-red-500/10 border border-red-200 font-bold text-xs">
+                          {p.blood_group}
+                        </span>
+                      ) : '—'}
+                    </td>
+                    <td className="p-4">
+                      <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border flex items-center gap-1 w-fit ${
+                        p.status === 'Active' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
+                        p.status === 'Discharged' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
+                        'bg-slate-50 text-slate-700 border-slate-200'
+                      }`}>
+                        {p.status === 'Active' && <Activity className="w-3 h-3" />}
+                        {p.status}
                       </span>
-                    ) : '—'}
-                  </td>
-                  <td className="p-4">
-                    <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border flex items-center gap-1 w-fit ${
-                      p.status === 'Active' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
-                      p.status === 'Discharged' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
-                      'bg-slate-50 text-slate-700 border-slate-200'
-                    }`}>
-                      {p.status === 'Active' && <Activity className="w-3 h-3" />}
-                      {p.status}
-                    </span>
-                  </td>
-                  <td className="p-4 text-right">
-                    <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button className="text-muted-foreground hover:text-primary transition-colors p-1.5 rounded bg-card border border-border shadow-sm" title="View EMR"><FileText className="w-3.5 h-3.5" /></button>
-                    </div>
-                  </td>
-                </motion.tr>
-              ))}
-            </tbody>
-          </table>
+                    </td>
+                    <td className="p-4 text-right">
+                      <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button className="text-muted-foreground hover:text-primary transition-colors p-1.5 rounded bg-card border border-border shadow-sm" title="View EMR"><FileText className="w-3.5 h-3.5" /></button>
+                      </div>
+                    </td>
+                  </motion.tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>
