@@ -37,7 +37,13 @@ export default function UnivInventory() {
 
   const save = async (e) => {
     e.preventDefault();
-    const payload = { ...form, status: calcStatus(Number(form.quantity), Number(form.reorder_level)) };
+    const payload = { 
+      ...form, 
+      quantity: Number(form.quantity) || 0,
+      unit_price: Number(form.unit_price) || 0,
+      reorder_level: Number(form.reorder_level) || 0,
+      status: calcStatus(Number(form.quantity), Number(form.reorder_level)) 
+    };
     try {
       if (editingId) {
         const { error } = await supabase.from('univ_inventory').update(payload).eq('id', editingId);

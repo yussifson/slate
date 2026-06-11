@@ -44,6 +44,9 @@ export default function UnivHREmployee() {
     try {
       const payload = { ...form, company_id: companyId };
       delete payload.employment_type; // Not in phase 1 schema
+      if (!payload.hire_date) delete payload.hire_date;
+      if (!payload.salary) delete payload.salary;
+      else payload.salary = Number(payload.salary);
       
       if (editingId) {
         const { error } = await supabase.from('univ_hr_employees').update(payload).eq('id', editingId);
