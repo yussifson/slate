@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from 'react';
+
+import GenericGrid from '@/components/views/GenericGrid';
+import GenericKanban from '@/components/views/GenericKanban';
+import GenericCalendar from '@/components/views/GenericCalendar';
+import GenericDashboard from '@/components/views/GenericDashboard';
+
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { Users, UserPlus, Search, Trash2, Edit2, Loader2, XCircle, Mail, Phone, Building2, Briefcase, DollarSign, LayoutGrid, List } from 'lucide-react';
@@ -13,6 +19,7 @@ const statusColor = (s) => s==='Active'?'bg-emerald-50 text-emerald-700 border-e
 
 export default function UnivHREmployee() {
   const companyId = useCompanyId();
+  const [view, setView] = useState('Default');
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -71,8 +78,8 @@ export default function UnivHREmployee() {
   const filtered = employees.filter(e => `${e.first_name} ${e.last_name} ${e.email} ${e.department} ${e.role_title}`.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <div className="h-full flex flex-col gap-6 w-full bg-background p-4 sm:p-6 lg:p-8">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0">
+    <div className="h-full flex flex-col gap-6 w-full bg-background p-4 sm:p-6 lg:p-8 ${view !== 'Default' ? 'hide-default' : ''}">
+      <div className="view-header flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0">
         <div><h1 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-2"><Users className="w-7 h-7 text-primary"/>Employees</h1><p className="text-muted-foreground text-sm font-medium mt-1">{employees.length} total • {employees.filter(e=>e.status==='Active').length} active</p></div>
         <button onClick={()=>openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 shadow-sm"><UserPlus className="w-4 h-4"/>Add Employee</button>
       </div>

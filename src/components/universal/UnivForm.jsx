@@ -1,4 +1,10 @@
 import React, { useState } from 'react';
+
+import GenericGrid from '@/components/views/GenericGrid';
+import GenericKanban from '@/components/views/GenericKanban';
+import GenericCalendar from '@/components/views/GenericCalendar';
+import GenericDashboard from '@/components/views/GenericDashboard';
+
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Upload, X, Check, File as FileIcon, Calendar, Image as ImageIcon } from 'lucide-react';
@@ -18,6 +24,7 @@ export default function UnivForm({
   onSubmit = null
 }) {
   const companyId = useCompanyId();
+  const [view, setView] = useState('Default');
 
   const [formData, setFormData] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -55,8 +62,8 @@ export default function UnivForm({
   };
 
   return (
-    <div className="flex flex-col h-full bg-background overflow-y-auto custom-scrollbar">
-      <div className="max-w-3xl w-full mx-auto py-8 px-4 sm:px-6">
+    <div className="flex flex-col h-full bg-background overflow-y-auto custom-scrollbar ${view !== 'Default' ? 'hide-default' : ''}">
+      <div className="view-header max-w-3xl w-full mx-auto py-8 px-4 sm:px-6">
         <div className="mb-8">
            <h2 className="text-2xl font-bold text-foreground tracking-tight">{title}</h2>
            <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>

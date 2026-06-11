@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from 'react';
+
+import GenericGrid from '@/components/views/GenericGrid';
+import GenericKanban from '@/components/views/GenericKanban';
+import GenericCalendar from '@/components/views/GenericCalendar';
+import GenericDashboard from '@/components/views/GenericDashboard';
+
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { Shield, CreditCard, Calendar, User, FileText, CheckCircle } from 'lucide-react';
@@ -6,6 +12,7 @@ import { supabase } from '@/api/supabaseClient';
 
 const UnivInsurancePolicy = () => {
   const companyId = useCompanyId();
+  const [view, setView] = useState('Default');
 
   const [policies, setPolicies] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -65,7 +72,7 @@ const UnivInsurancePolicy = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto bg-blue-50/50 min-h-screen">
+    <div className="p-6 max-w-7xl mx-auto bg-blue-50/50 min-h-screen ${view !== 'Default' ? 'hide-default' : ''}">
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-10 text-center">
         <h1 className="text-4xl font-black text-blue-900 flex items-center justify-center gap-3 tracking-tight">
           <Shield className="w-12 h-12 text-blue-600" />
@@ -74,7 +81,7 @@ const UnivInsurancePolicy = () => {
         <p className="text-blue-600/70 mt-2 font-medium">Secure Insurance Policy Management</p>
       </motion.div>
 
-      <div className="grid lg:grid-cols-3 gap-8">
+      <div className="view-header grid lg:grid-cols-3 gap-8">
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="lg:col-span-1 bg-card p-6 rounded-3xl shadow-sm border border-blue-100 h-fit">
           <h2 className="text-xl font-bold mb-6 text-blue-900 border-b border-blue-50 pb-3">Add Policy</h2>
           <form onSubmit={handleSubmit} className="space-y-4">

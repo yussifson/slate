@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from 'react';
+
+import GenericGrid from '@/components/views/GenericGrid';
+import GenericKanban from '@/components/views/GenericKanban';
+import GenericCalendar from '@/components/views/GenericCalendar';
+import GenericDashboard from '@/components/views/GenericDashboard';
+
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { Map, Plane, CalendarDays, Users, DollarSign, Check, Info } from 'lucide-react';
@@ -6,6 +12,7 @@ import { supabase } from '@/api/supabaseClient';
 
 const UnivTourPackage = () => {
   const companyId = useCompanyId();
+  const [view, setView] = useState('Default');
 
   const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -60,7 +67,7 @@ const UnivTourPackage = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto bg-orange-50/40 min-h-screen">
+    <div className="p-6 max-w-7xl mx-auto bg-orange-50/40 min-h-screen ${view !== 'Default' ? 'hide-default' : ''}">
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-10 text-center">
         <h1 className="text-4xl font-extrabold text-orange-900 flex items-center justify-center gap-3">
           <Plane className="w-10 h-10 text-orange-500" />
@@ -69,7 +76,7 @@ const UnivTourPackage = () => {
         <p className="text-orange-700/60 mt-2 font-medium">Curate and manage exclusive travel experiences</p>
       </motion.div>
 
-      <div className="grid lg:grid-cols-3 gap-8">
+      <div className="view-header grid lg:grid-cols-3 gap-8">
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="lg:col-span-1 bg-card p-8 rounded-3xl shadow-sm border border-orange-100 h-fit">
           <h2 className="text-2xl font-bold mb-6 text-orange-900 border-b border-orange-50 pb-2">New Package</h2>
           <form onSubmit={handleSubmit} className="space-y-5">

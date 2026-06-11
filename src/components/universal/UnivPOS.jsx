@@ -1,4 +1,10 @@
 import React, { useState } from 'react';
+
+import GenericGrid from '@/components/views/GenericGrid';
+import GenericKanban from '@/components/views/GenericKanban';
+import GenericCalendar from '@/components/views/GenericCalendar';
+import GenericDashboard from '@/components/views/GenericDashboard';
+
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
@@ -7,6 +13,7 @@ import { toast } from 'react-hot-toast';
 
 export default function UnivPOS() {
   const companyId = useCompanyId();
+  const [view, setView] = useState('Default');
   const [cart, setCart] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -72,10 +79,10 @@ export default function UnivPOS() {
   const filteredProducts = products.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
-    <div className="flex flex-col h-full bg-background overflow-hidden lg:flex-row gap-6 p-4 sm:p-6">
+    <div className="flex flex-col h-full bg-background overflow-hidden lg:flex-row gap-6 p-4 sm:p-6 ${view !== 'Default' ? 'hide-default' : ''}">
       
       {/* Product Grid Area */}
-      <div className="flex-1 flex flex-col min-h-[400px]">
+      <div className="view-header flex-1 flex flex-col min-h-[400px]">
         <div className="mb-6 relative">
           <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input 

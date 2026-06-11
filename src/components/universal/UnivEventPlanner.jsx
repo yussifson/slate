@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from 'react';
+
+import GenericGrid from '@/components/views/GenericGrid';
+import GenericKanban from '@/components/views/GenericKanban';
+import GenericCalendar from '@/components/views/GenericCalendar';
+import GenericDashboard from '@/components/views/GenericDashboard';
+
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { CalendarDays, Users, DollarSign, MapPin, Star, Plus } from 'lucide-react';
@@ -6,6 +12,7 @@ import { supabase } from '@/api/supabaseClient';
 
 const UnivEventPlanner = () => {
   const companyId = useCompanyId();
+  const [view, setView] = useState('Default');
 
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -69,7 +76,7 @@ const UnivEventPlanner = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto bg-fuchsia-50/30 min-h-screen font-sans">
+    <div className="p-6 max-w-7xl mx-auto bg-fuchsia-50/30 min-h-screen font-sans ${view !== 'Default' ? 'hide-default' : ''}">
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
         <h1 className="text-4xl font-extrabold text-foreground flex items-center gap-3">
           <Star className="w-10 h-10 text-fuchsia-500 fill-fuchsia-500/20" />
@@ -78,7 +85,7 @@ const UnivEventPlanner = () => {
         <p className="text-muted-foreground mt-2 text-lg">Orchestrate perfect events from start to finish</p>
       </motion.div>
 
-      <div className="grid lg:grid-cols-12 gap-8">
+      <div className="view-header grid lg:grid-cols-12 gap-8">
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="lg:col-span-4 bg-card p-6 rounded-3xl shadow-sm border border-border">
           <h2 className="text-2xl font-bold mb-6 text-foreground">New Event</h2>
           <form onSubmit={handleSubmit} className="space-y-4">

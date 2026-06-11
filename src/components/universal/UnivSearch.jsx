@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from 'react';
+
+import GenericGrid from '@/components/views/GenericGrid';
+import GenericKanban from '@/components/views/GenericKanban';
+import GenericCalendar from '@/components/views/GenericCalendar';
+import GenericDashboard from '@/components/views/GenericDashboard';
+
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -7,6 +13,7 @@ import { toast } from 'react-hot-toast';
 
 export default function UnivSearch() {
   const companyId = useCompanyId();
+  const [view, setView] = useState('Default');
   const [query, setQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [results, setResults] = useState([]);
@@ -123,8 +130,8 @@ export default function UnivSearch() {
   }, [query, companyId]);
 
   return (
-    <div className="flex flex-col h-full bg-background overflow-hidden relative">
-      <div className="max-w-4xl w-full mx-auto py-12 px-4 sm:px-6 relative z-10 flex flex-col items-center">
+    <div className="flex flex-col h-full bg-background overflow-hidden relative ${view !== 'Default' ? 'hide-default' : ''}">
+      <div className="view-header max-w-4xl w-full mx-auto py-12 px-4 sm:px-6 relative z-10 flex flex-col items-center">
         
         <div className="text-center mb-8">
            <h2 className="text-3xl font-bold text-foreground tracking-tight">Global Search</h2>

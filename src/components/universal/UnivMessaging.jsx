@@ -1,4 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
+
+import GenericGrid from '@/components/views/GenericGrid';
+import GenericKanban from '@/components/views/GenericKanban';
+import GenericCalendar from '@/components/views/GenericCalendar';
+import GenericDashboard from '@/components/views/GenericDashboard';
+
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
@@ -7,6 +13,7 @@ import { toast } from 'react-hot-toast';
 
 export default function UnivMessaging() {
   const companyId = useCompanyId();
+  const [view, setView] = useState('Default');
   const [currentUser, setCurrentUser] = useState(null);
   const [contacts, setContacts] = useState([]);
   const [activeContact, setActiveContact] = useState(null);
@@ -189,14 +196,14 @@ export default function UnivMessaging() {
 
   if (loadingContacts) {
     return (
-      <div className="flex h-full items-center justify-center bg-background border border-border rounded-2xl">
+      <div className="flex h-full items-center justify-center bg-background border border-border rounded-2xl ${view !== 'Default' ? 'hide-default' : ''}">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="flex h-full bg-background overflow-hidden border border-border rounded-2xl shadow-sm">
+    <div className="view-header flex h-full bg-background overflow-hidden border border-border rounded-2xl shadow-sm">
       
       {/* Sidebar - Contacts List */}
       <div className="w-80 border-r border-border bg-card flex flex-col shrink-0 hidden md:flex">

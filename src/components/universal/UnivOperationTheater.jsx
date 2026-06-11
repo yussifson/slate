@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from 'react';
+
+import GenericGrid from '@/components/views/GenericGrid';
+import GenericKanban from '@/components/views/GenericKanban';
+import GenericCalendar from '@/components/views/GenericCalendar';
+import GenericDashboard from '@/components/views/GenericDashboard';
+
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { Scissors, User, Clock, Activity, Settings, CalendarDays } from 'lucide-react';
@@ -6,6 +12,7 @@ import { supabase } from '@/api/supabaseClient';
 
 const UnivOperationTheater = () => {
   const companyId = useCompanyId();
+  const [view, setView] = useState('Default');
 
   const [operations, setOperations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -69,10 +76,10 @@ const UnivOperationTheater = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto bg-slate-900 min-h-screen text-slate-100">
+    <div className="p-6 max-w-7xl mx-auto bg-slate-900 min-h-screen text-slate-100 ${view !== 'Default' ? 'hide-default' : ''}">
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3 text-white">
+          <h1 className="view-header text-3xl font-bold flex items-center gap-3 text-white">
             <Scissors className="w-8 h-8 text-teal-400" />
             Operation Theater Manager
           </h1>

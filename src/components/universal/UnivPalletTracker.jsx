@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from 'react';
+
+import GenericGrid from '@/components/views/GenericGrid';
+import GenericKanban from '@/components/views/GenericKanban';
+import GenericCalendar from '@/components/views/GenericCalendar';
+import GenericDashboard from '@/components/views/GenericDashboard';
+
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { Package, Truck, MapPin, Scale, Barcode, CheckCircle2 } from 'lucide-react';
@@ -6,6 +12,7 @@ import { supabase } from '@/api/supabaseClient';
 
 const UnivPalletTracker = () => {
   const companyId = useCompanyId();
+  const [view, setView] = useState('Default');
 
   const [pallets, setPallets] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -69,10 +76,10 @@ const UnivPalletTracker = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto bg-slate-900 min-h-screen text-slate-200">
+    <div className="p-6 max-w-7xl mx-auto bg-slate-900 min-h-screen text-slate-200 ${view !== 'Default' ? 'hide-default' : ''}">
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-10 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-black text-white flex items-center gap-3 uppercase tracking-wider">
+          <h1 className="view-header text-3xl font-black text-white flex items-center gap-3 uppercase tracking-wider">
             <Package className="w-10 h-10 text-emerald-400" />
             Logistics Nexus
           </h1>

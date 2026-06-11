@@ -124,6 +124,17 @@
   ::-webkit-scrollbar-track {
     background: transparent;
   }
+  /* Dynamic View Switcher Logic */
+  .hide-default > :not(.view-header):not(.generic-view) {
+    display: none !important;
+  }
+  .generic-view {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
   ::-webkit-scrollbar-thumb {
     background-color: hsl(var(--border));
     border-radius: 10px;

@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from 'react';
+
+import GenericGrid from '@/components/views/GenericGrid';
+import GenericKanban from '@/components/views/GenericKanban';
+import GenericCalendar from '@/components/views/GenericCalendar';
+import GenericDashboard from '@/components/views/GenericDashboard';
+
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { Car, User, Calendar, CreditCard, Settings, MapPin } from 'lucide-react';
@@ -6,6 +12,7 @@ import { supabase } from '@/api/supabaseClient';
 
 const UnivCarRental = () => {
   const companyId = useCompanyId();
+  const [view, setView] = useState('Default');
 
   const [rentals, setRentals] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -69,7 +76,7 @@ const UnivCarRental = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto bg-background min-h-screen">
+    <div className="p-6 max-w-7xl mx-auto bg-background min-h-screen ${view !== 'Default' ? 'hide-default' : ''}">
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-10 text-center">
         <h1 className="text-4xl font-black text-foreground flex items-center justify-center gap-3">
           <Car className="w-12 h-12 text-blue-600" />
@@ -78,7 +85,7 @@ const UnivCarRental = () => {
         <p className="text-muted-foreground mt-2 font-medium">Streamlined vehicle rental management</p>
       </motion.div>
 
-      <div className="grid lg:grid-cols-12 gap-8">
+      <div className="view-header grid lg:grid-cols-12 gap-8">
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="lg:col-span-4 bg-card p-6 rounded-3xl shadow-xl shadow-slate-200/50 border border-border">
           <h2 className="text-xl font-bold mb-6 text-foreground flex items-center gap-2 border-b pb-4">
             <Settings className="w-5 h-5 text-blue-500" /> New Booking

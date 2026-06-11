@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from 'react';
+
+import GenericGrid from '@/components/views/GenericGrid';
+import GenericKanban from '@/components/views/GenericKanban';
+import GenericCalendar from '@/components/views/GenericCalendar';
+import GenericDashboard from '@/components/views/GenericDashboard';
+
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { HeartPulse, Thermometer, Wind, Droplets, Activity, Plus } from 'lucide-react';
@@ -6,6 +12,7 @@ import { supabase } from '@/api/supabaseClient';
 
 const UnivVitalSigns = () => {
   const companyId = useCompanyId();
+  const [view, setView] = useState('Default');
 
   const [vitals, setVitals] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -60,7 +67,7 @@ const UnivVitalSigns = () => {
   };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto bg-rose-50/20 min-h-screen">
+    <div className="p-6 max-w-6xl mx-auto bg-rose-50/20 min-h-screen ${view !== 'Default' ? 'hide-default' : ''}">
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8 text-center">
         <h1 className="text-4xl font-bold text-foreground flex items-center justify-center gap-3">
           <HeartPulse className="w-10 h-10 text-rose-500" />
@@ -69,7 +76,7 @@ const UnivVitalSigns = () => {
         <p className="text-muted-foreground mt-2">Continuous patient monitoring</p>
       </motion.div>
 
-      <div className="grid lg:grid-cols-3 gap-8">
+      <div className="view-header grid lg:grid-cols-3 gap-8">
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="lg:col-span-1 bg-card p-6 rounded-2xl shadow-sm border border-rose-100">
           <h2 className="text-xl font-semibold mb-6 flex items-center gap-2 text-rose-600">
             <Plus className="w-5 h-5" /> Record Vitals

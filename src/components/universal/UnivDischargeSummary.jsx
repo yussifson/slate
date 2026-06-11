@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from 'react';
+
+import GenericGrid from '@/components/views/GenericGrid';
+import GenericKanban from '@/components/views/GenericKanban';
+import GenericCalendar from '@/components/views/GenericCalendar';
+import GenericDashboard from '@/components/views/GenericDashboard';
+
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { FileText, Calendar, Pill, CheckCircle2, User, Home } from 'lucide-react';
@@ -6,6 +12,7 @@ import { supabase } from '@/api/supabaseClient';
 
 const UnivDischargeSummary = () => {
   const companyId = useCompanyId();
+  const [view, setView] = useState('Default');
 
   const [summaries, setSummaries] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -60,7 +67,7 @@ const UnivDischargeSummary = () => {
   };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto bg-muted min-h-screen">
+    <div className="p-6 max-w-6xl mx-auto bg-muted min-h-screen ${view !== 'Default' ? 'hide-default' : ''}">
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8 text-center bg-card p-8 rounded-3xl shadow-sm border border-border">
         <h1 className="text-4xl font-extrabold text-foreground flex items-center justify-center gap-3">
           <Home className="w-10 h-10 text-emerald-500" />
@@ -69,7 +76,7 @@ const UnivDischargeSummary = () => {
         <p className="text-muted-foreground mt-2 text-lg">Patient transition and aftercare planning</p>
       </motion.div>
 
-      <div className="grid md:grid-cols-2 gap-8">
+      <div className="view-header grid md:grid-cols-2 gap-8">
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-card p-6 rounded-3xl shadow-sm border border-border">
           <h2 className="text-2xl font-bold mb-6 text-foreground flex items-center gap-2">
             <FileText className="w-6 h-6 text-emerald-500" /> New Summary

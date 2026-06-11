@@ -1,4 +1,10 @@
 import React from 'react';
+
+import GenericGrid from '@/components/views/GenericGrid';
+import GenericKanban from '@/components/views/GenericKanban';
+import GenericCalendar from '@/components/views/GenericCalendar';
+import GenericDashboard from '@/components/views/GenericDashboard';
+
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { BarChart2, PieChart, TrendingUp, Download, Filter, Calendar } from 'lucide-react';
@@ -8,11 +14,12 @@ export default function UnivAnalytics({
   subtitle = "Detailed insights into your workspace performance."
 }) {
   const companyId = useCompanyId();
+  const [view, setView] = useState('Default');
 
   return (
-    <div className="flex flex-col h-full bg-background overflow-y-auto custom-scrollbar pb-8">
+    <div className="flex flex-col h-full bg-background overflow-y-auto custom-scrollbar pb-8 ${view !== 'Default' ? 'hide-default' : ''}">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6 shrink-0 px-1">
+      <div className="view-header flex items-center justify-between mb-6 shrink-0 px-1">
         <div>
            <h2 className="text-2xl font-bold text-foreground tracking-tight">{title}</h2>
            <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>

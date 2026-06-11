@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from 'react';
+
+import GenericGrid from '@/components/views/GenericGrid';
+import GenericKanban from '@/components/views/GenericKanban';
+import GenericCalendar from '@/components/views/GenericCalendar';
+import GenericDashboard from '@/components/views/GenericDashboard';
+
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { MessageSquareHeart, Star, User, Calendar, MessageCircle, AlertCircle } from 'lucide-react';
@@ -6,6 +12,7 @@ import { supabase } from '@/api/supabaseClient';
 
 const UnivFeedbackSurvey = () => {
   const companyId = useCompanyId();
+  const [view, setView] = useState('Default');
 
   const [feedbacks, setFeedbacks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -65,7 +72,7 @@ const UnivFeedbackSurvey = () => {
   };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto bg-pink-50/30 min-h-screen">
+    <div className="p-6 max-w-6xl mx-auto bg-pink-50/30 min-h-screen ${view !== 'Default' ? 'hide-default' : ''}">
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-10 text-center">
         <h1 className="text-4xl font-extrabold text-foreground flex items-center justify-center gap-3">
           <MessageSquareHeart className="w-10 h-10 text-pink-500" />
@@ -74,7 +81,7 @@ const UnivFeedbackSurvey = () => {
         <p className="text-muted-foreground mt-2">Collect and analyze service feedback</p>
       </motion.div>
 
-      <div className="grid md:grid-cols-3 gap-8">
+      <div className="view-header grid md:grid-cols-3 gap-8">
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="md:col-span-1 bg-card p-6 rounded-3xl shadow-sm border border-pink-100">
           <h2 className="text-xl font-bold mb-6 text-foreground flex items-center gap-2">
             <MessageCircle className="w-5 h-5 text-pink-500" /> New Survey

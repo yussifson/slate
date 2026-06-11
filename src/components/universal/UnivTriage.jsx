@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from 'react';
+
+import GenericGrid from '@/components/views/GenericGrid';
+import GenericKanban from '@/components/views/GenericKanban';
+import GenericCalendar from '@/components/views/GenericCalendar';
+import GenericDashboard from '@/components/views/GenericDashboard';
+
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { AlertOctagon, Clock, Activity, User, MapPin } from 'lucide-react';
@@ -6,6 +12,7 @@ import { supabase } from '@/api/supabaseClient';
 
 const UnivTriage = () => {
   const companyId = useCompanyId();
+  const [view, setView] = useState('Default');
 
   const [triageList, setTriageList] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -67,9 +74,9 @@ const UnivTriage = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto bg-background min-h-screen">
+    <div className="p-6 max-w-7xl mx-auto bg-background min-h-screen ${view !== 'Default' ? 'hide-default' : ''}">
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8 flex flex-col md:flex-row justify-between items-center bg-card p-6 rounded-2xl shadow-sm border border-border">
-        <div className="flex items-center gap-4">
+        <div className="view-header flex items-center gap-4">
           <div className="bg-red-100 p-4 rounded-full">
             <AlertOctagon className="w-8 h-8 text-red-600" />
           </div>

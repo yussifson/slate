@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from 'react';
+
+import GenericGrid from '@/components/views/GenericGrid';
+import GenericKanban from '@/components/views/GenericKanban';
+import GenericCalendar from '@/components/views/GenericCalendar';
+import GenericDashboard from '@/components/views/GenericDashboard';
+
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { Utensils, Users, Clock, Hash, CheckCircle2, User } from 'lucide-react';
@@ -6,6 +12,7 @@ import { supabase } from '@/api/supabaseClient';
 
 const UnivTableReservation = () => {
   const companyId = useCompanyId();
+  const [view, setView] = useState('Default');
 
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -67,7 +74,7 @@ const UnivTableReservation = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto bg-stone-50 min-h-screen font-serif">
+    <div className="p-6 max-w-7xl mx-auto bg-stone-50 min-h-screen font-serif ${view !== 'Default' ? 'hide-default' : ''}">
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-10 text-center">
         <h1 className="text-4xl font-bold text-stone-800 flex items-center justify-center gap-3">
           <Utensils className="w-10 h-10 text-stone-600" />
@@ -76,7 +83,7 @@ const UnivTableReservation = () => {
         <p className="text-stone-500 mt-2 font-sans">Elegant dining room management</p>
       </motion.div>
 
-      <div className="grid lg:grid-cols-3 gap-8">
+      <div className="view-header grid lg:grid-cols-3 gap-8">
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="lg:col-span-1 bg-card p-8 rounded-xl shadow-md border border-stone-200 h-fit">
           <h2 className="text-xl font-bold mb-6 text-stone-800 border-b border-stone-100 pb-3 font-sans">Book a Table</h2>
           <form onSubmit={handleSubmit} className="space-y-5 font-sans">

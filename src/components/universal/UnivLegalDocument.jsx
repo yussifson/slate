@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from 'react';
+
+import GenericGrid from '@/components/views/GenericGrid';
+import GenericKanban from '@/components/views/GenericKanban';
+import GenericCalendar from '@/components/views/GenericCalendar';
+import GenericDashboard from '@/components/views/GenericDashboard';
+
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
@@ -7,6 +13,7 @@ import { toast } from 'react-hot-toast';
 
 export default function UnivLegalDocument() {
   const companyId = useCompanyId();
+  const [view, setView] = useState('Default');
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -61,8 +68,8 @@ export default function UnivLegalDocument() {
   );
 
   return (
-    <div className="flex flex-col h-full bg-background overflow-hidden">
-      <div className="flex items-center justify-between mb-6 shrink-0 pt-2 px-1">
+    <div className="flex flex-col h-full bg-background overflow-hidden ${view !== 'Default' ? 'hide-default' : ''}">
+      <div className="view-header flex items-center justify-between mb-6 shrink-0 pt-2 px-1">
         <div>
            <h2 className="text-2xl font-bold text-foreground tracking-tight">Legal Documents</h2>
            <p className="text-sm text-muted-foreground mt-1">Manage contracts, pleadings, affidavits, and case evidence.</p>

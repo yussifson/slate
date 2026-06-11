@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from 'react';
+
+import GenericGrid from '@/components/views/GenericGrid';
+import GenericKanban from '@/components/views/GenericKanban';
+import GenericCalendar from '@/components/views/GenericCalendar';
+import GenericDashboard from '@/components/views/GenericDashboard';
+
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -7,6 +13,7 @@ import { toast } from 'react-hot-toast';
 
 export default function UnivNotification() {
   const companyId = useCompanyId();
+  const [view, setView] = useState('Default');
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -105,8 +112,8 @@ export default function UnivNotification() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-background overflow-hidden relative">
-      <div className="max-w-3xl w-full mx-auto py-12 px-4 sm:px-6 relative z-10 flex flex-col h-full">
+    <div className="flex flex-col h-full bg-background overflow-hidden relative ${view !== 'Default' ? 'hide-default' : ''}">
+      <div className="view-header max-w-3xl w-full mx-auto py-12 px-4 sm:px-6 relative z-10 flex flex-col h-full">
         
         <div className="flex items-center justify-between mb-8 shrink-0">
            <div className="flex items-center gap-3">

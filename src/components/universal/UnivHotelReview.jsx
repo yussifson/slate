@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from 'react';
+
+import GenericGrid from '@/components/views/GenericGrid';
+import GenericKanban from '@/components/views/GenericKanban';
+import GenericCalendar from '@/components/views/GenericCalendar';
+import GenericDashboard from '@/components/views/GenericDashboard';
+
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { Star, BedDouble, User, Calendar, Sparkles, ThumbsUp } from 'lucide-react';
@@ -6,6 +12,7 @@ import { supabase } from '@/api/supabaseClient';
 
 const UnivHotelReview = () => {
   const companyId = useCompanyId();
+  const [view, setView] = useState('Default');
 
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -66,7 +73,7 @@ const UnivHotelReview = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto bg-background min-h-screen">
+    <div className="p-6 max-w-7xl mx-auto bg-background min-h-screen ${view !== 'Default' ? 'hide-default' : ''}">
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-10 flex flex-col items-center">
         <h1 className="text-4xl font-serif font-bold text-foreground flex items-center gap-3">
           <BedDouble className="w-10 h-10 text-amber-600" />
@@ -75,7 +82,7 @@ const UnivHotelReview = () => {
         <p className="text-muted-foreground mt-2 uppercase tracking-widest text-xs font-bold">Guest Experience Management</p>
       </motion.div>
 
-      <div className="grid lg:grid-cols-3 gap-8">
+      <div className="view-header grid lg:grid-cols-3 gap-8">
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="lg:col-span-1 bg-card p-8 rounded-none border border-border shadow-[8px_8px_0px_0px_rgba(245,158,11,0.2)] h-fit">
           <h2 className="text-lg font-serif font-bold mb-6 text-foreground border-b-2 border-amber-100 pb-2">Submit Feedback</h2>
           <form onSubmit={handleSubmit} className="space-y-5">

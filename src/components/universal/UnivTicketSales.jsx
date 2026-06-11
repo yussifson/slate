@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from 'react';
+
+import GenericGrid from '@/components/views/GenericGrid';
+import GenericKanban from '@/components/views/GenericKanban';
+import GenericCalendar from '@/components/views/GenericCalendar';
+import GenericDashboard from '@/components/views/GenericDashboard';
+
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { Ticket, Calendar, DollarSign, BarChart3, Tag } from 'lucide-react';
@@ -6,6 +12,7 @@ import { supabase } from '@/api/supabaseClient';
 
 const UnivTicketSales = () => {
   const companyId = useCompanyId();
+  const [view, setView] = useState('Default');
 
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -65,9 +72,9 @@ const UnivTicketSales = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto bg-violet-50/50 min-h-screen">
+    <div className="p-6 max-w-7xl mx-auto bg-violet-50/50 min-h-screen ${view !== 'Default' ? 'hide-default' : ''}">
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8 flex items-center justify-between bg-card p-6 rounded-3xl shadow-sm border border-violet-100">
-        <div className="flex items-center gap-4">
+        <div className="view-header flex items-center gap-4">
           <div className="bg-violet-600 p-3 rounded-2xl text-white shadow-lg shadow-violet-200">
             <Ticket className="w-8 h-8" />
           </div>
