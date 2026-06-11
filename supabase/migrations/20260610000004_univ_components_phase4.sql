@@ -53,6 +53,8 @@ CREATE TABLE IF NOT EXISTS public.univ_subscriptions (
 );
 ALTER TABLE public.univ_subscriptions ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Users can manage their company's subscriptions" ON public.univ_subscriptions;
+DROP POLICY IF EXISTS "Users can manage their company's subscriptions" ON public.univ_subscriptions;
+DROP POLICY IF EXISTS "Users can manage their company's subscriptions" ON public.univ_subscriptions;
 CREATE POLICY "Users can manage their company's subscriptions" ON public.univ_subscriptions FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- 9. Assets (univ_assets)
@@ -179,13 +181,32 @@ DROP POLICY IF EXISTS "Users can manage their company's leaves" ON public.univ_l
 CREATE POLICY "Users can manage their company's leaves" ON public.univ_leave_management FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- Add triggers to auto-update updated_at for all Phase 4 tables
+DROP TRIGGER IF EXISTS update_univ_contacts_modtime ON public.univ_contacts;
 CREATE TRIGGER update_univ_contacts_modtime BEFORE UPDATE ON public.univ_contacts FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_univ_payments_modtime ON public.univ_payments;
 CREATE TRIGGER update_univ_payments_modtime BEFORE UPDATE ON public.univ_payments FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_univ_subscriptions_modtime ON public.univ_subscriptions;
 CREATE TRIGGER update_univ_subscriptions_modtime BEFORE UPDATE ON public.univ_subscriptions FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_univ_assets_modtime ON public.univ_assets;
 CREATE TRIGGER update_univ_assets_modtime BEFORE UPDATE ON public.univ_assets FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_univ_procurement_modtime ON public.univ_procurement;
 CREATE TRIGGER update_univ_procurement_modtime BEFORE UPDATE ON public.univ_procurement FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_univ_pos_modtime ON public.univ_pos;
 CREATE TRIGGER update_univ_pos_modtime BEFORE UPDATE ON public.univ_pos FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_univ_attendance_modtime ON public.univ_attendance;
 CREATE TRIGGER update_univ_attendance_modtime BEFORE UPDATE ON public.univ_attendance FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_univ_payroll_modtime ON public.univ_payroll;
 CREATE TRIGGER update_univ_payroll_modtime BEFORE UPDATE ON public.univ_payroll FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_univ_recruitment_modtime ON public.univ_recruitment;
 CREATE TRIGGER update_univ_recruitment_modtime BEFORE UPDATE ON public.univ_recruitment FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_univ_leave_management_modtime ON public.univ_leave_management;
 CREATE TRIGGER update_univ_leave_management_modtime BEFORE UPDATE ON public.univ_leave_management FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();

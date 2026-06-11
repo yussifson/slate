@@ -33,7 +33,8 @@ export default function UnivClassAttendance() {
       if (error && error.code !== '42P01') throw error;
       setAttendance(data || []);
     } catch (err) {
-      // Mock data removed for production empty states
+      console.error(err);
+      toast.error(err.message || 'Failed to fetch attendance');
     } finally {
       setLoading(false);
     }
@@ -42,8 +43,10 @@ export default function UnivClassAttendance() {
   const handleMarkAttendance = async (status) => {
     const newRecord = {
       company_id: companyId,
-      student_id: 'temp-student-id',
-      course_id: 'temp-course-id',
+      student_id: '00000000-0000-0000-0000-000000000000',
+      course_id: '00000000-0000-0000-0000-000000000000',
+      student_name: 'Temp Student',
+      course_name: 'Temp Course',
       date: new Date().toISOString().split('T')[0],
       status: status
     };
@@ -52,8 +55,8 @@ export default function UnivClassAttendance() {
       if (error) throw error;
       toast.success(`Marked as ${status}`);
     } catch (err) {
-      if (err.code === '42P01') toast.error("Database table not initialized yet.");
-      else toast.error('Failed to mark attendance');
+      console.error(err);
+      toast.error(err.message || 'Failed to save');
     }
   };
 

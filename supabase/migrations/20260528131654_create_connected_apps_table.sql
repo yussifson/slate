@@ -16,11 +16,13 @@ CREATE TABLE IF NOT EXISTS public.connected_apps (
 ALTER TABLE public.connected_apps ENABLE ROW LEVEL SECURITY;
 
 -- Allow authenticated users to view connected apps
+DROP POLICY IF EXISTS "Users can view connected apps" ON public.connected_apps;
 CREATE POLICY "Users can view connected apps" ON public.connected_apps
     FOR SELECT
     USING (auth.role() = 'authenticated');
 
 -- Allow authenticated users to manage connected apps
+DROP POLICY IF EXISTS "Users can manage connected apps" ON public.connected_apps;
 CREATE POLICY "Users can manage connected apps" ON public.connected_apps
     FOR ALL
     USING (auth.role() = 'authenticated');
@@ -34,6 +36,7 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
+DROP TRIGGER IF EXISTS update_connected_apps_modtime ON public.connected_apps;
 CREATE TRIGGER update_connected_apps_modtime
     BEFORE UPDATE ON public.connected_apps
     FOR EACH ROW

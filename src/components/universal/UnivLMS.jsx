@@ -42,10 +42,11 @@ export default function UnivLMS() {
   const handleAddContent = async (type) => {
     const newContent = {
       company_id: companyId,
-      course_id: 'temp-course-id',
+      course_id: '00000000-0000-0000-0000-000000000000',
       title: `New ${type}`,
       content_type: type,
-      status: 'Draft'
+      status: 'Draft',
+      description: 'Course: temp-course-id'
     };
     try {
       const { error } = await supabase.from('univ_lms_lessons').insert(newContent);

@@ -33,7 +33,8 @@ export default function UnivCaseManagement() {
       if (error && error.code !== '42P01') throw error;
       setCases(data || []);
     } catch (err) {
-      // Mock data removed for production empty states
+      console.error(err);
+      toast.error(err.message || 'Failed to fetch cases');
     } finally {
       setLoading(false);
     }
@@ -54,8 +55,8 @@ export default function UnivCaseManagement() {
       if (error) throw error;
       toast.success('Case added');
     } catch (err) {
-      if (err.code === '42P01') toast.error("Database table not initialized yet.");
-      else toast.error('Failed to add case');
+      console.error(err);
+      toast.error(err.message || 'Failed to save');
     }
   };
 

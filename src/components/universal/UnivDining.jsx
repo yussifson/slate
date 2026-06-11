@@ -46,7 +46,7 @@ export default function UnivDining() {
       table_number: 'T-01',
       order_type: 'Dine-In',
       status: 'Received',
-      total_amount: 25.00,
+      total_amount: Number(25.00) || 0,
       items: [{name: 'Burger', qty: 1}, {name: 'Fries', qty: 1}]
     };
     try {
@@ -54,8 +54,8 @@ export default function UnivDining() {
       if (error) throw error;
       toast.success('Order created');
     } catch (err) {
-      if (err.code === '42P01') toast.error("Database table not initialized yet.");
-      else toast.error('Failed to create order');
+      console.error(err);
+      toast.error(err.message || 'Failed to save');
     }
   };
 

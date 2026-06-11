@@ -42,20 +42,21 @@ export default function UnivEMR() {
   const handleAddEncounter = async () => {
     const newRecord = {
       company_id: companyId,
-      patient_id: 'temp-patient-id',
-      doctor_id: 'temp-doctor-id',
+      patient_id: '00000000-0000-0000-0000-000000000000',
+      doctor_id: '00000000-0000-0000-0000-000000000000',
       visit_date: new Date().toISOString(),
       diagnosis: 'Routine Checkup',
       symptoms: 'None',
-      treatment_plan: 'Continue healthy diet'
+      treatment_plan: 'Continue healthy diet',
+      notes: 'temp-patient-id, temp-doctor-id'
     };
     try {
       const { error } = await supabase.from('univ_emr').insert(newRecord);
       if (error) throw error;
       toast.success('Encounter added');
     } catch (err) {
-      if (err.code === '42P01') toast.error("Database table not initialized yet.");
-      else toast.error('Failed to add encounter');
+      console.error(err);
+      toast.error(err.message || 'Failed to save');
     }
   };
 

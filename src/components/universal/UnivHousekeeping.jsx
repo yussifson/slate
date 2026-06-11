@@ -42,10 +42,11 @@ export default function UnivHousekeeping() {
   const handleAddTask = async () => {
     const newTask = {
       company_id: companyId,
-      room_id: 'temp-room-id',
+      room_id: '00000000-0000-0000-0000-000000000000',
       task_type: 'Routine Cleaning',
       status: 'Pending',
-      priority: 'Medium'
+      priority: 'Medium',
+      notes: 'Room: temp-room-id'
     };
     try {
       const { error } = await supabase.from('univ_housekeeping').insert(newTask);
@@ -142,7 +143,7 @@ export default function UnivHousekeeping() {
                   className="hover:bg-muted/30 transition-colors group cursor-pointer"
                 >
                   <td className="p-4 font-bold text-foreground">
-                    Room {t.room_id?.replace('R-', '') || 'Unknown'}
+                    Room {t.notes?.includes('Room: ') ? t.notes.split('Room: ')[1] : (t.room_id?.replace('R-', '') || 'Unknown')}
                   </td>
                   <td className="p-4 font-semibold text-foreground flex items-center gap-2">
                     <Brush className="w-4 h-4 text-primary" /> {t.task_type}

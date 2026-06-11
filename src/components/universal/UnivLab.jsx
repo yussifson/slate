@@ -42,10 +42,11 @@ export default function UnivLab() {
   const handleOrderTest = async () => {
     const newTest = {
       company_id: companyId,
-      patient_id: 'temp-patient-id',
+      patient_id: '00000000-0000-0000-0000-000000000000',
       test_name: 'New Lab Test',
       test_date: new Date().toISOString(),
-      status: 'Pending'
+      status: 'Pending',
+      result_value: 'Patient: temp-patient-id'
     };
     try {
       const { error } = await supabase.from('univ_labs').insert(newTest);

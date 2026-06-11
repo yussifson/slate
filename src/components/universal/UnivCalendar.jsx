@@ -51,6 +51,10 @@ export default function UnivCalendar({
       if (error) throw error;
       return data;
     },
+    onError: (err) => {
+      console.error(err);
+      toast({ title: 'Error', description: err.message || 'Failed to save', variant: 'destructive' });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries(['orbit_records', companyId, pageName]);
       queryClient.invalidateQueries(['orbit_dynamic_records', companyId]);
@@ -64,6 +68,10 @@ export default function UnivCalendar({
     mutationFn: async (id) => {
       const { error } = await supabase.from('industry_records').delete().eq('id', id);
       if (error) throw error;
+    },
+    onError: (err) => {
+      console.error(err);
+      toast({ title: 'Error', description: err.message || 'Failed to save', variant: 'destructive' });
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['orbit_records', companyId, pageName]);

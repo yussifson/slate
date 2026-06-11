@@ -33,7 +33,8 @@ export default function UnivClientPortal() {
       if (error && error.code !== '42P01') throw error;
       setClients(data || []);
     } catch (err) {
-      // Mock data removed for production empty states
+      console.error(err);
+      toast.error(err.message || 'Failed to fetch clients');
     } finally {
       setLoading(false);
     }
@@ -46,8 +47,8 @@ export default function UnivClientPortal() {
       toast.success('Access updated');
       fetchClients();
     } catch (err) {
-      if (err.code === '42P01') toast.error("Database table not initialized yet.");
-      else toast.error('Failed to update access');
+      console.error(err);
+      toast.error(err.message || 'Failed to save');
     }
   };
 

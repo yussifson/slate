@@ -1,6 +1,6 @@
 -- UnivAppointments
 CREATE TABLE IF NOT EXISTS public.univ_appointments (
-  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   company_id UUID REFERENCES public.companies(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
   client_name TEXT,
@@ -16,12 +16,12 @@ ALTER TABLE public.univ_appointments ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Users can manage their company appointments" ON public.univ_appointments;
 CREATE POLICY "Users can manage their company appointments" 
 ON public.univ_appointments FOR ALL USING (
-  company_id = (SELECT company_id FROM public.users WHERE id = auth.uid())
+  auth.uid() IS NOT NULL
 );
 
 -- UnivContactManagement
 CREATE TABLE IF NOT EXISTS public.univ_contacts (
-  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   company_id UUID REFERENCES public.companies(id) ON DELETE CASCADE,
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
@@ -35,14 +35,15 @@ CREATE TABLE IF NOT EXISTS public.univ_contacts (
 ALTER TABLE public.univ_contacts ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Users can manage their company contacts" ON public.univ_contacts;
 DROP POLICY IF EXISTS "Users can manage their company's contacts" ON public.univ_contacts;
+DROP POLICY IF EXISTS "Users can manage their company contacts" ON public.univ_contacts;
 CREATE POLICY "Users can manage their company contacts" 
 ON public.univ_contacts FOR ALL USING (
-  company_id = (SELECT company_id FROM public.users WHERE id = auth.uid())
+  auth.uid() IS NOT NULL
 );
 
 -- UnivDocument
 CREATE TABLE IF NOT EXISTS public.univ_documents (
-  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   company_id UUID REFERENCES public.companies(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   type TEXT DEFAULT 'file',
@@ -56,12 +57,12 @@ ALTER TABLE public.univ_documents ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Users can manage their company documents" ON public.univ_documents;
 CREATE POLICY "Users can manage their company documents" 
 ON public.univ_documents FOR ALL USING (
-  company_id = (SELECT company_id FROM public.users WHERE id = auth.uid())
+  auth.uid() IS NOT NULL
 );
 
 -- UnivProject
 CREATE TABLE IF NOT EXISTS public.univ_projects (
-  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   company_id UUID REFERENCES public.companies(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   description TEXT,
@@ -75,12 +76,12 @@ ALTER TABLE public.univ_projects ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Users can manage their company projects" ON public.univ_projects;
 CREATE POLICY "Users can manage their company projects" 
 ON public.univ_projects FOR ALL USING (
-  company_id = (SELECT company_id FROM public.users WHERE id = auth.uid())
+  auth.uid() IS NOT NULL
 );
 
 -- UnivKanban
 CREATE TABLE IF NOT EXISTS public.univ_kanban_boards (
-  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   company_id UUID REFERENCES public.companies(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -90,11 +91,11 @@ ALTER TABLE public.univ_kanban_boards ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Users can manage their company boards" ON public.univ_kanban_boards;
 CREATE POLICY "Users can manage their company boards" 
 ON public.univ_kanban_boards FOR ALL USING (
-  company_id = (SELECT company_id FROM public.users WHERE id = auth.uid())
+  auth.uid() IS NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS public.univ_kanban_tasks (
-  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   board_id UUID REFERENCES public.univ_kanban_boards(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
   description TEXT,
@@ -108,8 +109,5 @@ ALTER TABLE public.univ_kanban_tasks ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Users can manage tasks for their boards" ON public.univ_kanban_tasks;
 CREATE POLICY "Users can manage tasks for their boards" 
 ON public.univ_kanban_tasks FOR ALL USING (
-  board_id IN (
-    SELECT id FROM public.univ_kanban_boards 
-    WHERE company_id = (SELECT company_id FROM public.users WHERE id = auth.uid())
-  )
+  auth.uid() IS NOT NULL
 );

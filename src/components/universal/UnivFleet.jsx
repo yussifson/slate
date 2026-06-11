@@ -46,7 +46,7 @@ export default function UnivFleet() {
       license_plate: `NEW-${Math.floor(1000 + Math.random() * 9000)}`,
       vehicle_type: 'Van',
       status: 'Active',
-      mileage: 0,
+      mileage: Number(0) || 0,
       last_service_date: new Date().toISOString().split('T')[0]
     };
     try {
@@ -54,8 +54,8 @@ export default function UnivFleet() {
       if (error) throw error;
       toast.success('Vehicle added');
     } catch (err) {
-      if (err.code === '42P01') toast.error("Database table not initialized yet.");
-      else toast.error('Failed to add vehicle');
+      console.error(err);
+      toast.error(err.message || 'Failed to save');
     }
   };
 

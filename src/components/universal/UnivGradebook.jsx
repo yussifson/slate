@@ -42,13 +42,14 @@ export default function UnivGradebook() {
   const handleRecordGrade = async () => {
     const newGrade = {
       company_id: companyId,
-      student_id: 'temp-student-id',
-      course_id: 'temp-course-id',
+      student_id: '00000000-0000-0000-0000-000000000000',
+      course_id: '00000000-0000-0000-0000-000000000000',
       assessment_name: 'Quiz 1',
       score: Math.floor(Math.random() * 30) + 70,
       max_score: 100,
       grade: 'B+',
-      date_recorded: new Date().toISOString().split('T')[0]
+      date_recorded: new Date().toISOString().split('T')[0],
+      remarks: 'Student: temp-student-id | Course: temp-course-id'
     };
     try {
       const { error } = await supabase.from('univ_gradebook').insert(newGrade);

@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS public.univ_patients (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_patients ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's patients" ON public.univ_patients;
 CREATE POLICY "Users can manage their company's patients" ON public.univ_patients FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- 24. EMR (univ_emr)
@@ -38,6 +39,7 @@ CREATE TABLE IF NOT EXISTS public.univ_emr (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_emr ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's emr" ON public.univ_emr;
 CREATE POLICY "Users can manage their company's emr" ON public.univ_emr FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- 25. Prescriptions (univ_prescriptions)
@@ -55,6 +57,8 @@ CREATE TABLE IF NOT EXISTS public.univ_prescriptions (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_prescriptions ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's prescriptions" ON public.univ_prescriptions;
+DROP POLICY IF EXISTS "Users can manage their company's prescriptions" ON public.univ_prescriptions;
 CREATE POLICY "Users can manage their company's prescriptions" ON public.univ_prescriptions FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- 26. Labs (univ_labs)
@@ -72,6 +76,7 @@ CREATE TABLE IF NOT EXISTS public.univ_labs (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_labs ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's labs" ON public.univ_labs;
 CREATE POLICY "Users can manage their company's labs" ON public.univ_labs FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- 27. Wards/Beds (univ_wards)
@@ -88,6 +93,7 @@ CREATE TABLE IF NOT EXISTS public.univ_wards (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_wards ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's wards" ON public.univ_wards;
 CREATE POLICY "Users can manage their company's wards" ON public.univ_wards FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- 28. Telemedicine (univ_telemedicine)
@@ -104,12 +110,19 @@ CREATE TABLE IF NOT EXISTS public.univ_telemedicine (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_telemedicine ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's telemedicine" ON public.univ_telemedicine;
 CREATE POLICY "Users can manage their company's telemedicine" ON public.univ_telemedicine FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- Add triggers to auto-update updated_at for all Phase 6 tables
+DROP TRIGGER IF EXISTS update_univ_patients_modtime ON public.univ_patients;
 CREATE TRIGGER update_univ_patients_modtime BEFORE UPDATE ON public.univ_patients FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+DROP TRIGGER IF EXISTS update_univ_emr_modtime ON public.univ_emr;
 CREATE TRIGGER update_univ_emr_modtime BEFORE UPDATE ON public.univ_emr FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+DROP TRIGGER IF EXISTS update_univ_prescriptions_modtime ON public.univ_prescriptions;
 CREATE TRIGGER update_univ_prescriptions_modtime BEFORE UPDATE ON public.univ_prescriptions FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+DROP TRIGGER IF EXISTS update_univ_labs_modtime ON public.univ_labs;
 CREATE TRIGGER update_univ_labs_modtime BEFORE UPDATE ON public.univ_labs FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+DROP TRIGGER IF EXISTS update_univ_wards_modtime ON public.univ_wards;
 CREATE TRIGGER update_univ_wards_modtime BEFORE UPDATE ON public.univ_wards FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+DROP TRIGGER IF EXISTS update_univ_telemedicine_modtime ON public.univ_telemedicine;
 CREATE TRIGGER update_univ_telemedicine_modtime BEFORE UPDATE ON public.univ_telemedicine FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();

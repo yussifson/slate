@@ -53,8 +53,8 @@ export default function UnivCourtCalendar() {
       if (error) throw error;
       toast.success('Event added');
     } catch (err) {
-      if (err.code === '42P01') toast.error("Database table not initialized yet.");
-      else toast.error('Failed to add event');
+      console.error(err);
+      toast.error(err.message || 'Failed to save');
     }
   };
 

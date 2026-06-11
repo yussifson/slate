@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS public.univ_fleet (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_fleet ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's fleet" ON public.univ_fleet;
 CREATE POLICY "Users can manage their company's fleet" ON public.univ_fleet FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- 35. Dispatch (univ_dispatch)
@@ -32,6 +33,7 @@ CREATE TABLE IF NOT EXISTS public.univ_dispatch (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_dispatch ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's dispatch" ON public.univ_dispatch;
 CREATE POLICY "Users can manage their company's dispatch" ON public.univ_dispatch FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- 36. Routes (univ_routes)
@@ -48,6 +50,7 @@ CREATE TABLE IF NOT EXISTS public.univ_routes (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_routes ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's routes" ON public.univ_routes;
 CREATE POLICY "Users can manage their company's routes" ON public.univ_routes FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- 37. Deliveries (univ_deliveries)
@@ -64,6 +67,7 @@ CREATE TABLE IF NOT EXISTS public.univ_deliveries (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_deliveries ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's deliveries" ON public.univ_deliveries;
 CREATE POLICY "Users can manage their company's deliveries" ON public.univ_deliveries FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- 38. Warehouse (univ_warehouses)
@@ -79,6 +83,7 @@ CREATE TABLE IF NOT EXISTS public.univ_warehouses (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_warehouses ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's warehouses" ON public.univ_warehouses;
 CREATE POLICY "Users can manage their company's warehouses" ON public.univ_warehouses FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- 39. Projects (univ_projects)
@@ -96,6 +101,7 @@ CREATE TABLE IF NOT EXISTS public.univ_projects (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_projects ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's projects" ON public.univ_projects;
 CREATE POLICY "Users can manage their company's projects" ON public.univ_projects FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- 40. BOQ (univ_boqs)
@@ -113,6 +119,7 @@ CREATE TABLE IF NOT EXISTS public.univ_boqs (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_boqs ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's boqs" ON public.univ_boqs;
 CREATE POLICY "Users can manage their company's boqs" ON public.univ_boqs FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- 41. Site Inspections (univ_site_inspections)
@@ -129,6 +136,8 @@ CREATE TABLE IF NOT EXISTS public.univ_site_inspections (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_site_inspections ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's site inspections" ON public.univ_site_inspections;
+DROP POLICY IF EXISTS "Users can manage their company's site inspections" ON public.univ_site_inspections;
 CREATE POLICY "Users can manage their company's site inspections" ON public.univ_site_inspections FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- 42. Safety (univ_safety)
@@ -146,6 +155,7 @@ CREATE TABLE IF NOT EXISTS public.univ_safety (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_safety ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's safety" ON public.univ_safety;
 CREATE POLICY "Users can manage their company's safety" ON public.univ_safety FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- 43. Contractors (univ_contractors)
@@ -162,16 +172,27 @@ CREATE TABLE IF NOT EXISTS public.univ_contractors (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_contractors ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's contractors" ON public.univ_contractors;
 CREATE POLICY "Users can manage their company's contractors" ON public.univ_contractors FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- Add triggers to auto-update updated_at for all Phase 8 tables
+DROP TRIGGER IF EXISTS update_univ_fleet_modtime ON public.univ_fleet;
 CREATE TRIGGER update_univ_fleet_modtime BEFORE UPDATE ON public.univ_fleet FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+DROP TRIGGER IF EXISTS update_univ_dispatch_modtime ON public.univ_dispatch;
 CREATE TRIGGER update_univ_dispatch_modtime BEFORE UPDATE ON public.univ_dispatch FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+DROP TRIGGER IF EXISTS update_univ_routes_modtime ON public.univ_routes;
 CREATE TRIGGER update_univ_routes_modtime BEFORE UPDATE ON public.univ_routes FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+DROP TRIGGER IF EXISTS update_univ_deliveries_modtime ON public.univ_deliveries;
 CREATE TRIGGER update_univ_deliveries_modtime BEFORE UPDATE ON public.univ_deliveries FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+DROP TRIGGER IF EXISTS update_univ_warehouses_modtime ON public.univ_warehouses;
 CREATE TRIGGER update_univ_warehouses_modtime BEFORE UPDATE ON public.univ_warehouses FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+DROP TRIGGER IF EXISTS update_univ_projects_modtime ON public.univ_projects;
 CREATE TRIGGER update_univ_projects_modtime BEFORE UPDATE ON public.univ_projects FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+DROP TRIGGER IF EXISTS update_univ_boqs_modtime ON public.univ_boqs;
 CREATE TRIGGER update_univ_boqs_modtime BEFORE UPDATE ON public.univ_boqs FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+DROP TRIGGER IF EXISTS update_univ_site_inspections_modtime ON public.univ_site_inspections;
 CREATE TRIGGER update_univ_site_inspections_modtime BEFORE UPDATE ON public.univ_site_inspections FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+DROP TRIGGER IF EXISTS update_univ_safety_modtime ON public.univ_safety;
 CREATE TRIGGER update_univ_safety_modtime BEFORE UPDATE ON public.univ_safety FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+DROP TRIGGER IF EXISTS update_univ_contractors_modtime ON public.univ_contractors;
 CREATE TRIGGER update_univ_contractors_modtime BEFORE UPDATE ON public.univ_contractors FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();

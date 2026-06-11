@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS public.univ_bookings (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_bookings ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's bookings" ON public.univ_bookings;
 CREATE POLICY "Users can manage their company's bookings" ON public.univ_bookings FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- 30. Rooms (univ_rooms)
@@ -37,6 +38,7 @@ CREATE TABLE IF NOT EXISTS public.univ_rooms (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_rooms ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's rooms" ON public.univ_rooms;
 CREATE POLICY "Users can manage their company's rooms" ON public.univ_rooms FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- 31. Housekeeping (univ_housekeeping)
@@ -53,6 +55,7 @@ CREATE TABLE IF NOT EXISTS public.univ_housekeeping (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_housekeeping ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's housekeeping" ON public.univ_housekeeping;
 CREATE POLICY "Users can manage their company's housekeeping" ON public.univ_housekeeping FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- 32. Menu (univ_menus)
@@ -69,6 +72,7 @@ CREATE TABLE IF NOT EXISTS public.univ_menus (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_menus ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's menus" ON public.univ_menus;
 CREATE POLICY "Users can manage their company's menus" ON public.univ_menus FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- 33. Dining Orders (univ_dining_orders)
@@ -86,11 +90,18 @@ CREATE TABLE IF NOT EXISTS public.univ_dining_orders (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_dining_orders ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's dining orders" ON public.univ_dining_orders;
+DROP POLICY IF EXISTS "Users can manage their company's dining orders" ON public.univ_dining_orders;
 CREATE POLICY "Users can manage their company's dining orders" ON public.univ_dining_orders FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- Add triggers to auto-update updated_at for all Phase 7 tables
+DROP TRIGGER IF EXISTS update_univ_bookings_modtime ON public.univ_bookings;
 CREATE TRIGGER update_univ_bookings_modtime BEFORE UPDATE ON public.univ_bookings FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+DROP TRIGGER IF EXISTS update_univ_rooms_modtime ON public.univ_rooms;
 CREATE TRIGGER update_univ_rooms_modtime BEFORE UPDATE ON public.univ_rooms FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+DROP TRIGGER IF EXISTS update_univ_housekeeping_modtime ON public.univ_housekeeping;
 CREATE TRIGGER update_univ_housekeeping_modtime BEFORE UPDATE ON public.univ_housekeeping FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+DROP TRIGGER IF EXISTS update_univ_menus_modtime ON public.univ_menus;
 CREATE TRIGGER update_univ_menus_modtime BEFORE UPDATE ON public.univ_menus FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+DROP TRIGGER IF EXISTS update_univ_dining_orders_modtime ON public.univ_dining_orders;
 CREATE TRIGGER update_univ_dining_orders_modtime BEFORE UPDATE ON public.univ_dining_orders FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();

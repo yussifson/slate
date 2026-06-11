@@ -58,46 +58,57 @@ ALTER TABLE public.chat_messages ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.video_rooms ENABLE ROW LEVEL SECURITY;
 
 -- Basic Policies (can be refined later based on company_id)
+DROP POLICY IF EXISTS "Users can view rooms they are in" ON public.chat_rooms;
 CREATE POLICY "Users can view rooms they are in" ON public.chat_rooms
     FOR SELECT USING (EXISTS (
         SELECT 1 FROM public.chat_participants cp WHERE cp.room_id = id AND cp.user_id = auth.uid()
     ));
 
+DROP POLICY IF EXISTS "Users can insert rooms" ON public.chat_rooms;
 CREATE POLICY "Users can insert rooms" ON public.chat_rooms
     FOR INSERT WITH CHECK (true);
 
+DROP POLICY IF EXISTS "Users can update rooms they admin" ON public.chat_rooms;
 CREATE POLICY "Users can update rooms they admin" ON public.chat_rooms
     FOR UPDATE USING (EXISTS (
         SELECT 1 FROM public.chat_participants cp WHERE cp.room_id = id AND cp.user_id = auth.uid() AND cp.role = 'admin'
     ));
 
+DROP POLICY IF EXISTS "Users can view participants in their rooms" ON public.chat_participants;
 CREATE POLICY "Users can view participants in their rooms" ON public.chat_participants
     FOR SELECT USING (EXISTS (
         SELECT 1 FROM public.chat_participants cp WHERE cp.room_id = room_id AND cp.user_id = auth.uid()
     ));
 
+DROP POLICY IF EXISTS "Users can insert participants" ON public.chat_participants;
 CREATE POLICY "Users can insert participants" ON public.chat_participants
     FOR INSERT WITH CHECK (true);
 
+DROP POLICY IF EXISTS "Users can update their own participant record" ON public.chat_participants;
 CREATE POLICY "Users can update their own participant record" ON public.chat_participants
     FOR UPDATE USING (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "Users can view messages in their rooms" ON public.chat_messages;
 CREATE POLICY "Users can view messages in their rooms" ON public.chat_messages
     FOR SELECT USING (EXISTS (
         SELECT 1 FROM public.chat_participants cp WHERE cp.room_id = room_id AND cp.user_id = auth.uid()
     ));
 
+DROP POLICY IF EXISTS "Users can insert messages to their rooms" ON public.chat_messages;
 CREATE POLICY "Users can insert messages to their rooms" ON public.chat_messages
     FOR INSERT WITH CHECK (EXISTS (
         SELECT 1 FROM public.chat_participants cp WHERE cp.room_id = room_id AND cp.user_id = auth.uid()
     ));
 
+DROP POLICY IF EXISTS "Users can update their own messages" ON public.chat_messages;
 CREATE POLICY "Users can update their own messages" ON public.chat_messages
     FOR UPDATE USING (sender_id = auth.uid());
 
+DROP POLICY IF EXISTS "Users can view video rooms" ON public.video_rooms;
 CREATE POLICY "Users can view video rooms" ON public.video_rooms
     FOR SELECT USING (true); -- Refine to company_id if needed
 
+DROP POLICY IF EXISTS "Users can insert video rooms" ON public.video_rooms;
 CREATE POLICY "Users can insert video rooms" ON public.video_rooms
     FOR INSERT WITH CHECK (true);
 

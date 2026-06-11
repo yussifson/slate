@@ -60,7 +60,8 @@ export default function UnivDataGrid({
       toast({ title: 'Success', description: 'Record added successfully.' });
     },
     onError: (err) => {
-      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+      console.error(err);
+      toast({ title: 'Error', description: err.message || 'Failed to save', variant: 'destructive' });
     }
   });
 

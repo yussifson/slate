@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS public.univ_crm_leads (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_crm_leads ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's CRM leads" ON public.univ_crm_leads;
 CREATE POLICY "Users can manage their company's CRM leads" 
 ON public.univ_crm_leads FOR ALL 
 USING (auth.uid() IS NOT NULL);
@@ -41,6 +42,7 @@ CREATE TABLE IF NOT EXISTS public.univ_invoices (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_invoices ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's invoices" ON public.univ_invoices;
 CREATE POLICY "Users can manage their company's invoices" 
 ON public.univ_invoices FOR ALL 
 USING (auth.uid() IS NOT NULL);
@@ -62,6 +64,7 @@ CREATE TABLE IF NOT EXISTS public.univ_appointments (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_appointments ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's appointments" ON public.univ_appointments;
 CREATE POLICY "Users can manage their company's appointments" 
 ON public.univ_appointments FOR ALL 
 USING (auth.uid() IS NOT NULL);
@@ -83,6 +86,7 @@ CREATE TABLE IF NOT EXISTS public.univ_inventory (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_inventory ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's inventory" ON public.univ_inventory;
 CREATE POLICY "Users can manage their company's inventory" 
 ON public.univ_inventory FOR ALL 
 USING (auth.uid() IS NOT NULL);
@@ -106,6 +110,7 @@ CREATE TABLE IF NOT EXISTS public.univ_hr_employees (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_hr_employees ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's HR employees" ON public.univ_hr_employees;
 CREATE POLICY "Users can manage their company's HR employees" 
 ON public.univ_hr_employees FOR ALL 
 USING (auth.uid() IS NOT NULL);
@@ -119,8 +124,13 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
+DROP TRIGGER IF EXISTS update_univ_crm_leads_modtime ON public.univ_crm_leads;
 CREATE TRIGGER update_univ_crm_leads_modtime BEFORE UPDATE ON public.univ_crm_leads FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+DROP TRIGGER IF EXISTS update_univ_invoices_modtime ON public.univ_invoices;
 CREATE TRIGGER update_univ_invoices_modtime BEFORE UPDATE ON public.univ_invoices FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+DROP TRIGGER IF EXISTS update_univ_appointments_modtime ON public.univ_appointments;
 CREATE TRIGGER update_univ_appointments_modtime BEFORE UPDATE ON public.univ_appointments FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+DROP TRIGGER IF EXISTS update_univ_inventory_modtime ON public.univ_inventory;
 CREATE TRIGGER update_univ_inventory_modtime BEFORE UPDATE ON public.univ_inventory FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();
+DROP TRIGGER IF EXISTS update_univ_hr_employees_modtime ON public.univ_hr_employees;
 CREATE TRIGGER update_univ_hr_employees_modtime BEFORE UPDATE ON public.univ_hr_employees FOR EACH ROW EXECUTE PROCEDURE update_univ_updated_at_column();

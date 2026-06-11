@@ -33,7 +33,8 @@ export default function UnivContractor() {
       if (error && error.code !== '42P01') throw error;
       setContractors(data || []);
     } catch (err) {
-      // Mock data removed for production empty states
+      console.error(err);
+      toast.error(err.message || 'Failed to fetch contractors');
     } finally {
       setLoading(false);
     }
@@ -54,8 +55,8 @@ export default function UnivContractor() {
       if (error) throw error;
       toast.success('Contractor added');
     } catch (err) {
-      if (err.code === '42P01') toast.error("Database table not initialized yet.");
-      else toast.error('Failed to add contractor');
+      console.error(err);
+      toast.error(err.message || 'Failed to save');
     }
   };
 

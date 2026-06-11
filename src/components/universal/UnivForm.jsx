@@ -37,11 +37,16 @@ export default function UnivForm({
     // Simulate network request
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    if (onSubmit) {
-      onSubmit(formData);
-    } else {
-      toast.success("Form submitted successfully!");
-      setFormData({});
+    try {
+      if (onSubmit) {
+        await onSubmit(formData);
+      } else {
+        toast.success("Form submitted successfully!");
+        setFormData({});
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error(err.message || 'Failed to save');
     }
     setIsSubmitting(false);
   };

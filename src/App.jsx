@@ -28,6 +28,31 @@ const UnivLeaveManagement = React.lazy(() => import('@/components/universal/Univ
 const UnivPayment = React.lazy(() => import('@/components/universal/UnivPayment'));
 const UnivAssetManagement = React.lazy(() => import('@/components/universal/UnivAssetManagement'));
 const UnivProcurement = React.lazy(() => import('@/components/universal/UnivProcurement'));
+const UnivAnalytics = React.lazy(() => import('@/components/universal/UnivAnalytics'));
+const UnivBOM = React.lazy(() => import('@/components/universal/UnivBOM'));
+const UnivBOQ = React.lazy(() => import('@/components/universal/UnivBOQ'));
+const UnivBooking = React.lazy(() => import('@/components/universal/UnivBooking'));
+const UnivCalendar = React.lazy(() => import('@/components/universal/UnivCalendar'));
+const UnivCaseManagement = React.lazy(() => import('@/components/universal/UnivCaseManagement'));
+const UnivClassAttendance = React.lazy(() => import('@/components/universal/UnivClassAttendance'));
+const UnivClientPortal = React.lazy(() => import('@/components/universal/UnivClientPortal'));
+const UnivContractor = React.lazy(() => import('@/components/universal/UnivContractor'));
+const UnivCourse = React.lazy(() => import('@/components/universal/UnivCourse'));
+const UnivCourtCalendar = React.lazy(() => import('@/components/universal/UnivCourtCalendar'));
+const UnivDashboard = React.lazy(() => import('@/components/universal/UnivDashboard'));
+const UnivDataGrid = React.lazy(() => import('@/components/universal/UnivDataGrid'));
+const UnivDelivery = React.lazy(() => import('@/components/universal/UnivDelivery'));
+const UnivDining = React.lazy(() => import('@/components/universal/UnivDining'));
+const UnivDispatch = React.lazy(() => import('@/components/universal/UnivDispatch'));
+const UnivEMR = React.lazy(() => import('@/components/universal/UnivEMR'));
+const UnivFaculty = React.lazy(() => import('@/components/universal/UnivFaculty'));
+const UnivFleet = React.lazy(() => import('@/components/universal/UnivFleet'));
+const UnivForm = React.lazy(() => import('@/components/universal/UnivForm'));
+const UnivGradebook = React.lazy(() => import('@/components/universal/UnivGradebook'));
+const UnivHousekeeping = React.lazy(() => import('@/components/universal/UnivHousekeeping'));
+const UnivLMS = React.lazy(() => import('@/components/universal/UnivLMS'));
+const UnivLab = React.lazy(() => import('@/components/universal/UnivLab'));
+const UnivLegalDocument = React.lazy(() => import('@/components/universal/UnivLegalDocument'));
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -391,6 +416,31 @@ function PlatformRoutes() {
       <Route path="/payments" element={<UnivPayment />} />
       <Route path="/assets" element={<UnivAssetManagement />} />
       <Route path="/procurement" element={<UnivProcurement />} />
+      <Route path="/analytics" element={<UnivAnalytics />} />
+      <Route path="/bom" element={<UnivBOM />} />
+      <Route path="/boq" element={<UnivBOQ />} />
+      <Route path="/bookings" element={<UnivBooking />} />
+      <Route path="/univ-calendar" element={<UnivCalendar />} />
+      <Route path="/case-mgmt" element={<UnivCaseManagement />} />
+      <Route path="/class-attendance" element={<UnivClassAttendance />} />
+      <Route path="/portal" element={<UnivClientPortal />} />
+      <Route path="/contractors" element={<UnivContractor />} />
+      <Route path="/courses" element={<UnivCourse />} />
+      <Route path="/court" element={<UnivCourtCalendar />} />
+      <Route path="/univ-dashboard" element={<UnivDashboard />} />
+      <Route path="/datagrid" element={<UnivDataGrid />} />
+      <Route path="/delivery" element={<UnivDelivery />} />
+      <Route path="/dining" element={<UnivDining />} />
+      <Route path="/dispatch" element={<UnivDispatch />} />
+      <Route path="/emr" element={<UnivEMR />} />
+      <Route path="/faculty" element={<UnivFaculty />} />
+      <Route path="/fleet" element={<UnivFleet />} />
+      <Route path="/form" element={<UnivForm />} />
+      <Route path="/gradebook" element={<UnivGradebook />} />
+      <Route path="/housekeeping" element={<UnivHousekeeping />} />
+      <Route path="/lms" element={<UnivLMS />} />
+      <Route path="/lab" element={<UnivLab />} />
+      <Route path="/legal-docs" element={<UnivLegalDocument />} />
       <Route path="/firm-setup" element={<OnboardingWizard />} />
       <Route path="/chat" element={<Chat />} />
       <Route path="/board" element={<Board />} />

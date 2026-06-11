@@ -33,7 +33,8 @@ export default function UnivCourse() {
       if (error && error.code !== '42P01') throw error;
       setCourses(data || []);
     } catch (err) {
-      // Mock data removed for production empty states
+      console.error(err);
+      toast.error(err.message || 'Failed to fetch courses');
     } finally {
       setLoading(false);
     }
@@ -53,8 +54,8 @@ export default function UnivCourse() {
       if (error) throw error;
       toast.success('Course added');
     } catch (err) {
-      if (err.code === '42P01') toast.error("Database table not initialized yet.");
-      else toast.error('Failed to add course');
+      console.error(err);
+      toast.error(err.message || 'Failed to save');
     }
   };
 
