@@ -1,248 +1,225 @@
-import React, { useState, useEffect } from 'react';
-import { supabase } from '@/api/supabaseClient';
+import React, { useState } from 'react';
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { motion } from 'framer-motion';
-import { Plus, Search, Filter, Package, AlertTriangle, ArrowUpRight, ArrowDownRight, Edit2, Trash2 } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Package, Plus, Search, Trash2, Edit2, Loader2, AlertTriangle, DollarSign, Archive, XCircle, BarChart2, Filter } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+
+const EMPTY_FORM = { item_name: '', sku: '', category: '', quantity: 0, unit_price: 0, reorder_level: 10, status: 'In Stock', supplier: '', location: '' };
 
 export default function UnivInventory() {
   const companyId = useCompanyId();
-  const [inventory, setInventory] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
+  const queryClient = useQueryClient();
+  const [search, setSearch] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [form, setForm] = useState(EMPTY_FORM);
+  const [filterStatus, setFilterStatus] = useState('All');
 
-  const [isAdding, setIsAdding] = useState(false);
-  const [newItemName, setNewItemName] = useState('');
-  const [newSku, setNewSku] = useState('');
-  const [newQuantity, setNewQuantity] = useState(0);
-  const [newPrice, setNewPrice] = useState(0);
+  const { data: inventory = [], isLoading } = useQuery({
+    queryKey: ['univ_inventory', companyId],
+    queryFn: async () => {
+      const res = await base44.db.from('univ_inventory').select('*').eq('company_id', companyId).order('item_name', { ascending: true });
+      if (res.error) throw res.error;
+      return res.data;
+    },
+    enabled: !!companyId
+  });
 
-  useEffect(() => {
-    if (companyId) {
-      fetchInventory();
-      const channel = supabase.channel('inv_changes')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'univ_inventory', filter: `company_id=eq.${companyId}` }, () => {
-          fetchInventory();
-        }).subscribe();
-      return () => { supabase.removeChannel(channel); };
-    }
-  }, [companyId]);
+  const saveItem = useMutation({
+    mutationFn: async (payload) => {
+      const data = {
+        ...payload,
+        status: payload.quantity > (payload.reorder_level || 10) ? 'In Stock' : payload.quantity === 0 ? 'Out of Stock' : 'Low Stock'
+      };
+      if (editingId) return base44.db.from('univ_inventory').update(data).eq('id', editingId);
+      return base44.db.from('univ_inventory').insert([{ ...data, company_id: companyId }]);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['univ_inventory']);
+      toast.success(editingId ? 'Item updated!' : 'Item added!');
+      closeModal();
+    },
+    onError: () => toast.error('Failed to save item')
+  });
 
-  const fetchInventory = async () => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from('univ_inventory')
-        .select('*')
-        .eq('company_id', companyId)
-        .order('item_name', { ascending: true });
-      if (error && error.code !== '42P01') throw error;
-      setInventory(data || []);
-    } catch (err) {
-      // Mock data removed
-    } finally {
-      setLoading(false);
-    }
+  const deleteItem = useMutation({
+    mutationFn: async (id) => base44.db.from('univ_inventory').delete().eq('id', id),
+    onSuccess: () => { queryClient.invalidateQueries(['univ_inventory']); toast.success('Item deleted'); },
+    onError: () => toast.error('Failed to delete')
+  });
+
+  const openModal = (item = null) => {
+    setForm(item ? { ...item } : EMPTY_FORM);
+    setEditingId(item?.id || null);
+    setIsModalOpen(true);
   };
 
-  const handleAddItem = async (e) => {
-    if (e) e.preventDefault();
-    if (!newItemName.trim()) return;
-    const newItem = {
-      company_id: companyId,
-      item_name: newItemName,
-      sku: newSku || `SKU-${Math.floor(Math.random() * 10000)}`,
-      quantity: Number(newQuantity),
-      unit_price: Number(newPrice),
-      status: Number(newQuantity) > 0 ? 'In Stock' : 'Out of Stock'
-    };
-    try {
-      const { error } = await supabase.from('univ_inventory').insert(newItem);
-      if (error) throw error;
-      toast.success('Item added to inventory');
-      setIsAdding(false);
-      setNewItemName('');
-      setNewSku('');
-      setNewQuantity(0);
-      setNewPrice(0);
-    } catch (err) {
-      toast.error('Failed to add item');
-    }
-  };
+  const closeModal = () => { setIsModalOpen(false); setEditingId(null); setForm(EMPTY_FORM); };
 
-  const handleDeleteItem = async (id) => {
-    try {
-      const { error } = await supabase.from('univ_inventory').delete().eq('id', id);
-      if (error) throw error;
-      toast.success('Item deleted');
-    } catch (err) {
-      toast.error('Failed to delete item');
-    }
-  };
+  const filtered = inventory.filter(i => {
+    const matchSearch = `${i.item_name} ${i.sku} ${i.category} ${i.supplier}`.toLowerCase().includes(search.toLowerCase());
+    const matchStatus = filterStatus === 'All' || i.status === filterStatus;
+    return matchSearch && matchStatus;
+  });
 
-  const filtered = inventory.filter(i => 
-    `${i.item_name} ${i.sku} ${i.category}`.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const lowStockCount = inventory.filter(i => i.quantity <= i.reorder_level).length;
+  const totalValue = inventory.reduce((sum, i) => sum + (Number(i.quantity) * Number(i.unit_price)), 0);
+  const lowStockCount = inventory.filter(i => i.status === 'Low Stock').length;
+  const outOfStockCount = inventory.filter(i => i.status === 'Out of Stock').length;
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
+    <div className="h-full flex flex-col gap-6 w-full bg-background p-4 sm:p-6 lg:p-8">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6 shrink-0">
-        <div className="flex items-center gap-4">
-          <div className="relative w-72">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input 
-              type="text"
-              placeholder="Search items, SKUs..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full h-10 pl-10 pr-4 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
-            />
-          </div>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0">
+        <div>
+          <h1 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-2">
+            <Package className="w-7 h-7 text-primary" /> Inventory
+          </h1>
+          <p className="text-muted-foreground text-sm font-medium mt-1">Track stock, manage products and receive alerts.</p>
         </div>
-        <div className="flex gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 bg-card border border-border rounded-xl text-sm font-medium hover:bg-muted/50 transition-colors">
-            <Filter className="w-4 h-4" /> Filter
-          </button>
-          <button onClick={() => setIsAdding(true)} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm shadow-primary/20">
-            <Plus className="w-4 h-4" /> Add Item
-          </button>
+        <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-sm">
+          <Plus className="w-4 h-4" /> Add Item
+        </button>
+      </div>
+
+      {/* KPIs */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 shrink-0">
+        {[
+          { label: 'Total SKUs', value: inventory.length, bg: 'bg-card', color: 'text-foreground', iconBg: 'bg-primary/10 text-primary', icon: <Archive className="w-5 h-5" /> },
+          { label: 'Inventory Value', value: `$${totalValue.toLocaleString(undefined, {minimumFractionDigits:2,maximumFractionDigits:2})}`, bg: 'bg-emerald-50 border-emerald-100', color: 'text-emerald-700', iconBg: 'bg-emerald-100 text-emerald-600', icon: <DollarSign className="w-5 h-5" /> },
+          { label: 'Low Stock', value: lowStockCount, bg: 'bg-amber-50 border-amber-100', color: 'text-amber-700', iconBg: 'bg-amber-100 text-amber-600', icon: <AlertTriangle className="w-5 h-5" /> },
+          { label: 'Out of Stock', value: outOfStockCount, bg: 'bg-red-50 border-red-100', color: 'text-red-700', iconBg: 'bg-red-100 text-red-600', icon: <BarChart2 className="w-5 h-5" /> },
+        ].map((k, i) => (
+          <div key={i} className={`border p-4 rounded-2xl shadow-sm flex items-center gap-4 ${k.bg}`}>
+            <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${k.iconBg}`}>{k.icon}</div>
+            <div>
+              <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{k.label}</p>
+              <p className={`text-xl font-black mt-0.5 ${k.color}`}>{k.value}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Filters */}
+      <div className="flex flex-col sm:flex-row gap-3 shrink-0">
+        <div className="relative flex-1">
+          <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by name, SKU, category, supplier..." className="w-full h-11 pl-10 pr-4 bg-card border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm shadow-sm" />
+        </div>
+        <div className="flex items-center gap-2 bg-card border border-border rounded-xl px-3 shadow-sm">
+          <Filter className="w-4 h-4 text-muted-foreground shrink-0" />
+          <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} className="h-11 bg-transparent text-sm focus:outline-none text-foreground pr-1">
+            <option value="All">All Status</option>
+            <option value="In Stock">In Stock</option>
+            <option value="Low Stock">Low Stock</option>
+            <option value="Out of Stock">Out of Stock</option>
+          </select>
         </div>
       </div>
 
-      {isAdding && (
-        <div className="mb-6 p-4 bg-card border border-primary/20 rounded-2xl shadow-sm mx-1">
-          <form onSubmit={handleAddItem} className="flex flex-col sm:flex-row sm:items-end gap-4">
-            <div className="flex-[2]">
-              <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Item Name</label>
-              <input 
-                autoFocus
-                type="text" 
-                value={newItemName} 
-                onChange={e => setNewItemName(e.target.value)} 
-                placeholder="Product name..." 
-                className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" 
-              />
-            </div>
-            <div className="flex-1">
-              <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">SKU</label>
-              <input 
-                type="text" 
-                value={newSku} 
-                onChange={e => setNewSku(e.target.value)} 
-                placeholder="SKU-123..." 
-                className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" 
-              />
-            </div>
-            <div className="flex-1">
-              <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Qty</label>
-              <input 
-                type="number" 
-                value={newQuantity} 
-                onChange={e => setNewQuantity(e.target.value)} 
-                className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" 
-              />
-            </div>
-            <div className="flex-1">
-              <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Price ($)</label>
-              <input 
-                type="number" 
-                step="0.01"
-                value={newPrice} 
-                onChange={e => setNewPrice(e.target.value)} 
-                className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" 
-              />
-            </div>
-            <div className="flex gap-2">
-              <button type="submit" className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90">Save</button>
-              <button type="button" onClick={() => setIsAdding(false)} className="h-10 px-4 bg-muted text-foreground rounded-xl text-sm font-medium hover:bg-muted/80 border border-border">Cancel</button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      {/* KPI Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 shrink-0">
-        <div className="bg-card border border-border rounded-2xl p-4 flex items-center justify-between shadow-sm">
-          <div>
-            <p className="text-sm text-muted-foreground font-medium">Total Items</p>
-            <h3 className="text-2xl font-bold text-foreground mt-1">{inventory.length}</h3>
-          </div>
-          <div className="p-3 bg-blue-100 dark:bg-blue-500/10 text-blue-600 rounded-xl"><Package className="w-5 h-5" /></div>
-        </div>
-        <div className="bg-card border border-border rounded-2xl p-4 flex items-center justify-between shadow-sm ring-1 ring-orange-500/20">
-          <div>
-            <p className="text-sm text-muted-foreground font-medium">Low Stock Alerts</p>
-            <h3 className="text-2xl font-bold text-foreground mt-1">{lowStockCount}</h3>
-          </div>
-          <div className="p-3 bg-orange-100 dark:bg-orange-500/10 text-orange-600 rounded-xl"><AlertTriangle className="w-5 h-5" /></div>
-        </div>
-        <div className="bg-card border border-border rounded-2xl p-4 flex items-center justify-between shadow-sm">
-          <div>
-            <p className="text-sm text-muted-foreground font-medium">Inventory Value</p>
-            <h3 className="text-2xl font-bold text-foreground mt-1">
-              ${inventory.reduce((sum, item) => sum + (item.quantity * item.unit_price), 0).toLocaleString()}
-            </h3>
-          </div>
-          <div className="p-3 bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 rounded-xl"><ArrowUpRight className="w-5 h-5" /></div>
-        </div>
-      </div>
-
-      {/* Data Grid */}
-      <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden shadow-sm flex flex-col">
-        <div className="grid grid-cols-12 gap-4 p-4 border-b border-border bg-muted/50 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-          <div className="col-span-4">Item Name & SKU</div>
+      {/* Table */}
+      <div className="flex-1 overflow-auto min-h-0 bg-card border border-border rounded-2xl shadow-sm flex flex-col custom-scrollbar">
+        <div className="grid grid-cols-12 gap-2 p-4 border-b border-border bg-muted/50 text-xs font-bold text-muted-foreground uppercase tracking-wider shrink-0">
+          <div className="col-span-4">Item</div>
           <div className="col-span-2">Category</div>
-          <div className="col-span-2 text-right">Quantity</div>
+          <div className="col-span-1 text-right">Qty</div>
           <div className="col-span-2 text-right">Unit Price</div>
-          <div className="col-span-2 text-right">Status</div>
+          <div className="col-span-2">Status</div>
+          <div className="col-span-1 text-right">Actions</div>
         </div>
-        <div className="flex-1 overflow-y-auto">
-          {filtered.map(item => {
-            const isLow = item.quantity <= item.reorder_level;
-            return (
-              <div key={item.id} className="grid grid-cols-12 gap-4 p-4 border-b border-border hover:bg-muted/30 transition-colors items-center">
-                <div className="col-span-4 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-border shrink-0">
-                    <Package className="w-5 h-5 text-slate-400" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="font-bold text-sm text-foreground">{item.item_name}</span>
-                    <span className="text-xs text-muted-foreground">{item.sku}</span>
-                  </div>
+        <div className="flex-1 overflow-y-auto custom-scrollbar">
+          {isLoading ? (
+            <div className="flex h-40 items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
+          ) : filtered.length === 0 ? (
+            <div className="p-12 text-center text-muted-foreground">
+              <Package className="w-12 h-12 mx-auto text-muted-foreground/30 mb-3" />
+              <p className="font-medium">No items found. Add your first inventory item.</p>
+            </div>
+          ) : filtered.map(item => (
+            <div key={item.id} className="grid grid-cols-12 gap-2 p-4 border-b border-border hover:bg-muted/30 transition-colors items-center group">
+              <div className="col-span-4 flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center shrink-0 border border-border">
+                  <Package className="w-4 h-4 text-muted-foreground" />
                 </div>
-                <div className="col-span-2">
-                  <span className="text-sm text-slate-600 dark:text-slate-400">{item.category || '—'}</span>
-                </div>
-                <div className="col-span-2 text-right flex flex-col items-end">
-                  <span className={`text-sm font-bold ${isLow ? 'text-orange-600' : 'text-foreground'}`}>{item.quantity}</span>
-                  {isLow && <span className="text-[10px] text-orange-600 font-medium">Reorder: {item.reorder_level}</span>}
-                </div>
-                <div className="col-span-2 text-right text-sm font-medium text-foreground">
-                  ${Number(item.unit_price).toFixed(2)}
-                </div>
-                <div className="col-span-2 text-right flex justify-end items-center gap-3">
-                  <span className={`px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-md border ${
-                    item.quantity === 0 ? 'bg-red-50 text-red-700 border-red-200' : 
-                    isLow ? 'bg-orange-50 text-orange-700 border-orange-200' : 
-                    'bg-emerald-50 text-emerald-700 border-emerald-200'
-                  }`}>
-                    {item.quantity === 0 ? 'Out of Stock' : isLow ? 'Low Stock' : 'In Stock'}
-                  </span>
-                  <button onClick={() => handleDeleteItem(item.id)} className="text-red-500 hover:text-red-600 transition-colors">
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                <div>
+                  <p className="font-bold text-sm text-foreground">{item.item_name}</p>
+                  <p className="text-xs text-muted-foreground">{item.sku || '—'}</p>
                 </div>
               </div>
-            );
-          })}
-          {filtered.length === 0 && (
-             <div className="p-8 text-center text-muted-foreground">No inventory items found.</div>
-          )}
+              <div className="col-span-2 text-sm text-muted-foreground">{item.category || '—'}</div>
+              <div className="col-span-1 text-right">
+                <span className={`text-sm font-black ${item.status === 'Out of Stock' ? 'text-red-600' : item.status === 'Low Stock' ? 'text-amber-600' : 'text-foreground'}`}>{item.quantity}</span>
+              </div>
+              <div className="col-span-2 text-right text-sm font-bold text-foreground">${Number(item.unit_price).toFixed(2)}</div>
+              <div className="col-span-2">
+                <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider border ${
+                  item.status === 'In Stock' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                  item.status === 'Low Stock' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                  'bg-red-50 text-red-700 border-red-200'
+                }`}>{item.status}</span>
+              </div>
+              <div className="col-span-1 flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button onClick={() => openModal(item)} className="p-1.5 text-muted-foreground hover:text-primary bg-muted rounded-md"><Edit2 className="w-3.5 h-3.5" /></button>
+                <button onClick={() => deleteItem.mutate(item.id)} className="p-1.5 text-red-400 hover:text-red-600 bg-red-50 rounded-md"><Trash2 className="w-3.5 h-3.5" /></button>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="bg-card w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
+            <div className="p-5 border-b border-border flex justify-between items-center shrink-0">
+              <h2 className="text-xl font-black">{editingId ? 'Edit Item' : 'Add Inventory Item'}</h2>
+              <button onClick={closeModal} className="p-2 bg-muted hover:bg-muted/80 rounded-full text-muted-foreground"><XCircle className="w-5 h-5" /></button>
+            </div>
+            <form onSubmit={e => { e.preventDefault(); saveItem.mutate(form); }} className="p-5 overflow-y-auto flex-1 custom-scrollbar">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-2">
+                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Item Name *</label>
+                  <input required type="text" value={form.item_name} onChange={e => setForm({...form, item_name: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">SKU</label>
+                  <input type="text" value={form.sku} onChange={e => setForm({...form, sku: e.target.value})} placeholder="Auto-generated if blank" className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Category</label>
+                  <input type="text" value={form.category} onChange={e => setForm({...form, category: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Quantity *</label>
+                  <input required type="number" min="0" value={form.quantity} onChange={e => setForm({...form, quantity: parseInt(e.target.value) || 0})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Unit Price ($) *</label>
+                  <input required type="number" min="0" step="0.01" value={form.unit_price} onChange={e => setForm({...form, unit_price: parseFloat(e.target.value) || 0})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Reorder Level</label>
+                  <input type="number" min="0" value={form.reorder_level} onChange={e => setForm({...form, reorder_level: parseInt(e.target.value) || 0})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Supplier</label>
+                  <input type="text" value={form.supplier} onChange={e => setForm({...form, supplier: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Storage Location</label>
+                  <input type="text" value={form.location} onChange={e => setForm({...form, location: e.target.value})} placeholder="Warehouse, Shelf A2..." className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
+                </div>
+              </div>
+              <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-border">
+                <button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium">Cancel</button>
+                <button type="submit" disabled={saveItem.isPending} className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold shadow-sm">
+                  {saveItem.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : editingId ? 'Update Item' : 'Add Item'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

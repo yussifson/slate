@@ -18,6 +18,11 @@ const UnivProject = React.lazy(() => import('@/components/universal/UnivProject'
 const UnivContactManagement = React.lazy(() => import('@/components/universal/UnivContactManagement'));
 const UnivKanban = React.lazy(() => import('@/components/universal/UnivKanban'));
 const UnivDocument = React.lazy(() => import('@/components/universal/UnivDocument'));
+const UnivInventory = React.lazy(() => import('@/components/universal/UnivInventory'));
+const UnivHREmployee = React.lazy(() => import('@/components/universal/UnivHREmployee'));
+const UnivInvoice = React.lazy(() => import('@/components/universal/UnivInvoice'));
+const UnivPayroll = React.lazy(() => import('@/components/universal/UnivPayroll'));
+const UnivRecruitment = React.lazy(() => import('@/components/universal/UnivRecruitment'));
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -349,10 +354,10 @@ function PlatformRoutes() {
       <Route path="/cases" element={<UnivProject />} />
       <Route path="/clients" element={<UnivContactManagement />} />
       <Route path="/calendar" element={<CalendarPage />} />
-      <Route path="/invoices" element={<Invoices />} />
+      <Route path="/invoices" element={<UnivInvoice />} />
       <Route path="/tasks" element={<UnivKanban />} />
       <Route path="/documents" element={<UnivDocument />} />
-      <Route path="/team" element={<Team />} />
+      <Route path="/team" element={<UnivHREmployee />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/settings/custom-fields" element={<CustomFieldsSettings />} />
       <Route path="/integrations" element={<AppIntegrations />} />
@@ -364,7 +369,7 @@ function PlatformRoutes() {
       <Route path="/pipeline" element={<CasePipelinePage />} />
       <Route path="/research" element={<LegalResearch />} />
       <Route path="/audit" element={<AuditLog />} />
-      <Route path="/leave" element={<LeaveManagement />} />
+      <Route path="/leave" element={<UnivPayroll />} />
       <Route path="/performance" element={<PerformanceDashboard />} />
       <Route path="/outcomes" element={<CaseOutcomes />} />
       <Route path="/conflict-check" element={<ConflictChecker />} />
@@ -372,7 +377,10 @@ function PlatformRoutes() {
       <Route path="/reports" element={<ReportsDashboard />} />
       <Route path="/export" element={<DataExport />} />
       <Route path="/whatsapp" element={<WhatsAppMessenger />} />
-      <Route path="/hr" element={<HRDashboard />} />
+      <Route path="/hr" element={<UnivHREmployee />} />
+      <Route path="/recruitment" element={<UnivRecruitment />} />
+      <Route path="/inventory" element={<UnivInventory />} />
+      <Route path="/payroll" element={<UnivPayroll />} />
       <Route path="/firm-setup" element={<OnboardingWizard />} />
       <Route path="/chat" element={<Chat />} />
       <Route path="/board" element={<Board />} />
