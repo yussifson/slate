@@ -1,268 +1,185 @@
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { base44 } from '@/api/base44Client';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { 
-  Calendar as CalendarIcon, Clock, User, FileText, Plus, Search, 
-  Trash2, Edit2, Loader2, CheckCircle2, XCircle, LayoutGrid, List
-} from 'lucide-react';
+import { Calendar, Plus, Search, Trash2, Edit2, Loader2, XCircle, Clock, User, CheckCircle2, LayoutGrid, List } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+
+const EMPTY_FORM = { title: '', client_name: '', client_email: '', client_phone: '', date: '', time: '', duration_minutes: 60, location: '', notes: '', status: 'Scheduled' };
+const STATUS_COLORS = { Scheduled: 'bg-blue-50 text-blue-700 border-blue-200', Completed: 'bg-emerald-50 text-emerald-700 border-emerald-200', Cancelled: 'bg-red-50 text-red-700 border-red-200', 'No Show': 'bg-slate-100 text-slate-600 border-slate-200' };
 
 export default function UnivAppointments() {
-  const { t } = useTranslation();
   const companyId = useCompanyId();
-  const queryClient = useQueryClient();
+  const [records, setRecords] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
   const [viewMode, setViewMode] = useState('list');
-  const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [viewingData, setViewingData] = useState(null);
-  const [formData, setFormData] = useState({ title: '', client_name: '', appointment_date: '', appointment_time: '', duration: 60, status: 'upcoming', notes: '' });
+  const [form, setForm] = useState(EMPTY_FORM);
 
-  const { data: appointments = [], isLoading } = useQuery({
-    queryKey: ['univ_appointments', companyId],
-    queryFn: async () => {
-      const res = await base44.db.from('univ_appointments')
-        .select('*')
-        .eq('company_id', companyId)
-        .order('appointment_date', { ascending: true })
-        .order('appointment_time', { ascending: true });
-      if (res.error) throw res.error;
-      return res.data;
-    },
-    enabled: !!companyId
-  });
-
-  const mutateRecord = useMutation({
-    mutationFn: async (payload) => {
-      if (editingId) {
-        return await base44.db.from('univ_appointments').update(payload).eq('id', editingId);
-      }
-      return await base44.db.from('univ_appointments').insert([{ ...payload, company_id: companyId }]);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['univ_appointments']);
-      toast.success(editingId ? "Appointment updated" : "Appointment scheduled");
-      setIsModalOpen(false);
-      setEditingId(null);
+  useEffect(() => {
+    if (companyId) {
+      fetchRecords();
+      const channel = supabase.channel('appt_changes')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'univ_appointments', filter: `company_id=eq.${companyId}` }, fetchRecords)
+        .subscribe();
+      return () => supabase.removeChannel(channel);
     }
-  });
+  }, [companyId]);
 
-  const deleteRecord = useMutation({
-    mutationFn: async (id) => await base44.db.from('univ_appointments').delete().eq('id', id),
-    onSuccess: () => {
-      queryClient.invalidateQueries(['univ_appointments']);
-      toast.success("Appointment deleted");
-    }
-  });
+  const fetchRecords = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.from('univ_appointments').select('*').eq('company_id', companyId).order('date', { ascending: true });
+      if (error && error.code !== '42P01') throw error;
+      setRecords(data || []);
+    } catch (err) { console.error(err); } finally { setLoading(false); }
+  };
 
-  const handleSubmit = (e) => {
+  const save = async (e) => {
     e.preventDefault();
-    mutateRecord.mutate(formData);
+    try {
+      if (editingId) {
+        const { error } = await supabase.from('univ_appointments').update(form).eq('id', editingId);
+        if (error) throw error;
+        toast.success('Appointment updated!');
+      } else {
+        const { error } = await supabase.from('univ_appointments').insert({ ...form, company_id: companyId });
+        if (error) throw error;
+        toast.success('Appointment scheduled!');
+      }
+      closeModal();
+    } catch (err) { toast.error('Failed to save'); }
   };
 
-  const openModal = (record = null) => {
-    if (record) {
-      setFormData(record);
-      setEditingId(record.id);
-    } else {
-      setFormData({ title: '', client_name: '', appointment_date: '', appointment_time: '', duration: 60, status: 'upcoming', notes: '' });
-      setEditingId(null);
-    }
-    setIsModalOpen(true);
+  const remove = async (id) => {
+    const { error } = await supabase.from('univ_appointments').delete().eq('id', id);
+    if (error) toast.error('Failed to delete'); else toast.success('Deleted');
   };
 
-  const filteredData = appointments.filter(a => 
-    a.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    a.client_name?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const updateStatus = async (id, status) => {
+    await supabase.from('univ_appointments').update({ status }).eq('id', id);
+  };
 
-  const upcoming = appointments.filter(a => a.status === 'upcoming').length;
-  const completed = appointments.filter(a => a.status === 'completed').length;
+  const openModal = (r = null) => { setForm(r ? { ...r } : EMPTY_FORM); setEditingId(r?.id || null); setIsModalOpen(true); };
+  const closeModal = () => { setIsModalOpen(false); setEditingId(null); setForm(EMPTY_FORM); };
+
+  const filtered = records.filter(r => `${r.title} ${r.client_name} ${r.status}`.toLowerCase().includes(search.toLowerCase()));
+  const today = new Date().toISOString().split('T')[0];
 
   return (
     <div className="h-full flex flex-col gap-6 w-full bg-background p-4 sm:p-6 lg:p-8">
-      
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0">
         <div>
-          <h1 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-2">
-            <CalendarIcon className="w-7 h-7 text-primary" /> Appointments
-          </h1>
-          <p className="text-muted-foreground text-sm font-medium mt-1">Manage scheduling and client meetings.</p>
+          <h1 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-2"><Calendar className="w-7 h-7 text-primary" /> Appointments</h1>
+          <p className="text-muted-foreground text-sm font-medium mt-1">Schedule and manage all client appointments.</p>
         </div>
-        <div className="flex gap-2">
-          <div className="bg-muted p-1 rounded-xl flex">
-            <button onClick={() => setViewMode('list')} className={`px-4 py-1.5 text-sm font-bold rounded-lg transition-all ${viewMode === 'list' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground'}`}>List</button>
-            <button onClick={() => setViewMode('grid')} className={`px-4 py-1.5 text-sm font-bold rounded-lg transition-all ${viewMode === 'grid' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground'}`}>Grid</button>
-          </div>
-          <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-sm">
-            <Plus className="w-4 h-4" /> Schedule
-          </button>
+        <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-sm"><Plus className="w-4 h-4" /> New Appointment</button>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 shrink-0">
+        {[
+          { label: 'Total', value: records.length, color: 'text-foreground', bg: 'bg-card' },
+          { label: "Today", value: records.filter(r => r.date === today).length, color: 'text-primary', bg: 'bg-primary/5 border-primary/20' },
+          { label: 'Completed', value: records.filter(r => r.status === 'Completed').length, color: 'text-emerald-600', bg: 'bg-emerald-50 border-emerald-100' },
+          { label: 'Cancelled', value: records.filter(r => r.status === 'Cancelled').length, color: 'text-red-500', bg: 'bg-red-50 border-red-100' },
+        ].map((k, i) => <div key={i} className={`border p-4 rounded-2xl shadow-sm ${k.bg}`}><p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">{k.label}</p><p className={`text-2xl font-black ${k.color}`}>{k.value}</p></div>)}
+      </div>
+
+      <div className="flex gap-3 shrink-0">
+        <div className="relative flex-1"><Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" /><input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by title, client..." className="w-full h-11 pl-10 pr-4 bg-card border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm shadow-sm" /></div>
+        <div className="flex bg-card border border-border rounded-xl p-1 shadow-sm gap-1">
+          <button onClick={() => setViewMode('list')} className={`px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-1.5 ${viewMode === 'list' ? 'bg-primary text-white' : 'text-muted-foreground'}`}><List className="w-4 h-4" />List</button>
+          <button onClick={() => setViewMode('grid')} className={`px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-1.5 ${viewMode === 'grid' ? 'bg-primary text-white' : 'text-muted-foreground'}`}><LayoutGrid className="w-4 h-4" />Grid</button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 shrink-0">
-        <div className="bg-card border border-border p-5 rounded-2xl shadow-sm flex items-center justify-between">
-          <div><p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Total Appointments</p><p className="text-3xl font-black text-foreground mt-1">{appointments.length}</p></div>
-          <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary"><CalendarIcon className="w-6 h-6" /></div>
-        </div>
-        <div className="bg-emerald-50 border border-emerald-100 p-5 rounded-2xl shadow-sm flex items-center justify-between">
-          <div><p className="text-xs font-bold text-emerald-600 uppercase tracking-wider">Completed</p><p className="text-3xl font-black text-emerald-700 mt-1">{completed}</p></div>
-          <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600"><CheckCircle2 className="w-6 h-6" /></div>
-        </div>
-        <div className="bg-blue-50 border border-blue-100 p-5 rounded-2xl shadow-sm flex items-center justify-between">
-          <div><p className="text-xs font-bold text-blue-600 uppercase tracking-wider">Upcoming</p><p className="text-3xl font-black text-blue-700 mt-1">{upcoming}</p></div>
-          <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600"><Clock className="w-6 h-6" /></div>
-        </div>
-      </div>
-
-      <div className="relative shrink-0">
-        <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-        <input 
-          type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
-          placeholder="Search appointments..." 
-          className="w-full h-12 pl-10 pr-4 bg-card border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm shadow-sm"
-        />
-      </div>
-
-      <div className="flex-1 overflow-auto custom-scrollbar min-h-0 bg-card border border-border rounded-2xl shadow-sm">
-        {isLoading ? (
-          <div className="flex h-full items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
-        ) : viewMode === 'list' ? (
-          <table className="w-full text-left text-sm whitespace-nowrap">
-            <thead className="bg-muted/50 sticky top-0 z-10 backdrop-blur-sm">
-              <tr>
-                <th className="px-6 py-4 font-bold text-muted-foreground uppercase text-[11px] tracking-wider">Title / Client</th>
-                <th className="px-6 py-4 font-bold text-muted-foreground uppercase text-[11px] tracking-wider">Date & Time</th>
-                <th className="px-6 py-4 font-bold text-muted-foreground uppercase text-[11px] tracking-wider">Status</th>
-                <th className="px-6 py-4 font-bold text-muted-foreground uppercase text-[11px] tracking-wider text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {filteredData.map(a => (
-                <tr key={a.id} className="hover:bg-muted/30 transition-colors cursor-pointer" onClick={() => setViewingData(a)}>
-                  <td className="px-6 py-4">
-                    <p className="font-bold text-foreground">{a.title}</p>
-                    <p className="text-xs text-muted-foreground">{a.client_name}</p>
-                  </td>
-                  <td className="px-6 py-4 font-medium">{a.appointment_date} <span className="text-muted-foreground ml-1">{a.appointment_time}</span></td>
-                  <td className="px-6 py-4">
-                    <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${a.status === 'completed' ? 'bg-emerald-100 text-emerald-700' : a.status === 'upcoming' ? 'bg-blue-100 text-blue-700' : 'bg-red-100 text-red-700'}`}>{a.status}</span>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <button onClick={(e) => { e.stopPropagation(); openModal(a); }} className="p-2 text-muted-foreground hover:text-primary transition-colors"><Edit2 className="w-4 h-4" /></button>
-                    <button onClick={(e) => { e.stopPropagation(); deleteRecord.mutate(a.id); }} className="p-2 text-red-400 hover:text-red-600 transition-colors"><Trash2 className="w-4 h-4" /></button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-            {filteredData.map(a => (
-              <div key={a.id} onClick={() => setViewingData(a)} className="bg-background border border-border p-5 rounded-2xl shadow-sm hover:shadow-md cursor-pointer transition-all">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="font-bold text-foreground truncate">{a.title}</h3>
-                    <p className="text-xs text-muted-foreground mt-0.5">{a.client_name}</p>
-                  </div>
-                  <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase ${a.status === 'completed' ? 'bg-emerald-100 text-emerald-700' : a.status === 'upcoming' ? 'bg-blue-100 text-blue-700' : 'bg-red-100 text-red-700'}`}>{a.status}</span>
+      <div className="flex-1 overflow-auto min-h-0 custom-scrollbar">
+        {loading ? <div className="flex h-40 items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
+        : viewMode === 'grid' ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-8">
+            {filtered.map(r => (
+              <div key={r.id} className="bg-card border border-border rounded-2xl p-5 shadow-sm hover:shadow-md transition-all group flex flex-col gap-3">
+                <div className="flex justify-between items-start">
+                  <h3 className="font-bold text-base text-foreground">{r.title}</h3>
+                  <span className={`px-2 py-0.5 text-[10px] font-bold uppercase border rounded-md ${STATUS_COLORS[r.status]}`}>{r.status}</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-foreground font-medium bg-muted/50 p-2.5 rounded-lg mb-4">
-                  <CalendarIcon className="w-4 h-4 text-primary" /> {a.appointment_date} <Clock className="w-4 h-4 ml-2 text-primary" /> {a.appointment_time}
-                </div>
-                <div className="flex justify-end gap-2 border-t border-border pt-4">
-                  <button onClick={(e) => { e.stopPropagation(); openModal(a); }} className="p-1.5 text-muted-foreground hover:text-primary bg-muted rounded-md"><Edit2 className="w-4 h-4" /></button>
-                  <button onClick={(e) => { e.stopPropagation(); deleteRecord.mutate(a.id); }} className="p-1.5 text-red-400 hover:text-red-600 bg-red-50 rounded-md"><Trash2 className="w-4 h-4" /></button>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground"><User className="w-4 h-4 text-primary" />{r.client_name || '—'}</div>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground"><Calendar className="w-4 h-4 text-primary" />{r.date} {r.time && `at ${r.time}`}</div>
+                {r.duration_minutes && <div className="flex items-center gap-2 text-sm text-muted-foreground"><Clock className="w-4 h-4 text-primary" />{r.duration_minutes} minutes</div>}
+                <div className="flex justify-end gap-1 mt-auto pt-3 border-t border-border opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button onClick={() => openModal(r)} className="p-1.5 bg-muted rounded-md text-muted-foreground hover:text-primary"><Edit2 className="w-3.5 h-3.5" /></button>
+                  <button onClick={() => remove(r.id)} className="p-1.5 bg-red-50 rounded-md text-red-400 hover:text-red-600"><Trash2 className="w-3.5 h-3.5" /></button>
                 </div>
               </div>
             ))}
+            {filtered.length === 0 && <div className="col-span-full py-20 text-center text-muted-foreground border-2 border-dashed border-border rounded-2xl"><Calendar className="w-12 h-12 mx-auto text-muted-foreground/30 mb-3" /><p className="font-medium">No appointments found.</p></div>}
+          </div>
+        ) : (
+          <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm">
+            <table className="w-full text-sm">
+              <thead className="bg-muted/50 border-b border-border">
+                <tr>{['Title', 'Client', 'Date & Time', 'Duration', 'Status', 'Actions'].map(h => <th key={h} className="p-4 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">{h}</th>)}</tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {filtered.map(r => (
+                  <tr key={r.id} className="hover:bg-muted/30 transition-colors group">
+                    <td className="p-4 font-bold text-foreground">{r.title}</td>
+                    <td className="p-4"><p className="font-medium">{r.client_name || '—'}</p><p className="text-xs text-muted-foreground">{r.client_email}</p></td>
+                    <td className="p-4 text-muted-foreground">{r.date} {r.time && <span className="font-mono text-xs">@ {r.time}</span>}</td>
+                    <td className="p-4 text-muted-foreground">{r.duration_minutes ? `${r.duration_minutes} min` : '—'}</td>
+                    <td className="p-4">
+                      <select value={r.status} onChange={e => updateStatus(r.id, e.target.value)} className={`px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-md border cursor-pointer focus:outline-none ${STATUS_COLORS[r.status]}`}>
+                        {Object.keys(STATUS_COLORS).map(s => <option key={s}>{s}</option>)}
+                      </select>
+                    </td>
+                    <td className="p-4">
+                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onClick={() => openModal(r)} className="p-1.5 bg-muted rounded-md text-muted-foreground hover:text-primary"><Edit2 className="w-3.5 h-3.5" /></button>
+                        <button onClick={() => remove(r.id)} className="p-1.5 bg-red-50 rounded-md text-red-400 hover:text-red-600"><Trash2 className="w-3.5 h-3.5" /></button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+                {filtered.length === 0 && <tr><td colSpan={6} className="p-12 text-center text-muted-foreground">No appointments found.</td></tr>}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
 
-      {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-          <div className="bg-card w-full max-w-lg rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-card w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
             <div className="p-5 border-b border-border flex justify-between items-center shrink-0">
-              <h2 className="text-xl font-black text-foreground">{editingId ? 'Edit Appointment' : 'Schedule Appointment'}</h2>
-              <button onClick={() => setIsModalOpen(false)} className="p-2 bg-muted hover:bg-muted/80 rounded-full text-muted-foreground transition-colors"><XCircle className="w-5 h-5" /></button>
+              <h2 className="text-xl font-black">{editingId ? 'Edit Appointment' : 'Schedule Appointment'}</h2>
+              <button onClick={closeModal} className="p-2 bg-muted rounded-full text-muted-foreground"><XCircle className="w-5 h-5" /></button>
             </div>
-            <form onSubmit={handleSubmit} className="p-5 overflow-y-auto flex-1 custom-scrollbar">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div className="sm:col-span-2">
-                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Title</label>
-                  <input required type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
-                </div>
-                <div className="sm:col-span-2">
-                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Client Name</label>
-                  <input type="text" value={formData.client_name} onChange={e => setFormData({...formData, client_name: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Date</label>
-                  <input required type="date" value={formData.appointment_date} onChange={e => setFormData({...formData, appointment_date: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Time</label>
-                  <input required type="time" value={formData.appointment_time} onChange={e => setFormData({...formData, appointment_time: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Duration (mins)</label>
-                  <input type="number" value={formData.duration} onChange={e => setFormData({...formData, duration: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Status</label>
-                  <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">
-                    <option value="upcoming">Upcoming</option>
-                    <option value="completed">Completed</option>
-                    <option value="cancelled">Cancelled</option>
+            <form onSubmit={save} className="p-5 overflow-y-auto flex-1 custom-scrollbar">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-2"><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Title *</label><input required type="text" value={form.title} onChange={e => setForm({...form, title: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" /></div>
+                <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Client Name</label><input type="text" value={form.client_name} onChange={e => setForm({...form, client_name: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" /></div>
+                <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Client Email</label><input type="email" value={form.client_email} onChange={e => setForm({...form, client_email: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" /></div>
+                <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Client Phone</label><input type="tel" value={form.client_phone} onChange={e => setForm({...form, client_phone: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" /></div>
+                <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Status</label>
+                  <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">
+                    {Object.keys(STATUS_COLORS).map(s => <option key={s}>{s}</option>)}
                   </select>
                 </div>
-                <div className="sm:col-span-2">
-                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Notes</label>
-                  <textarea rows="3" value={formData.notes} onChange={e => setFormData({...formData, notes: e.target.value})} className="w-full p-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm resize-none" />
-                </div>
+                <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Date *</label><input required type="date" value={form.date} onChange={e => setForm({...form, date: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" /></div>
+                <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Time</label><input type="time" value={form.time} onChange={e => setForm({...form, time: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" /></div>
+                <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Duration (minutes)</label><input type="number" min="15" value={form.duration_minutes} onChange={e => setForm({...form, duration_minutes: parseInt(e.target.value)})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" /></div>
+                <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Location</label><input type="text" value={form.location} onChange={e => setForm({...form, location: e.target.value})} placeholder="Office, Zoom, etc." className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" /></div>
+                <div className="col-span-2"><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Notes</label><textarea rows="3" value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} className="w-full p-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm resize-none" /></div>
               </div>
               <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-border">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium">Cancel</button>
-                <button type="submit" disabled={mutateRecord.isPending} className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold shadow-sm">{mutateRecord.isPending ? 'Saving...' : 'Save Appointment'}</button>
+                <button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium">Cancel</button>
+                <button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold shadow-sm">{editingId ? 'Update' : 'Schedule'}</button>
               </div>
             </form>
           </div>
         </div>
       )}
-
-      {/* Sheet */}
-      <Sheet open={!!viewingData} onOpenChange={(open) => !open && setViewingData(null)}>
-        <SheetContent className="overflow-y-auto sm:max-w-md">
-          <SheetHeader className="pb-6 border-b border-border">
-            <SheetTitle className="text-2xl font-black">{viewingData?.title}</SheetTitle>
-            <SheetDescription className="text-sm font-medium flex items-center gap-2 mt-2">
-              <span className={`px-2 py-0.5 text-[10px] uppercase tracking-wider font-bold rounded-md border ${viewingData?.status === 'completed' ? 'bg-emerald-50 text-emerald-700' : 'bg-blue-50 text-blue-700'}`}>{viewingData?.status}</span>
-            </SheetDescription>
-          </SheetHeader>
-          {viewingData && (
-            <div className="mt-6 space-y-6">
-              <div className="bg-muted/50 p-4 rounded-xl border border-border space-y-4">
-                <div><p className="text-[11px] font-bold text-muted-foreground uppercase">Client</p><p className="font-semibold mt-1">{viewingData.client_name || '-'}</p></div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div><p className="text-[11px] font-bold text-muted-foreground uppercase">Date</p><p className="font-semibold mt-1">{viewingData.appointment_date}</p></div>
-                  <div><p className="text-[11px] font-bold text-muted-foreground uppercase">Time</p><p className="font-semibold mt-1">{viewingData.appointment_time}</p></div>
-                </div>
-                <div><p className="text-[11px] font-bold text-muted-foreground uppercase">Duration</p><p className="font-semibold mt-1">{viewingData.duration} mins</p></div>
-              </div>
-              <div>
-                <p className="text-[11px] font-bold text-muted-foreground uppercase mb-2">Notes</p>
-                <div className="bg-card p-4 rounded-xl border border-border text-sm min-h-[100px] whitespace-pre-wrap">{viewingData.notes || 'No notes provided.'}</div>
-              </div>
-            </div>
-          )}
-        </SheetContent>
-      </Sheet>
-
     </div>
   );
 }

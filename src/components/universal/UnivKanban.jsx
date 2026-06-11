@@ -1,230 +1,188 @@
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { useState, useEffect } from 'react';
+import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { base44 } from '@/api/base44Client';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { DragDropContext, Droppable, Draggable } from 'hello-pangea/dnd';
-import { 
-  LayoutList, Plus, Trash2, Edit2, Loader2, GripVertical, AlertCircle, Calendar, CheckCircle2
-} from 'lucide-react';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { LayoutGrid, Plus, Search, Trash2, Edit2, Loader2, XCircle, User, Calendar, Tag } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
+const DEFAULT_COLS = ['To Do', 'In Progress', 'Review', 'Done'];
+const PRIORITY_COLORS = { Low: 'bg-slate-100 text-slate-600', Medium: 'bg-amber-50 text-amber-700', High: 'bg-orange-50 text-orange-700', Urgent: 'bg-red-50 text-red-700' };
+const COL_COLORS = ['border-slate-300', 'border-blue-400', 'border-violet-400', 'border-emerald-400'];
+const EMPTY_FORM = { title: '', description: '', status: 'To Do', priority: 'Medium', assignee: '', due_date: '', labels: '' };
+
 export default function UnivKanban() {
-  const { t } = useTranslation();
   const companyId = useCompanyId();
-  const queryClient = useQueryClient();
-  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
-  const [editingTask, setEditingTask] = useState(null);
-  const [formData, setFormData] = useState({ title: '', description: '', status: 'todo', priority: 'medium', due_date: '' });
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [columns, setColumns] = useState(DEFAULT_COLS);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [form, setForm] = useState(EMPTY_FORM);
+  const [addingCol, setAddingCol] = useState(false);
+  const [newColName, setNewColName] = useState('');
 
-  const STAGES = ['todo', 'in_progress', 'review', 'done'];
-  const STAGE_LABELS = { 'todo': 'To Do', 'in_progress': 'In Progress', 'review': 'Review', 'done': 'Done' };
-
-  // For this generic component, we just use a default board implicitly linked to the company
-  const { data: boards = [] } = useQuery({
-    queryKey: ['univ_kanban_boards', companyId],
-    queryFn: async () => {
-      let res = await base44.db.from('univ_kanban_boards').select('*').eq('company_id', companyId);
-      if (res.data?.length === 0) {
-        res = await base44.db.from('univ_kanban_boards').insert([{ name: 'Main Board', company_id: companyId }]).select();
-      }
-      return res.data || [];
-    },
-    enabled: !!companyId
-  });
-
-  const boardId = boards?.[0]?.id;
-
-  const { data: tasks = [], isLoading } = useQuery({
-    queryKey: ['univ_kanban_tasks', boardId],
-    queryFn: async () => {
-      const res = await base44.db.from('univ_kanban_tasks').select('*').eq('board_id', boardId).order('created_at', { ascending: false });
-      if (res.error) throw res.error;
-      return res.data;
-    },
-    enabled: !!boardId
-  });
-
-  const mutateTask = useMutation({
-    mutationFn: async (payload) => {
-      if (editingTask) return await base44.db.from('univ_kanban_tasks').update(payload).eq('id', editingTask);
-      return await base44.db.from('univ_kanban_tasks').insert([{ ...payload, board_id: boardId }]);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['univ_kanban_tasks']);
-      toast.success(editingTask ? "Task updated" : "Task added");
-      setIsTaskModalOpen(false);
-      setEditingTask(null);
+  useEffect(() => {
+    if (companyId) {
+      fetchTasks();
+      const savedCols = localStorage.getItem(`kanban_cols_${companyId}`);
+      if (savedCols) setColumns(JSON.parse(savedCols));
+      const ch = supabase.channel('kanban_ch').on('postgres_changes', { event: '*', schema: 'public', table: 'univ_kanban_tasks', filter: `company_id=eq.${companyId}` }, fetchTasks).subscribe();
+      return () => supabase.removeChannel(ch);
     }
-  });
+  }, [companyId]);
 
-  const deleteTask = useMutation({
-    mutationFn: async (id) => await base44.db.from('univ_kanban_tasks').delete().eq('id', id),
-    onSuccess: () => {
-      queryClient.invalidateQueries(['univ_kanban_tasks']);
-      toast.success("Task deleted");
-    }
-  });
-
-  const updateTaskStatus = useMutation({
-    mutationFn: async ({ id, status }) => await base44.db.from('univ_kanban_tasks').update({ status }).eq('id', id),
-    onSuccess: () => queryClient.invalidateQueries(['univ_kanban_tasks'])
-  });
-
-  const onDragEnd = (result) => {
-    if (!result.destination) return;
-    const { source, destination, draggableId } = result;
-    if (source.droppableId !== destination.droppableId) {
-      updateTaskStatus.mutate({ id: draggableId, status: destination.droppableId });
-    }
+  const fetchTasks = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.from('univ_kanban_tasks').select('*').eq('company_id', companyId).order('created_at', { ascending: true });
+      if (error && error.code !== '42P01') throw error;
+      setTasks(data || []);
+    } catch (e) { console.error(e); } finally { setLoading(false); }
   };
 
-  const openTaskModal = (task = null, status = 'todo') => {
-    if (task) {
-      setFormData(task);
-      setEditingTask(task.id);
-    } else {
-      setFormData({ title: '', description: '', status, priority: 'medium', due_date: '' });
-      setEditingTask(null);
-    }
-    setIsTaskModalOpen(true);
-  };
-
-  const handleSubmit = (e) => {
+  const save = async (e) => {
     e.preventDefault();
-    mutateTask.mutate(formData);
+    try {
+      if (editingId) {
+        const { error } = await supabase.from('univ_kanban_tasks').update(form).eq('id', editingId);
+        if (error) throw error;
+        toast.success('Task updated!');
+      } else {
+        const { error } = await supabase.from('univ_kanban_tasks').insert({ ...form, company_id: companyId });
+        if (error) throw error;
+        toast.success('Task created!');
+      }
+      closeModal(); fetchTasks();
+    } catch (err) { toast.error('Failed to save task'); }
   };
+
+  const remove = async (id) => {
+    const { error } = await supabase.from('univ_kanban_tasks').delete().eq('id', id);
+    if (error) toast.error('Failed to delete'); else { toast.success('Deleted'); fetchTasks(); }
+  };
+
+  const openModal = (r = null, defaultStatus = 'To Do') => {
+    setForm(r ? { ...r } : { ...EMPTY_FORM, status: defaultStatus });
+    setEditingId(r?.id || null);
+    setIsModalOpen(true);
+  };
+  const closeModal = () => { setIsModalOpen(false); setEditingId(null); setForm(EMPTY_FORM); };
+
+  const onDragEnd = async (result) => {
+    if (!result.destination) return;
+    const { draggableId, destination } = result;
+    const newStatus = destination.droppableId;
+    setTasks(prev => prev.map(t => t.id === draggableId ? { ...t, status: newStatus } : t));
+    try {
+      const { error } = await supabase.from('univ_kanban_tasks').update({ status: newStatus }).eq('id', draggableId);
+      if (error) throw error;
+    } catch { toast.error('Failed to move task'); fetchTasks(); }
+  };
+
+  const addColumn = (e) => {
+    e.preventDefault();
+    if (!newColName.trim() || columns.includes(newColName.trim())) return;
+    const updated = [...columns, newColName.trim()];
+    setColumns(updated);
+    localStorage.setItem(`kanban_cols_${companyId}`, JSON.stringify(updated));
+    setNewColName(''); setAddingCol(false);
+    toast.success('Column added!');
+  };
+
+  const filtered = tasks.filter(t => `${t.title} ${t.assignee} ${t.labels}`.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <div className="h-full min-h-[80vh] flex flex-col gap-6 w-full bg-background p-4 sm:p-6 lg:p-8">
-      
-      <div className="flex justify-between items-center shrink-0">
-        <div>
-          <h1 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-2">
-            <LayoutList className="w-7 h-7 text-primary" /> Kanban Board
-          </h1>
-          <p className="text-muted-foreground text-sm font-medium mt-1">Organize your workflow visually.</p>
-        </div>
-        <button onClick={() => openTaskModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-sm">
-          <Plus className="w-4 h-4" /> Add Task
-        </button>
+    <div className="h-full flex flex-col gap-4 w-full bg-background p-4 sm:p-6 lg:p-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0">
+        <div><h1 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-2"><LayoutGrid className="w-7 h-7 text-primary" />Kanban Board</h1><p className="text-muted-foreground text-sm font-medium mt-1">{tasks.length} tasks across {columns.length} columns.</p></div>
+        <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 shadow-sm"><Plus className="w-4 h-4" />Add Task</button>
       </div>
 
-      <div className="flex-1 overflow-x-auto overflow-y-hidden flex gap-5 pb-4 snap-x px-1 min-h-[500px] items-stretch custom-scrollbar">
-        {isLoading ? (
-          <div className="w-full h-full flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
-        ) : (
-          <DragDropContext onDragEnd={onDragEnd}>
-            {STAGES.map(stage => {
-              const stageTasks = tasks.filter(t => t.status === stage);
+      <div className="relative shrink-0 max-w-md"><Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" /><input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search tasks..." className="w-full h-10 pl-10 pr-4 bg-card border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm shadow-sm" /></div>
+
+      {loading ? <div className="flex flex-1 items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div> : (
+        <DragDropContext onDragEnd={onDragEnd}>
+          <div className="flex-1 overflow-x-auto overflow-y-hidden flex gap-4 pb-4 custom-scrollbar min-h-0">
+            {columns.map((col, ci) => {
+              const colTasks = filtered.filter(t => t.status === col);
               return (
-                <div key={stage} className="flex-shrink-0 w-[320px] max-w-[85vw] bg-muted/40 border border-border rounded-2xl flex flex-col snap-center shadow-sm h-full">
-                  <div className="p-4 border-b border-border/50 flex justify-between items-center bg-card/60 rounded-t-2xl shrink-0">
-                    <h3 className="font-bold text-sm text-foreground tracking-tight flex items-center gap-2">
-                      {stage === 'done' && <CheckCircle2 className="w-4 h-4 text-emerald-500" />}
-                      {STAGE_LABELS[stage]}
-                    </h3>
-                    <span className="px-2.5 py-0.5 rounded-full bg-background border border-border text-xs font-bold text-muted-foreground shadow-sm">{stageTasks.length}</span>
+                <div key={col} className={`flex-shrink-0 w-72 rounded-2xl border-t-4 ${COL_COLORS[ci % COL_COLORS.length]} bg-muted/40 border border-border flex flex-col`} style={{ height: 'calc(100% - 4px)' }}>
+                  <div className="p-3 flex justify-between items-center shrink-0">
+                    <h3 className="font-bold text-sm text-foreground">{col}</h3>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs font-bold px-2 py-0.5 bg-background border border-border rounded-full text-muted-foreground">{colTasks.length}</span>
+                      <button onClick={() => openModal(null, col)} className="p-1 text-muted-foreground hover:text-primary transition-colors"><Plus className="w-4 h-4" /></button>
+                    </div>
                   </div>
-                  
-                  <Droppable droppableId={stage}>
+                  <Droppable droppableId={col}>
                     {(provided, snapshot) => (
-                      <div
-                        {...provided.droppableProps}
-                        ref={provided.innerRef}
-                        className={`flex-1 p-3 overflow-y-auto custom-scrollbar flex flex-col gap-3 min-h-[150px] transition-colors ${snapshot.isDraggingOver ? 'bg-primary/5' : ''}`}
-                      >
-                        {stageTasks.map((task, index) => (
+                      <div ref={provided.innerRef} {...provided.droppableProps} className={`flex-1 overflow-y-auto p-2 space-y-2 custom-scrollbar rounded-b-2xl transition-colors ${snapshot.isDraggingOver ? 'bg-primary/5' : ''}`}>
+                        {colTasks.map((task, index) => (
                           <Draggable key={task.id} draggableId={task.id} index={index}>
-                            {(provided, snapshot) => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                className={`bg-card border border-border p-4 rounded-xl transition-all group relative overflow-hidden ${snapshot.isDragging ? 'shadow-xl ring-2 ring-primary scale-105 z-50' : 'shadow-sm hover:shadow-md'}`}
-                                style={provided.draggableProps.style}
-                              >
-                                <div className="absolute left-0 top-0 bottom-0 w-1.5 rounded-l-xl" style={{ backgroundColor: task.priority === 'high' ? '#ef4444' : task.priority === 'medium' ? '#f59e0b' : '#3b82f6' }}></div>
-                                
-                                <div className="flex justify-between items-start mb-2 pl-2">
-                                  <h4 className="font-bold text-[14px] text-foreground tracking-tight pr-6">{task.title}</h4>
-                                  <div className="flex gap-1 absolute right-2 top-2">
-                                    <button onClick={() => openTaskModal(task)} className="text-slate-400 hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity p-1 bg-muted rounded-md"><Edit2 className="w-3.5 h-3.5" /></button>
-                                    <button onClick={() => deleteTask.mutate(task.id)} className="text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity p-1 bg-red-50 rounded-md"><Trash2 className="w-3.5 h-3.5" /></button>
+                            {(prov, snap) => (
+                              <div ref={prov.innerRef} {...prov.draggableProps} {...prov.dragHandleProps} style={prov.draggableProps.style} className={`bg-card border border-border rounded-xl p-3 group shadow-sm transition-all ${snap.isDragging ? 'shadow-xl ring-2 ring-primary scale-105 z-50' : 'hover:shadow-md'}`}>
+                                <div className="flex justify-between items-start mb-2">
+                                  <p className="text-sm font-bold text-foreground leading-snug flex-1 pr-1">{task.title}</p>
+                                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                                    <button onClick={() => openModal(task)} className="p-1 bg-muted rounded-md text-muted-foreground hover:text-primary"><Edit2 className="w-3 h-3" /></button>
+                                    <button onClick={() => remove(task.id)} className="p-1 bg-red-50 rounded-md text-red-400 hover:text-red-600"><Trash2 className="w-3 h-3" /></button>
                                   </div>
                                 </div>
-                                <p className="text-[13px] text-muted-foreground line-clamp-2 pl-2 mb-3">{task.description}</p>
-                                
-                                <div className="flex items-center justify-between pl-2">
-                                  <div {...provided.dragHandleProps} className="text-slate-400 hover:text-foreground cursor-grab active:cursor-grabbing p-1 -ml-1">
-                                    <GripVertical className="w-4 h-4" />
-                                  </div>
-                                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-muted-foreground bg-muted px-2 py-1 rounded-md">
-                                    <Calendar className="w-3 h-3" /> {task.due_date || 'No Date'}
-                                  </div>
+                                {task.description && <p className="text-xs text-muted-foreground mb-2 line-clamp-2">{task.description}</p>}
+                                <div className="flex flex-wrap gap-1 mt-2">
+                                  {task.priority && <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${PRIORITY_COLORS[task.priority]}`}>{task.priority}</span>}
+                                  {task.labels && task.labels.split(',').map(l => <span key={l} className="text-[10px] px-1.5 py-0.5 bg-primary/10 text-primary rounded-md font-bold">{l.trim()}</span>)}
+                                </div>
+                                <div className="flex justify-between items-center mt-2 text-xs text-muted-foreground">
+                                  {task.assignee && <span className="flex items-center gap-1"><User className="w-3 h-3" />{task.assignee}</span>}
+                                  {task.due_date && <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{task.due_date}</span>}
                                 </div>
                               </div>
                             )}
                           </Draggable>
                         ))}
                         {provided.placeholder}
-                        
-                        {/* Quick Add Button at bottom of column */}
-                        <button onClick={() => openTaskModal(null, stage)} className="w-full py-2.5 rounded-lg border-2 border-dashed border-border/50 text-muted-foreground hover:text-foreground hover:border-border hover:bg-muted/30 transition-all flex items-center justify-center gap-2 text-[13px] font-bold mt-2">
-                          <Plus className="w-4 h-4" /> Add Task
-                        </button>
+                        {colTasks.length === 0 && !snapshot.isDraggingOver && <div className="h-20 flex items-center justify-center border-2 border-dashed border-border/50 rounded-xl text-xs text-muted-foreground">Drop tasks here</div>}
                       </div>
                     )}
                   </Droppable>
                 </div>
               );
             })}
-          </DragDropContext>
-        )}
-      </div>
-
-      {/* Modal */}
-      {isTaskModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-          <div className="bg-card w-full max-w-lg rounded-2xl shadow-2xl flex flex-col">
-            <div className="p-5 border-b border-border flex justify-between items-center">
-              <h2 className="text-xl font-black text-foreground">{editingTask ? 'Edit Task' : 'New Task'}</h2>
-              <button onClick={() => setIsTaskModalOpen(false)} className="p-2 bg-muted hover:bg-muted/80 rounded-full text-muted-foreground"><XCircle className="w-5 h-5" /></button>
+            {/* Add Column */}
+            <div className="flex-shrink-0 w-56 rounded-2xl border-2 border-dashed border-border/60 flex flex-col items-center justify-center min-h-[150px] hover:border-border transition-colors bg-card/30">
+              {addingCol ? (
+                <form onSubmit={addColumn} className="p-4 w-full flex flex-col gap-2">
+                  <input autoFocus type="text" value={newColName} onChange={e => setNewColName(e.target.value)} placeholder="Column name..." className="w-full h-9 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+                  <div className="flex gap-2"><button type="submit" className="flex-1 h-8 bg-primary text-white rounded-lg text-xs font-bold">Add</button><button type="button" onClick={() => setAddingCol(false)} className="flex-1 h-8 bg-muted rounded-lg text-xs font-bold">Cancel</button></div>
+                </form>
+              ) : (
+                <button onClick={() => setAddingCol(true)} className="flex flex-col items-center gap-2 text-muted-foreground hover:text-primary transition-colors p-4">
+                  <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center"><Plus className="w-5 h-5" /></div>
+                  <span className="text-sm font-bold">Add Column</span>
+                </button>
+              )}
             </div>
-            <form onSubmit={handleSubmit} className="p-5">
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Title</label>
-                  <input required type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Description</label>
-                  <textarea rows="3" value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full p-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm resize-none" />
-                </div>
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Status</label>
-                    <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">
-                      {STAGES.map(s => <option key={s} value={s}>{STAGE_LABELS[s]}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Priority</label>
-                    <select value={formData.priority} onChange={e => setFormData({...formData, priority: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">
-                      <option value="low">Low</option>
-                      <option value="medium">Medium</option>
-                      <option value="high">High</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Due Date</label>
-                    <input type="date" value={formData.due_date} onChange={e => setFormData({...formData, due_date: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
-                  </div>
-                </div>
+          </div>
+        </DragDropContext>
+      )}
+
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-card w-full max-w-lg rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
+            <div className="p-5 border-b border-border flex justify-between items-center shrink-0"><h2 className="text-xl font-black">{editingId ? 'Edit Task' : 'New Task'}</h2><button onClick={closeModal} className="p-2 bg-muted rounded-full text-muted-foreground"><XCircle className="w-5 h-5" /></button></div>
+            <form onSubmit={save} className="p-5 overflow-y-auto flex-1 custom-scrollbar">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-2"><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Task Title *</label><input required type="text" value={form.title} onChange={e=>setForm({...form,title:e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+                <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Column / Status</label><select value={form.status} onChange={e=>setForm({...form,status:e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">{columns.map(c=><option key={c}>{c}</option>)}</select></div>
+                <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Priority</label><select value={form.priority} onChange={e=>setForm({...form,priority:e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">{Object.keys(PRIORITY_COLORS).map(p=><option key={p}>{p}</option>)}</select></div>
+                <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Assignee</label><input type="text" value={form.assignee} onChange={e=>setForm({...form,assignee:e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+                <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Due Date</label><input type="date" value={form.due_date} onChange={e=>setForm({...form,due_date:e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+                <div className="col-span-2"><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Labels (comma-separated)</label><input type="text" value={form.labels} onChange={e=>setForm({...form,labels:e.target.value})} placeholder="bug, feature, design..." className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+                <div className="col-span-2"><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Description</label><textarea rows="3" value={form.description} onChange={e=>setForm({...form,description:e.target.value})} className="w-full p-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm resize-none"/></div>
               </div>
-              <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-border">
-                <button type="button" onClick={() => setIsTaskModalOpen(false)} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium">Cancel</button>
-                <button type="submit" disabled={mutateTask.isPending} className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold">{mutateTask.isPending ? 'Saving...' : 'Save Task'}</button>
-              </div>
+              <div className="flex justify-end gap-3 mt-5 pt-5 border-t border-border"><button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium">Cancel</button><button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold shadow-sm">{editingId?'Update':'Add Task'}</button></div>
             </form>
           </div>
         </div>
