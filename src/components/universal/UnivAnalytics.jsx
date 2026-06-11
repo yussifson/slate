@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import GenericGrid from '@/components/views/GenericGrid';
 import GenericKanban from '@/components/views/GenericKanban';
@@ -7,7 +7,17 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
-import { BarChart2, PieChart, TrendingUp, Download, Filter, Calendar } from 'lucide-react';
+import { BarChart2, PieChart, TrendingUp, Download, Filter, Calendar, LayoutGrid } from 'lucide-react';
+import Papa from 'papaparse';
+import { toast } from 'react-hot-toast';
+
+const mockPivotData = [
+  { Category: 'Enterprise', Product: 'SaaS Pro', Region: 'North America', Revenue: 45000, Users: 120 },
+  { Category: 'Enterprise', Product: 'SaaS Max', Region: 'Europe', Revenue: 32000, Users: 85 },
+  { Category: 'SMB', Product: 'SaaS Basic', Region: 'North America', Revenue: 15000, Users: 300 },
+  { Category: 'SMB', Product: 'SaaS Pro', Region: 'Europe', Revenue: 18000, Users: 210 },
+  { Category: 'Startup', Product: 'SaaS Basic', Region: 'Asia', Revenue: 8500, Users: 450 },
+];
 
 export default function UnivAnalytics({
   title = "Analytics & Reports",
@@ -16,8 +26,24 @@ export default function UnivAnalytics({
   const companyId = useCompanyId();
   const [view, setView] = useState('Default');
 
+  const handleExport = () => {
+    try {
+      const csv = Papa.unparse(mockPivotData);
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'analytics_report.csv';
+      a.click();
+      toast.success('Report exported successfully');
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to export');
+    }
+  };
+
   return (
-    <div className="flex flex-col h-full bg-background overflow-y-auto custom-scrollbar pb-8 ${view !== 'Default' ? 'hide-default' : ''}">
+    <div className={`flex flex-col h-full bg-background overflow-y-auto custom-scrollbar pb-8 ${view !== 'Default' ? 'hide-default' : ''}`}>
       {/* Header */}
       <div className="view-header flex items-center justify-between mb-6 shrink-0 px-1">
         <div>
@@ -31,8 +57,8 @@ export default function UnivAnalytics({
           <button className="flex items-center gap-2 px-4 py-2 bg-card border border-border rounded-xl text-sm font-medium hover:bg-muted/50 transition-colors">
             <Filter className="w-4 h-4" /> Filters
           </button>
-          <button className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm shadow-primary/20">
-            <Download className="w-4 h-4" /> Export Report
+          <button onClick={handleExport} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm shadow-primary/20">
+            <Download className="w-4 h-4" /> Export CSV
           </button>
         </div>
       </div>
@@ -50,7 +76,7 @@ export default function UnivAnalytics({
               <h3 className="text-lg font-bold text-foreground flex items-center gap-2"><TrendingUp className="w-5 h-5 text-primary" /> Growth Trend</h3>
               <p className="text-sm text-muted-foreground mt-1">Monthly recurring metrics</p>
             </div>
-            <select className="bg-muted border border-border rounded-lg px-3 py-1.5 text-sm font-medium focus:outline-none">
+            <select className="bg-muted border border-border rounded-lg px-3 py-1.5 text-sm font-medium focus:outline-none cursor-pointer">
               <option>Revenue</option>
               <option>Users</option>
               <option>Sessions</option>
@@ -127,46 +153,119 @@ export default function UnivAnalytics({
         </motion.div>
       </div>
 
-      {/* Metrics Data Table */}
+      {/* Pivot Table Section */}
       <motion.div 
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
+        className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm flex flex-col mb-6"
+      >
+        <div className="p-5 border-b border-border flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <LayoutGrid className="w-5 h-5 text-primary" />
+            <h3 className="text-lg font-bold text-foreground">Pivot Data</h3>
+          </div>
+          <div className="flex gap-2">
+            <select className="bg-muted border border-border rounded-lg px-3 py-1.5 text-sm font-medium focus:outline-none">
+              <option>Rows: Category</option>
+              <option>Rows: Region</option>
+            </select>
+            <select className="bg-muted border border-border rounded-lg px-3 py-1.5 text-sm font-medium focus:outline-none">
+              <option>Cols: Product</option>
+            </select>
+            <select className="bg-muted border border-border rounded-lg px-3 py-1.5 text-sm font-medium focus:outline-none">
+              <option>Values: Revenue (Sum)</option>
+              <option>Values: Users (Count)</option>
+            </select>
+          </div>
+        </div>
+        <div className="overflow-x-auto custom-scrollbar">
+          <table className="w-full text-left text-sm whitespace-nowrap">
+            <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground border-b border-border">
+              <tr>
+                <th className="p-4 font-semibold border-r border-border">Category \ Product</th>
+                <th className="p-4 font-semibold text-right border-r border-border">SaaS Basic</th>
+                <th className="p-4 font-semibold text-right border-r border-border">SaaS Pro</th>
+                <th className="p-4 font-semibold text-right border-r border-border">SaaS Max</th>
+                <th className="p-4 font-semibold text-right bg-muted/20">Grand Total</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              <tr className="hover:bg-muted/30 transition-colors">
+                <td className="p-4 font-bold border-r border-border">Enterprise</td>
+                <td className="p-4 text-right text-muted-foreground border-r border-border">-</td>
+                <td className="p-4 text-right font-medium border-r border-border">$45,000</td>
+                <td className="p-4 text-right font-medium border-r border-border">$32,000</td>
+                <td className="p-4 text-right font-black bg-muted/10">$77,000</td>
+              </tr>
+              <tr className="hover:bg-muted/30 transition-colors">
+                <td className="p-4 font-bold border-r border-border">SMB</td>
+                <td className="p-4 text-right font-medium border-r border-border">$15,000</td>
+                <td className="p-4 text-right font-medium border-r border-border">$18,000</td>
+                <td className="p-4 text-right text-muted-foreground border-r border-border">-</td>
+                <td className="p-4 text-right font-black bg-muted/10">$33,000</td>
+              </tr>
+              <tr className="hover:bg-muted/30 transition-colors">
+                <td className="p-4 font-bold border-r border-border">Startup</td>
+                <td className="p-4 text-right font-medium border-r border-border">$8,500</td>
+                <td className="p-4 text-right text-muted-foreground border-r border-border">-</td>
+                <td className="p-4 text-right text-muted-foreground border-r border-border">-</td>
+                <td className="p-4 text-right font-black bg-muted/10">$8,500</td>
+              </tr>
+              <tr className="bg-muted/20 border-t-2 border-border">
+                <td className="p-4 font-black border-r border-border">Grand Total</td>
+                <td className="p-4 text-right font-black border-r border-border">$23,500</td>
+                <td className="p-4 text-right font-black border-r border-border">$63,000</td>
+                <td className="p-4 text-right font-black border-r border-border">$32,000</td>
+                <td className="p-4 text-right font-black text-primary">$118,500</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </motion.div>
+
+      {/* Metrics Data Table */}
+      <motion.div 
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
         className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm flex flex-col"
       >
         <div className="p-5 border-b border-border flex items-center gap-2">
            <BarChart2 className="w-5 h-5 text-muted-foreground" />
            <h3 className="text-lg font-bold text-foreground">Detailed Metrics</h3>
         </div>
-        <table className="w-full text-left text-sm whitespace-nowrap">
-          <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground border-b border-border">
-            <tr>
-              <th className="p-4 font-semibold">Metric Name</th>
-              <th className="p-4 font-semibold text-right">Current Period</th>
-              <th className="p-4 font-semibold text-right">Previous Period</th>
-              <th className="p-4 font-semibold text-right">Variance</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
-            {[
-              { name: 'Total Revenue', cur: '$45,231', prev: '$38,100', var: '+18.7%', pos: true },
-              { name: 'New Customers', cur: '142', prev: '98', var: '+44.9%', pos: true },
-              { name: 'Churn Rate', cur: '2.1%', prev: '1.8%', var: '+0.3%', pos: false },
-              { name: 'Avg Deal Size', cur: '$4,200', prev: '$4,500', var: '-6.6%', pos: false },
-            ].map((row, i) => (
-              <tr key={i} className="hover:bg-muted/30 transition-colors">
-                <td className="p-4 font-medium text-foreground">{row.name}</td>
-                <td className="p-4 text-right font-bold">{row.cur}</td>
-                <td className="p-4 text-right text-muted-foreground">{row.prev}</td>
-                <td className="p-4 text-right">
-                  <span className={`px-2 py-0.5 rounded text-xs font-bold ${row.pos ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400' : 'bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-400'}`}>
-                    {row.var}
-                  </span>
-                </td>
+        <div className="overflow-x-auto custom-scrollbar">
+          <table className="w-full text-left text-sm whitespace-nowrap">
+            <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground border-b border-border">
+              <tr>
+                <th className="p-4 font-semibold">Metric Name</th>
+                <th className="p-4 font-semibold text-right">Current Period</th>
+                <th className="p-4 font-semibold text-right">Previous Period</th>
+                <th className="p-4 font-semibold text-right">Variance</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {[
+                { name: 'Total Revenue', cur: '$45,231', prev: '$38,100', var: '+18.7%', pos: true },
+                { name: 'New Customers', cur: '142', prev: '98', var: '+44.9%', pos: true },
+                { name: 'Churn Rate', cur: '2.1%', prev: '1.8%', var: '+0.3%', pos: false },
+                { name: 'Avg Deal Size', cur: '$4,200', prev: '$4,500', var: '-6.6%', pos: false },
+              ].map((row, i) => (
+                <tr key={i} className="hover:bg-muted/30 transition-colors">
+                  <td className="p-4 font-medium text-foreground">{row.name}</td>
+                  <td className="p-4 text-right font-bold">{row.cur}</td>
+                  <td className="p-4 text-right text-muted-foreground">{row.prev}</td>
+                  <td className="p-4 text-right">
+                    <span className={`px-2 py-0.5 rounded text-xs font-bold ${row.pos ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400' : 'bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-400'}`}>
+                      {row.var}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </motion.div>
     </div>
   );

@@ -7,8 +7,9 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { FolderOpen, Plus, Search, Trash2, Edit2, Loader2, XCircle, FileText, Download, Eye } from 'lucide-react';
+import { FolderOpen, Plus, Search, Trash2, Edit2, Loader2, XCircle, FileText, Download, Eye, UploadCloud } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { useDropzone } from 'react-dropzone';
 
 const EMPTY_FORM = { name: '', type: 'Document', description: '', file_url: '', status: 'Active', tags: '' };
 const TYPE_ICONS = { Document: '📄', Spreadsheet: '📊', Image: '🖼️', PDF: '📋', Contract: '📝', Report: '📈', Other: '📁' };
@@ -24,6 +25,7 @@ export default function UnivDocument() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState(EMPTY_FORM);
+  const [previewFile, setPreviewFile] = useState(null);
 
   useEffect(() => {
     if (companyId) {
@@ -65,6 +67,7 @@ export default function UnivDocument() {
 
   const openModal = (r = null) => { setForm(r ? { ...r } : EMPTY_FORM); setEditingId(r?.id || null); setIsModalOpen(true); };
   const closeModal = () => { setIsModalOpen(false); setEditingId(null); setForm(EMPTY_FORM); };
+  
   const filtered = records.filter(r => {
     const match = `${r.name} ${r.description} ${r.tags}`.toLowerCase().includes(search.toLowerCase());
     const matchType = typeFilter === 'All' || r.type === typeFilter;
@@ -73,9 +76,8 @@ export default function UnivDocument() {
 
   const types = ['All', ...Object.keys(TYPE_ICONS)];
 
-  
   const handleExport = () => {
-    const exportData = (typeof records !== 'undefined' ? records : (typeof data !== 'undefined' ? data : []));
+    const exportData = records;
     if (!exportData || exportData.length === 0) return alert('No data to export');
     const keys = Object.keys(exportData[0]).filter(k => k !== 'company_id' && k !== 'id');
     const csv = [keys.join(','), ...exportData.map(r => keys.map(k => '"' + (r[k]||'').toString().replace(/"/g, '""') + '"').join(','))].join('\n');
@@ -85,13 +87,33 @@ export default function UnivDocument() {
     a.href = url; a.download = 'export.csv'; a.click();
   };
 
+  const onDrop = React.useCallback(acceptedFiles => {
+    if (acceptedFiles?.length) {
+      toast.success("File upload mocked successfully!");
+      // Simulate an uploaded URL (in reality, upload to Supabase storage)
+      const mockUrl = URL.createObjectURL(acceptedFiles[0]);
+      setForm(prev => ({...prev, file_url: mockUrl}));
+    }
+  }, []);
+  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop});
+
+  const isPreviewable = (url) => {
+    if(!url) return false;
+    const lowerUrl = url.toLowerCase();
+    return lowerUrl.endsWith('.pdf') || lowerUrl.endsWith('.png') || lowerUrl.endsWith('.jpg') || lowerUrl.endsWith('.jpeg') || lowerUrl.endsWith('.gif') || url.startsWith('blob:');
+  };
+
+  const isImage = (url) => {
+    if(!url) return false;
+    const lowerUrl = url.toLowerCase();
+    return lowerUrl.endsWith('.png') || lowerUrl.endsWith('.jpg') || lowerUrl.endsWith('.jpeg') || lowerUrl.endsWith('.gif') || (url.startsWith('blob:') && form.type === 'Image');
+  }
+
   return (
-    <div className="h-full flex flex-col gap-6 w-full bg-background p-4 sm:p-6 lg:p-8 ${view !== 'Default' ? 'hide-default' : ''}">
+    <div className={`h-full flex flex-col gap-6 w-full bg-background p-4 sm:p-6 lg:p-8 ${view !== 'Default' ? 'hide-default' : ''}`}>
       <div className="view-header flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0">
         <div><h1 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-2"><FolderOpen className="w-7 h-7 text-primary" />Document Drive</h1><p className="text-muted-foreground text-sm font-medium mt-1">{records.length} documents stored.</p></div>
         <div className="flex items-center gap-2">
-
-        
         <div className="flex bg-muted p-1 rounded-lg border border-border mr-2 hidden sm:flex">
           {["Default","Grid","Kanban","Calendar","Dashboard"].map(v => (
             <button 
@@ -103,11 +125,10 @@ export default function UnivDocument() {
             </button>
           ))}
         </div>
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+        <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
           Export CSV
         </button>
-
         <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 shadow-sm"><Plus className="w-4 h-4" />Add Document</button>
       </div>
       </div>
@@ -141,7 +162,11 @@ export default function UnivDocument() {
               <div className="col-span-2"><span className={`px-2 py-0.5 text-[10px] font-bold uppercase border rounded-md ${STATUS_COLORS[r.status]||'bg-muted border-border'}`}>{r.status}</span></div>
               <div className="col-span-1 text-xs text-muted-foreground truncate">{r.tags||'—'}</div>
               <div className="col-span-2 flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                {r.file_url && <a href={r.file_url} target="_blank" rel="noreferrer" className="p-1.5 bg-muted rounded-md text-muted-foreground hover:text-primary"><Eye className="w-3.5 h-3.5" /></a>}
+                {r.file_url && (
+                  <button onClick={() => isPreviewable(r.file_url) ? setPreviewFile(r) : window.open(r.file_url, '_blank')} className="p-1.5 bg-muted rounded-md text-muted-foreground hover:text-primary">
+                    <Eye className="w-3.5 h-3.5" />
+                  </button>
+                )}
                 <button onClick={() => openModal(r)} className="p-1.5 bg-muted rounded-md text-muted-foreground hover:text-primary"><Edit2 className="w-3.5 h-3.5" /></button>
                 <button onClick={() => remove(r.id)} className="p-1.5 bg-red-50 rounded-md text-red-400 hover:text-red-600"><Trash2 className="w-3.5 h-3.5" /></button>
               </div>
@@ -149,6 +174,24 @@ export default function UnivDocument() {
           ))}
         </div>
       </div>
+
+      {previewFile && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={() => setPreviewFile(null)}>
+          <div className="bg-card w-full max-w-4xl h-[80vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden" onClick={e=>e.stopPropagation()}>
+            <div className="p-4 border-b border-border flex justify-between items-center bg-muted/30 shrink-0">
+              <h2 className="text-lg font-black flex items-center gap-2"><Eye className="w-5 h-5 text-primary"/> Preview: {previewFile.name}</h2>
+              <button onClick={() => setPreviewFile(null)} className="p-1.5 bg-background rounded-full text-muted-foreground hover:text-foreground"><XCircle className="w-5 h-5" /></button>
+            </div>
+            <div className="flex-1 overflow-auto flex items-center justify-center bg-muted/10 p-4">
+              {isImage(previewFile.file_url) ? (
+                <img src={previewFile.file_url} alt="Preview" className="max-w-full max-h-full object-contain rounded-lg shadow-sm" />
+              ) : (
+                <iframe src={previewFile.file_url} className="w-full h-full rounded-lg bg-white" title="PDF Preview" />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
@@ -159,7 +202,17 @@ export default function UnivDocument() {
                 <div className="col-span-2"><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Document Name *</label><input required type="text" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
                 <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Type</label><select value={form.type} onChange={e=>setForm({...form,type:e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">{Object.keys(TYPE_ICONS).map(t=><option key={t}>{t}</option>)}</select></div>
                 <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Status</label><select value={form.status} onChange={e=>setForm({...form,status:e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">{Object.keys(STATUS_COLORS).map(s=><option key={s}>{s}</option>)}</select></div>
-                <div className="col-span-2"><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">File URL</label><input type="url" value={form.file_url} onChange={e=>setForm({...form,file_url:e.target.value})} placeholder="https://..." className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+                
+                <div className="col-span-2">
+                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">File Upload</label>
+                  <div {...getRootProps()} className={`w-full p-6 border-2 border-dashed rounded-xl text-center cursor-pointer transition-colors ${isDragActive ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted/30'}`}>
+                    <input {...getInputProps()} />
+                    <UploadCloud className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
+                    {isDragActive ? <p className="text-sm font-bold text-primary">Drop files here...</p> : <p className="text-sm text-muted-foreground">Drag 'n' drop a file here, or click to select</p>}
+                  </div>
+                  {form.file_url && <p className="text-xs text-emerald-600 mt-2 font-medium truncate">Current File: {form.file_url}</p>}
+                </div>
+
                 <div className="col-span-2"><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Description</label><textarea rows="2" value={form.description} onChange={e=>setForm({...form,description:e.target.value})} className="w-full p-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm resize-none"/></div>
                 <div className="col-span-2"><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Tags (comma-separated)</label><input type="text" value={form.tags} onChange={e=>setForm({...form,tags:e.target.value})} placeholder="legal, 2024, contract..." className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
               </div>

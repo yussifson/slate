@@ -7,7 +7,7 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { Plus, Trash2, Edit2, Loader2, XCircle, Search, LifeBuoy } from 'lucide-react';
+import { Plus, Trash2, Edit2, Loader2, XCircle, Search, LifeBuoy, Clock, MessageSquare, Send } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -24,6 +24,7 @@ export default function UnivSupportTicket() {
   const [modal, setModal] = useState(false);
   const [editId, setEditId] = useState(null);
   const [form, setForm] = useState(EMPTY);
+  const [replyText, setReplyText] = useState('');
 
   useEffect(() => { if (companyId) fetchData(); }, [companyId]);
 
@@ -142,7 +143,17 @@ export default function UnivSupportTicket() {
                 <h2 className="text-xl font-black">{editId ? 'Edit Record' : 'Add Support Tickets'}</h2>
                 <button onClick={closeModal} className="p-2 bg-muted rounded-full"><XCircle className="w-5 h-5 text-muted-foreground" /></button>
               </div>
-              <form onSubmit={save} className="p-5 grid grid-cols-2 gap-4 overflow-y-auto custom-scrollbar">
+              <form onSubmit={save} className="p-5 flex flex-col gap-4 overflow-y-auto custom-scrollbar flex-1">
+                {editId && (
+                  <div className="flex items-center gap-3 p-3 bg-red-50 border border-red-100 rounded-xl mb-2 shrink-0">
+                    <Clock className="w-5 h-5 text-red-500 animate-pulse" />
+                    <div>
+                      <p className="text-xs font-bold text-red-600 uppercase">SLA Breach Warning</p>
+                      <p className="text-sm font-medium text-red-700">Time to resolve: 2h 15m remaining</p>
+                    </div>
+                  </div>
+                )}
+                <div className="grid grid-cols-2 gap-4 shrink-0">
               <div>
                 <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Ticket #</label>
                 <input required type="text" value={form['ticket_number']} onChange={e => setForm({ ...form, 'ticket_number': e.target.value })} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
@@ -190,7 +201,29 @@ export default function UnivSupportTicket() {
                   {["Open","In Progress","Resolved","Closed"].map(s => <option key={s}>{s}</option>)}
                 </select>
               </div>
-                <div className="col-span-2 flex justify-end gap-3 pt-2 border-t border-border">
+              </div>
+
+              {editId && (
+                <div className="mt-4 pt-4 border-t border-border shrink-0">
+                  <h3 className="font-bold text-sm mb-3 flex items-center gap-2"><MessageSquare className="w-4 h-4"/> Ticket Thread</h3>
+                  <div className="space-y-3 mb-4 max-h-40 overflow-y-auto custom-scrollbar pr-2">
+                    <div className="bg-muted/50 p-3 rounded-xl border border-border text-sm">
+                      <p className="text-xs font-bold text-muted-foreground mb-1">Customer <span className="font-normal opacity-70 ml-2">2 days ago</span></p>
+                      <p>Hello, I am having issues logging into my account. Please help.</p>
+                    </div>
+                    <div className="bg-primary/5 p-3 rounded-xl border border-primary/20 text-sm ml-6">
+                      <p className="text-xs font-bold text-primary mb-1">Support Agent <span className="font-normal opacity-70 ml-2">Yesterday</span></p>
+                      <p>Hi there, we have reset your password. Check your email for the link.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input type="text" value={replyText} onChange={e=>setReplyText(e.target.value)} placeholder="Type a reply..." className="flex-1 h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none"/>
+                    <button type="button" onClick={()=>{setReplyText(''); toast.success('Reply added!');}} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-1 shadow-sm"><Send className="w-3.5 h-3.5"/> Reply</button>
+                  </div>
+                </div>
+              )}
+
+                <div className="mt-2 flex justify-end gap-3 pt-4 border-t border-border w-full shrink-0">
                   <button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium">Cancel</button>
                   <button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold">{editId ? 'Update' : 'Add'}</button>
                 </div>

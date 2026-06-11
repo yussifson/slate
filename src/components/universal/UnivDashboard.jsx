@@ -1,15 +1,10 @@
 import React from 'react';
-
-import GenericGrid from '@/components/views/GenericGrid';
-import GenericKanban from '@/components/views/GenericKanban';
-import GenericCalendar from '@/components/views/GenericCalendar';
-import GenericDashboard from '@/components/views/GenericDashboard';
-
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { ArrowUpRight, ArrowDownRight, Activity, Users, Database, FileText, CheckSquare, Calendar, Folder } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/api/supabaseClient';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 
 export default function UnivDashboard({
   title = "Dashboard",
@@ -32,15 +27,12 @@ export default function UnivDashboard({
     enabled: !!companyId
   });
 
-  // Aggregate stats by record_type
   const statsMap = records.reduce((acc, curr) => {
     acc[curr.record_type] = (acc[curr.record_type] || 0) + 1;
     return acc;
   }, {});
 
   const statKeys = Object.keys(statsMap);
-  
-  // If no data yet, show some placeholders so it doesn't look empty
   let kpis = [];
   
   const getIconForType = (type) => {
@@ -65,16 +57,23 @@ export default function UnivDashboard({
       trend: 'up',
       icon: getIconForType(key)
     }));
-    
-    // Ensure we have at least a few cards
     if (kpis.length < 4) {
        kpis.push({ title: 'Total Entries', value: records.length, change: 'Active', trend: 'up', icon: Activity });
     }
   }
 
+  const chartData = [
+    { name: 'Mon', activity: 40, leads: 24 },
+    { name: 'Tue', activity: 70, leads: 13 },
+    { name: 'Wed', activity: 45, leads: 55 },
+    { name: 'Thu', activity: 90, leads: 39 },
+    { name: 'Fri', activity: 65, leads: 48 },
+    { name: 'Sat', activity: 85, leads: 21 },
+    { name: 'Sun', activity: 100, leads: 43 },
+  ];
+
   return (
-    <div className="flex flex-col h-full bg-background overflow-y-auto custom-scrollbar pb-8 ${view !== 'Default' ? 'hide-default' : ''}">
-      {/* Header */}
+    <div className="flex flex-col h-full bg-background overflow-y-auto custom-scrollbar pb-8">
       <div className="view-header flex items-center justify-between mb-6 shrink-0 px-1 pt-2">
         <div>
            <h2 className="text-2xl font-bold text-foreground tracking-tight">{title}</h2>
@@ -82,7 +81,6 @@ export default function UnivDashboard({
         </div>
       </div>
 
-      {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {kpis.map((kpi, idx) => (
           <motion.div 
@@ -114,7 +112,6 @@ export default function UnivDashboard({
         ))}
       </div>
 
-      {/* Placeholder Charts Area */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <motion.div 
           initial={{ opacity: 0, y: 10 }}
@@ -130,18 +127,22 @@ export default function UnivDashboard({
               <option>This Year</option>
             </select>
           </div>
-          <div className="flex-1 flex items-end justify-between gap-2 mt-4">
-            {/* Simple mock bar chart */}
-            {[40, 70, 45, 90, 65, 85, 100].map((h, i) => (
-              <div key={i} className="w-full bg-primary/10 rounded-t-lg relative group">
-                <motion.div 
-                  initial={{ height: 0 }}
-                  animate={{ height: `${h}%` }}
-                  transition={{ delay: 0.3 + (i * 0.1), duration: 0.5 }}
-                  className="absolute bottom-0 w-full bg-primary rounded-t-lg group-hover:bg-primary/80 transition-colors"
-                ></motion.div>
-              </div>
-            ))}
+          <div className="flex-1 mt-4">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorActivity" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 12, fill: '#6b7280'}} />
+                <YAxis axisLine={false} tickLine={false} tick={{fontSize: 12, fill: '#6b7280'}} />
+                <RechartsTooltip contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}} />
+                <Area type="monotone" dataKey="activity" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorActivity)" />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
         </motion.div>
 
@@ -149,34 +150,25 @@ export default function UnivDashboard({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-card border border-border rounded-2xl p-6 shadow-sm flex flex-col"
+          className="bg-card border border-border rounded-2xl p-6 shadow-sm flex flex-col min-h-[350px]"
         >
           <div className="mb-4">
-            <h3 className="text-lg font-bold text-foreground">Recent Activity</h3>
-            <p className="text-sm text-muted-foreground">Latest actions across workspace.</p>
+            <h3 className="text-lg font-bold text-foreground">Weekly Leads</h3>
+            <p className="text-sm text-muted-foreground">Lead generation metrics.</p>
           </div>
-          <div className="flex-1 space-y-4">
-            {[
-              { text: "Alice updated the schema", time: "10 mins ago" },
-              { text: "Bob closed Invoice #001", time: "1 hr ago" },
-              { text: "New lead captured", time: "2 hrs ago" },
-              { text: "System backup completed", time: "5 hrs ago" }
-            ].map((act, i) => (
-              <div key={i} className="flex gap-4">
-                <div className="flex flex-col items-center">
-                  <div className="w-2 h-2 rounded-full bg-primary mt-1.5"></div>
-                  {i !== 3 && <div className="w-0.5 h-full bg-border mt-2"></div>}
-                </div>
-                <div className="pb-4">
-                  <p className="text-sm font-medium text-foreground">{act.text}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{act.time}</p>
-                </div>
-              </div>
-            ))}
+          <div className="flex-1 mt-2">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={chartData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 12, fill: '#6b7280'}} />
+                <YAxis axisLine={false} tickLine={false} tick={{fontSize: 12, fill: '#6b7280'}} />
+                <RechartsTooltip cursor={{fill: 'transparent'}} contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}} />
+                <Bar dataKey="leads" fill="#10b981" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </motion.div>
       </div>
     </div>
   );
 }
-

@@ -10,7 +10,7 @@ import { useCompanyId } from '@/hooks/useCompanyId';
 import { Briefcase, Plus, Search, Trash2, Edit2, Loader2, XCircle, Calendar, User, CheckCircle2, Clock, AlertCircle } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
-const EMPTY_FORM = { name: '', description: '', client_name: '', status: 'Active', priority: 'Medium', start_date: '', due_date: '', budget: '', assigned_to: '' };
+const EMPTY_FORM = { name: '', description: '', client_name: '', status: 'Active', priority: 'Medium', start_date: '', due_date: '', budget: '', assigned_to: '', progress: 0 };
 const STATUS_COLORS = { Active: 'bg-blue-50 text-blue-700 border-blue-200', Completed: 'bg-emerald-50 text-emerald-700 border-emerald-200', 'On Hold': 'bg-amber-50 text-amber-700 border-amber-200', Cancelled: 'bg-red-50 text-red-700 border-red-200', Planning: 'bg-violet-50 text-violet-700 border-violet-200' };
 const PRIORITY_COLORS = { Low: 'bg-muted text-muted-foreground', Medium: 'bg-amber-50 text-amber-700', High: 'bg-orange-50 text-orange-700', Urgent: 'bg-red-50 text-red-700' };
 
@@ -84,14 +84,14 @@ export default function UnivProject() {
   };
 
   return (
-    <div className="h-full flex flex-col gap-6 w-full bg-background p-4 sm:p-6 lg:p-8 ${view !== 'Default' ? 'hide-default' : ''}">
+    <div className={`h-full flex flex-col gap-6 w-full bg-background p-4 sm:p-6 lg:p-8 ${view !== 'Default' ? 'hide-default' : ''}`}>
       <div className="view-header flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0">
         <div><h1 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-2"><Briefcase className="w-7 h-7 text-primary" />Projects</h1><p className="text-muted-foreground text-sm font-medium mt-1">{records.length} projects • {records.filter(r=>r.status==='Active').length} active</p></div>
         <div className="flex items-center gap-2">
 
         
         <div className="flex bg-muted p-1 rounded-lg border border-border mr-2 hidden sm:flex">
-          {["Default","Grid","Kanban","Calendar","Dashboard"].map(v => (
+          {["Default","Gantt"].map(v => (
             <button 
               key={v} 
               onClick={() => setView(v)} 
@@ -123,7 +123,7 @@ export default function UnivProject() {
 
       <div className="flex-1 overflow-auto min-h-0 custom-scrollbar">
         {loading ? <div className="flex h-40 items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
-        : (
+        : view === 'Default' ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-8">
             {filtered.map(r => (
               <div key={r.id} onClick={() => setSelected(r)} className="bg-card border border-border rounded-2xl p-5 shadow-sm hover:shadow-md transition-all group cursor-pointer flex flex-col gap-3">
@@ -132,7 +132,18 @@ export default function UnivProject() {
                   <span className={`px-2 py-0.5 text-[10px] font-bold uppercase border rounded-md shrink-0 ml-2 ${STATUS_COLORS[r.status]}`}>{r.status}</span>
                 </div>
                 {r.description && <p className="text-sm text-muted-foreground line-clamp-2">{r.description}</p>}
-                <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                
+                <div className="flex flex-col gap-1 mt-1">
+                  <div className="flex justify-between text-xs font-bold text-muted-foreground">
+                    <span>Progress</span>
+                    <span>{r.progress || 0}%</span>
+                  </div>
+                  <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
+                    <div className="bg-primary h-full rounded-full transition-all duration-500" style={{width: `${r.progress || 0}%`}}></div>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-2 text-xs text-muted-foreground mt-1">
                   {r.client_name && <span className="flex items-center gap-1"><User className="w-3 h-3 text-primary" />{r.client_name}</span>}
                   {r.due_date && <span className="flex items-center gap-1"><Calendar className="w-3 h-3 text-primary" />Due {r.due_date}</span>}
                   {r.assigned_to && <span className="flex items-center gap-1"><User className="w-3 h-3 text-primary" />{r.assigned_to}</span>}
@@ -146,6 +157,40 @@ export default function UnivProject() {
             ))}
             {filtered.length === 0 && <div className="col-span-full py-20 text-center text-muted-foreground border-2 border-dashed border-border rounded-2xl"><Briefcase className="w-12 h-12 mx-auto text-muted-foreground/30 mb-3" /><p className="font-medium">No projects found.</p></div>}
           </div>
+        ) : (
+          <div className="flex-1 overflow-auto bg-card border border-border rounded-2xl p-6 custom-scrollbar relative">
+            <h3 className="font-black text-lg mb-6">Gantt / Timeline View</h3>
+            <div className="min-w-[800px] flex flex-col gap-4">
+              {filtered.map(r => {
+                if (!r.start_date || !r.due_date) return null;
+                const start = new Date(r.start_date);
+                const due = new Date(r.due_date);
+                // For a simple mock timeline, represent months in a fixed 12 month block based on start date
+                const startMonth = start.getMonth();
+                const durationMonths = (due.getFullYear() - start.getFullYear()) * 12 + (due.getMonth() - start.getMonth());
+                
+                return (
+                  <div key={'gantt'+r.id} className="flex items-center gap-4">
+                    <div className="w-48 shrink-0 truncate font-bold text-sm" title={r.name}>{r.name}</div>
+                    <div className="flex-1 h-8 bg-muted/40 rounded-lg relative overflow-hidden flex items-center">
+                       <div 
+                         className="absolute h-full bg-primary/20 border-l-4 border-primary rounded-r-lg flex items-center px-2 text-xs font-bold text-primary" 
+                         style={{
+                           left: `${Math.max(0, (startMonth / 12) * 100)}%`, 
+                           width: `${Math.max(5, (Math.max(1, durationMonths) / 12) * 100)}%`
+                         }}
+                       >
+                         {r.start_date} to {r.due_date}
+                       </div>
+                    </div>
+                  </div>
+                );
+              })}
+              {filtered.filter(r => !r.start_date || !r.due_date).length > 0 && (
+                <p className="text-xs text-muted-foreground italic mt-4">* Some projects are hidden because they lack start or due dates.</p>
+              )}
+            </div>
+          </div>
         )}
       </div>
 
@@ -157,7 +202,7 @@ export default function UnivProject() {
               <h2 className="font-black text-xl text-foreground">{selected.name}</h2>
               <span className={`px-3 py-1 text-[11px] font-bold uppercase border rounded-full inline-block ${STATUS_COLORS[selected.status]}`}>{selected.status}</span>
               {selected.description && <p className="text-sm text-muted-foreground">{selected.description}</p>}
-              {[{label:'Client',value:selected.client_name},{label:'Assigned To',value:selected.assigned_to},{label:'Start Date',value:selected.start_date},{label:'Due Date',value:selected.due_date},{label:'Budget',value:selected.budget?`$${Number(selected.budget).toLocaleString()}`:null},{label:'Priority',value:selected.priority}].map((f,i)=>f.value?(<div key={i} className="p-3 bg-muted/40 rounded-xl"><p className="text-[10px] font-bold text-muted-foreground uppercase">{f.label}</p><p className="text-sm font-medium">{f.value}</p></div>):null)}
+              {[{label:'Client',value:selected.client_name},{label:'Assigned To',value:selected.assigned_to},{label:'Start Date',value:selected.start_date},{label:'Due Date',value:selected.due_date},{label:'Progress',value:`${selected.progress || 0}%`},{label:'Budget',value:selected.budget?`$${Number(selected.budget).toLocaleString()}`:null},{label:'Priority',value:selected.priority}].map((f,i)=>f.value?(<div key={i} className="p-3 bg-muted/40 rounded-xl"><p className="text-[10px] font-bold text-muted-foreground uppercase">{f.label}</p><p className="text-sm font-medium">{f.value}</p></div>):null)}
             </div>
             <div className="p-5 border-t border-border flex gap-2">
               <button onClick={()=>{openModal(selected);setSelected(null);}} className="flex-1 h-9 bg-primary text-white rounded-xl text-sm font-bold flex items-center justify-center gap-1"><Edit2 className="w-3.5 h-3.5"/>Edit</button>
@@ -181,6 +226,7 @@ export default function UnivProject() {
                 <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Start Date</label><input type="date" value={form.start_date} onChange={e=>setForm({...form,start_date:e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
                 <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Due Date</label><input type="date" value={form.due_date} onChange={e=>setForm({...form,due_date:e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
                 <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Budget ($)</label><input type="number" min="0" value={form.budget} onChange={e=>setForm({...form,budget:e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+                <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Progress (%)</label><input type="number" min="0" max="100" value={form.progress} onChange={e=>setForm({...form,progress:e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
                 <div className="col-span-2"><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Description</label><textarea rows="3" value={form.description} onChange={e=>setForm({...form,description:e.target.value})} className="w-full p-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm resize-none"/></div>
               </div>
               <div className="flex justify-end gap-3 mt-5 pt-5 border-t border-border"><button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium">Cancel</button><button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold shadow-sm">{editingId?'Update':'Create Project'}</button></div>
