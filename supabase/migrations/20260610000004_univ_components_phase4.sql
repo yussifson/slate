@@ -52,6 +52,7 @@ CREATE TABLE IF NOT EXISTS public.univ_subscriptions (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_subscriptions ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's subscriptions" ON public.univ_subscriptions;
 CREATE POLICY "Users can manage their company's subscriptions" ON public.univ_subscriptions FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- 9. Assets (univ_assets)
@@ -68,6 +69,7 @@ CREATE TABLE IF NOT EXISTS public.univ_assets (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_assets ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's assets" ON public.univ_assets;
 CREATE POLICY "Users can manage their company's assets" ON public.univ_assets FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- 10. Procurement (univ_procurement)
@@ -84,6 +86,7 @@ CREATE TABLE IF NOT EXISTS public.univ_procurement (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_procurement ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's procurement" ON public.univ_procurement;
 CREATE POLICY "Users can manage their company's procurement" ON public.univ_procurement FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- 11. POS (univ_pos)
@@ -99,6 +102,7 @@ CREATE TABLE IF NOT EXISTS public.univ_pos (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_pos ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's pos" ON public.univ_pos;
 CREATE POLICY "Users can manage their company's pos" ON public.univ_pos FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- 12. Attendance (univ_attendance)
@@ -115,6 +119,7 @@ CREATE TABLE IF NOT EXISTS public.univ_attendance (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_attendance ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's attendance" ON public.univ_attendance;
 CREATE POLICY "Users can manage their company's attendance" ON public.univ_attendance FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- 13. Payroll (univ_payroll)
@@ -134,6 +139,7 @@ CREATE TABLE IF NOT EXISTS public.univ_payroll (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_payroll ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's payroll" ON public.univ_payroll;
 CREATE POLICY "Users can manage their company's payroll" ON public.univ_payroll FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- 14. Recruitment (univ_recruitment)
@@ -151,6 +157,7 @@ CREATE TABLE IF NOT EXISTS public.univ_recruitment (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_recruitment ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's recruitment" ON public.univ_recruitment;
 CREATE POLICY "Users can manage their company's recruitment" ON public.univ_recruitment FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- 15. Leave Management (univ_leave_management)
@@ -168,6 +175,7 @@ CREATE TABLE IF NOT EXISTS public.univ_leave_management (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.univ_leave_management ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can manage their company's leaves" ON public.univ_leave_management;
 CREATE POLICY "Users can manage their company's leaves" ON public.univ_leave_management FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- Add triggers to auto-update updated_at for all Phase 4 tables

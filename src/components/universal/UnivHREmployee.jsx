@@ -42,17 +42,20 @@ export default function UnivHREmployee() {
   const save = async (e) => {
     e.preventDefault();
     try {
+      const payload = { ...form, company_id: companyId };
+      delete payload.employment_type; // Not in phase 1 schema
+      
       if (editingId) {
-        const { error } = await supabase.from('univ_hr_employees').update(form).eq('id', editingId);
+        const { error } = await supabase.from('univ_hr_employees').update(payload).eq('id', editingId);
         if (error) throw error;
         toast.success('Employee updated!');
       } else {
-        const { error } = await supabase.from('univ_hr_employees').insert({ ...form, company_id: companyId });
+        const { error } = await supabase.from('univ_hr_employees').insert(payload);
         if (error) throw error;
         toast.success('Employee added!');
       }
       closeModal(); fetchEmps();
-    } catch (err) { toast.error('Failed to save'); }
+    } catch (err) { console.error(err); toast.error(err.message || 'Failed to save'); }
   };
 
   const remove = async (id) => {

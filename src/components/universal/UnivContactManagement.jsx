@@ -29,9 +29,13 @@ export default function UnivContactManagement() {
   const fetch = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.from('univ_contacts').select('*').eq('company_id', companyId).order('name', { ascending: true });
+      const { data, error } = await supabase.from('univ_contacts').select('*').eq('company_id', companyId);
       if (error && error.code !== '42P01') throw error;
-      setRecords(data || []);
+      setRecords((data || []).map(r => ({
+        ...r,
+        name: `${r.first_name} ${r.last_name}`.trim(),
+        company: r.organization
+      })).sort((a,b) => a.name.localeCompare(b.name)));
     } catch (e) { console.error(e); } finally { setLoading(false); }
   };
 
@@ -39,16 +43,33 @@ export default function UnivContactManagement() {
     e.preventDefault();
     try {
       if (editingId) {
-        const { error } = await supabase.from('univ_contacts').update(form).eq('id', editingId);
+        const { error } = await supabase.from('univ_contacts').update({
+          first_name: form.name.split(' ')[0] || '',
+          last_name: form.name.split(' ').slice(1).join(' ') || '',
+          email: form.email,
+          phone: form.phone,
+          organization: form.company,
+          type: form.type,
+          notes: form.notes
+        }).eq('id', editingId);
         if (error) throw error;
         toast.success('Contact updated!');
       } else {
-        const { error } = await supabase.from('univ_contacts').insert({ ...form, company_id: companyId });
+        const { error } = await supabase.from('univ_contacts').insert({
+          company_id: companyId,
+          first_name: form.name.split(' ')[0] || '',
+          last_name: form.name.split(' ').slice(1).join(' ') || '',
+          email: form.email,
+          phone: form.phone,
+          organization: form.company,
+          type: form.type,
+          notes: form.notes
+        });
         if (error) throw error;
         toast.success('Contact added!');
       }
       closeModal(); fetch();
-    } catch (err) { toast.error('Failed to save contact'); }
+    } catch (err) { console.error(err); toast.error(err.message || 'Failed to save contact'); }
   };
 
   const remove = async (id) => {

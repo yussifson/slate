@@ -49,7 +49,7 @@ export default function UnivInventory() {
         toast.success('Item added!');
       }
       closeModal(); fetchItems();
-    } catch (err) { toast.error('Failed to save'); }
+    } catch (err) { console.error(err); toast.error(err.message || 'Failed to save'); }
   };
 
   const remove = async (id) => {
