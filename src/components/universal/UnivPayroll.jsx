@@ -49,7 +49,7 @@ export default function UnivPayroll() {
     const net_pay = gross - Number(form.deductions) - calculated_tax;
     
     // Clean and prepare the payload
-    const { id, created_at, updated_at, ...cleanForm } = form;
+    const { id, created_at, updated_at, tax_rate, tax_amount, ...cleanForm } = form;
     const payload = {
       ...cleanForm,
       net_pay,
