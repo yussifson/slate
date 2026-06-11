@@ -84,7 +84,7 @@ export default function UniRegistration() {
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="border-b border-[var(--color-border-subtle)] pb-4">
         <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Course Registration</h1>
-        <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Submit module choices, validate credit workloads, and satisfy prerequisites.</p>
+        <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Submit slate choices, validate credit workloads, and satisfy prerequisites.</p>
       </div>
 
       <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6">

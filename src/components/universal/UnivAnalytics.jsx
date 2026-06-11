@@ -181,13 +181,13 @@ export default function UnivAnalytics({
       {loading ? (
         <div className="flex-1 flex flex-col items-center justify-center gap-3 text-muted-foreground">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
-          <p className="text-sm font-medium">Scanning your workspace data...</p>
+          <p className="text-sm font-medium">Scanning your wixlate data...</p>
         </div>
       ) : stats.length === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center gap-3 text-muted-foreground py-20 border-2 border-dashed border-border rounded-2xl">
           <AlertCircle className="w-10 h-10 opacity-40" />
           <p className="text-base font-bold text-foreground">No data found yet</p>
-          <p className="text-sm text-center max-w-sm">Start adding records to your workspace modules and they will appear here automatically.</p>
+          <p className="text-sm text-center max-w-sm">Start adding records to your wixlate slates and they will appear here automatically.</p>
         </div>
       ) : (
         <div className="space-y-6">
@@ -197,17 +197,17 @@ export default function UnivAnalytics({
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="bg-card border border-border rounded-2xl p-5 shadow-sm">
               <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Total Records</p>
               <p className="text-4xl font-black text-foreground">{totalRecords.toLocaleString()}</p>
-              <p className="text-xs text-muted-foreground mt-2">Across all active modules</p>
+              <p className="text-xs text-muted-foreground mt-2">Across all active slates</p>
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="bg-card border border-border rounded-2xl p-5 shadow-sm">
-              <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Active Modules</p>
+              <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Active Slates</p>
               <p className="text-4xl font-black text-foreground">{stats.length}</p>
-              <p className="text-xs text-muted-foreground mt-2">Modules with data in this workspace</p>
+              <p className="text-xs text-muted-foreground mt-2">Slates with data in this wixlate</p>
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-card border border-border rounded-2xl p-5 shadow-sm">
-              <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Top Module</p>
-              <p className="text-2xl font-black text-foreground truncate">{topModule?.label || '—'}</p>
-              <p className="text-xs text-muted-foreground mt-2">{topModule ? `${topModule.count.toLocaleString()} records` : 'No data yet'}</p>
+              <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Top Slate</p>
+              <p className="text-2xl font-black text-foreground truncate">{topSlate?.label || '—'}</p>
+              <p className="text-xs text-muted-foreground mt-2">{topSlate ? `${topModule.count.toLocaleString()} records` : 'No data yet'}</p>
             </motion.div>
           </div>
 
@@ -215,7 +215,7 @@ export default function UnivAnalytics({
           <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="bg-card border border-border rounded-2xl p-6 shadow-sm">
             <div className="flex items-center gap-2 mb-6">
               <BarChart2 className="w-5 h-5 text-primary" />
-              <h3 className="text-lg font-bold text-foreground">Records by Module</h3>
+              <h3 className="text-lg font-bold text-foreground">Records by Slate</h3>
             </div>
             <div className="space-y-3">
               {stats.map((s, i) => (
@@ -246,7 +246,7 @@ export default function UnivAnalytics({
             <table className="w-full text-left text-sm">
               <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground border-b border-border">
                 <tr>
-                  <th className="p-4 font-semibold">Module</th>
+                  <th className="p-4 font-semibold">Slate</th>
                   <th className="p-4 font-semibold">Table</th>
                   <th className="p-4 font-semibold text-right">Records</th>
                   <th className="p-4 font-semibold text-right">% of Total</th>

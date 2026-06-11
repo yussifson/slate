@@ -237,7 +237,7 @@ export default function Marketplace() {
           <div className="w-20 h-20 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mb-5 border border-slate-100 dark:border-slate-800 dark:border-slate-800">
             <Blocks className="w-8 h-8 text-slate-400" />
           </div>
-          <h3 className="text-xl font-extrabold text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-white mb-2">No modules found</h3>
+          <h3 className="text-xl font-extrabold text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-white mb-2">No slates found</h3>
           <p className="text-slate-500 dark:text-slate-400 dark:text-slate-400 max-w-md leading-relaxed">
             {searchQuery
               ? "No modules match your search. Try a different term."
@@ -335,7 +335,7 @@ export default function Marketplace() {
       <Dialog open={!!confirmUninstall} onOpenChange={(open) => !open && setConfirmUninstall(null)}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Uninstall Module</DialogTitle>
+            <DialogTitle>Uninstall Slate</DialogTitle>
             <DialogDescription>
               Are you sure you want to uninstall <strong>{confirmUninstall?.name}</strong>? This will remove the module, all its fields, and all records from your workslate. This action cannot be undone.
             </DialogDescription>

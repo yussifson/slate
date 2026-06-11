@@ -135,7 +135,7 @@ export default function VDashboard() {
             <CardTitle className="text-xl flex items-center gap-2">
               <GraduationCap className="w-5 h-5 text-primary" /> Recent Graduates
             </CardTitle>
-            <CardDescription>Trainees who recently completed their modules</CardDescription>
+            <CardDescription>Trainees who recently completed their slates</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex flex-col items-center justify-center py-8 text-center">

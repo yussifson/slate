@@ -92,7 +92,7 @@ export default function Pricing() {
   return (
     <div className="overflow-x-hidden bg-slate-50 min-h-screen">
       <Helmet>
-        <title>Pricing | Slate AI Workspace</title>
+        <title>Pricing | Slate AI Wixlate</title>
         <meta name="description" content="Transparent pricing for Slate. Scale your business with our unified workspace platform. Choose the plan that fits your team." />
       </Helmet>
       {/* Pricing Header */}
@@ -433,7 +433,7 @@ export default function Pricing() {
                     <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
                   </tr>
                   <tr className="hover:bg-slate-50/50 transition-colors">
-                    <td className="py-4 px-6 text-sm font-medium text-slate-700">{t("time_off_module", "Time Off Module")}</td>
+                    <td className="py-4 px-6 text-sm font-medium text-slate-700">{t("time_off_slate", "Time Off Slate")}</td>
                     <td className="py-4 px-6 text-center text-slate-300 font-bold">—</td>
                     <td className="py-4 px-6 text-center text-slate-300 font-bold">—</td>
                     <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>

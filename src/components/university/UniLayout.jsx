@@ -72,7 +72,7 @@ export default function UniLayout({ children }) {
           <div className="flex items-center text-xs text-[var(--color-text-secondary)]">
             <span>University</span>
             <ChevronRight className="w-3 h-3 mx-1" />
-            <span className="text-[var(--color-text-primary)]">{activeModule.name}</span>
+            <span className="text-[var(--color-text-primary)]">{activeSlate.name}</span>
           </div>
         </div>
 
@@ -145,7 +145,7 @@ export default function UniLayout({ children }) {
                     style={{ strokeWidth: 1.5, color: isActive ? module.color : 'inherit' }} 
                   />
                   {!isSidebarCollapsed && (
-                    <span className="truncate">{module.name}</span>
+                    <span className="truncate">{slate.name}</span>
                   )}
                 </Link>
               );
@@ -182,7 +182,7 @@ export default function UniLayout({ children }) {
           <div className="h-14 shrink-0 flex items-center justify-between px-6 border-b border-[var(--color-border-subtle)] bg-[var(--color-surface-0)] z-10">
             <div className="flex items-center gap-3">
               <activeModule.icon className="w-6 h-6" style={{ color: activeModule.color }} />
-              <h1 className="font-display text-xl font-semibold tracking-tight">{activeModule.name}</h1>
+              <h1 className="font-display text-xl font-semibold tracking-tight">{activeSlate.name}</h1>
             </div>
             <div className="flex items-center gap-2">
               {/* Optional module-level actions */}

@@ -291,7 +291,7 @@ export default function UnivAccessControl() {
                 <table className="w-full text-sm">
                   <thead className="bg-muted/50 border-b border-border">
                     <tr>
-                      <th className="px-4 py-3 text-left font-bold text-muted-foreground">Feature / Module</th>
+                      <th className="px-4 py-3 text-left font-bold text-muted-foreground">Feature / Slate</th>
                       <th className="px-4 py-3 text-center font-bold text-muted-foreground">Read Access</th>
                       <th className="px-4 py-3 text-center font-bold text-muted-foreground">Write Access</th>
                       <th className="px-4 py-3 text-center font-bold text-muted-foreground">Delete Access</th>

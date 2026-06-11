@@ -102,12 +102,12 @@ export default function UnivAuditTrail() {
         <div className="flex-1 overflow-auto rounded-2xl border border-border bg-card shadow-sm">
           <table className="w-full text-sm min-w-[600px]">
             <thead className="border-b border-border bg-muted/40 sticky top-0">
-              <tr><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Action</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">User Name</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Module</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Timestamp</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Severity</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase"></th></tr>
+              <tr><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Action</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">User Name</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Slate</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Timestamp</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Severity</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase"></th></tr>
             </thead>
             <tbody>
               {filtered.map(r => (
                 <motion.tr key={r.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="border-b border-border/50 hover:bg-muted/20">
-                  <td className="px-4 py-3 font-semibold">{r['action']}</td><td className="px-4 py-3 text-muted-foreground">{r['user_name']}</td><td className="px-4 py-3 text-muted-foreground">{r['module']}</td><td className="px-4 py-3 text-muted-foreground">{r['timestamp']}</td><td className="px-4 py-3"><span className={`px-2 py-0.5 rounded-full text-xs font-bold ${STATUS_COLORS[r['severity']] || 'bg-muted text-foreground'}`}>{r['severity']}</span></td>
+                  <td className="px-4 py-3 font-semibold">{r['action']}</td><td className="px-4 py-3 text-muted-foreground">{r['user_name']}</td><td className="px-4 py-3 text-muted-foreground">{r['slate']}</td><td className="px-4 py-3 text-muted-foreground">{r['timestamp']}</td><td className="px-4 py-3"><span className={`px-2 py-0.5 rounded-full text-xs font-bold ${STATUS_COLORS[r['severity']] || 'bg-muted text-foreground'}`}>{r['severity']}</span></td>
                   <td className="px-4 py-3">
                     <div className="flex gap-1">
                       <button onClick={() => openModal(r)} className="p-1.5 bg-muted rounded-lg hover:bg-muted/80"><Edit2 className="w-3.5 h-3.5" /></button>
@@ -142,7 +142,7 @@ export default function UnivAuditTrail() {
                 <input  type="text" value={form['user_name']} onChange={e => setForm({ ...form, 'user_name': e.target.value })} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
               </div>
               <div>
-                <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Module / Area</label>
+                <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Slate / Area</label>
                 <input  type="text" value={form['module']} onChange={e => setForm({ ...form, 'module': e.target.value })} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
               </div>
               <div>

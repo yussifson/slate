@@ -156,7 +156,7 @@ export default function OnlineBuilder() {
                 <div className="space-y-6">
                   {courseId ? (
                     <div className="text-center py-12 border-2 border-dashed border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] text-[var(--color-text-secondary)] text-sm">
-                      <p className="mb-4">No modules created yet.</p>
+                      <p className="mb-4">No slates created yet.</p>
                       <button className="px-4 py-2 bg-[var(--color-surface-1)] border border-[var(--color-border-default)] text-[var(--color-text-primary)] font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors">
                         Create First Module
                       </button>

@@ -119,21 +119,21 @@ export default function OnlineInstructor() {
             <div className="space-y-6">
               <div>
                 <div className="flex justify-between text-sm mb-1">
-                  <span className="font-medium">Module 1: Setup</span>
+                  <span className="font-medium">Slate 1: Setup</span>
                   <span className="text-gray-500">5% drop-off</span>
                 </div>
                 <Progress value={95} className="h-2" />
               </div>
               <div>
                 <div className="flex justify-between text-sm mb-1">
-                  <span className="font-medium text-orange-600">Module 3: Advanced Concepts</span>
+                  <span className="font-medium text-orange-600">Slate 3: Advanced Concepts</span>
                   <span className="text-gray-500">25% drop-off</span>
                 </div>
                 <Progress value={75} className="h-2 [&>div]:bg-orange-500" />
               </div>
               <div>
                 <div className="flex justify-between text-sm mb-1">
-                  <span className="font-medium">Module 5: Final Project</span>
+                  <span className="font-medium">Slate 5: Final Project</span>
                   <span className="text-gray-500">10% drop-off</span>
                 </div>
                 <Progress value={90} className="h-2" />

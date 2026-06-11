@@ -12,6 +12,7 @@ CRITICAL INSTRUCTIONS:
 4. Provide a domain-specific \`page_name\` (e.g., "Pet Records", "Billing & Invoicing", "Student Attendance") but map it to exactly one matching \`component_id\` from the allowed library below.
 5. THE FIRST PAGE MUST ALWAYS BE A DASHBOARD. Set \`page_name\` to "Dashboard" and \`component_id\` to "dashboard".
 6. Avoid using the generic table or grid components unless the page is explicitly just a basic data table with no other domain representation.
+7. The \`industry_name\` must be a short, smart, and accurate title (1-2 words max) that names the system (e.g., "Optavel Retail", "City Hospital", "Grace School"). Do not use long descriptions.
 
 ALLOWED COMPONENT IDS (YOU MUST USE EXACTLY ONE OF THESE AS THE \`component_id\` FOR EACH PAGE):
 - \`dashboard\` : Main system dashboard, charts, overview (MUST be the first page)
@@ -284,13 +285,13 @@ export async function generateOrbitBuildWorkspace(prompt, companyId) {
 
     let parsedData = null;
     let assembledPages = [];
-    let industryName = 'Custom Workspace';
+    let industryName = 'Custom Wixlate';
 
     // Best-effort attempt to extract an industry name from the prompt
     // e.g., "Build a veterinary clinic management system..." -> "veterinary clinic"
     const extractIndustryFromPrompt = (text) => {
       const match = text.match(/(?:build|create|make) (?:a|an) (.*?) (?:management system|workspace|app|software)/i);
-      return match ? match[1].trim().replace(/\b\w/g, l => l.toUpperCase()) : 'Custom Workspace';
+      return match ? match[1].trim().replace(/\b\w/g, l => l.toUpperCase()) : 'Custom Wixlate';
     };
 
     try {

@@ -19,7 +19,7 @@ export default function OnlinePortal() {
           <CardContent className="p-5">
             <p className="text-xs font-semibold text-primary mb-1">COURSE</p>
             <h3 className="font-bold text-lg mb-2">Machine Learning Specialization</h3>
-            <p className="text-sm text-gray-500 mb-4">Module 3: Neural Networks and Deep Learning</p>
+            <p className="text-sm text-gray-500 mb-4">Slate 3: Neural Networks and Deep Learning</p>
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="font-medium text-gray-700">45% Completed</span>
@@ -36,7 +36,7 @@ export default function OnlinePortal() {
           <CardContent className="p-5">
             <p className="text-xs font-semibold text-primary mb-1">PROFESSIONAL CERTIFICATE</p>
             <h3 className="font-bold text-lg mb-2">React Web Development</h3>
-            <p className="text-sm text-gray-500 mb-4">Module 1: React Basics</p>
+            <p className="text-sm text-gray-500 mb-4">Slate 1: React Basics</p>
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="font-medium text-gray-700">10% Completed</span>

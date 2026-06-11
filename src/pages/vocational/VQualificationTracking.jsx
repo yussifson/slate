@@ -141,22 +141,22 @@ export default function VQualificationTracking() {
                   <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="md:col-span-2 space-y-6">
                       <div className="p-6 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800 shadow-sm">
-                        <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 flex items-center gap-2"><BookCheck className="w-4 h-4 text-primary" /> Core Modules</h3>
+                        <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 flex items-center gap-2"><BookCheck className="w-4 h-4 text-primary" /> Core Slates</h3>
                         <div className="space-y-3">
                           {selectedQual.data?.modules?.length > 0 ? (
                             selectedQual.data.modules.map((mod, idx) => (
                               <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
                                 <div className="flex items-center gap-3">
                                   <div className="w-8 h-8 rounded-full bg-slate-100 text-primary flex items-center justify-center font-bold text-xs">{idx + 1}</div>
-                                  <span className="font-medium text-slate-700 dark:text-slate-300">{mod.name || 'Module Name'}</span>
+                                  <span className="font-medium text-slate-700 dark:text-slate-300">{mod.name || 'Slate Name'}</span>
                                 </div>
                                 <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">{mod.credits || 0} Credits</span>
                               </div>
                             ))
                           ) : (
                             <div className="text-center py-6 border-2 border-dashed border-slate-200 rounded-xl">
-                              <p className="text-slate-500 dark:text-slate-400 text-sm">No modules defined for this qualification.</p>
-                              <Button variant="link" className="text-primary h-auto p-0 mt-2">Add Module</Button>
+                              <p className="text-slate-500 dark:text-slate-400 text-sm">No slates defined for this qualification.</p>
+                              <Button variant="link" className="text-primary h-auto p-0 mt-2">Add Slate</Button>
                             </div>
                           )}
                         </div>

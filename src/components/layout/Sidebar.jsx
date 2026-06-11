@@ -50,7 +50,7 @@ const ICON_MAP = {
 import { supabase } from "@/api/supabaseClient";
 import { useAuth } from "@/lib/AuthContext";
 import { useCompanyId } from "@/hooks/useCompanyId";
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -59,6 +59,7 @@ import { useVideo } from "@/lib/VideoContext";
 export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   const { t } = useTranslation();
   const { impersonatedCompany } = useImpersonation();
+  const queryClient = useQueryClient();
   const companyId = useCompanyId();
   const location = useLocation();
   const navigate = useNavigate();
@@ -333,8 +334,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
     setDeleteData({ id, name });
   };
 
-  const handleRenameModule = (id, currentName) => {
-    setRenameData({ id, currentName, newName: currentName });
+  const handleRenameModule = (id, currentName, isOrbitBuild = false) => {
+    setRenameData({ id, currentName, newName: currentName, isOrbitBuild });
   };
 
   const confirmDelete = async () => {
@@ -347,8 +348,24 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
 
   const confirmRename = async () => {
     if (renameData && renameData.newName.trim() !== "" && renameData.newName !== renameData.currentName) {
-      setDynamicModules(prev => prev.map(m => m.id === renameData.id ? { ...m, name: renameData.newName } : m));
-      await supabase.from('module_definitions').update({ name: renameData.newName }).eq('id', renameData.id);
+      if (renameData.isOrbitBuild) {
+        // OrbitBuild components are stored in industry_records
+        if (orbitBuildData && orbitBuildData.pages) {
+          const updatedPages = orbitBuildData.pages.map(p => 
+            p.page_name === renameData.currentName ? { ...p, page_name: renameData.newName } : p
+          );
+          await supabase.from('industry_records')
+            .update({ data: { ...orbitBuildData, pages: updatedPages } })
+            .eq('company_id', companyId)
+            .eq('industry', 'orbit_build')
+            .eq('record_type', 'workspace_config');
+          // Invalidate to refresh sidebar
+          queryClient.invalidateQueries(['orbit_build_config', companyId]);
+        }
+      } else {
+        setDynamicModules(prev => prev.map(m => m.id === renameData.id ? { ...m, name: renameData.newName } : m));
+        await supabase.from('module_definitions').update({ name: renameData.newName }).eq('id', renameData.id);
+      }
       setRenameData(null);
     } else {
       setRenameData(null);
@@ -373,10 +390,12 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
         )}
         {!collapsed && (
           <div className="animate-in fade-in zoom-in duration-200">
-            <h1 className="text-sm font-bold text-sidebar-foreground tracking-tight leading-tight whitespace-nowrap truncate max-w-[140px]">{activeCompanyName}</h1>
-            <p className="text-[10px] text-muted-foreground uppercase tracking-wider whitespace-nowrap">
-              {activeIndustry === 'orbit_build' ? (orbitBuildData?.industry_name || 'Custom Workspace') : industryData.name}
-            </p>
+            <div className="flex flex-col">
+              <span className="font-bold text-foreground leading-tight tracking-tight mt-0.5">orbtal</span>
+              <span className="text-[9px] font-extrabold text-muted-foreground uppercase tracking-widest leading-none mt-1">
+                {companyData?.name || (activeIndustry === 'orbit_build' ? (orbitBuildData?.industry_name || 'Custom Wixlate') : industryData.name)}
+              </span>
+            </div>
           </div>
         )}
       </div>
@@ -457,18 +476,24 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
                     {openMenuId === item.id && (
                       <div className="absolute right-0 mt-1 w-36 bg-sidebar border border-sidebar-border shadow-xl rounded-md overflow-hidden">
                         <div className="py-1">
-                          <button onClick={(e) => { e.preventDefault(); handleTogglePublish(item.id, item.status); setOpenMenuId(null); }} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors">
-                            <Eye className="w-3 h-3" /> {item.status === 'published' ? 'Unpublish' : 'Publish'}
-                          </button>
-                          <button onClick={(e) => { e.preventDefault(); handleRenameModule(item.id, item.label); setOpenMenuId(null); }} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors">
+                          {!item.component_id && (
+                            <button onClick={(e) => { e.preventDefault(); handleTogglePublish(item.id, item.status); setOpenMenuId(null); }} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors">
+                              <Eye className="w-3 h-3" /> {item.status === 'published' ? 'Unpublish' : 'Publish'}
+                            </button>
+                          )}
+                          <button onClick={(e) => { e.preventDefault(); handleRenameModule(item.id, item.label, !!item.component_id); setOpenMenuId(null); }} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors">
                             <Pencil className="w-3 h-3" /> Rename
                           </button>
-                          <button onClick={(e) => { e.preventDefault(); navigate(`/slate/edit/${item.id}`); setOpenMenuId(null); }} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors">
-                            <Settings className="w-3 h-3" /> Customize
-                          </button>
-                          <button onClick={(e) => { e.preventDefault(); handleDeleteModule(item.id, item.label); setOpenMenuId(null); }} className="w-full text-left px-3 py-2 text-xs text-red-500 hover:bg-red-500/10 flex items-center gap-2 transition-colors">
-                            <Trash2 className="w-3 h-3" /> Delete
-                          </button>
+                          {!item.component_id && (
+                            <>
+                              <button onClick={(e) => { e.preventDefault(); navigate(`/slate/edit/${item.id}`); setOpenMenuId(null); }} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors">
+                                <Settings className="w-3 h-3" /> Customize
+                              </button>
+                              <button onClick={(e) => { e.preventDefault(); handleDeleteModule(item.id, item.label); setOpenMenuId(null); }} className="w-full text-left px-3 py-2 text-xs text-red-500 hover:bg-red-500/10 flex items-center gap-2 transition-colors">
+                                <Trash2 className="w-3 h-3" /> Delete
+                              </button>
+                            </>
+                          )}
                         </div>
                       </div>
                     )}

@@ -62,7 +62,7 @@ export default function UniDashboard() {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[var(--color-border-subtle)] pb-6">
         <div>
-          <h1 className="font-display font-semibold text-3xl text-[var(--color-text-primary)] tracking-tight">University Workspace</h1>
+          <h1 className="font-display font-semibold text-3xl text-[var(--color-text-primary)] tracking-tight">University Wixlate</h1>
           <p className="text-base text-[var(--color-text-secondary)] mt-2">Enterprise command center for academic and operational metrics.</p>
         </div>
         <div className="flex gap-3">

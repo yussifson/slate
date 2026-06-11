@@ -30,7 +30,7 @@ export default function OnlineAssessments() {
           <div className="w-16 h-16 bg-[var(--primary)] text-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-md">
             <BookOpen className="w-8 h-8" />
           </div>
-          <h1 className="text-2xl font-bold font-display text-[var(--color-text-primary)] mb-2">Module 1 Final Assessment</h1>
+          <h1 className="text-2xl font-bold font-display text-[var(--color-text-primary)] mb-2">Slate 1 Final Assessment</h1>
           <p className="text-[var(--color-text-secondary)] mb-8">Test your knowledge on the foundational concepts covered in Slate 1. You must score 80% to pass.</p>
           
           <div className="flex justify-center gap-8 mb-8 text-sm text-[var(--color-text-secondary)]">

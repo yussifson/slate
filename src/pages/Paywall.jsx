@@ -188,7 +188,7 @@ export default function Paywall() {
         </div>
 
         <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight leading-none mb-4">
-          {t("activate_your_firm_s_workspace", "Activate your firm's workspace")}
+          {t("activate_your_firm_s_workspace", "Activate your firm's wixlate")}
         </h1>
         <p className="text-slate-600 text-base md:text-lg max-w-xl mx-auto leading-relaxed mb-12">
           {t(

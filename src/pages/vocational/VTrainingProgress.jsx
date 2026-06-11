@@ -123,7 +123,7 @@ export default function VTrainingProgress() {
                       <div className="flex items-center gap-3 mt-2 text-sm text-slate-600 dark:text-slate-300 font-medium">
                         <span className="flex items-center gap-1.5"><Badge variant="outline" className="border-primary/20 dark:border-slate-600 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-primary">{selectedRecord.data?.trainee_name}</Badge></span>
                         <span>•</span>
-                        <span className="flex items-center gap-1.5"><BookOpen className="w-4 h-4 text-primary" /> Module: {selectedRecord.data?.current_module || 'N/A'}</span>
+                        <span className="flex items-center gap-1.5"><BookOpen className="w-4 h-4 text-primary" /> Slate: {selectedRecord.data?.current_slate || 'N/A'}</span>
                         <span>•</span>
                         <span className="flex items-center gap-1.5">
                           <Badge className={selectedRecord.data?.status === 'Completed' ? 'bg-primary' : 'bg-primary'}>

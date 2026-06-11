@@ -102,7 +102,7 @@ export default function LearningPlayer() {
               )}
               {activeTab === 'resources' && (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
-                  <p className="text-sm text-[var(--color-text-secondary)] text-center py-12 border-2 border-dashed border-[var(--color-border-subtle)] rounded-[var(--radius-lg)]">No resources available for this module yet.</p>
+                  <p className="text-sm text-[var(--color-text-secondary)] text-center py-12 border-2 border-dashed border-[var(--color-border-subtle)] rounded-[var(--radius-lg)]">No resources available for this slate yet.</p>
                 </motion.div>
               )}
             </div>
@@ -122,7 +122,7 @@ export default function LearningPlayer() {
           <div className="flex-1 overflow-y-auto p-4 space-y-1">
             <div className="text-center py-8">
               <BookOpen className="w-8 h-8 text-[var(--color-text-tertiary)] mx-auto mb-2 opacity-50" />
-              <p className="text-xs text-[var(--color-text-secondary)]">No modules found for this course.</p>
+              <p className="text-xs text-[var(--color-text-secondary)]">No slates found for this course.</p>
             </div>
           </div>
         </div>

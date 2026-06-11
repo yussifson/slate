@@ -192,20 +192,20 @@ export default function AppLayout() {
 
         {/* Trial Countdown Banner */}
         {subscriptionStatus === 'trial' && !hideTrialBanner && !isSuperAdmin && (
-          <div className="mx-3 mt-3 mb-1 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-5 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs md:text-sm shrink-0 shadow-[0_4px_14px_0_rgba(16,185,129,0.39)] font-sans border border-white/20 relative overflow-hidden">
+          <div className="mx-3 mt-3 mb-1 rounded-xl bg-primary text-white px-5 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs md:text-sm shrink-0 shadow-lg font-sans border border-white/20 relative overflow-hidden">
             {/* Shimmer effect */}
             <div className="absolute inset-0 -translate-x-full animate-[shimmer_3s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
             
             <div className="flex items-center gap-2 relative z-10">
-              <Clock className="w-5 h-5 shrink-0 animate-pulse text-emerald-100" />
+              <Clock className="w-5 h-5 shrink-0 animate-pulse text-white/90" />
               <span className="font-bold tracking-tight">{t("free_trial_active", "Free Trial Active:")}</span>
-              <span className="text-emerald-50">{t("you_have", "You have")} <strong className="font-extrabold text-white text-base bg-emerald-700/50 px-1.5 py-0.5 rounded">{trialDaysLeft} {t("days", "days")}</strong> {t("remaining_on_your_slate_trial", "remaining on your Slate trial.")}</span>
+              <span className="text-white/90">{t("you_have", "You have")} <strong className="font-extrabold text-white text-base bg-black/20 px-1.5 py-0.5 rounded">{trialDaysLeft} {t("days", "days")}</strong> {t("remaining_on_your_slate_trial", "remaining on your Slate trial.")}</span>
             </div>
             <div className="flex items-center gap-3 relative z-10 w-full sm:w-auto">
               <Link to="/settings" className="w-full sm:w-auto">
                 <Button
                   size="sm"
-                  className="w-full h-8 bg-white hover:bg-emerald-50 text-emerald-700 font-extrabold text-xs gap-1.5 shrink-0 rounded-lg shadow-md transition-all hover:scale-105"
+                  className="w-full h-8 bg-white hover:bg-white/90 text-primary font-extrabold text-xs gap-1.5 shrink-0 rounded-lg shadow-md transition-all hover:scale-105"
                 >
                   <CreditCard className="w-3.5 h-3.5" /> {t("upgrade_plan", "Upgrade Plan")}
                 </Button>

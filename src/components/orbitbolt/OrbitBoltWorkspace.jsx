@@ -377,7 +377,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
                 </div>
                 <div className="flex items-center gap-2.5 px-4 py-3 rounded-2xl rounded-tl-md bg-muted ring-1 ring-border text-sm text-muted-foreground">
                   <RefreshCw className="w-4 h-4 animate-spin text-primary" />
-                  <span>Architecting your module…</span>
+                  <span>Architecting your slate…</span>
                 </div>
               </motion.div>
             )}
@@ -396,7 +396,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
                       handleSend(e);
                     }
                   }}
-                  placeholder="Describe the module, dashboard, or workflow to build…"
+                  placeholder="Describe the slate, dashboard, or workflow to build…"
                   className="w-full bg-transparent border-none resize-none px-4 pt-4 pb-2 text-[14px] text-foreground placeholder:text-muted-foreground focus:outline-none min-h-[100px] max-h-[220px] scrollbar-thin"
                   disabled={isGenerating}
                 />
@@ -458,8 +458,8 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
                                  <Layers className="w-6 h-6 text-primary" />
                                </div>
                                <div>
-                                 <h2 className="text-2xl font-semibold text-foreground tracking-tight">{previewSchema.module?.name || previewSchema.title || "Slate"}</h2>
-                                 <p className="text-muted-foreground text-sm mt-1">{previewSchema.module?.description || "Dynamic module preview"}</p>
+                                 <h2 className="text-2xl font-semibold text-foreground tracking-tight">{previewSchema.slate?.name || previewSchema.title || "Slate"}</h2>
+                                 <p className="text-muted-foreground text-sm mt-1">{previewSchema.slate?.description || "Dynamic module preview"}</p>
                                </div>
                              </div>
                              

@@ -204,7 +204,7 @@ export default function VCourses() {
               ))}
               <div className="mt-3 space-y-1 px-2">
                 <button className="w-full py-2 text-[10px] font-semibold uppercase tracking-wider border border-dashed border-[#30363D] text-[#484F58] hover:border-[#F6C90E] hover:text-[#F6C90E] transition-colors" style={{ fontFamily: F.label }}>+ Add Phase</button>
-                <button className="w-full py-2 text-[10px] font-semibold uppercase tracking-wider border border-dashed border-[#30363D] text-[#484F58] hover:border-primary hover:text-primary transition-colors" style={{ fontFamily: F.label }}>+ Add Module</button>
+                <button className="w-full py-2 text-[10px] font-semibold uppercase tracking-wider border border-dashed border-[#30363D] text-[#484F58] hover:border-primary hover:text-primary transition-colors" style={{ fontFamily: F.label }}>+ Add Slate</button>
               </div>
             </div>
 
@@ -257,7 +257,7 @@ export default function VCourses() {
 
             {/* Right: Properties */}
             <div className="w-[280px] shrink-0 bg-[#161B22] border-l border-[#30363D] overflow-y-auto p-4">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#484F58] mb-3" style={{ fontFamily: F.label }}>Module Properties</div>
+              <div className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#484F58] mb-3" style={{ fontFamily: F.label }}>Slate Properties</div>
               <div className="space-y-4">
                 {[{ label: 'Total Hours', value: '40' }, { label: 'NQF Credits', value: '8' }, { label: 'Prerequisites', value: 'None' }, { label: 'Equipment Required', value: 'Multimeter, Breadboard' }].map(p => (
                   <div key={p.label}>

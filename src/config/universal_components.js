@@ -1,1002 +1,1002 @@
 export const UNIVERSAL_COMPONENTS = [
   {
     "id": "UnivAccessControl",
-    "label": "ccess ontrol",
+    "label": "Access Control",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivAdSpend",
-    "label": "d pend",
+    "label": "Ad Spend",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivAdvocacy",
-    "label": "dvocacy",
+    "label": "Advocacy",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivAffiliateProgram",
-    "label": "ffiliate rogram",
+    "label": "Affiliate Program",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivAgentcommission",
-    "label": "gentcommission",
+    "label": "Agentcommission",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivAllergyList",
-    "label": "llergy ist",
+    "label": "Allergy List",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivAlumni",
-    "label": "lumni",
+    "label": "Alumni",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivAnalytics",
-    "label": "nalytics",
+    "label": "Analytics",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivApiIntegration",
-    "label": "pi ntegration",
+    "label": "Api Integration",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivAppointments",
-    "label": "ppointments",
+    "label": "Appointments",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivArbitration",
-    "label": "rbitration",
+    "label": "Arbitration",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivAssemblyLine",
-    "label": "ssembly ine",
+    "label": "Assembly Line",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivAssetManagement",
-    "label": "sset anagement",
+    "label": "Asset Management",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivAttendance",
-    "label": "ttendance",
+    "label": "Attendance",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivAuditTrail",
-    "label": "udit rail",
+    "label": "Audit Trail",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivBankReconciliation",
-    "label": "ank econciliation",
+    "label": "Bank Reconciliation",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivBeneficiaryList",
-    "label": "eneficiary ist",
+    "label": "Beneficiary List",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivBenefitElection",
-    "label": "enefit lection",
+    "label": "Benefit Election",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivBillOfLading",
-    "label": "ill f ading",
+    "label": "Bill Of Lading",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivBlueprint",
-    "label": "lueprint",
+    "label": "Blueprint",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivBOM",
-    "label": "",
+    "label": "B O M",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivBooking",
-    "label": "ooking",
+    "label": "Booking",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivBOQ",
-    "label": "",
+    "label": "B O Q",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivBrandAsset",
-    "label": "rand sset",
+    "label": "Brand Asset",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivBriefs",
-    "label": "riefs",
+    "label": "Briefs",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivBudgetForecast",
-    "label": "udget orecast",
+    "label": "Budget Forecast",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivBudgetPlan",
-    "label": "udget lan",
+    "label": "Budget Plan",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivCalendar",
-    "label": "alendar",
+    "label": "Calendar",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivCallLog",
-    "label": "all og",
+    "label": "Call Log",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivCampaignMetric",
-    "label": "ampaign etric",
+    "label": "Campaign Metric",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivCampaignSchedule",
-    "label": "ampaign chedule",
+    "label": "Campaign Schedule",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivCarRental",
-    "label": "ar ental",
+    "label": "Car Rental",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivCarrierContract",
-    "label": "arrier ontract",
+    "label": "Carrier Contract",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivCaseManagement",
-    "label": "ase anagement",
+    "label": "Case Management",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivCashFlow",
-    "label": "ash low",
+    "label": "Cash Flow",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivChangeRequest",
-    "label": "hange equest",
+    "label": "Change Request",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivChatTranscript",
-    "label": "hat ranscript",
+    "label": "Chat Transcript",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivChurnRisk",
-    "label": "hurn isk",
+    "label": "Churn Risk",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivClassAttendance",
-    "label": "lass ttendance",
+    "label": "Class Attendance",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivClientledger",
-    "label": "lientledger",
+    "label": "Clientledger",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivClientPortal",
-    "label": "lient ortal",
+    "label": "Client Portal",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivColdChain",
-    "label": "old hain",
+    "label": "Cold Chain",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivCommissionStructure",
-    "label": "ommission tructure",
+    "label": "Commission Structure",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivCompetitorPrice",
-    "label": "ompetitor rice",
+    "label": "Competitor Price",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivConcreteTest",
-    "label": "oncrete est",
+    "label": "Concrete Test",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivConflictcheck",
-    "label": "onflictcheck",
+    "label": "Conflictcheck",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivConsultation",
-    "label": "onsultation",
+    "label": "Consultation",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivContactManagement",
-    "label": "ontact anagement",
+    "label": "Contact Management",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivContractManagement",
-    "label": "ontract anagement",
+    "label": "Contract Management",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivContractor",
-    "label": "ontractor",
+    "label": "Contractor",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivCourse",
-    "label": "ourse",
+    "label": "Course",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivCourtCalendar",
-    "label": "ourt alendar",
+    "label": "Court Calendar",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivCRM",
-    "label": "",
+    "label": "C R M",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivCrossDocking",
-    "label": "ross ocking",
+    "label": "Cross Docking",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivCustomerJourney",
-    "label": "ustomer ourney",
+    "label": "Customer Journey",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivCustomerReview",
-    "label": "ustomer eview",
+    "label": "Customer Review",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivCustomerSegment",
-    "label": "ustomer egment",
+    "label": "Customer Segment",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivCustomsDoc",
-    "label": "ustoms oc",
+    "label": "Customs Doc",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivDamagedGoods",
-    "label": "amaged oods",
+    "label": "Damaged Goods",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivDashboard",
-    "label": "ashboard",
+    "label": "Dashboard",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivDataBackup",
-    "label": "ata ackup",
+    "label": "Data Backup",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivDataGrid",
-    "label": "ata rid",
+    "label": "Data Grid",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivDelivery",
-    "label": "elivery",
+    "label": "Delivery",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivDigitalAsset",
-    "label": "igital sset",
+    "label": "Digital Asset",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivDining",
-    "label": "ining",
+    "label": "Dining",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivDischargeSummary",
-    "label": "ischarge ummary",
+    "label": "Discharge Summary",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivDisciplinary",
-    "label": "isciplinary",
+    "label": "Disciplinary",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivDiscount",
-    "label": "iscount",
+    "label": "Discount",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivDispatch",
-    "label": "ispatch",
+    "label": "Dispatch",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivDoctorSchedule",
-    "label": "octor chedule",
+    "label": "Doctor Schedule",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivDocument",
-    "label": "ocument",
+    "label": "Document",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivDonationLog",
-    "label": "onation og",
+    "label": "Donation Log",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivDonorProfile",
-    "label": "onor rofile",
+    "label": "Donor Profile",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivEmployeePerformance",
-    "label": "mployee erformance",
+    "label": "Employee Performance",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivEMR",
-    "label": "",
+    "label": "E M R",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivEnrollment",
-    "label": "nrollment",
+    "label": "Enrollment",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivEquipmentRental",
-    "label": "quipment ental",
+    "label": "Equipment Rental",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivEscrow",
-    "label": "scrow",
+    "label": "Escrow",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivEventPlanner",
-    "label": "vent lanner",
+    "label": "Event Planner",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivExamSchedule",
-    "label": "xam chedule",
+    "label": "Exam Schedule",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivExitInterview",
-    "label": "xit nterview",
+    "label": "Exit Interview",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivExpenseClaim",
-    "label": "xpense laim",
+    "label": "Expense Claim",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivExpenseReport",
-    "label": "xpense eport",
+    "label": "Expense Report",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivExpertwitness",
-    "label": "xpertwitness",
+    "label": "Expertwitness",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivExtracurricular",
-    "label": "xtracurricular",
+    "label": "Extracurricular",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivFaculty",
-    "label": "aculty",
+    "label": "Faculty",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivFeatureRequest",
-    "label": "eature equest",
+    "label": "Feature Request",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivFeedbackSurvey",
-    "label": "eedback urvey",
+    "label": "Feedback Survey",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivFixedAsset",
-    "label": "ixed sset",
+    "label": "Fixed Asset",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivFleet",
-    "label": "leet",
+    "label": "Fleet",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivForkliftMaintenance",
-    "label": "orklift aintenance",
+    "label": "Forklift Maintenance",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivForm",
-    "label": "orm",
+    "label": "Form",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivGdprRequest",
-    "label": "dpr equest",
+    "label": "Gdpr Request",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivGeneralLedger",
-    "label": "eneral edger",
+    "label": "General Ledger",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivGiftCard",
-    "label": "ift ard",
+    "label": "Gift Card",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivGradebook",
-    "label": "radebook",
+    "label": "Gradebook",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivHealthSafety",
-    "label": "ealth afety",
+    "label": "Health Safety",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivHoa",
-    "label": "oa",
+    "label": "Hoa",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivHotelReview",
-    "label": "otel eview",
+    "label": "Hotel Review",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivHousekeeping",
-    "label": "ousekeeping",
+    "label": "Housekeeping",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivHREmployee",
-    "label": "mployee",
+    "label": "H R Employee",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivImmunization",
-    "label": "mmunization",
+    "label": "Immunization",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivIncidentReport",
-    "label": "ncident eport",
+    "label": "Incident Report",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivInKindDonation",
-    "label": "n ind onation",
+    "label": "In Kind Donation",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivInsurancePolicy",
-    "label": "nsurance olicy",
+    "label": "Insurance Policy",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivInventory",
-    "label": "nventory",
+    "label": "Inventory",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivInvoice",
-    "label": "nvoice",
+    "label": "Invoice",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivIpAddress",
-    "label": "p ddress",
+    "label": "Ip Address",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivKanban",
-    "label": "anban",
+    "label": "Kanban",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivKbArticle",
-    "label": "b rticle",
+    "label": "Kb Article",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivKpiTracker",
-    "label": "pi racker",
+    "label": "Kpi Tracker",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivLab",
-    "label": "ab",
+    "label": "Lab",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivLeadMagnet",
-    "label": "ead agnet",
+    "label": "Lead Magnet",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivLease",
-    "label": "ease",
+    "label": "Lease",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivLeaveManagement",
-    "label": "eave anagement",
+    "label": "Leave Management",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivLegalDocument",
-    "label": "egal ocument",
+    "label": "Legal Document",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivLibraryBook",
-    "label": "ibrary ook",
+    "label": "Library Book",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivListing",
-    "label": "isting",
+    "label": "Listing",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivLMS",
-    "label": "",
+    "label": "L M S",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivLoyaltyPoint",
-    "label": "oyalty oint",
+    "label": "Loyalty Point",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivLuggageClaim",
-    "label": "uggage laim",
+    "label": "Luggage Claim",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivMachine",
-    "label": "achine",
+    "label": "Machine",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivMaintenancerequest",
-    "label": "aintenancerequest",
+    "label": "Maintenancerequest",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivMedicalBilling",
-    "label": "edical illing",
+    "label": "Medical Billing",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivMeetingMinutes",
-    "label": "eeting inutes",
+    "label": "Meeting Minutes",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivMenu",
-    "label": "enu",
+    "label": "Menu",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivMessaging",
-    "label": "essaging",
+    "label": "Messaging",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivNewsletter",
-    "label": "ewsletter",
+    "label": "Newsletter",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivNotification",
-    "label": "otification",
+    "label": "Notification",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivOnboardingTask",
-    "label": "nboarding ask",
+    "label": "Onboarding Task",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivOperationTheater",
-    "label": "peration heater",
+    "label": "Operation Theater",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivOrderRegistry",
-    "label": "rder egistry",
+    "label": "Order Registry",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivOrgChart",
-    "label": "rg hart",
+    "label": "Org Chart",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivPalletTracker",
-    "label": "allet racker",
+    "label": "Pallet Tracker",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivParentPortal",
-    "label": "arent ortal",
+    "label": "Parent Portal",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivPatient",
-    "label": "atient",
+    "label": "Patient",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivPayment",
-    "label": "ayment",
+    "label": "Payment",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivPayroll",
-    "label": "ayroll",
+    "label": "Payroll",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivPermitTracker",
-    "label": "ermit racker",
+    "label": "Permit Tracker",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivPledge",
-    "label": "ledge",
+    "label": "Pledge",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivPOS",
-    "label": "",
+    "label": "P O S",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivPrescription",
-    "label": "rescription",
+    "label": "Prescription",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivPressRelease",
-    "label": "ress elease",
+    "label": "Press Release",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivProcurement",
-    "label": "rocurement",
+    "label": "Procurement",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivProductCatalog",
-    "label": "roduct atalog",
+    "label": "Product Catalog",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivProduction",
-    "label": "roduction",
+    "label": "Production",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivProductionSchedule",
-    "label": "roduction chedule",
+    "label": "Production Schedule",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivProject",
-    "label": "roject",
+    "label": "Project",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivProjectMilestone",
-    "label": "roject ilestone",
+    "label": "Project Milestone",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivProperty",
-    "label": "roperty",
+    "label": "Property",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivPropertyinspection",
-    "label": "ropertyinspection",
+    "label": "Propertyinspection",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivPurchaseOrder",
-    "label": "urchase rder",
+    "label": "Purchase Order",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivQualityControl",
-    "label": "uality ontrol",
+    "label": "Quality Control",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivRawMaterial",
-    "label": "aw aterial",
+    "label": "Raw Material",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivRecruitment",
-    "label": "ecruitment",
+    "label": "Recruitment",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivReferral",
-    "label": "eferral",
+    "label": "Referral",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivRetainer",
-    "label": "etainer",
+    "label": "Retainer",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivReturnRefund",
-    "label": "eturn efund",
+    "label": "Return Refund",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivRiskRegister",
-    "label": "isk egister",
+    "label": "Risk Register",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivRoom",
-    "label": "oom",
+    "label": "Room",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivRoute",
-    "label": "oute",
+    "label": "Route",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivSafety",
-    "label": "afety",
+    "label": "Safety",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivSalesTarget",
-    "label": "ales arget",
+    "label": "Sales Target",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivScholarship",
-    "label": "cholarship",
+    "label": "Scholarship",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivScrapRate",
-    "label": "crap ate",
+    "label": "Scrap Rate",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivSearch",
-    "label": "earch",
+    "label": "Search",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivSeoKeyword",
-    "label": "eo eyword",
+    "label": "Seo Keyword",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivServerMetric",
-    "label": "erver etric",
+    "label": "Server Metric",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivSiteInspection",
-    "label": "ite nspection",
+    "label": "Site Inspection",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivSlaAgreement",
-    "label": "la greement",
+    "label": "Sla Agreement",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivSnagList",
-    "label": "nag ist",
+    "label": "Snag List",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivSoftwareLicense",
-    "label": "oftware icense",
+    "label": "Software License",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivSponsorship",
-    "label": "ponsorship",
+    "label": "Sponsorship",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivSslCertificate",
-    "label": "sl ertificate",
+    "label": "Ssl Certificate",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivStockOption",
-    "label": "tock ption",
+    "label": "Stock Option",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivStudent",
-    "label": "tudent",
+    "label": "Student",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivSubscription",
-    "label": "ubscription",
+    "label": "Subscription",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivSupplierDirectory",
-    "label": "upplier irectory",
+    "label": "Supplier Directory",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivSupportTicket",
-    "label": "upport icket",
+    "label": "Support Ticket",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivTableReservation",
-    "label": "able eservation",
+    "label": "Table Reservation",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivTaxFiling",
-    "label": "ax iling",
+    "label": "Tax Filing",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivTelemedicine",
-    "label": "elemedicine",
+    "label": "Telemedicine",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivTenant",
-    "label": "enant",
+    "label": "Tenant",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivTicketSales",
-    "label": "icket ales",
+    "label": "Ticket Sales",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivTimebilling",
-    "label": "imebilling",
+    "label": "Timebilling",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivTimeline",
-    "label": "imeline",
+    "label": "Timeline",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivTimeSheet",
-    "label": "ime heet",
+    "label": "Time Sheet",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivTourPackage",
-    "label": "our ackage",
+    "label": "Tour Package",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivTrademark",
-    "label": "rademark",
+    "label": "Trademark",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivTrainingRecord",
-    "label": "raining ecord",
+    "label": "Training Record",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivTriage",
-    "label": "riage",
+    "label": "Triage",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivTuition",
-    "label": "uition",
+    "label": "Tuition",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivUtilitybill",
-    "label": "tilitybill",
+    "label": "Utilitybill",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivVitalSigns",
-    "label": "ital igns",
+    "label": "Vital Signs",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivVolunteerRoster",
-    "label": "olunteer oster",
+    "label": "Volunteer Roster",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivVulnerability",
-    "label": "ulnerability",
+    "label": "Vulnerability",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivWard",
-    "label": "ard",
+    "label": "Ward",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivWarehouse",
-    "label": "arehouse",
+    "label": "Warehouse",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivWishlist",
-    "label": "ishlist",
+    "label": "Wishlist",
     "icon": "LayoutGrid"
   },
   {
     "id": "UnivWorkOrder",
-    "label": "ork rder",
+    "label": "Work Order",
     "icon": "LayoutGrid"
   }
 ];

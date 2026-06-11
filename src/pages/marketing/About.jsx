@@ -34,7 +34,7 @@ export default function About() {
   return (
     <div className="overflow-x-hidden bg-white min-h-screen">
       <Helmet>
-        <title>About Us | Slate AI Workspace</title>
+        <title>About Us | Slate AI Wixlate</title>
         <meta name="description" content="Learn more about Slate. We are a team of engineers building the ultimate AI WorkSlate for modern businesses." />
       </Helmet>
       {/* Hero Section */}

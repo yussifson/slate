@@ -40,7 +40,7 @@ export default function OnlineCourses() {
       <div className="border-b border-[var(--color-border-subtle)] pb-4 flex justify-between items-end">
         <div>
           <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Course Catalog</h1>
-          <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage learning modules, update curriculum, and track course performance.</p>
+          <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage learning slates, update curriculum, and track course performance.</p>
         </div>
         <div className="flex gap-3">
           <button onClick={() => navigate('/o/builder')} className="px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">

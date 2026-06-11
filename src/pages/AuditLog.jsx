@@ -66,7 +66,7 @@ export default function AuditLog() {
     },
     {
       header: "Slate",
-      render: (row) => <span className="text-xs uppercase bg-muted px-2 py-0.5 rounded-full">{row.module}</span>,
+      render: (row) => <span className="text-xs uppercase bg-muted px-2 py-0.5 rounded-full">{row.slate}</span>,
     },
     {
       header: "IP Address",
@@ -86,7 +86,7 @@ export default function AuditLog() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             className="pl-9"
-            placeholder="Search by user, action, or module..."
+            placeholder="Search by user, action, or slate..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />

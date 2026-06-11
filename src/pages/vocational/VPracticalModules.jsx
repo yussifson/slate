@@ -85,11 +85,11 @@ export default function VPracticalModules() {
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px] rounded-2xl">
             <DialogHeader>
-              <DialogTitle>Add New Module</DialogTitle>
+              <DialogTitle>Add New Slate</DialogTitle>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="space-y-2">
-                <Label htmlFor="title">Module Name</Label>
+                <Label htmlFor="title">Slate Name</Label>
                 <Input id="title" placeholder="e.g. Arc Welding Basics" value={newModule.title} onChange={e => setNewModule({...newModule, title: e.target.value})} className="rounded-xl" />
               </div>
               <div className="space-y-2">
@@ -106,7 +106,7 @@ export default function VPracticalModules() {
               </div>
             </div>
             <DialogFooter>
-              <Button onClick={handleCreateModule} className="bg-rose-600 hover:bg-rose-700 rounded-xl">Save Module</Button>
+              <Button onClick={handleCreateModule} className="bg-rose-600 hover:bg-rose-700 rounded-xl">Save Slate</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -119,7 +119,7 @@ export default function VPracticalModules() {
             <div className="relative">
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-rose-500" />
               <Input 
-                placeholder="Search modules..." 
+                placeholder="Search slates..." 
                 className="pl-9 h-10 bg-rose-50/50 dark:bg-slate-800/50 border-rose-100 dark:border-slate-700 rounded-xl focus-visible:ring-rose-600"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -128,9 +128,9 @@ export default function VPracticalModules() {
           </div>
           <ScrollArea className="flex-1">
             {loading ? (
-              <div className="p-8 text-center text-rose-300 text-sm">Loading modules...</div>
+              <div className="p-8 text-center text-rose-300 text-sm">Loading slates...</div>
             ) : filteredModules.length === 0 ? (
-              <div className="p-8 text-center text-slate-400 text-sm">No modules found.</div>
+              <div className="p-8 text-center text-slate-400 text-sm">No slates found.</div>
             ) : (
               <div className="p-2 space-y-1">
                 {filteredModules.map(module => (
@@ -149,7 +149,7 @@ export default function VPracticalModules() {
                       <Layers className="w-5 h-5" />
                     </div>
                     <div className="overflow-hidden">
-                      <p className="font-bold truncate">{module.title}</p>
+                      <p className="font-bold truncate">{slate.title}</p>
                       <p className={`text-xs truncate ${selectedModule?.id === module.id ? 'text-rose-200' : 'text-slate-500 dark:text-slate-400'}`}>
                         {module.data?.courseId || 'No Course'} • {module.data?.durationHours || '0'} Hrs
                       </p>
@@ -180,7 +180,7 @@ export default function VPracticalModules() {
                 <div className="px-8 pb-8">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h2 className="text-3xl font-black text-slate-800 dark:text-slate-100">{selectedModule.title}</h2>
+                      <h2 className="text-3xl font-black text-slate-800 dark:text-slate-100">{selectedSlate.title}</h2>
                       <div className="flex items-center gap-3 mt-2 text-sm text-slate-600 dark:text-slate-300 font-medium">
                         <Badge variant="outline" className="border-rose-200 bg-rose-50 text-rose-700 dark:bg-slate-800 dark:text-rose-400">
                           {selectedModule.data?.difficulty || 'Beginner'}

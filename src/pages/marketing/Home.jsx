@@ -417,7 +417,7 @@ const suites = [
               <div className="flex-none p-6 sm:p-8 border-b border-slate-100 flex justify-between items-start bg-slate-50/50">
                 <div>
                   <div className="inline-flex items-center px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-[10px] font-bold uppercase tracking-widest mb-3">
-                    {t("workslate_module", "WorkSlate Module")}
+                    {t("workslate_module", "WorkSlate Slate")}
                   </div>
                   <h3 className="text-3xl font-extrabold text-slate-900 tracking-tight">{activeSuite.name}</h3>
                   <p className="text-slate-500 font-medium mt-2 max-w-2xl">{activeSuite.description}</p>
@@ -492,7 +492,7 @@ export default function Home() {
   return (
     <div className="overflow-x-hidden">
       <Helmet>
-        <title>Slate - The Ultimate AI Workspace</title>
+        <title>Slate - The Ultimate AI Wixlate</title>
         <meta name="description" content="Slate is an AI-powered workspace replacing multiple tools with one cohesive ecosystem. Simplify communication, scheduling, cases, and payments." />
         <meta property="og:title" content="Slate - The Ultimate AI Workspace" />
         <meta property="og:description" content="Replace fragmented tools with an intelligent, cohesive workspace built for maximum operational excellence." />
