@@ -784,71 +784,73 @@ function App() {
             <QueryClientProvider client={queryClientInstance}>
             <Router>
               <ErrorBoundary>
-                {isBaseDomain ? (
-                  /* Storefront Routes for the Base Domain */
-                  <Routes>
-                    <Route element={<MarketingLayout><Outlet /></MarketingLayout>}>
-                      <Route path="/" element={<Home />} />
-                      <Route path="/features" element={<Features />} />
-                      <Route path="/pricing" element={<Pricing />} />
-                      <Route path="/about" element={<About />} />
-                      <Route path="/contact" element={<Contact />} />
-                      <Route path="/enterprise-contact" element={<EnterpriseContact />} />
-                      <Route path="/integrations" element={<Integrations />} />
-                      <Route path="/changelog" element={<Changelog />} />
-                      <Route path="/careers" element={<Careers />} />
-                      <Route path="/partners" element={<Partners />} />
-                      <Route path="/legal" element={<LegalDocs />} />
-                    </Route>
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/signup" element={<SignUp />} />
-                    <Route path="/forgot-password" element={<ForgotPassword />} />
-                    <Route path="/reset-password" element={<ResetPassword />} />
-                    
-                    <Route element={<ProtectedRoute />}>
-                      <Route path="/onboarding" element={<OnboardingWizard />} />
+                <React.Suspense fallback={<div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm"><div className="w-12 h-12 rounded-full border-[3px] border-primary/20 border-t-primary animate-spin"></div></div>}>
+                  {isBaseDomain ? (
+                    /* Storefront Routes for the Base Domain */
+                    <Routes>
+                      <Route element={<MarketingLayout><Outlet /></MarketingLayout>}>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/features" element={<Features />} />
+                        <Route path="/pricing" element={<Pricing />} />
+                        <Route path="/about" element={<About />} />
+                        <Route path="/contact" element={<Contact />} />
+                        <Route path="/enterprise-contact" element={<EnterpriseContact />} />
+                        <Route path="/integrations" element={<Integrations />} />
+                        <Route path="/changelog" element={<Changelog />} />
+                        <Route path="/careers" element={<Careers />} />
+                        <Route path="/partners" element={<Partners />} />
+                        <Route path="/legal" element={<LegalDocs />} />
+                      </Route>
+                      <Route path="/login" element={<Login />} />
+                      <Route path="/signup" element={<SignUp />} />
+                      <Route path="/forgot-password" element={<ForgotPassword />} />
+                      <Route path="/reset-password" element={<ResetPassword />} />
                       
-                      {/* Super Admin Base Domain Dashboard */}
-                      <Route element={<AppLayout />}>
-                        <Route path="/admin" element={<AdminOverview />} />
-                        <Route path="/admin/firms" element={<AdminFirms />} />
-                        <Route path="/admin/users" element={<AdminUsers />} />
-                        <Route path="/admin/billing" element={<AdminBilling />} />
-                        <Route path="/admin/security" element={<AdminSecurity />} />
-                        <Route path="/admin/broadcasts" element={<AdminBroadcasts />} />
+                      <Route element={<ProtectedRoute />}>
+                        <Route path="/onboarding" element={<OnboardingWizard />} />
+                        
+                        {/* Super Admin Base Domain Dashboard */}
+                        <Route element={<AppLayout />}>
+                          <Route path="/admin" element={<AdminOverview />} />
+                          <Route path="/admin/firms" element={<AdminFirms />} />
+                          <Route path="/admin/users" element={<AdminUsers />} />
+                          <Route path="/admin/billing" element={<AdminBilling />} />
+                          <Route path="/admin/security" element={<AdminSecurity />} />
+                          <Route path="/admin/broadcasts" element={<AdminBroadcasts />} />
 
-                        {PlatformRoutes()}
+                          {PlatformRoutes()}
+                        </Route>
                       </Route>
-                    </Route>
-                    
-                    <Route path="/intake" element={<IntakeForm />} />
-                    <Route path="*" element={<PageNotFound />} />
-                  </Routes>
-                ) : (
-                  /* App Routes for Subdomains */
-                  <Routes>
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/signup" element={<SignUp />} />
-                    <Route path="/forgot-password" element={<ForgotPassword />} />
-                    <Route path="/reset-password" element={<ResetPassword />} />
-                    
-                    <Route element={<ProtectedRoute />}>
-                      <Route element={<AppLayout />}>
-                        <Route path="/admin" element={<AdminOverview />} />
-                        <Route path="/admin/firms" element={<AdminFirms />} />
-                        <Route path="/admin/users" element={<AdminUsers />} />
-                        <Route path="/admin/billing" element={<AdminBilling />} />
-                        <Route path="/admin/security" element={<AdminSecurity />} />
-                        <Route path="/admin/broadcasts" element={<AdminBroadcasts />} />
-
-                        {PlatformRoutes()}
-                      </Route>
+                      
                       <Route path="/intake" element={<IntakeForm />} />
-                      <Route path="/onboarding" element={<OnboardingWizard />} />
                       <Route path="*" element={<PageNotFound />} />
-                    </Route>
-                  </Routes>
-                )}
+                    </Routes>
+                  ) : (
+                    /* App Routes for Subdomains */
+                    <Routes>
+                      <Route path="/login" element={<Login />} />
+                      <Route path="/signup" element={<SignUp />} />
+                      <Route path="/forgot-password" element={<ForgotPassword />} />
+                      <Route path="/reset-password" element={<ResetPassword />} />
+                      
+                      <Route element={<ProtectedRoute />}>
+                        <Route element={<AppLayout />}>
+                          <Route path="/admin" element={<AdminOverview />} />
+                          <Route path="/admin/firms" element={<AdminFirms />} />
+                          <Route path="/admin/users" element={<AdminUsers />} />
+                          <Route path="/admin/billing" element={<AdminBilling />} />
+                          <Route path="/admin/security" element={<AdminSecurity />} />
+                          <Route path="/admin/broadcasts" element={<AdminBroadcasts />} />
+
+                          {PlatformRoutes()}
+                        </Route>
+                        <Route path="/intake" element={<IntakeForm />} />
+                        <Route path="/onboarding" element={<OnboardingWizard />} />
+                        <Route path="*" element={<PageNotFound />} />
+                      </Route>
+                    </Routes>
+                  )}
+                </React.Suspense>
               </ErrorBoundary>
             </Router>
           </QueryClientProvider>

@@ -13,6 +13,7 @@ import AiAssistant from "@/components/AiAssistant";
 import GlobalChatPanel from "@/components/chat/GlobalChatPanel";
 import SpotlightSearch from "./SpotlightSearch";
 import GlobalVideoOverlay from "@/components/video/GlobalVideoOverlay";
+import OrbitBoltWorkspace from "@/components/orbitbolt/OrbitBoltWorkspace";
 
 export default function AppLayout() {
   const { t } = useTranslation();
@@ -26,6 +27,7 @@ export default function AppLayout() {
 
   const [isAIOpen, setIsAIOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isBoltOpen, setIsBoltOpen] = useState(false);
   const [isPrefsLoaded, setIsPrefsLoaded] = useState(false);
   const [orbitContext, setOrbitContext] = useState(null);
   const [uiPrefsId, setUiPrefsId] = useState(null);
@@ -71,12 +73,21 @@ export default function AppLayout() {
     const newState = !isChatOpen;
     setIsChatOpen(newState);
     if (isAIOpen && newState) setIsAIOpen(false); // Close AI if opening chat
+    if (isBoltOpen && newState) setIsBoltOpen(false); // Close Bolt if opening chat
+  };
+
+  const toggleBolt = () => {
+    const newState = !isBoltOpen;
+    setIsBoltOpen(newState);
+    if (isAIOpen && newState) setIsAIOpen(false);
+    if (isChatOpen && newState) setIsChatOpen(false);
   };
 
   const toggleAI = async () => {
     const newState = !isAIOpen;
     setIsAIOpen(newState);
     if (isChatOpen && newState) setIsChatOpen(false); // Close chat if opening AI
+    if (isBoltOpen && newState) setIsBoltOpen(false); // Close Bolt if opening AI
     
     if (user?.email && user?.company_id) {
       try {
@@ -164,7 +175,7 @@ export default function AppLayout() {
       <div className="z-10 flex">
         <Sidebar user={user} isCollapsed={isSidebarCollapsed} setIsCollapsed={setIsSidebarCollapsed} />
       </div>
-      <div className="flex-1 flex flex-col overflow-x-hidden overflow-y-auto h-screen z-30 relative">
+      <div className="flex-1 flex flex-col overflow-hidden h-screen z-30 relative">
         {/* Offline Banner */}
         {isOffline && !hideOfflineBanner && (
           <div className="bg-red-600 text-white px-4 py-2 flex items-center justify-between gap-3 text-xs md:text-sm shrink-0 shadow-sm font-sans z-50">
@@ -192,7 +203,7 @@ export default function AppLayout() {
 
         {/* Trial Countdown Banner */}
         {subscriptionStatus === 'trial' && !hideTrialBanner && !isSuperAdmin && (
-          <div className="mx-3 mt-3 mb-1 rounded-xl bg-primary text-white px-5 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs md:text-sm shrink-0 shadow-lg font-sans border border-white/20 relative overflow-hidden">
+          <div className="mx-3 mt-3 mb-1 rounded-xl bg-gradient-to-b from-primary/90 to-primary text-white px-5 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs md:text-sm shrink-0 shadow-lg font-sans border border-white/20 relative overflow-hidden">
             {/* Shimmer effect */}
             <div className="absolute inset-0 -translate-x-full animate-[shimmer_3s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
             
@@ -246,6 +257,8 @@ export default function AppLayout() {
           toggleAI={toggleAI}
           isChatOpen={isChatOpen}
           toggleChat={toggleChat}
+          isBoltOpen={isBoltOpen}
+          toggleBolt={toggleBolt}
         />
         <div className="flex-1 relative flex flex-col overflow-hidden">
           <main className="flex-1 w-full mx-auto pb-24 md:pb-6 overflow-y-auto">
@@ -257,6 +270,7 @@ export default function AppLayout() {
       <MobileBottomNav />
       <AiAssistant isOpen={isAIOpen} onClose={toggleAI} injectedContext={orbitContext} onContextConsumed={() => setOrbitContext(null)} />
       <GlobalChatPanel isOpen={isChatOpen} onClose={toggleChat} />
+      {isBoltOpen && <OrbitBoltWorkspace onClose={toggleBolt} />}
       <SpotlightSearch />
     </div>
   );

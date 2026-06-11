@@ -69,8 +69,21 @@ export default function FirmStaffManager({ firm, onClose }) {
     if (!invite.user_email || !invite.full_name) return;
     setInviting(true);
     try {
-      // Invite user to the platform
-      await base44.users.inviteUser(invite.user_email, invite.role === "company_admin" ? "admin" : "user");
+      // Register user to the platform with a temporary password
+      const tempPassword = Math.random().toString(36).slice(-8) + 'A1!';
+      const { registerSchoolUser } = await import('@/api/authUtils');
+      const { user, error } = await registerSchoolUser(
+        invite.user_email, 
+        tempPassword, 
+        invite.role, 
+        firm.id, 
+        invite.full_name
+      );
+      
+      if (error && error.message !== 'already registered in this firm') {
+        throw error;
+      }
+
       // Create their staff record
       await base44.entities.StaffRecord.create({
         company_id: firm.id,
@@ -83,7 +96,11 @@ export default function FirmStaffManager({ firm, onClose }) {
         currency: firm.currency || "GHS",
       });
       queryClient.invalidateQueries({ queryKey: ["firm-staff", firm.id] });
-      toast({ title: `✓ Invited ${invite.full_name}`, description: `Login email sent to ${invite.user_email}` });
+      toast({ 
+        title: `✓ Invited ${invite.full_name}`, 
+        description: `Their temporary password is: ${tempPassword}. Please share it with them.`,
+        duration: 10000 
+      });
       setInvite(emptyInvite);
     } catch (err) {
       toast({ title: "Invite failed", description: err?.message || "Please try again.", variant: "destructive" });

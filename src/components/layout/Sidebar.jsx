@@ -216,7 +216,51 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
     support: ["/my-dashboard", "/", "/tasks", "/documents", "/calendar", "/whatsapp", "/email-inbox", "/chat"]
   };
 
-  const allowedPaths = isAdmin ? null : (ROLE_PERMISSIONS[user?.role] || ROLE_PERMISSIONS.support);
+  const FEATURE_PATHS = {
+    'Dashboard': ['/'],
+    'Access Control': ['/admin/users', '/settings'],
+    'Documents': ['/documents'],
+    'Projects': ['/cases', '/projects'],
+    'CRM Leads': ['/leads', '/clients'],
+    'Invoices': ['/billing', '/invoices'],
+    'HR Employees': ['/hr', '/employees', '/team'],
+    'Inventory': ['/inventory', '/products'],
+    'Messaging': ['/chat', '/whatsapp'],
+    'Support Tickets': ['/support-center', '/complaints'],
+    'Appointments': ['/calendar', '/appointments'],
+    'Payroll': ['/payroll'],
+    'Asset Management': ['/equipment-inventory', '/fleet'],
+    'Procurement': ['/purchase-orders', '/suppliers'],
+    'Analytics': ['/reports', '/analytics']
+  };
+
+  const { data: univAccessData } = useQuery({
+    queryKey: ['univ_role', user?.role, companyId],
+    queryFn: async () => {
+      if (!user?.role || !companyId) return null;
+      const { data } = await supabase
+        .from('univ_roles')
+        .select('permissions')
+        .eq('company_id', companyId)
+        .eq('role_name', user.role)
+        .maybeSingle();
+      return data;
+    },
+    enabled: !!user?.role && !!companyId && !isAdmin
+  });
+
+  const univAllowedPaths = React.useMemo(() => {
+    if (!univAccessData?.permissions) return null;
+    const paths = ['/chat', '/board', '/email-inbox'];
+    Object.entries(univAccessData.permissions).forEach(([feat, perms]) => {
+      if (perms.read) {
+        if (FEATURE_PATHS[feat]) paths.push(...FEATURE_PATHS[feat]);
+      }
+    });
+    return paths;
+  }, [univAccessData]);
+
+  const allowedPaths = isAdmin ? null : (univAllowedPaths || ROLE_PERMISSIONS[user?.role] || ROLE_PERMISSIONS.support);
 
   const coreOrbitNav = [
     { label: "Dashboard", path: "/", icon: "Sparkles" },
@@ -249,7 +293,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
     enabled: !!companyId
   });
 
-  const dynamicNavItems = dynamicModules.map(m => ({
+  const rawDynamicNavItems = dynamicModules.map(m => ({
     id: m.id,
     label: m.name,
     icon: m.icon || "Sparkles",
@@ -258,11 +302,26 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
     isDynamic: true
   }));
 
+  const dynamicNavItems = rawDynamicNavItems.filter(item => {
+    if (isAdmin) return true;
+    if (!univAccessData?.permissions) return true;
+    
+    const normalizedItemName = item.label.toLowerCase().replace(/\s/g, '');
+    for (const [feat, perms] of Object.entries(univAccessData.permissions)) {
+      if (perms.read) {
+        const normalizedFeat = feat.toLowerCase().replace(/\s/g, '');
+        if (normalizedItemName.includes(normalizedFeat) || normalizedFeat.includes(normalizedItemName)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  });
+
   
     const { data: orbitBuildData } = useQuery({
       queryKey: ['orbit_build_config', companyId],
       queryFn: async () => {
-        if (activeIndustry !== 'orbit_build') return null;
         const { data, error } = await supabase
           .from('industry_records')
           .select('data')
@@ -278,7 +337,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
         }
         return data?.data || null;
       },
-      enabled: !!companyId && activeIndustry === 'orbit_build'
+      enabled: !!companyId
     });
   
       // Force dashboard to be at the top and mapped to the dashboard component correctly
@@ -295,8 +354,22 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
           };
         });
 
-      // Pass it through (dashboard is already handled by coreOrbitNav at root)
-      const orbitBuildNavItems = orbitBuildNavItemsRaw;
+      // Pass it through and filter by RBAC
+      const orbitBuildNavItems = orbitBuildNavItemsRaw.filter(item => {
+        if (isAdmin) return true;
+        if (!univAccessData?.permissions) return true; // fallback if no role found
+        
+        const normalizedItemName = item.label.toLowerCase().replace(/\s/g, '');
+        for (const [feat, perms] of Object.entries(univAccessData.permissions)) {
+          if (perms.read) {
+            const normalizedFeat = feat.toLowerCase().replace(/\s/g, '');
+            if (normalizedItemName.includes(normalizedFeat) || normalizedFeat.includes(normalizedItemName)) {
+              return true;
+            }
+          }
+        }
+        return false;
+      });
   
     const customPageItems = customPages.map(p => ({
       id: p.id,
@@ -648,7 +721,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
 
       {/* Desktop sidebar */}
       <aside className={cn(
-        "hidden lg:flex flex-col h-screen sticky top-0 border-r-2 border-r-primary/30 shadow-[2px_0_16px_-2px_hsl(158,68%,38%,0.2)] transition-all duration-300 relative z-[1] bg-sidebar",
+        "hidden lg:flex flex-col h-screen sticky top-0 border-r-2 border-r-primary/30 transition-all duration-300 relative z-[1] bg-sidebar",
         isCollapsed ? "w-[80px] min-w-[80px] max-w-[80px]" : "w-[256px] min-w-[256px] max-w-[256px]"
       )}>
         {renderNavContent(isCollapsed)}

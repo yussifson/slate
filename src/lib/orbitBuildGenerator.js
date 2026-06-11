@@ -285,13 +285,13 @@ export async function generateOrbitBuildWorkspace(prompt, companyId) {
 
     let parsedData = null;
     let assembledPages = [];
-    let industryName = 'Custom Wixlate';
+    let industryName = 'Custom Workslate';
 
     // Best-effort attempt to extract an industry name from the prompt
     // e.g., "Build a veterinary clinic management system..." -> "veterinary clinic"
     const extractIndustryFromPrompt = (text) => {
       const match = text.match(/(?:build|create|make) (?:a|an) (.*?) (?:management system|workspace|app|software)/i);
-      return match ? match[1].trim().replace(/\b\w/g, l => l.toUpperCase()) : 'Custom Wixlate';
+      return match ? match[1].trim().replace(/\b\w/g, l => l.toUpperCase()) : 'Custom Workslate';
     };
 
     try {

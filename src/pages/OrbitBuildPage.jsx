@@ -21,6 +21,30 @@ const UnivInventory = React.lazy(() => import("@/components/universal/UnivInvent
 const UnivHREmployee = React.lazy(() => import("@/components/universal/UnivHREmployee"));
 
 // Phase 2 Universal Components
+const UnivKnowledgeBase = React.lazy(() => import("@/components/universal/UnivKnowledgeBase"));
+const UnivClientPortal = React.lazy(() => import("@/components/universal/UnivClientPortal"));
+const UnivCommandPalette = React.lazy(() => import("@/components/universal/UnivCommandPalette"));
+const UnivGlobalSearch = React.lazy(() => import("@/components/universal/UnivGlobalSearch"));
+const UnivChat = React.lazy(() => import("@/components/universal/UnivChat"));
+
+// Phase 3 Universal Components
+const UnivBooking = React.lazy(() => import("@/components/universal/UnivBooking"));
+const UnivSOP = React.lazy(() => import("@/components/universal/UnivSOP"));
+
+// Phase 4 Universal Components
+const UnivBudgeting = React.lazy(() => import("@/components/universal/UnivBudgeting"));
+const UnivRiskManagement = React.lazy(() => import("@/components/universal/UnivRiskManagement"));
+const UnivVendorManagement = React.lazy(() => import("@/components/universal/UnivVendorManagement"));
+const UnivCompliance = React.lazy(() => import("@/components/universal/UnivCompliance"));
+const UnivAuditLog = React.lazy(() => import("@/components/universal/UnivAuditLog"));
+
+// Phase 5 Universal Components
+const UnivGoalTracker = React.lazy(() => import("@/components/universal/UnivGoalTracker"));
+const UnivTimeTracking = React.lazy(() => import("@/components/universal/UnivTimeTracking"));
+const UnivResourceAllocation = React.lazy(() => import("@/components/universal/UnivResourceAllocation"));
+const UnivSurvey = React.lazy(() => import("@/components/universal/UnivSurvey"));
+const UnivEventManagement = React.lazy(() => import("@/components/universal/UnivEventManagement"));
+
 const UnivDataGrid = React.lazy(() => import("@/components/universal/UnivDataGrid"));
 const UnivKanban = React.lazy(() => import("@/components/universal/UnivKanban"));
 const UnivCalendar = React.lazy(() => import("@/components/universal/UnivCalendar"));
@@ -207,6 +231,8 @@ const UnivProductionSchedule = React.lazy(() => import("@/components/universal/U
 const UnivCustomerSegment = React.lazy(() => import("@/components/universal/UnivCustomerSegment"));
 const UnivDigitalAsset = React.lazy(() => import("@/components/universal/UnivDigitalAsset"));
 const UnivApiIntegration = React.lazy(() => import("@/components/universal/UnivApiIntegration"));
+const UnivWorkflowBuilder = React.lazy(() => import("@/components/universal/UnivWorkflowBuilder"));
+const UnivApprovalEngine = React.lazy(() => import("@/components/universal/UnivApprovalEngine"));
 
 // Basic dummy data generator for these components since they might not be hooked to real tables yet if they are purely UI templates in OrbitBuild
 const DUMMY_DATA = Array(5).fill(0).map((_, i) => ({
@@ -501,6 +527,21 @@ export default function OrbitBuildPage() {
         return <UnivForm />;
       case 'search':
         return <UnivSearch />;
+      case 'globalsearch':
+        return <UnivGlobalSearch title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+      case 'commandpalette':
+      case 'command':
+      case 'palette':
+        // Note: UnivCommandPalette is ideally mounted app-wide but can be here too
+        return <UnivCommandPalette companyId={companyId} workspaceConfig={{ pages: [pageDef] }} />;
+      case 'knowledgebase':
+      case 'knowledge':
+      case 'kb':
+      case 'wiki':
+        return <UnivKnowledgeBase title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+      case 'clientportal':
+      case 'portal':
+        return <UnivClientPortal title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
       case 'timeline':
         return <UnivTimeline />;
       case 'documentmanager':
@@ -508,9 +549,75 @@ export default function OrbitBuildPage() {
       case 'documents':
       case 'filemanager':
         return <UnivDocument companyId={companyId} pageName={pageDef.page_name} title={pageDef.page_name} />;
-      case 'messaging':
       case 'chat':
+      case 'internalchat':
+      case 'messages':
+        return <UnivChat title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+      case 'messaging':
         return <UnivMessaging />;
+      case 'booking':
+      case 'bookings':
+      case 'reservations':
+        return <UnivBooking title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+      case 'appointments':
+      case 'scheduling':
+      case 'schedule':
+        return <UnivAppointments title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+      case 'assetmanagement':
+      case 'assets':
+      case 'inventory':
+      case 'equipment':
+        return <UnivAssetManagement title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+      case 'supportticket':
+      case 'support':
+      case 'tickets':
+      case 'helpdesk':
+        return <UnivSupportTicket title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+      case 'sop':
+      case 'sops':
+      case 'procedures':
+      case 'manuals':
+        return <UnivSOP title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+      case 'budgeting':
+      case 'budgets':
+      case 'finance':
+        return <UnivBudgeting title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+      case 'riskmanagement':
+      case 'risks':
+      case 'risk':
+        return <UnivRiskManagement title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+      case 'vendormanagement':
+      case 'vendors':
+      case 'suppliers':
+        return <UnivVendorManagement title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+      case 'compliance':
+      case 'certifications':
+      case 'audit':
+        return <UnivCompliance title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+      case 'auditlog':
+      case 'logs':
+      case 'systemlogs':
+        return <UnivAuditLog title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+      case 'goals':
+      case 'okrs':
+      case 'goaltracker':
+        return <UnivGoalTracker title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+      case 'time':
+      case 'timetracking':
+      case 'timesheets':
+        return <UnivTimeTracking title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+      case 'resources':
+      case 'capacity':
+      case 'resourceallocation':
+        return <UnivResourceAllocation title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+      case 'surveys':
+      case 'feedback':
+      case 'pulse':
+        return <UnivSurvey title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+      case 'events':
+      case 'webinars':
+      case 'eventmanagement':
+        return <UnivEventManagement title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
       case 'notification':
       case 'notifications':
         return <UnivNotification />;
@@ -522,13 +629,6 @@ export default function OrbitBuildPage() {
       case 'billing':
         return <UnivPayment />;
       case 'subscription':
-      case 'subscriptions':
-      case 'plans':
-        return <UnivSubscription />;
-      case 'assetmanagement':
-      case 'assets':
-        return <UnivAssetManagement />;
-      case 'procurement':
       case 'purchasing':
         return <UnivProcurement />;
       case 'pos':
@@ -802,6 +902,10 @@ export default function OrbitBuildPage() {
       case 'customersegment': case 'segments': return <UnivCustomerSegment />;
       case 'digitalasset': case 'assets': return <UnivDigitalAsset />;
       case 'apiintegration': case 'integrations': return <UnivApiIntegration />;
+      
+      // Batch 1 Specialized
+      case 'workflowbuilder': case 'workflows': return <UnivWorkflowBuilder companyId={companyId} />;
+      case 'approvalengine': case 'approvals': return <UnivApprovalEngine companyId={companyId} />;
 
       default:
         return <UnivDataGrid title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
@@ -819,14 +923,17 @@ export default function OrbitBuildPage() {
     { id: 'form', label: 'Form Questionnaire', icon: <FormIcon className="w-4 h-4" /> },
   ];
 
+  const hideViewpointSwitcher = ['analytics', 'reports', 'workflowbuilder', 'workflows', 'approvalengine', 'approvals'].includes(cleanId);
+
   return (
     <div className="w-full min-h-[calc(100vh-4rem)] p-6 bg-background flex flex-col gap-4">
       {/* Viewpoint persistence switcher control */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 bg-card/60 border border-border/80 backdrop-blur-md rounded-2xl gap-3 shadow-sm shrink-0">
-        <div className="px-2">
-          <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider block">Active Viewpoint</span>
-          <span className="text-sm font-bold text-foreground capitalize">{currentViewpoint} View</span>
-        </div>
+      {!hideViewpointSwitcher && (
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 bg-card/60 border border-border/80 backdrop-blur-md rounded-2xl gap-3 shadow-sm shrink-0">
+          <div className="px-2">
+            <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider block">Active Viewpoint</span>
+            <span className="text-sm font-bold text-foreground capitalize">{currentViewpoint} View</span>
+          </div>
         <div className="flex flex-wrap items-center bg-muted/40 p-1 rounded-xl border border-border/50">
           {toolbarViews.map((view) => (
             <button
@@ -845,6 +952,7 @@ export default function OrbitBuildPage() {
           ))}
         </div>
       </div>
+      )}
 
       <div className="flex-1">
         <React.Suspense fallback={<div className="p-8 text-center flex justify-center items-center min-h-[50vh]"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>}>

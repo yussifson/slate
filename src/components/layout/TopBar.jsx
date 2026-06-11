@@ -13,6 +13,7 @@ import { useCompany } from "@/hooks/useCompanyId";
 import { INDUSTRIES } from "@/config/industries";
 import ProfileAvatarDialog from "@/components/shared/ProfileAvatarDialog";
 import { ORBIT_COMPONENTS_LIST } from "@/pages/admin/OrbitComponentTester";
+import { supabase } from "@/api/supabaseClient";
 
 const PAGE_TITLES = {
   "/": "Dashboard",
@@ -47,7 +48,7 @@ const LANGUAGES = {
   tr: { name: "Türkçe", flag: "🇹🇷" },
 };
 
-export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOpen, toggleAI, isChatOpen, toggleChat }) {
+export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOpen, toggleAI, isChatOpen, toggleChat, isBoltOpen, toggleBolt }) {
   const { t, i18n } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
@@ -83,8 +84,34 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
     });
     navigate('/');
     setTimeout(() => {
-      window.location.href = '/';
-    }, 50);
+      window.location.reload();
+    }, 100);
+  };
+
+  const handleSwitchWorkspace = async (targetCompanyId) => {
+    if (!targetCompanyId || targetCompanyId === user?.company_id) return;
+    try {
+      const { error } = await supabase.from('profiles').update({ company_id: targetCompanyId }).eq('id', user.id);
+      if (error) throw error;
+      
+      const targetCompany = user?.available_companies?.find(c => c.id === targetCompanyId);
+      toast({ title: t('switching_workspace', "Switching Workspace..."), description: targetCompany?.name || "Loading..." });
+      
+      if (targetCompany?.subdomain) {
+        let targetBase = window.location.hostname.split('.').slice(-2).join('.');
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+           targetBase = window.location.hostname;
+        }
+        const port = window.location.port ? `:${window.location.port}` : '';
+        const targetHost = `${targetCompany.subdomain}.${targetBase}${port}`;
+        window.location.href = `${window.location.protocol}//${targetHost}/`;
+      } else {
+        window.location.href = '/';
+      }
+    } catch (e) {
+      console.error(e);
+      toast({ title: "Error", description: "Failed to switch workspace.", variant: "destructive" });
+    }
   };
 
   const pathKey = Object.keys(PAGE_TITLES).filter(k => k !== "/").find(k => location.pathname.startsWith(k)) || (location.pathname === "/" ? "/" : "/");
@@ -100,7 +127,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
   const currentLang = LANGUAGES[i18n.language?.split('-')[0]] || LANGUAGES.en;
 
   return (
-    <div className="h-12 border-t-[3px] border-t-primary border-b-2 border-b-primary/30 bg-card sticky top-0 z-30 flex items-center pl-4 pr-5 lg:px-5 gap-3 shadow-[0_2px_12px_-2px_hsl(158,68%,38%,0.25)]">
+    <div className="h-12 border-t-[3px] border-t-primary border-b-2 border-b-primary/30 bg-card relative z-30 flex items-center pl-4 pr-5 lg:px-5 gap-3">
       {/* Sidebar Toggle & Breadcrumb */}
       {/* Sidebar Toggle & Breadcrumb */}
       <div className="flex items-center gap-2 sm:gap-3 text-sm flex-1 min-w-0">
@@ -156,6 +183,24 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
           </div>
         )}
 
+        {/* Workspace Switcher */}
+        {user?.available_companies?.length > 1 && (
+          <div className="hidden sm:flex items-center gap-1.5 text-xs font-bold text-foreground border border-border rounded-md px-2.5 py-1 hover:bg-muted/50 bg-card shadow-sm">
+            <Layers className="w-3.5 h-3.5 text-primary" />
+            <select
+              value={user.company_id}
+              onChange={e => handleSwitchWorkspace(e.target.value)}
+              className="bg-transparent border-none outline-none cursor-pointer focus:ring-0 truncate max-w-[150px]"
+            >
+              {user.available_companies.map(comp => (
+                <option key={comp.id} value={comp.id} className="bg-card text-foreground">
+                  {comp.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
         {/* Language Switcher */}
         <div className="hidden sm:flex items-center gap-1.5 text-xs text-muted-foreground border border-border rounded-md px-2.5 py-1 hover:bg-muted/50 bg-card">
           <Globe className="w-3.5 h-3.5" />
@@ -173,6 +218,22 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
             })}
           </select>
         </div>
+
+        {/* Orbit Bolt Toggle */}
+        <Button
+          onClick={toggleBolt}
+          variant="ghost"
+          size="icon"
+          className={`relative overflow-hidden sm:w-auto sm:px-3 sm:py-1.5 text-xs font-bold rounded-lg border transition-all duration-300 ${
+            isBoltOpen
+              ? "bg-gradient-to-r from-primary/80 to-primary text-white border-primary shadow-[0_0_15px_rgba(var(--primary),0.5)] scale-95"
+              : "bg-card text-foreground border-border hover:border-primary/50 hover:bg-gradient-to-r hover:from-primary/10 hover:to-primary/10 hover:text-primary hover:shadow-[0_0_10px_rgba(var(--primary),0.15)]"
+          }`}
+        >
+          <span className="absolute inset-0 bg-gradient-to-r from-primary/10 to-primary/10 opacity-0 hover:opacity-100 transition-opacity duration-300" />
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 sm:w-3.5 sm:h-3.5 ${isBoltOpen ? "text-white fill-current" : "text-primary fill-current"} sm:mr-1.5`}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <span className="hidden sm:inline">{t("orbit_bolt", "Orbit Bolt")}</span>
+        </Button>
 
         {/* Orbit AI Toggle */}
         <Button

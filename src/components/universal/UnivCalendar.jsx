@@ -22,7 +22,10 @@ export default function UnivCalendar({
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const targetTable = tableName || 'industry_records';
+  let targetTable = tableName || 'industry_records';
+  if (targetTable === 'univ_dashboards' || targetTable === 'univ_analytics' || targetTable === 'univ_reports') {
+    targetTable = 'industry_records';
+  }
 
   const { data: records = [], isLoading } = useQuery({
     queryKey: ['orbit_records', companyId, pageName, targetTable],
@@ -92,7 +95,25 @@ export default function UnivCalendar({
   };
 
   const displayEvents = React.useMemo(() => {
-    return records.map(r => targetTable === 'industry_records' ? { id: r.id, ...r.data } : r);
+    return records.map(r => {
+      const data = targetTable === 'industry_records' ? { id: r.id, ...r.data, created_at: r.created_at } : r;
+      let day = data.day;
+      if (!day) {
+        const dStr = data.date || data.start_date || data.created_at;
+        if (dStr) {
+           day = new Date(dStr).getDate();
+        } else {
+           day = 10;
+        }
+      }
+      return {
+         ...data,
+         day,
+         title: data.title || data.name || data.project_name || 'Event',
+         time: data.time || '12:00 PM',
+         type: data.type || 'internal'
+      };
+    });
   }, [records, targetTable]);
 
   // Simple mock month view generation

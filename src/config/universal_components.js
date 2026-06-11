@@ -45,6 +45,11 @@ export const UNIVERSAL_COMPONENTS = [
     "icon": "LayoutGrid"
   },
   {
+    "id": "UnivApprovalEngine",
+    "label": "Approval Engine",
+    "icon": "CheckCircle"
+  },
+  {
     "id": "UnivAppointments",
     "label": "Appointments",
     "icon": "LayoutGrid"
@@ -993,6 +998,11 @@ export const UNIVERSAL_COMPONENTS = [
     "id": "UnivWishlist",
     "label": "Wishlist",
     "icon": "LayoutGrid"
+  },
+  {
+    "id": "UnivWorkflowBuilder",
+    "label": "Workflow Builder",
+    "icon": "Workflow"
   },
   {
     "id": "UnivWorkOrder",

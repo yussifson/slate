@@ -37,7 +37,11 @@ export default function Companies() {
       const company = await base44.entities.Company.create(form);
       // If admin email provided, invite them and create staff record
       if (form.admin_email) {
-        await base44.users.inviteUser(form.admin_email, "admin");
+        const tempPassword = Math.random().toString(36).slice(-8) + 'A1!';
+        const { registerSchoolUser } = await import('@/api/authUtils');
+        await registerSchoolUser(form.admin_email, tempPassword, 'admin', company.id, adminName || form.admin_email.split('@')[0]);
+        toast.success(`Company created! Admin password: ${tempPassword}`, { duration: 10000 });
+        
         await base44.entities.StaffRecord.create({
           company_id: company.id,
           user_email: form.admin_email,

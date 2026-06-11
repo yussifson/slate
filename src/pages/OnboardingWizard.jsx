@@ -112,7 +112,7 @@ export default function OnboardingWizard() {
          }
 
           if (!companyIdToUse) {
-             const cName = workspaceName || md.company_name || 'My Wixlate';
+             const cName = workspaceName || md.company_name || 'My Workslate';
              const cSubdomain = subdomain || md.subdomain || `workspace-${Date.now()}`;
              
              let finalIndustry = (industry === 'school' && educationLevel !== 'basic') ? educationLevel : industry;
@@ -337,7 +337,7 @@ export default function OnboardingWizard() {
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
               <img src="/slate-logo.svg" alt="Slate" className="h-10" />
-              <h1 className="text-xl font-bold text-slate-900 tracking-tight">{t("wixlate_setup_wizard", "WorkSlate Setup")}</h1>
+              <h1 className="text-xl font-bold text-slate-900 tracking-tight">{t("workslate_setup_wizard", "WorkSlate Setup")}</h1>
             </div>
           </div>
 
@@ -392,7 +392,7 @@ export default function OnboardingWizard() {
                 <div className="space-y-4">
                   {(setupMode === 'template' || setupMode === 'custom') && (
                     <div className="space-y-3 p-5 rounded-2xl bg-slate-50 border border-slate-200">
-                      <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("industry", "Wixlate")}</label>
+                      <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("industry", "Workslate")}</label>
                       <Select value={industry} onValueChange={setIndustry}>
                         <SelectTrigger className="h-12 bg-card border-border rounded-xl text-slate-900 focus:ring-primary">
                           <SelectValue />
@@ -574,8 +574,8 @@ export default function OnboardingWizard() {
                   {setupMode === 'orbit' && (
                     <div className="space-y-3 mt-6 p-6 rounded-2xl bg-gradient-to-br from-primary/5 to-transparent border border-primary/20">
                       <div>
-                        <h3 className="text-lg font-bold text-slate-900 tracking-tight">Describe Your Wixlate</h3>
-                        <p className="text-sm text-slate-500 mt-1">OrbitBuild will assemble the perfect wixlate for you.</p>
+                        <h3 className="text-lg font-bold text-slate-900 tracking-tight">Describe Your Workslate</h3>
+                        <p className="text-sm text-slate-500 mt-1">OrbitBuild will assemble the perfect workslate for you.</p>
                       </div>
                       <textarea
                         value={orbitPrompt}
@@ -828,7 +828,7 @@ export default function OnboardingWizard() {
                 {loading || orbitProgress ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>{orbitProgress || t("finalizing_wixlate", "Finalizing Wixlate...")}</span>
+                    <span>{orbitProgress || t("finalizing_workslate", "Finalizing Workslate...")}</span>
                   </>
                 ) : (
                   <>

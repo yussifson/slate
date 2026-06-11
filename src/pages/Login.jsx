@@ -254,7 +254,7 @@ export default function Login() {
   if (checkingSubdomain) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="animate-pulse text-muted-foreground font-medium">{t("checking_wixlate_access", "Checking wixlate access...")}</div>
+        <div className="animate-pulse text-muted-foreground font-medium">{t("checking_workslate_access", "Checking workslate access...")}</div>
       </div>
     );
   }
@@ -271,7 +271,7 @@ export default function Login() {
             <AlertCircle className="h-8 w-8 text-red-500" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">{t("wixlate_not_found", "Wixlate Not Found")}</h2>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">{t("workslate_not_found", "Workslate Not Found")}</h2>
             <p className="mt-2 text-sm text-muted-foreground">
               {t(
                 "we_couldn_t_find_an_organizati",
@@ -342,7 +342,7 @@ export default function Login() {
             <div className="text-center mt-6">
               <span className="text-xs text-slate-500 font-medium">{t("don_t_have_an_account", "Don't have an account?")} </span>
               <a href="/signup" className="text-xs font-bold text-primary hover:underline">
-                {t("create_workspace", "Create Wixlate")}
+                {t("create_workspace", "Create Workslate")}
               </a>
             </div>
           </form>

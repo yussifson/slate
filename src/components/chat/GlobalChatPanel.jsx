@@ -259,7 +259,7 @@ export default function GlobalChatPanel({ isOpen, onClose }) {
   };
 
   return (
-    <div className={`flex flex-col h-full shrink-0 border-l border-border bg-card shadow-[-8px_0_30px_rgba(0,0,0,0.07)] z-40 transition-all duration-300 ${isOpen ? 'w-full sm:w-[400px] md:w-[450px] opacity-100' : 'w-0 opacity-0 overflow-hidden border-none pointer-events-none'}`}>
+    <div className={`flex flex-col h-full shrink-0 border-l border-border bg-card z-40 transition-all duration-300 ${isOpen ? 'w-full sm:w-[400px] md:w-[450px] opacity-100' : 'w-0 opacity-0 overflow-hidden border-none pointer-events-none'}`}>
       
       <AddChatDialog 
         open={isAddChatOpen} 

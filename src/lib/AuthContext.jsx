@@ -114,7 +114,7 @@ export const AuthProvider = ({ children }) => {
       }
 
       setAuthStep("Checking invite/staff records...");
-      const { data: staffRecord } = await supabase
+      let { data: staffRecord } = await supabase
         .from('staff_records')
         .select('*')
         .ilike('user_email', sessionUser.email)
@@ -182,18 +182,36 @@ export const AuthProvider = ({ children }) => {
             .eq('id', staffRecord.id);
         }
       } else if (profileError && profileError.code === 'PGRST116') {
-        const invitedCompanyId =
-          sessionUser.user_metadata?.company_id || null;
+        let invitedCompanyId = sessionUser.user_metadata?.company_id || null;
+        let invitedRole = sessionUser.user_metadata?.role || 'company_admin';
+
+        if (!invitedCompanyId && sessionUser.email) {
+          const { data: accessRecord } = await supabase
+            .from('univ_accesscontrols')
+            .select('*')
+            .ilike('email', sessionUser.email)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+          if (accessRecord) {
+             invitedCompanyId = accessRecord.company_id;
+             invitedRole = accessRecord.role;
+          }
+        }
+
         const { data: newProfile, error: insertError } = await supabase.from('profiles').insert({
           id: sessionUser.id,
-          role: invitedCompanyId ? (sessionUser.user_metadata?.role || 'lawyer') : 'company_admin',
+          role: invitedRole,
           company_id: invitedCompanyId,
           company_name: sessionUser.user_metadata?.company_name || null,
           email: sessionUser.email?.toLowerCase() || null,
         }).select().single();
+        
         if (!insertError) {
           profile = newProfile;
           profileError = null;
+        } else {
+          console.error("Failed to insert profile on login:", insertError);
         }
       } else if (profile && !profile.company_id && sessionUser.user_metadata?.company_id) {
         const { data: updatedProfile, error: updateError } = await supabase
@@ -224,19 +242,96 @@ export const AuthProvider = ({ children }) => {
       // Find where we are right now
       const { currentSubdomain, baseDomain } = getSubdomainAndBase();
 
-      if (companySubdomain && currentSubdomain !== null && currentSubdomain !== companySubdomain) {
-         const port = window.location.port ? `:${window.location.port}` : '';
-         const targetHost = `${companySubdomain}.${baseDomain}${port}`;
-         let url = `${window.location.protocol}//${targetHost}${window.location.pathname}${window.location.search}`;
-         
-         // Pass session to the new subdomain so they don't have to login twice
-         if (sessionVal?.access_token && sessionVal?.refresh_token) {
-           url += url.includes('?') ? '&' : '?';
-           url += `access_token=${sessionVal.access_token}&refresh_token=${sessionVal.refresh_token}`;
+      if (companySubdomain && currentSubdomain !== companySubdomain) {
+         if (currentSubdomain === null) {
+             // Logged in via root domain, redirect to their base company immediately!
+             const port = window.location.port ? `:${window.location.port}` : '';
+             const targetHost = `${companySubdomain}.${baseDomain}${port}`;
+             let url = `${window.location.protocol}//${targetHost}${window.location.pathname}${window.location.search}`;
+             
+             // Pass session to the new subdomain so they don't have to login twice
+             if (sessionVal?.access_token && sessionVal?.refresh_token) {
+               url += url.includes('?') ? '&' : '?';
+               url += `access_token=${sessionVal.access_token}&refresh_token=${sessionVal.refresh_token}`;
+             }
+             
+             window.location.href = url;
+             return; // Stop execution as we are redirecting
+         } else {
+             // They are trying to access a DIFFERENT workspace subdomain
+             setAuthStep("Checking multi-workspace access...");
+             
+             // 1. Get the company ID for the current subdomain
+             const { data: targetCompany } = await supabase.rpc('get_company_by_subdomain', { p_subdomain: currentSubdomain });
+             let targetCompanyId = null;
+             let tComp = null;
+             if (targetCompany) {
+                tComp = Array.isArray(targetCompany) ? targetCompany[0] : targetCompany;
+                targetCompanyId = tComp?.id;
+             } else {
+                // fallback if RPC fails
+                const { data: tCompData } = await supabase.from('companies').select('*').eq('subdomain', currentSubdomain).maybeSingle();
+                if (tCompData) {
+                   tComp = tCompData;
+                   targetCompanyId = tCompData.id;
+                }
+             }
+
+             if (targetCompanyId) {
+                // 2. Check if user is in univ_accesscontrols for this target company
+                const { data: accessRecord } = await supabase
+                  .from('univ_accesscontrols')
+                  .select('*')
+                  .eq('company_id', targetCompanyId)
+                  .ilike('email', sessionUser.email)
+                  .maybeSingle();
+
+                // 3. Or check staff_records
+                const { data: staffRecordAlt } = await supabase
+                  .from('staff_records')
+                  .select('*')
+                  .eq('company_id', targetCompanyId)
+                  .ilike('user_email', sessionUser.email)
+                  .maybeSingle();
+
+                if (accessRecord || staffRecordAlt) {
+                   // Access granted! Override the profile and company data in-memory
+                   console.log("Multi-workspace access granted to:", currentSubdomain);
+                   
+                   // Override profile
+                   profile.company_id = targetCompanyId;
+                   profile.role = accessRecord?.role || staffRecordAlt?.role || 'lawyer';
+                   profile.company_name = tComp.name;
+
+                   // Override companyData
+                   companyData = tComp;
+                   companySubdomain = currentSubdomain; // This prevents the redirect below!
+                   
+                   // Set the staff record so it's used below
+                   if (staffRecordAlt) {
+                      staffRecord = staffRecordAlt;
+                   } else if (accessRecord) {
+                      staffRecord = { role: accessRecord.role, full_name: accessRecord.user_name };
+                   }
+                }
+             }
+
+             // If still different (no access granted), THEN redirect back to THEIR firm!
+             if (currentSubdomain !== companySubdomain) {
+                const port = window.location.port ? `:${window.location.port}` : '';
+                const targetHost = `${companySubdomain}.${baseDomain}${port}`;
+                let url = `${window.location.protocol}//${targetHost}${window.location.pathname}${window.location.search}`;
+                
+                // Pass session to the new subdomain so they don't have to login twice
+                if (sessionVal?.access_token && sessionVal?.refresh_token) {
+                  url += url.includes('?') ? '&' : '?';
+                  url += `access_token=${sessionVal.access_token}&refresh_token=${sessionVal.refresh_token}`;
+                }
+                
+                window.location.href = url;
+                return; // Stop execution as we are redirecting
+             }
          }
-         
-         window.location.href = url;
-         return; // Stop execution as we are redirecting
       }
 
       // Update favicon and title if company data has it
@@ -262,6 +357,26 @@ export const AuthProvider = ({ children }) => {
         }
       }
 
+      setAuthStep("Fetching available workspaces...");
+      let availableCompanies = [];
+      try {
+        const { data: uAccess } = await supabase.from('univ_accesscontrols').select('company_id').ilike('email', sessionUser.email);
+        const { data: sAccess } = await supabase.from('staff_records').select('company_id').ilike('user_email', sessionUser.email);
+        
+        const cIds = new Set();
+        if (profile?.company_id) cIds.add(profile.company_id);
+        if (companyData?.id) cIds.add(companyData.id);
+        (uAccess || []).forEach(r => r.company_id && cIds.add(r.company_id));
+        (sAccess || []).forEach(r => r.company_id && cIds.add(r.company_id));
+        
+        if (cIds.size > 0) {
+          const { data: comps } = await supabase.from('companies').select('id, name, subdomain').in('id', Array.from(cIds));
+          if (comps) availableCompanies = comps;
+        }
+      } catch(e) {
+        console.error("Failed to fetch available workspaces:", e);
+      }
+
       const newUser = { 
         ...sessionUser, 
         ...profile, 
@@ -274,7 +389,8 @@ export const AuthProvider = ({ children }) => {
         avatar_url: sessionUser.user_metadata?.avatar_url || profile?.avatar_url || null,
         subscription_plan: companyData?.subscription_plan || 'starter',
         subscription_status: companyData?.subscription_status || 'trial',
-        company_created_date: companyData?.created_date || null
+        company_created_date: companyData?.created_date || null,
+        available_companies: availableCompanies
       };
 
       const updatedUser = userRef.current;

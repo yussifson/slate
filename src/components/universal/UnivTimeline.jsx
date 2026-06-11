@@ -1,10 +1,4 @@
 import React, { useState, useEffect } from 'react';
-
-import GenericGrid from '@/components/views/GenericGrid';
-import GenericKanban from '@/components/views/GenericKanban';
-import GenericCalendar from '@/components/views/GenericCalendar';
-import GenericDashboard from '@/components/views/GenericDashboard';
-
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
@@ -14,49 +8,58 @@ import { toast } from 'react-hot-toast';
 export default function UnivTimeline({
   title = "Project Timeline",
   subtitle = "Track milestones and phase completion.",
-  milestones: propMilestones
+  milestones: propMilestones,
+  tableName,
+  pageName
 }) {
   const companyId = useCompanyId();
   const [view, setView] = useState('Default');
   const [dbMilestones, setDbMilestones] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  let targetTable = tableName || 'univ_projects';
+  if (targetTable === 'univ_dashboards' || targetTable === 'univ_analytics' || targetTable === 'univ_reports') {
+    targetTable = 'industry_records';
+  }
   const [form, setForm] = useState({
     title: '',
     description: '',
     date: '',
-    status: 'upcoming' // completed, current, upcoming
+    status: 'upcoming'
   });
 
   useEffect(() => {
     if (companyId && !propMilestones) {
       fetchProjects();
       const channel = supabase.channel('timeline_projects')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'univ_projects', filter: `company_id=eq.${companyId}` }, () => {
+        .on('postgres_changes', { event: '*', schema: 'public', table: targetTable, filter: `company_id=eq.${companyId}` }, () => {
           fetchProjects();
         }).subscribe();
       return () => { supabase.removeChannel(channel); };
     }
-  }, [companyId, propMilestones]);
+  }, [companyId, propMilestones, tableName, pageName]);
 
   const fetchProjects = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('univ_projects')
-        .select('*').eq('company_id', companyId)
-        .eq('company_id', companyId)
-        .order('start_date', { ascending: true });
+      let query = supabase.from(targetTable).select('*').eq('company_id', companyId);
+      if (targetTable === 'industry_records') {
+        query = query.eq('industry', 'orbit_build_data').eq('record_type', pageName);
+      }
+      const { data, error } = await query.order('created_at', { ascending: true });
       if (error && error.code !== '42P01') throw error;
 
-      // Map projects to milestone structure
-      const mapped = (data || []).map(p => ({
-        id: p.id,
-        title: p.project_name,
-        description: p.description || '',
-        date: p.start_date || p.end_date || '',
-        status: p.status === 'Completed' ? 'completed' : (p.status === 'Active' ? 'current' : 'upcoming')
-      }));
+      const mapped = (data || []).map(p => {
+        const r = targetTable === 'industry_records' ? { id: p.id, ...p.data, created_at: p.created_at } : p;
+        return {
+          id: r.id,
+          title: r.project_name || r.title || r.name || 'Milestone',
+          description: r.description || '',
+          date: r.start_date || r.end_date || r.date || r.created_at?.split('T')[0] || '',
+          status: r.status === 'Completed' || r.status === 'completed' || r.status === 'Closed' ? 'completed' : 
+                 (r.status === 'Active' || r.status === 'active' || r.status === 'current' ? 'current' : 'upcoming')
+        };
+      });
       setDbMilestones(mapped);
     } catch (err) {
       console.error(err);
@@ -66,21 +69,13 @@ export default function UnivTimeline({
   };
 
   const handleOpenAdd = () => {
-    setForm({
-      title: '',
-      description: '',
-      date: new Date().toISOString().split('T')[0],
-      status: 'upcoming'
-    });
+    setForm({ title: '', description: '', date: new Date().toISOString().split('T')[0], status: 'upcoming' });
     setIsModalOpen(true);
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
-    if (!form.title.trim()) {
-      toast.error('Milestone title is required');
-      return;
-    }
+    if (!form.title.trim()) { toast.error('Milestone title is required'); return; }
 
     const projectStatus = form.status === 'completed' ? 'Completed' : (form.status === 'current' ? 'Active' : 'Planning');
     const newProject = {
@@ -94,14 +89,20 @@ export default function UnivTimeline({
       completion_percentage: form.status === 'completed' ? 100 : (form.status === 'current' ? 50 : 0)
     };
 
+    let payload;
+    if (targetTable === 'industry_records') {
+      payload = { company_id: companyId, industry: 'orbit_build_data', record_type: pageName, data: newProject };
+    } else {
+      payload = { ...newProject, company_id: companyId };
+    }
+
     try {
-      const { error } = await supabase.from('univ_projects').insert(newProject);
+      const { error } = await supabase.from(targetTable).insert([payload]);
       if (error) throw error;
       toast.success('Milestone added');
       setIsModalOpen(false);
       fetchProjects();
     } catch (err) {
-      console.error(err);
       toast.error(err.message || 'Failed to save milestone');
     }
   };
@@ -109,17 +110,15 @@ export default function UnivTimeline({
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this milestone?')) return;
     try {
-      const { error } = await supabase.from('univ_projects').delete().eq('id', id);
+      const { error } = await supabase.from(targetTable).delete().eq('id', id);
       if (error) throw error;
       toast.success('Milestone deleted');
       fetchProjects();
     } catch (err) {
-      console.error(err);
       toast.error(err.message || 'Failed to delete milestone');
     }
   };
 
-  // Default hardcoded list if not logged in / no data
   const defaultMilestones = [
     { id: 'm1', title: 'Project Kickoff', date: '2026-06-01', status: 'completed', description: 'Initial requirements gathering and team alignment.' },
     { id: 'm2', title: 'Phase 1 Delivery', date: '2026-06-15', status: 'current', description: 'Core generic UI components deployed to staging.' },
@@ -129,12 +128,10 @@ export default function UnivTimeline({
 
   const milestonesList = propMilestones || (dbMilestones.length > 0 ? dbMilestones : defaultMilestones);
 
-  
   const handleExport = () => {
-    const exportData = (typeof records !== 'undefined' ? records : (typeof data !== 'undefined' ? data : []));
-    if (!exportData || exportData.length === 0) return alert('No data to export');
-    const keys = Object.keys(exportData[0]).filter(k => k !== 'company_id' && k !== 'id');
-    const csv = [keys.join(','), ...exportData.map(r => keys.map(k => '"' + (r[k]||'').toString().replace(/"/g, '""') + '"').join(','))].join('\n');
+    if (!milestonesList || milestonesList.length === 0) return alert('No data to export');
+    const keys = Object.keys(milestonesList[0]).filter(k => k !== 'company_id' && k !== 'id');
+    const csv = [keys.join(','), ...milestonesList.map(r => keys.map(k => '"' + (r[k]||'').toString().replace(/"/g, '""') + '"').join(','))].join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -142,7 +139,7 @@ export default function UnivTimeline({
   };
 
   return (
-    <div className="flex flex-col h-full bg-background overflow-y-auto custom-scrollbar ${view !== 'Default' ? 'hide-default' : ''}">
+    <div className="flex flex-col h-full bg-background overflow-y-auto custom-scrollbar">
       <div className="view-header max-w-4xl w-full mx-auto py-8 px-4 sm:px-6">
         <div className="flex items-center justify-between mb-10">
           <div>
@@ -151,18 +148,14 @@ export default function UnivTimeline({
           </div>
           {!propMilestones && (
             <div className="flex items-center gap-2">
-
-        
-        
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-          Export CSV
-        </button>
-
-        <button onClick={handleOpenAdd} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm shadow-primary/20">
-               <Plus className="w-4 h-4" /> Add Milestone
-            </button>
-      </div>
+              <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                Export CSV
+              </button>
+              <button onClick={handleOpenAdd} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm shadow-primary/20">
+                 <Plus className="w-4 h-4" /> Add Milestone
+              </button>
+            </div>
           )}
         </div>
 

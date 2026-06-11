@@ -1,296 +1,407 @@
-import React, { useState, useEffect } from 'react';
-
-import GenericGrid from '@/components/views/GenericGrid';
-import GenericKanban from '@/components/views/GenericKanban';
-import GenericCalendar from '@/components/views/GenericCalendar';
-import GenericDashboard from '@/components/views/GenericDashboard';
-
+import React, { useState, useMemo } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { Monitor, Plus, Search, Trash2, Edit2, Loader2, XCircle, Package, Map as MapIcon, Wrench, History } from 'lucide-react';
-import { toast } from 'react-hot-toast';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
+import { useToast } from '@/components/ui/use-toast';
+import {
+  Package, Search, Plus, Filter, Edit3, Trash2, Tag, 
+  MapPin, Wrench, MoreHorizontal, AlertCircle, DollarSign,
+  TrendingDown, CheckCircle2, QrCode
+} from 'lucide-react';
 
-const STATUS_COLORS = { Active: 'bg-emerald-50 text-emerald-700 border-emerald-200', 'Under Maintenance': 'bg-amber-50 text-amber-700 border-amber-200', Retired: 'bg-muted text-muted-foreground border-border' };
-const EMPTY_FORM = { name: '', category: 'Equipment', status: 'Active', purchase_date: new Date().toISOString().split('T')[0], purchase_value: 0, location: 'New York, USA' };
+const ASSET_STATUS = {
+  'Active': 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-400 dark:border-emerald-800',
+  'In Maintenance': 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/40 dark:text-amber-400 dark:border-amber-800',
+  'Retired': 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700',
+  'Lost': 'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/40 dark:text-red-400 dark:border-red-800'
+};
 
-export default function UnivAssetManagement() {
-  const companyId = useCompanyId();
-  const [view, setView] = useState('Default');
-  const [records, setRecords] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
+export default function UnivAssetManagement({
+  title = 'Asset Management',
+  companyId,
+  pageName,
+  tableName
+}) {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const hookCompanyId = useCompanyId();
+  const effectiveCompanyId = companyId || hookCompanyId;
+  const effectivePageName = pageName || 'assets';
+  const targetTable = tableName || 'industry_records';
+
+  const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingId, setEditingId] = useState(null);
-  const [selectedAsset, setSelectedAsset] = useState(null);
-  const [viewMode, setViewMode] = useState('list');
-  const [maintenanceLogText, setMaintenanceLogText] = useState('');
-  const [maintenanceLogs, setMaintenanceLogs] = useState({});
-  const [form, setForm] = useState(EMPTY_FORM);
+  const [editingAsset, setEditingAsset] = useState(null);
 
-  useEffect(() => {
-    if (companyId) {
-      fetchRecords();
-      const ch = supabase.channel('assets_ch').on('postgres_changes', { event: '*', schema: 'public', table: 'univ_assets', filter: `company_id=eq.${companyId}` }, fetchRecords).subscribe();
-      return () => supabase.removeChannel(ch);
-    }
-  }, [companyId]);
-
-  const fetchRecords = async () => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase.from('univ_assets').select('*').eq('company_id', companyId).order('name', { ascending: true });
-      if (error && error.code !== '42P01') throw error;
-      setRecords(data || []);
-    } catch (e) { console.error(e); } finally { setLoading(false); }
-  };
-
-  const saveRecord = async (e) => {
-    e.preventDefault();
-    try {
-      const payload = { 
-        company_id: companyId,
-        name: form.name,
-        category: form.category,
-        status: form.status,
-        purchase_date: form.purchase_date || null,
-        purchase_value: Number(form.purchase_value) || 0,
-        location: form.location || 'New York, USA'
-      };
-      
-      if (editingId) {
-        const { error } = await supabase.from('univ_assets').update(payload).eq('id', editingId);
-        if (error) throw error;
-        toast.success('Updated!');
-      } else {
-        const { error } = await supabase.from('univ_assets').insert(payload);
-        if (error) throw error;
-        toast.success('Asset added!');
-      }
-      closeModal(); fetchRecords();
-    } catch (err) { console.error(err); toast.error(err.message || 'Failed to save'); }
-  };
-
-  const deleteRecord = async (id) => {
-    const { error } = await supabase.from('univ_assets').delete().eq('id', id);
-    if (error) toast.error('Failed to delete'); else { toast.success('Deleted'); fetchRecords(); }
-  };
-
-  const updateStatus = async (id, status) => {
-    const { error } = await supabase.from('univ_assets').update({ status }).eq('id', id);
-    if (error) toast.error('Failed to update status'); else fetchRecords();
-  };
-
-  const openModal = (r = null) => { 
-    if (r) {
-      setForm({
-        name: r.name,
-        category: r.category,
-        status: r.status,
-        purchase_date: r.purchase_date || '',
-        purchase_value: r.purchase_value || 0,
-        location: r.location || 'New York, USA'
-      });
-    } else {
-      setForm(EMPTY_FORM);
-    }
-    setEditingId(r?.id || null); 
-    setIsModalOpen(true); 
-  };
-  const closeModal = () => { setIsModalOpen(false); setEditingId(null); setForm(EMPTY_FORM); };
-
-  const filtered = records.filter(r => {
-    return `${r.name} ${r.category} ${r.status}`.toLowerCase().includes(search.toLowerCase());
+  const [formState, setFormState] = useState({
+    name: '',
+    asset_tag: '',
+    category: 'Hardware',
+    status: 'Active',
+    location: '',
+    purchase_date: '',
+    purchase_price: 0,
+    current_value: 0,
+    assigned_to: '',
+    notes: ''
   });
 
-  
-  const handleExport = () => {
-    const exportData = (typeof records !== 'undefined' ? records : (typeof data !== 'undefined' ? data : []));
-    if (!exportData || exportData.length === 0) return alert('No data to export');
-    const keys = Object.keys(exportData[0]).filter(k => k !== 'company_id' && k !== 'id');
-    const csv = [keys.join(','), ...exportData.map(r => keys.map(k => '"' + (r[k]||'').toString().replace(/"/g, '""') + '"').join(','))].join('\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = 'export.csv'; a.click();
+  const { data: assets = [], isLoading } = useQuery({
+    queryKey: ['assets', effectiveCompanyId, effectivePageName],
+    queryFn: async () => {
+      if (!effectiveCompanyId) return [];
+      let query = supabase.from(targetTable).select('*').eq('company_id', effectiveCompanyId);
+      if (targetTable === 'industry_records') {
+        query = query.eq('industry', 'orbit_build_data').eq('record_type', `${effectivePageName}_assets`);
+      }
+      const { data, error } = await query;
+      if (error && error.code !== '42P01') throw error;
+      return (data || []).map(r => ({ id: r.id, ...(targetTable === 'industry_records' ? r.data : r) }))
+        .sort((a, b) => (b.purchase_date || '').localeCompare(a.purchase_date || ''));
+    },
+    enabled: !!effectiveCompanyId
+  });
+
+  const filteredAssets = useMemo(() => {
+    let filtered = assets;
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter(a => 
+        (a.name || '').toLowerCase().includes(q) || 
+        (a.asset_tag || '').toLowerCase().includes(q) ||
+        (a.location || '').toLowerCase().includes(q)
+      );
+    }
+    return filtered;
+  }, [assets, searchQuery]);
+
+  const saveMutation = useMutation({
+    mutationFn: async (assetData) => {
+      const isNew = !assetData.id;
+      let payload;
+      if (targetTable === 'industry_records') {
+        payload = { company_id: effectiveCompanyId, industry: 'orbit_build_data', record_type: `${effectivePageName}_assets`, data: assetData };
+      } else {
+        payload = { ...assetData, company_id: effectiveCompanyId };
+      }
+
+      if (isNew) {
+        const { error } = await supabase.from(targetTable).insert([payload]);
+        if (error) throw error;
+      } else {
+        const updatePayload = targetTable === 'industry_records' ? { data: assetData } : assetData;
+        const { error } = await supabase.from(targetTable).update(updatePayload).eq('id', assetData.id);
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['assets', effectiveCompanyId, effectivePageName]);
+      setIsModalOpen(false);
+      toast({ title: 'Asset saved successfully.' });
+    }
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id) => {
+      const { error } = await supabase.from(targetTable).delete().eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['assets', effectiveCompanyId, effectivePageName]);
+      toast({ title: 'Asset deleted.' });
+    }
+  });
+
+  const handleSave = (e) => {
+    e.preventDefault();
+    if (!formState.name || !formState.asset_tag) return;
+    saveMutation.mutate(formState);
   };
 
+  const openNewModal = () => {
+    setEditingAsset(null);
+    setFormState({
+      name: '',
+      asset_tag: `AST-${Math.floor(Math.random()*10000).toString().padStart(4, '0')}`,
+      category: 'Hardware',
+      status: 'Active',
+      location: '',
+      purchase_date: new Date().toISOString().split('T')[0],
+      purchase_price: 0,
+      current_value: 0,
+      assigned_to: '',
+      notes: ''
+    });
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (asset) => {
+    setEditingAsset(asset);
+    setFormState({ ...asset });
+    setIsModalOpen(true);
+  };
+
+  // Stats
+  const totalAssets = assets.length;
+  const activeAssets = assets.filter(a => a.status === 'Active').length;
+  const inMaintenance = assets.filter(a => a.status === 'In Maintenance').length;
+  const totalValue = assets.reduce((acc, a) => acc + (Number(a.current_value) || 0), 0);
+
   return (
-    <div className="h-full flex flex-col gap-6 w-full bg-background p-4 sm:p-6 lg:p-8 ${view !== 'Default' ? 'hide-default' : ''}">
-      <div className="view-header flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0">
-        <div>
-          <h1 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-2"><Monitor className="w-7 h-7 text-primary" /> Asset Management</h1>
-          <p className="text-muted-foreground text-sm font-medium mt-1">Manage company equipment and physical assets.</p>
+    <div className="flex flex-col h-full bg-background font-sans">
+      
+      {/* Header */}
+      <div className="border-b border-border bg-card px-6 sm:px-8 py-6 shrink-0">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-extrabold text-foreground tracking-tight flex items-center gap-2">
+              <Package className="w-6 h-6 text-primary" /> {title}
+            </h1>
+            <p className="text-sm text-muted-foreground mt-1">Track physical assets, locations, and depreciation.</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={openNewModal}
+              className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-semibold shadow-sm hover:bg-primary/90 transition-colors flex items-center gap-2"
+            >
+              <Plus className="w-4 h-4" /> Add Asset
+            </button>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
 
+        {/* Stats Row */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+          <div className="bg-muted/30 border border-border rounded-xl p-4">
+            <div className="flex items-center gap-2 text-muted-foreground mb-2">
+              <Package className="w-4 h-4" /> <span className="text-xs font-bold uppercase">Total Assets</span>
+            </div>
+            <div className="text-2xl font-bold text-foreground">{totalAssets}</div>
+          </div>
+          <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900 rounded-xl p-4">
+            <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 mb-2">
+              <CheckCircle2 className="w-4 h-4" /> <span className="text-xs font-bold uppercase">Active</span>
+            </div>
+            <div className="text-2xl font-bold text-emerald-700 dark:text-emerald-300">{activeAssets}</div>
+          </div>
+          <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900 rounded-xl p-4">
+            <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 mb-2">
+              <Wrench className="w-4 h-4" /> <span className="text-xs font-bold uppercase">In Maintenance</span>
+            </div>
+            <div className="text-2xl font-bold text-amber-700 dark:text-amber-300">{inMaintenance}</div>
+          </div>
+          <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900 rounded-xl p-4">
+            <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 mb-2">
+              <DollarSign className="w-4 h-4" /> <span className="text-xs font-bold uppercase">Total Value</span>
+            </div>
+            <div className="text-2xl font-bold text-blue-700 dark:text-blue-300">${totalValue.toLocaleString()}</div>
+          </div>
+        </div>
         
-        
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-          Export CSV
-        </button>
-
-        <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-sm"><Plus className="w-4 h-4" /> Add Asset</button>
-      </div>
-      </div>
-
-      <div className="flex gap-3 shrink-0">
-        <div className="relative flex-1">
-          <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search assets..." className="w-full h-11 pl-10 pr-4 bg-card border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm shadow-sm" />
-        </div>
-        <div className="flex bg-card border border-border rounded-xl p-1 shadow-sm gap-1 shrink-0">
-          <button onClick={() => setViewMode('list')} className={`px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-1.5 ${viewMode === 'list' ? 'bg-primary text-white' : 'text-muted-foreground'}`}>List</button>
-          <button onClick={() => setViewMode('map')} className={`px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-1.5 ${viewMode === 'map' ? 'bg-primary text-white' : 'text-muted-foreground'}`}><MapIcon className="w-4 h-4" />Map View</button>
+        {/* Filters bar */}
+        <div className="mt-6 flex items-center gap-3">
+          <div className="relative flex-1 max-w-sm">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <input 
+              type="text" 
+              placeholder="Search by name, tag, or location..."
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              className="w-full h-10 pl-9 pr-4 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-primary shadow-sm"
+            />
+          </div>
+          <button className="h-10 px-4 bg-background border border-border rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-muted transition-colors shadow-sm">
+            <Filter className="w-4 h-4 text-muted-foreground" /> Filter
+          </button>
         </div>
       </div>
 
-      <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden shadow-sm flex flex-col min-h-0">
-        {viewMode === 'list' ? (
-        <div className="overflow-auto flex-1 custom-scrollbar">
-          <table className="w-full text-sm">
-            <thead className="bg-muted/50 border-b border-border sticky top-0 z-10">
-              <tr>
-                {['Name', 'Category', 'Value', 'Purchase Date', 'Status', 'Actions'].map((h, i) => (
-                  <th key={i} className="p-4 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {loading ? (
-                <tr><td colSpan={6} className="p-8 text-center"><Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" /></td></tr>
-              ) : filtered.length === 0 ? (
-                <tr><td colSpan={6} className="p-12 text-center text-muted-foreground">No assets found.</td></tr>
-              ) : (
-                filtered.map(r => {
-                  return (
-                  <tr key={r.id} className="hover:bg-muted/30 transition-colors group cursor-pointer" onClick={() => setSelectedAsset(r)}>
-                    <td className="p-4"><div className="flex items-center gap-2"><div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold"><Package className="w-4 h-4" /></div><span className="font-bold text-foreground">{r.name}</span></div></td>
-                    <td className="p-4 text-muted-foreground">{r.category}</td>
-                    <td className="p-4 font-black">${Number(r.purchase_value).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
-                    <td className="p-4 text-muted-foreground whitespace-nowrap">{r.purchase_date || '—'}</td>
-                    <td className="p-4" onClick={e=>e.stopPropagation()}>
-                      <select value={r.status} onChange={(e) => updateStatus(r.id, e.target.value)} className={`px-3 py-1 rounded-full text-xs font-bold border outline-none cursor-pointer ${STATUS_COLORS[r.status] || 'bg-muted text-muted-foreground'}`}>
-                        {Object.keys(STATUS_COLORS).map(s => <option key={s} value={s}>{s}</option>)}
-                      </select>
-                    </td>
-                    <td className="p-4" onClick={e=>e.stopPropagation()}>
-                      <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => openModal(r)} className="p-1.5 bg-muted rounded-md text-muted-foreground hover:text-primary transition-colors"><Edit2 className="w-4 h-4" /></button>
-                        <button onClick={() => deleteRecord(r.id)} className="p-1.5 bg-red-50 rounded-md text-red-400 hover:text-red-600 transition-colors"><Trash2 className="w-4 h-4" /></button>
-                      </div>
-                    </td>
+      {/* Main Content */}
+      <div className="flex-1 overflow-y-auto p-6 sm:p-8 bg-muted/10">
+        <div className="max-w-7xl mx-auto space-y-4">
+          {filteredAssets.length === 0 ? (
+            <div className="text-center py-20 text-muted-foreground">
+              <QrCode className="w-12 h-12 mx-auto mb-4 opacity-20" />
+              <h3 className="text-lg font-bold text-foreground">No assets found</h3>
+              <p className="text-sm mt-1">Add your first asset to the inventory.</p>
+            </div>
+          ) : (
+            <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
+              <table className="w-full text-sm text-left">
+                <thead className="bg-muted/50 border-b border-border text-xs uppercase tracking-wider text-muted-foreground">
+                  <tr>
+                    <th className="px-6 py-4 font-semibold">Asset Details</th>
+                    <th className="px-6 py-4 font-semibold">Location / Assignment</th>
+                    <th className="px-6 py-4 font-semibold">Value</th>
+                    <th className="px-6 py-4 font-semibold">Status</th>
+                    <th className="px-6 py-4 text-right font-semibold">Actions</th>
                   </tr>
-                  )
-                })
-              )}
-            </tbody>
-          </table>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {filteredAssets.map(asset => (
+                    <tr key={asset.id} className="hover:bg-muted/30 transition-colors group">
+                      <td className="px-6 py-4">
+                        <div className="font-bold text-foreground flex items-center gap-2">
+                          {asset.name}
+                        </div>
+                        <div className="text-xs text-muted-foreground mt-1 flex items-center gap-2">
+                          <span className="flex items-center gap-1 font-mono bg-muted px-1.5 py-0.5 rounded text-foreground"><QrCode className="w-3 h-3" /> {asset.asset_tag}</span>
+                          <span className="flex items-center gap-1"><Tag className="w-3 h-3" /> {asset.category}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="font-semibold text-foreground flex items-center gap-1">
+                          <MapPin className="w-3 h-3 text-muted-foreground" /> {asset.location || 'Unspecified'}
+                        </div>
+                        {asset.assigned_to && (
+                          <div className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                            Assigned to: <span className="font-medium text-foreground">{asset.assigned_to}</span>
+                          </div>
+                        )}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="font-bold text-foreground">${Number(asset.current_value).toLocaleString()}</div>
+                        {Number(asset.purchase_price) > Number(asset.current_value) && (
+                          <div className="text-[10px] text-muted-foreground mt-0.5 flex items-center gap-1">
+                            <TrendingDown className="w-3 h-3 text-red-500" /> 
+                            from ${Number(asset.purchase_price).toLocaleString()}
+                          </div>
+                        )}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={cn("px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full border", ASSET_STATUS[asset.status] || ASSET_STATUS['Active'])}>
+                          {asset.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button onClick={() => openEditModal(asset)} className="p-1.5 text-muted-foreground hover:text-primary rounded-lg hover:bg-primary/10">
+                            <Edit3 className="w-4 h-4" />
+                          </button>
+                          <button onClick={() => { if(window.confirm('Delete asset?')) deleteMutation.mutate(asset.id); }} className="p-1.5 text-muted-foreground hover:text-red-500 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/30">
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
-        ) : (
-          <div className="flex-1 w-full h-full p-2 relative">
-             <div className="absolute top-4 left-4 z-10 bg-card p-3 rounded-xl border border-border shadow-md max-w-xs">
-               <h3 className="font-bold text-sm mb-2"><MapIcon className="w-4 h-4 inline-block mr-1"/>Asset Map Overview</h3>
-               <p className="text-xs text-muted-foreground mb-3">Showing {filtered.length} locations across your organization.</p>
-               <div className="flex flex-col gap-2 max-h-40 overflow-y-auto">
-                 {filtered.map(r=>(
-                   <div key={r.id} className="text-xs border-b border-border pb-1 flex justify-between">
-                     <span className="font-medium truncate mr-2">{r.name}</span>
-                     <span className="text-muted-foreground truncate max-w-[100px]">{r.location || 'New York'}</span>
-                   </div>
-                 ))}
-               </div>
-             </div>
-             <iframe width="100%" height="100%" src="https://maps.google.com/maps?q=New%20York&t=&z=13&ie=UTF8&iwloc=&output=embed" frameBorder="0" scrolling="no" className="rounded-xl border border-border"></iframe>
+      </div>
+
+      {/* Edit/New Modal */}
+      <AnimatePresence>
+        {isModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsModalOpen(false)} />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-2xl bg-card border border-border rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+            >
+              <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-muted/20">
+                <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+                  <Package className="w-5 h-5 text-primary" />
+                  {editingAsset ? 'Edit Asset' : 'New Asset'}
+                </h2>
+                <button onClick={() => setIsModalOpen(false)} className="text-muted-foreground hover:text-foreground"><MoreHorizontal className="w-5 h-5" /></button>
+              </div>
+              
+              <div className="flex-1 overflow-y-auto p-6">
+                <form id="asset-form" onSubmit={handleSave} className="space-y-6">
+                  
+                  {/* Basic Info */}
+                  <div className="space-y-4">
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground border-b border-border pb-2">Basic Info</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Asset Name *</label>
+                        <input required type="text" value={formState.name} onChange={e => setFormState({...formState, name: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Asset Tag *</label>
+                        <input required type="text" value={formState.asset_tag} onChange={e => setFormState({...formState, asset_tag: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm font-mono focus:border-primary focus:outline-none" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Category</label>
+                        <select value={formState.category} onChange={e => setFormState({...formState, category: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none">
+                          <option>Hardware</option>
+                          <option>Software License</option>
+                          <option>Vehicle</option>
+                          <option>Furniture</option>
+                          <option>Machinery</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Status</label>
+                        <select value={formState.status} onChange={e => setFormState({...formState, status: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none">
+                          <option>Active</option>
+                          <option>In Maintenance</option>
+                          <option>Retired</option>
+                          <option>Lost</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Location & Assignment */}
+                  <div className="space-y-4">
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground border-b border-border pb-2">Location & Assignment</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Location</label>
+                        <input type="text" placeholder="e.g. Server Room A, HQ" value={formState.location} onChange={e => setFormState({...formState, location: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Assigned To</label>
+                        <input type="text" placeholder="e.g. John Doe" value={formState.assigned_to} onChange={e => setFormState({...formState, assigned_to: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Financial Info */}
+                  <div className="space-y-4">
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground border-b border-border pb-2">Financial Info</h3>
+                    <div className="grid grid-cols-3 gap-4">
+                      <div>
+                        <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Purchase Date</label>
+                        <input type="date" value={formState.purchase_date} onChange={e => setFormState({...formState, purchase_date: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Purchase Price ($)</label>
+                        <input type="number" min="0" step="0.01" value={formState.purchase_price} onChange={e => setFormState({...formState, purchase_price: parseFloat(e.target.value)})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Current Value ($)</label>
+                        <input type="number" min="0" step="0.01" value={formState.current_value} onChange={e => setFormState({...formState, current_value: parseFloat(e.target.value)})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Notes</label>
+                    <textarea value={formState.notes} onChange={e => setFormState({...formState, notes: e.target.value})} className="w-full h-20 p-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none resize-none" />
+                  </div>
+
+                </form>
+              </div>
+              
+              <div className="px-6 py-4 border-t border-border bg-muted/20 flex justify-end gap-3">
+                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-muted transition-colors">Cancel</button>
+                <button type="submit" form="asset-form" disabled={saveMutation.isPending} className="px-6 py-2 bg-primary text-white rounded-lg text-sm font-bold shadow-sm hover:bg-primary/90 transition-colors disabled:opacity-50">
+                  {saveMutation.isPending ? 'Saving...' : 'Save Asset'}
+                </button>
+              </div>
+            </motion.div>
           </div>
         )}
-      </div>
+      </AnimatePresence>
 
-      {selectedAsset && (
-        <div className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm" onClick={() => setSelectedAsset(null)}>
-          <div className="absolute right-0 top-0 bottom-0 w-96 bg-card border-l border-border shadow-2xl flex flex-col" onClick={e => e.stopPropagation()}>
-            <div className="p-5 border-b border-border flex justify-between items-center bg-muted/30">
-              <div>
-                <h3 className="font-black text-lg">{selectedAsset.name}</h3>
-                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${STATUS_COLORS[selectedAsset.status] || 'bg-muted'}`}>{selectedAsset.status}</span>
-              </div>
-              <button onClick={() => setSelectedAsset(null)} className="p-1.5 bg-muted rounded-full"><XCircle className="w-4 h-4 text-muted-foreground" /></button>
-            </div>
-            
-            <div className="p-5 border-b border-border grid grid-cols-2 gap-4">
-              <div><p className="text-[10px] uppercase font-bold text-muted-foreground">Category</p><p className="font-medium text-sm">{selectedAsset.category}</p></div>
-              <div><p className="text-[10px] uppercase font-bold text-muted-foreground">Location</p><p className="font-medium text-sm">{selectedAsset.location || 'New York, USA'}</p></div>
-              <div><p className="text-[10px] uppercase font-bold text-muted-foreground">Purchase Date</p><p className="font-medium text-sm">{selectedAsset.purchase_date}</p></div>
-              <div><p className="text-[10px] uppercase font-bold text-muted-foreground">Value</p><p className="font-medium text-sm">${Number(selectedAsset.purchase_value).toLocaleString()}</p></div>
-            </div>
-
-            <div className="flex-1 overflow-y-auto p-5 custom-scrollbar bg-muted/10">
-              <h4 className="font-bold text-sm flex items-center gap-2 mb-4 text-foreground"><History className="w-4 h-4"/> Maintenance Logs</h4>
-              <div className="space-y-3">
-                {(maintenanceLogs[selectedAsset.id] || []).map((log, i) => (
-                  <div key={i} className="p-3 bg-card border border-border rounded-xl shadow-sm">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-xs font-bold text-foreground flex items-center gap-1"><Wrench className="w-3 h-3 text-primary"/>{log.date}</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground">{log.text}</p>
-                  </div>
-                ))}
-                {!(maintenanceLogs[selectedAsset.id]?.length) && <p className="text-xs text-muted-foreground italic text-center py-4">No maintenance logs found.</p>}
-              </div>
-            </div>
-            <div className="p-4 border-t border-border bg-card">
-              <textarea 
-                value={maintenanceLogText} 
-                onChange={(e) => setMaintenanceLogText(e.target.value)} 
-                placeholder="Add new maintenance log..." 
-                className="w-full h-20 p-3 bg-muted border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none resize-none mb-2"
-              />
-              <button 
-                onClick={() => {
-                  if(!maintenanceLogText.trim()) return;
-                  const newLog = { date: new Date().toLocaleDateString(), text: maintenanceLogText };
-                  setMaintenanceLogs(prev => ({
-                    ...prev,
-                    [selectedAsset.id]: [newLog, ...(prev[selectedAsset.id]||[])]
-                  }));
-                  setMaintenanceLogText('');
-                }}
-                className="w-full h-9 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary/90 transition-colors"
-              >
-                Add Log Entry
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-card w-full max-w-md rounded-2xl shadow-2xl flex flex-col overflow-hidden">
-            <div className="p-5 border-b border-border flex justify-between items-center bg-muted/20">
-              <h2 className="text-xl font-black text-foreground flex items-center gap-2"><Monitor className="w-5 h-5 text-primary" /> {editingId ? 'Edit Asset' : 'New Asset'}</h2>
-              <button onClick={closeModal} className="p-2 hover:bg-muted rounded-full text-muted-foreground transition-colors"><XCircle className="w-5 h-5" /></button>
-            </div>
-            <form onSubmit={saveRecord} className="p-5 flex flex-col gap-4">
-              <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Asset Name *</label><input required type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" /></div>
-              <div className="grid grid-cols-2 gap-4">
-                <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Category</label><select value={form.category} onChange={e => setForm({...form, category: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"><option>Equipment</option><option>Vehicle</option><option>Building</option><option>IT Hardware</option><option>Furniture</option></select></div>
-                <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Status</label><select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">{Object.keys(STATUS_COLORS).map(s => <option key={s} value={s}>{s}</option>)}</select></div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Purchase Value</label><input type="number" step="0.01" value={form.purchase_value} onChange={e => setForm({...form, purchase_value: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" /></div>
-                <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Purchase Date</label><input type="date" value={form.purchase_date} onChange={e => setForm({...form, purchase_date: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" /></div>
-              </div>
-              <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Location</label><input type="text" value={form.location || ''} onChange={e => setForm({...form, location: e.target.value})} placeholder="e.g. New York, USA" className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" /></div>
-              
-              <div className="flex justify-end gap-3 mt-2 pt-5 border-t border-border">
-                <button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium hover:bg-muted/80 transition-colors">Cancel</button>
-                <button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold shadow-sm hover:bg-primary/90 transition-colors">{editingId ? 'Update' : 'Save Asset'}</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

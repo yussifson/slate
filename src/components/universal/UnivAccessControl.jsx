@@ -66,12 +66,47 @@ export default function UnivAccessControl() {
     payload.resource = 'Managed by Role';
     payload.permission_level = 'Managed by Role';
 
+    if (!editingUserId) {
+      // Register auth user first
+      const { registerSchoolUser } = await import('@/api/authUtils');
+      const tempPass = payload.default_password || Math.random().toString(36).slice(-8) + 'A1!';
+      const { error: authError } = await registerSchoolUser(
+        payload.email,
+        tempPass,
+        payload.role,
+        companyId,
+        payload.user_name
+      );
+
+      if (authError && authError.message !== 'already registered in this firm' && authError.message !== 'User already exists globally') {
+        toast.error('Failed to register auth user: ' + authError.message);
+        return;
+      }
+      
+      // If the user already existed globally, we don't need a temp password
+      if (authError && authError.message === 'User already exists globally') {
+         payload.default_password = 'Use existing password';
+      } else {
+         payload.default_password = tempPass;
+      }
+    }
+
     const { error } = editingUserId
       ? await supabase.from('univ_accesscontrols').update(payload).eq('id', editingUserId)
       : await supabase.from('univ_accesscontrols').insert(payload);
       
-    if (error) { toast.error('Failed to save user'); return; }
-    toast.success(editingUserId ? 'User Updated' : 'User Added');
+    if (error) { toast.error('Failed to save user access control record'); return; }
+    
+    if (!editingUserId) {
+      if (payload.default_password === 'Use existing password') {
+         toast.success(`User Added! They can log in with their existing password.`, { duration: 6000 });
+      } else {
+         toast.success(`User Added! Temp password: ${payload.default_password}`, { duration: 10000 });
+      }
+    } else {
+      toast.success('User Updated');
+    }
+    
     setUserModal(false); fetchData();
   };
 

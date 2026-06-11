@@ -47,7 +47,11 @@ export default function SuperAdminDashboard() {
 
       if (form.admin_email) {
         try {
-          await base44.users.inviteUser(form.admin_email, "admin");
+          // Invite user to the platform with a temporary password
+          const tempPassword = Math.random().toString(36).slice(-8) + 'A1!';
+          const { registerSchoolUser } = await import('@/api/authUtils');
+          await registerSchoolUser(form.admin_email, tempPassword, 'admin', created.id, adminName || form.admin_email.split("@")[0]);
+          toast({ title: "Success", description: `Company added! Admin password: ${tempPassword}`, duration: 10000 });
         } catch (e) {
           console.warn("Could not send invite (might already exist):", e);
         }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense, lazy } from "react";
+import React, { useState, useEffect, Suspense, lazy, startTransition } from "react";
 import PageHeader from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Plus, RefreshCw, BarChart2, ShieldCheck, FileText, Table, Trello, Calendar, Clock, BarChart, Users, Grid, FileSpreadsheet, Filter, PieChart } from "lucide-react";
@@ -383,7 +383,11 @@ export default function GenericModulePage({ title: propTitle, description: propD
             return (
               <button
                 key={view.id}
-                onClick={() => setActiveView(view.id)}
+                onClick={() => {
+                  startTransition(() => {
+                    setActiveView(view.id);
+                  });
+                }}
                 className={`flex items-center gap-2 px-4 py-2 text-sm font-medium whitespace-nowrap rounded-t-lg border-b-2 transition-colors ${
                   isActive 
                     ? 'border-primary text-primary bg-primary/5' 
@@ -437,8 +441,8 @@ export default function GenericModulePage({ title: propTitle, description: propD
                 onChange={e => setVisibility(e.target.value)}
                 className="w-full border border-input bg-background text-foreground rounded-md px-3 py-2 text-sm"
               >
-                <option value="private">Private (Only my wixlate)</option>
-                <option value="shared">Shared (Specific wixlates)</option>
+                <option value="private">Private (Only my workslate)</option>
+                <option value="shared">Shared (Specific workslates)</option>
                 <option value="public">Public (Marketplace Template)</option>
               </select>
               <p className="text-xs text-muted-foreground mt-1">
@@ -455,20 +459,20 @@ export default function GenericModulePage({ title: propTitle, description: propD
                   type="text" 
                   value={sharedWith}
                   onChange={e => setSharedWith(e.target.value)}
-                  placeholder="Comma-separated wixlate IDs"
+                  placeholder="Comma-separated workslate IDs"
                   className="w-full border border-input bg-background text-foreground rounded-md px-3 py-2 text-sm"
                 />
-                <p className="text-xs text-muted-foreground mt-1">Enter the Secure WorkSlate ID of the wixlate you want to share with. They will receive a Draft copy they can publish.</p>
+                <p className="text-xs text-muted-foreground mt-1">Enter the Secure WorkSlate ID of the workslate you want to share with. They will receive a Draft copy they can publish.</p>
               </div>
             )}
 
             {isAdmin && (
               <div className="mt-4 p-3 bg-muted rounded-lg border border-border">
                 <p className="text-xs font-semibold text-foreground mb-1">Your Secure WorkSlate ID</p>
-                <p className="text-xs text-muted-foreground mb-2">Give this ID to other wixlates so they can share slates with you.</p>
+                <p className="text-xs text-muted-foreground mb-2">Give this ID to other workslates so they can share slates with you.</p>
                 <div className="flex gap-2">
                   <code className="flex-1 bg-background px-2 py-1.5 rounded border border-border text-xs select-all">{user?.company_id || "No ID available"}</code>
-                  <Button variant="outline" size="sm" className="h-auto py-1" onClick={() => { navigator.clipboard.writeText(user?.company_id); toast({title:"Copied!", description:"Wixlate ID copied to clipboard."})}}>Copy</Button>
+                  <Button variant="outline" size="sm" className="h-auto py-1" onClick={() => { navigator.clipboard.writeText(user?.company_id); toast({title:"Copied!", description:"Workslate ID copied to clipboard."})}}>Copy</Button>
                 </div>
               </div>
             )}

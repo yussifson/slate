@@ -135,7 +135,7 @@ export default function UnivSearch() {
         
         <div className="text-center mb-8">
            <h2 className="text-3xl font-bold text-foreground tracking-tight">Global Search</h2>
-           <p className="text-sm text-muted-foreground mt-2 max-w-lg mx-auto">Find records, contacts, files, and projects instantly across your entire wixlate.</p>
+           <p className="text-sm text-muted-foreground mt-2 max-w-lg mx-auto">Find records, contacts, files, and projects instantly across your entire workslate.</p>
         </div>
 
         {/* Search Input */}
@@ -192,7 +192,7 @@ export default function UnivSearch() {
                   <div className="flex flex-col max-h-[400px] overflow-y-auto custom-scrollbar">
                     {loading ? (
                       <div className="p-8 text-center text-muted-foreground">
-                        <p className="text-sm">Searching wixlate...</p>
+                        <p className="text-sm">Searching workslate...</p>
                       </div>
                     ) : results.length > 0 ? (
                       <div className="p-2">

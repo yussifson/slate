@@ -83,13 +83,13 @@ export default function OrbitDashboard() {
     );
   }
 
-  const industryName = orbitBuildData?.industry_name || 'Custom Wixlate';
+  const industryName = orbitBuildData?.industry_name || 'Custom Workslate';
 
   return (
     <div className="flex-1 h-screen overflow-hidden">
       <UnivDashboard 
         title={`${industryName} Dashboard`}
-        subtitle="Real-time overview of your dynamically generated wixlate."
+        subtitle="Real-time overview of your dynamically generated workslate."
         kpis={kpis}
       />
     </div>

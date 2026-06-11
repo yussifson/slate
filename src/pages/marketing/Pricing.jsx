@@ -92,7 +92,7 @@ export default function Pricing() {
   return (
     <div className="overflow-x-hidden bg-slate-50 min-h-screen">
       <Helmet>
-        <title>Pricing | Slate AI Wixlate</title>
+        <title>Pricing | Slate AI Workslate</title>
         <meta name="description" content="Transparent pricing for Slate. Scale your business with our unified workspace platform. Choose the plan that fits your team." />
       </Helmet>
       {/* Pricing Header */}

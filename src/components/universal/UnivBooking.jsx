@@ -1,322 +1,464 @@
-import React, { useState, useEffect } from 'react';
-
-import GenericGrid from '@/components/views/GenericGrid';
-import GenericKanban from '@/components/views/GenericKanban';
-import GenericCalendar from '@/components/views/GenericCalendar';
-import GenericDashboard from '@/components/views/GenericDashboard';
-
+import React, { useState, useMemo } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Calendar, User, Phone, CheckCircle2, XCircle, Clock, MoreHorizontal, Plus, FileText } from 'lucide-react';
-import { toast } from 'react-hot-toast';
+import { cn } from '@/lib/utils';
+import { useToast } from '@/components/ui/use-toast';
+import {
+  Calendar as CalendarIcon, Clock, Users, MapPin, 
+  ChevronLeft, ChevronRight, CheckCircle2, 
+  Info, CreditCard, Tag, User, Search
+} from 'lucide-react';
 
-const EMPTY_FORM = {
-  booking_reference: '',
-  guest_name: '',
-  guest_email: '',
-  guest_phone: '',
-  check_in: '',
-  check_out: '',
-  room_type: 'Standard',
-  number_of_guests: 1,
-  status: 'Pending',
-  total_amount: 0
+// Helpers for dates
+const addDays = (date, days) => {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
 };
 
-export default function UnivBooking() {
-  const companyId = useCompanyId();
-  const [view, setView] = useState('Default');
-  const [bookings, setBookings] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [form, setForm] = useState(EMPTY_FORM);
+const formatDate = (date) => date.toISOString().split('T')[0];
 
-  useEffect(() => {
-    if (companyId) {
-      fetchBookings();
-      const channel = supabase.channel('bookings_changes')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'univ_bookings', filter: `company_id=eq.${companyId}` }, () => {
-          fetchBookings();
-        }).subscribe();
-      return () => { supabase.removeChannel(channel); };
+const generateTimeSlots = (startHour = 9, endHour = 17, intervalMinutes = 30) => {
+  const slots = [];
+  for (let h = startHour; h < endHour; h++) {
+    for (let m = 0; m < 60; m += intervalMinutes) {
+      const hh = h.toString().padStart(2, '0');
+      const mm = m.toString().padStart(2, '0');
+      slots.push(`${hh}:${mm}`);
     }
-  }, [companyId]);
+  }
+  return slots;
+};
 
-  const fetchBookings = async () => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from('univ_bookings')
-        .select('*').eq('company_id', companyId)
-        .eq('company_id', companyId)
-        .order('created_at', { ascending: false });
-      if (error && error.code !== '42P01') throw error;
-      setBookings(data || []);
-    } catch (err) {
-      console.error(err);
-      toast.error(err.message || 'Failed to fetch bookings');
-    } finally {
-      setLoading(false);
-    }
-  };
+export default function UnivBooking({
+  title = 'Booking Engine',
+  companyId,
+  pageName,
+  tableName
+}) {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const hookCompanyId = useCompanyId();
+  const effectiveCompanyId = companyId || hookCompanyId;
+  const effectivePageName = pageName || 'booking';
+  const targetTable = tableName || 'industry_records';
 
-  const handleSave = async (e) => {
-    e.preventDefault();
-    try {
-      const payload = {
-        company_id: companyId,
-        booking_reference: form.booking_reference || `BK-${Math.floor(1000 + Math.random() * 9000)}`,
-        guest_name: form.guest_name,
-        guest_email: form.guest_email || null,
-        guest_phone: form.guest_phone || null,
-        check_in: form.check_in || null,
-        check_out: form.check_out || null,
-        room_type: form.room_type,
-        number_of_guests: Number(form.number_of_guests) || 1,
-        status: form.status,
-        total_amount: Number(form.total_amount) || 0
-      };
-
-      const { error } = await supabase.from('univ_bookings').insert(payload);
-      if (error) throw error;
-      toast.success('Booking created');
-      setIsModalOpen(false);
-      setForm(EMPTY_FORM);
-    } catch (err) {
-      console.error(err);
-      toast.error(err.message || 'Failed to create booking');
-    }
-  };
-
-  const filtered = bookings.filter(b => 
-    `${b.guest_name} ${b.booking_reference} ${b.status} ${b.room_type}`.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedService, setSelectedService] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [step, setStep] = useState(1); // 1: Service, 2: Date/Time, 3: Details, 4: Confirmation
   
-  const handleExport = () => {
-    const exportData = (typeof records !== 'undefined' ? records : (typeof data !== 'undefined' ? data : []));
-    if (!exportData || exportData.length === 0) return alert('No data to export');
-    const keys = Object.keys(exportData[0]).filter(k => k !== 'company_id' && k !== 'id');
-    const csv = [keys.join(','), ...exportData.map(r => keys.map(k => '"' + (r[k]||'').toString().replace(/"/g, '""') + '"').join(','))].join('\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = 'export.csv'; a.click();
+  const [customerForm, setCustomerForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    notes: ''
+  });
+
+  // Example generic services (in reality this might come from the DB)
+  const SERVICES = [
+    { id: 'srv-1', name: 'General Consultation', duration: 30, price: 50, icon: Users, color: 'bg-blue-500' },
+    { id: 'srv-2', name: 'Premium Assessment', duration: 60, price: 120, icon: CheckCircle2, color: 'bg-purple-500' },
+    { id: 'srv-3', name: 'Facility Tour', duration: 45, price: 0, icon: MapPin, color: 'bg-emerald-500' },
+    { id: 'srv-4', name: 'Follow-up Session', duration: 15, price: 25, icon: Clock, color: 'bg-amber-500' },
+  ];
+
+  // Fetch Existing Bookings to find taken slots
+  const { data: bookings = [] } = useQuery({
+    queryKey: ['bookings', effectiveCompanyId, effectivePageName],
+    queryFn: async () => {
+      if (!effectiveCompanyId) return [];
+      let query = supabase.from(targetTable).select('*').eq('company_id', effectiveCompanyId);
+      if (targetTable === 'industry_records') {
+        query = query.eq('industry', 'orbit_build_data').eq('record_type', `${effectivePageName}_bookings`);
+      }
+      const { data, error } = await query;
+      if (error && error.code !== '42P01') throw error;
+      return (data || []).map(r => ({ id: r.id, ...(targetTable === 'industry_records' ? r.data : r) }));
+    },
+    enabled: !!effectiveCompanyId
+  });
+
+  const timeSlots = useMemo(() => generateTimeSlots(9, 18, 30), []);
+
+  const takenSlots = useMemo(() => {
+    return bookings
+      .filter(b => b.date === selectedDate && b.status !== 'Cancelled')
+      .map(b => b.time);
+  }, [bookings, selectedDate]);
+
+  const availableSlots = useMemo(() => {
+    return timeSlots.filter(slot => !takenSlots.includes(slot));
+  }, [timeSlots, takenSlots]);
+
+  // Next/Prev Week
+  const dates = useMemo(() => {
+    const d = [];
+    const start = new Date(currentDate);
+    // Adjust to Monday
+    const day = start.getDay();
+    const diff = start.getDate() - day + (day === 0 ? -6 : 1);
+    start.setDate(diff);
+
+    for (let i = 0; i < 7; i++) {
+      d.push(new Date(start));
+      start.setDate(start.getDate() + 1);
+    }
+    return d;
+  }, [currentDate]);
+
+  const handleNextWeek = () => setCurrentDate(prev => addDays(prev, 7));
+  const handlePrevWeek = () => setCurrentDate(prev => addDays(prev, -7));
+
+  const bookMutation = useMutation({
+    mutationFn: async (bookingData) => {
+      const payload = {
+        company_id: effectiveCompanyId,
+        industry: 'orbit_build_data',
+        record_type: `${effectivePageName}_bookings`,
+        data: {
+          ...bookingData,
+          status: 'Confirmed',
+          created_at: new Date().toISOString()
+        }
+      };
+      const finalPayload = targetTable === 'industry_records' ? payload : { ...bookingData, company_id: effectiveCompanyId };
+      const { error } = await supabase.from(targetTable).insert([finalPayload]);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['bookings', effectiveCompanyId, effectivePageName]);
+      setStep(4);
+    },
+    onError: (err) => toast({ title: 'Booking Failed', description: err.message, variant: 'destructive' })
+  });
+
+  const handleConfirm = () => {
+    if (!customerForm.name || !customerForm.email) {
+      toast({ title: 'Missing info', description: 'Please fill out name and email.', variant: 'destructive' });
+      return;
+    }
+    bookMutation.mutate({
+      service_id: selectedService.id,
+      service_name: selectedService.name,
+      date: selectedDate,
+      time: selectedSlot,
+      price: selectedService.price,
+      customer: customerForm
+    });
+  };
+
+  const resetFlow = () => {
+    setStep(1);
+    setSelectedService(null);
+    setSelectedSlot(null);
+    setCustomerForm({ name: '', email: '', phone: '', notes: '' });
   };
 
   return (
-    <div className="flex flex-col h-full bg-background overflow-hidden relative ${view !== 'Default' ? 'hide-default' : ''}">
-      <div className="view-header flex items-center justify-between mb-6 shrink-0 pt-2 px-1">
-        <div>
-           <h2 className="text-2xl font-bold text-foreground tracking-tight">Reservations</h2>
-           <p className="text-sm text-muted-foreground mt-1">Manage guest bookings, check-ins, and check-outs.</p>
+    <div className="flex h-full w-full bg-background overflow-hidden font-sans">
+      
+      {/* Sidebar Overview */}
+      <div className="w-80 border-r border-border bg-card flex flex-col shrink-0 hidden md:flex">
+        <div className="p-6 border-b border-border">
+          <h2 className="text-xl font-bold text-foreground">{title}</h2>
+          <p className="text-sm text-muted-foreground mt-1">Select a service and reserve your spot.</p>
         </div>
-        <div className="flex gap-3">
-          <div className="flex items-center gap-2">
-
         
-        
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-          Export CSV
-        </button>
-
-        <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm shadow-primary/20">
-            <Plus className="w-4 h-4" /> New Booking
-          </button>
-      </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6 shrink-0">
-        <div className="bg-card border border-border rounded-2xl p-4 flex items-center justify-between shadow-sm">
-          <div>
-            <p className="text-sm text-muted-foreground font-medium">Total Bookings</p>
-            <h3 className="text-2xl font-bold text-foreground mt-1">{bookings.length}</h3>
+        <div className="flex-1 p-6 space-y-6 overflow-y-auto custom-scrollbar">
+          {/* Progress Timeline */}
+          <div className="relative border-l-2 border-muted ml-3 space-y-8 pb-4">
+            <div className={cn("relative -left-[9px] flex items-center gap-3", step >= 1 ? "text-primary" : "text-muted-foreground")}>
+              <div className={cn("w-4 h-4 rounded-full border-[3px] bg-background", step >= 1 ? "border-primary" : "border-muted")} />
+              <span className={cn("text-sm font-semibold", step === 1 && "text-foreground")}>1. Service</span>
+            </div>
+            <div className={cn("relative -left-[9px] flex items-center gap-3", step >= 2 ? "text-primary" : "text-muted-foreground")}>
+              <div className={cn("w-4 h-4 rounded-full border-[3px] bg-background", step >= 2 ? "border-primary" : "border-muted")} />
+              <span className={cn("text-sm font-semibold", step === 2 && "text-foreground")}>2. Date & Time</span>
+            </div>
+            <div className={cn("relative -left-[9px] flex items-center gap-3", step >= 3 ? "text-primary" : "text-muted-foreground")}>
+              <div className={cn("w-4 h-4 rounded-full border-[3px] bg-background", step >= 3 ? "border-primary" : "border-muted")} />
+              <span className={cn("text-sm font-semibold", step === 3 && "text-foreground")}>3. Details</span>
+            </div>
+            <div className={cn("relative -left-[9px] flex items-center gap-3", step >= 4 ? "text-primary" : "text-muted-foreground")}>
+              <div className={cn("w-4 h-4 rounded-full border-[3px] bg-background", step >= 4 ? "border-primary" : "border-muted")} />
+              <span className={cn("text-sm font-semibold", step === 4 && "text-foreground")}>4. Done</span>
+            </div>
           </div>
-          <div className="p-3 bg-blue-100 dark:bg-blue-500/10 text-blue-600 rounded-xl"><FileText className="w-5 h-5" /></div>
-        </div>
-        <div className="bg-card border border-border rounded-2xl p-4 flex items-center justify-between shadow-sm">
-          <div>
-            <p className="text-sm text-muted-foreground font-medium">Confirmed</p>
-            <h3 className="text-2xl font-bold text-foreground mt-1">{bookings.filter(b => b.status === 'Confirmed').length}</h3>
-          </div>
-          <div className="p-3 bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 rounded-xl"><CheckCircle2 className="w-5 h-5" /></div>
-        </div>
-        <div className="bg-card border border-border rounded-2xl p-4 flex items-center justify-between shadow-sm">
-          <div>
-            <p className="text-sm text-muted-foreground font-medium">Pending</p>
-            <h3 className="text-2xl font-bold text-foreground mt-1">{bookings.filter(b => b.status === 'Pending').length}</h3>
-          </div>
-          <div className="p-3 bg-amber-100 dark:bg-amber-500/10 text-amber-600 rounded-xl"><Clock className="w-5 h-5" /></div>
-        </div>
-        <div className="bg-card border border-border rounded-2xl p-4 flex items-center justify-between shadow-sm">
-          <div>
-            <p className="text-sm text-muted-foreground font-medium">Checked In</p>
-            <h3 className="text-2xl font-bold text-foreground mt-1">{bookings.filter(b => b.status === 'Checked In').length}</h3>
-          </div>
-          <div className="p-3 bg-purple-100 dark:bg-purple-500/10 text-purple-600 rounded-xl"><User className="w-5 h-5" /></div>
-        </div>
-      </div>
 
-      <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden shadow-sm flex flex-col">
-        <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
-          <div className="relative w-72">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <input 
-              type="text"
-              placeholder="Search bookings..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
-            />
-          </div>
-        </div>
-
-        <div className="flex-1 overflow-auto custom-scrollbar">
-          <table className="w-full text-left text-sm whitespace-nowrap">
-            <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground sticky top-0 z-10 backdrop-blur-md">
-              <tr>
-                <th className="p-4 font-semibold">Guest Name</th>
-                <th className="p-4 font-semibold">Reference</th>
-                <th className="p-4 font-semibold">Dates</th>
-                <th className="p-4 font-semibold">Room & Guests</th>
-                <th className="p-4 font-semibold">Status</th>
-                <th className="p-4 font-semibold text-right">Amount</th>
-                <th className="p-4 font-semibold text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {filtered.map((b, idx) => (
-                <motion.tr 
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.02 }}
-                  key={b.id} 
-                  className="hover:bg-muted/30 transition-colors group cursor-pointer"
-                >
-                  <td className="p-4">
-                    <div className="font-bold text-foreground">{b.guest_name}</div>
-                    <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
-                      {b.guest_phone && <span className="flex items-center gap-1"><Phone className="w-3 h-3" /> {b.guest_phone}</span>}
-                    </div>
-                  </td>
-                  <td className="p-4 font-mono text-muted-foreground">{b.booking_reference}</td>
-                  <td className="p-4">
-                    <div className="text-foreground flex items-center gap-2"><Calendar className="w-3.5 h-3.5 text-emerald-500" /> In: {new Date(b.check_in).toLocaleDateString()}</div>
-                    <div className="text-muted-foreground flex items-center gap-2 mt-1"><Calendar className="w-3.5 h-3.5 text-rose-500" /> Out: {new Date(b.check_out).toLocaleDateString()}</div>
-                  </td>
-                  <td className="p-4">
-                    <div className="font-medium text-foreground">{b.room_type}</div>
-                    <div className="text-xs text-muted-foreground mt-1">{b.number_of_guests} Guest(s)</div>
-                  </td>
-                  <td className="p-4">
-                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
-                      b.status === 'Confirmed' ? 'bg-emerald-100 text-emerald-700' :
-                      b.status === 'Checked In' ? 'bg-purple-100 text-purple-700' :
-                      b.status === 'Checked Out' ? 'bg-muted text-foreground' :
-                      b.status === 'Cancelled' ? 'bg-red-100 text-red-700' :
-                      'bg-amber-100 text-amber-700'
-                    }`}>
-                      {b.status === 'Confirmed' ? <CheckCircle2 className="w-3 h-3" /> :
-                       b.status === 'Cancelled' ? <XCircle className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
-                      {b.status}
-                    </span>
-                  </td>
-                  <td className="p-4 font-mono font-bold text-emerald-600 text-right">
-                    ${Number(b.total_amount).toFixed(2)}
-                  </td>
-                  <td className="p-4 text-right">
-                    <button className="text-muted-foreground hover:text-primary transition-colors p-2"><MoreHorizontal className="w-4 h-4" /></button>
-                  </td>
-                </motion.tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <AnimatePresence>
-        {isModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-card border border-border rounded-2xl shadow-xl w-full max-w-lg overflow-hidden"
-            >
-              <div className="flex items-center justify-between p-4 border-b border-border">
-                <h3 className="font-semibold text-foreground">New Booking</h3>
-                <button onClick={() => setIsModalOpen(false)} className="text-muted-foreground hover:text-foreground">
-                  <XCircle className="w-5 h-5" />
-                </button>
+          {/* Booking Summary (if selections made) */}
+          {selectedService && (
+            <div className="bg-muted/30 rounded-xl p-4 border border-border space-y-3 animate-in fade-in slide-in-from-bottom-4">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">Booking Summary</h3>
+              <div className="flex items-start gap-2">
+                <Tag className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                <div className="text-sm font-medium text-foreground">{selectedService.name}</div>
               </div>
-              <form onSubmit={handleSave} className="p-4 space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-medium text-muted-foreground mb-1">Guest Name</label>
-                    <input required value={form.guest_name} onChange={e => setForm({...form, guest_name: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-muted-foreground mb-1">Booking Ref (Optional)</label>
-                    <input value={form.booking_reference} onChange={e => setForm({...form, booking_reference: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" placeholder="Auto-generated if empty" />
+              {selectedSlot && (
+                <div className="flex items-start gap-2">
+                  <Clock className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                  <div className="text-sm font-medium text-foreground">
+                    {new Date(selectedDate).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}<br/>
+                    <span className="text-muted-foreground">{selectedSlot}</span>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+              )}
+              {selectedService.price > 0 && (
+                <div className="flex items-start gap-2 pt-2 border-t border-border mt-2">
+                  <CreditCard className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                  <div className="text-sm font-bold text-foreground">${selectedService.price}</div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Main Flow Area */}
+      <div className="flex-1 bg-muted/10 overflow-y-auto p-4 sm:p-8 custom-scrollbar">
+        <div className="max-w-3xl mx-auto min-h-full flex flex-col justify-center">
+          <AnimatePresence mode="wait">
+            
+            {/* STEP 1: SERVICE */}
+            {step === 1 && (
+              <motion.div 
+                key="step1"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-6"
+              >
+                <div className="mb-8">
+                  <h1 className="text-3xl font-extrabold text-foreground tracking-tight">Select a Service</h1>
+                  <p className="text-muted-foreground mt-2 text-lg">Choose what you'd like to book today.</p>
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {SERVICES.map(srv => {
+                    const Icon = srv.icon;
+                    return (
+                      <button
+                        key={srv.id}
+                        onClick={() => { setSelectedService(srv); setStep(2); }}
+                        className="flex items-center text-left gap-4 p-5 rounded-2xl bg-card border border-border hover:border-primary/50 hover:shadow-md transition-all group"
+                      >
+                        <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center shrink-0 shadow-sm", srv.color)}>
+                          <Icon className="w-6 h-6 text-white" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-bold text-foreground text-base truncate">{srv.name}</h3>
+                          <p className="text-sm text-muted-foreground mt-0.5">{srv.duration} mins • ${srv.price}</p>
+                        </div>
+                      </button>
+                    )
+                  })}
+                </div>
+              </motion.div>
+            )}
+
+            {/* STEP 2: DATE & TIME */}
+            {step === 2 && (
+              <motion.div 
+                key="step2"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-6"
+              >
+                <div className="mb-6 flex items-center justify-between">
                   <div>
-                    <label className="block text-xs font-medium text-muted-foreground mb-1">Guest Email</label>
-                    <input type="email" value={form.guest_email} onChange={e => setForm({...form, guest_email: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+                    <h1 className="text-3xl font-extrabold text-foreground tracking-tight">Choose Time</h1>
+                    <p className="text-muted-foreground mt-1">{selectedService?.duration} minute session</p>
                   </div>
-                  <div>
-                    <label className="block text-xs font-medium text-muted-foreground mb-1">Guest Phone</label>
-                    <input value={form.guest_phone} onChange={e => setForm({...form, guest_phone: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+                  <button onClick={() => setStep(1)} className="text-sm font-medium text-muted-foreground hover:text-foreground">
+                    ← Back
+                  </button>
+                </div>
+
+                <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
+                  {/* Calendar Week Nav */}
+                  <div className="flex items-center justify-between mb-6">
+                    <button onClick={handlePrevWeek} className="p-2 hover:bg-muted rounded-full transition-colors"><ChevronLeft className="w-5 h-5" /></button>
+                    <h3 className="font-bold text-foreground">
+                      {dates[0].toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}
+                    </h3>
+                    <button onClick={handleNextWeek} className="p-2 hover:bg-muted rounded-full transition-colors"><ChevronRight className="w-5 h-5" /></button>
+                  </div>
+                  
+                  {/* Days Row */}
+                  <div className="grid grid-cols-7 gap-2 mb-8">
+                    {dates.map((d, i) => {
+                      const isSelected = formatDate(d) === selectedDate;
+                      const isPast = d < new Date(new Date().setHours(0,0,0,0));
+                      return (
+                        <button
+                          key={i}
+                          disabled={isPast}
+                          onClick={() => { setSelectedDate(formatDate(d)); setSelectedSlot(null); }}
+                          className={cn(
+                            "flex flex-col items-center justify-center p-3 rounded-xl border transition-all",
+                            isSelected ? "bg-primary text-white border-primary shadow-md" : "bg-muted/30 border-transparent hover:border-border",
+                            isPast && "opacity-30 cursor-not-allowed"
+                          )}
+                        >
+                          <span className={cn("text-xs font-semibold uppercase mb-1", isSelected ? "text-primary-foreground/80" : "text-muted-foreground")}>
+                            {d.toLocaleDateString(undefined, { weekday: 'short' })}
+                          </span>
+                          <span className={cn("text-lg font-bold", isSelected ? "text-white" : "text-foreground")}>
+                            {d.getDate()}
+                          </span>
+                        </button>
+                      )
+                    })}
+                  </div>
+
+                  {/* Time Slots */}
+                  <div className="space-y-4">
+                    <h4 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Available Slots</h4>
+                    {availableSlots.length === 0 ? (
+                      <div className="text-center py-8 text-muted-foreground bg-muted/30 rounded-xl">
+                        No slots available on this day.
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                        {availableSlots.map(slot => (
+                          <button
+                            key={slot}
+                            onClick={() => setSelectedSlot(slot)}
+                            className={cn(
+                              "py-2.5 rounded-lg border text-sm font-medium transition-all text-center",
+                              selectedSlot === slot 
+                                ? "bg-primary/10 border-primary text-primary shadow-sm" 
+                                : "bg-background border-border text-foreground hover:border-primary/50"
+                            )}
+                          >
+                            {slot}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+
+                <div className="flex justify-end pt-4">
+                  <button 
+                    disabled={!selectedSlot}
+                    onClick={() => setStep(3)}
+                    className="px-8 py-3 bg-primary text-white rounded-xl font-bold shadow-sm hover:bg-primary/90 transition-colors disabled:opacity-50"
+                  >
+                    Continue to Details
+                  </button>
+                </div>
+              </motion.div>
+            )}
+
+            {/* STEP 3: DETAILS */}
+            {step === 3 && (
+              <motion.div 
+                key="step3"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-6"
+              >
+                <div className="mb-6 flex items-center justify-between">
                   <div>
-                    <label className="block text-xs font-medium text-muted-foreground mb-1">Check In</label>
-                    <input type="date" required value={form.check_in} onChange={e => setForm({...form, check_in: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+                    <h1 className="text-3xl font-extrabold text-foreground tracking-tight">Your Details</h1>
+                    <p className="text-muted-foreground mt-1">Almost done! Just need a few details.</p>
+                  </div>
+                  <button onClick={() => setStep(2)} className="text-sm font-medium text-muted-foreground hover:text-foreground">
+                    ← Back
+                  </button>
+                </div>
+
+                <div className="bg-card border border-border rounded-2xl p-6 shadow-sm space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Full Name *</label>
+                      <input 
+                        type="text" 
+                        required
+                        value={customerForm.name}
+                        onChange={e => setCustomerForm({...customerForm, name: e.target.value})}
+                        className="w-full h-11 px-3 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary" 
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Email Address *</label>
+                      <input 
+                        type="email" 
+                        required
+                        value={customerForm.email}
+                        onChange={e => setCustomerForm({...customerForm, email: e.target.value})}
+                        className="w-full h-11 px-3 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary" 
+                      />
+                    </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-muted-foreground mb-1">Check Out</label>
-                    <input type="date" required value={form.check_out} onChange={e => setForm({...form, check_out: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+                    <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Phone Number</label>
+                    <input 
+                      type="tel" 
+                      value={customerForm.phone}
+                      onChange={e => setCustomerForm({...customerForm, phone: e.target.value})}
+                      className="w-full h-11 px-3 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary" 
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Additional Notes</label>
+                    <textarea 
+                      value={customerForm.notes}
+                      onChange={e => setCustomerForm({...customerForm, notes: e.target.value})}
+                      className="w-full min-h-[100px] p-3 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary resize-y" 
+                    />
                   </div>
                 </div>
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-xs font-medium text-muted-foreground mb-1">Room Type</label>
-                    <input required value={form.room_type} onChange={e => setForm({...form, room_type: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-muted-foreground mb-1">Guests</label>
-                    <input type="number" min="1" required value={form.number_of_guests} onChange={e => setForm({...form, number_of_guests: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-muted-foreground mb-1">Status</label>
-                    <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm">
-                      <option>Pending</option>
-                      <option>Confirmed</option>
-                      <option>Checked In</option>
-                      <option>Checked Out</option>
-                      <option>Cancelled</option>
-                    </select>
-                  </div>
+
+                <div className="flex justify-end pt-4">
+                  <button 
+                    disabled={bookMutation.isPending}
+                    onClick={handleConfirm}
+                    className="px-8 py-3 bg-primary text-white rounded-xl font-bold shadow-sm hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-2"
+                  >
+                    {bookMutation.isPending ? 'Confirming...' : 'Confirm Booking'}
+                  </button>
                 </div>
-                <div>
-                  <label className="block text-xs font-medium text-muted-foreground mb-1">Total Amount</label>
-                  <input type="number" step="any" value={form.total_amount} onChange={e => setForm({...form, total_amount: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+              </motion.div>
+            )}
+
+            {/* STEP 4: CONFIRMATION */}
+            {step === 4 && (
+              <motion.div 
+                key="step4"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center py-10"
+              >
+                <div className="w-20 h-20 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <CheckCircle2 className="w-10 h-10 text-emerald-600 dark:text-emerald-400" />
                 </div>
-                <div className="pt-4 flex justify-end gap-2">
-                  <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted rounded-lg">Cancel</button>
-                  <button type="submit" className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90">Save Booking</button>
-                </div>
-              </form>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+                <h1 className="text-3xl font-extrabold text-foreground tracking-tight mb-4">Booking Confirmed!</h1>
+                <p className="text-muted-foreground text-lg max-w-md mx-auto mb-8">
+                  Your appointment for <strong className="text-foreground">{selectedService?.name}</strong> has been successfully scheduled for <strong className="text-foreground">{selectedSlot}</strong> on <strong className="text-foreground">{new Date(selectedDate).toLocaleDateString()}</strong>.
+                </p>
+                <p className="text-sm text-muted-foreground mb-8">
+                  A confirmation email has been sent to {customerForm.email}.
+                </p>
+                <button 
+                  onClick={resetFlow}
+                  className="px-8 py-3 bg-secondary text-secondary-foreground rounded-xl font-bold shadow-sm hover:bg-secondary/80 transition-colors"
+                >
+                  Book Another Appointment
+                </button>
+              </motion.div>
+            )}
+
+          </AnimatePresence>
+        </div>
+      </div>
+
     </div>
   );
 }

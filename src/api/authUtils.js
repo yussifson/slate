@@ -45,10 +45,9 @@ export const registerSchoolUser = async (realEmail, password, role, companyId, f
       return { error: { message: 'already registered in this firm' } };
     }
 
-    const proxyEmail = generateSaltedEmail(cleanEmail, companyId);
-    // 1. Create the user in Supabase Auth
+    // 2. Create the user in Supabase Auth using their RAW email
     const { data, error } = await supabaseAdmin.auth.signUp({
-      email: proxyEmail,
+      email: cleanEmail,
       password: password,
       options: {
         data: {
@@ -59,6 +58,12 @@ export const registerSchoolUser = async (realEmail, password, role, companyId, f
     });
     
     if (error) {
+      // If the user already exists globally, that's fine! 
+      // We don't want to throw an error, we just want to link them.
+      if (error.message.includes('User already registered') || error.message.includes('already exists')) {
+         console.log(`User ${cleanEmail} already exists globally. They can use their existing account.`);
+         return { user: null, error: { message: 'User already exists globally' } };
+      }
       console.error(`Error creating ${role} auth user:`, error);
       return { error };
     }
@@ -75,14 +80,12 @@ export const registerSchoolUser = async (realEmail, password, role, companyId, f
           id: data.user.id,
           company_id: companyId,
           role: role,
-          email: cleanEmail, // Store real email in profile for UI
-          full_name: fullName,
+          email: cleanEmail,
         }
       ]);
       
       if (profileError) {
         console.error(`Error creating ${role} profile:`, profileError);
-        // It's not a fatal error for auth, but they might not route properly
       }
     }
     

@@ -44,7 +44,7 @@ export default function UniLMS() {
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="border-b border-[var(--color-border-subtle)] pb-4">
         <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Learning Management</h1>
-        <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Access virtual course wixlates, assignment centers, and academic discussions.</p>
+        <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Access virtual course workslates, assignment centers, and academic discussions.</p>
       </div>
 
       <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6">
@@ -58,7 +58,7 @@ export default function UniLMS() {
       {activeStudent ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            <h3 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-2"><BookOpen className="w-5 h-5" style={{ color: 'var(--primary)' }} /> Enrolled Wixlates</h3>
+            <h3 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-2"><BookOpen className="w-5 h-5" style={{ color: 'var(--primary)' }} /> Enrolled Workslates</h3>
             {activeStudentCourses.length === 0 ? (
               <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-12 text-center text-[var(--color-text-tertiary)]">Not enrolled in any courses yet.</div>
             ) : (
@@ -79,7 +79,7 @@ export default function UniLMS() {
             {activeCourse && (
               <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] overflow-hidden shadow-sm">
                 <div className="p-6 border-b border-[var(--color-border-subtle)]">
-                  <h3 className="font-semibold text-[var(--color-text-primary)]">Wixlate: {activeCourse.name} ({activeCourse.code})</h3>
+                  <h3 className="font-semibold text-[var(--color-text-primary)]">Workslate: {activeCourse.name} ({activeCourse.code})</h3>
                   <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Submit course deliverables and assignments here.</p>
                 </div>
                 <div className="p-6 space-y-6">
@@ -126,7 +126,7 @@ export default function UniLMS() {
           </div>
         </div>
       ) : (
-        <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-12 text-center text-[var(--color-text-tertiary)]">Select a student profile to load class wixlates.</div>
+        <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-12 text-center text-[var(--color-text-tertiary)]">Select a student profile to load class workslates.</div>
       )}
     </div>
   );
