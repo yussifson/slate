@@ -7,28 +7,17 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Plus, Search, Filter, MoreHorizontal, User, Mail, Phone, 
   Calendar as CalendarIcon, Loader2, DollarSign, Trash2, X,
-  LayoutList, KanbanSquare, Target, TrendingUp, Building2, Edit2, Eye, Flame, ThermometerSun, Snowflake
+  LayoutList, KanbanSquare, Target, TrendingUp, Building2, Edit2, Eye
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 
 const DEFAULT_STAGES = ['New', 'Contacted', 'Qualified', 'Proposal', 'Won', 'Lost'];
-
-const getScoreColor = (score) => {
-  if (score === 'Hot') return 'bg-red-100 text-red-700 border-red-200';
-  if (score === 'Warm') return 'bg-orange-100 text-orange-700 border-orange-200';
-  return 'bg-blue-100 text-blue-700 border-blue-200'; // Cold
-};
-
-const getScoreIcon = (score) => {
-  if (score === 'Hot') return <Flame className="w-3 h-3 text-red-600" />;
-  if (score === 'Warm') return <ThermometerSun className="w-3 h-3 text-orange-600" />;
-  return <Snowflake className="w-3 h-3 text-blue-600" />; // Cold
-};
 
 export default function UnivCRM() {
   const companyId = useCompanyId();
@@ -50,7 +39,7 @@ export default function UnivCRM() {
   const [viewingLead, setViewingLead] = useState(null);
 
   const [formData, setFormData] = useState({
-    first_name: '', last_name: '', email: '', phone: '', source: '', value: 0, status: 'New', score: 'Warm', notes: ''
+    first_name: '', last_name: '', email: '', phone: '', source: '', value: 0, status: 'New', notes: ''
   });
 
   useEffect(() => {
@@ -72,6 +61,7 @@ export default function UnivCRM() {
       const { data, error } = await supabase
         .from('univ_crm_leads')
         .select('*').eq('company_id', companyId)
+        .eq('company_id', companyId)
         .order('created_at', { ascending: false });
       if (error && error.code !== '42P01') throw error;
       setLeads(data || []);
@@ -88,12 +78,12 @@ export default function UnivCRM() {
       setFormData({
         first_name: lead.first_name || '', last_name: lead.last_name || '', email: lead.email || '',
         phone: lead.phone || '', source: lead.source || '', value: lead.value || 0,
-        status: lead.status || 'New', score: lead.score || 'Warm', notes: lead.notes || ''
+        status: lead.status || 'New', notes: lead.notes || ''
       });
     } else {
       setEditingLeadId(null);
       setFormData({
-        first_name: '', last_name: '', email: '', phone: '', source: '', value: 0, status: 'New', score: 'Warm', notes: ''
+        first_name: '', last_name: '', email: '', phone: '', source: '', value: 0, status: 'New', notes: ''
       });
     }
     setIsModalOpen(true);
@@ -112,7 +102,6 @@ export default function UnivCRM() {
       source: formData.source,
       value: Number(formData.value) || 0,
       status: formData.status,
-      score: formData.score,
       notes: formData.notes
     };
 
@@ -145,6 +134,17 @@ export default function UnivCRM() {
     }
   };
 
+  const updateLeadStatus = async (id, newStatus, e) => {
+    if (e) e.stopPropagation();
+    try {
+      const { error } = await supabase.from('univ_crm_leads').update({ status: newStatus }).eq('id', id);
+      if (error) throw error;
+      toast.success('Lead status updated');
+    } catch (err) {
+      toast.error("Failed to update status");
+    }
+  };
+
   const handleAddStage = (e) => {
     e.preventDefault();
     if (!newStageName.trim() || stages.includes(newStageName.trim())) return;
@@ -156,29 +156,21 @@ export default function UnivCRM() {
     toast.success('Pipeline stage added');
   };
 
-  // HTML5 Drag and Drop handlers
-  const handleDragStart = (e, leadId, sourceStage) => {
-    e.dataTransfer.setData('leadId', leadId);
-    e.dataTransfer.setData('sourceStage', sourceStage);
-  };
+  const onDragEnd = async (result) => {
+    if (!result.destination) return;
+    const { source, destination, draggableId } = result;
+    if (source.droppableId === destination.droppableId && source.index === destination.index) return;
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-  };
-
-  const handleDrop = async (e, destStage) => {
-    e.preventDefault();
-    const leadId = e.dataTransfer.getData('leadId');
-    const sourceStage = e.dataTransfer.getData('sourceStage');
-    if (!leadId || sourceStage === destStage) return;
-
+    const leadId = draggableId;
+    const newStatus = destination.droppableId;
+    
     // Optimistic update
-    setLeads(prev => prev.map(l => l.id === leadId ? { ...l, status: destStage } : l));
+    setLeads(prev => prev.map(l => l.id === leadId ? { ...l, status: newStatus } : l));
     
     try {
-      const { error } = await supabase.from('univ_crm_leads').update({ status: destStage }).eq('id', leadId);
+      const { error } = await supabase.from('univ_crm_leads').update({ status: newStatus }).eq('id', leadId);
       if (error) throw error;
-      toast.success(`Moved to ${destStage}`);
+      toast.success(`Moved to ${newStatus}`);
     } catch (err) {
       toast.error('Failed to move lead');
       fetchLeads(); // Revert
@@ -193,8 +185,9 @@ export default function UnivCRM() {
   const wonLeads = leads.filter(l => l.status === 'Won').length;
   const winRate = leads.length > 0 ? Math.round((wonLeads / leads.length) * 100) : 0;
 
+  
   const handleExport = () => {
-    const exportData = leads;
+    const exportData = (typeof records !== 'undefined' ? records : (typeof data !== 'undefined' ? data : []));
     if (!exportData || exportData.length === 0) return alert('No data to export');
     const keys = Object.keys(exportData[0]).filter(k => k !== 'company_id' && k !== 'id');
     const csv = [keys.join(','), ...exportData.map(r => keys.map(k => '"' + (r[k]||'').toString().replace(/"/g, '""') + '"').join(','))].join('\n');
@@ -205,8 +198,9 @@ export default function UnivCRM() {
   };
 
   return (
-    <div className={`min-h-[80vh] h-full flex flex-col gap-6 w-full bg-background ${view !== 'Default' ? 'hide-default' : ''}`}>
+    <div className="min-h-[80vh] h-full flex flex-col gap-6 w-full bg-background ${view !== 'Default' ? 'hide-default' : ''}">
       
+      {/* Top Header Controls */}
       <div className="view-header flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 shrink-0 gap-4 px-1">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Lead Management</h1>
@@ -215,31 +209,45 @@ export default function UnivCRM() {
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <div className="flex items-center p-1 bg-muted rounded-lg shrink-0">
             <div className="flex items-center gap-2">
-              <div className="flex bg-muted p-1 rounded-lg border border-border mr-2 hidden sm:flex">
-                {["Default","Grid","Kanban","Calendar","Dashboard"].map(v => (
-                  <button key={v} onClick={() => setView(v)} className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${view === v ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
-                    {v}
-                  </button>
-                ))}
-              </div>
-              <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
-                Export CSV
-              </button>
 
-              <button onClick={() => setViewMode('kanban')} className={`p-1.5 rounded-md flex items-center gap-1.5 text-xs font-medium transition-all ${viewMode === 'kanban' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}>
-                <KanbanSquare className="w-4 h-4" /> Kanban
-              </button>
-              <button onClick={() => setViewMode('list')} className={`p-1.5 rounded-md flex items-center gap-1.5 text-xs font-medium transition-all ${viewMode === 'list' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}>
-                <LayoutList className="w-4 h-4" /> List
-              </button>
-            </div>
+        
+        <div className="flex bg-muted p-1 rounded-lg border border-border mr-2 hidden sm:flex">
+          {["Default","Grid","Kanban","Calendar","Dashboard"].map(v => (
+            <button 
+              key={v} 
+              onClick={() => setView(v)} 
+              className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${view === v ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              {v}
+            </button>
+          ))}
+        </div>
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          Export CSV
+        </button>
+
+        <button 
+              onClick={() => setViewMode('kanban')} 
+              className={`p-1.5 rounded-md flex items-center gap-1.5 text-xs font-medium transition-all ${viewMode === 'kanban' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              <KanbanSquare className="w-4 h-4" /> Kanban
+            </button>
+            <button 
+              onClick={() => setViewMode('list')} 
+              className={`p-1.5 rounded-md flex items-center gap-1.5 text-xs font-medium transition-all ${viewMode === 'list' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              <LayoutList className="w-4 h-4" /> List
+            </button>
           </div>
           <button onClick={() => handleOpenModal()} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm shadow-primary/20 whitespace-nowrap">
             <Plus className="w-4 h-4" /> Add Lead
           </button>
+      </div>
         </div>
       </div>
 
+      {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 shrink-0 px-1">
         <div className="bg-card border border-border rounded-2xl p-5 shadow-sm flex items-center justify-between">
           <div>
@@ -270,6 +278,7 @@ export default function UnivCRM() {
         </div>
       </div>
 
+      {/* Search Bar */}
       <div className="relative mb-6 shrink-0 px-1 max-w-md">
         <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
         <input 
@@ -281,97 +290,113 @@ export default function UnivCRM() {
         />
       </div>
 
+      {/* Main Content Area */}
       {viewMode === 'kanban' ? (
-        <div className="flex-1 overflow-x-auto overflow-y-hidden flex gap-5 pb-4 snap-x px-1 min-h-[500px] items-stretch custom-scrollbar">
-          {loading && leads.length === 0 ? (
-            <div className="w-full h-full flex items-center justify-center">
-              <Loader2 className="w-8 h-8 animate-spin text-primary" />
-            </div>
-          ) : (
-            <>
-              {stages.map(stage => {
-                const stageLeads = filteredLeads.filter(l => l.status === stage);
-                return (
-                  <div key={stage} className="flex-shrink-0 w-[320px] max-w-[85vw] bg-muted/40 border border-border rounded-2xl flex flex-col snap-center shadow-sm h-full"
-                       onDragOver={handleDragOver}
-                       onDrop={(e) => handleDrop(e, stage)}>
-                    <div className="p-4 border-b border-border/50 flex justify-between items-center bg-card/60 rounded-t-2xl shrink-0">
-                      <h3 className="font-bold text-sm text-foreground tracking-tight">{stage}</h3>
-                      <span className="px-2.5 py-0.5 rounded-full bg-background border border-border text-xs font-bold text-muted-foreground shadow-sm">
-                        {stageLeads.length}
-                      </span>
-                    </div>
-                    <div className="p-3 flex-1 overflow-y-auto space-y-3 custom-scrollbar min-h-[150px] transition-colors rounded-b-2xl hover:bg-muted/60">
-                      {stageLeads.map((lead) => (
-                        <div
-                          key={lead.id}
-                          draggable
-                          onDragStart={(e) => handleDragStart(e, lead.id, stage)}
-                          onClick={() => setViewingLead(lead)}
-                          className={`bg-card border border-border p-4 rounded-xl transition-all group cursor-pointer relative overflow-hidden shadow-sm hover:shadow-md active:shadow-xl active:scale-105 z-50`}
-                        >
-                          <div className={`absolute top-0 left-0 w-1.5 h-full transition-colors ${stage === 'Won' ? 'bg-emerald-500' : stage === 'Lost' ? 'bg-red-500' : 'bg-primary/40 group-hover:bg-primary'}`}></div>
-                          
-                          <div className="flex justify-between items-start mb-2 pl-2">
-                            <h4 className="font-bold text-[15px] text-foreground tracking-tight">{lead.first_name} {lead.last_name}</h4>
-                            <div className="flex gap-1">
-                              <button onClick={(e) => { e.stopPropagation(); setViewingLead(lead); }} className="text-muted-foreground hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity p-1 bg-muted rounded-md">
-                                <Eye className="w-3.5 h-3.5" />
-                              </button>
-                              <button onClick={(e) => { e.stopPropagation(); handleOpenModal(lead); }} className="text-muted-foreground hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity p-1 bg-muted rounded-md">
-                                <Edit2 className="w-3.5 h-3.5" />
-                              </button>
-                              <button onClick={(e) => handleDeleteLead(lead.id, e)} className="text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity p-1 bg-red-50 dark:bg-red-900/20 rounded-md">
-                                <Trash2 className="w-3.5 h-3.5" />
-                              </button>
-                            </div>
-                          </div>
-                          
-                          <div className="pl-2">
-                            {lead.source && <p className="text-xs text-muted-foreground flex items-center gap-1.5 mb-1.5"><Building2 className="w-3 h-3" /> {lead.source}</p>}
-                            {lead.email && <p className="text-xs text-muted-foreground flex items-center gap-1.5 mb-3"><Mail className="w-3 h-3" /> {lead.email}</p>}
-                          </div>
-                          
-                          <div className="flex items-center justify-between text-xs font-medium bg-muted/60 p-2 rounded-lg mt-auto ml-2">
-                            <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-bold">
-                              <DollarSign className="w-3.5 h-3.5" /> {Number(lead.value || 0).toLocaleString()}
-                            </span>
-                            <span className={`px-2 py-0.5 rounded-full border flex items-center gap-1 font-bold uppercase text-[10px] tracking-wider ${getScoreColor(lead.score)}`}>
-                              {getScoreIcon(lead.score)} {lead.score || 'Warm'}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                      {stageLeads.length === 0 && (
-                        <div className="h-24 flex items-center justify-center border-2 border-dashed border-border/60 rounded-xl text-xs text-muted-foreground font-medium bg-card/20">
-                          Drop leads here
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-              <div className="flex-shrink-0 w-[320px] max-w-[85vw] h-[150px] rounded-2xl flex flex-col snap-center border-2 border-dashed border-border/60 hover:border-border transition-colors bg-card/30">
-                {isAddingStage ? (
-                  <form onSubmit={handleAddStage} className="p-4 flex flex-col gap-3 h-full justify-center">
-                    <input autoFocus type="text" value={newStageName} onChange={e=>setNewStageName(e.target.value)} placeholder="Stage Name..." className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm shadow-sm" />
-                    <div className="flex gap-2">
-                      <button type="submit" className="flex-1 h-9 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 shadow-sm shadow-primary/20">Save</button>
-                      <button type="button" onClick={()=>setIsAddingStage(false)} className="flex-1 h-9 bg-muted text-foreground rounded-lg text-sm font-medium hover:bg-muted/80 border border-border">Cancel</button>
-                    </div>
-                  </form>
-                ) : (
-                  <button onClick={()=>setIsAddingStage(true)} className="flex-1 flex flex-col items-center justify-center gap-2 text-muted-foreground hover:text-primary transition-colors">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                      <Plus className="w-5 h-5" />
-                    </div>
-                    <span className="text-sm font-bold">Add Pipeline Stage</span>
-                  </button>
-                )}
+        <DragDropContext onDragEnd={onDragEnd}>
+          <div className="flex-1 overflow-x-auto overflow-y-hidden flex gap-5 pb-4 snap-x px-1 min-h-[500px] items-stretch custom-scrollbar">
+            {loading && leads.length === 0 ? (
+              <div className="w-full h-full flex items-center justify-center">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
               </div>
-            </>
-          )}
-        </div>
+            ) : (
+              <>
+                {stages.map(stage => {
+                  const stageLeads = filteredLeads.filter(l => l.status === stage);
+                  return (
+                    <div key={stage} className="flex-shrink-0 w-[320px] max-w-[85vw] bg-muted/40 border border-border rounded-2xl flex flex-col snap-center shadow-sm h-full">
+                      <div className="p-4 border-b border-border/50 flex justify-between items-center bg-card/60 rounded-t-2xl shrink-0">
+                        <h3 className="font-bold text-sm text-foreground tracking-tight">{stage}</h3>
+                        <span className="px-2.5 py-0.5 rounded-full bg-background border border-border text-xs font-bold text-muted-foreground shadow-sm">
+                          {stageLeads.length}
+                        </span>
+                      </div>
+                      <Droppable droppableId={stage}>
+                        {(provided, snapshot) => (
+                          <div 
+                            ref={provided.innerRef} 
+                            {...provided.droppableProps}
+                            className={`p-3 flex-1 overflow-y-auto space-y-3 custom-scrollbar min-h-[150px] transition-colors rounded-b-2xl ${snapshot.isDraggingOver ? 'bg-primary/5' : ''}`}
+                          >
+                            {stageLeads.map((lead, index) => (
+                              <Draggable key={lead.id} draggableId={lead.id} index={index}>
+                                {(provided, snapshot) => (
+                                  <div
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    onClick={() => setViewingLead(lead)}
+                                    className={`bg-card border border-border p-4 rounded-xl transition-all group cursor-pointer relative overflow-hidden ${snapshot.isDragging ? 'shadow-xl ring-2 ring-primary scale-105 z-50' : 'shadow-sm hover:shadow-md'}`}
+                                    style={provided.draggableProps.style}
+                                  >
+                                    <div className={`absolute top-0 left-0 w-1.5 h-full transition-colors ${stage === 'Won' ? 'bg-emerald-500' : stage === 'Lost' ? 'bg-red-500' : 'bg-primary/40 group-hover:bg-primary'}`}></div>
+                                    
+                                    <div className="flex justify-between items-start mb-2 pl-2">
+                                      <h4 className="font-bold text-[15px] text-foreground tracking-tight">{lead.first_name} {lead.last_name}</h4>
+                                      <div className="flex gap-1">
+                                        <button onClick={(e) => { e.stopPropagation(); setViewingLead(lead); }} className="text-muted-foreground hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity p-1 bg-muted rounded-md">
+                                          <Eye className="w-3.5 h-3.5" />
+                                        </button>
+                                        <button onClick={(e) => { e.stopPropagation(); handleOpenModal(lead); }} className="text-muted-foreground hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity p-1 bg-muted rounded-md">
+                                          <Edit2 className="w-3.5 h-3.5" />
+                                        </button>
+                                        <button onClick={(e) => handleDeleteLead(lead.id, e)} className="text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity p-1 bg-red-50 dark:bg-red-900/20 rounded-md">
+                                          <Trash2 className="w-3.5 h-3.5" />
+                                        </button>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="pl-2">
+                                      {lead.source && <p className="text-xs text-muted-foreground flex items-center gap-1.5 mb-1.5"><Building2 className="w-3 h-3" /> {lead.source}</p>}
+                                      {lead.email && <p className="text-xs text-muted-foreground flex items-center gap-1.5 mb-3"><Mail className="w-3 h-3" /> {lead.email}</p>}
+                                    </div>
+                                    
+                                    <div className="flex items-center justify-between text-xs font-medium bg-muted/60 p-2 rounded-lg mt-auto ml-2">
+                                      <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-bold">
+                                        <DollarSign className="w-3.5 h-3.5" /> {Number(lead.value || 0).toLocaleString()}
+                                      </span>
+                                      <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] uppercase tracking-wider ${lead.value > 10000 ? 'bg-red-100 text-red-700' : lead.value > 5000 ? 'bg-orange-100 text-orange-700' : 'bg-blue-100 text-blue-700'}`}>
+                                        {lead.value > 10000 ? 'Hot' : lead.value > 5000 ? 'Warm' : 'Cold'}
+                                      </span>
+                                    </div>
+                                  </div>
+                                )}
+                              </Draggable>
+                            ))}
+                            {provided.placeholder}
+                            {stageLeads.length === 0 && !snapshot.isDraggingOver && (
+                              <div className="h-24 flex items-center justify-center border-2 border-dashed border-border/60 rounded-xl text-xs text-muted-foreground font-medium bg-card/20">
+                                Drop leads here
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </Droppable>
+                    </div>
+                  );
+                })}
+                {/* Add Stage Column */}
+                <div className="flex-shrink-0 w-[320px] max-w-[85vw] h-[150px] rounded-2xl flex flex-col snap-center border-2 border-dashed border-border/60 hover:border-border transition-colors bg-card/30">
+                  {isAddingStage ? (
+                    <form onSubmit={handleAddStage} className="p-4 flex flex-col gap-3 h-full justify-center">
+                      <input autoFocus type="text" value={newStageName} onChange={e=>setNewStageName(e.target.value)} placeholder="Stage Name..." className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm shadow-sm" />
+                      <div className="flex gap-2">
+                        <button type="submit" className="flex-1 h-9 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 shadow-sm shadow-primary/20">Save</button>
+                        <button type="button" onClick={()=>setIsAddingStage(false)} className="flex-1 h-9 bg-muted text-foreground rounded-lg text-sm font-medium hover:bg-muted/80 border border-border">Cancel</button>
+                      </div>
+                    </form>
+                  ) : (
+                    <button onClick={()=>setIsAddingStage(true)} className="flex-1 flex flex-col items-center justify-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <Plus className="w-5 h-5" />
+                      </div>
+                      <span className="text-sm font-bold">Add Pipeline Stage</span>
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        </DragDropContext>
       ) : (
         <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden shadow-sm flex flex-col mx-1">
           <div className="overflow-x-auto flex-1">
@@ -381,7 +406,7 @@ export default function UnivCRM() {
                   <th className="px-6 py-4">Lead Name</th>
                   <th className="px-6 py-4">Contact Info</th>
                   <th className="px-6 py-4">Source/Company</th>
-                  <th className="px-6 py-4">Status & Score</th>
+                  <th className="px-6 py-4">Status</th>
                   <th className="px-6 py-4 text-right">Value</th>
                   <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
@@ -405,19 +430,14 @@ export default function UnivCRM() {
                     </td>
                     <td className="px-6 py-4 text-muted-foreground">{lead.source || '-'}</td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <span className={`px-2.5 py-1 text-[10px] uppercase tracking-wider font-bold rounded-md border ${
-                          lead.status === 'Won' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                          lead.status === 'Lost' ? 'bg-red-50 text-red-700 border-red-200' :
-                          lead.status === 'New' ? 'bg-blue-50 text-blue-700 border-blue-200' :
-                          'bg-amber-50 text-amber-700 border-amber-200'
-                        }`}>
-                          {lead.status}
-                        </span>
-                        <span className={`px-2.5 py-1 text-[10px] uppercase tracking-wider font-bold rounded-md border flex items-center gap-1 ${getScoreColor(lead.score)}`}>
-                          {getScoreIcon(lead.score)} {lead.score || 'Warm'}
-                        </span>
-                      </div>
+                      <span className={`px-2.5 py-1 text-[10px] uppercase tracking-wider font-bold rounded-md border ${
+                        lead.status === 'Won' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                        lead.status === 'Lost' ? 'bg-red-50 text-red-700 border-red-200' :
+                        lead.status === 'New' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                        'bg-amber-50 text-amber-700 border-amber-200'
+                      }`}>
+                        {lead.status}
+                      </span>
                     </td>
                     <td className="px-6 py-4 text-right font-bold text-emerald-600 dark:text-emerald-400">
                       ${Number(lead.value || 0).toLocaleString()}
@@ -447,6 +467,7 @@ export default function UnivCRM() {
         </div>
       )}
 
+      {/* Add / Edit Modal (Tailwind CSS Modal to ensure zero dependency issues) */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
@@ -486,16 +507,10 @@ export default function UnivCRM() {
                   <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Expected Value ($)</label>
                   <input type="number" step="0.01" value={formData.value} onChange={e => setFormData({...formData, value: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="5000" />
                 </div>
-                <div>
+                <div className="sm:col-span-2">
                   <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Pipeline Stage</label>
                   <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">
                     {stages.map(s => <option key={s} value={s}>{s}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Lead Score</label>
-                  <select value={formData.score} onChange={e => setFormData({...formData, score: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">
-                    {['Hot', 'Warm', 'Cold'].map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </div>
                 <div className="sm:col-span-2">
@@ -530,9 +545,7 @@ export default function UnivCRM() {
               }`}>
                 {viewingLead?.status}
               </span>
-              <span className={`px-2 py-0.5 text-[10px] uppercase tracking-wider font-bold rounded-md border flex items-center gap-1 ${getScoreColor(viewingLead?.score)}`}>
-                {getScoreIcon(viewingLead?.score)} {viewingLead?.score || 'Warm'}
-              </span>
+              <span>Lead Profile</span>
             </SheetDescription>
           </SheetHeader>
           

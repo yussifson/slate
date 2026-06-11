@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
+
+import GenericGrid from '@/components/views/GenericGrid';
+import GenericKanban from '@/components/views/GenericKanban';
+import GenericCalendar from '@/components/views/GenericCalendar';
+import GenericDashboard from '@/components/views/GenericDashboard';
+
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { Calendar as CalendarIcon, Plus, Search, Trash2, Edit2, Loader2, XCircle, Clock, User, CheckCircle2, LayoutGrid, List, ChevronLeft, ChevronRight, CalendarDays } from 'lucide-react';
+import { Calendar, Plus, Search, Trash2, Edit2, Loader2, XCircle, Clock, User, CheckCircle2, LayoutGrid, List } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 const EMPTY_FORM = { title: '', client_name: '', client_email: '', client_phone: '', date: '', time: '', duration_minutes: 60, location: '', notes: '', status: 'Scheduled' };
@@ -13,11 +19,10 @@ export default function UnivAppointments() {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [viewMode, setViewMode] = useState('list'); // 'list', 'grid', 'calendar'
+  const [viewMode, setViewMode] = useState('list');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState(EMPTY_FORM);
-  const [currentDate, setCurrentDate] = useState(new Date());
 
   useEffect(() => {
     if (companyId) {
@@ -99,109 +104,52 @@ export default function UnivAppointments() {
     }
   };
 
-  const openModal = (r = null, prefillDate = null) => { 
-    setForm(r ? { ...r } : { ...EMPTY_FORM, date: prefillDate || '' }); 
-    setEditingId(r?.id || null); 
-    setIsModalOpen(true); 
-  };
+  const openModal = (r = null) => { setForm(r ? { ...r } : EMPTY_FORM); setEditingId(r?.id || null); setIsModalOpen(true); };
   const closeModal = () => { setIsModalOpen(false); setEditingId(null); setForm(EMPTY_FORM); };
 
   const filtered = records.filter(r => `${r.title} ${r.client_name} ${r.status}`.toLowerCase().includes(search.toLowerCase()));
   const today = new Date().toISOString().split('T')[0];
 
+  
   const handleExport = () => {
-    const exportData = filtered;
+    const exportData = (typeof records !== 'undefined' ? records : (typeof data !== 'undefined' ? data : []));
     if (!exportData || exportData.length === 0) return alert('No data to export');
     const keys = Object.keys(exportData[0]).filter(k => k !== 'company_id' && k !== 'id');
     const csv = [keys.join(','), ...exportData.map(r => keys.map(k => '"' + (r[k]||'').toString().replace(/"/g, '""') + '"').join(','))].join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = 'appointments_export.csv'; a.click();
-  };
-
-  const renderCalendar = () => {
-    const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-    const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-    const startDate = new Date(startOfMonth);
-    startDate.setDate(startDate.getDate() - startDate.getDay());
-    const endDate = new Date(endOfMonth);
-    if (endDate.getDay() !== 6) {
-      endDate.setDate(endDate.getDate() + (6 - endDate.getDay()));
-    }
-
-    const days = [];
-    let d = new Date(startDate);
-    while (d <= endDate) {
-      days.push(new Date(d));
-      d.setDate(d.getDate() + 1);
-    }
-
-    return (
-      <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm flex flex-col h-full min-h-[500px]">
-        <div className="flex justify-between items-center p-4 border-b border-border bg-muted/20">
-          <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))} className="p-2 hover:bg-muted rounded-full transition-colors"><ChevronLeft className="w-5 h-5 text-muted-foreground" /></button>
-          <h2 className="text-lg font-black text-foreground">
-            {currentDate.toLocaleString('default', { month: 'long', year: 'numeric' })}
-          </h2>
-          <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))} className="p-2 hover:bg-muted rounded-full transition-colors"><ChevronRight className="w-5 h-5 text-muted-foreground" /></button>
-        </div>
-        <div className="grid grid-cols-7 border-b border-border bg-muted/50">
-          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-            <div key={day} className="p-2 text-center text-xs font-bold text-muted-foreground uppercase">{day}</div>
-          ))}
-        </div>
-        <div className="grid grid-cols-7 flex-1 auto-rows-fr">
-          {days.map((day, i) => {
-            const dateStr = day.toISOString().split('T')[0];
-            const dayRecords = filtered.filter(r => r.date === dateStr);
-            const isToday = dateStr === today;
-            const isCurrentMonth = day.getMonth() === currentDate.getMonth();
-
-            return (
-              <div 
-                key={i} 
-                className={`min-h-[100px] border-b border-r border-border p-2 transition-colors cursor-pointer hover:bg-muted/30 ${!isCurrentMonth ? 'bg-muted/10 opacity-50' : ''} ${isToday ? 'bg-primary/5' : ''}`}
-                onClick={() => openModal(null, dateStr)}
-              >
-                <div className="flex justify-between items-start mb-1">
-                  <span className={`text-sm font-bold w-7 h-7 flex items-center justify-center rounded-full ${isToday ? 'bg-primary text-white' : 'text-foreground'}`}>{day.getDate()}</span>
-                </div>
-                <div className="flex flex-col gap-1 overflow-y-auto max-h-[80px] custom-scrollbar">
-                  {dayRecords.map(r => (
-                    <div 
-                      key={r.id} 
-                      onClick={(e) => { e.stopPropagation(); openModal(r); }}
-                      className={`text-xs p-1 rounded border truncate font-medium ${STATUS_COLORS[r.status]}`}
-                      title={`${r.time || ''} ${r.title}`}
-                    >
-                      {r.time && <span className="mr-1 opacity-75">{r.time}</span>}
-                      {r.title}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
+    a.href = url; a.download = 'export.csv'; a.click();
   };
 
   return (
-    <div className={`h-full flex flex-col gap-6 w-full bg-background p-4 sm:p-6 lg:p-8 ${view !== 'Default' ? 'hide-default' : ''}`}>
+    <div className="h-full flex flex-col gap-6 w-full bg-background p-4 sm:p-6 lg:p-8 ${view !== 'Default' ? 'hide-default' : ''}">
       <div className="view-header flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0">
         <div>
-          <h1 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-2"><CalendarIcon className="w-7 h-7 text-primary" /> Appointments</h1>
+          <h1 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-2"><Calendar className="w-7 h-7 text-primary" /> Appointments</h1>
           <p className="text-muted-foreground text-sm font-medium mt-1">Schedule and manage all client appointments.</p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-            Export CSV
-          </button>
-          <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-sm"><Plus className="w-4 h-4" /> New Appointment</button>
+
+        
+        <div className="flex bg-muted p-1 rounded-lg border border-border mr-2 hidden sm:flex">
+          {["Default","Grid","Kanban","Calendar","Dashboard"].map(v => (
+            <button 
+              key={v} 
+              onClick={() => setView(v)} 
+              className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${view === v ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              {v}
+            </button>
+          ))}
         </div>
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          Export CSV
+        </button>
+
+        <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-sm"><Plus className="w-4 h-4" /> New Appointment</button>
+      </div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 shrink-0">
@@ -216,15 +164,14 @@ export default function UnivAppointments() {
       <div className="flex gap-3 shrink-0">
         <div className="relative flex-1"><Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" /><input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by title, client..." className="w-full h-11 pl-10 pr-4 bg-card border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm shadow-sm" /></div>
         <div className="flex bg-card border border-border rounded-xl p-1 shadow-sm gap-1">
-          <button onClick={() => setViewMode('list')} className={`px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-1.5 ${viewMode === 'list' ? 'bg-primary text-white' : 'text-muted-foreground hover:bg-muted'}`}><List className="w-4 h-4" />List</button>
-          <button onClick={() => setViewMode('grid')} className={`px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-1.5 ${viewMode === 'grid' ? 'bg-primary text-white' : 'text-muted-foreground hover:bg-muted'}`}><LayoutGrid className="w-4 h-4" />Grid</button>
-          <button onClick={() => setViewMode('calendar')} className={`px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-1.5 ${viewMode === 'calendar' ? 'bg-primary text-white' : 'text-muted-foreground hover:bg-muted'}`}><CalendarDays className="w-4 h-4" />Calendar</button>
+          <button onClick={() => setViewMode('list')} className={`px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-1.5 ${viewMode === 'list' ? 'bg-primary text-white' : 'text-muted-foreground'}`}><List className="w-4 h-4" />List</button>
+          <button onClick={() => setViewMode('grid')} className={`px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-1.5 ${viewMode === 'grid' ? 'bg-primary text-white' : 'text-muted-foreground'}`}><LayoutGrid className="w-4 h-4" />Grid</button>
+          <button onClick={() => setViewMode('calendar')} className={`px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-1.5 ${viewMode === 'calendar' ? 'bg-primary text-white' : 'text-muted-foreground'}`}><Calendar className="w-4 h-4" />Calendar</button>
         </div>
       </div>
 
       <div className="flex-1 overflow-auto min-h-0 custom-scrollbar">
         {loading ? <div className="flex h-40 items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
-        : viewMode === 'calendar' ? renderCalendar()
         : viewMode === 'grid' ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-8">
             {filtered.map(r => (
@@ -234,7 +181,7 @@ export default function UnivAppointments() {
                   <span className={`px-2 py-0.5 text-[10px] font-bold uppercase border rounded-md ${STATUS_COLORS[r.status]}`}>{r.status}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground"><User className="w-4 h-4 text-primary" />{r.client_name || '—'}</div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground"><CalendarIcon className="w-4 h-4 text-primary" />{r.date} {r.time && `at ${r.time}`}</div>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground"><Calendar className="w-4 h-4 text-primary" />{r.date} {r.time && `at ${r.time}`}</div>
                 {r.duration_minutes && <div className="flex items-center gap-2 text-sm text-muted-foreground"><Clock className="w-4 h-4 text-primary" />{r.duration_minutes} minutes</div>}
                 <div className="flex justify-end gap-1 mt-auto pt-3 border-t border-border opacity-0 group-hover:opacity-100 transition-opacity">
                   <button onClick={() => openModal(r)} className="p-1.5 bg-muted rounded-md text-muted-foreground hover:text-primary"><Edit2 className="w-3.5 h-3.5" /></button>
@@ -242,9 +189,9 @@ export default function UnivAppointments() {
                 </div>
               </div>
             ))}
-            {filtered.length === 0 && <div className="col-span-full py-20 text-center text-muted-foreground border-2 border-dashed border-border rounded-2xl"><CalendarIcon className="w-12 h-12 mx-auto text-muted-foreground/30 mb-3" /><p className="font-medium">No appointments found.</p></div>}
+            {filtered.length === 0 && <div className="col-span-full py-20 text-center text-muted-foreground border-2 border-dashed border-border rounded-2xl"><Calendar className="w-12 h-12 mx-auto text-muted-foreground/30 mb-3" /><p className="font-medium">No appointments found.</p></div>}
           </div>
-        ) : (
+        ) : viewMode === 'list' ? (
           <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm">
             <table className="w-full text-sm">
               <thead className="bg-muted/50 border-b border-border">
@@ -274,6 +221,35 @@ export default function UnivAppointments() {
               </tbody>
             </table>
           </div>
+        ) : (
+          <div className="bg-card border border-border rounded-2xl p-6 shadow-sm flex flex-col min-h-[500px]">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-black">{new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}</h3>
+              <div className="flex gap-2">
+                <button className="px-3 py-1.5 bg-muted rounded-lg text-sm font-bold text-muted-foreground hover:bg-muted/80">Prev</button>
+                <button className="px-3 py-1.5 bg-muted rounded-lg text-sm font-bold text-muted-foreground hover:bg-muted/80">Next</button>
+              </div>
+            </div>
+            <div className="grid grid-cols-7 gap-px bg-border rounded-xl overflow-hidden flex-1">
+              {['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=><div key={d} className="bg-muted/50 p-3 text-center text-xs font-bold text-muted-foreground uppercase tracking-wider">{d}</div>)}
+              {Array.from({length: 35}).map((_, i) => {
+                const day = i - 2; // Offset for mock calendar
+                const dateStr = new Date(new Date().setDate(day)).toISOString().split('T')[0];
+                const dayAppts = filtered.filter(r => r.date === dateStr);
+                const isToday = dateStr === today;
+                return (
+                  <div key={i} className={`bg-card p-2 min-h-[100px] flex flex-col gap-1 transition-colors hover:bg-muted/30 ${day > 0 && day <= 31 ? '' : 'opacity-40'}`}>
+                    <span className={`text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full mb-1 ${isToday ? 'bg-primary text-white' : 'text-muted-foreground'}`}>{day > 0 && day <= 31 ? day : ''}</span>
+                    {dayAppts.map(a => (
+                      <div key={a.id} onClick={() => openModal(a)} className={`text-[10px] p-1.5 rounded-md truncate cursor-pointer font-bold ${STATUS_COLORS[a.status]}`}>
+                        {a.time} {a.title}
+                      </div>
+                    ))}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         )}
       </div>
 
@@ -282,7 +258,7 @@ export default function UnivAppointments() {
           <div className="bg-card w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
             <div className="p-5 border-b border-border flex justify-between items-center shrink-0">
               <h2 className="text-xl font-black">{editingId ? 'Edit Appointment' : 'Schedule Appointment'}</h2>
-              <button onClick={closeModal} className="p-2 hover:bg-muted rounded-full text-muted-foreground"><XCircle className="w-5 h-5" /></button>
+              <button onClick={closeModal} className="p-2 bg-muted rounded-full text-muted-foreground"><XCircle className="w-5 h-5" /></button>
             </div>
             <form onSubmit={save} className="p-5 overflow-y-auto flex-1 custom-scrollbar">
               <div className="grid grid-cols-2 gap-4">
@@ -302,8 +278,8 @@ export default function UnivAppointments() {
                 <div className="col-span-2"><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Notes</label><textarea rows="3" value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} className="w-full p-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm resize-none" /></div>
               </div>
               <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-border">
-                <button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium hover:bg-muted/80">Cancel</button>
-                <button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold shadow-sm hover:bg-primary/90">{editingId ? 'Update' : 'Schedule'}</button>
+                <button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium">Cancel</button>
+                <button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold shadow-sm">{editingId ? 'Update' : 'Schedule'}</button>
               </div>
             </form>
           </div>

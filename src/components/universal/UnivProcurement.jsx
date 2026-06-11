@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
 
+import GenericGrid from '@/components/views/GenericGrid';
+import GenericKanban from '@/components/views/GenericKanban';
+import GenericCalendar from '@/components/views/GenericCalendar';
+import GenericDashboard from '@/components/views/GenericDashboard';
+
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { ShoppingCart, Plus, Search, Trash2, Edit2, Loader2, XCircle, FileText, Truck, AlertTriangle } from 'lucide-react';
+import { ShoppingCart, Plus, Search, Trash2, Edit2, Loader2, XCircle, FileText, Truck } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
-const STATUS_STAGES = ['Draft', 'Pending Review', 'Approved', 'Ordered', 'Received'];
-const STATUS_COLORS = { Draft: 'bg-muted text-muted-foreground border-border', 'Pending Review': 'bg-amber-50 text-amber-700 border-amber-200', Approved: 'bg-emerald-50 text-emerald-700 border-emerald-200', Ordered: 'bg-blue-50 text-blue-700 border-blue-200', Received: 'bg-purple-50 text-purple-700 border-purple-200', Canceled: 'bg-red-50 text-red-700 border-red-200' };
+const STATUS_COLORS = { Draft: 'bg-muted text-muted-foreground border-border', Pending: 'bg-amber-50 text-amber-700 border-amber-200', Approved: 'bg-emerald-50 text-emerald-700 border-emerald-200', 'PO Created': 'bg-blue-50 text-blue-700 border-blue-200', Canceled: 'bg-red-50 text-red-700 border-red-200' };
+const WORKFLOW_STAGES = ['Draft', 'Pending', 'Approved', 'PO Created'];
 const EMPTY_FORM = { po_number: '', supplier: '', total_amount: 0, status: 'Draft', order_date: new Date().toISOString().split('T')[0], expected_date: '' };
-
-const BUDGET_LIMIT = 50000;
 
 export default function UnivProcurement() {
   const companyId = useCompanyId();
@@ -74,13 +77,20 @@ export default function UnivProcurement() {
     if (error) toast.error('Failed to update status'); else fetchRecords();
   };
 
+  const advanceWorkflow = async (r) => {
+    const currentIndex = WORKFLOW_STAGES.indexOf(r.status);
+    if (currentIndex >= 0 && currentIndex < WORKFLOW_STAGES.length - 1) {
+      await updateStatus(r.id, WORKFLOW_STAGES[currentIndex + 1]);
+    }
+  };
+
   const openModal = (r = null) => { 
     if (r) {
       setForm({
         po_number: r.po_number,
         supplier: r.supplier,
         total_amount: r.total_amount || 0,
-        status: r.status || 'Draft',
+        status: r.status,
         order_date: r.order_date || '',
         expected_date: r.expected_date || ''
       });
@@ -96,45 +106,47 @@ export default function UnivProcurement() {
     return `${r.po_number} ${r.supplier} ${r.status}`.toLowerCase().includes(search.toLowerCase());
   });
 
+  
   const handleExport = () => {
-    const exportData = filtered;
+    const exportData = (typeof records !== 'undefined' ? records : (typeof data !== 'undefined' ? data : []));
     if (!exportData || exportData.length === 0) return alert('No data to export');
     const keys = Object.keys(exportData[0]).filter(k => k !== 'company_id' && k !== 'id');
     const csv = [keys.join(','), ...exportData.map(r => keys.map(k => '"' + (r[k]||'').toString().replace(/"/g, '""') + '"').join(','))].join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = 'procurement_export.csv'; a.click();
+    a.href = url; a.download = 'export.csv'; a.click();
   };
 
-  const currentSpend = records.filter(r => !['Canceled', 'Draft'].includes(r.status)).reduce((acc, r) => acc + Number(r.total_amount), 0);
-  const budgetExceeded = currentSpend > BUDGET_LIMIT;
-
   return (
-    <div className={`h-full flex flex-col gap-6 w-full bg-background p-4 sm:p-6 lg:p-8 ${view !== 'Default' ? 'hide-default' : ''}`}>
+    <div className="h-full flex flex-col gap-6 w-full bg-background p-4 sm:p-6 lg:p-8 ${view !== 'Default' ? 'hide-default' : ''}">
       <div className="view-header flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0">
         <div>
           <h1 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-2"><ShoppingCart className="w-7 h-7 text-primary" /> Procurement</h1>
           <p className="text-muted-foreground text-sm font-medium mt-1">Manage purchase orders and supplier requests.</p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-            Export CSV
-          </button>
-          <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-sm"><Plus className="w-4 h-4" /> Create PO</button>
-        </div>
-      </div>
 
-      {budgetExceeded && (
-        <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl flex items-center gap-3 shrink-0 shadow-sm">
-          <AlertTriangle className="w-6 h-6 text-red-500 shrink-0" />
-          <div>
-            <h3 className="font-bold text-sm">Budget Warning</h3>
-            <p className="text-sm font-medium opacity-90">Total active spend (${currentSpend.toLocaleString()}) exceeds the monthly budget of ${BUDGET_LIMIT.toLocaleString()}.</p>
-          </div>
+        
+        <div className="flex bg-muted p-1 rounded-lg border border-border mr-2 hidden sm:flex">
+          {["Default","Grid","Kanban","Calendar","Dashboard"].map(v => (
+            <button 
+              key={v} 
+              onClick={() => setView(v)} 
+              className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${view === v ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              {v}
+            </button>
+          ))}
         </div>
-      )}
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          Export CSV
+        </button>
+
+        <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-sm"><Plus className="w-4 h-4" /> Create PO</button>
+      </div>
+      </div>
 
       <div className="flex gap-3 shrink-0">
         <div className="relative flex-1">
@@ -148,40 +160,36 @@ export default function UnivProcurement() {
           <table className="w-full text-sm">
             <thead className="bg-muted/50 border-b border-border sticky top-0 z-10">
               <tr>
-                {['PO Number', 'Supplier', 'Amount', 'Order Date', 'Progress', 'Actions'].map((h, i) => (
+                {['PO Number', 'Supplier', 'Amount', 'Order Date', 'Expected', 'Status', 'Actions'].map((h, i) => (
                   <th key={i} className="p-4 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               {loading ? (
-                <tr><td colSpan={6} className="p-8 text-center"><Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" /></td></tr>
+                <tr><td colSpan={7} className="p-8 text-center"><Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" /></td></tr>
               ) : filtered.length === 0 ? (
-                <tr><td colSpan={6} className="p-12 text-center text-muted-foreground">No purchase orders found.</td></tr>
+                <tr><td colSpan={7} className="p-12 text-center text-muted-foreground">No purchase orders found.</td></tr>
               ) : (
                 filtered.map(r => {
-                  const stageIndex = STATUS_STAGES.indexOf(r.status);
-                  
                   return (
                   <tr key={r.id} className="hover:bg-muted/30 transition-colors group">
                     <td className="p-4"><div className="flex items-center gap-2"><div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold"><FileText className="w-4 h-4" /></div><span className="font-bold text-foreground">{r.po_number}</span></div></td>
                     <td className="p-4 text-foreground font-medium">{r.supplier}</td>
                     <td className="p-4 font-black">${Number(r.total_amount).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
                     <td className="p-4 text-muted-foreground whitespace-nowrap">{r.order_date || '—'}</td>
+                    <td className="p-4 text-muted-foreground whitespace-nowrap">{r.expected_date || '—'}</td>
                     <td className="p-4">
-                      {r.status === 'Canceled' ? (
-                        <span className="px-2 py-1 bg-red-50 text-red-700 border border-red-200 rounded-md text-xs font-bold uppercase">Canceled</span>
-                      ) : (
-                        <div className="flex items-center gap-1 w-full max-w-[200px]">
-                          {STATUS_STAGES.map((s, idx) => (
-                             <div key={s} title={s} className={`flex-1 h-2 rounded-full ${idx <= stageIndex ? 'bg-primary' : 'bg-muted'}`}></div>
-                          ))}
-                          <select value={r.status} onChange={(e) => updateStatus(r.id, e.target.value)} className="ml-2 bg-transparent text-xs font-bold text-muted-foreground outline-none cursor-pointer">
-                            {STATUS_STAGES.map(s => <option key={s} value={s}>{s}</option>)}
-                            <option value="Canceled">Canceled</option>
-                          </select>
-                        </div>
-                      )}
+                      <div className="flex flex-col gap-1">
+                        <select value={r.status} onChange={(e) => updateStatus(r.id, e.target.value)} className={`px-2 py-0.5 w-max rounded-full text-[10px] font-bold uppercase tracking-wider border outline-none cursor-pointer ${STATUS_COLORS[r.status] || 'bg-muted text-muted-foreground'}`}>
+                          {Object.keys(STATUS_COLORS).map(s => <option key={s} value={s}>{s}</option>)}
+                        </select>
+                        {WORKFLOW_STAGES.indexOf(r.status) >= 0 && WORKFLOW_STAGES.indexOf(r.status) < WORKFLOW_STAGES.length - 1 && (
+                          <button onClick={() => advanceWorkflow(r)} className="text-[10px] font-bold text-primary hover:underline text-left mt-1">
+                            Approve &rarr; {WORKFLOW_STAGES[WORKFLOW_STAGES.indexOf(r.status) + 1]}
+                          </button>
+                        )}
+                      </div>
                     </td>
                     <td className="p-4">
                       <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">

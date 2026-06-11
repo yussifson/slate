@@ -9,7 +9,6 @@ import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { Package, Plus, Search, Trash2, Edit2, Loader2, XCircle, AlertTriangle, DollarSign, Archive, BarChart2, Filter, QrCode } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { QRCodeCanvas } from 'qrcode.react';
 
 const EMPTY_FORM = { item_name: '', sku: '', category: '', quantity: 0, unit_price: 0, reorder_level: 10, supplier: '', location: '' };
 
@@ -22,7 +21,7 @@ export default function UnivInventory() {
   const [filterStatus, setFilterStatus] = useState('All');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [viewingItem, setViewingItem] = useState(null);
+  const [qrItem, setQrItem] = useState(null);
   const [form, setForm] = useState(EMPTY_FORM);
 
   useEffect(() => {
@@ -81,7 +80,7 @@ export default function UnivInventory() {
   });
 
   const totalValue = inventory.reduce((s, i) => s + (Number(i.quantity) * Number(i.unit_price)), 0);
-  const STATUS_STYLE = { 'In Stock': 'bg-emerald-50 text-emerald-700 border-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.3)]', 'Low Stock': 'bg-amber-50 text-amber-700 border-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]', 'Out of Stock': 'bg-red-50 text-red-700 border-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)] animate-pulse' };
+  const STATUS_STYLE = { 'In Stock': 'bg-emerald-50 text-emerald-700 border-emerald-200', 'Low Stock': 'bg-amber-50 text-amber-700 border-amber-200', 'Out of Stock': 'bg-red-50 text-red-700 border-red-200' };
 
   
   const handleExport = () => {
@@ -158,7 +157,7 @@ export default function UnivInventory() {
               <div className="col-span-2 text-right text-sm font-bold">${Number(item.unit_price).toFixed(2)}</div>
               <div className="col-span-2"><span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider border ${STATUS_STYLE[item.status]||'bg-muted border-border'}`}>{item.status}</span></div>
               <div className="col-span-1 flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button onClick={()=>setViewingItem(item)} className="p-1.5 bg-muted rounded-md text-muted-foreground hover:text-primary"><QrCode className="w-3.5 h-3.5"/></button>
+                <button onClick={()=>setQrItem(item)} className="p-1.5 bg-muted rounded-md text-muted-foreground hover:text-primary"><QrCode className="w-3.5 h-3.5"/></button>
                 <button onClick={()=>openModal(item)} className="p-1.5 bg-muted rounded-md text-muted-foreground hover:text-primary"><Edit2 className="w-3.5 h-3.5"/></button>
                 <button onClick={()=>remove(item.id)} className="p-1.5 bg-red-50 rounded-md text-red-400 hover:text-red-600"><Trash2 className="w-3.5 h-3.5"/></button>
               </div>
@@ -188,20 +187,16 @@ export default function UnivInventory() {
         </div>
       )}
 
-      {viewingItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={()=>setViewingItem(null)}>
-          <div className="bg-card w-full max-w-sm rounded-2xl shadow-2xl flex flex-col p-6 items-center text-center" onClick={e=>e.stopPropagation()}>
-            <div className="w-full flex justify-end"><button onClick={()=>setViewingItem(null)}><XCircle className="w-5 h-5 text-muted-foreground"/></button></div>
-            <div className="bg-white p-4 rounded-xl shadow-inner border border-gray-100 mb-4 inline-block">
-               <QRCodeCanvas value={`SKU:${viewingItem.sku}|NAME:${viewingItem.item_name}`} size={160} />
+      {qrItem && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={()=>setQrItem(null)}>
+          <div className="bg-card border border-border w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center" onClick={e=>e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-4"><h3 className="font-black text-lg">Item QR Code</h3><button onClick={()=>setQrItem(null)} className="p-1.5 bg-muted rounded-full"><XCircle className="w-4 h-4 text-muted-foreground"/></button></div>
+            <div className="bg-white p-4 rounded-xl inline-block mx-auto border border-border shadow-sm mb-4">
+              <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrItem.sku||qrItem.id)}`} alt="QR Code" className="w-48 h-48" />
             </div>
-            <h3 className="font-black text-xl mb-1">{viewingItem.item_name}</h3>
-            <p className="text-muted-foreground font-mono bg-muted px-2 py-1 rounded text-sm mb-4">{viewingItem.sku}</p>
-            <div className="w-full space-y-2 text-sm border-t border-border pt-4 text-left">
-              <div className="flex justify-between"><span className="text-muted-foreground">Category</span><span className="font-bold">{viewingItem.category || '—'}</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Quantity</span><span className="font-bold">{viewingItem.quantity}</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Status</span><span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${STATUS_STYLE[viewingItem.status]}`}>{viewingItem.status}</span></div>
-            </div>
+            <h4 className="font-bold text-lg mb-1">{qrItem.item_name}</h4>
+            <p className="text-sm text-muted-foreground font-mono">{qrItem.sku}</p>
+            <button onClick={()=>setQrItem(null)} className="mt-6 w-full h-10 bg-primary text-white rounded-xl font-bold">Done</button>
           </div>
         </div>
       )}

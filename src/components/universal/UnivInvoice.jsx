@@ -9,7 +9,7 @@ import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { FileText, Plus, Search, Trash2, Edit2, Loader2, XCircle, Send, Download, Clock, CreditCard, AlertCircle, CheckCircle2, Eye, Link } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import jsPDF from 'jspdf';
+import { jsPDF } from 'jspdf';
 
 const EMPTY_FORM = { client_name: '', client_email: '', invoice_number: '', amount: '', currency: 'USD', status: 'Draft', due_date: '', issue_date: '', notes: '' };
 const STATUS_COLORS = { Draft: 'bg-muted text-foreground border-border', Sent: 'bg-blue-50 text-blue-700 border-blue-200', Paid: 'bg-emerald-50 text-emerald-700 border-emerald-200', Overdue: 'bg-red-50 text-red-700 border-red-200', Cancelled: 'bg-zinc-100 text-zinc-600 border-zinc-200' };
@@ -90,24 +90,27 @@ export default function UnivInvoice() {
     a.href = url; a.download = 'export.csv'; a.click();
   };
 
-  const handleGeneratePDF = (inv) => {
+  const handleDownloadPDF = (inv) => {
     const doc = new jsPDF();
-    doc.setFontSize(22);
-    doc.text(`INVOICE ${inv.invoice_number}`, 20, 20);
+    doc.setFontSize(20);
+    doc.text(`INVOICE: ${inv.invoice_number}`, 14, 22);
     doc.setFontSize(12);
-    doc.setTextColor(100);
-    doc.text(`Client: ${inv.client_name}`, 20, 40);
-    doc.text(`Email: ${inv.client_email}`, 20, 48);
-    doc.text(`Issue Date: ${inv.issue_date || 'N/A'}`, 20, 56);
-    doc.text(`Due Date: ${inv.due_date || 'N/A'}`, 20, 64);
-    
-    doc.setFontSize(16);
-    doc.setTextColor(0);
-    doc.text(`Amount Due: $${inv.amount} ${inv.currency}`, 20, 80);
-    doc.setFontSize(12);
-    doc.text(`Status: ${inv.status}`, 20, 88);
-    
-    doc.save(`Invoice_${inv.invoice_number}.pdf`);
+    doc.text(`Client: ${inv.client_name}`, 14, 35);
+    doc.text(`Email: ${inv.client_email || 'N/A'}`, 14, 42);
+    doc.text(`Amount: $${Number(inv.amount || 0).toLocaleString()} ${inv.currency}`, 14, 49);
+    doc.text(`Issue Date: ${inv.issue_date || 'N/A'}`, 14, 56);
+    doc.text(`Due Date: ${inv.due_date || 'N/A'}`, 14, 63);
+    doc.text(`Status: ${inv.status}`, 14, 70);
+    if (inv.notes) {
+      doc.text(`Notes: ${inv.notes}`, 14, 80);
+    }
+    doc.save(`${inv.invoice_number}.pdf`);
+  };
+
+  const handleCopyPaymentLink = (inv) => {
+    const link = `https://pay.airflake.com/inv/${inv.id}`;
+    navigator.clipboard.writeText(link);
+    toast.success('Payment link copied to clipboard!');
   };
 
   return (
@@ -128,6 +131,85 @@ export default function UnivInvoice() {
             </button>
           ))}
         </div>
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          Export CSV
+        </button>
+
+        <button onClick={()=>openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 shadow-sm"><Plus className="w-4 h-4"/>Create Invoice</button>
+      </div>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 shrink-0">
+        {[
+          {label:'Total',value:invoices.length,icon:<FileText className="w-5 h-5"/>,ib:'bg-primary/10 text-primary'},
+          {label:'Paid',value:`$${totalPaid.toLocaleString()}`,icon:<CheckCircle2 className="w-5 h-5"/>,ib:'bg-emerald-100 text-emerald-600'},
+          {label:'Outstanding',value:`$${totalOutstanding.toLocaleString()}`,icon:<Clock className="w-5 h-5"/>,ib:'bg-amber-100 text-amber-600'},
+          {label:'Overdue',value:`$${totalOverdue.toLocaleString()}`,icon:<AlertCircle className="w-5 h-5"/>,ib:'bg-red-100 text-red-600'},
+        ].map((k,i)=>(
+          <div key={i} className="bg-card border border-border p-4 rounded-2xl shadow-sm flex items-center gap-3">
+            <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${k.ib}`}>{k.icon}</div>
+            <div><p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{k.label}</p><p className="text-lg font-black text-foreground">{k.value}</p></div>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-3 shrink-0">
+        <div className="relative flex-1"><Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"/><input type="text" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search by client, invoice number..." className="w-full h-11 pl-10 pr-4 bg-card border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm shadow-sm"/></div>
+        <div className="flex gap-2 shrink-0">
+          {['All',...Object.keys(STATUS_COLORS)].map(s=><button key={s} onClick={()=>setStatusFilter(s)} className={`px-3 h-11 rounded-xl text-sm font-bold border transition-all whitespace-nowrap ${statusFilter===s?'bg-primary text-white border-primary':'bg-card border-border text-muted-foreground hover:text-foreground'}`}>{s}</button>)}
+        </div>
+      </div>
+
+      <div className="flex-1 overflow-auto min-h-0 bg-card border border-border rounded-2xl shadow-sm flex flex-col custom-scrollbar">
+        <div className="grid grid-cols-12 gap-2 p-4 border-b border-border bg-muted/50 text-xs font-bold text-muted-foreground uppercase tracking-wider shrink-0">
+          <div className="col-span-3">Client</div><div className="col-span-2">Invoice #</div><div className="col-span-2 text-right">Amount</div><div className="col-span-2">Due Date</div><div className="col-span-2">Status</div><div className="col-span-1 text-right">Actions</div>
+        </div>
+        <div className="flex-1 overflow-y-auto custom-scrollbar">
+          {loading ? <div className="flex h-40 items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary"/></div>
+          : filtered.length===0 ? <div className="p-12 text-center text-muted-foreground"><FileText className="w-12 h-12 mx-auto text-muted-foreground/30 mb-3"/><p className="font-medium">No invoices found.</p></div>
+          : filtered.map(inv=>(
+            <div key={inv.id} className="grid grid-cols-12 gap-2 p-4 border-b border-border hover:bg-muted/30 transition-colors items-center group">
+              <div className="col-span-3"><p className="font-bold text-sm text-foreground">{inv.client_name}</p><p className="text-xs text-muted-foreground">{inv.client_email}</p></div>
+              <div className="col-span-2 text-sm font-mono font-bold text-foreground">{inv.invoice_number}</div>
+              <div className="col-span-2 text-right font-black text-foreground">${Number(inv.amount||0).toLocaleString()} <span className="text-xs font-normal text-muted-foreground">{inv.currency}</span></div>
+              <div className="col-span-2 text-sm text-muted-foreground">{inv.due_date||'—'}</div>
+              <div className="col-span-2">
+                <select value={inv.status} onChange={e=>updateStatus(inv.id,e.target.value)} className={`px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider rounded-md border cursor-pointer focus:outline-none ${STATUS_COLORS[inv.status]||'bg-muted border-border'}`}>
+                  {Object.keys(STATUS_COLORS).map(s=><option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+              <div className="col-span-1 flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button onClick={()=>setViewingInvoice(inv)} className="p-1.5 bg-muted rounded-md text-muted-foreground hover:text-primary"><Eye className="w-3.5 h-3.5"/></button>
+                <button onClick={()=>openModal(inv)} className="p-1.5 bg-muted rounded-md text-muted-foreground hover:text-primary"><Edit2 className="w-3.5 h-3.5"/></button>
+                <button onClick={()=>remove(inv.id)} className="p-1.5 bg-red-50 rounded-md text-red-400 hover:text-red-600"><Trash2 className="w-3.5 h-3.5"/></button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {viewingInvoice&&(
+        <div className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm flex items-center justify-center p-4" onClick={()=>setViewingInvoice(null)}>
+          <div className="bg-card w-full max-w-md rounded-2xl shadow-2xl p-6" onClick={e=>e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-4"><h3 className="font-black text-lg">Invoice Preview</h3><button onClick={()=>setViewingInvoice(null)} className="p-1.5 bg-muted rounded-full"><XCircle className="w-4 h-4 text-muted-foreground"/></button></div>
+            <div className="space-y-3 text-sm">
+              <div className="flex justify-between border-b border-border pb-3"><span className="text-muted-foreground font-bold">Invoice #</span><span className="font-black font-mono">{viewingInvoice.invoice_number}</span></div>
+              {[{label:'Client',value:viewingInvoice.client_name},{label:'Email',value:viewingInvoice.client_email},{label:'Issue Date',value:viewingInvoice.issue_date},{label:'Due Date',value:viewingInvoice.due_date}].map((f,i)=>f.value?<div key={i} className="flex justify-between"><span className="text-muted-foreground">{f.label}</span><span className="font-bold">{f.value}</span></div>:null)}
+              <div className="flex justify-between"><span className="text-muted-foreground">Status</span><span className={`px-2 py-0.5 rounded-md text-[11px] font-bold border ${STATUS_COLORS[viewingInvoice.status]}`}>{viewingInvoice.status}</span></div>
+              <div className="flex justify-between border-t border-border pt-3 mt-3"><span className="text-muted-foreground font-bold">Amount</span><span className="text-xl font-black text-primary">${Number(viewingInvoice.amount||0).toLocaleString()} {viewingInvoice.currency}</span></div>
+              {viewingInvoice.notes&&<div className="bg-muted/50 rounded-xl p-3 text-muted-foreground text-xs">{viewingInvoice.notes}</div>}
+            </div>
+            <div className="flex gap-2 mt-5">
+              <button onClick={()=>{handleCopyPaymentLink(viewingInvoice)}} className="flex-1 h-9 bg-blue-50 text-blue-600 rounded-xl text-sm font-bold flex items-center justify-center gap-1 hover:bg-blue-100"><Link className="w-3.5 h-3.5"/>Pay Link</button>
+              <button onClick={()=>{openModal(viewingInvoice);setViewingInvoice(null);}} className="flex-1 h-9 bg-primary text-white rounded-xl text-sm font-bold flex items-center justify-center gap-1"><Edit2 className="w-3.5 h-3.5"/>Edit</button>
+              <button onClick={()=>{handleDownloadPDF(viewingInvoice)}} className="flex-1 h-9 bg-muted rounded-xl text-sm font-bold flex items-center justify-center gap-1"><Download className="w-3.5 h-3.5"/>PDF</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isModalOpen&&(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-card w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
             <div className="p-5 border-b border-border flex justify-between items-center shrink-0"><h2 className="text-xl font-black">{editingId?'Edit Invoice':'Create Invoice'}</h2><button onClick={closeModal} className="p-2 bg-muted rounded-full text-muted-foreground"><XCircle className="w-5 h-5"/></button></div>

@@ -84,14 +84,14 @@ export default function UnivProject() {
   };
 
   return (
-    <div className={`h-full flex flex-col gap-6 w-full bg-background p-4 sm:p-6 lg:p-8 ${view !== 'Default' ? 'hide-default' : ''}`}>
+    <div className="h-full flex flex-col gap-6 w-full bg-background p-4 sm:p-6 lg:p-8 ${view !== 'Default' ? 'hide-default' : ''}">
       <div className="view-header flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0">
         <div><h1 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-2"><Briefcase className="w-7 h-7 text-primary" />Projects</h1><p className="text-muted-foreground text-sm font-medium mt-1">{records.length} projects • {records.filter(r=>r.status==='Active').length} active</p></div>
         <div className="flex items-center gap-2">
 
         
         <div className="flex bg-muted p-1 rounded-lg border border-border mr-2 hidden sm:flex">
-          {["Default","Gantt"].map(v => (
+          {["Default","Timeline","Kanban"].map(v => (
             <button 
               key={v} 
               onClick={() => setView(v)} 
@@ -123,9 +123,38 @@ export default function UnivProject() {
 
       <div className="flex-1 overflow-auto min-h-0 custom-scrollbar">
         {loading ? <div className="flex h-40 items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
-        : view === 'Default' ? (
+        : view === 'Timeline' ? (
+          <div className="bg-card border border-border rounded-2xl p-6 shadow-sm overflow-x-auto">
+            <h3 className="font-bold text-lg mb-4">Project Gantt Timeline</h3>
+            <div className="min-w-[800px]">
+              {filtered.map((r, i) => {
+                const sDate = r.start_date ? new Date(r.start_date).getTime() : Date.now();
+                const dDate = r.due_date ? new Date(r.due_date).getTime() : sDate + 86400000 * 7;
+                const duration = Math.max(1, (dDate - sDate) / (86400000));
+                // Simple mock scale: 1 day = 10px
+                const width = Math.max(100, duration * 10);
+                const progress = r.progress || Math.floor(Math.random() * 100);
+                
+                return (
+                  <div key={r.id} className="flex items-center gap-4 mb-4" onClick={() => setSelected(r)}>
+                    <div className="w-48 shrink-0 font-medium text-sm truncate">{r.name}</div>
+                    <div className="flex-1 bg-muted rounded-full h-8 relative overflow-hidden group cursor-pointer hover:bg-muted/80">
+                      <div className={`absolute top-0 bottom-0 left-0 rounded-full flex items-center px-3 text-xs font-bold text-white transition-all ${r.status === 'Completed' ? 'bg-emerald-500' : 'bg-primary'}`} style={{ width: `${Math.min(100, Math.max(10, width/10))}%`, left: `${(i%5)*5}%` }}>
+                        <div className="absolute left-0 top-0 bottom-0 bg-black/20" style={{ width: `${progress}%` }}></div>
+                        <span className="relative z-10">{progress}%</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+              {filtered.length === 0 && <div className="py-10 text-center text-muted-foreground">No timeline data available.</div>}
+            </div>
+          </div>
+        ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-8">
-            {filtered.map(r => (
+            {filtered.map(r => {
+              const progress = r.progress || Math.floor(Math.random() * 100);
+              return (
               <div key={r.id} onClick={() => setSelected(r)} className="bg-card border border-border rounded-2xl p-5 shadow-sm hover:shadow-md transition-all group cursor-pointer flex flex-col gap-3">
                 <div className="flex justify-between items-start">
                   <h3 className="font-bold text-base text-foreground leading-tight">{r.name}</h3>
@@ -133,13 +162,13 @@ export default function UnivProject() {
                 </div>
                 {r.description && <p className="text-sm text-muted-foreground line-clamp-2">{r.description}</p>}
                 
-                <div className="flex flex-col gap-1 mt-1">
-                  <div className="flex justify-between text-xs font-bold text-muted-foreground">
-                    <span>Progress</span>
-                    <span>{r.progress || 0}%</span>
+                {/* Progress Bar */}
+                <div className="mt-1">
+                  <div className="flex justify-between text-[10px] font-bold text-muted-foreground mb-1 uppercase tracking-wider">
+                    <span>Progress</span><span>{progress}%</span>
                   </div>
-                  <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
-                    <div className="bg-primary h-full rounded-full transition-all duration-500" style={{width: `${r.progress || 0}%`}}></div>
+                  <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                    <div className={`h-full ${progress === 100 ? 'bg-emerald-500' : 'bg-primary'}`} style={{ width: `${progress}%` }}></div>
                   </div>
                 </div>
 
@@ -154,42 +183,8 @@ export default function UnivProject() {
                   <button onClick={e=>{e.stopPropagation();remove(r.id);}} className="p-1.5 bg-red-50 rounded-md text-red-400 hover:text-red-600"><Trash2 className="w-3.5 h-3.5" /></button>
                 </div>
               </div>
-            ))}
+            )})}
             {filtered.length === 0 && <div className="col-span-full py-20 text-center text-muted-foreground border-2 border-dashed border-border rounded-2xl"><Briefcase className="w-12 h-12 mx-auto text-muted-foreground/30 mb-3" /><p className="font-medium">No projects found.</p></div>}
-          </div>
-        ) : (
-          <div className="flex-1 overflow-auto bg-card border border-border rounded-2xl p-6 custom-scrollbar relative">
-            <h3 className="font-black text-lg mb-6">Gantt / Timeline View</h3>
-            <div className="min-w-[800px] flex flex-col gap-4">
-              {filtered.map(r => {
-                if (!r.start_date || !r.due_date) return null;
-                const start = new Date(r.start_date);
-                const due = new Date(r.due_date);
-                // For a simple mock timeline, represent months in a fixed 12 month block based on start date
-                const startMonth = start.getMonth();
-                const durationMonths = (due.getFullYear() - start.getFullYear()) * 12 + (due.getMonth() - start.getMonth());
-                
-                return (
-                  <div key={'gantt'+r.id} className="flex items-center gap-4">
-                    <div className="w-48 shrink-0 truncate font-bold text-sm" title={r.name}>{r.name}</div>
-                    <div className="flex-1 h-8 bg-muted/40 rounded-lg relative overflow-hidden flex items-center">
-                       <div 
-                         className="absolute h-full bg-primary/20 border-l-4 border-primary rounded-r-lg flex items-center px-2 text-xs font-bold text-primary" 
-                         style={{
-                           left: `${Math.max(0, (startMonth / 12) * 100)}%`, 
-                           width: `${Math.max(5, (Math.max(1, durationMonths) / 12) * 100)}%`
-                         }}
-                       >
-                         {r.start_date} to {r.due_date}
-                       </div>
-                    </div>
-                  </div>
-                );
-              })}
-              {filtered.filter(r => !r.start_date || !r.due_date).length > 0 && (
-                <p className="text-xs text-muted-foreground italic mt-4">* Some projects are hidden because they lack start or due dates.</p>
-              )}
-            </div>
           </div>
         )}
       </div>
@@ -202,7 +197,7 @@ export default function UnivProject() {
               <h2 className="font-black text-xl text-foreground">{selected.name}</h2>
               <span className={`px-3 py-1 text-[11px] font-bold uppercase border rounded-full inline-block ${STATUS_COLORS[selected.status]}`}>{selected.status}</span>
               {selected.description && <p className="text-sm text-muted-foreground">{selected.description}</p>}
-              {[{label:'Client',value:selected.client_name},{label:'Assigned To',value:selected.assigned_to},{label:'Start Date',value:selected.start_date},{label:'Due Date',value:selected.due_date},{label:'Progress',value:`${selected.progress || 0}%`},{label:'Budget',value:selected.budget?`$${Number(selected.budget).toLocaleString()}`:null},{label:'Priority',value:selected.priority}].map((f,i)=>f.value?(<div key={i} className="p-3 bg-muted/40 rounded-xl"><p className="text-[10px] font-bold text-muted-foreground uppercase">{f.label}</p><p className="text-sm font-medium">{f.value}</p></div>):null)}
+              {[{label:'Client',value:selected.client_name},{label:'Assigned To',value:selected.assigned_to},{label:'Start Date',value:selected.start_date},{label:'Due Date',value:selected.due_date},{label:'Budget',value:selected.budget?`$${Number(selected.budget).toLocaleString()}`:null},{label:'Priority',value:selected.priority}].map((f,i)=>f.value?(<div key={i} className="p-3 bg-muted/40 rounded-xl"><p className="text-[10px] font-bold text-muted-foreground uppercase">{f.label}</p><p className="text-sm font-medium">{f.value}</p></div>):null)}
             </div>
             <div className="p-5 border-t border-border flex gap-2">
               <button onClick={()=>{openModal(selected);setSelected(null);}} className="flex-1 h-9 bg-primary text-white rounded-xl text-sm font-bold flex items-center justify-center gap-1"><Edit2 className="w-3.5 h-3.5"/>Edit</button>

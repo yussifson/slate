@@ -1,4 +1,10 @@
 import React from 'react';
+
+import GenericGrid from '@/components/views/GenericGrid';
+import GenericKanban from '@/components/views/GenericKanban';
+import GenericCalendar from '@/components/views/GenericCalendar';
+import GenericDashboard from '@/components/views/GenericDashboard';
+
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { ArrowUpRight, ArrowDownRight, Activity, Users, Database, FileText, CheckSquare, Calendar, Folder } from 'lucide-react';
@@ -27,12 +33,15 @@ export default function UnivDashboard({
     enabled: !!companyId
   });
 
+  // Aggregate stats by record_type
   const statsMap = records.reduce((acc, curr) => {
     acc[curr.record_type] = (acc[curr.record_type] || 0) + 1;
     return acc;
   }, {});
 
   const statKeys = Object.keys(statsMap);
+  
+  // If no data yet, show some placeholders so it doesn't look empty
   let kpis = [];
   
   const getIconForType = (type) => {
@@ -57,6 +66,8 @@ export default function UnivDashboard({
       trend: 'up',
       icon: getIconForType(key)
     }));
+    
+    // Ensure we have at least a few cards
     if (kpis.length < 4) {
        kpis.push({ title: 'Total Entries', value: records.length, change: 'Active', trend: 'up', icon: Activity });
     }
@@ -73,7 +84,8 @@ export default function UnivDashboard({
   ];
 
   return (
-    <div className="flex flex-col h-full bg-background overflow-y-auto custom-scrollbar pb-8">
+    <div className="flex flex-col h-full bg-background overflow-y-auto custom-scrollbar pb-8 ${view !== 'Default' ? 'hide-default' : ''}">
+      {/* Header */}
       <div className="view-header flex items-center justify-between mb-6 shrink-0 px-1 pt-2">
         <div>
            <h2 className="text-2xl font-bold text-foreground tracking-tight">{title}</h2>
@@ -81,6 +93,7 @@ export default function UnivDashboard({
         </div>
       </div>
 
+      {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {kpis.map((kpi, idx) => (
           <motion.div 
@@ -112,6 +125,7 @@ export default function UnivDashboard({
         ))}
       </div>
 
+      {/* Placeholder Charts Area */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <motion.div 
           initial={{ opacity: 0, y: 10 }}
@@ -172,3 +186,4 @@ export default function UnivDashboard({
     </div>
   );
 }
+

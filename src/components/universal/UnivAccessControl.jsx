@@ -7,45 +7,42 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { Plus, Trash2, Edit2, Loader2, XCircle, Search, Lock, List, Grid } from 'lucide-react';
+import { Plus, Trash2, Edit2, Loader2, XCircle, Search, Lock } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const TABLE = 'univ_accesscontrols';
-const EMPTY = {"user_name":"","email":"","role":"","resource":"","permission_level":"","granted_by":"","expiry_date":"","status":"Active", "default_password":""};
+const EMPTY = {"user_name":"","email":"","role":"","resource":"","permission_level":"","granted_by":"","expiry_date":"","status":"Active", "default_password": ""};
 const STATUS_COLORS = {"Active":"bg-emerald-100 text-emerald-700","Expired":"bg-blue-100 text-blue-700","Revoked":"bg-amber-100 text-amber-700"};
 
 export default function UnivAccessControl() {
   const companyId = useCompanyId();
   const [view, setView] = useState('Default');
-  const [activeTab, setActiveTab] = useState('list'); // 'list' | 'matrix'
   const [records, setRecords] = useState([]);
-  const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [modal, setModal] = useState(false);
   const [editId, setEditId] = useState(null);
   const [form, setForm] = useState(EMPTY);
+  const [roles, setRoles] = useState([]);
 
   useEffect(() => { 
     if (companyId) {
-      fetchData(); 
+      fetchData();
       fetchRoles();
     }
   }, [companyId]);
+
+  const fetchRoles = async () => {
+    const { data } = await supabase.from('univ_roles').select('role_name').eq('company_id', companyId);
+    if (data) setRoles(data.map(r => r.role_name));
+  };
 
   const fetchData = async () => {
     setLoading(true);
     const { data, error } = await supabase.from(TABLE).select('*').eq('company_id', companyId).order('created_at', { ascending: false });
     if (!error) setRecords(data || []);
     setLoading(false);
-  };
-
-  const fetchRoles = async () => {
-    try {
-      const { data } = await supabase.from('univ_roles').select('name').eq('company_id', companyId);
-      if (data) setRoles(data.map(r => r.name));
-    } catch (e) { console.error(e); }
   };
 
   const save = async (e) => {
@@ -69,8 +66,9 @@ export default function UnivAccessControl() {
   const closeModal = () => { setModal(false); setEditId(null); setForm(EMPTY); };
   const filtered = records.filter(r => Object.values(r).join(' ').toLowerCase().includes(search.toLowerCase()));
 
+  
   const handleExport = () => {
-    const exportData = records;
+    const exportData = (typeof records !== 'undefined' ? records : (typeof data !== 'undefined' ? data : []));
     if (!exportData || exportData.length === 0) return alert('No data to export');
     const keys = Object.keys(exportData[0]).filter(k => k !== 'company_id' && k !== 'id');
     const csv = [keys.join(','), ...exportData.map(r => keys.map(k => '"' + (r[k]||'').toString().replace(/"/g, '""') + '"').join(','))].join('\n');
@@ -80,56 +78,8 @@ export default function UnivAccessControl() {
     a.href = url; a.download = 'export.csv'; a.click();
   };
 
-  const renderMatrix = () => {
-    const resources = Array.from(new Set(records.map(r => r.resource).filter(Boolean)));
-    const allRoles = Array.from(new Set([...roles, ...records.map(r => r.role).filter(Boolean)]));
-
-    if (resources.length === 0) return <div className="flex-1 flex items-center justify-center text-muted-foreground">No resources available for matrix.</div>;
-
-    return (
-      <div className="flex-1 overflow-auto rounded-2xl border border-border bg-card shadow-sm p-6 custom-scrollbar">
-        <h3 className="font-black text-lg mb-4">Permission Matrix</h3>
-        <table className="w-full text-sm min-w-[600px] border-collapse">
-          <thead className="bg-muted/40">
-            <tr>
-              <th className="px-4 py-3 text-left font-bold text-muted-foreground uppercase border-b border-border">Resource</th>
-              {allRoles.map(role => (
-                <th key={role} className="px-4 py-3 text-center font-bold text-muted-foreground uppercase border-b border-border border-l">{role}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {resources.map(resource => (
-              <tr key={resource} className="border-b border-border hover:bg-muted/20">
-                <td className="px-4 py-3 font-semibold">{resource}</td>
-                {allRoles.map(role => {
-                  const match = records.find(r => r.role === role && r.resource === resource && r.status === 'Active');
-                  return (
-                    <td key={role} className="px-4 py-3 text-center border-l border-border">
-                      {match ? (
-                        <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] uppercase tracking-wider font-bold
-                          ${match.permission_level === 'Admin' ? 'bg-purple-100 text-purple-700' :
-                            match.permission_level === 'Write' ? 'bg-blue-100 text-blue-700' :
-                            match.permission_level === 'Read' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-700'}
-                        `}>
-                          {match.permission_level}
-                        </span>
-                      ) : (
-                        <span className="text-muted-foreground/30 text-xs">—</span>
-                      )}
-                    </td>
-                  )
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
-  };
-
   return (
-    <div className={`h-full flex flex-col gap-6 p-6 bg-background overflow-auto ${view !== 'Default' ? 'hide-default' : ''}`}>
+    <div className="h-full flex flex-col gap-6 p-6 bg-background overflow-auto ${view !== 'Default' ? 'hide-default' : ''}">
       <div className="view-header flex items-center justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-black text-foreground flex items-center gap-2">
@@ -138,58 +88,50 @@ export default function UnivAccessControl() {
           <p className="text-sm text-muted-foreground mt-1">{records.length} records</p>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex items-center bg-muted p-1 rounded-lg border border-border mr-2">
-            <button onClick={() => setActiveTab('list')} className={`p-1.5 rounded-md flex items-center gap-1.5 text-xs font-medium transition-all ${activeTab === 'list' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}>
-              <List className="w-4 h-4" /> List
+
+        
+        <div className="flex bg-muted p-1 rounded-lg border border-border mr-2 hidden sm:flex">
+          {["Default","Grid","Kanban","Calendar","Dashboard"].map(v => (
+            <button 
+              key={v} 
+              onClick={() => setView(v)} 
+              className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${view === v ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              {v}
             </button>
-            <button onClick={() => setActiveTab('matrix')} className={`p-1.5 rounded-md flex items-center gap-1.5 text-xs font-medium transition-all ${activeTab === 'matrix' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}>
-              <Grid className="w-4 h-4" /> Matrix
-            </button>
-          </div>
-          <div className="flex bg-muted p-1 rounded-lg border border-border mr-2 hidden sm:flex">
-            {["Default","Grid","Kanban","Calendar","Dashboard"].map(v => (
-              <button 
-                key={v} 
-                onClick={() => setView(v)} 
-                className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${view === v ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
-              >
-                {v}
-              </button>
-            ))}
-          </div>
-          <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
-            Export CSV
-          </button>
-          <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 shadow-sm">
-            <Plus className="w-4 h-4" />Add Record
-          </button>
+          ))}
         </div>
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          Export CSV
+        </button>
+
+        <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 shadow-sm">
+          <Plus className="w-4 h-4" />Add Record
+        </button>
+      </div>
       </div>
 
-      {activeTab === 'list' && (
-        <div className="relative max-w-sm flex-shrink-0">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search access control..." className="w-full h-10 pl-9 pr-4 bg-card border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
-        </div>
-      )}
+      <div className="relative max-w-sm flex-shrink-0">
+        <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search access control..." className="w-full h-10 pl-9 pr-4 bg-card border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+      </div>
 
       {loading ? (
         <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
-      ) : activeTab === 'matrix' ? (
-        renderMatrix()
       ) : (
-        <div className="flex-1 overflow-auto rounded-2xl border border-border bg-card shadow-sm custom-scrollbar">
+        <div className="flex-1 overflow-auto rounded-2xl border border-border bg-card shadow-sm">
           <table className="w-full text-sm min-w-[600px]">
-            <thead className="border-b border-border bg-muted/40 sticky top-0 z-10">
+            <thead className="border-b border-border bg-muted/40 sticky top-0">
               <tr><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">User Name</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Role</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Resource</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Permission Level</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Expiry Date</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Status</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase"></th></tr>
             </thead>
             <tbody>
               {filtered.map(r => (
-                <motion.tr key={r.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="border-b border-border/50 hover:bg-muted/20 group">
-                  <td className="px-4 py-3 font-semibold">{r['user_name']}</td><td className="px-4 py-3 text-muted-foreground">{r['role']}</td><td className="px-4 py-3 text-muted-foreground">{r['resource']}</td><td className="px-4 py-3 text-muted-foreground">{r['permission_level']}</td><td className="px-4 py-3 text-muted-foreground">{r['expiry_date']}</td><td className="px-4 py-3"><span className={`px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-bold ${STATUS_COLORS[r['status']] || 'bg-muted text-foreground'}`}>{r['status']}</span></td>
+                <motion.tr key={r.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="border-b border-border/50 hover:bg-muted/20">
+                  <td className="px-4 py-3 font-semibold">{r['user_name']}</td><td className="px-4 py-3 text-muted-foreground">{r['role']}</td><td className="px-4 py-3 text-muted-foreground">{r['resource']}</td><td className="px-4 py-3 text-muted-foreground">{r['permission_level']}</td><td className="px-4 py-3 text-muted-foreground">{r['expiry_date']}</td><td className="px-4 py-3"><span className={`px-2 py-0.5 rounded-full text-xs font-bold ${STATUS_COLORS[r['status']] || 'bg-muted text-foreground'}`}>{r['status']}</span></td>
                   <td className="px-4 py-3">
-                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button onClick={() => openModal(r)} className="p-1.5 bg-muted rounded-lg hover:bg-muted/80 text-muted-foreground hover:text-primary"><Edit2 className="w-3.5 h-3.5" /></button>
+                    <div className="flex gap-1">
+                      <button onClick={() => openModal(r)} className="p-1.5 bg-muted rounded-lg hover:bg-muted/80"><Edit2 className="w-3.5 h-3.5" /></button>
                       <button onClick={() => remove(r.id)} className="p-1.5 bg-red-50 rounded-lg hover:bg-red-100 text-red-500"><Trash2 className="w-3.5 h-3.5" /></button>
                     </div>
                   </td>
@@ -225,10 +167,10 @@ export default function UnivAccessControl() {
                 {roles.length > 0 ? (
                   <select value={form['role']} onChange={e => setForm({ ...form, 'role': e.target.value })} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none">
                     <option value="">Select a role...</option>
-                    {roles.map(r => <option key={r} value={r}>{r}</option>)}
+                    {roles.map(r => <option key={r}>{r}</option>)}
                   </select>
                 ) : (
-                  <input type="text" value={form['role']} onChange={e => setForm({ ...form, 'role': e.target.value })} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" placeholder="e.g. Manager" />
+                  <input type="text" value={form['role']} onChange={e => setForm({ ...form, 'role': e.target.value })} placeholder="e.g. Admin, Editor" className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
                 )}
               </div>
               <div>
@@ -240,6 +182,14 @@ export default function UnivAccessControl() {
                 <select value={form['permission_level']} onChange={e => setForm({ ...form, 'permission_level': e.target.value })} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none">
                   {["Read","Write","Admin","No Access"].map(o => <option key={o}>{o}</option>)}
                 </select>
+                {/* Visual Permission Matrix Hint */}
+                {form.permission_level && (
+                  <div className="mt-2 flex gap-1">
+                    {["Read", "Write", "Admin"].map(lvl => (
+                      <div key={lvl} className={`h-1.5 flex-1 rounded-full ${["Read"].includes(lvl) && ["Read", "Write", "Admin"].includes(form.permission_level) ? 'bg-blue-500' : ["Write"].includes(lvl) && ["Write", "Admin"].includes(form.permission_level) ? 'bg-blue-500' : ["Admin"].includes(lvl) && form.permission_level === "Admin" ? 'bg-blue-500' : 'bg-muted'}`} />
+                    ))}
+                  </div>
+                )}
               </div>
               <div>
                 <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Granted By</label>
@@ -249,10 +199,6 @@ export default function UnivAccessControl() {
                 <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Access Expiry</label>
                 <input  type="date" value={form['expiry_date']} onChange={e => setForm({ ...form, 'expiry_date': e.target.value })} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
               </div>
-              <div>
-                <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Default Password</label>
-                <input type="text" value={form['default_password']} onChange={e => setForm({ ...form, 'default_password': e.target.value })} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" placeholder="Initial access pass..." />
-              </div>
 
               <div className="col-span-2">
                 <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Status</label>
@@ -260,9 +206,15 @@ export default function UnivAccessControl() {
                   {["Active","Expired","Revoked"].map(s => <option key={s}>{s}</option>)}
                 </select>
               </div>
-                <div className="col-span-2 flex justify-end gap-3 pt-2 border-t border-border mt-2">
+              {!editId && (
+                <div className="col-span-2">
+                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Default Password</label>
+                  <input type="password" value={form['default_password'] || ''} onChange={e => setForm({ ...form, 'default_password': e.target.value })} placeholder="Set an initial password for the user" className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+                </div>
+              )}
+                <div className="col-span-2 flex justify-end gap-3 pt-2 border-t border-border">
                   <button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium">Cancel</button>
-                  <button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold shadow-sm">{editId ? 'Update' : 'Add'}</button>
+                  <button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold">{editId ? 'Update' : 'Add'}</button>
                 </div>
               </form>
             </motion.div>

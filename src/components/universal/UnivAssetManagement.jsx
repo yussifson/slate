@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 
+import GenericGrid from '@/components/views/GenericGrid';
+import GenericKanban from '@/components/views/GenericKanban';
+import GenericCalendar from '@/components/views/GenericCalendar';
+import GenericDashboard from '@/components/views/GenericDashboard';
+
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { Monitor, Plus, Search, Trash2, Edit2, Loader2, XCircle, Package, TrendingDown, Clock } from 'lucide-react';
+import { Monitor, Plus, Search, Trash2, Edit2, Loader2, XCircle, Package, Map as MapIcon, Wrench, History } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { LineChart, Line, ResponsiveContainer } from 'recharts';
 
 const STATUS_COLORS = { Active: 'bg-emerald-50 text-emerald-700 border-emerald-200', 'Under Maintenance': 'bg-amber-50 text-amber-700 border-amber-200', Retired: 'bg-muted text-muted-foreground border-border' };
-const EMPTY_FORM = { name: '', category: 'Equipment', status: 'Active', purchase_date: new Date().toISOString().split('T')[0], purchase_value: 0 };
+const EMPTY_FORM = { name: '', category: 'Equipment', status: 'Active', purchase_date: new Date().toISOString().split('T')[0], purchase_value: 0, location: 'New York, USA' };
 
 export default function UnivAssetManagement() {
   const companyId = useCompanyId();
@@ -17,8 +21,11 @@ export default function UnivAssetManagement() {
   const [search, setSearch] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [selectedAsset, setSelectedAsset] = useState(null);
+  const [viewMode, setViewMode] = useState('list');
+  const [maintenanceLogText, setMaintenanceLogText] = useState('');
+  const [maintenanceLogs, setMaintenanceLogs] = useState({});
   const [form, setForm] = useState(EMPTY_FORM);
-  const [timelineId, setTimelineId] = useState(null);
 
   useEffect(() => {
     if (companyId) {
@@ -46,7 +53,8 @@ export default function UnivAssetManagement() {
         category: form.category,
         status: form.status,
         purchase_date: form.purchase_date || null,
-        purchase_value: Number(form.purchase_value) || 0
+        purchase_value: Number(form.purchase_value) || 0,
+        location: form.location || 'New York, USA'
       };
       
       if (editingId) {
@@ -79,7 +87,8 @@ export default function UnivAssetManagement() {
         category: r.category,
         status: r.status,
         purchase_date: r.purchase_date || '',
-        purchase_value: r.purchase_value || 0
+        purchase_value: r.purchase_value || 0,
+        location: r.location || 'New York, USA'
       });
     } else {
       setForm(EMPTY_FORM);
@@ -93,42 +102,46 @@ export default function UnivAssetManagement() {
     return `${r.name} ${r.category} ${r.status}`.toLowerCase().includes(search.toLowerCase());
   });
 
+  
   const handleExport = () => {
-    const exportData = filtered;
+    const exportData = (typeof records !== 'undefined' ? records : (typeof data !== 'undefined' ? data : []));
     if (!exportData || exportData.length === 0) return alert('No data to export');
     const keys = Object.keys(exportData[0]).filter(k => k !== 'company_id' && k !== 'id');
     const csv = [keys.join(','), ...exportData.map(r => keys.map(k => '"' + (r[k]||'').toString().replace(/"/g, '""') + '"').join(','))].join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = 'assets_export.csv'; a.click();
+    a.href = url; a.download = 'export.csv'; a.click();
   };
-
-  const generateDepreciationData = (value) => {
-    const points = [];
-    let currentVal = value;
-    for(let i=0; i<5; i++) {
-      points.push({ year: i, value: currentVal });
-      currentVal = currentVal * 0.8; // 20% depreciation per year
-    }
-    return points;
-  };
-
-  const timelineRecord = records.find(r => r.id === timelineId);
 
   return (
-    <div className={`h-full flex flex-col gap-6 w-full bg-background p-4 sm:p-6 lg:p-8 ${view !== 'Default' ? 'hide-default' : ''}`}>
+    <div className="h-full flex flex-col gap-6 w-full bg-background p-4 sm:p-6 lg:p-8 ${view !== 'Default' ? 'hide-default' : ''}">
       <div className="view-header flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0">
         <div>
           <h1 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-2"><Monitor className="w-7 h-7 text-primary" /> Asset Management</h1>
-          <p className="text-muted-foreground text-sm font-medium mt-1">Manage company equipment and track assignment.</p>
+          <p className="text-muted-foreground text-sm font-medium mt-1">Manage company equipment and physical assets.</p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
-            <TrendingDown className="w-4 h-4" /> Export CSV
-          </button>
-          <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-sm"><Plus className="w-4 h-4" /> Add Asset</button>
+
+        
+        <div className="flex bg-muted p-1 rounded-lg border border-border mr-2 hidden sm:flex">
+          {["Default","Grid","Kanban","Calendar","Dashboard"].map(v => (
+            <button 
+              key={v} 
+              onClick={() => setView(v)} 
+              className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${view === v ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              {v}
+            </button>
+          ))}
         </div>
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          Export CSV
+        </button>
+
+        <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-sm"><Plus className="w-4 h-4" /> Add Asset</button>
+      </div>
       </div>
 
       <div className="flex gap-3 shrink-0">
@@ -136,14 +149,19 @@ export default function UnivAssetManagement() {
           <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search assets..." className="w-full h-11 pl-10 pr-4 bg-card border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm shadow-sm" />
         </div>
+        <div className="flex bg-card border border-border rounded-xl p-1 shadow-sm gap-1 shrink-0">
+          <button onClick={() => setViewMode('list')} className={`px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-1.5 ${viewMode === 'list' ? 'bg-primary text-white' : 'text-muted-foreground'}`}>List</button>
+          <button onClick={() => setViewMode('map')} className={`px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-1.5 ${viewMode === 'map' ? 'bg-primary text-white' : 'text-muted-foreground'}`}><MapIcon className="w-4 h-4" />Map View</button>
+        </div>
       </div>
 
       <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden shadow-sm flex flex-col min-h-0">
+        {viewMode === 'list' ? (
         <div className="overflow-auto flex-1 custom-scrollbar">
           <table className="w-full text-sm">
             <thead className="bg-muted/50 border-b border-border sticky top-0 z-10">
               <tr>
-                {['Name', 'Category', 'Value', 'Depreciation', 'Status', 'Actions'].map((h, i) => (
+                {['Name', 'Category', 'Value', 'Purchase Date', 'Status', 'Actions'].map((h, i) => (
                   <th key={i} className="p-4 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">{h}</th>
                 ))}
               </tr>
@@ -155,29 +173,19 @@ export default function UnivAssetManagement() {
                 <tr><td colSpan={6} className="p-12 text-center text-muted-foreground">No assets found.</td></tr>
               ) : (
                 filtered.map(r => {
-                  const data = generateDepreciationData(r.purchase_value || 0);
                   return (
-                  <tr key={r.id} className="hover:bg-muted/30 transition-colors group">
+                  <tr key={r.id} className="hover:bg-muted/30 transition-colors group cursor-pointer" onClick={() => setSelectedAsset(r)}>
                     <td className="p-4"><div className="flex items-center gap-2"><div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold"><Package className="w-4 h-4" /></div><span className="font-bold text-foreground">{r.name}</span></div></td>
                     <td className="p-4 text-muted-foreground">{r.category}</td>
                     <td className="p-4 font-black">${Number(r.purchase_value).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
-                    <td className="p-4">
-                      <div className="w-24 h-8 opacity-70 group-hover:opacity-100 transition-opacity">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <LineChart data={data}>
-                            <Line type="monotone" dataKey="value" stroke="#f43f5e" strokeWidth={2} dot={false} isAnimationActive={false} />
-                          </LineChart>
-                        </ResponsiveContainer>
-                      </div>
-                    </td>
-                    <td className="p-4">
+                    <td className="p-4 text-muted-foreground whitespace-nowrap">{r.purchase_date || '—'}</td>
+                    <td className="p-4" onClick={e=>e.stopPropagation()}>
                       <select value={r.status} onChange={(e) => updateStatus(r.id, e.target.value)} className={`px-3 py-1 rounded-full text-xs font-bold border outline-none cursor-pointer ${STATUS_COLORS[r.status] || 'bg-muted text-muted-foreground'}`}>
                         {Object.keys(STATUS_COLORS).map(s => <option key={s} value={s}>{s}</option>)}
                       </select>
                     </td>
-                    <td className="p-4">
+                    <td className="p-4" onClick={e=>e.stopPropagation()}>
                       <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => setTimelineId(r.id)} className="p-1.5 bg-muted rounded-md text-muted-foreground hover:text-primary transition-colors"><Clock className="w-4 h-4" /></button>
                         <button onClick={() => openModal(r)} className="p-1.5 bg-muted rounded-md text-muted-foreground hover:text-primary transition-colors"><Edit2 className="w-4 h-4" /></button>
                         <button onClick={() => deleteRecord(r.id)} className="p-1.5 bg-red-50 rounded-md text-red-400 hover:text-red-600 transition-colors"><Trash2 className="w-4 h-4" /></button>
                       </div>
@@ -189,7 +197,82 @@ export default function UnivAssetManagement() {
             </tbody>
           </table>
         </div>
+        ) : (
+          <div className="flex-1 w-full h-full p-2 relative">
+             <div className="absolute top-4 left-4 z-10 bg-card p-3 rounded-xl border border-border shadow-md max-w-xs">
+               <h3 className="font-bold text-sm mb-2"><MapIcon className="w-4 h-4 inline-block mr-1"/>Asset Map Overview</h3>
+               <p className="text-xs text-muted-foreground mb-3">Showing {filtered.length} locations across your organization.</p>
+               <div className="flex flex-col gap-2 max-h-40 overflow-y-auto">
+                 {filtered.map(r=>(
+                   <div key={r.id} className="text-xs border-b border-border pb-1 flex justify-between">
+                     <span className="font-medium truncate mr-2">{r.name}</span>
+                     <span className="text-muted-foreground truncate max-w-[100px]">{r.location || 'New York'}</span>
+                   </div>
+                 ))}
+               </div>
+             </div>
+             <iframe width="100%" height="100%" src="https://maps.google.com/maps?q=New%20York&t=&z=13&ie=UTF8&iwloc=&output=embed" frameBorder="0" scrolling="no" className="rounded-xl border border-border"></iframe>
+          </div>
+        )}
       </div>
+
+      {selectedAsset && (
+        <div className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm" onClick={() => setSelectedAsset(null)}>
+          <div className="absolute right-0 top-0 bottom-0 w-96 bg-card border-l border-border shadow-2xl flex flex-col" onClick={e => e.stopPropagation()}>
+            <div className="p-5 border-b border-border flex justify-between items-center bg-muted/30">
+              <div>
+                <h3 className="font-black text-lg">{selectedAsset.name}</h3>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${STATUS_COLORS[selectedAsset.status] || 'bg-muted'}`}>{selectedAsset.status}</span>
+              </div>
+              <button onClick={() => setSelectedAsset(null)} className="p-1.5 bg-muted rounded-full"><XCircle className="w-4 h-4 text-muted-foreground" /></button>
+            </div>
+            
+            <div className="p-5 border-b border-border grid grid-cols-2 gap-4">
+              <div><p className="text-[10px] uppercase font-bold text-muted-foreground">Category</p><p className="font-medium text-sm">{selectedAsset.category}</p></div>
+              <div><p className="text-[10px] uppercase font-bold text-muted-foreground">Location</p><p className="font-medium text-sm">{selectedAsset.location || 'New York, USA'}</p></div>
+              <div><p className="text-[10px] uppercase font-bold text-muted-foreground">Purchase Date</p><p className="font-medium text-sm">{selectedAsset.purchase_date}</p></div>
+              <div><p className="text-[10px] uppercase font-bold text-muted-foreground">Value</p><p className="font-medium text-sm">${Number(selectedAsset.purchase_value).toLocaleString()}</p></div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-5 custom-scrollbar bg-muted/10">
+              <h4 className="font-bold text-sm flex items-center gap-2 mb-4 text-foreground"><History className="w-4 h-4"/> Maintenance Logs</h4>
+              <div className="space-y-3">
+                {(maintenanceLogs[selectedAsset.id] || []).map((log, i) => (
+                  <div key={i} className="p-3 bg-card border border-border rounded-xl shadow-sm">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-xs font-bold text-foreground flex items-center gap-1"><Wrench className="w-3 h-3 text-primary"/>{log.date}</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">{log.text}</p>
+                  </div>
+                ))}
+                {!(maintenanceLogs[selectedAsset.id]?.length) && <p className="text-xs text-muted-foreground italic text-center py-4">No maintenance logs found.</p>}
+              </div>
+            </div>
+            <div className="p-4 border-t border-border bg-card">
+              <textarea 
+                value={maintenanceLogText} 
+                onChange={(e) => setMaintenanceLogText(e.target.value)} 
+                placeholder="Add new maintenance log..." 
+                className="w-full h-20 p-3 bg-muted border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none resize-none mb-2"
+              />
+              <button 
+                onClick={() => {
+                  if(!maintenanceLogText.trim()) return;
+                  const newLog = { date: new Date().toLocaleDateString(), text: maintenanceLogText };
+                  setMaintenanceLogs(prev => ({
+                    ...prev,
+                    [selectedAsset.id]: [newLog, ...(prev[selectedAsset.id]||[])]
+                  }));
+                  setMaintenanceLogText('');
+                }}
+                className="w-full h-9 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary/90 transition-colors"
+              >
+                Add Log Entry
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
@@ -208,45 +291,13 @@ export default function UnivAssetManagement() {
                 <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Purchase Value</label><input type="number" step="0.01" value={form.purchase_value} onChange={e => setForm({...form, purchase_value: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" /></div>
                 <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Purchase Date</label><input type="date" value={form.purchase_date} onChange={e => setForm({...form, purchase_date: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" /></div>
               </div>
+              <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Location</label><input type="text" value={form.location || ''} onChange={e => setForm({...form, location: e.target.value})} placeholder="e.g. New York, USA" className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" /></div>
               
               <div className="flex justify-end gap-3 mt-2 pt-5 border-t border-border">
                 <button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium hover:bg-muted/80 transition-colors">Cancel</button>
                 <button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold shadow-sm hover:bg-primary/90 transition-colors">{editingId ? 'Update' : 'Save Asset'}</button>
               </div>
             </form>
-          </div>
-        </div>
-      )}
-
-      {timelineId && timelineRecord && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-card w-full max-w-lg rounded-2xl shadow-2xl flex flex-col p-6">
-            <div className="flex justify-between items-start mb-6">
-              <div>
-                <h2 className="text-xl font-black">{timelineRecord.name}</h2>
-                <p className="text-sm text-muted-foreground">Assignment Timeline</p>
-              </div>
-              <button onClick={() => setTimelineId(null)} className="p-2 hover:bg-muted rounded-full text-muted-foreground"><XCircle className="w-5 h-5" /></button>
-            </div>
-
-            <div className="relative pl-6 border-l-2 border-border space-y-6">
-              <div className="relative">
-                <div className="absolute -left-[31px] w-4 h-4 rounded-full bg-emerald-500 border-4 border-card"></div>
-                <p className="text-sm font-bold">Assigned to Engineering Dept</p>
-                <p className="text-xs text-muted-foreground">{new Date().toLocaleDateString()}</p>
-              </div>
-              <div className="relative">
-                <div className="absolute -left-[31px] w-4 h-4 rounded-full bg-amber-500 border-4 border-card"></div>
-                <p className="text-sm font-bold">Under Maintenance</p>
-                <p className="text-xs text-muted-foreground">2 months ago</p>
-              </div>
-              <div className="relative">
-                <div className="absolute -left-[31px] w-4 h-4 rounded-full bg-blue-500 border-4 border-card"></div>
-                <p className="text-sm font-bold">Purchased</p>
-                <p className="text-xs text-muted-foreground">{timelineRecord.purchase_date || 'Unknown'}</p>
-              </div>
-            </div>
-            
           </div>
         </div>
       )}

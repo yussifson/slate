@@ -7,13 +7,14 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { Plus, Trash2, Edit2, Loader2, XCircle, Search, LifeBuoy, Clock, MessageSquare, Send } from 'lucide-react';
+import { Plus, Trash2, Edit2, Loader2, XCircle, Search, LifeBuoy } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const TABLE = 'univ_supporttickets';
 const EMPTY = {"ticket_number":"","subject":"","customer_name":"","customer_email":"","priority":"","category":"","description":"","assigned_to":"","created_date":"","status":"Open"};
 const STATUS_COLORS = {"Open":"bg-emerald-100 text-emerald-700","In Progress":"bg-blue-100 text-blue-700","Resolved":"bg-amber-100 text-amber-700","Closed":"bg-red-100 text-red-700"};
+const PRIORITY_COLORS = {"Low":"bg-muted text-muted-foreground","Medium":"bg-blue-100 text-blue-700","High":"bg-orange-100 text-orange-700","Urgent":"bg-red-100 text-red-700"};
 
 export default function UnivSupportTicket() {
   const companyId = useCompanyId();
@@ -23,8 +24,10 @@ export default function UnivSupportTicket() {
   const [search, setSearch] = useState('');
   const [modal, setModal] = useState(false);
   const [editId, setEditId] = useState(null);
-  const [form, setForm] = useState(EMPTY);
+  const [selectedTicket, setSelectedTicket] = useState(null);
   const [replyText, setReplyText] = useState('');
+  const [mockReplies, setMockReplies] = useState({});
+  const [form, setForm] = useState(EMPTY);
 
   useEffect(() => { if (companyId) fetchData(); }, [companyId]);
 
@@ -117,10 +120,12 @@ export default function UnivSupportTicket() {
             </thead>
             <tbody>
               {filtered.map(r => (
-                <motion.tr key={r.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="border-b border-border/50 hover:bg-muted/20">
-                  <td className="px-4 py-3 font-semibold">{r['ticket_number']}</td><td className="px-4 py-3 text-muted-foreground">{r['subject']}</td><td className="px-4 py-3 text-muted-foreground">{r['customer_name']}</td><td className="px-4 py-3 text-muted-foreground">{r['priority']}</td><td className="px-4 py-3 text-muted-foreground">{r['assigned_to']}</td><td className="px-4 py-3"><span className={`px-2 py-0.5 rounded-full text-xs font-bold ${STATUS_COLORS[r['status']] || 'bg-muted text-foreground'}`}>{r['status']}</span></td>
+                <motion.tr key={r.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="border-b border-border/50 hover:bg-muted/20 cursor-pointer" onClick={()=>setSelectedTicket(r)}>
+                  <td className="px-4 py-3 font-semibold">{r['ticket_number']}</td><td className="px-4 py-3 text-muted-foreground">{r['subject']}</td><td className="px-4 py-3 text-muted-foreground">{r['customer_name']}</td>
+                  <td className="px-4 py-3"><span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${PRIORITY_COLORS[r['priority']] || 'bg-muted text-foreground'}`}>{r['priority']||'Medium'}</span></td>
+                  <td className="px-4 py-3 text-muted-foreground">{r['assigned_to']}</td><td className="px-4 py-3"><span className={`px-2 py-0.5 rounded-full text-xs font-bold ${STATUS_COLORS[r['status']] || 'bg-muted text-foreground'}`}>{r['status']}</span></td>
                   <td className="px-4 py-3">
-                    <div className="flex gap-1">
+                    <div className="flex gap-1" onClick={e=>e.stopPropagation()}>
                       <button onClick={() => openModal(r)} className="p-1.5 bg-muted rounded-lg hover:bg-muted/80"><Edit2 className="w-3.5 h-3.5" /></button>
                       <button onClick={() => remove(r.id)} className="p-1.5 bg-red-50 rounded-lg hover:bg-red-100 text-red-500"><Trash2 className="w-3.5 h-3.5" /></button>
                     </div>
@@ -135,6 +140,72 @@ export default function UnivSupportTicket() {
         </div>
       )}
 
+      {selectedTicket && (
+        <div className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm" onClick={() => setSelectedTicket(null)}>
+          <div className="absolute right-0 top-0 bottom-0 w-96 bg-card border-l border-border shadow-2xl flex flex-col" onClick={e => e.stopPropagation()}>
+            <div className="p-5 border-b border-border flex justify-between items-center bg-muted/30">
+              <div>
+                <h3 className="font-black text-lg">{selectedTicket.ticket_number}</h3>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${STATUS_COLORS[selectedTicket.status]}`}>{selectedTicket.status}</span>
+              </div>
+              <button onClick={() => setSelectedTicket(null)} className="p-1.5 bg-muted rounded-full"><XCircle className="w-4 h-4 text-muted-foreground" /></button>
+            </div>
+            
+            <div className="p-5 border-b border-border flex flex-col gap-2">
+              <h4 className="font-bold text-foreground text-sm">{selectedTicket.subject}</h4>
+              <p className="text-sm text-muted-foreground">{selectedTicket.description || 'No description provided.'}</p>
+              <div className="flex gap-2 mt-2">
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border ${PRIORITY_COLORS[selectedTicket.priority]||'bg-muted'}`}>{selectedTicket.priority} Priority</span>
+              </div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-5 custom-scrollbar bg-muted/10 space-y-4">
+              <h4 className="font-bold text-xs uppercase text-muted-foreground mb-4 tracking-wider">Threaded Replies</h4>
+              
+              <div className="bg-card border border-border p-3 rounded-xl shadow-sm">
+                <div className="flex justify-between items-center mb-1">
+                  <span className="font-bold text-xs">{selectedTicket.customer_name}</span>
+                  <span className="text-[10px] text-muted-foreground">Original Message</span>
+                </div>
+                <p className="text-sm text-muted-foreground">{selectedTicket.description}</p>
+              </div>
+
+              {(mockReplies[selectedTicket.id] || []).map((reply, i) => (
+                <div key={i} className={`p-3 rounded-xl shadow-sm border border-border ${reply.isAgent ? 'bg-primary/5 ml-4' : 'bg-card mr-4'}`}>
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="font-bold text-xs">{reply.sender}</span>
+                    <span className="text-[10px] text-muted-foreground">{reply.time}</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">{reply.text}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="p-4 border-t border-border bg-card">
+              <textarea 
+                value={replyText} 
+                onChange={(e) => setReplyText(e.target.value)} 
+                placeholder="Type a reply..." 
+                className="w-full h-20 p-3 bg-muted border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none resize-none mb-2"
+              />
+              <button 
+                onClick={() => {
+                  if(!replyText.trim()) return;
+                  setMockReplies(prev => ({
+                    ...prev,
+                    [selectedTicket.id]: [...(prev[selectedTicket.id]||[]), { text: replyText, sender: 'Support Agent', time: new Date().toLocaleTimeString(), isAgent: true }]
+                  }));
+                  setReplyText('');
+                }}
+                className="w-full h-9 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary/90 transition-colors"
+              >
+                Send Reply
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <AnimatePresence>
         {modal && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
@@ -143,17 +214,7 @@ export default function UnivSupportTicket() {
                 <h2 className="text-xl font-black">{editId ? 'Edit Record' : 'Add Support Tickets'}</h2>
                 <button onClick={closeModal} className="p-2 bg-muted rounded-full"><XCircle className="w-5 h-5 text-muted-foreground" /></button>
               </div>
-              <form onSubmit={save} className="p-5 flex flex-col gap-4 overflow-y-auto custom-scrollbar flex-1">
-                {editId && (
-                  <div className="flex items-center gap-3 p-3 bg-red-50 border border-red-100 rounded-xl mb-2 shrink-0">
-                    <Clock className="w-5 h-5 text-red-500 animate-pulse" />
-                    <div>
-                      <p className="text-xs font-bold text-red-600 uppercase">SLA Breach Warning</p>
-                      <p className="text-sm font-medium text-red-700">Time to resolve: 2h 15m remaining</p>
-                    </div>
-                  </div>
-                )}
-                <div className="grid grid-cols-2 gap-4 shrink-0">
+              <form onSubmit={save} className="p-5 grid grid-cols-2 gap-4 overflow-y-auto custom-scrollbar">
               <div>
                 <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Ticket #</label>
                 <input required type="text" value={form['ticket_number']} onChange={e => setForm({ ...form, 'ticket_number': e.target.value })} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
@@ -201,29 +262,7 @@ export default function UnivSupportTicket() {
                   {["Open","In Progress","Resolved","Closed"].map(s => <option key={s}>{s}</option>)}
                 </select>
               </div>
-              </div>
-
-              {editId && (
-                <div className="mt-4 pt-4 border-t border-border shrink-0">
-                  <h3 className="font-bold text-sm mb-3 flex items-center gap-2"><MessageSquare className="w-4 h-4"/> Ticket Thread</h3>
-                  <div className="space-y-3 mb-4 max-h-40 overflow-y-auto custom-scrollbar pr-2">
-                    <div className="bg-muted/50 p-3 rounded-xl border border-border text-sm">
-                      <p className="text-xs font-bold text-muted-foreground mb-1">Customer <span className="font-normal opacity-70 ml-2">2 days ago</span></p>
-                      <p>Hello, I am having issues logging into my account. Please help.</p>
-                    </div>
-                    <div className="bg-primary/5 p-3 rounded-xl border border-primary/20 text-sm ml-6">
-                      <p className="text-xs font-bold text-primary mb-1">Support Agent <span className="font-normal opacity-70 ml-2">Yesterday</span></p>
-                      <p>Hi there, we have reset your password. Check your email for the link.</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <input type="text" value={replyText} onChange={e=>setReplyText(e.target.value)} placeholder="Type a reply..." className="flex-1 h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none"/>
-                    <button type="button" onClick={()=>{setReplyText(''); toast.success('Reply added!');}} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-1 shadow-sm"><Send className="w-3.5 h-3.5"/> Reply</button>
-                  </div>
-                </div>
-              )}
-
-                <div className="mt-2 flex justify-end gap-3 pt-4 border-t border-border w-full shrink-0">
+                <div className="col-span-2 flex justify-end gap-3 pt-2 border-t border-border">
                   <button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium">Cancel</button>
                   <button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold">{editId ? 'Update' : 'Add'}</button>
                 </div>
