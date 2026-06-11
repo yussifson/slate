@@ -1,4 +1,5 @@
 import React from 'react';
+import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { ArrowUpRight, ArrowDownRight, Activity, Users, Database, FileText, CheckSquare, Calendar, Folder } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
@@ -172,3 +173,4 @@ export default function UnivDashboard({
     </div>
   );
 }
+

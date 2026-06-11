@@ -37,7 +37,17 @@ export default function UnivPayroll() {
   const save = async (e) => {
     e.preventDefault();
     const net_pay = Number(form.basic_salary) + Number(form.allowances) - Number(form.deductions);
-    const payload = { ...form, net_pay };
+    
+    // Clean and prepare the payload
+    const { id, created_at, updated_at, ...cleanForm } = form;
+    const payload = {
+      ...cleanForm,
+      net_pay,
+      payment_date: form.payment_date || null,
+      period_start: form.period_start || null,
+      period_end: form.period_end || null
+    };
+
     try {
       if (editingId) {
         const { error } = await supabase.from('univ_payroll').update(payload).eq('id', editingId);
@@ -49,7 +59,10 @@ export default function UnivPayroll() {
         toast.success('Payroll created!');
       }
       closeModal(); fetchData();
-    } catch (err) { toast.error('Failed to save'); }
+    } catch (err) {
+      console.error(err);
+      toast.error(err.message || 'Failed to save');
+    }
   };
 
   const remove = async (id) => {

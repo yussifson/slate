@@ -37,7 +37,7 @@ export default function UnivMachine() {
     try {
       const { data, error } = await supabase
         .from('univ_machines')
-        .select('*')
+        .select('*').eq('company_id', companyId)
         .eq('company_id', companyId)
         .order('machine_name', { ascending: true });
       if (error && error.code !== '42P01') throw error;

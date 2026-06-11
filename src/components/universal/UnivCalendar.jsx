@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Plus, Calendar as CalendarIcon, Clock, Users, Video, Loader2, Trash2 } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -10,8 +11,10 @@ export default function UnivCalendar({
   title = "Calendar",
   subtitle = "Manage your schedule and appointments.",
   companyId,
-  pageName
+  pageName,
+  tableName
 }) {
+
   const [view, setView] = useState('Month'); // Month, Week, Day
   const [isAdding, setIsAdding] = useState(false);
   const [newEventTitle, setNewEventTitle] = useState('');
@@ -19,35 +22,32 @@ export default function UnivCalendar({
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
+  const targetTable = tableName || 'industry_records';
+
   const { data: records = [], isLoading } = useQuery({
-    queryKey: ['orbit_records', companyId, pageName],
+    queryKey: ['orbit_records', companyId, pageName, targetTable],
     queryFn: async () => {
-      if (!companyId || !pageName) return [];
-      const { data, error } = await supabase
-        .from('industry_records')
-        .select('*')
-        .eq('company_id', companyId)
-        .eq('industry', 'orbit_build_data')
-        .eq('record_type', pageName)
-        .order('created_at', { ascending: false });
-        
-      if (error) throw error;
+      if (!companyId) return [];
+      let query = supabase.from(targetTable).select('*').eq('company_id', companyId);
+      if (targetTable === 'industry_records') {
+        query = query.eq('industry', 'orbit_build_data').eq('record_type', pageName);
+      }
+      const { data, error } = await query.order('created_at', { ascending: false });
+      if (error && error.code !== '42P01') throw error;
       return data || [];
     },
-    enabled: !!companyId && !!pageName
+    enabled: !!companyId
   });
 
   const addMutation = useMutation({
     mutationFn: async (newData) => {
-      const { data, error } = await supabase
-        .from('industry_records')
-        .insert([{
-          company_id: companyId,
-          industry: 'orbit_build_data',
-          record_type: pageName,
-          data: newData,
-          search_text: Object.values(newData).join(' ')
-        }]);
+      let payload;
+      if (targetTable === 'industry_records') {
+        payload = { company_id: companyId, industry: 'orbit_build_data', record_type: pageName, data: newData, search_text: Object.values(newData).join(' ') };
+      } else {
+        payload = { ...newData, company_id: companyId };
+      }
+      const { data, error } = await supabase.from(targetTable).insert([payload]);
       if (error) throw error;
       return data;
     },
@@ -66,7 +66,7 @@ export default function UnivCalendar({
 
   const deleteMutation = useMutation({
     mutationFn: async (id) => {
-      const { error } = await supabase.from('industry_records').delete().eq('id', id);
+      const { error } = await supabase.from(targetTable).delete().eq('id', id);
       if (error) throw error;
     },
     onError: (err) => {
@@ -91,7 +91,9 @@ export default function UnivCalendar({
     });
   };
 
-  const displayEvents = records.map(r => ({ id: r.id, ...r.data }));
+  const displayEvents = React.useMemo(() => {
+    return records.map(r => targetTable === 'industry_records' ? { id: r.id, ...r.data } : r);
+  }, [records, targetTable]);
 
   // Simple mock month view generation
   const days = Array.from({ length: 35 }, (_, i) => {
@@ -248,3 +250,4 @@ export default function UnivCalendar({
     </div>
   );
 }
+

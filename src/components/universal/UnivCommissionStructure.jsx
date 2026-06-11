@@ -1,0 +1,214 @@
+import React, { useState, useEffect } from 'react';
+import { useCompanyId } from '@/hooks/useCompanyId';
+import { supabase } from '@/api/supabaseClient';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Plus, Trash2, Edit2, Save, X, Briefcase, Percent, Target } from 'lucide-react';
+
+export default function UnivCommissionStructure() {
+  const companyId = useCompanyId();
+
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [formData, setFormData] = useState({
+    role_name: '',
+    base_rate: '',
+    quota_amount: '',
+    bonus_percentage: ''
+  });
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    setLoading(true);
+    const { data: records, error } = await supabase.from('univ_commissionstructure').select('*').eq('company_id', companyId).order('created_at', { ascending: false });
+    if (!error && records) setData(records);
+    setLoading(false);
+  };
+
+  const handleSave = async () => {
+    if (editingId) {
+      await supabase.from('univ_commissionstructure').update({ ...formData, company_id: companyId }).eq('id', editingId);
+    } else {
+      await supabase.from('univ_commissionstructure').insert([{ ...formData, company_id: companyId }]);
+    }
+    setFormData({ role_name: '', base_rate: '', quota_amount: '', bonus_percentage: '' });
+    setIsEditing(false);
+    setEditingId(null);
+    fetchData();
+  };
+
+  const handleEdit = (item) => {
+    setFormData({
+      role_name: item.role_name || '',
+      base_rate: item.base_rate || '',
+      quota_amount: item.quota_amount || '',
+      bonus_percentage: item.bonus_percentage || ''
+    });
+    setEditingId(item.id);
+    setIsEditing(true);
+  };
+
+  const handleDelete = async (id) => {
+    await supabase.from('univ_commissionstructure').delete().eq('id', id);
+    fetchData();
+  };
+
+  return (
+    <div className="p-6 max-w-5xl mx-auto bg-gray-50 min-h-screen">
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
+            <Percent className="text-blue-600 w-8 h-8" />
+            Commission Structures
+          </h1>
+          <p className="text-gray-500 mt-2">Manage sales roles, base rates, and quota bonuses.</p>
+        </div>
+        {!isEditing && (
+          <button
+            onClick={() => setIsEditing(true)}
+            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition-colors"
+          >
+            <Plus className="w-5 h-5" />
+            Add Structure
+          </button>
+        )}
+      </div>
+
+      <AnimatePresence>
+        {isEditing && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="bg-white p-6 rounded-xl shadow-md border border-gray-100 mb-8"
+          >
+            <h2 className="text-xl font-semibold mb-4 text-gray-700">
+              {editingId ? 'Edit Structure' : 'New Structure'}
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-1">Role Name</label>
+                <div className="relative">
+                  <Briefcase className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
+                  <input
+                    type="text"
+                    className="w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    value={formData.role_name}
+                    onChange={(e) => setFormData({ ...formData, role_name: e.target.value })}
+                    placeholder="e.g. Account Executive"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-1">Base Rate (%)</label>
+                <input
+                  type="number"
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  value={formData.base_rate}
+                  onChange={(e) => setFormData({ ...formData, base_rate: e.target.value })}
+                  placeholder="e.g. 5"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-1">Quota Amount ($)</label>
+                <div className="relative">
+                  <Target className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
+                  <input
+                    type="number"
+                    className="w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    value={formData.quota_amount}
+                    onChange={(e) => setFormData({ ...formData, quota_amount: e.target.value })}
+                    placeholder="e.g. 100000"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-1">Bonus Rate (%)</label>
+                <input
+                  type="number"
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  value={formData.bonus_percentage}
+                  onChange={(e) => setFormData({ ...formData, bonus_percentage: e.target.value })}
+                  placeholder="e.g. 10"
+                />
+              </div>
+            </div>
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => {
+                  setIsEditing(false);
+                  setEditingId(null);
+                  setFormData({ role_name: '', base_rate: '', quota_amount: '', bonus_percentage: '' });
+                }}
+                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <X className="w-4 h-4" /> Cancel
+              </button>
+              <button
+                onClick={handleSave}
+                className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-700 transition-colors"
+              >
+                <Save className="w-4 h-4" /> Save
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {loading ? (
+        <div className="flex justify-center py-12">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {data.map((item) => (
+            <motion.div
+              key={item.id}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow"
+            >
+              <div className="p-5">
+                <div className="flex justify-between items-start mb-4">
+                  <h3 className="font-semibold text-lg text-gray-800">{item.role_name || 'Unnamed Role'}</h3>
+                  <div className="flex gap-2">
+                    <button onClick={() => handleEdit(item)} className="p-1.5 text-gray-400 hover:text-blue-600 rounded-md hover:bg-blue-50 transition-colors">
+                      <Edit2 className="w-4 h-4" />
+                    </button>
+                    <button onClick={() => handleDelete(item.id)} className="p-1.5 text-gray-400 hover:text-red-600 rounded-md hover:bg-red-50 transition-colors">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-500">Base Rate:</span>
+                    <span className="font-medium text-gray-700">{item.base_rate}%</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-500">Quota Amount:</span>
+                    <span className="font-medium text-gray-700">${Number(item.quota_amount).toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm pt-3 border-t border-gray-50">
+                    <span className="text-gray-500">Bonus Rate:</span>
+                    <span className="font-bold text-green-600">{item.bonus_percentage}%</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+          {data.length === 0 && !isEditing && (
+            <div className="col-span-full py-12 text-center bg-white rounded-xl border border-dashed border-gray-300">
+              <Percent className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+              <p className="text-gray-500">No commission structures found.</p>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { Search, Filter, ChevronDown, MoreHorizontal, Download, ArrowUpDown, Plus, Loader2, Trash2 } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -10,8 +11,10 @@ export default function UnivDataGrid({
   title = "Data Grid",
   searchPlaceholder = "Search records...",
   companyId,
-  pageName
+  pageName,
+  tableName
 }) {
+
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: 'date', direction: 'desc' });
   const [isAdding, setIsAdding] = useState(false);
@@ -20,35 +23,33 @@ export default function UnivDataGrid({
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
+  const targetTable = tableName || 'industry_records';
+
   const { data: records = [], isLoading } = useQuery({
-    queryKey: ['orbit_records', companyId, pageName],
+    queryKey: ['orbit_records', companyId, pageName, targetTable],
     queryFn: async () => {
-      if (!companyId || !pageName) return [];
-      const { data, error } = await supabase
-        .from('industry_records')
-        .select('*')
-        .eq('company_id', companyId)
-        .eq('industry', 'orbit_build_data')
-        .eq('record_type', pageName)
-        .order('created_at', { ascending: false });
+      if (!companyId) return [];
+      let query = supabase.from(targetTable).select('*').eq('company_id', companyId);
+      if (targetTable === 'industry_records') {
+        query = query.eq('industry', 'orbit_build_data').eq('record_type', pageName);
+      }
+      const { data, error } = await query.order('created_at', { ascending: false });
         
-      if (error) throw error;
+      if (error && error.code !== '42P01') throw error;
       return data || [];
     },
-    enabled: !!companyId && !!pageName
+    enabled: !!companyId
   });
 
   const addMutation = useMutation({
     mutationFn: async (newData) => {
-      const { data, error } = await supabase
-        .from('industry_records')
-        .insert([{
-          company_id: companyId,
-          industry: 'orbit_build_data',
-          record_type: pageName,
-          data: newData,
-          search_text: Object.values(newData).join(' ')
-        }]);
+      let payload;
+      if (targetTable === 'industry_records') {
+        payload = { company_id: companyId, industry: 'orbit_build_data', record_type: pageName, data: newData, search_text: Object.values(newData).join(' ') };
+      } else {
+        payload = { ...newData, company_id: companyId };
+      }
+      const { data, error } = await supabase.from(targetTable).insert([payload]);
       if (error) throw error;
       return data;
     },
@@ -67,7 +68,7 @@ export default function UnivDataGrid({
 
   const deleteMutation = useMutation({
     mutationFn: async (id) => {
-      const { error } = await supabase.from('industry_records').delete().eq('id', id);
+      const { error } = await supabase.from(targetTable).delete().eq('id', id);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -87,13 +88,16 @@ export default function UnivDataGrid({
     });
   };
 
-  const displayData = records.map(r => ({ id: r.id, ...r.data }));
+  const displayData = React.useMemo(() => {
+    return records.map(r => targetTable === 'industry_records' ? { id: r.id, ...r.data } : r);
+  }, [records, targetTable]);
 
-  const displayColumns = [
-    { key: 'name', label: 'Name' },
-    { key: 'status', label: 'Status' },
-    { key: 'date', label: 'Date' }
-  ];
+  const displayColumns = React.useMemo(() => {
+    if (displayData.length === 0) return [{ key: 'name', label: 'Name' }, { key: 'status', label: 'Status' }, { key: 'date', label: 'Date' }];
+    const firstRow = displayData[0];
+    const keys = Object.keys(firstRow).filter(k => k !== 'id' && k !== 'company_id' && k !== 'created_at' && k !== 'updated_at' && typeof firstRow[k] !== 'object');
+    return keys.slice(0, 5).map(k => ({ key: k, label: k.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) }));
+  }, [displayData]);
 
   const handleSort = (key) => {
     let direction = 'asc';
@@ -252,3 +256,4 @@ export default function UnivDataGrid({
     </div>
   );
 }
+

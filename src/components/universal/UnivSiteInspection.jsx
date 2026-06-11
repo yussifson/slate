@@ -27,7 +27,7 @@ export default function UnivSiteInspection() {
     try {
       const { data, error } = await supabase
         .from('univ_site_inspections')
-        .select('*')
+        .select('*').eq('company_id', companyId)
         .eq('company_id', companyId)
         .order('inspection_date', { ascending: false });
       if (error && error.code !== '42P01') throw error;

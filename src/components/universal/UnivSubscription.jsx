@@ -39,7 +39,7 @@ export default function UnivSubscription() {
     try {
       const { data, error } = await supabase
         .from('univ_subscriptions')
-        .select('*')
+        .select('*').eq('company_id', companyId)
         .eq('company_id', companyId)
         .order('created_at', { ascending: false });
       if (error && error.code !== '42P01') throw error;

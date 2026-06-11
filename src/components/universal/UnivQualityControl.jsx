@@ -38,7 +38,7 @@ export default function UnivQualityControl() {
     try {
       const { data, error } = await supabase
         .from('univ_quality_control')
-        .select('*')
+        .select('*').eq('company_id', companyId)
         .eq('company_id', companyId)
         .order('inspection_date', { ascending: false });
       if (error && error.code !== '42P01') throw error;

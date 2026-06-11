@@ -37,7 +37,7 @@ export default function UnivTimeline({
     try {
       const { data, error } = await supabase
         .from('univ_projects')
-        .select('*')
+        .select('*').eq('company_id', companyId)
         .eq('company_id', companyId)
         .order('start_date', { ascending: true });
       if (error && error.code !== '42P01') throw error;

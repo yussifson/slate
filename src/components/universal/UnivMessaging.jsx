@@ -37,7 +37,7 @@ export default function UnivMessaging() {
         if (companyId) {
           const { data: profiles, error: profilesError } = await supabase
             .from('profiles')
-            .select('*')
+            .select('*').eq('company_id', companyId)
             .eq('company_id', companyId);
           if (profilesError) throw profilesError;
 
@@ -151,7 +151,7 @@ export default function UnivMessaging() {
     try {
       const { data, error } = await supabase
         .from('chat_messages')
-        .select('*')
+        .select('*').eq('company_id', companyId)
         .eq('room_id', roomId)
         .order('created_at', { ascending: true });
       if (error) throw error;

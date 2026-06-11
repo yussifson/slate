@@ -27,7 +27,7 @@ export default function UnivClassAttendance() {
     try {
       const { data, error } = await supabase
         .from('univ_class_attendance')
-        .select('*')
+        .select('*').eq('company_id', companyId)
         .eq('company_id', companyId)
         .order('date', { ascending: false });
       if (error && error.code !== '42P01') throw error;

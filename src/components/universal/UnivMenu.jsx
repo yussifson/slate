@@ -33,7 +33,7 @@ export default function UnivMenu() {
     try {
       const { data, error } = await supabase
         .from('univ_menus')
-        .select('*')
+        .select('*').eq('company_id', companyId)
         .eq('company_id', companyId)
         .order('category', { ascending: true })
         .order('item_name', { ascending: true });

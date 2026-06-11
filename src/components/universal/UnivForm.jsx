@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Upload, X, Check, File as FileIcon, Calendar, Image as ImageIcon } from 'lucide-react';
 import { toast } from 'react-hot-toast';
@@ -16,6 +17,8 @@ export default function UnivForm({
   ],
   onSubmit = null
 }) {
+  const companyId = useCompanyId();
+
   const [formData, setFormData] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [dragActive, setDragActive] = useState(false);

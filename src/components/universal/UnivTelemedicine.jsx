@@ -39,7 +39,7 @@ export default function UnivTelemedicine() {
     try {
       const { data, error } = await supabase
         .from('univ_telemedicine')
-        .select('*')
+        .select('*').eq('company_id', companyId)
         .eq('company_id', companyId)
         .order('scheduled_time', { ascending: true });
       if (error && error.code !== '42P01') throw error;

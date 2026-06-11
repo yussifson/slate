@@ -10,8 +10,8 @@ const PRIORITY_COLORS = { Low: 'bg-slate-100 text-slate-600', Medium: 'bg-amber-
 const COL_COLORS = ['border-slate-300', 'border-blue-400', 'border-violet-400', 'border-emerald-400'];
 const EMPTY_FORM = { title: '', description: '', status: 'To Do', priority: 'Medium', assignee: '', due_date: '', labels: '' };
 
-export default function UnivKanban() {
-  const companyId = useCompanyId();
+export default function UnivKanban({ title = "Kanban Board", companyId, pageName, tableName }) {
+
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -22,22 +22,37 @@ export default function UnivKanban() {
   const [addingCol, setAddingCol] = useState(false);
   const [newColName, setNewColName] = useState('');
 
+  // Fallback if tableName is undefined (shouldn't happen in OrbitBuild)
+  const targetTable = tableName || 'univ_kanban_tasks';
+
   useEffect(() => {
     if (companyId) {
       fetchTasks();
-      const savedCols = localStorage.getItem(`kanban_cols_${companyId}`);
+      const savedCols = localStorage.getItem(`kanban_cols_${companyId}_${targetTable}`);
       if (savedCols) setColumns(JSON.parse(savedCols));
-      const ch = supabase.channel('kanban_ch').on('postgres_changes', { event: '*', schema: 'public', table: 'univ_kanban_tasks', filter: `company_id=eq.${companyId}` }, fetchTasks).subscribe();
+      
+      const ch = supabase.channel(`kanban_ch_${targetTable}`)
+        .on('postgres_changes', { event: '*', schema: 'public', table: targetTable, filter: `company_id=eq.${companyId}` }, fetchTasks)
+        .subscribe();
       return () => supabase.removeChannel(ch);
     }
-  }, [companyId]);
+  }, [companyId, targetTable]);
 
   const fetchTasks = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.from('univ_kanban_tasks').select('*').eq('company_id', companyId).order('created_at', { ascending: true });
+      const { data, error } = await supabase.from(targetTable).select('*').eq('company_id', companyId).order('created_at', { ascending: true });
       if (error && error.code !== '42P01') throw error;
-      setTasks(data || []);
+      
+      // Auto-extract columns from data if they exist
+      const loaded = data || [];
+      const distinctStatuses = Array.from(new Set(loaded.map(t => t.status || 'To Do')));
+      if (distinctStatuses.length > 0) {
+        const merged = Array.from(new Set([...columns, ...distinctStatuses]));
+        if (merged.length > columns.length) setColumns(merged);
+      }
+      
+      setTasks(loaded);
     } catch (e) { console.error(e); } finally { setLoading(false); }
   };
 
@@ -45,11 +60,11 @@ export default function UnivKanban() {
     e.preventDefault();
     try {
       if (editingId) {
-        const { error } = await supabase.from('univ_kanban_tasks').update(form).eq('id', editingId);
+        const { error } = await supabase.from(targetTable).update(form).eq('id', editingId);
         if (error) throw error;
         toast.success('Task updated!');
       } else {
-        const { error } = await supabase.from('univ_kanban_tasks').insert({ ...form, company_id: companyId });
+        const { error } = await supabase.from(targetTable).insert({ ...form, company_id: companyId });
         if (error) throw error;
         toast.success('Task created!');
       }
@@ -58,7 +73,7 @@ export default function UnivKanban() {
   };
 
   const remove = async (id) => {
-    const { error } = await supabase.from('univ_kanban_tasks').delete().eq('id', id);
+    const { error } = await supabase.from(targetTable).delete().eq('id', id);
     if (error) toast.error('Failed to delete'); else { toast.success('Deleted'); fetchTasks(); }
   };
 
@@ -75,7 +90,7 @@ export default function UnivKanban() {
     const newStatus = destination.droppableId;
     setTasks(prev => prev.map(t => t.id === draggableId ? { ...t, status: newStatus } : t));
     try {
-      const { error } = await supabase.from('univ_kanban_tasks').update({ status: newStatus }).eq('id', draggableId);
+      const { error } = await supabase.from(targetTable).update({ status: newStatus }).eq('id', draggableId);
       if (error) throw error;
     } catch { toast.error('Failed to move task'); fetchTasks(); }
   };
@@ -120,26 +135,29 @@ export default function UnivKanban() {
                       <div ref={provided.innerRef} {...provided.droppableProps} className={`flex-1 overflow-y-auto p-2 space-y-2 custom-scrollbar rounded-b-2xl transition-colors ${snapshot.isDraggingOver ? 'bg-primary/5' : ''}`}>
                         {colTasks.map((task, index) => (
                           <Draggable key={task.id} draggableId={task.id} index={index}>
-                            {(prov, snap) => (
+                            {(prov, snap) => {
+                              const displayTitle = task.title || task.name || task.client_name || task.employee_name || task.room_number || task.id.slice(0,8);
+                              const displayDesc = task.description || task.notes || task.reason || task.email || '';
+                              return (
                               <div ref={prov.innerRef} {...prov.draggableProps} {...prov.dragHandleProps} style={prov.draggableProps.style} className={`bg-card border border-border rounded-xl p-3 group shadow-sm transition-all ${snap.isDragging ? 'shadow-xl ring-2 ring-primary scale-105 z-50' : 'hover:shadow-md'}`}>
                                 <div className="flex justify-between items-start mb-2">
-                                  <p className="text-sm font-bold text-foreground leading-snug flex-1 pr-1">{task.title}</p>
+                                  <p className="text-sm font-bold text-foreground leading-snug flex-1 pr-1">{displayTitle}</p>
                                   <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
                                     <button onClick={() => openModal(task)} className="p-1 bg-muted rounded-md text-muted-foreground hover:text-primary"><Edit2 className="w-3 h-3" /></button>
                                     <button onClick={() => remove(task.id)} className="p-1 bg-red-50 rounded-md text-red-400 hover:text-red-600"><Trash2 className="w-3 h-3" /></button>
                                   </div>
                                 </div>
-                                {task.description && <p className="text-xs text-muted-foreground mb-2 line-clamp-2">{task.description}</p>}
+                                {displayDesc && <p className="text-xs text-muted-foreground mb-2 line-clamp-2">{displayDesc}</p>}
                                 <div className="flex flex-wrap gap-1 mt-2">
                                   {task.priority && <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${PRIORITY_COLORS[task.priority]}`}>{task.priority}</span>}
                                   {task.labels && task.labels.split(',').map(l => <span key={l} className="text-[10px] px-1.5 py-0.5 bg-primary/10 text-primary rounded-md font-bold">{l.trim()}</span>)}
                                 </div>
                                 <div className="flex justify-between items-center mt-2 text-xs text-muted-foreground">
                                   {task.assignee && <span className="flex items-center gap-1"><User className="w-3 h-3" />{task.assignee}</span>}
-                                  {task.due_date && <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{task.due_date}</span>}
+                                  {(task.due_date || task.created_at) && <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{task.due_date || task.created_at?.split('T')[0]}</span>}
                                 </div>
                               </div>
-                            )}
+                            )}}
                           </Draggable>
                         ))}
                         {provided.placeholder}
@@ -190,3 +208,4 @@ export default function UnivKanban() {
     </div>
   );
 }
+

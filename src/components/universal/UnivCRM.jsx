@@ -53,7 +53,7 @@ export default function UnivCRM() {
     try {
       const { data, error } = await supabase
         .from('univ_crm_leads')
-        .select('*')
+        .select('*').eq('company_id', companyId)
         .eq('company_id', companyId)
         .order('created_at', { ascending: false });
       if (error && error.code !== '42P01') throw error;

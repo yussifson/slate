@@ -41,7 +41,7 @@ export default function UnivWard() {
     try {
       const { data, error } = await supabase
         .from('univ_wards')
-        .select('*')
+        .select('*').eq('company_id', companyId)
         .eq('company_id', companyId)
         .order('ward_name', { ascending: true });
       if (error && error.code !== '42P01') throw error;

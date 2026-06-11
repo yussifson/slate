@@ -27,7 +27,7 @@ export default function UnivClientPortal() {
     try {
       const { data, error } = await supabase
         .from('univ_client_portal')
-        .select('*')
+        .select('*').eq('company_id', companyId)
         .eq('company_id', companyId)
         .order('client_name', { ascending: true });
       if (error && error.code !== '42P01') throw error;

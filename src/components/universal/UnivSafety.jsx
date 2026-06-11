@@ -27,7 +27,7 @@ export default function UnivSafety() {
     try {
       const { data, error } = await supabase
         .from('univ_safety')
-        .select('*')
+        .select('*').eq('company_id', companyId)
         .eq('company_id', companyId)
         .order('report_date', { ascending: false });
       if (error && error.code !== '42P01') throw error;

@@ -1,0 +1,308 @@
+import React, { useState, useEffect } from 'react';
+import { useCompanyId } from '@/hooks/useCompanyId';
+import { motion, AnimatePresence } from 'framer-motion';
+import { supabase } from '@/api/supabaseClient';
+import { Share2, Plus, Trash2, Edit2, X, Check, Search, RefreshCw } from 'lucide-react';
+
+export default function UnivReferral() {
+  const companyId = useCompanyId();
+
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  
+  const [formData, setFormData] = useState({
+    patient_name: '',
+    referred_to: '',
+    reason: '',
+    date_referred: ''
+  });
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    setLoading(true);
+    const { data: fetchedData, error } = await supabase
+      .from('univ_referrals')
+      .select('*').eq('company_id', companyId)
+      .order('created_at', { ascending: false });
+      
+    if (error) {
+      console.error('Error fetching univ_referrals:', error);
+    } else {
+      setData(fetchedData || []);
+    }
+    setLoading(false);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (editingId) {
+      const { error } = await supabase
+        .from('univ_referrals')
+        .update({ ...formData, company_id: companyId })
+        .eq('id', editingId);
+      if (error) console.error('Error updating:', error);
+    } else {
+      const { error } = await supabase
+        .from('univ_referrals')
+        .insert([{ ...formData, company_id: companyId }]);
+      if (error) console.error('Error inserting:', error);
+    }
+    
+    setIsModalOpen(false);
+    setEditingId(null);
+    setFormData({     patient_name: '',
+    referred_to: '',
+    reason: '',
+    date_referred: '' });
+    fetchData();
+  };
+
+  const handleEdit = (record) => {
+    setFormData({
+      patient_name: record.patient_name || '',
+      referred_to: record.referred_to || '',
+      reason: record.reason || '',
+      date_referred: record.date_referred || ''
+    });
+    setEditingId(record.id);
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this record?')) {
+      const { error } = await supabase
+        .from('univ_referrals')
+        .delete()
+        .eq('id', id);
+      if (error) console.error('Error deleting:', error);
+      else fetchData();
+    }
+  };
+
+  const filteredData = data.filter(item => 
+    Object.values(item).some(val => 
+      String(val).toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  );
+
+  return (
+    <div className="p-6 max-w-7xl mx-auto text-slate-800 dark:text-slate-200">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+        <div className="flex items-center gap-3">
+          <div className="p-3 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl">
+            <Share2 size={24} />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold">Referral Management</h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400">Manage your referral records efficiently</p>
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+            <input 
+              type="text"
+              placeholder="Search..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 pr-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none w-full md:w-64"
+            />
+          </div>
+          <button 
+            onClick={fetchData}
+            className="p-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+          >
+            <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
+          </button>
+          <button 
+            onClick={() => {
+              setFormData({     patient_name: '',
+    referred_to: '',
+    reason: '',
+    date_referred: '' });
+              setEditingId(null);
+              setIsModalOpen(true);
+            }}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors shadow-sm shadow-blue-600/20"
+          >
+            <Plus size={18} />
+            <span>Add New</span>
+          </button>
+        </div>
+      </div>
+
+      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
+                <th className="p-4 font-medium text-slate-500 dark:text-slate-400">Patient Name</th>
+                <th className="p-4 font-medium text-slate-500 dark:text-slate-400">Referred To</th>
+                <th className="p-4 font-medium text-slate-500 dark:text-slate-400">Reason for Referral</th>
+                <th className="p-4 font-medium text-slate-500 dark:text-slate-400">Date Referred</th>
+                <th className="p-4 font-medium text-slate-500 dark:text-slate-400">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <AnimatePresence>
+                {loading ? (
+                  <tr>
+                    <td colSpan="5" className="p-8 text-center text-slate-500">
+                      <RefreshCw className="animate-spin mx-auto mb-2" />
+                      Loading records...
+                    </td>
+                  </tr>
+                ) : filteredData.length === 0 ? (
+                  <tr>
+                    <td colSpan="5" className="p-8 text-center text-slate-500">
+                      No records found.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredData.map((item, idx) => (
+                    <motion.tr 
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ delay: idx * 0.05 }}
+                      key={item.id}
+                      className="border-b border-slate-100 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700/20 transition-colors"
+                    >
+                      <td className="p-4">{item.patient_name}</td>
+                      <td className="p-4">{item.referred_to}</td>
+                      <td className="p-4">{item.reason}</td>
+                      <td className="p-4">{item.date_referred}</td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-2">
+                          <button 
+                            onClick={() => handleEdit(item)}
+                            className="p-1.5 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-md transition-colors"
+                          >
+                            <Edit2 size={16} />
+                          </button>
+                          <button 
+                            onClick={() => handleDelete(item.id)}
+                            className="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-md transition-colors"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </td>
+                    </motion.tr>
+                  ))
+                )}
+              </AnimatePresence>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {isModalOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm"
+          >
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-md overflow-hidden border border-slate-200 dark:border-slate-700"
+            >
+              <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-700">
+                <h2 className="text-xl font-semibold">
+                  {editingId ? 'Edit Record' : 'Add New Record'}
+                </h2>
+                <button 
+                  onClick={() => setIsModalOpen(false)}
+                  className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              
+              <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Patient Name</label>
+                  <input 
+                    type="text"
+                    name="patient_name"
+                    value={formData.patient_name}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Referred To</label>
+                  <input 
+                    type="text"
+                    name="referred_to"
+                    value={formData.referred_to}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Reason for Referral</label>
+                  <input 
+                    type="text"
+                    name="reason"
+                    value={formData.reason}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Date Referred</label>
+                  <input 
+                    type="date"
+                    name="date_referred"
+                    value={formData.date_referred}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    required
+                  />
+                </div>
+
+                
+                <div className="pt-4 flex gap-3">
+                  <button 
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
+                    className="flex-1 px-4 py-2 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    type="submit"
+                    className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center justify-center gap-2 transition-colors"
+                  >
+                    <Check size={18} />
+                    <span>{editingId ? 'Update' : 'Save'}</span>
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}

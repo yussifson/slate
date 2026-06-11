@@ -26,7 +26,7 @@ export default function UnivNotification() {
     try {
       const { data, error } = await supabase
         .from('univ_notifications')
-        .select('*')
+        .select('*').eq('company_id', companyId)
         .eq('company_id', companyId)
         .order('created_at', { ascending: false });
       if (error && error.code !== '42P01') throw error;

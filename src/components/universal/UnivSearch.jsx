@@ -29,7 +29,7 @@ export default function UnivSearch() {
         // 1. Search Contacts
         const { data: contacts, error: contactsErr } = await supabase
           .from('univ_contacts')
-          .select('*')
+          .select('*').eq('company_id', companyId)
           .eq('company_id', companyId)
           .or(`first_name.ilike.${searchStr},last_name.ilike.${searchStr},company_name.ilike.${searchStr}`);
         
@@ -49,7 +49,7 @@ export default function UnivSearch() {
         // 2. Search Invoices
         const { data: invoices, error: invoicesErr } = await supabase
           .from('univ_invoices')
-          .select('*')
+          .select('*').eq('company_id', companyId)
           .eq('company_id', companyId)
           .or(`client_name.ilike.${searchStr},invoice_number.ilike.${searchStr}`);
 
@@ -69,7 +69,7 @@ export default function UnivSearch() {
         // 3. Search Projects
         const { data: projects, error: projectsErr } = await supabase
           .from('univ_projects')
-          .select('*')
+          .select('*').eq('company_id', companyId)
           .eq('company_id', companyId)
           .ilike('name', searchStr);
 
@@ -89,7 +89,7 @@ export default function UnivSearch() {
         // 4. Search Documents
         const { data: docs, error: docsErr } = await supabase
           .from('univ_documents')
-          .select('*')
+          .select('*').eq('company_id', companyId)
           .eq('company_id', companyId)
           .ilike('name', searchStr);
 

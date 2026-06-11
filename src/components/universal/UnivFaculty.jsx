@@ -27,7 +27,7 @@ export default function UnivFaculty() {
     try {
       const { data, error } = await supabase
         .from('univ_faculty')
-        .select('*')
+        .select('*').eq('company_id', companyId)
         .eq('company_id', companyId)
         .order('first_name', { ascending: true });
       if (error && error.code !== '42P01') throw error;

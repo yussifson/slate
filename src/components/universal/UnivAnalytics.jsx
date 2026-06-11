@@ -1,4 +1,5 @@
 import React from 'react';
+import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { BarChart2, PieChart, TrendingUp, Download, Filter, Calendar } from 'lucide-react';
 
@@ -6,6 +7,8 @@ export default function UnivAnalytics({
   title = "Analytics & Reports",
   subtitle = "Detailed insights into your workspace performance."
 }) {
+  const companyId = useCompanyId();
+
   return (
     <div className="flex flex-col h-full bg-background overflow-y-auto custom-scrollbar pb-8">
       {/* Header */}

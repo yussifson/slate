@@ -39,7 +39,7 @@ export default function UnivRoom() {
     try {
       const { data, error } = await supabase
         .from('univ_rooms')
-        .select('*')
+        .select('*').eq('company_id', companyId)
         .eq('company_id', companyId)
         .order('room_number', { ascending: true });
       if (error && error.code !== '42P01') throw error;
