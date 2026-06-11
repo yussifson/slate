@@ -58,16 +58,22 @@ export const AuthProvider = ({ children }) => {
         
         if (urlAccessToken && urlRefreshToken) {
             setAuthStep("Restoring cross-domain session...");
+            
+            // ALWAYS clean the URL immediately to prevent retry loops on refresh
+            const params = new URLSearchParams(window.location.search);
+            params.delete('access_token');
+            params.delete('refresh_token');
+            const newSearch = params.toString();
+            const newUrl = window.location.pathname + (newSearch ? '?' + newSearch : '') + window.location.hash;
+            window.history.replaceState({}, document.title, newUrl);
+
             const { data, error } = await supabase.auth.setSession({
                 access_token: urlAccessToken,
                 refresh_token: urlRefreshToken
             });
+            
             if (!error && data.session) {
                 sessionVal = data.session;
-                // Clean the URL to remove the tokens for security, but preserve other params if we need them later?
-                // Actually, we'll just clean the whole thing at the end or here, since we already extracted them into memory.
-                const newUrl = window.location.pathname + window.location.hash;
-                window.history.replaceState({}, document.title, newUrl);
             }
         }
         
