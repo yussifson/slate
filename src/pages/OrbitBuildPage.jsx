@@ -45,6 +45,10 @@ const UnivResourceAllocation = React.lazy(() => import("@/components/universal/U
 const UnivSurvey = React.lazy(() => import("@/components/universal/UnivSurvey"));
 const UnivEventManagement = React.lazy(() => import("@/components/universal/UnivEventManagement"));
 
+// Billing Components
+const UnivBilling = React.lazy(() => import("@/components/universal/UnivBilling"));
+const SuperAdminBilling = React.lazy(() => import("@/components/orbitbolt/SuperAdminBilling"));
+
 const UnivDataGrid = React.lazy(() => import("@/components/universal/UnivDataGrid"));
 const UnivKanban = React.lazy(() => import("@/components/universal/UnivKanban"));
 const UnivCalendar = React.lazy(() => import("@/components/universal/UnivCalendar"));
@@ -89,7 +93,6 @@ const UnivWard = React.lazy(() => import("@/components/universal/UnivWard"));
 const UnivTelemedicine = React.lazy(() => import("@/components/universal/UnivTelemedicine"));
 
 // Phase 7 Universal Components (Hospitality Suite)
-const UnivBooking = React.lazy(() => import("@/components/universal/UnivBooking"));
 const UnivRoom = React.lazy(() => import("@/components/universal/UnivRoom"));
 const UnivHousekeeping = React.lazy(() => import("@/components/universal/UnivHousekeeping"));
 const UnivMenu = React.lazy(() => import("@/components/universal/UnivMenu"));
@@ -111,7 +114,6 @@ const UnivContractor = React.lazy(() => import("@/components/universal/UnivContr
 const UnivCaseManagement = React.lazy(() => import("@/components/universal/UnivCaseManagement"));
 const UnivLegalDocument = React.lazy(() => import("@/components/universal/UnivLegalDocument"));
 const UnivCourtCalendar = React.lazy(() => import("@/components/universal/UnivCourtCalendar"));
-const UnivClientPortal = React.lazy(() => import("@/components/universal/UnivClientPortal"));
 const UnivProduction = React.lazy(() => import("@/components/universal/UnivProduction"));
 const UnivBOM = React.lazy(() => import("@/components/universal/UnivBOM"));
 const UnivMachine = React.lazy(() => import("@/components/universal/UnivMachine"));
@@ -618,6 +620,13 @@ export default function OrbitBuildPage() {
       case 'webinars':
       case 'eventmanagement':
         return <UnivEventManagement title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+      case 'billing':
+      case 'subscription':
+      case 'plans':
+        return <UnivBilling title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} />;
+      case 'superadminbilling':
+      case 'revenue':
+        return <SuperAdminBilling title={pageDef.page_name} />;
       case 'notification':
       case 'notifications':
         return <UnivNotification />;
