@@ -20,9 +20,20 @@ export default function Login() {
   const [branding, setBranding] = useState({ name: 'Slate', logo_url: null, tagline: 'Enter your credentials to access your account' });
 
   const { currentSubdomain, baseDomain } = getSubdomainAndBase();
+  const { isAuthenticated, user, isLoadingAuth } = useAuth();
 
   const [checkingSubdomain, setCheckingSubdomain] = useState(!!currentSubdomain);
   const [invalidSubdomain, setInvalidSubdomain] = useState(false);
+
+  // Auto-redirect if already authenticated
+  useEffect(() => {
+    if (!isLoadingAuth && isAuthenticated && user) {
+      if (user.role === 'student') window.location.href = '/student-portal';
+      else if (user.role === 'parent') window.location.href = '/parent-portal';
+      else if (user.role === 'super_admin' && !currentSubdomain) window.location.href = '/admin';
+      else window.location.href = '/';
+    }
+  }, [isAuthenticated, isLoadingAuth, user, currentSubdomain]);
 
   // Disconnect Auth Pages from Dashboard Theme Switcher
   useEffect(() => {

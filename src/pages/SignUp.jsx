@@ -7,9 +7,22 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import { Logo } from '@/components/ui/Logo';
 import { getSubdomainAndBase } from '@/lib/domainUtils';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function SignUp() {
   const { t } = useTranslation();
+  const { isAuthenticated, user, isLoadingAuth } = useAuth();
+  
+  // Auto-redirect if already authenticated
+  useEffect(() => {
+    if (!isLoadingAuth && isAuthenticated && user) {
+      if (user.role === 'student') window.location.href = '/student-portal';
+      else if (user.role === 'parent') window.location.href = '/parent-portal';
+      else if (user.role === 'super_admin') window.location.href = '/admin';
+      else window.location.href = '/';
+    }
+  }, [isAuthenticated, isLoadingAuth, user]);
+
   const [username, setUsername] = useState('');
   const [companyName, setCompanyName] = useState('');
   const [subdomain, setSubdomain] = useState('');
