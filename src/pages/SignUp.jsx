@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import { Logo } from '@/components/ui/Logo';
 import { getSubdomainAndBase } from '@/lib/domainUtils';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/lib/AuthContext';
 
 export default function SignUp() {
   const { t } = useTranslation();
