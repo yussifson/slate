@@ -2,7 +2,7 @@
 
 -- 1. Subscription Plans
 CREATE TABLE IF NOT EXISTS public.subscription_plans (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,
     paystack_plan_code TEXT UNIQUE,
     price_monthly NUMERIC DEFAULT 0,
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS public.subscription_plans (
 
 -- 2. Company Subscriptions
 CREATE TABLE IF NOT EXISTS public.company_subscriptions (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     company_id UUID REFERENCES public.companies(id) ON DELETE CASCADE UNIQUE NOT NULL,
     plan_id UUID REFERENCES public.subscription_plans(id) ON DELETE SET NULL,
     paystack_customer_code TEXT,
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS public.company_subscriptions (
 
 -- 3. Usage Metrics
 CREATE TABLE IF NOT EXISTS public.usage_metrics (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     company_id UUID REFERENCES public.companies(id) ON DELETE CASCADE NOT NULL,
     metric_name TEXT NOT NULL, -- e.g., 'ai_credits', 'storage_gb', 'users'
     used_amount NUMERIC DEFAULT 0,
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS public.usage_metrics (
 
 -- 4. Transaction & Invoice Logs
 CREATE TABLE IF NOT EXISTS public.billing_transactions (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     company_id UUID REFERENCES public.companies(id) ON DELETE CASCADE,
     paystack_reference TEXT UNIQUE,
     amount NUMERIC NOT NULL,

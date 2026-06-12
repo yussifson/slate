@@ -89,6 +89,11 @@ export default function SignUp() {
         return;
       }
 
+      // Parse URL parameters for pricing plans
+      const searchParams = new URLSearchParams(window.location.search);
+      const urlPlan = searchParams.get('plan') || 'starter';
+      const urlMarket = searchParams.get('market') || 'global';
+
       // 2. Create the company
       const { data: companyData, error: compError } = await supabase.from('companies').insert({
         name: companyName,
@@ -97,7 +102,8 @@ export default function SignUp() {
         industry_type: 'law', // Temporarily set to 'law' to pass DB constraints. Onboarding will update it.
         education_level: null,
         country: null,
-        subscription_plan: 'starter',
+        subscription_plan: urlPlan,
+        market_tier: urlMarket,
         subscription_status: 'trial',
         status: 'active'
       }).select().single();
