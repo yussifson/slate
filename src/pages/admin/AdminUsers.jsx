@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState, useEffect } from 'react';
-import { supabase } from '@/api/supabaseClient';
+import { powerSync } from "@/api/PowerSyncConnector";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -65,12 +65,16 @@ export default function AdminUsers() {
   const handleForceOnboarding = async (userObj) => {
     try {
       // Unlink from profile
-      const { error } = await supabase.from('profiles').update({ company_id: null }).eq('id', userObj.id);
+      const keys = Object.keys({ company_id: null });
+      const values = Object.values({ company_id: null }).map(v => typeof v === 'object' ? JSON.stringify(v) : v);
+      const setClause = keys.map(k => `${k} = ?`).join(', ');
+      await powerSync.execute(`UPDATE ${'profiles'.replace(/['"`]/g, '')} SET ${setClause} WHERE id = ?`, [...values, userObj.id]);
+      const error = null;
       if (error) throw error;
       
       // Prevent OnboardingWizard from finding and reusing the old company via email
       if (userObj.company_id) {
-        await supabase.from('companies').update({ email: null }).eq('id', userObj.company_id);
+        await (async () => { const _p = {email: null}; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE companies SET ${_k.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._v, userObj.company_id]); })();
       }
       
       toast({ title: "Success", description: "User forced to onboard on next login" });

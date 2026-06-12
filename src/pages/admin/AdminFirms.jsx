@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState, useEffect } from 'react';
-import { supabase } from '@/api/supabaseClient';
+import { powerSync } from "@/api/PowerSyncConnector";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -65,10 +65,13 @@ export default function AdminFirms() {
   const handleToggleStatus = async (company) => {
     const nextStatus = company.status === 'active' ? 'suspended' : 'active';
     try {
-      const { error } = await supabase
-        .from('companies')
-        .update({ status: nextStatus })
-        .eq('id', company.id);
+      (async () => {
+        const _p = { status: nextStatus };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`UPDATE companies SET ${_k.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._v, company.id]);
+      })();
+      const error = null;
 
       if (error) throw error;
       toast({ title: `Firm status updated`, description: `${company.name} is now ${nextStatus}.` });
@@ -117,15 +120,18 @@ export default function AdminFirms() {
     if (!selectedCompany) return;
     setUpdatingQuota(true);
     try {
-      const { error } = await supabase
-        .from('companies')
-        .update({
+      (async () => {
+        const _p = {
           max_users: maxUsers,
           max_cases: maxCases,
           subscription_plan: subPlan,
           subscription_status: subStatus
-        })
-        .eq('id', selectedCompany.id);
+        };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`UPDATE companies SET ${_k.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._v, selectedCompany.id]);
+      })();
+      const error = null;
 
       if (error) throw error;
       toast({ title: "Limits updated successfully" });

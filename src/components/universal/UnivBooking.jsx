@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -71,7 +72,7 @@ export default function UnivBooking({
     queryKey: ['bookings', effectiveCompanyId, effectivePageName],
     queryFn: async () => {
       if (!effectiveCompanyId) return [];
-      let query = supabase.from(targetTable).select('*').eq('company_id', effectiveCompanyId);
+      let dbQueryStr = `SELECT * FROM ${targetTable} WHERE company_id = ?`; let dbQueryParams = [effectiveCompanyId];
       if (targetTable === 'industry_records') {
         query = query.eq('industry', 'orbit_build_data').eq('record_type', `${effectivePageName}_bookings`);
       }
@@ -126,7 +127,13 @@ export default function UnivBooking({
         }
       };
       const finalPayload = targetTable === 'industry_records' ? payload : { ...bookingData, company_id: effectiveCompanyId };
-      const { error } = await supabase.from(targetTable).insert([finalPayload]);
+      const { error } = await (async () => {
+        const _p = finalPayload;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO targetTable (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
       if (error) throw error;
     },
     onSuccess: () => {

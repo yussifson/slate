@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -40,7 +41,7 @@ export default function UnivChat({
     queryKey: ['chat_channels', effectiveCompanyId, effectivePageName],
     queryFn: async () => {
       if (!effectiveCompanyId) return [];
-      let query = supabase.from(targetTable).select('*').eq('company_id', effectiveCompanyId);
+      let dbQueryStr = `SELECT * FROM ${targetTable} WHERE company_id = ?`; let dbQueryParams = [effectiveCompanyId];
       if (targetTable === 'industry_records') {
         query = query.eq('industry', 'orbit_build_data').eq('record_type', `${effectivePageName}_channels`);
       }
@@ -64,7 +65,7 @@ export default function UnivChat({
     queryKey: ['chat_messages', effectiveCompanyId, activeChannelId],
     queryFn: async () => {
       if (!effectiveCompanyId || !activeChannelId) return [];
-      let query = supabase.from(targetTable).select('*').eq('company_id', effectiveCompanyId);
+      let dbQueryStr = `SELECT * FROM ${targetTable} WHERE company_id = ?`; let dbQueryParams = [effectiveCompanyId];
       if (targetTable === 'industry_records') {
         query = query.eq('industry', 'orbit_build_data').eq('record_type', `${activeChannelId}_messages`);
       }
@@ -108,7 +109,13 @@ export default function UnivChat({
       } else {
         payload = { ...channelData, company_id: effectiveCompanyId };
       }
-      const { error } = await supabase.from(targetTable).insert([payload]);
+      const { error } = await (async () => {
+        const _p = payload;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO targetTable (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
       if (error) throw error;
     },
     onSuccess: () => {
@@ -133,7 +140,13 @@ export default function UnivChat({
       } else {
         payload = { ...msgData, company_id: effectiveCompanyId };
       }
-      const { error } = await supabase.from(targetTable).insert([payload]);
+      const { error } = await (async () => {
+        const _p = payload;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO targetTable (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
       if (error) throw error;
     },
     onSuccess: () => {

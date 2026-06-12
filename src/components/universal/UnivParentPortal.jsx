@@ -5,7 +5,8 @@ import GenericKanban from '@/components/views/GenericKanban';
 import GenericCalendar from '@/components/views/GenericCalendar';
 import GenericDashboard from '@/components/views/GenericDashboard';
 
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { Search, Users, Link as LinkIcon, Mail, Settings, CheckCircle2, Copy } from 'lucide-react';
@@ -33,8 +34,8 @@ export default function UnivParentPortal() {
     setLoading(true);
     try {
       const [accessRes, studentRes] = await Promise.all([
-        supabase.from('univ_parent_portal_access').select('*').eq('company_id', companyId).order('parent_name', { ascending: true }),
-        supabase.from('univ_students').select('id, first_name, last_name').eq('company_id', companyId)
+        powerSync.execute('SELECT * FROM univ_parent_portal_access WHERE company_id = ? ORDER BY parent_name ASC', [companyId]).then(r => ({ data: r.rows ? (r.rows._array || Array.from(r.rows)) : [], error: null })),
+        powerSync.execute('SELECT id, first_name, last_name FROM univ_students WHERE company_id = ?', [companyId]).then(r => ({ data: r.rows ? (r.rows._array || Array.from(r.rows)) : [], error: null }))
       ]);
 
       if (accessRes.error && accessRes.error.code !== '42P01') throw accessRes.error;
@@ -80,7 +81,13 @@ export default function UnivParentPortal() {
         status: 'Pending'
       };
 
-      const { error } = await supabase.from('univ_parent_portal_access').insert(newAccess);
+      const { error } = await (async () => {
+        const _p = newAccess;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO univ_parent_portal_access (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
       if (error) throw error;
       toast.success('Access code generated');
       fetchAccesses();

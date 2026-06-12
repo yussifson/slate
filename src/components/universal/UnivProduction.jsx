@@ -5,7 +5,8 @@ import GenericKanban from '@/components/views/GenericKanban';
 import GenericCalendar from '@/components/views/GenericCalendar';
 import GenericDashboard from '@/components/views/GenericDashboard';
 
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Factory, Plus, Settings, CheckCircle2, Clock, PlayCircle, Edit2, Trash2, XCircle } from 'lucide-react';
@@ -102,9 +103,13 @@ export default function UnivProduction() {
         if (error) throw error;
         toast.success('Production batch updated');
       } else {
-        const { error } = await supabase
-          .from('univ_production')
-          .insert(payload);
+        const { error } = await (async () => {
+        const _p = payload;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO univ_production (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
         if (error) throw error;
         toast.success('Production batch created');
       }
@@ -121,10 +126,8 @@ export default function UnivProduction() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this batch?')) return;
     try {
-      const { error } = await supabase
-        .from('univ_production')
-        .delete()
-        .eq('id', id);
+      await powerSync.execute(`DELETE FROM univ_production WHERE id = ?`, [id]);
+      const error = null;
       if (error) throw error;
       toast.success('Batch deleted');
       fetchProduction();

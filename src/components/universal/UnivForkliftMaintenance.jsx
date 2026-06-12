@@ -6,7 +6,8 @@ import GenericCalendar from '@/components/views/GenericCalendar';
 import GenericDashboard from '@/components/views/GenericDashboard';
 
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { motion } from 'framer-motion';
 import { Wrench, Plus, Edit2, Trash2, Save, X, RefreshCw } from 'lucide-react';
 
@@ -28,7 +29,9 @@ const UnivForkliftMaintenance = () => {
 
   const fetchData = async () => {
     setLoading(true);
-    const { data: records, error } = await supabase.from(tableName).select('*').eq('company_id', companyId).order('created_at', { ascending: false });
+    const __res = await powerSync.execute(`SELECT * FROM tableName WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
+      const records = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
+      const error = null;
     if (error) {
       console.error('Error fetching data:', error);
     } else {
@@ -45,10 +48,17 @@ const UnivForkliftMaintenance = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (editId) {
-      const { error } = await supabase.from(tableName).update({ ...formData, company_id: companyId }).eq('id', editId);
+      await (async () => { const _p = { ...formData, company_id: companyId }; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${tableName} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editId]); })();
+      const error = null; const data = [];
       if (error) console.error('Error updating:', error);
     } else {
-      const { error } = await supabase.from(tableName).insert([{ ...formData, company_id: companyId }]);
+      const { error } = await (async () => {
+        const _p = { ...formData, company_id: companyId };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO tableName (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
       if (error) console.error('Error inserting:', error);
     }
     setFormData({forklift_id: '', last_service: '', next_service: '', condition: ''});
@@ -64,7 +74,8 @@ const UnivForkliftMaintenance = () => {
   };
 
   const handleDelete = async (id) => {
-    const { error } = await supabase.from(tableName).delete().eq('id', id);
+    await powerSync.execute(`DELETE FROM tableName WHERE id = ?`, [id]);
+      const error = null;
     if (error) console.error('Error deleting:', error);
     else fetchData();
   };

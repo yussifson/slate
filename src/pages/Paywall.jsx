@@ -1,7 +1,7 @@
 ﻿import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { useAuth } from '@/lib/AuthContext';
-import { supabase } from '@/api/supabaseClient';
+import { powerSync } from "@/api/PowerSyncConnector";
 import { initiatePaystackSubscription } from '@/lib/paystack';
 import { Button } from '@/components/ui/button';
 import { Scale, Check, LogOut, Loader2, Sparkles, Server, Shield, Database, Headphones } from 'lucide-react';
@@ -100,27 +100,36 @@ export default function Paywall() {
         companyId: user.company_id,
         onSuccess: async (response) => {
           // 1. Update company record in Supabase
-          const { error } = await supabase
-            .from('companies')
-            .update({
+          (async () => {
+        const _p = {
               subscription_plan: plan.name,
               subscription_status: 'active',
               max_users: SUBSCRIPTION_PLANS[plan.name]?.maxUsers || 999,
               max_cases: SUBSCRIPTION_PLANS[plan.name]?.maxCases || 9999,
               max_storage_gb: SUBSCRIPTION_PLANS[plan.name]?.maxStorageGB || 500
-            })
-            .eq('id', user.company_id);
+            };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`UPDATE companies SET ${_k.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._v, user.company_id]);
+      })();
+      const error = null;
 
           if (error) throw error;
 
           // 2. Add an invoice entry in Supabase to track history
-          await supabase.from('subscription_invoices').insert({
+          await (async () => {
+        const _p = {
             company_id: user.company_id,
             amount: plan.price,
             status: 'paid',
             plan_name: plan.displayName,
             paystack_ref: response.reference
-          });
+          };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO subscription_invoices (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
 
           // Trigger omnichannel notification
           await NotificationService.send({

@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -38,7 +39,7 @@ export default function UnivClientPortal({
     queryKey: ['portal_invoices', effectiveCompanyId, pageName],
     queryFn: async () => {
       if (!effectiveCompanyId) return [];
-      let query = supabase.from(targetTable).select('*').eq('company_id', effectiveCompanyId);
+      let dbQueryStr = `SELECT * FROM ${targetTable} WHERE company_id = ?`; let dbQueryParams = [effectiveCompanyId];
       if (targetTable === 'industry_records') {
         query = query.eq('industry', 'orbit_build_data').eq('record_type', fetchType('invoices'));
       }
@@ -53,7 +54,7 @@ export default function UnivClientPortal({
     queryKey: ['portal_docs', effectiveCompanyId, pageName],
     queryFn: async () => {
       if (!effectiveCompanyId) return [];
-      let query = supabase.from(targetTable).select('*').eq('company_id', effectiveCompanyId);
+      let dbQueryStr = `SELECT * FROM ${targetTable} WHERE company_id = ?`; let dbQueryParams = [effectiveCompanyId];
       if (targetTable === 'industry_records') {
         query = query.eq('industry', 'orbit_build_data').eq('record_type', fetchType('documents'));
       }
@@ -68,7 +69,7 @@ export default function UnivClientPortal({
     queryKey: ['portal_tickets', effectiveCompanyId, pageName],
     queryFn: async () => {
       if (!effectiveCompanyId) return [];
-      let query = supabase.from(targetTable).select('*').eq('company_id', effectiveCompanyId);
+      let dbQueryStr = `SELECT * FROM ${targetTable} WHERE company_id = ?`; let dbQueryParams = [effectiveCompanyId];
       if (targetTable === 'industry_records') {
         query = query.eq('industry', 'orbit_build_data').eq('record_type', fetchType('support_tickets'));
       }
@@ -103,7 +104,13 @@ export default function UnivClientPortal({
         record_type: fetchType('support_tickets'),
         data: { ...ticket, status: 'Open', user: currentUser?.email || 'Unknown' }
       };
-      const { error } = await supabase.from('industry_records').insert([payload]);
+      const { error } = await (async () => {
+        const _p = payload;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO industry_records (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
       if (error) throw error;
     },
     onSuccess: () => {

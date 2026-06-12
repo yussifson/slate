@@ -5,7 +5,8 @@ import GenericKanban from '@/components/views/GenericKanban';
 import GenericCalendar from '@/components/views/GenericCalendar';
 import GenericDashboard from '@/components/views/GenericDashboard';
 
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { Calendar, Plus, Search, Trash2, Edit2, Loader2, XCircle, User, FileText } from 'lucide-react';
 import { toast } from 'react-hot-toast';
@@ -34,7 +35,9 @@ export default function UnivLeaveManagement() {
   const fetchRecords = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.from('univ_leave_management').select('*').eq('company_id', companyId).order('start_date', { ascending: false });
+      const __res = await powerSync.execute(`SELECT * FROM univ_leave_management WHERE company_id = ? ORDER BY start_date DESC`, [companyId]);
+      const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
+      const error = null;
       if (error && error.code !== '42P01') throw error;
       setRecords(data || []);
     } catch (e) { console.error(e); } finally { setLoading(false); }
@@ -54,11 +57,18 @@ export default function UnivLeaveManagement() {
       };
       
       if (editingId) {
-        const { error } = await supabase.from('univ_leave_management').update(payload).eq('id', editingId);
+        await (async () => { const _p = payload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${univ_leave_management} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingId]); })();
+      const error = null; const data = [];
         if (error) throw error;
         toast.success('Updated!');
       } else {
-        const { error } = await supabase.from('univ_leave_management').insert(payload);
+        const { error } = await (async () => {
+        const _p = payload;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO univ_leave_management (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
         if (error) throw error;
         toast.success('Record added!');
       }
@@ -67,12 +77,14 @@ export default function UnivLeaveManagement() {
   };
 
   const deleteRecord = async (id) => {
-    const { error } = await supabase.from('univ_leave_management').delete().eq('id', id);
+    await powerSync.execute(`DELETE FROM univ_leave_management WHERE id = ?`, [id]);
+      const error = null;
     if (error) toast.error('Failed to delete'); else { toast.success('Deleted'); fetchRecords(); }
   };
 
   const updateStatus = async (id, status) => {
-    const { error } = await supabase.from('univ_leave_management').update({ status }).eq('id', id);
+    await (async () => { const _p = { status }; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${univ_leave_management} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, id]); })();
+      const error = null; const data = [];
     if (error) toast.error('Failed to update status'); else fetchRecords();
   };
 

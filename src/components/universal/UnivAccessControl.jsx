@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { Plus, Trash2, Edit2, Loader2, XCircle, Search, Shield, Users, Key, Check } from 'lucide-react';
 import { toast } from 'react-hot-toast';
@@ -44,11 +45,13 @@ export default function UnivAccessControl() {
     setLoading(true);
     try {
       // Fetch users
-      const { data: uData } = await supabase.from('univ_accesscontrols').select('*').eq('company_id', companyId);
+      const __resU = await powerSync.execute(`SELECT * FROM univ_accesscontrols WHERE company_id = ?`, [companyId]); 
+      const uData = __resU.rows ? (__resU.rows._array || Array.from(__resU.rows)) : [];
       if (uData) setUsers(uData);
 
       // Fetch roles
-      const { data: rData } = await supabase.from('univ_roles').select('*').eq('company_id', companyId);
+      const __resR = await powerSync.execute(`SELECT * FROM univ_roles WHERE company_id = ?`, [companyId]); 
+      const rData = __resR.rows ? (__resR.rows._array || Array.from(__resR.rows)) : [];
       if (rData) setRoles(rData);
     } catch (e) {
       console.error(e);
@@ -91,9 +94,18 @@ export default function UnivAccessControl() {
       }
     }
 
-    const { error } = editingUserId
-      ? await supabase.from('univ_accesscontrols').update(payload).eq('id', editingUserId)
-      : await supabase.from('univ_accesscontrols').insert(payload);
+    await (async () => {
+        const _p = payload;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        if (editingUserId) {
+            await powerSync.execute(`UPDATE univ_accesscontrols SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingUserId]);
+        } else {
+            const _pl = _k.map(()=>'?').join(', ');
+            await powerSync.execute(`INSERT INTO univ_accesscontrols (${_k.join(', ')}) VALUES (${_pl})`, _v);
+        }
+      })();
+      const error = null;
       
     if (error) { toast.error('Failed to save user access control record'); return; }
     
@@ -111,7 +123,8 @@ export default function UnivAccessControl() {
   };
 
   const deleteUser = async (id) => {
-    const { error } = await supabase.from('univ_accesscontrols').delete().eq('id', id);
+    await powerSync.execute(`DELETE FROM univ_accesscontrols WHERE id = ?`, [id]);
+      const error = null;
     if (!error) { toast.success('User removed'); fetchData(); }
   };
 
@@ -126,9 +139,18 @@ export default function UnivAccessControl() {
     e.preventDefault();
     const payload = { ...roleForm, company_id: companyId };
     
-    const { error } = editingRoleId
-      ? await supabase.from('univ_roles').update(payload).eq('id', editingRoleId)
-      : await supabase.from('univ_roles').insert(payload);
+    await (async () => {
+        const _p = payload;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        if (editingRoleId) {
+            await powerSync.execute(`UPDATE univ_roles SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingRoleId]);
+        } else {
+            const _pl = _k.map(()=>'?').join(', ');
+            await powerSync.execute(`INSERT INTO univ_roles (${_k.join(', ')}) VALUES (${_pl})`, _v);
+        }
+      })();
+      const error = null;
       
     if (error) { toast.error('Failed to save role'); return; }
     toast.success(editingRoleId ? 'Role Updated' : 'Role Created');
@@ -136,7 +158,8 @@ export default function UnivAccessControl() {
   };
 
   const deleteRole = async (id) => {
-    const { error } = await supabase.from('univ_roles').delete().eq('id', id);
+    await powerSync.execute(`DELETE FROM univ_roles WHERE id = ?`, [id]);
+      const error = null;
     if (!error) { toast.success('Role removed'); fetchData(); }
   };
 

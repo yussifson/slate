@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
@@ -54,12 +55,12 @@ export default function UnivGlobalSearch({
       if (!debouncedQuery.trim()) return [];
       const startTime = performance.now();
       
-      let dbQuery = supabase.from(targetTable).select('*').eq('company_id', effectiveCompanyId);
+      let dbQueryStr = `SELECT * FROM ${targetTable} WHERE company_id = ?`; let dbQueryParams = [effectiveCompanyId];
       
       // Fuzzy search across common JSON keys
       const q = `%${debouncedQuery}%`;
       const orFilter = `data->>title.ilike.${q},data->>name.ilike.${q},data->>description.ilike.${q},data->>content.ilike.${q}`;
-      dbQuery = dbQuery.or(orFilter);
+      dbQueryStr += `(title LIKE ? OR description LIKE ?)`; dbQueryParams.push(`%${debouncedQuery}%`, `%${debouncedQuery}%`);
 
       // Scope filtering
       if (activeScope === 'documents') dbQuery = dbQuery.like('record_type', '%document%');

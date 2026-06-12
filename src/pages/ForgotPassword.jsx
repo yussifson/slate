@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { supabase } from '@/api/supabaseClient';
+import { powerSync } from "@/api/PowerSyncConnector";
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { getSubdomainAndBase } from '@/lib/domainUtils';

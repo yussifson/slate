@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { supabase } from '@/api/supabaseClient';
+import { powerSync } from "@/api/PowerSyncConnector";
+import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -56,7 +57,7 @@ export default function UnivSupportTicket({
     queryKey: ['tickets', effectiveCompanyId, effectivePageName],
     queryFn: async () => {
       if (!effectiveCompanyId) return [];
-      let query = supabase.from(targetTable).select('*').eq('company_id', effectiveCompanyId);
+      let dbQueryStr = `SELECT * FROM ${targetTable} WHERE company_id = ?`; let dbQueryParams = [effectiveCompanyId];
       if (targetTable === 'industry_records') {
         query = query.eq('industry', 'orbit_build_data').eq('record_type', `${effectivePageName}_tickets`);
       }
@@ -94,19 +95,26 @@ export default function UnivSupportTicket({
       }
 
       if (isNew) {
-        const { error } = await supabase.from(targetTable).insert([{
-          ...payload,
-          data: {
-            ...payload.data,
-            ticket_id: `TKT-${Math.floor(Math.random()*100000).toString().padStart(5, '0')}`,
-            status: 'Open',
-            messages: [{ sender: ticketData.requester || 'User', content: ticketData.description, timestamp: new Date().toISOString() }]
-          }
-        }]);
+                await (async () => {
+          const _p = {
+            ...payload,
+            data: {
+              ...payload.data,
+              ticket_id: `TKT-${Math.floor(Math.random()*100000).toString().padStart(5, '0')}`,
+              status: 'Open',
+              messages: [{ sender: ticketData.requester || 'User', content: ticketData.description, timestamp: new Date().toISOString() }]
+            }
+          };
+          const _k = Object.keys(_p);
+          const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+          await powerSync.execute(`INSERT INTO ${targetTable} (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v);
+        })();
+        const error = null;
         if (error) throw error;
       } else {
         const updatePayload = targetTable === 'industry_records' ? { data: ticketData } : ticketData;
-        const { error } = await supabase.from(targetTable).update(updatePayload).eq('id', ticketData.id);
+        await (async () => { const _p = updatePayload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${targetTable} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, ticketData.id]); })();
+        const error = null;
         if (error) throw error;
       }
     },

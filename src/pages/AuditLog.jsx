@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { base44 } from "@/api/base44Client";
-import { supabase } from "@/api/supabaseClient";
+import { powerSync } from "@/api/PowerSyncConnector";
 import PageHeader from "@/components/shared/PageHeader";
 import DataTable from "@/components/shared/DataTable";
 import { format } from "date-fns";

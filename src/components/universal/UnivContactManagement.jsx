@@ -36,7 +36,9 @@ export default function UnivContactManagement() {
   const fetch = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.from('univ_contacts').select('*').eq('company_id', companyId);
+      const __res = await powerSync.execute(`SELECT * FROM univ_contacts WHERE company_id = ?`, [companyId]);
+      const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
+      const error = null;
       if (error && error.code !== '42P01') throw error;
       setRecords((data || []).map(r => ({
         ...r,
@@ -50,28 +52,40 @@ export default function UnivContactManagement() {
     e.preventDefault();
     try {
       if (editingId) {
-        const { error } = await supabase.from('univ_contacts').update({
-          first_name: form.name.split(' ')[0] || '',
-          last_name: form.name.split(' ').slice(1).join(' ') || '',
-          email: form.email,
-          phone: form.phone,
-          organization: form.company,
-          type: form.type,
-          notes: form.notes
-        }).eq('id', editingId);
+        await (async () => {
+          const _p = {
+            first_name: form.name.split(' ')[0] || '',
+            last_name: form.name.split(' ').slice(1).join(' ') || '',
+            email: form.email,
+            phone: form.phone,
+            organization: form.company,
+            type: form.type,
+            notes: form.notes
+          };
+          const _k = Object.keys(_p);
+          const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+          await powerSync.execute(`UPDATE univ_contacts SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingId]);
+        })();
+        const error = null;
         if (error) throw error;
         toast.success('Contact updated!');
       } else {
-        const { error } = await supabase.from('univ_contacts').insert({
-          company_id: companyId,
-          first_name: form.name.split(' ')[0] || '',
-          last_name: form.name.split(' ').slice(1).join(' ') || '',
-          email: form.email,
-          phone: form.phone,
-          organization: form.company,
-          type: form.type,
-          notes: form.notes
-        });
+        await (async () => {
+          const _p = {
+            company_id: companyId,
+            first_name: form.name.split(' ')[0] || '',
+            last_name: form.name.split(' ').slice(1).join(' ') || '',
+            email: form.email,
+            phone: form.phone,
+            organization: form.company,
+            type: form.type,
+            notes: form.notes
+          };
+          const _k = Object.keys(_p);
+          const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+          await powerSync.execute(`INSERT INTO univ_contacts (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v);
+        })();
+        const error = null;
         if (error) throw error;
         toast.success('Contact added!');
       }
@@ -80,7 +94,8 @@ export default function UnivContactManagement() {
   };
 
   const remove = async (id) => {
-    const { error } = await supabase.from('univ_contacts').delete().eq('id', id);
+    await powerSync.execute(`DELETE FROM univ_contacts WHERE id = ?`, [id]);
+    const error = null;
     if (error) toast.error('Failed to delete'); else { toast.success('Deleted'); setSelected(null); }
   };
 

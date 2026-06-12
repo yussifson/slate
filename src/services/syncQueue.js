@@ -68,7 +68,8 @@ class SyncQueue {
       const { error } = await supabase.from(endpoint).upsert(cleanData);
       if (error) throw error;
     } else if (action === 'DELETE') {
-      const { error } = await supabase.from(endpoint).delete().eq('id', payload.id);
+      await powerSync.execute(`DELETE FROM ${endpoint.replace(/['"`]/g, '')} WHERE id = ?`, [payload.id]);
+      const error = null;
       if (error) throw error;
     }
   }

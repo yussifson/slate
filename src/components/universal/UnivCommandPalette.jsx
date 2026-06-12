@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Compass, Zap, History, X, Command, CornerDownLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 
 export default function UnivCommandPalette({ companyId, workspaceConfig }) {
   const [isOpen, setIsOpen] = useState(false);

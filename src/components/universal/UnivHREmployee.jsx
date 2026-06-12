@@ -5,7 +5,8 @@ import GenericKanban from '@/components/views/GenericKanban';
 import GenericCalendar from '@/components/views/GenericCalendar';
 import GenericDashboard from '@/components/views/GenericDashboard';
 
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { Users, UserPlus, Search, Trash2, Edit2, Loader2, XCircle, Mail, Phone, Building2, Briefcase, DollarSign, LayoutGrid, List, Network } from 'lucide-react';
 import { toast } from 'react-hot-toast';
@@ -40,7 +41,9 @@ export default function UnivHREmployee() {
   const fetchEmps = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.from('univ_hr_employees').select('*').eq('company_id', companyId).order('first_name', { ascending: true });
+      const __res = await powerSync.execute(`SELECT * FROM univ_hr_employees WHERE company_id = ? ORDER BY first_name ASC`, [companyId]);
+      const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
+      const error = null;
       if (error && error.code !== '42P01') throw error;
       setEmployees(data || []);
     } catch (e) { console.error(e); } finally { setLoading(false); }
@@ -56,11 +59,18 @@ export default function UnivHREmployee() {
       else payload.salary = Number(payload.salary);
       
       if (editingId) {
-        const { error } = await supabase.from('univ_hr_employees').update(payload).eq('id', editingId);
+        await (async () => { const _p = payload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${univ_hr_employees} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingId]); })();
+      const error = null; const data = [];
         if (error) throw error;
         toast.success('Employee updated!');
       } else {
-        const { error } = await supabase.from('univ_hr_employees').insert(payload);
+        const { error } = await (async () => {
+        const _p = payload;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO univ_hr_employees (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
         if (error) throw error;
         toast.success('Employee added!');
       }
@@ -69,7 +79,8 @@ export default function UnivHREmployee() {
   };
 
   const remove = async (id) => {
-    const { error } = await supabase.from('univ_hr_employees').delete().eq('id', id);
+    await powerSync.execute(`DELETE FROM univ_hr_employees WHERE id = ?`, [id]);
+      const error = null;
     if (error) toast.error('Failed to delete'); else { toast.success('Deleted'); fetchEmps(); setSelected(null); }
   };
 

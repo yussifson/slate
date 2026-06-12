@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useQuery } from '@tanstack/react-query';
 import { cn } from '@/lib/utils';

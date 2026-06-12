@@ -5,7 +5,8 @@ import GenericKanban from '@/components/views/GenericKanban';
 import GenericCalendar from '@/components/views/GenericCalendar';
 import GenericDashboard from '@/components/views/GenericDashboard';
 
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { Search, FileText, Plus, Upload, CheckCircle2, Clock, MoreHorizontal, FileSignature } from 'lucide-react';
@@ -54,7 +55,13 @@ export default function UnivLegalDocument() {
       status: 'Draft'
     };
     try {
-      const { error } = await supabase.from('univ_legal_documents').insert(newDoc);
+      const { error } = await (async () => {
+        const _p = newDoc;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO univ_legal_documents (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
       if (error) throw error;
       toast.success('Document added');
     } catch (err) {

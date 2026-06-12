@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect, useRef, useCallback, useMemo } from 'react';
-import { supabase } from '@/api/supabaseClient';
+import { powerSync } from "@/api/PowerSyncConnector";
 import { getSubdomainAndBase } from './domainUtils';
 
 const AuthContext = createContext();
@@ -103,7 +103,7 @@ export const AuthProvider = ({ children }) => {
       }
 
       setAuthStep("Fetching profile...");
-      let { data: profile, error: profileError } = await supabase.from('profiles').select('*').eq('id', sessionUser.id).single();
+      let { data: profile, error: profileError } = await powerSync.execute('SELECT * FROM profiles WHERE id = ?', [sessionUser.id]).then(res => ({ data: res.rows._array })).single();
       
       // Save transferred config to local storage using the correct company ID
       if (setupModeParam && profile?.company_id) {
@@ -142,7 +142,7 @@ export const AuthProvider = ({ children }) => {
 
         if (profileError && profileError.code === 'PGRST116') {
           // Create new profile mapped to the existing company and role
-          const { data: newProfile, error: insertError } = await supabase.from('profiles').insert({
+                    const _p = {
             id: sessionUser.id,
             role: staffRecord.role || 'lawyer',
             company_id: staffRecord.company_id,
@@ -151,7 +151,13 @@ export const AuthProvider = ({ children }) => {
             phone: staffRecord.phone || null,
             department: staffRecord.department || null,
             bar_number: staffRecord.bar_number || null
-          }).select().single();
+          };
+          const _k = Object.keys(_p);
+          const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+          await powerSync.execute(`INSERT INTO profiles (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+          const __resNew = await powerSync.execute(`SELECT * FROM profiles WHERE id = ?`, [sessionUser.id]);
+          const newProfile = __resNew.rows && __resNew.rows.length > 0 ? __resNew.rows.item(0) : null;
+          const insertError = null;
           if (!insertError) {
             profile = newProfile;
             profileError = null;
@@ -166,7 +172,7 @@ export const AuthProvider = ({ children }) => {
             !profile.company_name ||
             profile.email?.toLowerCase() !== sessionUser.email?.toLowerCase()
           ) {
-            const { data: updatedProfile, error: updateError } = await supabase.from('profiles').update({
+                        const _p = {
               role: staffRecord.role,
               company_id: staffRecord.company_id,
               company_name: companyName || profile.company_name,
@@ -174,7 +180,13 @@ export const AuthProvider = ({ children }) => {
               phone: staffRecord.phone || profile.phone || null,
               department: staffRecord.department || null,
               bar_number: staffRecord.bar_number || null
-            }).eq('id', sessionUser.id).select().single();
+            };
+            const _k = Object.keys(_p);
+            const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+            await powerSync.execute(`UPDATE profiles SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, sessionUser.id]);
+            const __resUpd = await powerSync.execute(`SELECT * FROM profiles WHERE id = ?`, [sessionUser.id]);
+            const updatedProfile = __resUpd.rows && __resUpd.rows.length > 0 ? __resUpd.rows.item(0) : null;
+            const updateError = null;
             if (!updateError) {
               profile = updatedProfile;
             }
@@ -182,10 +194,12 @@ export const AuthProvider = ({ children }) => {
         }
 
         if (staffRecord.id && !staffRecord.user_id) {
-          await supabase
-            .from('staff_records')
-            .update({ user_id: sessionUser.id })
-            .eq('id', staffRecord.id);
+          await (async () => {
+        const _p = { user_id: sessionUser.id };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`UPDATE staff_records SET ${_k.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._v, staffRecord.id]);
+      })();
         }
       } else if (profileError && profileError.code === 'PGRST116') {
         let invitedCompanyId = sessionUser.user_metadata?.company_id || null;
@@ -205,13 +219,20 @@ export const AuthProvider = ({ children }) => {
           }
         }
 
-        const { data: newProfile, error: insertError } = await supabase.from('profiles').insert({
+                const _p = {
           id: sessionUser.id,
-          role: invitedRole,
-          company_id: invitedCompanyId,
-          company_name: sessionUser.user_metadata?.company_name || null,
+          role: 'lawyer', // Default role for net-new independent signups
+          company_id: companyIdToUse,
+          company_name: companyNameToUse,
           email: sessionUser.email?.toLowerCase() || null,
-        }).select().single();
+          full_name: sessionUser.user_metadata?.full_name || ''
+        };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`INSERT INTO profiles (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+        const __resNew = await powerSync.execute(`SELECT * FROM profiles WHERE id = ?`, [sessionUser.id]);
+        const newProfile = __resNew.rows && __resNew.rows.length > 0 ? __resNew.rows.item(0) : null;
+        const insertError = null;
         
         if (!insertError) {
           profile = newProfile;
@@ -236,7 +257,7 @@ export const AuthProvider = ({ children }) => {
       let companySubdomain = null;
       let companyData = null;
       if (profile?.company_id) {
-        const { data: company, error: companyError } = await supabase.from('companies').select('*').eq('id', profile.company_id).single();
+        const { data: company, error: companyError } = await powerSync.execute('SELECT * FROM companies WHERE id = ?', [profile.company_id]).then(res => ({ data: res.rows._array })).single();
         if (company) {
           companyData = company;
           companySubdomain = company.subdomain || company.name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
@@ -276,7 +297,7 @@ export const AuthProvider = ({ children }) => {
                 targetCompanyId = tComp?.id;
              } else {
                 // fallback if RPC fails
-                const { data: tCompData } = await supabase.from('companies').select('*').eq('subdomain', currentSubdomain).maybeSingle();
+                const { data: tCompData } = await powerSync.execute('SELECT * FROM companies WHERE subdomain = ?', [currentSubdomain]).then(res => ({ data: res.rows._array })).maybeSingle();
                 if (tCompData) {
                    tComp = tCompData;
                    targetCompanyId = tCompData.id;
@@ -366,8 +387,10 @@ export const AuthProvider = ({ children }) => {
       setAuthStep("Fetching available workspaces...");
       let availableCompanies = [];
       try {
-        const { data: uAccess } = await supabase.from('univ_accesscontrols').select('company_id').ilike('email', sessionUser.email);
-        const { data: sAccess } = await supabase.from('staff_records').select('company_id').ilike('user_email', sessionUser.email);
+        const __resUA = await powerSync.execute(`SELECT company_id FROM univ_accesscontrols WHERE email LIKE ?`, [sessionUser.email]);
+        const uAccess = __resUA.rows ? (__resUA.rows._array || Array.from(__resUA.rows)) : [];
+        const __resSA = await powerSync.execute(`SELECT company_id FROM staff_records WHERE user_email LIKE ?`, [sessionUser.email]);
+        const sAccess = __resSA.rows ? (__resSA.rows._array || Array.from(__resSA.rows)) : [];
         
         const cIds = new Set();
         if (profile?.company_id) cIds.add(profile.company_id);
@@ -376,7 +399,13 @@ export const AuthProvider = ({ children }) => {
         (sAccess || []).forEach(r => r.company_id && cIds.add(r.company_id));
         
         if (cIds.size > 0) {
-          const { data: comps } = await supabase.from('companies').select('id, name, subdomain').in('id', Array.from(cIds));
+          const _cIdsArr = Array.from(cIds);
+          let comps = [];
+          if (_cIdsArr.length > 0) {
+            const _pl = _cIdsArr.map(()=>'?').join(',');
+            const __resC = await powerSync.execute(`SELECT id, name, subdomain FROM companies WHERE id IN (${_pl})`, _cIdsArr);
+            comps = __resC.rows ? (__resC.rows._array || Array.from(__resC.rows)) : [];
+          }
           if (comps) availableCompanies = comps;
         }
       } catch(e) {

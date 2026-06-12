@@ -2,7 +2,7 @@ import React, { useState, startTransition } from "react";
 import PageHeader from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/api/supabaseClient";
+import { powerSync } from "@/api/PowerSyncConnector";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { useAuth } from "@/lib/AuthContext";
@@ -209,7 +209,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false }
 
       const { error: moduleError } = isEditing
         ? await supabase.from('module_definitions').update(moduleData).eq('id', id)
-        : await supabase.from('module_definitions').insert(moduleData);
+        : await (async () => { let _p = moduleData; if (Array.isArray(_p)) _p = _p[0]; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' ? JSON.stringify(v) : v); const _pl = _k.map(()=>'?').join(', '); await powerSync.execute(`INSERT INTO module_definitions (${_k.join(', ')}) VALUES (${_pl})`, _v); })();
 
       if (moduleError) throw moduleError;
 
@@ -230,7 +230,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false }
           created_at: new Date().toISOString()
         }));
 
-        const { error: fieldError } = await supabase.from('field_definitions').insert(fieldsToInsert);
+        const { error: fieldError } = await (async () => { let _p = fieldsToInsert; if (Array.isArray(_p)) _p = _p[0]; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' ? JSON.stringify(v) : v); const _pl = _k.map(()=>'?').join(', '); await powerSync.execute(`INSERT INTO field_definitions (${_k.join(', ')}) VALUES (${_pl})`, _v); })();
         if (fieldError) throw fieldError;
       }
 

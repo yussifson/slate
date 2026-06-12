@@ -4,7 +4,7 @@ import { Pencil, Trash2, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { supabase } from "@/api/supabaseClient";
+import { powerSync } from "@/api/PowerSyncConnector";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function DynamicGrid({ data, fieldDefinitions, theme, onRefresh }) {

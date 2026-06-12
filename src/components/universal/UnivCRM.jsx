@@ -5,7 +5,8 @@ import GenericKanban from '@/components/views/GenericKanban';
 import GenericCalendar from '@/components/views/GenericCalendar';
 import GenericDashboard from '@/components/views/GenericDashboard';
 
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -107,11 +108,18 @@ export default function UnivCRM() {
 
     try {
       if (editingLeadId) {
-        const { error } = await supabase.from('univ_crm_leads').update(payload).eq('id', editingLeadId);
+        await (async () => { const _p = payload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${univ_crm_leads} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingLeadId]); })();
+      const error = null; const data = [];
         if (error) throw error;
         toast.success('Lead updated successfully');
       } else {
-        const { error } = await supabase.from('univ_crm_leads').insert(payload);
+        const { error } = await (async () => {
+        const _p = payload;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO univ_crm_leads (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
         if (error) throw error;
         toast.success('Lead added successfully');
       }
@@ -125,7 +133,8 @@ export default function UnivCRM() {
     if (e) e.stopPropagation();
     if (!window.confirm("Are you sure you want to delete this lead?")) return;
     try {
-      const { error } = await supabase.from('univ_crm_leads').delete().eq('id', id);
+      await powerSync.execute(`DELETE FROM univ_crm_leads WHERE id = ?`, [id]);
+      const error = null;
       if (error) throw error;
       toast.success('Lead deleted');
       if (viewingLead?.id === id) setViewingLead(null);
@@ -137,7 +146,8 @@ export default function UnivCRM() {
   const updateLeadStatus = async (id, newStatus, e) => {
     if (e) e.stopPropagation();
     try {
-      const { error } = await supabase.from('univ_crm_leads').update({ status: newStatus }).eq('id', id);
+      await (async () => { const _p = { status: newStatus }; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${univ_crm_leads} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, id]); })();
+      const error = null; const data = [];
       if (error) throw error;
       toast.success('Lead status updated');
     } catch (err) {
@@ -168,7 +178,8 @@ export default function UnivCRM() {
     setLeads(prev => prev.map(l => l.id === leadId ? { ...l, status: newStatus } : l));
     
     try {
-      const { error } = await supabase.from('univ_crm_leads').update({ status: newStatus }).eq('id', leadId);
+      await (async () => { const _p = { status: newStatus }; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${univ_crm_leads} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, leadId]); })();
+      const error = null; const data = [];
       if (error) throw error;
       toast.success(`Moved to ${newStatus}`);
     } catch (err) {

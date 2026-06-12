@@ -55,6 +55,17 @@ export default [
         { ignore: ["cmdk-input-wrapper", "toast-close"] },
       ],
       "react-hooks/rules-of-hooks": "error",
+      "no-restricted-imports": [
+        "error",
+        {
+          "paths": [
+            {
+              "name": "@supabase/supabase-js",
+              "message": "Direct Supabase client usage is forbidden. Use PowerSyncConnector instead."
+            }
+          ]
+        }
+      ]
     },
   },
 ];

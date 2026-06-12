@@ -9,7 +9,7 @@ import { useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useInd
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { supabase } from '@/api/supabaseClient';
+import { powerSync } from "@/api/PowerSyncConnector";
 import { OrbitIcon } from '@/components/ui/OrbitIcon';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -743,7 +743,7 @@ RULES FOR MULTI-STEP REASONING:
   const deleteSession = async (sid, e) => {
     e.stopPropagation();
     if (companyId) {
-      await supabase.from('industry_records').delete().eq('id', sid).eq('company_id', companyId);
+      await powerSync.execute(`DELETE FROM industry_records WHERE id = ?`, [sid]).eq('company_id', companyId);
     }
     setSessions(prev => {
       const rest = prev.filter(s => s.id !== sid);

@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect } from "react";
-import { supabase } from "@/api/supabaseClient";
+import { powerSync } from "@/api/PowerSyncConnector";
 import { INDUSTRIES, getIndustryNav, clientNav } from "@/config/industries";
 
 export function useNavigation(user, impersonatedCompany) {

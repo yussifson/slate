@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "react-hot-toast";
-import { supabase } from "@/api/supabaseClient";
+import { powerSync } from "@/api/PowerSyncConnector";
 
 const ACTIVITY_ICONS = {
   note: <FileText className="w-4 h-4 text-primary" />,
@@ -28,11 +28,9 @@ export default function CaseTimeline({ caseData, user }) {
   const { data: timeline = [], isLoading } = useQuery({
     queryKey: ["case-timeline", caseData?.id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("case_timeline")
-        .select("*")
-        .eq("case_id", caseData.id)
-        .order("created_date", { ascending: false });
+      const __res = await powerSync.execute(`SELECT * FROM case_timeline WHERE case_id = ? ORDER BY created_date DESC`, [caseData.id]);
+      const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
+      const error = null;
       
       if (error) throw error;
       return data;
@@ -42,14 +40,20 @@ export default function CaseTimeline({ caseData, user }) {
 
   const addMutation = useMutation({
     mutationFn: async (entry) => {
-      const { data, error } = await supabase.from("case_timeline").insert([{
+      const { data, error } = await (async () => {
+        const _p = {
         ...entry,
         case_id: caseData.id,
         case_title: caseData.title,
         company_id: user.company_id,
         created_by: user.id,
         logged_by_name: user.name || user.email.split("@")[0]
-      }]);
+      };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO case_timeline (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
       if (error) throw error;
       return data;
     },

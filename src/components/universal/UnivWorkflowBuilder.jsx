@@ -31,7 +31,8 @@ import {
   Unlink2,
   RotateCcw,
 } from 'lucide-react';
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { cn } from '@/lib/utils';
 import { toast } from 'react-hot-toast';
 
@@ -462,7 +463,13 @@ export default function UnivWorkflowBuilder({ companyId, workflowId, onSave }) {
             .from('univ_workflows')
             .upsert({ id: workflowId, ...record }, { onConflict: 'id' });
         } else {
-          await supabase.from('univ_workflows').insert(record);
+          await (async () => {
+        const _p = record;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO univ_workflows (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
         }
       }
       toast.success('Workflow saved!');

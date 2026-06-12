@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -53,7 +54,7 @@ export default function UnivKnowledgeBase({
     queryKey: ['kb_categories', effectiveCompanyId, effectivePageName],
     queryFn: async () => {
       if (!effectiveCompanyId) return [];
-      let query = supabase.from(targetTable).select('*').eq('company_id', effectiveCompanyId);
+      let dbQueryStr = `SELECT * FROM ${targetTable} WHERE company_id = ?`; let dbQueryParams = [effectiveCompanyId];
       if (targetTable === 'industry_records') {
         query = query.eq('industry', 'orbit_build_data').eq('record_type', `${effectivePageName}_kb_categories`);
       }
@@ -69,7 +70,7 @@ export default function UnivKnowledgeBase({
     queryKey: ['kb_articles', effectiveCompanyId, effectivePageName],
     queryFn: async () => {
       if (!effectiveCompanyId) return [];
-      let query = supabase.from(targetTable).select('*').eq('company_id', effectiveCompanyId);
+      let dbQueryStr = `SELECT * FROM ${targetTable} WHERE company_id = ?`; let dbQueryParams = [effectiveCompanyId];
       if (targetTable === 'industry_records') {
         query = query.eq('industry', 'orbit_build_data').eq('record_type', `${effectivePageName}_kb_articles`);
       }
@@ -97,12 +98,14 @@ export default function UnivKnowledgeBase({
 
       if (isNew) {
         payload.data = { ...payload.data, author: currentUserEmail };
-        const { data, error } = await supabase.from(targetTable).insert([payload]).select();
+        await (async () => { const _p = payload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); const _pl = _k.map(()=>'?').join(', '); await powerSync.execute(`INSERT INTO ${targetTable} (${_k.join(', ')}) VALUES (${_pl})`, _v); })();
+      const error = null; const data = [];
         if (error) throw error;
         return data[0];
       } else {
         const updatePayload = targetTable === 'industry_records' ? { data: article } : article;
-        const { data, error } = await supabase.from(targetTable).update(updatePayload).eq('id', article.id).select();
+        await (async () => { const _p = updatePayload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${targetTable} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, article.id]); })();
+      const error = null; const data = [];
         if (error) throw error;
         return data[0];
       }
@@ -120,7 +123,8 @@ export default function UnivKnowledgeBase({
 
   const deleteArticleMutation = useMutation({
     mutationFn: async (id) => {
-      const { error } = await supabase.from(targetTable).delete().eq('id', id);
+      await powerSync.execute(`DELETE FROM targetTable WHERE id = ?`, [id]);
+      const error = null;
       if (error) throw error;
     },
     onSuccess: () => {
@@ -139,7 +143,13 @@ export default function UnivKnowledgeBase({
       } else {
         payload = { ...catData, company_id: effectiveCompanyId };
       }
-      const { error } = await supabase.from(targetTable).insert([payload]);
+      const { error } = await (async () => {
+        const _p = payload;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO targetTable (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
       if (error) throw error;
     },
     onSuccess: () => {

@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/api/supabaseClient';
+import { powerSync } from "@/api/PowerSyncConnector";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/lib/AuthContext';
@@ -60,7 +60,7 @@ export default function Login() {
           if (error) {
              console.error("Could not fetch branding via RPC", error);
              // Fallback to table query if RPC is not created yet (for development)
-             const { data: tableData, error: tableError } = await supabase.from('companies').select('name, logo_url').eq('subdomain', currentSubdomain).single();
+             const { data: tableData, error: tableError } = await powerSync.execute('SELECT name, logo_url FROM companies WHERE subdomain = ? LIMIT 1', [currentSubdomain]).then(res => ({ data: res.rows._array[0] }));
              if (tableData) {
                setBranding({ name: tableData.name || 'Slate', logo_url: tableData.logo_url, tagline: `Sign in to ${tableData.name || 'your workslate'}` });
              } else if (tableError) {
@@ -181,7 +181,7 @@ export default function Login() {
     
     if (targetSubdomain) {
       // Check if user belongs to this subdomain
-      const { data: profile } = await supabase.from('profiles').select('company_id, role, onboarding_completed').eq('id', authData.user.id).single();
+      const { data: profile } = await powerSync.execute('SELECT company_id, role, onboarding_completed FROM profiles WHERE id = ? LIMIT 1', [authData.user.id]).then(res => ({ data: res.rows._array[0] }));
       
       if (profile && profile.onboarding_completed === false) {
         window.location.href = '/onboarding';
@@ -189,7 +189,7 @@ export default function Login() {
       }
 
       if (profile?.company_id) {
-        const { data: company } = await supabase.from('companies').select('name, subdomain').eq('id', profile.company_id).single();
+        const { data: company } = await powerSync.execute('SELECT name, subdomain FROM companies WHERE id = ? LIMIT 1', [profile.company_id]).then(res => ({ data: res.rows._array[0] }));
         const companySubdomain = company?.subdomain || company?.name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
         
         if (companySubdomain && companySubdomain !== currentSubdomain && !workspace) {
@@ -226,7 +226,7 @@ export default function Login() {
       window.location.href = '/';
     } else {
       // Base domain login
-      const { data: profile } = await supabase.from('profiles').select('company_id, role').eq('id', authData.user.id).single();
+      const { data: profile } = await powerSync.execute('SELECT company_id, role FROM profiles WHERE id = ? LIMIT 1', [authData.user.id]).then(res => ({ data: res.rows._array[0] }));
       
       // If Super Admin logs into the Base Domain, route directly to the admin command center
       if (profile?.role === 'super_admin') {
@@ -235,7 +235,7 @@ export default function Login() {
       }
 
       if (profile?.company_id) {
-        const { data: company } = await supabase.from('companies').select('name, subdomain').eq('id', profile.company_id).single();
+        const { data: company } = await powerSync.execute('SELECT name, subdomain FROM companies WHERE id = ? LIMIT 1', [profile.company_id]).then(res => ({ data: res.rows._array[0] }));
         const companySubdomain = company?.subdomain || company?.name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
         
         if (companySubdomain) {

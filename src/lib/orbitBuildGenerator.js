@@ -1,5 +1,5 @@
 import { generateText } from './cloudflareAI';
-import { supabase } from '@/api/supabaseClient';
+import { powerSync } from "@/api/PowerSyncConnector";
 
 const ORBIT_BUILD_PROMPT = `You are OrbitBuild, an elite Workspace Assembly Engine for Slate.
 Your purpose is to understand a business or industry described by the user and assemble a complete workspace.
@@ -338,9 +338,7 @@ export async function generateOrbitBuildWorkspace(prompt, companyId) {
     }
 
     // Update the company's industry_type
-    const { error: compError } = await supabase.from('companies').update({
-      industry_type: 'orbit_build'
-    }).eq('id', companyId);
+    const { error: compError } = await (async () => { const _p = {industry_type: 'orbit_build'}; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE companies SET ${_k.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._v, companyId]); })();
 
     if (compError) {
       console.error("Failed to update company industry_type:", compError);

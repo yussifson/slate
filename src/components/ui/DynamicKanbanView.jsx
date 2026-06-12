@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { MoreHorizontal, Plus } from 'lucide-react';
-import { supabase } from '@/api/supabaseClient';
+import { powerSync } from "@/api/PowerSyncConnector";
 import { useToast } from '@/components/ui/use-toast';
 
 // A simple Kanban board for any module that has a "status" field

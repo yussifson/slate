@@ -5,7 +5,8 @@ import GenericKanban from '@/components/views/GenericKanban';
 import GenericCalendar from '@/components/views/GenericCalendar';
 import GenericDashboard from '@/components/views/GenericDashboard';
 
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { LayoutGrid, Plus, Search, Trash2, Edit2, Loader2, XCircle, User, Calendar, Tag } from 'lucide-react';
@@ -48,7 +49,9 @@ export default function UnivKanban({ title = "Kanban Board", companyId, pageName
   const fetchTasks = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.from(targetTable).select('*').eq('company_id', companyId).order('created_at', { ascending: true });
+      const __res = await powerSync.execute(`SELECT * FROM targetTable WHERE company_id = ? ORDER BY created_at ASC`, [companyId]);
+      const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
+      const error = null;
       if (error && error.code !== '42P01') throw error;
       
       // Auto-extract columns from data if they exist
@@ -67,11 +70,18 @@ export default function UnivKanban({ title = "Kanban Board", companyId, pageName
     e.preventDefault();
     try {
       if (editingId) {
-        const { error } = await supabase.from(targetTable).update(form).eq('id', editingId);
+        await (async () => { const _p = form; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${targetTable} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingId]); })();
+      const error = null; const data = [];
         if (error) throw error;
         toast.success('Task updated!');
       } else {
-        const { error } = await supabase.from(targetTable).insert({ ...form, company_id: companyId });
+        const { error } = await (async () => {
+        const _p = { ...form, company_id: companyId };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO targetTable (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
         if (error) throw error;
         toast.success('Task created!');
       }
@@ -80,7 +90,8 @@ export default function UnivKanban({ title = "Kanban Board", companyId, pageName
   };
 
   const remove = async (id) => {
-    const { error } = await supabase.from(targetTable).delete().eq('id', id);
+    await powerSync.execute(`DELETE FROM targetTable WHERE id = ?`, [id]);
+      const error = null;
     if (error) toast.error('Failed to delete'); else { toast.success('Deleted'); fetchTasks(); }
   };
 
@@ -97,7 +108,8 @@ export default function UnivKanban({ title = "Kanban Board", companyId, pageName
     const newStatus = destination.droppableId;
     setTasks(prev => prev.map(t => t.id === draggableId ? { ...t, status: newStatus } : t));
     try {
-      const { error } = await supabase.from(targetTable).update({ status: newStatus }).eq('id', draggableId);
+      await (async () => { const _p = { status: newStatus }; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${targetTable} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, draggableId]); })();
+      const error = null; const data = [];
       if (error) throw error;
     } catch { toast.error('Failed to move task'); fetchTasks(); }
   };

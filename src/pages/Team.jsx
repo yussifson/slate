@@ -1,7 +1,7 @@
 ﻿import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { supabase } from "@/api/supabaseClient";
+import { powerSync } from "@/api/PowerSyncConnector";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
 import { UserCog, Search, Trash2, UserPlus, Eye, EyeOff } from "lucide-react";

@@ -5,7 +5,8 @@ import GenericKanban from '@/components/views/GenericKanban';
 import GenericCalendar from '@/components/views/GenericCalendar';
 import GenericDashboard from '@/components/views/GenericDashboard';
 
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { Search, MonitorSpeaker, Plus, Activity, AlertTriangle, Settings, MoreHorizontal, Edit2, Trash2, XCircle, Loader2 } from 'lucide-react';
@@ -70,11 +71,18 @@ export default function UnivMachine() {
       };
 
       if (editingId) {
-        const { error } = await supabase.from('univ_machines').update(payload).eq('id', editingId);
+        await (async () => { const _p = payload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${univ_machines} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingId]); })();
+      const error = null; const data = [];
         if (error) throw error;
         toast.success('Machine updated');
       } else {
-        const { error } = await supabase.from('univ_machines').insert(payload);
+        const { error } = await (async () => {
+        const _p = payload;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO univ_machines (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
         if (error) throw error;
         toast.success('Machine added');
       }
@@ -88,7 +96,8 @@ export default function UnivMachine() {
 
   const handleDelete = async (id) => {
     try {
-      const { error } = await supabase.from('univ_machines').delete().eq('id', id);
+      await powerSync.execute(`DELETE FROM univ_machines WHERE id = ?`, [id]);
+      const error = null;
       if (error) throw error;
       toast.success('Machine deleted');
       fetchMachines();

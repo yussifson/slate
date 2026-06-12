@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { supabase } from "@/api/supabaseClient";
+import { powerSync } from "@/api/PowerSyncConnector";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
 import {
@@ -52,7 +52,7 @@ export default function EmailInbox() {
   const { data: staff = [] } = useQuery({
     queryKey: ["staff", companyId],
     queryFn: async () => {
-      const { data } = await supabase.from("profiles").select("*").eq("company_id", companyId);
+      const { data } = await powerSync.execute('SELECT * FROM profiles WHERE company_id = ?', [companyId]).then(res => ({ data: res.rows._array }));
       return data || [];
     },
     enabled: !!companyId,

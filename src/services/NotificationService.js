@@ -5,7 +5,7 @@
  * Under the hood, this should trigger a Supabase Edge Function which securely 
  * uses your Novu Secret Key to trigger workflows.
  */
-import { supabase } from '@/api/supabaseClient';
+import { powerSync } from "@/api/PowerSyncConnector";
 
 export const NotificationService = {
   /**

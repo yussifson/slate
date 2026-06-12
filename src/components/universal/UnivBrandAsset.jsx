@@ -6,7 +6,8 @@ import GenericCalendar from '@/components/views/GenericCalendar';
 import GenericDashboard from '@/components/views/GenericDashboard';
 
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Trash2, Edit2, Save, X, Image as ImageIcon, Type, File, UploadCloud, Link } from 'lucide-react';
 
@@ -31,16 +32,25 @@ export default function UnivBrandAsset() {
 
   const fetchData = async () => {
     setLoading(true);
-    const { data: records, error } = await supabase.from('univ_brandasset').select('*').eq('company_id', companyId).order('created_at', { ascending: false });
+    const __res = await powerSync.execute(`SELECT * FROM univ_brandasset WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
+      const records = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
+      const error = null;
     if (!error && records) setData(records);
     setLoading(false);
   };
 
   const handleSave = async () => {
     if (editingId) {
-      await supabase.from('univ_brandasset').update({ ...formData, company_id: companyId }).eq('id', editingId);
+      await (async () => { const _p = { ...formData, company_id: companyId }; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${univ_brandasset} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingId]); })();
+      const error = null; const data = [];
     } else {
-      await supabase.from('univ_brandasset').insert([{ ...formData, company_id: companyId }]);
+      await (async () => {
+        const _p = { ...formData, company_id: companyId };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO univ_brandasset (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
     }
     setFormData({ asset_name: '', asset_type: 'Logo', file_url: '', uploaded_by: '' });
     setIsEditing(false);
@@ -60,7 +70,7 @@ export default function UnivBrandAsset() {
   };
 
   const handleDelete = async (id) => {
-    await supabase.from('univ_brandasset').delete().eq('id', id);
+    await powerSync.execute(`DELETE FROM ${univ_brandasset} WHERE id = ?`, [id]);
     fetchData();
   };
 

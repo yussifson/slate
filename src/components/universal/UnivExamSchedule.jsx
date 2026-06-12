@@ -7,7 +7,8 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion, AnimatePresence } from 'framer-motion';
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { Calendar, Plus, Trash2, Edit2, X, Check, Search, RefreshCw } from 'lucide-react';
 
 export default function UnivExamSchedule() {
@@ -33,10 +34,9 @@ export default function UnivExamSchedule() {
 
   const fetchData = async () => {
     setLoading(true);
-    const { data: fetchedData, error } = await supabase
-      .from('univ_examschedules')
-      .select('*').eq('company_id', companyId)
-      .order('created_at', { ascending: false });
+    const __res = await powerSync.execute(`SELECT * FROM univ_examschedules WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
+      const fetchedData = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
+      const error = null;
       
     if (error) {
       console.error('Error fetching univ_examschedules:', error);
@@ -60,9 +60,13 @@ export default function UnivExamSchedule() {
         .eq('id', editingId);
       if (error) console.error('Error updating:', error);
     } else {
-      const { error } = await supabase
-        .from('univ_examschedules')
-        .insert([{ ...formData, company_id: companyId }]);
+      const { error } = await (async () => {
+        const _p = { ...formData, company_id: companyId };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO univ_examschedules (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
       if (error) console.error('Error inserting:', error);
     }
     
@@ -88,10 +92,8 @@ export default function UnivExamSchedule() {
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this record?')) {
-      const { error } = await supabase
-        .from('univ_examschedules')
-        .delete()
-        .eq('id', id);
+      await powerSync.execute(`DELETE FROM univ_examschedules WHERE id = ?`, [id]);
+      const error = null;
       if (error) console.error('Error deleting:', error);
       else fetchData();
     }

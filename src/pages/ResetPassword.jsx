@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState, useEffect } from 'react';
-import { supabase } from '@/api/supabaseClient';
+import { powerSync } from "@/api/PowerSyncConnector";
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, Eye, EyeOff } from 'lucide-react';

@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
-import { supabase } from "@/api/supabaseClient";
+import { powerSync } from "@/api/PowerSyncConnector";
 import { base44 } from "@/api/base44Client";
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { useAuth } from "@/lib/AuthContext";
@@ -91,11 +91,17 @@ export default function AddChatDialog({ open, onOpenChange, onChatCreated }) {
       if (roomErr) throw roomErr;
 
       // Add self
-      await supabase.from('chat_participants').insert({
+      await (async () => {
+        const _p = {
         room_id: room.id,
         user_id: user.id,
         role: 'admin'
-      });
+      };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO chat_participants (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
 
       const selectedRecords = [...staff, ...clients].filter((r) => selectedUsers.includes(r.id));
       const directUserIds = [
@@ -161,9 +167,13 @@ export default function AddChatDialog({ open, onOpenChange, onChatCreated }) {
         );
       }
 
-      const { error: participantsError } = await supabase
-        .from("chat_participants")
-        .insert(participantInserts);
+      const { error: participantsError } = await (async () => {
+        const _p = participantInserts;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO chat_participants (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
       if (participantsError) throw participantsError;
 
       const expectedCount = selectedRecords.length;

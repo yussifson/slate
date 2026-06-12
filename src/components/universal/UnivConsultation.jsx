@@ -5,7 +5,8 @@ import GenericKanban from '@/components/views/GenericKanban';
 import GenericCalendar from '@/components/views/GenericCalendar';
 import GenericDashboard from '@/components/views/GenericDashboard';
 
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { Search, Plus, Download, MoreHorizontal, Users, Calendar, FileText, CheckCircle2 } from 'lucide-react';
@@ -56,7 +57,13 @@ export default function UnivConsultation() {
       status: 'Active'
     };
     try {
-      const { error } = await supabase.from('univ_consultation').insert({ ...newItem, company_id: companyId });
+      const { error } = await (async () => {
+        const _p = { ...newItem, company_id: companyId };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO univ_consultation (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
       if (error) throw error;
       toast.success('Consultation added');
     } catch (err) {

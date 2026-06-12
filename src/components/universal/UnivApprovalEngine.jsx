@@ -9,7 +9,8 @@ import {
 import { formatDistanceToNow, format, parseISO } from 'date-fns';
 import { toast } from 'react-hot-toast';
 
-import { supabase } from '@/api/supabaseClient';
+import { powerSync } from "@/api/PowerSyncConnector";
+import { supabase } from "@/api/supabaseClient";
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { Badge } from '@/components/ui/badge';
@@ -321,11 +322,9 @@ function TemplatesPanel({ companyId }) {
   const { data: templates = [], isLoading } = useQuery({
     queryKey: ['univ_approval_templates', companyId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from(TEMPLATES_TABLE)
-        .select('*')
-        .eq('company_id', companyId)
-        .order('created_at', { ascending: false });
+      const __res = await powerSync.execute(`SELECT * FROM TEMPLATES_TABLE WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
+      const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
+      const error = null;
       if (error) throw error;
       return data || [];
     },
@@ -344,12 +343,13 @@ function TemplatesPanel({ companyId }) {
     if (!form.name.trim()) return toast.error('Template name is required');
     if (form.steps.some(s => !s.stepName.trim())) return toast.error('All step names are required');
     setSaving(true);
-    const { error } = await supabase.from(TEMPLATES_TABLE).insert({
-      company_id: companyId,
-      name: form.name.trim(),
-      steps: form.steps,
-      created_at: new Date().toISOString(),
-    });
+    await (async () => {
+      const _p = { company_id: companyId, name: form.name.trim(), steps: form.steps, created_at: new Date().toISOString() };
+      const _k = Object.keys(_p);
+      const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+      await powerSync.execute(`INSERT INTO ${TEMPLATES_TABLE} (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v);
+    })();
+    const error = null;
     setSaving(false);
     if (error) { toast.error('Failed to save template: ' + error.message); return; }
     toast.success('Template saved!');
@@ -358,7 +358,8 @@ function TemplatesPanel({ companyId }) {
   };
 
   const deleteTemplate = async (id) => {
-    const { error } = await supabase.from(TEMPLATES_TABLE).delete().eq('id', id);
+    await powerSync.execute(`DELETE FROM TEMPLATES_TABLE WHERE id = ?`, [id]);
+      const error = null;
     if (error) toast.error('Delete failed');
     else { toast.success('Template deleted'); queryClient.invalidateQueries({ queryKey: ['univ_approval_templates', companyId] }); }
   };
@@ -488,11 +489,9 @@ export default function UnivApprovalEngine() {
   const { data: allApprovals = [], isLoading } = useQuery({
     queryKey: [TABLE, companyId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from(TABLE)
-        .select('*')
-        .eq('company_id', companyId)
-        .order('created_at', { ascending: false });
+      const __res = await powerSync.execute(`SELECT * FROM TABLE WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
+      const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
+      const error = null;
       if (error) throw error;
       return data || [];
     },
@@ -755,7 +754,7 @@ export function useApprovalEngine() {
       actioned_at:    null,
     }));
 
-    const { data, error } = await supabase.from(TABLE).insert({
+    const payload = {
       company_id:     companyId,
       record_type:    recordType,
       record_id:      recordId || null,
@@ -768,7 +767,15 @@ export function useApprovalEngine() {
       priority,
       created_at:     new Date().toISOString(),
       updated_at:     new Date().toISOString(),
-    }).select().single();
+    };
+    await (async () => {
+      const _p = payload;
+      const _k = Object.keys(_p);
+      const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+      await powerSync.execute(`INSERT INTO ${TABLE} (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v);
+    })();
+    const data = payload;
+    const error = null;
 
     if (error) throw error;
     return data;

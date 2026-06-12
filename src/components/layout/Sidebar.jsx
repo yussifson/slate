@@ -47,7 +47,7 @@ const ICON_MAP = {
   FileSearch, LayoutGrid, BedDouble, BellRing, CheckSquare2: CheckSquare, Zap, Store
 , ShieldAlert, HeartPulse, FilePlus, FileCheck, Gavel, CalendarDays, CalendarCheck, UserCheck, PenTool, Target, Calculator, Home, Moon, CalendarSearch, Wallet, PieChart, ArrowUpRight, ArrowDownLeft, Laptop, Smartphone, MessageSquare, LineChart};
 
-import { supabase } from "@/api/supabaseClient";
+import { powerSync } from "@/api/PowerSyncConnector";
 import { useAuth } from "@/lib/AuthContext";
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -112,7 +112,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
     queryKey: ['company', user?.company_id],
     queryFn: async () => {
       if (!user?.company_id) return null;
-      const { data } = await supabase.from('companies').select('education_level').eq('id', user.company_id).single();
+      const { data } = await powerSync.execute('SELECT education_level FROM companies WHERE id = ? LIMIT 1', [user.company_id]).then(res => ({ data: res.rows._array[0] }));
       return data;
     },
     enabled: !!user?.company_id
@@ -414,7 +414,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   const confirmDelete = async () => {
     if (deleteData) {
       setDynamicModules(prev => prev.filter(m => m.id !== deleteData.id));
-      await supabase.from('module_definitions').delete().eq('id', deleteData.id);
+      await powerSync.execute(`DELETE FROM module_definitions WHERE id = ?`, [deleteData.id]);
       setDeleteData(null);
     }
   };
@@ -437,7 +437,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
         }
       } else {
         setDynamicModules(prev => prev.map(m => m.id === renameData.id ? { ...m, name: renameData.newName } : m));
-        await supabase.from('module_definitions').update({ name: renameData.newName }).eq('id', renameData.id);
+        await (async () => { const _p = {name: renameData.newName}; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE module_definitions SET ${_k.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._v, renameData.id]); })();
       }
       setRenameData(null);
     } else {
@@ -448,7 +448,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   const handleTogglePublish = async (id, currentStatus) => {
     const newStatus = currentStatus === 'published' ? 'draft' : 'published';
     setDynamicModules(prev => prev.map(m => m.id === id ? { ...m, status: newStatus } : m));
-    await supabase.from('module_definitions').update({ status: newStatus }).eq('id', id);
+    await (async () => { const _p = {status: newStatus}; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE module_definitions SET ${_k.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._v, id]); })();
   };
 
   const renderNavContent = (collapsed) => (

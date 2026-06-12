@@ -7,7 +7,8 @@ import {
   FileDown, AlertCircle
 } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
@@ -203,7 +204,7 @@ export default function UnivDataGrid({
     queryKey: ['orbit_records', effectiveCompanyId, effectivePageName, targetTable],
     queryFn: async () => {
       if (!effectiveCompanyId) return [];
-      let query = supabase.from(targetTable).select('*').eq('company_id', effectiveCompanyId);
+      let dbQueryStr = `SELECT * FROM ${targetTable} WHERE company_id = ?`; let dbQueryParams = [effectiveCompanyId];
       if (targetTable === 'industry_records') {
         query = query.eq('industry', 'orbit_build_data').eq('record_type', effectivePageName);
       }
@@ -357,7 +358,13 @@ export default function UnivDataGrid({
       } else {
         payload = { ...newData, company_id: effectiveCompanyId };
       }
-      const { data, error } = await supabase.from(targetTable).insert([payload]);
+      const { data, error } = await (async () => {
+        const _p = payload;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO targetTable (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
       if (error) throw error;
       return data;
     },
@@ -372,7 +379,8 @@ export default function UnivDataGrid({
 
   const deleteMutation = useMutation({
     mutationFn: async (id) => {
-      const { error } = await supabase.from(targetTable).delete().eq('id', id);
+      await powerSync.execute(`DELETE FROM targetTable WHERE id = ?`, [id]);
+      const error = null;
       if (error) throw error;
     },
     onSuccess: () => { invalidate(); toast({ title: 'Deleted' }); }
@@ -380,7 +388,8 @@ export default function UnivDataGrid({
 
   const bulkDeleteMutation = useMutation({
     mutationFn: async (ids) => {
-      const { error } = await supabase.from(targetTable).delete().in('id', ids);
+      await powerSync.execute(`DELETE FROM ${targetTable} WHERE id IN (${ids.map(()=>'?').join(',')})`, ids);
+      const error = null;
       if (error) throw error;
     },
     onSuccess: () => {
@@ -402,7 +411,8 @@ export default function UnivDataGrid({
     } else {
       updatePayload = { [colKey]: value };
     }
-    const { error } = await supabase.from(targetTable).update(updatePayload).eq('id', rowId);
+    await (async () => { const _p = updatePayload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${targetTable} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, rowId]); })();
+      const error = null; const data = [];
     if (error) throw error;
   }, [records, targetTable]);
 
@@ -428,7 +438,8 @@ export default function UnivDataGrid({
         } else {
           payload = { status };
         }
-        const { error } = await supabase.from(targetTable).update(payload).eq('id', id);
+        await (async () => { const _p = payload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${targetTable} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, id]); })();
+      const error = null; const data = [];
         if (error) throw error;
       }
     },

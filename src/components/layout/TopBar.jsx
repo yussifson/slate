@@ -13,7 +13,7 @@ import { useCompany } from "@/hooks/useCompanyId";
 import { INDUSTRIES } from "@/config/industries";
 import ProfileAvatarDialog from "@/components/shared/ProfileAvatarDialog";
 import { ORBIT_COMPONENTS_LIST } from "@/pages/admin/OrbitComponentTester";
-import { supabase } from "@/api/supabaseClient";
+import { powerSync } from "@/api/PowerSyncConnector";
 
 const PAGE_TITLES = {
   "/": "Dashboard",
@@ -91,7 +91,11 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
   const handleSwitchWorkspace = async (targetCompanyId) => {
     if (!targetCompanyId || targetCompanyId === user?.company_id) return;
     try {
-      const { error } = await supabase.from('profiles').update({ company_id: targetCompanyId }).eq('id', user.id);
+      const keys = Object.keys({ company_id: targetCompanyId });
+      const values = Object.values({ company_id: targetCompanyId }).map(v => typeof v === 'object' ? JSON.stringify(v) : v);
+      const setClause = keys.map(k => `${k} = ?`).join(', ');
+      await powerSync.execute(`UPDATE ${'profiles'.replace(/['"`]/g, '')} SET ${setClause} WHERE id = ?`, [...values, user.id]);
+      const error = null;
       if (error) throw error;
       
       const targetCompany = user?.available_companies?.find(c => c.id === targetCompanyId);

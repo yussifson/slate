@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { motion } from 'framer-motion';
 import { BarChart2, TrendingUp, Download, Loader2, RefreshCw, Database, AlertCircle } from 'lucide-react';
 

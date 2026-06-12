@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/api/supabaseClient";
+import { powerSync } from "@/api/PowerSyncConnector";
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { Search, Loader2, CheckCircle2, Download, Trash2, ShieldCheck, Blocks } from "lucide-react";
 import PageHeader from "@/components/shared/PageHeader";
@@ -118,7 +118,7 @@ export default function Marketplace() {
           order_index: f.order_index,
           created_at: new Date().toISOString()
         }));
-        const { error: fieldsError } = await supabase.from('field_definitions').insert(fieldsToInsert);
+        const { error: fieldsError } = await (async () => { let _p = fieldsToInsert; if (Array.isArray(_p)) _p = _p[0]; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' ? JSON.stringify(v) : v); const _pl = _k.map(()=>'?').join(', '); await powerSync.execute(`INSERT INTO field_definitions (${_k.join(', ')}) VALUES (${_pl})`, _v); })();
         if (fieldsError) throw fieldsError;
       }
 
@@ -148,7 +148,8 @@ export default function Marketplace() {
       // Delete all field definitions
       await supabase.from('field_definitions').delete().eq('module_id', installedModuleId);
       // Delete the module definition itself
-      const { error } = await supabase.from('module_definitions').delete().eq('id', installedModuleId);
+      await powerSync.execute(`DELETE FROM ${'module_definitions'.replace(/['"`]/g, '')} WHERE id = ?`, [installedModuleId]);
+      const error = null;
       if (error) throw error;
 
       setInstalledMap(prev => {

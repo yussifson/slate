@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { useQuery } from '@tanstack/react-query';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
@@ -31,11 +32,9 @@ export default function UnivBilling({
   const { data: availablePlans = [], isLoading: plansLoading } = useQuery({
     queryKey: ['subscription_plans'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('subscription_plans')
-        .select('*')
-        .eq('is_active', true)
-        .order('price_monthly', { ascending: true });
+      const __res = await powerSync.execute(`SELECT * FROM subscription_plans WHERE is_active = ? ORDER BY price_monthly ASC`, [true]);
+      const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
+      const error = null;
       if (error) throw error;
       return data || [];
     }

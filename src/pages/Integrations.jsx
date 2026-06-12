@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Search, Loader2, CheckCircle2, Link2, ExternalLink, ShieldCheck, HelpCircle } from 'lucide-react';
 import PageHeader from '@/components/shared/PageHeader';
 import { useToast } from '@/components/ui/use-toast';
-import { supabase } from '@/api/supabaseClient';
+import { powerSync } from "@/api/PowerSyncConnector";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 

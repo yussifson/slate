@@ -8,7 +8,8 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { Save, RefreshCw, X, Plus, User } from 'lucide-react';
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 
 export default function UnivDonorProfile() {
   const companyId = useCompanyId();
@@ -31,14 +32,22 @@ export default function UnivDonorProfile() {
 
   const fetchItems = async () => {
     setLoading(true);
-    const { data, error } = await supabase.from('univ_donorprofile').select('*').eq('company_id', companyId).order('created_at', { ascending: false }).limit(50);
+    const __res = await powerSync.execute(`SELECT * FROM univ_donorprofile WHERE company_id = ? ORDER BY created_at DESC LIMIT 50`, [companyId]);
+      const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
+      const error = null;
     if (!error && data) setItems(data);
     setLoading(false);
   };
 
   const handleSave = async () => {
     setLoading(true);
-    const { error } = await supabase.from('univ_donorprofile').insert([{ ...formData, company_id: companyId }]);
+    const { error } = await (async () => {
+        const _p = { ...formData, company_id: companyId };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO univ_donorprofile (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
     if (!error) {
       setShowForm(false);
       setFormData({ name: '', email: '', phone: '', total_donated: '', donor_status: '' });

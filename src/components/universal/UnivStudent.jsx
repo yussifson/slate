@@ -5,7 +5,8 @@ import GenericKanban from '@/components/views/GenericKanban';
 import GenericCalendar from '@/components/views/GenericCalendar';
 import GenericDashboard from '@/components/views/GenericDashboard';
 
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { Search, GraduationCap, User, BookOpen, Clock, MoreHorizontal, FileText, Download, Plus } from 'lucide-react';
@@ -57,7 +58,13 @@ export default function UnivStudent() {
       enrollment_date: new Date().toISOString().split('T')[0] || null
     };
     try {
-      const { error } = await supabase.from('univ_students').insert(newStudent);
+      const { error } = await (async () => {
+        const _p = newStudent;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO univ_students (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
       if (error) throw error;
       toast.success('Student added');
     } catch (err) {

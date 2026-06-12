@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { supabase } from '@/api/supabaseClient';
+import { powerSync } from "@/api/PowerSyncConnector";
 import { useToast } from '@/components/ui/use-toast';
 import { CheckCircle2, ChevronRight, ChevronLeft } from 'lucide-react';
 
@@ -61,7 +61,11 @@ export default function DynamicFormWizard({ fieldDefinitions = [], onRefresh, mo
         status: 'active'
       };
       
-      const { error } = await supabase.from('industry_records').insert([payload]);
+      const keys = Object.keys(payload);
+      const values = Object.values(payload).map(v => typeof v === 'object' ? JSON.stringify(v) : v);
+      const placeholders = keys.map(() => '?').join(', ');
+      await powerSync.execute(`INSERT INTO ${'industry_records'} (${keys.join(', ')}) VALUES (${placeholders})`, values);
+      const error = null;
       if (error) throw error;
       
       toast({ title: 'Success', description: 'Record created successfully.' });

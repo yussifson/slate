@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { supabase } from '@/api/supabaseClient';
+import { powerSync } from "@/api/PowerSyncConnector";
 import { useAuth } from '@/lib/AuthContext';
 import { toast } from 'react-hot-toast';
 

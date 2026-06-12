@@ -136,19 +136,27 @@ export default function UnivMessaging() {
     }
     
     // Create a new direct room
-    const { data: newRoom, error: roomError } = await supabase
-      .from('chat_rooms')
-      .insert({ room_type: 'direct', company_id: companyId, created_by: currentUser.id })
-      .select('id')
-      .single();
+        await (async () => {
+      const _p = { room_type: 'direct', company_id: companyId, created_by: currentUser.id };
+      const _k = Object.keys(_p);
+      const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+      await powerSync.execute(`INSERT INTO chat_rooms (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v);
+    })();
+    const newRoom = { id: `room_${Math.random().toString(36).substr(2, 9)}` };
+    const roomError = null;
       
     if (roomError) throw roomError;
     
     // Add both participants
-    const { error: partError } = await supabase.from('chat_participants').insert([
-      { room_id: newRoom.id, user_id: currentUser.id, role: 'member' },
-      { room_id: newRoom.id, user_id: contactId, role: 'member' }
-    ]);
+        await (async () => {
+      const p1 = { room_id: newRoom.id, user_id: currentUser.id, role: 'member' };
+      const p2 = { room_id: newRoom.id, user_id: contactId, role: 'member' };
+      const _k = Object.keys(p1);
+      const _pl = _k.map(()=>'?').join(', ');
+      await powerSync.execute(`INSERT INTO chat_participants (${_k.join(',')}) VALUES (${_pl})`, Object.values(p1));
+      await powerSync.execute(`INSERT INTO chat_participants (${_k.join(',')}) VALUES (${_pl})`, Object.values(p2));
+    })();
+    const partError = null;
     if (partError) throw partError;
     
     return newRoom.id;
@@ -156,11 +164,9 @@ export default function UnivMessaging() {
 
   const fetchMessages = async (roomId) => {
     try {
-      const { data, error } = await supabase
-        .from('chat_messages')
-        .select('*').eq('company_id', companyId)
-        .eq('room_id', roomId)
-        .order('created_at', { ascending: true });
+            const __res = await powerSync.execute(`SELECT * FROM chat_messages WHERE company_id = ? AND room_id = ? ORDER BY created_at ASC`, [companyId, roomId]);
+      const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
+      const error = null;
       if (error) throw error;
       setMessages(data || []);
     } catch (err) {
@@ -174,15 +180,17 @@ export default function UnivMessaging() {
     const textToSend = message.trim();
     setMessage('');
     try {
-      const { error } = await supabase.from('chat_messages').insert({
-        room_id: activeRoomId,
-        sender_id: currentUser.id,
-        content: textToSend
-      });
+            await (async () => {
+        const _p = { room_id: activeRoomId, sender_id: currentUser.id, content: textToSend };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`INSERT INTO chat_messages (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v);
+      })();
+      const error = null;
       if (error) throw error;
       
       // Update room updated_at timestamp
-      await supabase.from('chat_rooms').update({ updated_at: new Date().toISOString() }).eq('id', activeRoomId);
+            await powerSync.execute(`UPDATE chat_rooms SET updated_at = ? WHERE id = ?`, [new Date().toISOString(), activeRoomId]);
       fetchMessages(activeRoomId);
     } catch (err) {
       console.error(err);

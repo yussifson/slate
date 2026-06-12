@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/AuthContext";
 import { cn } from "@/lib/utils";
 import { generateText } from "@/lib/cloudflareAI";
-import { supabase } from "@/api/supabaseClient";
+import { powerSync } from "@/api/PowerSyncConnector";
 import AddChatDialog from "@/components/chat/AddChatDialog";
 import { useToast } from "@/components/ui/use-toast";
 import { format } from "date-fns";
@@ -134,24 +134,42 @@ export default function Chat() {
     setInputValue("");
     try {
       if (editingMsg) {
-        const { error } = await supabase.from('chat_messages').update({
+        (async () => {
+        const _p = {
           content: text,
           is_edited: true
-        }).eq('id', editingMsg.id);
+        };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`UPDATE chat_messages SET ${_k.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingMsg.id]);
+      })();
+      const error = null;
         if (error) throw error;
         setMessages(prev => prev.map(m => m.id === editingMsg.id ? { ...m, content: text, is_edited: true } : m));
         setEditingMsg(null);
       } else {
-        const { error } = await supabase.from('chat_messages').insert({
+        (async () => {
+        const _p = {
           room_id: activeRoomId,
           sender_id: user.id,
           content: text,
           reply_to_id: replyTo?.id || null
-        });
+        };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO chat_messages (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
+      const error = null;
         if (error) throw error;
         setReplyTo(null);
       }
-      await supabase.from('chat_rooms').update({ updated_at: new Date().toISOString() }).eq('id', activeRoomId);
+      await (async () => {
+        const _p = { updated_at: new Date().toISOString() };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`UPDATE chat_rooms SET ${_k.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._v, activeRoomId]);
+      })();
     } catch (err) {
       toast({ title: "Error", description: "Failed to send message", variant: "destructive" });
     }
@@ -172,7 +190,14 @@ export default function Chat() {
         mockUrl = `[Attachment|${file.name}|data:image/png;base64,mock]`;
       }
     
-      const { error } = await supabase.from('chat_messages').insert({ room_id: activeRoomId, sender_id: user.id, content: mockUrl });
+      (async () => {
+        const _p = { room_id: activeRoomId, sender_id: user.id, content: mockUrl };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO chat_messages (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
+      const error = null;
       if (error) throw error;
     } catch (err) {
       toast({ title: "Error", description: "Failed to upload file", variant: "destructive" });

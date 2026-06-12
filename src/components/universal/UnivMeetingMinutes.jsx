@@ -5,7 +5,8 @@ import GenericKanban from '@/components/views/GenericKanban';
 import GenericCalendar from '@/components/views/GenericCalendar';
 import GenericDashboard from '@/components/views/GenericDashboard';
 
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { Plus, Trash2, Edit2, Loader2, XCircle, Search, ClipboardList } from 'lucide-react';
 import { toast } from 'react-hot-toast';
@@ -52,9 +53,18 @@ export default function UnivMeetingMinutes() {
     e.preventDefault();
     setSaving(true);
     const payload = { ...form, company_id: companyId };
-    const { error } = editId
-      ? await supabase.from(TABLE).update(payload).eq('id', editId)
-      : await supabase.from(TABLE).insert(payload);
+    await (async () => {
+        const _p = payload;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        if (editId) {
+            await powerSync.execute(`UPDATE TABLE SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editId]);
+        } else {
+            const _pl = _k.map(()=>'?').join(', ');
+            await powerSync.execute(`INSERT INTO TABLE (${_k.join(', ')}) VALUES (${_pl})`, _v);
+        }
+      })();
+      const error = null;
     setSaving(false);
     if (error) { toast.error('Save failed: ' + error.message); return; }
     toast.success(editId ? 'Record updated!' : 'Record added!');
@@ -63,7 +73,8 @@ export default function UnivMeetingMinutes() {
   };
 
   const handleDelete = async (id) => {
-    const { error } = await supabase.from(TABLE).delete().eq('id', id);
+    await powerSync.execute(`DELETE FROM TABLE WHERE id = ?`, [id]);
+      const error = null;
     if (error) { toast.error('Delete failed'); return; }
     toast.success('Deleted');
     fetchData();

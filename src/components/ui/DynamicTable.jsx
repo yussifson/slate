@@ -11,7 +11,7 @@ import { ArrowUpDown, Search, ChevronLeft, ChevronRight, Eye, Pencil, Trash2, Mo
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { supabase } from '@/api/supabaseClient';
+import { powerSync } from "@/api/PowerSyncConnector";
 import { useToast } from '@/components/ui/use-toast';
 
 export default function DynamicTable({ data = [], fieldDefinitions = [], moduleDef, onRefresh }) {

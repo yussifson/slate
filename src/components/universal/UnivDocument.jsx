@@ -5,7 +5,8 @@ import GenericKanban from '@/components/views/GenericKanban';
 import GenericCalendar from '@/components/views/GenericCalendar';
 import GenericDashboard from '@/components/views/GenericDashboard';
 
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { FolderOpen, Plus, Search, Trash2, Edit2, Loader2, XCircle, FileText, Download, Eye, UploadCloud } from 'lucide-react';
 import { toast } from 'react-hot-toast';
@@ -63,7 +64,9 @@ export default function UnivDocument() {
   const fetchDocs = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.from('univ_documents').select('*').eq('company_id', companyId).order('created_at', { ascending: false });
+      const __res = await powerSync.execute(`SELECT * FROM univ_documents WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
+      const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
+      const error = null;
       if (error && error.code !== '42P01') throw error;
       setRecords(data || []);
     } catch (e) { console.error(e); } finally { setLoading(false); }
@@ -73,11 +76,18 @@ export default function UnivDocument() {
     e.preventDefault();
     try {
       if (editingId) {
-        const { error } = await supabase.from('univ_documents').update(form).eq('id', editingId);
+        await (async () => { const _p = form; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${univ_documents} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingId]); })();
+      const error = null; const data = [];
         if (error) throw error;
         toast.success('Document updated!');
       } else {
-        const { error } = await supabase.from('univ_documents').insert({ ...form, company_id: companyId });
+        const { error } = await (async () => {
+        const _p = { ...form, company_id: companyId };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO univ_documents (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
         if (error) throw error;
         toast.success('Document added!');
       }
@@ -86,7 +96,8 @@ export default function UnivDocument() {
   };
 
   const remove = async (id) => {
-    const { error } = await supabase.from('univ_documents').delete().eq('id', id);
+    await powerSync.execute(`DELETE FROM univ_documents WHERE id = ?`, [id]);
+      const error = null;
     if (error) toast.error('Failed to delete'); else { toast.success('Deleted'); fetchDocs(); }
   };
 

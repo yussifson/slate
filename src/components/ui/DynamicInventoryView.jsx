@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { supabase } from '@/api/supabaseClient';
+import { powerSync } from "@/api/PowerSyncConnector";
 import { useToast } from '@/components/ui/use-toast';
 import { AlertCircle, CheckCircle2, ChevronRight, ChevronLeft, Package, PackageX, TrendingDown } from 'lucide-react';
 
@@ -42,7 +42,7 @@ export default function DynamicInventoryView({ data = [], fieldDefinitions = [],
     try {
       const record = data.find(d => d.id === id);
       const updatedData = { ...record.data, [qtyField.name]: next };
-      await supabase.from('industry_records').update({ data: updatedData }).eq('id', id);
+      await (async () => { const _p = {data: updatedData}; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE industry_records SET ${_k.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._v, id]); })();
       if (onRefresh) onRefresh();
     } catch (e) {
       toast({ title: 'Error updating inventory', description: e.message, variant: 'destructive' });

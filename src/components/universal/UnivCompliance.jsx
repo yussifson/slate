@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -43,7 +44,7 @@ export default function UnivCompliance({
     queryKey: ['compliance', effectiveCompanyId, effectivePageName],
     queryFn: async () => {
       if (!effectiveCompanyId) return [];
-      let query = supabase.from(targetTable).select('*').eq('company_id', effectiveCompanyId);
+      let dbQueryStr = `SELECT * FROM ${targetTable} WHERE company_id = ?`; let dbQueryParams = [effectiveCompanyId];
       if (targetTable === 'industry_records') {
         query = query.eq('industry', 'orbit_build_data').eq('record_type', `${effectivePageName}_items`);
       }
@@ -87,11 +88,18 @@ export default function UnivCompliance({
       }
 
       if (isNew) {
-        const { error } = await supabase.from(targetTable).insert([payload]);
+        const { error } = await (async () => {
+        const _p = payload;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO targetTable (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
         if (error) throw error;
       } else {
         const updatePayload = targetTable === 'industry_records' ? { data: itemData } : itemData;
-        const { error } = await supabase.from(targetTable).update(updatePayload).eq('id', itemData.id);
+        await (async () => { const _p = updatePayload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${targetTable} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, itemData.id]); })();
+      const error = null; const data = [];
         if (error) throw error;
       }
     },
@@ -104,7 +112,8 @@ export default function UnivCompliance({
 
   const deleteMutation = useMutation({
     mutationFn: async (id) => {
-      const { error } = await supabase.from(targetTable).delete().eq('id', id);
+      await powerSync.execute(`DELETE FROM targetTable WHERE id = ?`, [id]);
+      const error = null;
       if (error) throw error;
     },
     onSuccess: () => {

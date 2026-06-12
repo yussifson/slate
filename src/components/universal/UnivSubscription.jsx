@@ -5,7 +5,8 @@ import GenericKanban from '@/components/views/GenericKanban';
 import GenericCalendar from '@/components/views/GenericCalendar';
 import GenericDashboard from '@/components/views/GenericDashboard';
 
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { Search, Repeat, CreditCard, ArrowUpRight, ArrowDownRight, User, MoreHorizontal, Download, Calendar, Plus, X, Trash2 } from 'lucide-react';
@@ -110,9 +111,13 @@ export default function UnivSubscription() {
         if (error) throw error;
         toast.success('Subscription updated');
       } else {
-        const { error } = await supabase
-          .from('univ_subscriptions')
-          .insert(payload);
+        const { error } = await (async () => {
+        const _p = payload;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO univ_subscriptions (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
         if (error) throw error;
         toast.success('Subscription created');
       }
@@ -127,10 +132,8 @@ export default function UnivSubscription() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this subscription?')) return;
     try {
-      const { error } = await supabase
-        .from('univ_subscriptions')
-        .delete()
-        .eq('id', id);
+      await powerSync.execute(`DELETE FROM univ_subscriptions WHERE id = ?`, [id]);
+      const error = null;
       if (error) throw error;
       toast.success('Subscription deleted');
       fetchSubscriptions();

@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState, useEffect } from 'react';
-import { supabase } from '@/api/supabaseClient';
+import { powerSync } from "@/api/PowerSyncConnector";
 import { Scale, Users, Building2, DollarSign, Loader2 } from 'lucide-react';
 import PageHeader from '@/components/shared/PageHeader';
 import Companies from '@/pages/Companies';

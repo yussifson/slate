@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/api/supabaseClient';
+import { powerSync } from "@/api/PowerSyncConnector";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -111,12 +111,17 @@ export default function SignUp() {
       if (compError) throw compError;
 
       // 3. Update the profile
-      const { error: profError } = await supabase.from('profiles').update({
+      const { error: profError } = await (async () => {
+        const _p = {
         company_id: companyData.id,
         company_name: companyData.name,
         full_name: username,
         role: 'company_admin'
-      }).eq('id', user.id);
+      };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`UPDATE profiles SET ${_k.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._v, user.id]);
+      })();
 
       if (profError) throw profError;
 

@@ -5,7 +5,8 @@ import GenericKanban from '@/components/views/GenericKanban';
 import GenericCalendar from '@/components/views/GenericCalendar';
 import GenericDashboard from '@/components/views/GenericDashboard';
 
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { Search, Map, Navigation, CheckCircle2, Clock, MapPin, MoreHorizontal, Plus } from 'lucide-react';
@@ -57,7 +58,13 @@ export default function UnivRoute() {
       status: 'Planned'
     };
     try {
-      const { error } = await supabase.from('univ_routes').insert(newRoute);
+      const { error } = await (async () => {
+        const _p = newRoute;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO univ_routes (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
       if (error) throw error;
       toast.success('Route added');
     } catch (err) {

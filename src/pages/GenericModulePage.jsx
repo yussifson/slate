@@ -8,7 +8,7 @@ import DynamicGrid from "@/components/ui/DynamicGrid";
 import DynamicForm from "@/components/ui/DynamicForm";
 import DynamicDashboard from "@/components/ui/DynamicDashboard";
 import DynamicKanbanView from "@/components/ui/DynamicKanbanView";
-import { supabase } from "@/api/supabaseClient";
+import { powerSync } from "@/api/PowerSyncConnector";
 import { useAuth } from "@/lib/AuthContext";
 import { useImpersonation } from "@/lib/ImpersonationContext";
 import { useNavigate } from "react-router-dom";
@@ -119,10 +119,13 @@ export default function GenericModulePage({ title: propTitle, description: propD
   const handleSaveSettings = async () => {
     setIsSavingSettings(true);
     try {
-      const { error } = await supabase
-        .from('module_definitions')
-        .update({ visibility, shared_with: sharedWith })
-        .eq('id', moduleDef.id);
+      (async () => {
+        const _p = { visibility, shared_with: sharedWith };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`UPDATE module_definitions SET ${_k.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._v, moduleDef.id]);
+      })();
+      const error = null;
         
       if (error) throw error;
 
@@ -140,7 +143,8 @@ export default function GenericModulePage({ title: propTitle, description: propD
           if (!existing || existing.length === 0) {
             // Clone module as draft
             const newModuleId = crypto.randomUUID();
-            await supabase.from('module_definitions').insert({
+            await (async () => {
+        const _p = {
               id: newModuleId,
               company_id: targetCompanyId,
               name: moduleDef.name,
@@ -150,7 +154,12 @@ export default function GenericModulePage({ title: propTitle, description: propD
               status: 'draft',
               is_active: 'true',
               created_at: new Date().toISOString()
-            });
+            };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO module_definitions (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
 
             // Clone fields
             const newFields = fieldDefs.map(f => ({
@@ -165,7 +174,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
               created_at: new Date().toISOString()
             }));
             if (newFields.length > 0) {
-              await supabase.from('field_definitions').insert(newFields);
+              await (async () => { let _p = newFields; if (Array.isArray(_p)) _p = _p[0]; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' ? JSON.stringify(v) : v); const _pl = _k.map(()=>'?').join(', '); await powerSync.execute(`INSERT INTO field_definitions (${_k.join(', ')}) VALUES (${_pl})`, _v); })();
             }
           }
         }

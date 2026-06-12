@@ -5,7 +5,8 @@ import GenericKanban from '@/components/views/GenericKanban';
 import GenericCalendar from '@/components/views/GenericCalendar';
 import GenericDashboard from '@/components/views/GenericDashboard';
 
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { Search, Users, Plus, Star, Phone, Mail, CheckCircle2, AlertCircle, MoreHorizontal } from 'lucide-react';
@@ -58,7 +59,13 @@ export default function UnivContractor() {
       rating: 0
     };
     try {
-      const { error } = await supabase.from('univ_contractors').insert(newContractor);
+      const { error } = await (async () => {
+        const _p = newContractor;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO univ_contractors (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
       if (error) throw error;
       toast.success('Contractor added');
     } catch (err) {

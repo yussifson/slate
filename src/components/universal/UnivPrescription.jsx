@@ -5,7 +5,8 @@ import GenericKanban from '@/components/views/GenericKanban';
 import GenericCalendar from '@/components/views/GenericCalendar';
 import GenericDashboard from '@/components/views/GenericDashboard';
 
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Pill, Plus, Activity, Download, CheckCircle2, MoreHorizontal, User, Stethoscope, Edit2, Trash2, XCircle } from 'lucide-react';
@@ -165,9 +166,13 @@ export default function UnivPrescription() {
         if (error) throw error;
         toast.success('Prescription updated');
       } else {
-        const { error } = await supabase
-          .from('univ_prescriptions')
-          .insert(payload);
+        const { error } = await (async () => {
+        const _p = payload;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO univ_prescriptions (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
         if (error) throw error;
         toast.success('Prescription created');
       }
@@ -185,10 +190,8 @@ export default function UnivPrescription() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this prescription?')) return;
     try {
-      const { error } = await supabase
-        .from('univ_prescriptions')
-        .delete()
-        .eq('id', id);
+      await powerSync.execute(`DELETE FROM univ_prescriptions WHERE id = ?`, [id]);
+      const error = null;
       if (error) throw error;
       toast.success('Prescription deleted');
       fetchPrescriptions();

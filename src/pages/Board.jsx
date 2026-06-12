@@ -4,7 +4,7 @@ import { Video, Plus, Calendar, Clock, Users, Copy, Sparkles, LayoutGrid, Loader
 import { Button } from "@/components/ui/button";
 import VideoRoom from "@/components/video/VideoRoom";
 import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/api/supabaseClient";
+import { powerSync } from "@/api/PowerSyncConnector";
 import { useAuth } from "@/lib/AuthContext";
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { format } from "date-fns";

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { motion } from 'framer-motion';
 import {
   Plus, Edit3, Check, Trash2, LayoutGrid, XCircle, X,

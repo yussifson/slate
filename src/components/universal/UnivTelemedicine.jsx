@@ -5,7 +5,8 @@ import GenericKanban from '@/components/views/GenericKanban';
 import GenericCalendar from '@/components/views/GenericCalendar';
 import GenericDashboard from '@/components/views/GenericDashboard';
 
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { Search, Video, Calendar, Clock, CheckCircle2, User, Phone, MoreHorizontal, FileText, Plus, X, Trash2 } from 'lucide-react';
@@ -130,9 +131,13 @@ export default function UnivTelemedicine() {
         if (error) throw error;
         toast.success('Consultation updated');
       } else {
-        const { error } = await supabase
-          .from('univ_telemedicine')
-          .insert(payload);
+        const { error } = await (async () => {
+        const _p = payload;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO univ_telemedicine (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
         if (error) throw error;
         toast.success('Consultation scheduled');
       }
@@ -147,10 +152,8 @@ export default function UnivTelemedicine() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to cancel and delete this consultation?')) return;
     try {
-      const { error } = await supabase
-        .from('univ_telemedicine')
-        .delete()
-        .eq('id', id);
+      await powerSync.execute(`DELETE FROM univ_telemedicine WHERE id = ?`, [id]);
+      const error = null;
       if (error) throw error;
       toast.success('Consultation deleted');
       fetchAppointments();

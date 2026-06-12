@@ -8,7 +8,8 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { AlertOctagon, Clock, Activity, User, MapPin } from 'lucide-react';
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 
 const UnivTriage = () => {
   const companyId = useCompanyId();
@@ -31,7 +32,9 @@ const UnivTriage = () => {
 
   const fetchTriageList = async () => {
     try {
-      const { data, error } = await supabase.from('univ_triage').select('*').eq('company_id', companyId).order('created_at', { ascending: false });
+      const __res = await powerSync.execute(`SELECT * FROM univ_triage WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
+      const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
+      const error = null;
       if (error) throw error;
       setTriageList(data || []);
     } catch (error) {
@@ -48,7 +51,13 @@ const UnivTriage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { error } = await supabase.from('univ_triage').insert([{ ...formData, company_id: companyId }]);
+      const { error } = await (async () => {
+        const _p = { ...formData, company_id: companyId };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO univ_triage (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
       if (error) throw error;
       setFormData({
         patient_name: '',

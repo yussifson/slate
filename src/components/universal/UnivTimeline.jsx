@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion } from 'framer-motion';
 import { Clock, CheckCircle2, Circle, Flag, Calendar, Plus, X, Trash2 } from 'lucide-react';
@@ -42,7 +43,7 @@ export default function UnivTimeline({
   const fetchProjects = async () => {
     setLoading(true);
     try {
-      let query = supabase.from(targetTable).select('*').eq('company_id', companyId);
+      let dbQueryStr = `SELECT * FROM ${targetTable} WHERE company_id = ?`; let dbQueryParams = [companyId];
       if (targetTable === 'industry_records') {
         query = query.eq('industry', 'orbit_build_data').eq('record_type', pageName);
       }
@@ -97,7 +98,13 @@ export default function UnivTimeline({
     }
 
     try {
-      const { error } = await supabase.from(targetTable).insert([payload]);
+      const { error } = await (async () => {
+        const _p = payload;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO targetTable (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
       if (error) throw error;
       toast.success('Milestone added');
       setIsModalOpen(false);
@@ -110,7 +117,8 @@ export default function UnivTimeline({
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this milestone?')) return;
     try {
-      const { error } = await supabase.from(targetTable).delete().eq('id', id);
+      await powerSync.execute(`DELETE FROM targetTable WHERE id = ?`, [id]);
+      const error = null;
       if (error) throw error;
       toast.success('Milestone deleted');
       fetchProjects();

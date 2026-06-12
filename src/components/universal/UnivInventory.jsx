@@ -5,7 +5,8 @@ import GenericKanban from '@/components/views/GenericKanban';
 import GenericCalendar from '@/components/views/GenericCalendar';
 import GenericDashboard from '@/components/views/GenericDashboard';
 
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { Package, Plus, Search, Trash2, Edit2, Loader2, XCircle, AlertTriangle, DollarSign, Archive, BarChart2, Filter, QrCode } from 'lucide-react';
 import { toast } from 'react-hot-toast';
@@ -35,7 +36,9 @@ export default function UnivInventory() {
   const fetchItems = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.from('univ_inventory').select('*').eq('company_id', companyId).order('item_name', { ascending: true });
+      const __res = await powerSync.execute(`SELECT * FROM univ_inventory WHERE company_id = ? ORDER BY item_name ASC`, [companyId]);
+      const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
+      const error = null;
       if (error && error.code !== '42P01') throw error;
       setInventory(data || []);
     } catch (e) { console.error(e); } finally { setLoading(false); }
@@ -54,11 +57,18 @@ export default function UnivInventory() {
     };
     try {
       if (editingId) {
-        const { error } = await supabase.from('univ_inventory').update(payload).eq('id', editingId);
+        await (async () => { const _p = payload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${univ_inventory} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingId]); })();
+      const error = null; const data = [];
         if (error) throw error;
         toast.success('Item updated!');
       } else {
-        const { error } = await supabase.from('univ_inventory').insert({ ...payload, company_id: companyId, sku: form.sku || `SKU-${Math.floor(Math.random()*10000)}` });
+        await (async () => {
+          const _p = { ...payload, company_id: companyId, sku: form.sku || `SKU-${Math.floor(Math.random()*10000)}` };
+          const _k = Object.keys(_p);
+          const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+          await powerSync.execute(`INSERT INTO univ_inventory (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v);
+        })();
+        const error = null;
         if (error) throw error;
         toast.success('Item added!');
       }
@@ -67,7 +77,8 @@ export default function UnivInventory() {
   };
 
   const remove = async (id) => {
-    const { error } = await supabase.from('univ_inventory').delete().eq('id', id);
+    await powerSync.execute(`DELETE FROM univ_inventory WHERE id = ?`, [id]);
+      const error = null;
     if (error) toast.error('Failed to delete'); else { toast.success('Deleted'); fetchItems(); }
   };
 

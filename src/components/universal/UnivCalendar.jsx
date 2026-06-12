@@ -3,7 +3,8 @@ import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Plus, Calendar as CalendarIcon, Clock, Users, Video, Loader2, Trash2 } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -31,7 +32,7 @@ export default function UnivCalendar({
     queryKey: ['orbit_records', companyId, pageName, targetTable],
     queryFn: async () => {
       if (!companyId) return [];
-      let query = supabase.from(targetTable).select('*').eq('company_id', companyId);
+      let dbQueryStr = `SELECT * FROM ${targetTable} WHERE company_id = ?`; let dbQueryParams = [companyId];
       if (targetTable === 'industry_records') {
         query = query.eq('industry', 'orbit_build_data').eq('record_type', pageName);
       }
@@ -50,7 +51,13 @@ export default function UnivCalendar({
       } else {
         payload = { ...newData, company_id: companyId };
       }
-      const { data, error } = await supabase.from(targetTable).insert([payload]);
+      const { data, error } = await (async () => {
+        const _p = payload;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _pl = _k.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO targetTable (${_k.join(', ')}) VALUES (${_pl})`, _v);
+      })();
       if (error) throw error;
       return data;
     },
@@ -69,7 +76,8 @@ export default function UnivCalendar({
 
   const deleteMutation = useMutation({
     mutationFn: async (id) => {
-      const { error } = await supabase.from(targetTable).delete().eq('id', id);
+      await powerSync.execute(`DELETE FROM targetTable WHERE id = ?`, [id]);
+      const error = null;
       if (error) throw error;
     },
     onError: (err) => {

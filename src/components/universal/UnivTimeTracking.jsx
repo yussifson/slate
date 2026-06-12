@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { supabase } from '@/api/supabaseClient';
+
+import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -46,7 +47,7 @@ export default function UnivTimeTracking({
     queryKey: ['time_entries', effectiveCompanyId, effectivePageName],
     queryFn: async () => {
       if (!effectiveCompanyId) return [];
-      let query = supabase.from(targetTable).select('*').eq('company_id', effectiveCompanyId);
+      let dbQueryStr = `SELECT * FROM ${targetTable} WHERE company_id = ?`; let dbQueryParams = [effectiveCompanyId];
       if (targetTable === 'industry_records') {
         query = query.eq('industry', 'orbit_build_data').eq('record_type', `${effectivePageName}_entries`);
       }
@@ -81,12 +82,14 @@ export default function UnivTimeTracking({
       }
 
       if (isNew) {
-        const { error, data } = await supabase.from(targetTable).insert([payload]).select().single();
+        await (async () => { const _p = payload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); const _pl = _k.map(()=>'?').join(', '); await powerSync.execute(`INSERT INTO ${targetTable} (${_k.join(', ')}) VALUES (${_pl})`, _v); })();
+      const error = null; const data = [];
         if (error) throw error;
         return data;
       } else {
         const updatePayload = targetTable === 'industry_records' ? { data: entryData } : entryData;
-        const { error, data } = await supabase.from(targetTable).update(updatePayload).eq('id', entryData.id).select().single();
+        await (async () => { const _p = updatePayload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${targetTable} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, entryData.id]); })();
+      const error = null; const data = [];
         if (error) throw error;
         return data;
       }
@@ -105,7 +108,8 @@ export default function UnivTimeTracking({
 
   const deleteMutation = useMutation({
     mutationFn: async (id) => {
-      const { error } = await supabase.from(targetTable).delete().eq('id', id);
+      await powerSync.execute(`DELETE FROM targetTable WHERE id = ?`, [id]);
+      const error = null;
       if (error) throw error;
     },
     onSuccess: () => {
