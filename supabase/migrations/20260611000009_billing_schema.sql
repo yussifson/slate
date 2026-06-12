@@ -66,7 +66,7 @@ CREATE POLICY "Plans updatable by super admin" ON public.subscription_plans FOR 
 -- Company Subscriptions (Read by company members, Write by super_admin / webhooks)
 ALTER TABLE public.company_subscriptions ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view their company subscription" ON public.company_subscriptions FOR SELECT USING (
-    company_id IN (SELECT company_id FROM company_users WHERE user_id = auth.uid())
+    company_id IN (SELECT company_id FROM profiles WHERE id = auth.uid())
 );
 CREATE POLICY "Super admins can manage all subscriptions" ON public.company_subscriptions FOR ALL USING (
     auth.uid() IN (SELECT id FROM profiles WHERE role = 'super_admin')
@@ -75,19 +75,19 @@ CREATE POLICY "Super admins can manage all subscriptions" ON public.company_subs
 -- Usage Metrics (Read by company members, Write by system/functions)
 ALTER TABLE public.usage_metrics ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view their usage" ON public.usage_metrics FOR SELECT USING (
-    company_id IN (SELECT company_id FROM company_users WHERE user_id = auth.uid())
+    company_id IN (SELECT company_id FROM profiles WHERE id = auth.uid())
 );
 CREATE POLICY "Users can update their usage" ON public.usage_metrics FOR UPDATE USING (
-    company_id IN (SELECT company_id FROM company_users WHERE user_id = auth.uid())
+    company_id IN (SELECT company_id FROM profiles WHERE id = auth.uid())
 );
 CREATE POLICY "Users can insert their usage" ON public.usage_metrics FOR INSERT WITH CHECK (
-    company_id IN (SELECT company_id FROM company_users WHERE user_id = auth.uid())
+    company_id IN (SELECT company_id FROM profiles WHERE id = auth.uid())
 );
 
 -- Billing Transactions
 ALTER TABLE public.billing_transactions ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view their company transactions" ON public.billing_transactions FOR SELECT USING (
-    company_id IN (SELECT company_id FROM company_users WHERE user_id = auth.uid())
+    company_id IN (SELECT company_id FROM profiles WHERE id = auth.uid())
 );
 CREATE POLICY "Super admins can manage all transactions" ON public.billing_transactions FOR ALL USING (
     auth.uid() IN (SELECT id FROM profiles WHERE role = 'super_admin')
