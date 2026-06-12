@@ -427,11 +427,12 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
           const updatedPages = orbitBuildData.pages.map(p => 
             p.page_name === renameData.currentName ? { ...p, page_name: renameData.newName } : p
           );
-          await supabase.from('industry_records')
-            .update({ data: { ...orbitBuildData, pages: updatedPages } })
-            .eq('company_id', companyId)
-            .eq('industry', 'orbit_build')
-            .eq('record_type', 'workspace_config');
+          await (async () => {
+            const _p = { data: { ...orbitBuildData, pages: updatedPages } };
+            const _k = Object.keys(_p);
+            const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+            await powerSync.execute(`UPDATE industry_records SET ${_k.map(k=>k+' = ?').join(', ')} WHERE company_id = ? AND industry = 'orbit_build' AND record_type = 'workspace_config'`, [..._v, companyId]);
+          })();
           // Invalidate to refresh sidebar
           queryClient.invalidateQueries(['orbit_build_config', companyId]);
         }

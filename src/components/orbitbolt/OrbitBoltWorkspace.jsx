@@ -72,11 +72,8 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
 
   useEffect(() => {
     const load = async () => {
-      const { data } = await supabase.from('industry_records')
-        .select('*')
-        .eq('company_id', companyId)
-        .eq('record_type', 'orbitbolt_session')
-        .order('created_at', { ascending: false });
+      const __res = await powerSync.execute(`SELECT * FROM industry_records WHERE company_id = ? AND record_type = 'orbitbolt_session' ORDER BY created_at DESC`, [companyId]);
+      const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
         
       if (data && data.length > 0) {
         const parsed = data.map(d => d.data);
@@ -115,7 +112,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
   const deleteSession = async (sid, e) => {
     e.stopPropagation();
     if (companyId) {
-      await supabase.from('industry_records').delete().eq('id', sid).eq('company_id', companyId);
+      await powerSync.execute(`DELETE FROM industry_records WHERE id = ? AND company_id = ?`, [sid, companyId]);
     }
     setSessions(prev => {
       const rest = prev.filter(s => s.id !== sid);
@@ -130,14 +127,19 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
 
   const saveSession = async (s) => {
     if (!companyId) return;
-    await supabase.from('industry_records').upsert({
+    await (async () => {
+        const _p = {
       id: s.id,
       company_id: companyId,
       industry: 'core',
       record_type: 'orbitbolt_session',
       search_text: s.title.toLowerCase(),
       data: s
-    });
+    };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`INSERT INTO industry_records (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${_k.map(k=>k+' = excluded.'+k).join(', ')}`, _v);
+      })();
   };
 
   const handleSend = async (e) => {

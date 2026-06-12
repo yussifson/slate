@@ -208,13 +208,19 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false }
       }
 
       const { error: moduleError } = isEditing
-        ? await supabase.from('module_definitions').update(moduleData).eq('id', id)
+        ? (await (async () => {
+        const _p = moduleData;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`UPDATE module_definitions SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, id]);
+        return { data: null };
+      }))()
         : await (async () => { let _p = moduleData; if (Array.isArray(_p)) _p = _p[0]; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' ? JSON.stringify(v) : v); const _pl = _k.map(()=>'?').join(', '); await powerSync.execute(`INSERT INTO module_definitions (${_k.join(', ')}) VALUES (${_pl})`, _v); })();
 
       if (moduleError) throw moduleError;
 
       // Delete existing fields then re-insert (clean update)
-      await supabase.from('field_definitions').delete().eq('module_id', moduleId);
+      await powerSync.execute(`DELETE FROM field_definitions WHERE module_id = ?`, [moduleId]);
 
       const validFields = fields.filter(f => f.name.trim());
       if (validFields.length > 0) {

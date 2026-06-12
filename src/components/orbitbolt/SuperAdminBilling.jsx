@@ -117,7 +117,9 @@ function TabPlanManager({ queryClient, toast }) {
   const { data: plans = [], isLoading } = useQuery({
     queryKey: ['superadmin_plans'],
     queryFn: async () => {
-      const { data, error } = await supabase.from('subscription_plans').select('*').order('price_monthly');
+      const __res = await powerSync.execute(`SELECT * FROM subscription_plans ORDER BY price_monthly`);
+      const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
+      const error = null;
       if (error) throw error;
       return data;
     }
@@ -130,10 +132,22 @@ function TabPlanManager({ queryClient, toast }) {
     mutationFn: async (plan) => {
       if (plan.id === 'new') {
         const { id, ...rest } = plan;
-        const { error } = await supabase.from('subscription_plans').insert([rest]);
+        await (async () => {
+        const _p = rest;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`INSERT INTO subscription_plans (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+      })();
+      const error = null;
         if (error) throw error;
       } else {
-        const { error } = await supabase.from('subscription_plans').update(plan).eq('id', plan.id);
+        await (async () => {
+        const _p = plan;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`UPDATE subscription_plans SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, plan.id]);
+      })();
+      const error = null;
         if (error) throw error;
       }
     },

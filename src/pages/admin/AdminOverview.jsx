@@ -16,13 +16,16 @@ export default function AdminOverview() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const { data: compData } = await supabase.from('companies').select('*');
+        const __resComp = await powerSync.execute(`SELECT * FROM companies`);
+      const compData = __resComp.rows ? (__resComp.rows._array || Array.from(__resComp.rows)) : [];
         if (compData) setCompanies(compData);
 
-        const { data: profData } = await supabase.from('profiles').select('*');
+        const __resProf = await powerSync.execute(`SELECT * FROM profiles`);
+      const profData = __resProf.rows ? (__resProf.rows._array || Array.from(__resProf.rows)) : [];
         if (profData) setProfiles(profData);
 
-        const { data: caseData } = await supabase.from('legal_cases').select('*');
+        const __resCase = await powerSync.execute(`SELECT * FROM legal_cases`);
+      const caseData = __resCase.rows ? (__resCase.rows._array || Array.from(__resCase.rows)) : [];
         if (caseData) setCases(caseData);
       } catch (err) {
         console.error("Failed to load platform stats:", err);

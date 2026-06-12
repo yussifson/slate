@@ -731,9 +731,14 @@ RULES FOR MULTI-STEP REASONING:
   const startNewChat = () => {
     const s = newSession();
     if (companyId && user?.email) {
-      supabase.from('industry_records').upsert({
+      await (async () => {
+        const _p = {
         id: s.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: s
-      }).then();
+      };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`INSERT INTO industry_records (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${_k.map(k=>k+' = excluded.'+k).join(', ')}`, _v);
+      })().then();
     }
     setSessions(prev => [s, ...prev]);
     setActiveId(s.id);

@@ -83,18 +83,21 @@ export default function Marketplace() {
     setInstallingId(mod.id);
     try {
       const newModuleId = crypto.randomUUID();
-      const { error: moduleError } = await supabase.from('module_definitions').insert({
-        id: newModuleId,
-        company_id: companyId,
-        name: mod.name,
-        description: mod.description,
-        icon: mod.icon,
-        is_active: 'true',
-        visibility: 'private',
-        status: 'published',
-        config: { ...(mod.config || {}), source_module_id: mod.id }, // Track which marketplace module this was cloned from
-        created_at: new Date().toISOString()
-      });
+            const moduleError = await (async () => {
+        try {
+          const _p = {
+            company_id: companyId,
+            name: module.name,
+            icon: module.icon,
+            color: module.color,
+            is_active: true
+          };
+          const _k = Object.keys(_p);
+          const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+          await powerSync.execute(`INSERT INTO module_definitions (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+          return null;
+        } catch(e) { return e; }
+      })();
 
       if (moduleError) throw moduleError;
 
@@ -144,9 +147,9 @@ export default function Marketplace() {
     setUninstallingId(mod.id);
     try {
       // Delete all records for this module
-      await supabase.from('dynamic_records').delete().eq('module_id', installedModuleId);
+      await powerSync.execute(`DELETE FROM dynamic_records WHERE module_id = ?`, [installedModuleId]);
       // Delete all field definitions
-      await supabase.from('field_definitions').delete().eq('module_id', installedModuleId);
+      await powerSync.execute(`DELETE FROM field_definitions WHERE module_id = ?`, [installedModuleId]);
       // Delete the module definition itself
       await powerSync.execute(`DELETE FROM ${'module_definitions'.replace(/['"`]/g, '')} WHERE id = ?`, [installedModuleId]);
       const error = null;

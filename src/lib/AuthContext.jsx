@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect, useRef, useCallback, useMemo } from 'react';
 import { powerSync } from "@/api/PowerSyncConnector";
+import { supabase } from "@/api/supabaseClient";
 import { getSubdomainAndBase } from './domainUtils';
 
 const AuthContext = createContext();

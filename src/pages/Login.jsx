@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from 'react';
 import { powerSync } from "@/api/PowerSyncConnector";
+import { supabase } from "@/api/supabaseClient";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/lib/AuthContext';

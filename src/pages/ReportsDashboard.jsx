@@ -169,12 +169,8 @@ export default function ReportsDashboard() {
     queryKey: ['industry_records', companyId, industry, 'order'],
     queryFn: async () => {
       // Data is usually loaded via the useIndustryRecords hook which hits idb first, but for reports we can fetch from Supabase
-      const { data } = await base44.supabase.from('industry_records')
-        .select('*')
-        .eq('company_id', companyId)
-        .eq('industry', industry)
-        .eq('record_type', 'order')
-        .neq('status', 'deleted');
+      const __res = await powerSync.execute(`SELECT * FROM industry_records WHERE company_id = ? AND industry = ? AND record_type = 'order' AND status != 'deleted'`, [companyId, industry]);
+      const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
       return data || [];
     },
     enabled: !!companyId && isRetail
@@ -183,12 +179,8 @@ export default function ReportsDashboard() {
   const { data: retailCustomers = [] } = useQuery({
     queryKey: ['industry_records', companyId, industry, 'customer'],
     queryFn: async () => {
-      const { data } = await base44.supabase.from('industry_records')
-        .select('*')
-        .eq('company_id', companyId)
-        .eq('industry', industry)
-        .eq('record_type', 'customer')
-        .neq('status', 'deleted');
+      const __res = await powerSync.execute(`SELECT * FROM industry_records WHERE company_id = ? AND industry = ? AND record_type = 'customer' AND status != 'deleted'`, [companyId, industry]);
+      const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
       return data || [];
     },
     enabled: !!companyId && isRetail
@@ -197,12 +189,8 @@ export default function ReportsDashboard() {
   const { data: retailProducts = [] } = useQuery({
     queryKey: ['industry_records', companyId, industry, 'product'],
     queryFn: async () => {
-      const { data } = await base44.supabase.from('industry_records')
-        .select('*')
-        .eq('company_id', companyId)
-        .eq('industry', industry)
-        .eq('record_type', 'product')
-        .neq('status', 'deleted');
+      const __res = await powerSync.execute(`SELECT * FROM industry_records WHERE company_id = ? AND industry = ? AND record_type = 'product' AND status != 'deleted'`, [companyId, industry]);
+      const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
       return data || [];
     },
     enabled: !!companyId && isRetail

@@ -448,14 +448,19 @@ export default function OrbitBuildPage() {
 
       const recordId = existing?.id || crypto.randomUUID();
 
-      await supabase.from('industry_records').upsert({
+      await (async () => {
+        const _p = {
         id: recordId,
         company_id: companyId,
         industry: 'core',
         record_type: 'ui_viewpoints',
         data: { page_viewpoints: updatedViewpoints },
         created_at: new Date().toISOString()
-      });
+      };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`INSERT INTO industry_records (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${_k.map(k=>k+' = excluded.'+k).join(', ')}`, _v);
+      })();
       toast.success(`Switched to ${newView} view`);
       refetchViewpoints();
     } catch (e) {

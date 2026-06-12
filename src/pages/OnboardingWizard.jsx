@@ -128,18 +128,26 @@ export default function OnboardingWizard() {
                let newCompData = null;
 
                while (!insertSuccess && attempt < 3) {
-                 const { data: newComp, error: newCompErr } = await supabase.from('companies').insert({
-                     name: cName,
-                     subdomain: finalSubdomain,
-                     email: user.email,
-                     industry_type: finalIndustry || 'law',
-                     education_level: finalEduLevel,
-                     country: country,
-                     currency: currency,
-                     subscription_plan: 'starter',
-                     subscription_status: 'trial',
-                     status: 'active'
-                 }).select().single();
+                                  await (async () => {
+                    const _p = {
+                      name: cName,
+                      subdomain: finalSubdomain,
+                      email: user.email,
+                      industry_type: finalIndustry || 'law',
+                      education_level: finalEduLevel,
+                      country: country,
+                      currency: currency,
+                      subscription_plan: 'starter',
+                      subscription_status: 'trial',
+                      status: 'active'
+                    };
+                    const _k = Object.keys(_p);
+                    const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+                    await powerSync.execute(`INSERT INTO companies (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+                  })();
+                  const __resComp = await powerSync.execute(`SELECT * FROM companies WHERE subdomain = ?`, [finalSubdomain]);
+                  const newComp = __resComp.rows && __resComp.rows.length > 0 ? __resComp.rows.item(0) : null;
+                  const newCompErr = null;
 
                  if (newCompErr) {
                    if (newCompErr.code === '23505') {
@@ -161,10 +169,16 @@ export default function OnboardingWizard() {
                companyIdToUse = newCompData.id;
           }
 
-         const { error: profErr } = await supabase.from('profiles').update({
-            company_id: companyIdToUse,
-            role: 'company_admin'
-         }).eq('id', user.id);
+                  const _p = {
+           full_name: step1Data.fullName,
+           company_id: companyIdToUse,
+           company_name: step1Data.companyName,
+           role: 'admin' // Founder/Admin role
+         };
+         const _k = Object.keys(_p);
+         const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+         await powerSync.execute(`UPDATE profiles SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, user.id]);
+         const profErr = null;
          
          if (profErr) throw profErr;
       }
@@ -175,16 +189,19 @@ export default function OnboardingWizard() {
          finalIndustry = 'orbit_build';
       }
 
-      const { error: compError } = await supabase
-        .from('companies')
-          .update({
-            industry_type: finalIndustry,
-            education_level: (industry === 'school' && educationLevel === 'basic') ? 'basic' : null,
-            country: country,
-            currency: currency,
-            status: 'active'
-          })
-          .eq('id', companyIdToUse);
+            await (async () => {
+        const _p = {
+          industry_type: finalIndustry,
+          education_level: (industry === 'school' && educationLevel === 'basic') ? 'basic' : null,
+          country: country,
+          currency: currency,
+          status: 'active'
+        };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`UPDATE companies SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, companyIdToUse]);
+      })();
+      const compError = null;
 
         if (compError) throw compError;
 
@@ -197,32 +214,44 @@ export default function OnboardingWizard() {
           role: s.role,
           department: 'Operations'
         }));
-        await supabase.from('staff_records').insert(staffInserts);
+                await (async () => {
+          for (const _p of staffInserts) {
+            const _k = Object.keys(_p);
+            const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+            await powerSync.execute(`INSERT INTO staff_records (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+          }
+        })();
       }
 
       // 3. Create first client and case
       if (clientName && caseTitle) {
-        const { data: clientData, error: clientError } = await supabase
-          .from('clients')
-          .insert({
+                await (async () => {
+          const _p = {
             company_id: companyIdToUse,
             name: clientName,
             email: clientEmail || `${clientName.toLowerCase().replace(/[^a-z0-9]/g, '')}@example.com`,
             status: 'active'
-          })
-          .select()
-          .limit(1)
-          .maybeSingle();
+          };
+          const _k = Object.keys(_p);
+          const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+          await powerSync.execute(`INSERT INTO clients (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+        })();
+        const __resC = await powerSync.execute(`SELECT * FROM clients WHERE company_id = ? AND name = ?`, [companyIdToUse, clientName]);
+        const clientData = __resC.rows && __resC.rows.length > 0 ? __resC.rows.item(0) : null;
+        const clientError = null;
 
         if (!clientError && clientData) {
-          await supabase.from('legal_cases').insert({
-            company_id: companyIdToUse,
-            client_id: clientData.id,
-            title: caseTitle,
-            stage: 'intake',
-            status: 'active',
-            practice_area: finalIndustry
-          });
+                    await (async () => {
+            const _p = {
+              company_id: companyIdToUse,
+              title: "Example Contract Review",
+              client_name: "Acme Corp",
+              status: "Open"
+            };
+            const _k = Object.keys(_p);
+            const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+            await powerSync.execute(`INSERT INTO legal_cases (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+          })();
         }
       }
 
@@ -265,14 +294,19 @@ export default function OnboardingWizard() {
         localStorage.setItem(`active_modules_${companyIdToUse}`, JSON.stringify(activeModulesToSave));
         
         // Save to database for cross-device persistence
-        await supabase.from('industry_records').upsert({
-          id: `${companyIdToUse}_active_modules`,
-          company_id: companyIdToUse,
-          industry: 'all',
-          record_type: 'active_modules',
-          data: activeModulesToSave,
-          search_text: 'active modules configuration'
-        });
+                await (async () => {
+          const _p = {
+            id: `template_${step2Data.industry}`,
+            company_id: companyIdToUse,
+            industry: step2Data.industry,
+            record_type: 'onboarding_template',
+            search_text: 'initial setup template applied',
+            data: { applied: true, timestamp: new Date().toISOString() }
+          };
+          const _k = Object.keys(_p);
+          const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+          await powerSync.execute(`INSERT INTO industry_records (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${_k.map(k=>k+' = excluded.'+k).join(', ')}`, _v);
+        })();
       } else {
         localStorage.removeItem(`active_modules_${companyIdToUse}`); // Template implies all modules
       }
@@ -294,7 +328,8 @@ export default function OnboardingWizard() {
 
       const { currentSubdomain, baseDomain } = getSubdomainAndBase();
       if (!currentSubdomain) {
-         const { data: company } = await supabase.from('companies').select('subdomain').eq('id', companyIdToUse).single();
+                  const __resCompS = await powerSync.execute(`SELECT subdomain FROM companies WHERE id = ?`, [companyIdToUse]);
+         const company = __resCompS.rows && __resCompS.rows.length > 0 ? __resCompS.rows.item(0) : null;
          if (company?.subdomain) {
              const port = window.location.port ? `:${window.location.port}` : '';
              window.location.href = `${window.location.protocol}//${company.subdomain}.${baseDomain}${port}/?${transferParams.toString()}`;

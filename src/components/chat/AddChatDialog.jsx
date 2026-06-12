@@ -81,12 +81,19 @@ export default function AddChatDialog({ open, onOpenChange, onChatCreated }) {
       // This logic will map them properly assuming staff/clients have a user_id or email we can find.
       // For now, let's just create the room.
 
-      const { data: room, error: roomErr } = await supabase.from('chat_rooms').insert({
+      await (async () => {
+        const _p = {
         room_type: isGroup ? 'group' : 'direct',
         name: isGroup ? groupName : null,
         created_by: user.id,
         company_id: companyId
-      }).select().single();
+      };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`INSERT INTO chat_rooms (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+      })();
+      const room = null;
+      const roomErr = null.select().single();
 
       if (roomErr) throw roomErr;
 

@@ -113,7 +113,8 @@ export default function Chat() {
       if (data && data.length > 0) {
         const senderIds = [...new Set(data.map(m => m.sender_id).filter(Boolean))];
         if (senderIds.length > 0) {
-          const { data: profiles } = await supabase.from('profiles').select('id, full_name, avatar_url').in('id', senderIds);
+          const __res = await powerSync.execute(`SELECT id, full_name, avatar_url FROM profiles WHERE id IN (${senderIds.map(()=>'?').join(',')})`, senderIds);
+      const profiles = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
           if (profiles) {
             const pMap = {};
             profiles.forEach(p => pMap[p.id] = p);
@@ -432,9 +433,15 @@ export default function Chat() {
                       <button 
                         onClick={async () => {
                           const currentLikes = msg.reactions?.likes || 0;
-                          const { error } = await supabase.from('chat_messages').update({
+                          await (async () => {
+        const _p = {
                             reactions: { ...msg.reactions, likes: currentLikes + 1 }
-                          }).eq('id', msg.id);
+                          };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`UPDATE chat_messages SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, msg.id]);
+      })();
+      const error = null;
                           if (!error) {
                             setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, reactions: { ...m.reactions, likes: currentLikes + 1 } } : m));
                           }
@@ -454,7 +461,7 @@ export default function Chat() {
                             className="p-1 hover:bg-rose-100 hover:text-rose-500 rounded-full text-muted-foreground" 
                             title="Delete"
                             onClick={() => {
-                              supabase.from('chat_messages').delete().eq('id', msg.id).then(() => {
+                              powerSync.execute(`DELETE FROM chat_messages WHERE id = ?`, [msg.id]).then(() => {
                                 setMessages(prev => prev.filter(m => m.id !== msg.id));
                               });
                             }}

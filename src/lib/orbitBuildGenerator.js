@@ -322,15 +322,23 @@ export async function generateOrbitBuildWorkspace(prompt, companyId) {
 
     // Save the assembly configuration to industry_records
     const configId = crypto.randomUUID();
-    const { error: configError } = await supabase.from('industry_records').insert({
-      id: configId,
-      company_id: companyId,
-      industry: 'orbit_build',
-      record_type: 'workspace_config',
-      data: { pages: assembledPages, industry_name: industryName, prompt: prompt },
-      search_text: 'orbit build assembly configuration',
-      created_at: new Date().toISOString()
-    });
+    const configError = await (async () => {
+      const _p = {
+        id: configId,
+        company_id: companyId,
+        industry: 'orbit_build',
+        record_type: 'workspace_config',
+        data: { pages: assembledPages, industry_name: industryName, prompt: prompt },
+        search_text: 'orbit build assembly configuration',
+        created_at: new Date().toISOString()
+      };
+      const _k = Object.keys(_p);
+      const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+      try {
+        await powerSync.execute(`INSERT INTO industry_records (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+        return null;
+      } catch(e) { return e; }
+    })();
 
     if (configError) {
       console.error("Failed to save OrbitBuild config:", configError);

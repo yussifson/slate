@@ -95,14 +95,21 @@ export default function Board() {
       const realUrl = dailyData.url;
 
       // Create new room record
-      const { data: newRoom, error } = await supabase.from('video_rooms').insert({
+      await (async () => {
+        const _p = {
         company_id: companyId,
         title: `${user?.full_name?.split(' ')[0] || 'User'}'s Instant Meeting`,
         daily_room_url: realUrl,
         daily_room_name: dailyData.name || roomName,
         host_id: user.id,
         status: 'active'
-      }).select().single();
+      };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`INSERT INTO video_rooms (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+      })();
+      const newRoom = null;
+      const error = null.select().single();
 
       if (error) {
         if (error.code === 'PGRST205' || error.message?.includes('schema cache')) {

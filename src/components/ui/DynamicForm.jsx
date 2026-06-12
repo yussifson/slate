@@ -34,7 +34,15 @@ export default function DynamicForm({ moduleDef, fieldDefinitions = [], onSucces
         created_at: new Date().toISOString()
       };
 
-      const { error } = await supabase.from('dynamic_records').insert(record);
+            const error = await (async () => {
+        try {
+          const _p = record;
+          const _k = Object.keys(_p);
+          const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+          await powerSync.execute(`INSERT INTO dynamic_records (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+          return null;
+        } catch(e) { return e; }
+      })();
       if (error) throw error;
 
       toast({

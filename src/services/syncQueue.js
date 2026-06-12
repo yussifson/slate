@@ -1,4 +1,4 @@
-﻿import { get, set } from 'idb-keyval';
+import { get, set } from 'idb-keyval';
 
 class SyncQueue {
   constructor() {
@@ -65,7 +65,13 @@ class SyncQueue {
         // Strip out SQLite artifacts (e.g. 'id:1')
         cleanData = Object.fromEntries(Object.entries(cleanData).filter(([k]) => !k.includes(':')));
       }
-      const { error } = await supabase.from(endpoint).upsert(cleanData);
+      await (async () => {
+        const _p = cleanData;
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`INSERT INTO ${endpoint.replace(/[^a-zA-Z0-9_]/g, '')} (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${_k.map(k=>k+' = excluded.'+k).join(', ')}`, _v);
+      })();
+      const error = null;
       if (error) throw error;
     } else if (action === 'DELETE') {
       await powerSync.execute(`DELETE FROM ${endpoint.replace(/['"`]/g, '')} WHERE id = ?`, [payload.id]);

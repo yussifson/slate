@@ -189,9 +189,12 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
         const s = newSession();
         setSessions([s]);
         setActiveId(s.id);
-        supabase.from('industry_records').upsert({
-          id: s.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: s
-        }).then();
+        (async () => {
+          const _p = { id: s.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: s };
+          const _k = Object.keys(_p);
+          const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+          await powerSync.execute(`INSERT INTO industry_records (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${_k.map(k=>k+' = excluded.'+k).join(', ')}`, _v);
+        })();
       }
       setIsInitialized(true);
     };
@@ -219,9 +222,14 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
         const newS = { ...s, messages: upMsgs, title: title || 'New Chat' };
         
         if (companyId && user?.email) {
-          supabase.from('industry_records').upsert({
+          (async () => {
+        const _p = {
             id: newS.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: newS
-          }).then();
+          };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`INSERT INTO industry_records (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${_k.map(k=>k+' = excluded.'+k).join(', ')}`, _v);
+      })();
         }
         return newS;
       });
@@ -706,9 +714,12 @@ RULES FOR MULTI-STEP REASONING:
   const startNewChat = () => {
     const s = newSession();
     if (companyId && user?.email) {
-      supabase.from('industry_records').upsert({
-        id: s.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: s
-      }).then();
+      (async () => {
+        const _p = { id: s.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: s };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`INSERT INTO industry_records (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${_k.map(k=>k+' = excluded.'+k).join(', ')}`, _v);
+      })();
     }
     setSessions(prev => [s, ...prev]);
     setActiveId(s.id);
@@ -718,16 +729,19 @@ RULES FOR MULTI-STEP REASONING:
   const deleteSession = async (sid, e) => {
     e.stopPropagation();
     if (companyId) {
-      await powerSync.execute(`DELETE FROM industry_records WHERE id = ?`, [sid]).eq('company_id', companyId);
+      await powerSync.execute(`DELETE FROM industry_records WHERE id = ? AND company_id = ?`, [sid, companyId]);
     }
     setSessions(prev => {
       const rest = prev.filter(s => s.id !== sid);
       if (rest.length === 0) {
         const fresh = newSession();
         if (companyId && user?.email) {
-          supabase.from('industry_records').upsert({
-            id: fresh.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: fresh
-          }).then();
+          (async () => {
+            const _p = { id: fresh.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: fresh };
+            const _k = Object.keys(_p);
+            const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+            await powerSync.execute(`INSERT INTO industry_records (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${_k.map(k=>k+' = excluded.'+k).join(', ')}`, _v);
+          })();
         }
         setActiveId(fresh.id);
         return [fresh];

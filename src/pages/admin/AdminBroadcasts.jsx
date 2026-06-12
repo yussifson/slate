@@ -15,7 +15,8 @@ export default function AdminBroadcasts() {
 
   useEffect(() => {
     const fetchCompanies = async () => {
-      const { data } = await supabase.from('companies').select('id');
+      const __res = await powerSync.execute(`SELECT id FROM companies`);
+      const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
       if (data) setCompanies(data);
     };
     fetchCompanies();
@@ -33,7 +34,16 @@ export default function AdminBroadcasts() {
         status: "unread"
       }));
       
-      const { error } = await supabase.from('notifications').insert(notificationInserts);
+      const error = await (async () => {
+        try {
+          for (const _p of notificationInserts) {
+            const _k = Object.keys(_p);
+            const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+            await powerSync.execute(`INSERT INTO notifications (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+          }
+          return null;
+        } catch(e) { return e; }
+      })();
       if (error) throw error;
 
       toast({ title: "System Broadcast Sent", description: "Successfully pushed notification alert to all law firms." });

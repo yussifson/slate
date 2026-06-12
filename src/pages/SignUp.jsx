@@ -95,18 +95,26 @@ export default function SignUp() {
       const urlMarket = searchParams.get('market') || 'global';
 
       // 2. Create the company
-      const { data: companyData, error: compError } = await supabase.from('companies').insert({
-        name: companyName,
-        subdomain: cleanSubdomain,
-        email: email,
-        industry_type: 'law', // Temporarily set to 'law' to pass DB constraints. Onboarding will update it.
-        education_level: null,
-        country: null,
-        subscription_plan: urlPlan,
-        market_tier: urlMarket,
-        subscription_status: 'trial',
-        status: 'active'
-      }).select().single();
+            await (async () => {
+        const _p = {
+          name: companyName,
+          subdomain: cleanSubdomain,
+          email: email,
+          industry_type: 'law',
+          education_level: null,
+          country: null,
+          subscription_plan: urlPlan,
+          market_tier: urlMarket,
+          subscription_status: 'trial',
+          status: 'active'
+        };
+        const _k = Object.keys(_p);
+        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`INSERT INTO companies (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+      })();
+      const __resComp = await powerSync.execute(`SELECT * FROM companies WHERE subdomain = ?`, [cleanSubdomain]);
+      const companyData = __resComp.rows && __resComp.rows.length > 0 ? __resComp.rows.item(0) : null;
+      const compError = null;
 
       if (compError) throw compError;
 
