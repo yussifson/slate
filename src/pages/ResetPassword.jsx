@@ -1,3 +1,4 @@
+import { supabase } from '@/api/supabaseClient';
 import { useTranslation } from "react-i18next";
 import { useState, useEffect } from 'react';
 import { powerSync } from "@/api/PowerSyncConnector";

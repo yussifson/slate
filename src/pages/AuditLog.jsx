@@ -1,3 +1,4 @@
+import { supabase } from '@/api/supabaseClient';
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useCompanyId } from "@/hooks/useCompanyId";

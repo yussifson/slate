@@ -1,3 +1,4 @@
+import { supabase } from '@/api/supabaseClient';
 import { useState } from 'react';
 import { powerSync } from "@/api/PowerSyncConnector";
 import { useAuth } from '@/lib/AuthContext';

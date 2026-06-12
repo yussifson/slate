@@ -1,3 +1,4 @@
+import { supabase } from '@/api/supabaseClient';
 import React, { useState, useEffect, useMemo } from 'react';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';

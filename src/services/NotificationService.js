@@ -1,3 +1,4 @@
+import { supabase } from '@/api/supabaseClient';
 /**
  * Slate Notification Engine Wrapper
  * 

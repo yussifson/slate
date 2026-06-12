@@ -1,3 +1,4 @@
+import { supabase } from '@/api/supabaseClient';
 import React, { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { powerSync } from "@/api/PowerSyncConnector";

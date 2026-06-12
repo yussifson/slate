@@ -1,3 +1,4 @@
+import { supabase } from '@/api/supabaseClient';
 import React, { useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";

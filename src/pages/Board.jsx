@@ -1,3 +1,4 @@
+import { supabase } from '@/api/supabaseClient';
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Video, Plus, Calendar, Clock, Users, Copy, Sparkles, LayoutGrid, Loader2 } from "lucide-react";

@@ -1,3 +1,4 @@
+import { supabase } from '@/api/supabaseClient';
 import React, { useState, useMemo, useEffect } from 'react';
 import { format } from 'date-fns';
 import {

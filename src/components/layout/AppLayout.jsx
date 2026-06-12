@@ -1,3 +1,4 @@
+import { supabase } from '@/api/supabaseClient';
 import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from "react";
 import { Outlet, useNavigate, Link } from "react-router-dom";

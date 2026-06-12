@@ -1,3 +1,4 @@
+import { supabase } from '@/api/supabaseClient';
 ﻿import React, { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Search, Plus, MessageSquare, MoreVertical, Send, Sparkles, Hash, Users, UserCircle, Phone, Video, Loader2, CheckCheck, Check, Smile, Paperclip, ImageIcon, FileText, File, X } from "lucide-react";

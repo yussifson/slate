@@ -1,3 +1,4 @@
+import { supabase } from '@/api/supabaseClient';
 import React, { useState, useEffect } from "react";
 import { powerSync } from "@/api/PowerSyncConnector";
 import { X, Search, Check, Layers, Loader2 } from "lucide-react";

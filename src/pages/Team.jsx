@@ -1,3 +1,4 @@
+import { supabase } from '@/api/supabaseClient';
 ﻿import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";

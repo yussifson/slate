@@ -1,3 +1,4 @@
+import { supabase } from '@/api/supabaseClient';
 ﻿import { useState, useEffect } from "react";
 import { powerSync } from "@/api/PowerSyncConnector";
 import { INDUSTRIES, getIndustryNav, clientNav } from "@/config/industries";

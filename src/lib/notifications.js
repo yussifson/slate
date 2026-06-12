@@ -1,3 +1,4 @@
+import { supabase } from '@/api/supabaseClient';
 import { powerSync } from "@/api/PowerSyncConnector";
 
 /**

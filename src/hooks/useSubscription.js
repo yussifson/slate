@@ -1,3 +1,4 @@
+import { supabase } from '@/api/supabaseClient';
 import { useQuery } from '@tanstack/react-query';
 import { powerSync } from "@/api/PowerSyncConnector";
 import { useCompanyId } from '@/hooks/useCompanyId';

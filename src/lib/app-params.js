@@ -1,3 +1,4 @@
+import { supabase } from '@/api/supabaseClient';
 export const appParams = {
 	appId: 'supabase-migration',
 	token: null,

@@ -1,3 +1,4 @@
+import { supabase } from '@/api/supabaseClient';
 import { get, set } from 'idb-keyval';
 
 class SyncQueue {

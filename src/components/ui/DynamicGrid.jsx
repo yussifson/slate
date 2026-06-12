@@ -1,3 +1,4 @@
+import { supabase } from '@/api/supabaseClient';
 import React, { useState } from "react";
 import { format } from "date-fns";
 import { Pencil, Trash2, Eye } from "lucide-react";
