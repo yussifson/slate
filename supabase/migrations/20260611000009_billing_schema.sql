@@ -60,8 +60,8 @@ CREATE TABLE IF NOT EXISTS public.billing_transactions (
 -- Subscription Plans (Read by all authenticated, Write by super_admin)
 ALTER TABLE public.subscription_plans ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Plans are viewable by everyone" ON public.subscription_plans FOR SELECT USING (true);
-CREATE POLICY "Plans insertable by super admin" ON public.subscription_plans FOR INSERT WITH CHECK (auth.uid() IN (SELECT user_id FROM user_roles WHERE role = 'super_admin'));
-CREATE POLICY "Plans updatable by super admin" ON public.subscription_plans FOR UPDATE USING (auth.uid() IN (SELECT user_id FROM user_roles WHERE role = 'super_admin'));
+CREATE POLICY "Plans insertable by super admin" ON public.subscription_plans FOR INSERT WITH CHECK (auth.uid() IN (SELECT id FROM profiles WHERE role = 'super_admin'));
+CREATE POLICY "Plans updatable by super admin" ON public.subscription_plans FOR UPDATE USING (auth.uid() IN (SELECT id FROM profiles WHERE role = 'super_admin'));
 
 -- Company Subscriptions (Read by company members, Write by super_admin / webhooks)
 ALTER TABLE public.company_subscriptions ENABLE ROW LEVEL SECURITY;
@@ -69,7 +69,7 @@ CREATE POLICY "Users can view their company subscription" ON public.company_subs
     company_id IN (SELECT company_id FROM company_users WHERE user_id = auth.uid())
 );
 CREATE POLICY "Super admins can manage all subscriptions" ON public.company_subscriptions FOR ALL USING (
-    auth.uid() IN (SELECT user_id FROM user_roles WHERE role = 'super_admin')
+    auth.uid() IN (SELECT id FROM profiles WHERE role = 'super_admin')
 );
 
 -- Usage Metrics (Read by company members, Write by system/functions)
@@ -90,7 +90,7 @@ CREATE POLICY "Users can view their company transactions" ON public.billing_tran
     company_id IN (SELECT company_id FROM company_users WHERE user_id = auth.uid())
 );
 CREATE POLICY "Super admins can manage all transactions" ON public.billing_transactions FOR ALL USING (
-    auth.uid() IN (SELECT user_id FROM user_roles WHERE role = 'super_admin')
+    auth.uid() IN (SELECT id FROM profiles WHERE role = 'super_admin')
 );
 
 -- Function to handle new company creation trigger (give them default plan/trial)
