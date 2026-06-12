@@ -1,3 +1,4 @@
+import { powerSync } from '@/api/PowerSyncConnector';
 import React, { useState, useMemo } from 'react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { motion, AnimatePresence } from 'framer-motion';

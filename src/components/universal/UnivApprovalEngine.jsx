@@ -347,7 +347,7 @@ function TemplatesPanel({ companyId }) {
       const _p = { company_id: companyId, name: form.name.trim(), steps: form.steps, created_at: new Date().toISOString() };
       const _k = Object.keys(_p);
       const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-      await powerSync.execute(`INSERT INTO ${TEMPLATES_TABLE} (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v);
+      await powerSync.execute(`INSERT INTO TEMPLATES_TABLE (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v);
     })();
     const error = null;
     setSaving(false);
@@ -772,7 +772,7 @@ export function useApprovalEngine() {
       const _p = payload;
       const _k = Object.keys(_p);
       const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-      await powerSync.execute(`INSERT INTO ${TABLE} (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v);
+      await powerSync.execute(`INSERT INTO TABLE (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v);
     })();
     const data = payload;
     const error = null;

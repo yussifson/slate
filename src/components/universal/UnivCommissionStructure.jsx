@@ -1,3 +1,4 @@
+import { powerSync } from '@/api/PowerSyncConnector';
 import React, { useState, useEffect } from 'react';
 
 import GenericGrid from '@/components/views/GenericGrid';
@@ -41,7 +42,7 @@ export default function UnivCommissionStructure() {
 
   const handleSave = async () => {
     if (editingId) {
-      await (async () => { const _p = { ...formData, company_id: companyId }; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${univ_commissionstructure} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingId]); })();
+      await (async () => { const _p = { ...formData, company_id: companyId }; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_commissionstructure SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingId]); })();
       const error = null; const data = [];
     } else {
       await (async () => {
@@ -70,7 +71,7 @@ export default function UnivCommissionStructure() {
   };
 
   const handleDelete = async (id) => {
-    await powerSync.execute(`DELETE FROM ${univ_commissionstructure} WHERE id = ?`, [id]);
+    await powerSync.execute(`DELETE FROM univ_commissionstructure WHERE id = ?`, [id]);
     fetchData();
   };
 

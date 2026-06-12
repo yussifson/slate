@@ -1,3 +1,4 @@
+import { powerSync } from '@/api/PowerSyncConnector';
 import React, { useState, useMemo } from 'react';
 
 import { supabase } from "@/api/supabaseClient";
@@ -74,13 +75,13 @@ export default function UnivSOP({
       }
 
       if (isNew) {
-        await (async () => { const _p = payload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); const _pl = _k.map(()=>'?').join(', '); await powerSync.execute(`INSERT INTO ${targetTable} (${_k.join(', ')}) VALUES (${_pl})`, _v); })();
+        await (async () => { const _p = payload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); const _pl = _k.map(()=>'?').join(', '); await powerSync.execute(`INSERT INTO targetTable (${_k.join(', ')}) VALUES (${_pl})`, _v); })();
       const error = null; const data = [];
         if (error) throw error;
         return data;
       } else {
         const updatePayload = targetTable === 'industry_records' ? { data: sopData } : sopData;
-        await (async () => { const _p = updatePayload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${targetTable} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, sopData.id]); })();
+        await (async () => { const _p = updatePayload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE targetTable SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, sopData.id]); })();
       const error = null; const data = [];
         if (error) throw error;
         return data;

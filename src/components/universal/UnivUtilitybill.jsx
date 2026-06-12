@@ -1,3 +1,4 @@
+import { powerSync } from '@/api/PowerSyncConnector';
 import React, { useState, useEffect } from 'react';
 
 import GenericGrid from '@/components/views/GenericGrid';
@@ -53,7 +54,7 @@ export default function UnivUtilitybill() {
     if (error) { toast.error('Failed to save'); return; }
     toast.success(editId ? 'Updated!' : 'Bill added!'); closeModal(); fetchData();
   };
-  const remove = async (id) => { await powerSync.execute(`DELETE FROM ${TABLE} WHERE id = ?`, [id]); toast.success('Deleted'); fetchData(); };
+  const remove = async (id) => { await powerSync.execute(`DELETE FROM TABLE WHERE id = ?`, [id]); toast.success('Deleted'); fetchData(); };
   const openModal = (r = null) => { setForm(r ? { ...r } : EMPTY); setEditId(r?.id || null); setModal(true); };
   const closeModal = () => { setModal(false); setEditId(null); setForm(EMPTY); };
   const filtered = records.filter(r => `${r.unit_address} ${r.tenant_name} ${r.utility_type}`.toLowerCase().includes(search.toLowerCase()));

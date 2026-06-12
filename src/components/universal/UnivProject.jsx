@@ -1,3 +1,4 @@
+import { powerSync } from '@/api/PowerSyncConnector';
 import React, { useState, useEffect } from 'react';
 
 import GenericGrid from '@/components/views/GenericGrid';
@@ -50,7 +51,7 @@ export default function UnivProject() {
     e.preventDefault();
     try {
       if (editingId) {
-        await (async () => { const _p = form; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${univ_projects} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingId]); })();
+        await (async () => { const _p = form; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_projects SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingId]); })();
       const error = null; const data = [];
         if (error) throw error;
         toast.success('Project updated!');

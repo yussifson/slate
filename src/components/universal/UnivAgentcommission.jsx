@@ -1,3 +1,4 @@
+import { powerSync } from '@/api/PowerSyncConnector';
 import React, { useState, useEffect } from 'react';
 
 import GenericGrid from '@/components/views/GenericGrid';
@@ -59,7 +60,7 @@ export default function UnivAgentCommission() {
   };
 
   const remove = async (id) => {
-    await powerSync.execute(`DELETE FROM ${TABLE} WHERE id = ?`, [id]);
+    await powerSync.execute(`DELETE FROM TABLE WHERE id = ?`, [id]);
     toast.success('Deleted'); fetch();
   };
 

@@ -1,3 +1,4 @@
+import { powerSync } from '@/api/PowerSyncConnector';
 import React, { useState, useEffect } from 'react';
 
 import GenericGrid from '@/components/views/GenericGrid';
@@ -108,7 +109,7 @@ export default function UnivCRM() {
 
     try {
       if (editingLeadId) {
-        await (async () => { const _p = payload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${univ_crm_leads} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingLeadId]); })();
+        await (async () => { const _p = payload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_crm_leads SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingLeadId]); })();
       const error = null; const data = [];
         if (error) throw error;
         toast.success('Lead updated successfully');
@@ -146,7 +147,7 @@ export default function UnivCRM() {
   const updateLeadStatus = async (id, newStatus, e) => {
     if (e) e.stopPropagation();
     try {
-      await (async () => { const _p = { status: newStatus }; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${univ_crm_leads} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, id]); })();
+      await (async () => { const _p = { status: newStatus }; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_crm_leads SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, id]); })();
       const error = null; const data = [];
       if (error) throw error;
       toast.success('Lead status updated');
@@ -178,7 +179,7 @@ export default function UnivCRM() {
     setLeads(prev => prev.map(l => l.id === leadId ? { ...l, status: newStatus } : l));
     
     try {
-      await (async () => { const _p = { status: newStatus }; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${univ_crm_leads} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, leadId]); })();
+      await (async () => { const _p = { status: newStatus }; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_crm_leads SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, leadId]); })();
       const error = null; const data = [];
       if (error) throw error;
       toast.success(`Moved to ${newStatus}`);

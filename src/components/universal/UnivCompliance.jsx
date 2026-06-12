@@ -1,3 +1,4 @@
+import { powerSync } from '@/api/PowerSyncConnector';
 import React, { useState, useMemo } from 'react';
 
 import { supabase } from "@/api/supabaseClient";
@@ -98,7 +99,7 @@ export default function UnivCompliance({
         if (error) throw error;
       } else {
         const updatePayload = targetTable === 'industry_records' ? { data: itemData } : itemData;
-        await (async () => { const _p = updatePayload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${targetTable} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, itemData.id]); })();
+        await (async () => { const _p = updatePayload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE targetTable SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, itemData.id]); })();
       const error = null; const data = [];
         if (error) throw error;
       }

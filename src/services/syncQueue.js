@@ -1,3 +1,4 @@
+import { powerSync } from '@/api/PowerSyncConnector';
 import { supabase } from '@/api/supabaseClient';
 import { get, set } from 'idb-keyval';
 

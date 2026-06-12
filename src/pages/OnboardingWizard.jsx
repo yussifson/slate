@@ -1,3 +1,4 @@
+import { powerSync } from '@/api/PowerSyncConnector';
 import { useTranslation } from "react-i18next";
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';

@@ -1,3 +1,4 @@
+import { powerSync } from '@/api/PowerSyncConnector';
 import React, { useState } from 'react';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useCompanyId } from '@/hooks/useCompanyId';

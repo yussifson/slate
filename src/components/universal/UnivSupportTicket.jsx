@@ -107,13 +107,13 @@ export default function UnivSupportTicket({
           };
           const _k = Object.keys(_p);
           const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-          await powerSync.execute(`INSERT INTO ${targetTable} (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v);
+          await powerSync.execute(`INSERT INTO targetTable (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v);
         })();
         const error = null;
         if (error) throw error;
       } else {
         const updatePayload = targetTable === 'industry_records' ? { data: ticketData } : ticketData;
-        await (async () => { const _p = updatePayload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${targetTable} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, ticketData.id]); })();
+        await (async () => { const _p = updatePayload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE targetTable SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, ticketData.id]); })();
         const error = null;
         if (error) throw error;
       }

@@ -374,7 +374,7 @@ export const base44 = {
                         const placeholders = keys.map(() => '?').join(', ');
                         const values = Object.values(securedPayload);
 
-                        await powerSync.execute(`INSERT INTO ${tableName} (${keys.join(', ')}) VALUES (${placeholders})`, values);
+                        await powerSync.execute(`INSERT INTO tableName (${keys.join(', ')}) VALUES (${placeholders})`, values);
 
                         await mirrorToSupabase(tableName, securedPayload, 'upsert');
                         
@@ -420,7 +420,7 @@ export const base44 = {
                         const assignments = keys.map(k => `${k} = ?`).join(', ');
                         const values = [...Object.values(securedPayload), id];
 
-                        await powerSync.execute(`UPDATE ${tableName} SET ${assignments} WHERE id = ?`, values);
+                        await powerSync.execute(`UPDATE tableName SET ${assignments} WHERE id = ?`, values);
 
                         const updatedData = await powerSync.getOptional(`SELECT * FROM ${tableName} WHERE id = ?`, [id]);
                         if (updatedData) {
@@ -434,7 +434,7 @@ export const base44 = {
                 },
                 delete: async (id) => {
                     try {
-                        await powerSync.execute(`DELETE FROM ${tableName} WHERE id = ?`, [id]);
+                        await powerSync.execute(`DELETE FROM tableName WHERE id = ?`, [id]);
                         await mirrorToSupabase(tableName, id, 'delete');
                         return { id };
                     } catch (err) {

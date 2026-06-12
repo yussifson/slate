@@ -1,3 +1,4 @@
+import { powerSync } from '@/api/PowerSyncConnector';
 import React, { useState, useMemo } from 'react';
 
 import { supabase } from "@/api/supabaseClient";

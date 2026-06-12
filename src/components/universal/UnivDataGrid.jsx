@@ -1,3 +1,4 @@
+import { powerSync } from '@/api/PowerSyncConnector';
 import React, { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -388,7 +389,7 @@ export default function UnivDataGrid({
 
   const bulkDeleteMutation = useMutation({
     mutationFn: async (ids) => {
-      await powerSync.execute(`DELETE FROM ${targetTable} WHERE id IN (${ids.map(()=>'?').join(',')})`, ids);
+      await powerSync.execute(`DELETE FROM targetTable WHERE id IN (${ids.map(()=>'?').join(',')})`, ids);
       const error = null;
       if (error) throw error;
     },
@@ -411,7 +412,7 @@ export default function UnivDataGrid({
     } else {
       updatePayload = { [colKey]: value };
     }
-    await (async () => { const _p = updatePayload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${targetTable} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, rowId]); })();
+    await (async () => { const _p = updatePayload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE targetTable SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, rowId]); })();
       const error = null; const data = [];
     if (error) throw error;
   }, [records, targetTable]);
@@ -438,7 +439,7 @@ export default function UnivDataGrid({
         } else {
           payload = { status };
         }
-        await (async () => { const _p = payload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${targetTable} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, id]); })();
+        await (async () => { const _p = payload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE targetTable SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, id]); })();
       const error = null; const data = [];
         if (error) throw error;
       }

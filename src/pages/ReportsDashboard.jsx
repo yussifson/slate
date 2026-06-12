@@ -1,3 +1,4 @@
+import { powerSync } from '@/api/PowerSyncConnector';
 import { useTranslation } from "react-i18next";
 import React, { useState, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
