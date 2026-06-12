@@ -1,5 +1,5 @@
 import { supabase } from '@/api/supabaseClient';
-﻿import { powerSync } from "@/api/PowerSyncConnector";
+import { powerSync } from "@/api/PowerSyncConnector";
 import { base44 } from '@/api/base44Client';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';

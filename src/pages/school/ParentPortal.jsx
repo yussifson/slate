@@ -1,4 +1,4 @@
-﻿import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Calendar, Bell, FileText, CheckCircle, Clock, BookOpen, User, CreditCard, Download, LayoutDashboard, GraduationCap } from 'lucide-react';
 import { useIndustryRecords } from '@/hooks/useIndustryData';

@@ -1,4 +1,4 @@
-﻿import { supabase } from './supabaseClient';
+import { supabase } from './supabaseClient';
 import { SCHEMA_COLUMNS } from './schemaColumns';
 import { encryptText, decryptText } from '../lib/encryption';
 import { powerSync } from './PowerSyncConnector';

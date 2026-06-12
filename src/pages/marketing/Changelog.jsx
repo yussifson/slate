@@ -1,4 +1,4 @@
-﻿import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { GitCommit, Star, Zap } from 'lucide-react';
 
 export default function Changelog() {

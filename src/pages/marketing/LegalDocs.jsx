@@ -1,4 +1,4 @@
-﻿import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Shield, FileText, Lock, Cookie } from 'lucide-react';

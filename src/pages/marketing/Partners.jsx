@@ -1,4 +1,4 @@
-﻿import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { Handshake, ArrowRight, ShieldCheck, Globe, Rocket } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 

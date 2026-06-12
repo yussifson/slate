@@ -1,4 +1,4 @@
-﻿import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BedDouble, CheckCircle2, AlertTriangle, Settings, ArrowRightLeft, Plus } from 'lucide-react';

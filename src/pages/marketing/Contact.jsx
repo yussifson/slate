@@ -1,4 +1,4 @@
-﻿import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Mail, Phone, MapPin, CheckCircle, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';

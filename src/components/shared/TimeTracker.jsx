@@ -1,4 +1,4 @@
-﻿import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import React, { useState, useEffect, useRef } from "react";
 import { Play, Square, Clock, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";

@@ -1,4 +1,4 @@
-﻿import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import React, { useState } from 'react';
 import { Server, Shield, Database, Headphones, Check, ArrowRight, Building2, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';

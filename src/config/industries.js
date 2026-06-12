@@ -1,4 +1,4 @@
-﻿// Central industry configuration — single source of truth for the entire platform
+// Central industry configuration — single source of truth for the entire platform
 
 export const INDUSTRIES = {
   law: {
