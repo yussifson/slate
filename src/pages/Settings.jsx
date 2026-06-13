@@ -40,7 +40,7 @@ export default function Settings() {
     queryKey: ["company", companyId],
     queryFn: async () => {
       if (!companyId) return null;
-      const { data } = await powerSync.execute('SELECT * FROM companies WHERE id = ?', [companyId]).then(res => ({ data: res.rows._array })).single();
+      const { data } = await powerSync.execute('SELECT * FROM companies WHERE id = ?', [companyId]).then(res => ({ data: res.rows._array[0] || null, error: null }));
       return data;
     },
     enabled: !!companyId,
@@ -102,15 +102,15 @@ export default function Settings() {
       case "currency":     return <CurrencySettings activeIndustry={activeIndustry} company={company} onSave={company ? d => updateCompany({ currency: d.currency }) : fakeSuccess} saving={saving} />;
       case "security":     return <SecuritySettings />;
       case "permissions":  return (
-        <div className="bg-card/45 backdrop-blur-xl rounded-3xl border border-border/60 p-8 space-y-6 shadow-2xl shadow-black/5">
+        <div className="bg-card rounded-2xl border border-border p-8 space-y-6 shadow-sm">
           <div>
-            <h2 className="text-xl font-extrabold text-foreground">{t("staff_access_controls", "Staff Access Controls")}</h2>
-            <p className="text-sm text-muted-foreground mt-1.5">{t(
+            <h2 className="text-2xl font-semibold text-foreground tracking-tight">{t("staff_access_controls", "Staff Access Controls")}</h2>
+            <p className="text-sm text-muted-foreground mt-2">{t(
               "maintain_granular_security_per",
               "Maintain granular security permissions across internal groups"
             )}</p>
           </div>
-          <div className="pt-4 border-t border-border/40">
+          <div className="pt-6 border-t border-border">
             <StaffPermissionsSettings />
           </div>
         </div>
@@ -122,78 +122,67 @@ export default function Settings() {
   const categories = ["General", "Security & Access", "Billing"];
 
   return (
-    <div className="flex flex-col h-full bg-card/20 rounded-[2rem] overflow-hidden shadow-2xl shadow-black/5 border border-border/40 max-w-7xl mx-auto my-6 backdrop-blur-3xl ring-1 ring-white/10">
-      {/* Header */}
-      <div className="px-10 py-10 border-b border-border/30 bg-card/60 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5"></div>
-        <div className="relative z-10">
-          <h1 className="text-4xl font-extrabold tracking-tight text-foreground">Workspace Settings</h1>
-          <p className="text-muted-foreground mt-3 text-base max-w-xl leading-relaxed">Manage your core configurations, enforce security policies, and monitor billing directly from the control center.</p>
+    <div className="flex flex-col h-full bg-background md:flex-row rounded-tl-2xl overflow-hidden border-t border-l border-border/50">
+      
+      {/* Sidebar Navigation */}
+      <div className="w-full md:w-64 lg:w-72 shrink-0 border-r border-border/60 bg-muted/30 overflow-y-auto hidden md:block">
+        <div className="p-8 pb-6">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Settings</h1>
+        </div>
+        <div className="px-4 space-y-8 pb-8">
+          {categories.map(cat => {
+            const catSections = SECTIONS.filter(s => s.cat === cat);
+            if (catSections.length === 0) return null;
+            return (
+              <div key={cat} className="space-y-1">
+                <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-widest px-4 mb-3">{cat}</h4>
+                <nav className="space-y-1">
+                  {catSections.map(s => {
+                    const IconComp = s.icon;
+                    const isActive = activeSection === s.id;
+                    return (
+                      <button
+                        key={s.id}
+                        onClick={() => setActiveSection(s.id)}
+                        className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl transition-colors text-sm font-medium ${
+                          isActive 
+                            ? "bg-foreground text-background shadow-md" 
+                            : "text-foreground/70 hover:bg-muted hover:text-foreground"
+                        }`}
+                      >
+                        <IconComp className={`w-4 h-4 ${isActive ? 'text-background' : 'text-muted-foreground'}`} />
+                        {s.label}
+                      </button>
+                    );
+                  })}
+                </nav>
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* Split Pane */}
-      <div className="flex flex-1 overflow-hidden min-h-[600px]">
-        
-        {/* Sidebar Navigation */}
-        <div className="w-72 shrink-0 border-r border-border/30 bg-card/40 overflow-y-auto p-6 hidden md:block backdrop-blur-xl">
-          <div className="space-y-10">
-            {categories.map(cat => {
-              const catSections = SECTIONS.filter(s => s.cat === cat);
-              if (catSections.length === 0) return null;
-              return (
-                <div key={cat} className="space-y-4">
-                  <h4 className="text-xs font-black text-muted-foreground/60 uppercase tracking-widest px-4">{cat}</h4>
-                  <nav className="space-y-1.5">
-                    {catSections.map(s => {
-                      const IconComp = s.icon;
-                      const isActive = activeSection === s.id;
-                      return (
-                        <button
-                          key={s.id}
-                          onClick={() => setActiveSection(s.id)}
-                          className={`w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl transition-all duration-300 text-sm font-bold relative overflow-hidden group ${
-                            isActive 
-                              ? "text-primary bg-primary/10 shadow-sm" 
-                              : "text-foreground/70 hover:bg-muted/80 hover:text-foreground"
-                          }`}
-                        >
-                          {isActive && (
-                            <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-6 bg-primary rounded-r-full" />
-                          )}
-                          <IconComp className={`w-5 h-5 transition-transform duration-300 ${isActive ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground/80 group-hover:scale-110'}`} />
-                          {s.label}
-                        </button>
-                      );
-                    })}
-                  </nav>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Mobile Nav Select (Fallback) */}
-        <div className="md:hidden p-4 border-b border-border/30 w-full bg-card/60 backdrop-blur-xl">
-          <select 
-            value={activeSection}
-            onChange={(e) => setActiveSection(e.target.value)}
-            className="w-full bg-background border border-border/50 rounded-2xl px-4 py-3.5 font-bold text-sm focus:ring-2 focus:ring-primary/20 shadow-sm"
-          >
-            {SECTIONS.map(s => (
-              <option key={s.id} value={s.id}>{s.label}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Main Content Area */}
-        <div className="flex-1 overflow-y-auto p-6 md:p-12 bg-background/30 custom-scrollbar">
-          <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700 fill-mode-both ease-out">
-            {renderActiveSection()}
-          </div>
-        </div>
-
+      {/* Mobile Nav Select (Fallback) */}
+      <div className="md:hidden p-4 border-b border-border w-full bg-background sticky top-0 z-10">
+        <h1 className="text-xl font-bold mb-4">Settings</h1>
+        <select 
+          value={activeSection}
+          onChange={(e) => setActiveSection(e.target.value)}
+          className="w-full bg-muted border-none rounded-xl px-4 py-3 font-medium text-sm focus:ring-2 focus:ring-foreground"
+        >
+          {SECTIONS.map(s => (
+            <option key={s.id} value={s.id}>{s.label}</option>
+          ))}
+        </select>
       </div>
+
+      {/* Main Content Area */}
+      <div className="flex-1 overflow-y-auto bg-background p-6 md:p-10 lg:p-16">
+        <div className="max-w-3xl mx-auto animate-in fade-in duration-300">
+          {renderActiveSection()}
+        </div>
+      </div>
+
     </div>
   );
 }

@@ -145,7 +145,7 @@ export const base44 = {
             const { data: { user }, error } = await supabase.auth.getUser();
             if (error || !user) throw error || new Error("Not logged in");
             
-            const { data: profile } = await powerSync.execute('SELECT * FROM profiles WHERE id = ?', [user.id]).then(res => ({ data: res.rows._array })).single();
+            const { data: profile } = await powerSync.execute('SELECT * FROM profiles WHERE id = ?', [user.id]).then(res => ({ data: res.rows._array[0] || null, error: null }));
             return profile;
         },
         register: async ({ email, password, company_id, role }) => {

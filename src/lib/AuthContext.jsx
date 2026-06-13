@@ -104,7 +104,7 @@ export const AuthProvider = ({ children }) => {
       }
 
       setAuthStep("Fetching profile...");
-      let { data: profile, error: profileError } = await powerSync.execute('SELECT * FROM profiles WHERE id = ?', [sessionUser.id]).then(res => ({ data: res.rows._array })).single();
+      let { data: profile, error: profileError } = await powerSync.execute('SELECT * FROM profiles WHERE id = ?', [sessionUser.id]).then(res => ({ data: res.rows._array[0] || null, error: null }));
       
       // Save transferred config to local storage using the correct company ID
       if (setupModeParam && profile?.company_id) {
@@ -258,7 +258,7 @@ export const AuthProvider = ({ children }) => {
       let companySubdomain = null;
       let companyData = null;
       if (profile?.company_id) {
-        const { data: company, error: companyError } = await powerSync.execute('SELECT * FROM companies WHERE id = ?', [profile.company_id]).then(res => ({ data: res.rows._array })).single();
+        const { data: company, error: companyError } = await powerSync.execute('SELECT * FROM companies WHERE id = ?', [profile.company_id]).then(res => ({ data: res.rows._array[0] || null, error: null }));
         if (company) {
           companyData = company;
           companySubdomain = company.subdomain || company.name?.toLowerCase().replace(/[^a-z0-9-]/g, '');

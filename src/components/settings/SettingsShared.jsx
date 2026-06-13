@@ -5,10 +5,10 @@ import { Loader2, Save } from "lucide-react";
 
 export function SectionCard({ title, subtitle, onSave, saving, children }) {
   return (
-    <div className="bg-card/45 backdrop-blur-xl rounded-3xl border border-border/60 shadow-2xl shadow-black/5 p-8 space-y-8 transition-all duration-300 hover:shadow-3xl hover:border-border/80">
+    <div className="space-y-8 pb-12 border-b border-border/40 last:border-0 last:pb-0">
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6">
-        <div className="space-y-1.5">
-          <h2 className="text-xl font-extrabold tracking-tight text-foreground">{title}</h2>
+        <div className="space-y-2">
+          <h2 className="text-xl font-bold tracking-tight text-foreground">{title}</h2>
           {subtitle && <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl">{subtitle}</p>}
         </div>
         {onSave && (
