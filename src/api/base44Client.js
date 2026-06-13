@@ -374,7 +374,7 @@ export const base44 = {
                         const placeholders = keys.map(() => '?').join(', ');
                         const values = Object.values(securedPayload);
 
-                        await powerSync.execute(`INSERT INTO tableName (${keys.join(', ')}) VALUES (${placeholders})`, values);
+                        await powerSync.execute(`INSERT INTO ${tableName} (${keys.join(', ')}) VALUES (${placeholders})`, values);
 
                         await mirrorToSupabase(tableName, securedPayload, 'upsert');
                         

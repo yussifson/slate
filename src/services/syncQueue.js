@@ -71,7 +71,11 @@ class SyncQueue {
         const _p = cleanData;
         const _k = Object.keys(_p);
         const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-        await powerSync.execute(`INSERT INTO ${endpoint.replace(/[^a-zA-Z0-9_]/g, '')} (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${_k.map(k=>k+' = excluded.'+k).join(', ')}`, _v);
+        if (action === 'POST') {
+          await powerSync.execute(`INSERT INTO ${endpoint.replace(/[^a-zA-Z0-9_]/g, '')} (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+        } else {
+          await powerSync.execute(`UPDATE ${endpoint.replace(/[^a-zA-Z0-9_]/g, '')} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, cleanData.id]);
+        }
       })();
       const error = null;
       if (error) throw error;

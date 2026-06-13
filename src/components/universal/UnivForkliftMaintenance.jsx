@@ -30,7 +30,7 @@ const UnivForkliftMaintenance = () => {
 
   const fetchData = async () => {
     setLoading(true);
-    const __res = await powerSync.execute(`SELECT * FROM tableName WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
+    const __res = await powerSync.execute(`SELECT * FROM  WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
       const records = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
       const error = null;
     if (error) {
@@ -58,7 +58,7 @@ const UnivForkliftMaintenance = () => {
         const _k = Object.keys(_p);
         const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
         const _pl = _k.map(()=>'?').join(', ');
-        await powerSync.execute(`INSERT INTO tableName (${_k.join(', ')}) VALUES (${_pl})`, _v);
+        await powerSync.execute(`INSERT INTO  (${_k.join(', ')}) VALUES (${_pl})`, _v);
       })();
       if (error) console.error('Error inserting:', error);
     }
@@ -75,7 +75,7 @@ const UnivForkliftMaintenance = () => {
   };
 
   const handleDelete = async (id) => {
-    await powerSync.execute(`DELETE FROM tableName WHERE id = ?`, [id]);
+    await powerSync.execute(`DELETE FROM  WHERE id = ?`, [id]);
       const error = null;
     if (error) console.error('Error deleting:', error);
     else fetchData();
