@@ -106,6 +106,12 @@ export const AuthProvider = ({ children }) => {
       setAuthStep("Fetching profile...");
       let { data: profile, error: profileError } = await powerSync.execute('SELECT * FROM profiles WHERE id = ?', [sessionUser.id]).then(res => ({ data: res.rows._array[0] || null, error: null }));
       
+      // FALLBACK TO SUPABASE FOR MISSING COLUMNS
+      if (profile) {
+          const { data: supaProfile } = await supabase.from('profiles').select('*').eq('id', profile.id).maybeSingle();
+          if (supaProfile) profile = { ...profile, ...supaProfile };
+      }
+
       // Save transferred config to local storage using the correct company ID
       if (setupModeParam && profile?.company_id) {
           localStorage.setItem(`setup_mode_${profile.company_id}`, setupModeParam);
@@ -262,9 +268,15 @@ export const AuthProvider = ({ children }) => {
       let companyData = null;
       if (profile?.company_id) {
         const { data: company, error: companyError } = await powerSync.execute('SELECT * FROM companies WHERE id = ?', [profile.company_id]).then(res => ({ data: res.rows._array[0] || null, error: null }));
-        if (company) {
-          companyData = company;
-          companySubdomain = company.subdomain || company.name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
+        let finalCompany = company || {};
+        
+        // FALLBACK TO SUPABASE
+        const { data: supaCompany } = await supabase.from('companies').select('*').eq('id', profile.company_id).maybeSingle();
+        if (supaCompany) finalCompany = { ...finalCompany, ...supaCompany };
+        
+        if (finalCompany.id) {
+          companyData = finalCompany;
+          companySubdomain = finalCompany.subdomain || finalCompany.name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
         } else if (companyError) {
           console.error("Failed to fetch company for redirect:", companyError);
         }
