@@ -168,7 +168,7 @@ export default function AppLayout() {
   }
 
   return (
-    <div className="flex h-screen bg-slate-50/50 dark:bg-background overflow-hidden relative selection:bg-primary/20">
+    <div className="flex h-[100dvh] bg-slate-50/50 dark:bg-background overflow-hidden relative selection:bg-primary/20 w-full">
       {/* Global Ambient Orbit Background - Unified Optavel Theme */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-all duration-1000 bg-white dark:bg-[#0A0F1C]">
         {/* Clean White Background with subtle Emerald Green accents */}
@@ -268,7 +268,7 @@ export default function AppLayout() {
           toggleBolt={toggleBolt}
         />
         <div className="flex-1 relative flex flex-col overflow-hidden">
-          <main className="flex-1 w-full mx-auto pb-24 md:pb-6 overflow-y-auto">
+          <main className="flex-1 w-full mx-auto pb-[calc(6rem+env(safe-area-inset-bottom))] md:pb-6 overflow-y-auto">
             <Outlet />
           </main>
           <GlobalVideoOverlay />

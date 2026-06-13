@@ -285,7 +285,25 @@ export default function GlobalChatPanel({ isOpen, onClose }) {
   };
 
   return (
-    <div className={`flex flex-col h-full shrink-0 border-l border-border bg-card z-40 transition-all duration-300 ${isOpen ? 'w-full sm:w-[400px] md:w-[450px] opacity-100' : 'w-0 opacity-0 overflow-hidden border-none pointer-events-none'}`}>
+    <>
+      {/* Mobile Backdrop */}
+      {isOpen && (
+        <div className="md:hidden fixed inset-0 z-[60] bg-slate-900/50 backdrop-blur-[2px] transition-opacity" onClick={onClose} />
+      )}
+      
+      <div 
+        className={`flex flex-col bg-card z-[70] transition-all duration-300 overflow-hidden ${
+          // Mobile: Bottom Sheet
+          isOpen ? "max-md:fixed max-md:inset-x-0 max-md:bottom-0 max-md:h-[85vh] max-md:rounded-t-[32px] max-md:shadow-2xl max-md:pb-[env(safe-area-inset-bottom)] max-md:translate-y-0 max-md:opacity-100" : "max-md:fixed max-md:inset-x-0 max-md:bottom-0 max-md:h-0 max-md:translate-y-full max-md:opacity-0 max-md:pointer-events-none"
+        } ${
+          // Desktop: Side Panel
+          isOpen ? "md:relative md:h-full md:shrink-0 md:border-l md:border-border md:w-[450px] md:opacity-100" : "md:h-full md:w-0 md:opacity-0 md:border-none md:pointer-events-none"
+        }`}
+      >
+        {/* Mobile Drag Handle */}
+        <div className="md:hidden flex justify-center pt-3 pb-1 shrink-0 bg-[#f0f2f5] dark:bg-[#202c33]">
+          <div className="w-12 h-1.5 rounded-full bg-slate-300 dark:bg-slate-600" />
+        </div>
       
       <AddChatDialog 
         open={isAddChatOpen} 
@@ -592,5 +610,6 @@ export default function GlobalChatPanel({ isOpen, onClose }) {
         )}
       </div>
     </div>
+  </>
   );
 }

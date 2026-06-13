@@ -131,22 +131,53 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
   const currentLang = LANGUAGES[i18n.language?.split('-')[0]] || LANGUAGES.en;
 
   return (
-    <div className="h-12 border-t-[3px] border-t-primary border-b-2 border-b-primary/30 bg-card relative z-30 flex items-center pl-4 pr-5 lg:px-5 gap-3">
-      {/* Sidebar Toggle & Breadcrumb */}
-      {/* Sidebar Toggle & Breadcrumb */}
-      <div className="flex items-center gap-2 sm:gap-3 text-sm flex-1 min-w-0">
-        <button 
-          onClick={toggleSidebar}
-          className="hidden lg:flex p-1.5 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
-          title={isSidebarCollapsed ? t('expand_sidebar', "Expand sidebar") : t('collapse_sidebar', "Collapse sidebar")}
-        >
-          <PanelLeft className="w-5 h-5" />
+    <>
+      {/* ── NATIVE MOBILE TOP BAR ── */}
+      <div className="md:hidden sticky top-0 z-[60] h-[52px] bg-background/80 backdrop-blur-xl border-b border-border/50 flex items-center justify-between px-4 w-full pt-[env(safe-area-inset-top)]">
+        {/* Left: Avatar */}
+        <button onClick={() => setShowAvatarDialog(true)} className="relative w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center overflow-hidden active:scale-95 transition-transform">
+          {user?.avatar_url ? (
+            <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+          ) : (
+            <span className="text-[11px] font-bold text-primary">{initials}</span>
+          )}
         </button>
-        <div className="h-4 w-px bg-border hidden lg:block mx-1"></div>
-        <LayoutDashboard className="w-4 h-4 text-muted-foreground hidden sm:block shrink-0" />
-        <span className="font-bold sm:font-medium text-foreground truncate max-w-[100px] sm:max-w-none text-base sm:text-sm">{title}</span>
+
+        {/* Center: Slate Logo */}
+        <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 flex items-center gap-1.5 pointer-events-none">
+          <div className="w-5 h-5 bg-primary rounded-md flex items-center justify-center shadow-sm">
+            <div className="w-2.5 h-2.5 bg-white rounded-sm transform rotate-45" />
+          </div>
+          <span className="font-extrabold text-lg tracking-tight text-foreground">Slate</span>
+        </div>
+
+        {/* Right: AI & Notifications */}
+        <div className="flex items-center gap-1">
+          <Button onClick={toggleAI} variant="ghost" size="icon" className={`w-8 h-8 rounded-full ${isAIOpen ? "bg-primary/10 text-primary" : "text-muted-foreground"}`}>
+            <Sparkles className="w-4 h-4" />
+          </Button>
+          <div className="scale-90 origin-right">
+            <NotificationBell user={user} />
+          </div>
+        </div>
       </div>
-      {/* Right */}
+
+      {/* ── DESKTOP TOP BAR ── */}
+      <div className="hidden md:flex h-12 border-t-[3px] border-t-primary border-b border-border bg-card relative z-30 items-center pl-4 pr-5 lg:px-5 gap-3 shrink-0 w-full">
+        {/* Sidebar Toggle & Breadcrumb */}
+        <div className="flex items-center gap-2 sm:gap-3 text-sm flex-1 min-w-0">
+          <button 
+            onClick={toggleSidebar}
+            className="hidden lg:flex p-1.5 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+            title={isSidebarCollapsed ? t('expand_sidebar', "Expand sidebar") : t('collapse_sidebar', "Collapse sidebar")}
+          >
+            <PanelLeft className="w-5 h-5" />
+          </button>
+          <div className="h-4 w-px bg-border hidden lg:block mx-1"></div>
+          <LayoutDashboard className="w-4 h-4 text-muted-foreground shrink-0" />
+          <span className="font-bold sm:font-medium text-foreground truncate max-w-[100px] sm:max-w-none text-base sm:text-sm">{title}</span>
+        </div>
+        {/* Right */}
       <div className="flex items-center gap-1 sm:gap-2 shrink-0">
         {/* Super Admin Industry Switcher */}
         {user?.role === 'super_admin' && (
@@ -309,6 +340,6 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
         </Button>
       </div>
       <ProfileAvatarDialog open={showAvatarDialog} onOpenChange={setShowAvatarDialog} />
-    </div>
+    </>
   );
 }

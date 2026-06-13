@@ -271,9 +271,18 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
     { label: "Settings", path: "/settings", icon: "Settings" }
   ];
 
+  const adminNav = [
+    { label: "Overview", path: "/admin", icon: "LayoutDashboard" },
+    { label: "Workspaces", path: "/admin/firms", icon: "Building2" },
+    { label: "Users", path: "/admin/users", icon: "Users" },
+    { label: "Billing", path: "/admin/billing", icon: "DollarSign" },
+    { label: "Security", path: "/admin/security", icon: "Shield" },
+    { label: "Broadcasts", path: "/admin/broadcasts", icon: "Megaphone" }
+  ];
+
   const isSuiteAdmin = ["super_admin", "admin"].includes(user?.role);
 
-  const filteredCompanyNav = isOrbitMode ? coreOrbitNav : industryNav.filter(item => {
+  const filteredCompanyNav = (isSuiteAdmin && !companyId) ? adminNav : (isOrbitMode ? coreOrbitNav : industryNav.filter(item => {
     // If activeModules is explicitly set (Custom Selection mode)
     if (activeModules && !['/', '/settings', '/integrations', '/admin', '/email-inbox', '/chat', '/board'].includes(item.path)) {
       // If it's not in the active modules, completely hide it
@@ -664,70 +673,9 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
 
   return (
     <>
-      {/* Mobile overlay (opened from bottom nav "More") */}
-      {mobileOpen && (
-        <div className="lg:hidden fixed inset-0 z-[100] flex">
-          <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
-          <div className="relative w-72 flex flex-col shadow-2xl h-full bg-sidebar transition-transform animate-in slide-in-from-left">
-            <div className="flex items-center justify-between p-4 border-b border-sidebar-border">
-              <h2 className="text-lg font-bold text-sidebar-foreground">{t('menu', 'Menu')}</h2>
-              <button 
-                onClick={() => setMobileOpen(false)} 
-                className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground hover:scale-105 transition-all"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="flex-1 overflow-y-auto pb-[env(safe-area-inset-bottom)]">
-              {renderNavContent(false)}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Mobile Bottom Navigation */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-xl border-t border-border shadow-[0_-4px_20px_rgba(0,0,0,0.06)] pb-[env(safe-area-inset-bottom)]">
-        <div className="flex items-center justify-around h-16 px-1">
-          {navItems.slice(0, 4).map((item) => {
-            const isActive = location.pathname === item.path || (item.path !== "/" && item.path !== "/admin" && location.pathname.startsWith(item.path));
-            const IconComp = typeof item.icon === 'string' ? ICON_MAP[item.icon] || LayoutDashboard : item.icon;
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={cn(
-                  "flex flex-col items-center justify-center gap-1 py-1 px-2 rounded-xl min-w-[64px] transition-all",
-                  isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                <div className={cn("w-8 h-8 rounded-full flex items-center justify-center transition-colors", isActive ? "bg-slate-100" : "")}>
-                  <IconComp className={cn("w-5 h-5 transition-transform", isActive ? "scale-110" : "")} />
-                </div>
-                <span className={cn("text-[10px] font-semibold leading-none", isActive ? "text-primary" : "")}>
-                  {t(item.label.toLowerCase().replace(/\s+/g, '_'), item.label)}
-                </span>
-              </Link>
-            );
-          })}
-          
-          {/* More Tab */}
-          <button
-            onClick={() => setMobileOpen(true)}
-            className="flex flex-col items-center justify-center gap-1 py-1 px-2 rounded-xl min-w-[64px] transition-all text-muted-foreground hover:text-foreground"
-          >
-            <div className="w-8 h-8 rounded-full flex items-center justify-center transition-colors">
-              <MoreHorizontal className="w-5 h-5 transition-transform" />
-            </div>
-            <span className="text-[10px] font-semibold leading-none">
-              {t("more", "More")}
-            </span>
-          </button>
-        </div>
-      </nav>
-
-      {/* Desktop sidebar */}
+      {/* Desktop sidebar - Strictly hidden on mobile */}
       <aside className={cn(
-        "hidden lg:flex flex-col h-screen sticky top-0 border-r-2 border-r-primary/30 transition-all duration-300 relative z-[1] bg-sidebar",
+        "hidden md:flex flex-col h-screen sticky top-0 border-r-2 border-r-primary/30 transition-all duration-300 relative z-[1] bg-sidebar",
         isCollapsed ? "w-[80px] min-w-[80px] max-w-[80px]" : "w-[256px] min-w-[256px] max-w-[256px]"
       )}>
         {renderNavContent(isCollapsed)}

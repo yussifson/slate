@@ -756,8 +756,29 @@ RULES FOR MULTI-STEP REASONING:
 
   //  Render 
   return (
-    <div className={`flex h-full shrink-0 border-l-[3px] border-l-primary bg-card z-40 transition-all duration-300 ${isOpen ? (isExpanded ? 'w-[680px] opacity-100' : 'w-[400px] opacity-100') : 'w-0 opacity-0 overflow-hidden border-none pointer-events-none'}`}>
-      {/*  History Sidebar  */}
+    <>
+      {/* Mobile Backdrop */}
+      {isOpen && (
+        <div className="md:hidden fixed inset-0 z-[60] bg-slate-900/50 backdrop-blur-[2px] transition-opacity" onClick={onClose} />
+      )}
+      
+      <div 
+        className={`flex bg-card z-[70] transition-all duration-300 overflow-hidden ${
+          // Mobile: Bottom Sheet
+          isOpen ? "max-md:fixed max-md:inset-x-0 max-md:bottom-0 max-md:h-[85vh] max-md:rounded-t-[32px] max-md:shadow-2xl max-md:flex-col max-md:pb-[env(safe-area-inset-bottom)] max-md:translate-y-0 max-md:opacity-100" : "max-md:fixed max-md:inset-x-0 max-md:bottom-0 max-md:h-0 max-md:translate-y-full max-md:opacity-0 max-md:pointer-events-none"
+        } ${
+          // Desktop: Side Panel
+          isOpen ? (isExpanded ? "md:relative md:h-full md:shrink-0 md:border-l-[3px] md:border-l-primary md:w-[680px] md:opacity-100" : "md:relative md:h-full md:shrink-0 md:border-l-[3px] md:border-l-primary md:w-[400px] md:opacity-100") : "md:h-full md:w-0 md:opacity-0 md:border-none md:pointer-events-none"
+        }`}
+      >
+        {/* Mobile Drag Handle */}
+        <div className="md:hidden flex justify-center pt-3 pb-1 shrink-0">
+          <div className="w-12 h-1.5 rounded-full bg-slate-200 dark:bg-slate-800" />
+        </div>
+        
+        {/* Main Content Wrapper (Needs flex row on desktop, flex col on mobile if history is open) */}
+        <div className="flex h-full w-full">
+          {/*  History Sidebar  */}
       {showHistory && (
         <div className="w-52 shrink-0 border-r border-border bg-muted/20 flex flex-col">
           <div className="px-3 py-2.5 border-b border-border flex items-center justify-between">
@@ -986,6 +1007,6 @@ RULES FOR MULTI-STEP REASONING:
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

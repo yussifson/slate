@@ -239,14 +239,123 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
       s = { ...s, messages: [...updatedMsgs, errorMsg] };
       setActiveSession(s);
       setSessions(prev => prev.map(p => p.id === s.id ? s : p));
+      })();
+  };
+
+  const handleSend = async (e) => {
+    e?.preventDefault();
+    if (!input.trim() || !activeSession) return;
+    
+    const text = input.trim();
+    setInput('');
+    setIsGenerating(true);
+
+    const userMsg = { role: 'user', content: text };
+    const updatedMsgs = [...activeSession.messages, userMsg];
+    
+    let title = activeSession.title;
+    if (title === 'New WorkSlate') title = text.slice(0, 30) + '...';
+    
+    let s = { ...activeSession, title, messages: updatedMsgs };
+    setActiveSession(s);
+    setSessions(prev => prev.map(p => p.id === s.id ? s : p));
+
+    try {
+      const aiMessages = [
+        { role: 'system', content: SYSTEM_PROMPT },
+        ...updatedMsgs.map(m => {
+          if (m.role === 'assistant') {
+            return { role: 'assistant', content: m.raw_json ? JSON.stringify(m.raw_json) : m.content };
+          }
+          return { role: 'user', content: m.content };
+        })
+      ];
+
+      const responseText = await generateText(aiMessages);
+      
+      let parsedSchema = null;
+      let aiResponseMsg = responseText;
+      let appliedSuccessfully = false;
+
+      // Extract UNIVERSAL tag
+      const universalMatch = responseText.match(/<UNIVERSAL>([\s\S]*?)<\/UNIVERSAL>/i);
+      if (universalMatch && universalMatch[1]) {
+        try {
+          const univData = JSON.parse(universalMatch[1].trim());
+          aiResponseMsg = responseText.replace(/<UNIVERSAL>[\s\S]*?<\/UNIVERSAL>/ig, '').trim();
+          if (!aiResponseMsg) aiResponseMsg = "I have selected a Universal Component for your architecture.";
+          
+          if (onApplySchema) {
+            onApplySchema({ isUniversal: true, ...univData });
+            appliedSuccessfully = true;
+          }
+        } catch(e) {
+          console.error("Failed to parse universal:", e);
+        }
+      } else {
+        // Extract SCHEMA tag
+        const schemaMatch = responseText.match(/<S?CHEMA>([\s\S]*?)(?:<\/S?CHEMA>|<S?CHEMA>|$)/i);
+        if (schemaMatch && schemaMatch[1]) {
+          try {
+            parsedSchema = JSON.parse(schemaMatch[1].trim());
+            aiResponseMsg = responseText.replace(/<S?CHEMA>[\s\S]*?(?:<\/S?CHEMA>|<S?CHEMA>|$)/ig, '').trim();
+            if (!aiResponseMsg) aiResponseMsg = "I've generated the architecture.";
+            
+            if (onApplySchema) {
+              onApplySchema(parsedSchema);
+              appliedSuccessfully = true;
+            } else {
+              // Store it in session storage if we need to navigate
+              sessionStorage.setItem('orbitbolt_pending_schema', JSON.stringify(parsedSchema));
+              navigate('/create/module');
+            }
+          } catch (e) {
+            console.error("Failed to parse schema from AI:", e);
+          }
+        }
+      }
+
+      if (appliedSuccessfully && aiResponseMsg === "I've generated the architecture.") {
+         aiResponseMsg += " I have applied it to your builder instantly.";
+      }
+
+      const assistantMsg = { 
+        role: 'assistant', 
+        content: aiResponseMsg,
+        raw_json: parsedSchema || null
+      };
+      
+      s = { ...s, messages: [...updatedMsgs, assistantMsg] };
+      
+      setActiveSession(s);
+      setSessions(prev => prev.map(p => p.id === s.id ? s : p));
+      saveSession(s);
+      
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to generate module: " + err.message);
+      const errorMsg = { role: 'assistant', content: "Sorry, I ran into an error building that. Please try rephrasing." };
+      s = { ...s, messages: [...updatedMsgs, errorMsg] };
+      setActiveSession(s);
+      setSessions(prev => prev.map(p => p.id === s.id ? s : p));
     } finally {
       setIsGenerating(false);
     }
   };
 
   const workspaceContent = (
-    <div className="fixed top-0 right-0 bottom-0 z-[9999] flex h-full shrink-0 border-l-[3px] border-l-primary bg-card transition-all duration-300 w-[400px]">
+    <>
+      {/* Mobile Backdrop */}
+      <div className="md:hidden fixed inset-0 z-[9998] bg-slate-900/50 backdrop-blur-[2px] transition-opacity" onClick={onClose} />
       
+      <div className={`fixed z-[9999] bg-card transition-all duration-300 overflow-hidden flex max-md:inset-x-0 max-md:bottom-0 max-md:h-[85vh] max-md:rounded-t-[32px] max-md:shadow-2xl max-md:flex-col max-md:pb-[env(safe-area-inset-bottom)] md:top-0 md:right-0 md:bottom-0 md:h-full md:shrink-0 md:border-l-[3px] md:border-l-primary md:w-[400px]`}>
+        
+        {/* Mobile Drag Handle */}
+        <div className="md:hidden flex justify-center pt-3 pb-1 shrink-0">
+          <div className="w-12 h-1.5 rounded-full bg-slate-200 dark:bg-slate-800" />
+        </div>
+        
+        <div className="flex h-full w-full">
       {/*  History Sidebar  */}
       <AnimatePresence>
       {showHistory && (
@@ -397,8 +506,9 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
           </form>
         </div>
 
+        </div>
       </div>
-    </div>
+    </>
   );
 
   return createPortal(workspaceContent, document.body);
