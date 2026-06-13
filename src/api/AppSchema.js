@@ -179,6 +179,7 @@ export const AppSchema = new Schema({
         status: column.text,
         custom_email_domain: column.text,
         custom_email_verified: column.text,
+        industry_type: column.text,
     }),
     documents: new Table({
         id: column.text,
@@ -622,6 +623,7 @@ export const AppSchema = new Schema({
         avatar_url: column.text,
         department: column.text,
         bar_number: column.text,
+        industry_type: column.text,
     }),
     school_students: new Table({
         id: column.text,

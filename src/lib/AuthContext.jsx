@@ -141,7 +141,7 @@ export const AuthProvider = ({ children }) => {
           }
         }
 
-        if (profileError && profileError.code === 'PGRST116') {
+        if (!profile) {
           // Create new profile mapped to the existing company and role
                     const _p = {
             id: sessionUser.id,
@@ -206,7 +206,7 @@ export const AuthProvider = ({ children }) => {
         await powerSync.execute(`UPDATE staff_records SET ${_k.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._v, staffRecord.id]);
       })();
         }
-      } else if (profileError && profileError.code === 'PGRST116') {
+      } else if (!profile) {
         let invitedCompanyId = sessionUser.user_metadata?.company_id || null;
         let invitedRole = sessionUser.user_metadata?.role || 'company_admin';
 
