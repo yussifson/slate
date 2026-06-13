@@ -229,8 +229,7 @@ export const AuthProvider = ({ children }) => {
           role: 'lawyer', // Default role for net-new independent signups
           company_id: invitedCompanyId,
           company_name: null,
-          email: sessionUser.email?.toLowerCase() || null,
-          full_name: sessionUser.user_metadata?.full_name || ''
+          email: sessionUser.email?.toLowerCase() || null
         };
         const _k = Object.keys(_p);
         const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
