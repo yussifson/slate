@@ -232,12 +232,12 @@ export default function Features() {
                   </ul>
                 </div>
                 {/* Stylized UI Mockup */}
-                <div className="flex-1 w-full">
-                  <div className="aspect-[4/3] rounded-3xl border border-slate-200 bg-slate-50 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden">
+                <div className="flex-1 w-full flex items-center justify-center">
+                  <div className="w-full aspect-[4/3] rounded-3xl border border-slate-200 bg-slate-50 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden flex items-center justify-center p-4">
                     <img 
                       src={feature.image} 
                       alt={`${feature.badge} Interface`} 
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain object-center drop-shadow-xl"
                     />
                   </div>
                 </div>
