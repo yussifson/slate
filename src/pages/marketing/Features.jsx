@@ -233,13 +233,11 @@ export default function Features() {
                 </div>
                 {/* Stylized UI Mockup */}
                 <div className="flex-1 w-full flex items-center justify-center">
-                  <div className="w-full rounded-3xl border border-slate-200 bg-slate-50 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden flex items-center justify-center p-4 sm:p-6">
-                    <img 
-                      src={feature.image} 
-                      alt={`${feature.badge} Interface`} 
-                      className="w-full h-auto object-contain object-center drop-shadow-xl"
-                    />
-                  </div>
+                  <img 
+                    src={feature.image} 
+                    alt={`${feature.badge} Interface`} 
+                    className="w-full h-auto object-contain rounded-xl drop-shadow-2xl hover:scale-[1.02] transition-transform duration-300"
+                  />
                 </div>
               </div>
             );
