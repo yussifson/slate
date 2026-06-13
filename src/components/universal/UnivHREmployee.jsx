@@ -1,7 +1,6 @@
 import { powerSync } from '@/api/PowerSyncConnector';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import FeatureGate from '@/components/ui/FeatureGate';
-//, useEffect } from 'react';
 
 import GenericGrid from '@/components/views/GenericGrid';
 import GenericKanban from '@/components/views/GenericKanban';
