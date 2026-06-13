@@ -649,10 +649,12 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
               <UserCircle className="w-4 h-4 mr-2" />
               Change Avatar
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate('/settings')} className="cursor-pointer">
-              <Settings className="w-4 h-4 mr-2" />
-              Settings
-            </DropdownMenuItem>
+            {isSuiteAdmin && (
+              <DropdownMenuItem onClick={() => navigate('/settings')} className="cursor-pointer">
+                <Settings className="w-4 h-4 mr-2" />
+                Settings
+              </DropdownMenuItem>
+            )}
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => base44.auth.logout()} className="text-red-600 focus:bg-red-50 focus:text-red-600 cursor-pointer">
               <LogOut className="w-4 h-4 mr-2" />
