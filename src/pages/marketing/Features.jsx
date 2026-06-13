@@ -233,11 +233,11 @@ export default function Features() {
                 </div>
                 {/* Stylized UI Mockup */}
                 <div className="flex-1 w-full">
-                  <div className="w-full aspect-video rounded-2xl border border-slate-200/60 shadow-xl overflow-hidden relative group">
+                  <div className="w-full aspect-[4/3] rounded-2xl border border-slate-200/80 shadow-2xl overflow-hidden relative group bg-white">
                     <img 
                       src={feature.image} 
                       alt={`${feature.badge} Interface`} 
-                      className="w-full h-full object-cover object-center transform scale-[1.05] group-hover:scale-[1.08] transition-transform duration-500"
+                      className="absolute inset-0 w-full h-full object-cover object-center transform scale-[1.3] group-hover:scale-[1.35] transition-transform duration-700"
                     />
                   </div>
                 </div>
