@@ -1,6 +1,17 @@
 import { column, Schema, Table } from '@powersync/web';
 
 export const AppSchema = new Schema({
+    industry_records: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        industry: column.text,
+        record_type: column.text,
+        data: column.text,
+        status: column.text,
+        title: column.text,
+        search_text: column.text,
+    }),
     audit_logs: new Table({
         id: column.text,
         created_at: column.text,
