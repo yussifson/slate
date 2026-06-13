@@ -594,9 +594,9 @@ export const AppSchema = new Schema({
         phone: column.text,
         hire_date: column.text,
         status: column.text,
-        salary: column.integer,
+        salary: column.text,
         currency: column.text,
-        leave_balance: column.integer,
+        leave_balance: column.text,
         bar_number: column.text,
     }),
     module_definitions: new Table({
@@ -613,7 +613,7 @@ export const AppSchema = new Schema({
         config: column.text,
         industry_type: column.text,
         status: column.text,
-        is_active: column.integer
+        is_active: column.text,
     }),
     field_definitions: new Table({
         id: column.text,
@@ -624,8 +624,8 @@ export const AppSchema = new Schema({
         name: column.text,
         field_type: column.text,
         options: column.text,
-        is_required: column.integer,
-        order_index: column.integer
+        is_required: column.text,
+        order_index: column.text,
     }),
     dynamic_records: new Table({
         id: column.text,
@@ -637,9 +637,7 @@ export const AppSchema = new Schema({
         company_id: column.text,
         module_id: column.text,
         data: column.text,
-        status: column.text
-    }),
-    documents: new Table({
+        status: column.text,
     }),
     subscription_invoices: new Table({
         id: column.text,
@@ -720,7 +718,7 @@ export const AppSchema = new Schema({
         error_message: column.text,
         failed_at: column.text,
         raw_payload: column.text,
-        acknowledged: column.integer,
+        acknowledged: column.text,
     }),
     profiles: new Table({
         id: column.text,
@@ -739,7 +737,7 @@ export const AppSchema = new Schema({
         department: column.text,
         bar_number: column.text,
         industry_type: column.text,
-        onboarding_completed: column.integer,
+        onboarding_completed: column.text,
     }),
     school_students: new Table({
         id: column.text,
@@ -1461,8 +1459,6 @@ export const AppSchema = new Schema({
         created_at: column.text,
         created_date: column.text,
     }),
-
-    // --- UNIVERSAL MODULE TABLES ---
     univ_accesscontrols: new Table({
         id: column.text,
         created_at: column.text,
@@ -2725,6 +2721,9 @@ export const AppSchema = new Schema({
         due_date: column.text,
         budget: column.text,
         assigned_to: column.text,
+        project_name: column.text,
+        end_date: column.text,
+        completion_percentage: column.text,
     }),
     univ_projectmilestones: new Table({
         id: column.text,
@@ -2877,11 +2876,6 @@ export const AppSchema = new Schema({
         company_id: column.text,
     }),
     univ_scraprates: new Table({
-        id: column.text,
-        created_at: column.text,
-        company_id: column.text,
-    }),
-    univ_contacts: new Table({
         id: column.text,
         created_at: column.text,
         company_id: column.text,
@@ -3075,18 +3069,6 @@ export const AppSchema = new Schema({
         hours: column.text,
         rate: column.text,
         status: column.text,
-    }),
-    univ_projects: new Table({
-        id: column.text,
-        created_at: column.text,
-        company_id: column.text,
-        project_name: column.text,
-        description: column.text,
-        start_date: column.text,
-        end_date: column.text,
-        status: column.text,
-        budget: column.text,
-        completion_percentage: column.text,
     }),
     univ_timesheet: new Table({
         id: column.text,
