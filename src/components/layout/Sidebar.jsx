@@ -271,7 +271,14 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
     { label: "Settings", path: "/settings", icon: "Settings" }
   ];
 
+  const isSuiteAdmin = ["super_admin", "admin"].includes(user?.role);
+
   const filteredCompanyNav = isOrbitMode ? coreOrbitNav : industryNav.filter(item => {
+    // Hide global system config from non-suite admins
+    if (['/settings', '/integrations', '/firm-setup'].includes(item.path)) {
+      if (!isSuiteAdmin) return false;
+    }
+
     // If activeModules is explicitly set (Custom Selection mode)
     if (activeModules && !['/', '/settings', '/integrations', '/admin', '/email-inbox', '/chat', '/board'].includes(item.path)) {
       // If it's not in the active modules, completely hide it
