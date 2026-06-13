@@ -164,7 +164,8 @@ export default function AppLayout() {
 
   // If subscription is expired or inactive, render the Paywall screen
   if (isExpired) {
-    return <Paywall />;
+    // return <Paywall />;
+    console.warn("Paywall bypassed for development.");
   }
 
   return (
