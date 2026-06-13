@@ -16,7 +16,7 @@ export function SectionCard({ title, subtitle, onSave, saving, children }) {
             onClick={onSave} 
             disabled={saving} 
             size="sm" 
-            className="gap-2 bg-foreground text-background hover:bg-foreground/90 shadow-md font-bold transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 shrink-0 rounded-xl px-5 h-10"
+            className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90 shadow-md font-bold transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 shrink-0 rounded-xl px-5 h-10"
           >
             {saving ? (
               <Loader2 className="w-4 h-4 animate-spin" />

@@ -165,8 +165,12 @@ export const AuthProvider = ({ children }) => {
           }
         } else if (profile) {
           // If the profile already exists, but its role or company is different from staff_records, sync them!
+          // Do not let a local staff_record downgrade a global admin/super_admin
+          const isGlobalAdmin = ['super_admin', 'admin'].includes(profile.role);
+          const shouldUpdateRole = !isGlobalAdmin && (profile.role !== staffRecord.role);
+
           if (
-            profile.role !== staffRecord.role ||
+            shouldUpdateRole ||
             profile.company_id !== staffRecord.company_id ||
             profile.department !== staffRecord.department ||
             profile.bar_number !== staffRecord.bar_number ||
@@ -174,7 +178,7 @@ export const AuthProvider = ({ children }) => {
             profile.email?.toLowerCase() !== sessionUser.email?.toLowerCase()
           ) {
                         const _p = {
-              role: staffRecord.role,
+              role: shouldUpdateRole ? staffRecord.role : profile.role,
               company_id: staffRecord.company_id,
               company_name: companyName || profile.company_name,
               email: sessionUser.email?.toLowerCase() || profile.email || null,
