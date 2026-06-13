@@ -274,11 +274,6 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
   const isSuiteAdmin = ["super_admin", "admin"].includes(user?.role);
 
   const filteredCompanyNav = isOrbitMode ? coreOrbitNav : industryNav.filter(item => {
-    // Hide global system config from non-suite admins
-    if (['/settings', '/integrations', '/firm-setup'].includes(item.path)) {
-      if (!isSuiteAdmin) return false;
-    }
-
     // If activeModules is explicitly set (Custom Selection mode)
     if (activeModules && !['/', '/settings', '/integrations', '/admin', '/email-inbox', '/chat', '/board'].includes(item.path)) {
       // If it's not in the active modules, completely hide it
@@ -623,8 +618,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
               
               {!collapsed && (
                 <div className="flex-1 text-left min-w-0 animate-in fade-in duration-200">
-                  <p className="text-sm font-semibold text-foreground truncate leading-tight">
-                    {user?.full_name || user?.company_name || "Admin"}
+                  <p className="text-sm font-bold leading-none text-foreground">
+                    {user?.full_name || user?.company_name || (user?.role === "super_admin" ? "Super Admin" : "Admin")}
                   </p>
                   <p className="text-[11px] text-muted-foreground capitalize truncate mt-0.5">
                     {user?.role?.replace("_", " ")}
@@ -640,7 +635,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
           <DropdownMenuContent className="w-56" align="end" side="right" sideOffset={8}>
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">{user?.full_name || "Admin"}</p>
+                <p className="text-sm font-medium leading-none">{user?.full_name || (user?.role === "super_admin" ? "Super Admin" : "Admin")}</p>
                 <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
               </div>
             </DropdownMenuLabel>
