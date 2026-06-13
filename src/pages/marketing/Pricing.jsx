@@ -54,7 +54,7 @@ export default function Pricing() {
     },
     {
       q: 'Can I self-host Slate on my own servers?',
-      a: 'Yes. Our Off-Cloud Enterprise deployment starts at $15,000/year and allows you to run Slate completely air-gapped on your private network.'
+      a: 'Yes. Our Off-Cloud Enterprise deployment starts at $15,500/year and allows you to run Slate completely air-gapped on your private network.'
     },
     {
       q: 'Do community and education plans need verification?',
@@ -246,10 +246,10 @@ export default function Pricing() {
             </div>
             <div className="w-full md:w-80 shrink-0 flex flex-col items-center bg-white rounded-3xl p-8 border border-slate-200 shadow-sm">
               <span className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Starting At</span>
-              <span className="text-4xl md:text-5xl font-bold text-slate-900 mb-6 tracking-tighter">$15,000<span className="text-xl text-slate-500 font-medium tracking-normal">/yr</span></span>
+              <span className="text-4xl md:text-5xl font-bold text-slate-900 mb-6 tracking-tighter">$15,500<span className="text-xl text-slate-500 font-medium tracking-normal">/yr</span></span>
               <Button
                 onClick={() => setShowOffCloudDialog(true)}
-                className="w-full py-6 rounded-2xl font-bold text-sm bg-slate-900 text-white hover:bg-slate-800 transition-all shadow-md"
+                className="w-full py-6 rounded-2xl font-bold text-sm bg-primary text-white hover:bg-primary/90 transition-all shadow-md"
               >
                 {t('build_custom_quote', 'Build Custom Quote')}
               </Button>
@@ -264,7 +264,7 @@ export default function Pricing() {
           <div className="bg-slate-50 border-b border-slate-100 px-8 py-8 shrink-0 text-center">
             <DialogTitle className="text-2xl font-bold text-slate-900 mb-3 tracking-tight">{t('off_cloud_enterprise', 'Off-Cloud Enterprise')}</DialogTitle>
             <DialogDescription className="text-slate-600 text-sm max-w-md mx-auto leading-relaxed font-medium">
-              Deploy Slate securely on your own private infrastructure. Starting at $15,000 USD / year.
+              Deploy Slate securely on your own private infrastructure. Starting at $15,500 USD / year.
             </DialogDescription>
           </div>
           <div className="px-8 py-8 overflow-y-auto bg-white flex-1">
