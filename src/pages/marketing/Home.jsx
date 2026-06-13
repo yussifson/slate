@@ -501,7 +501,7 @@ export default function Home() {
       {/* ============================================================ */}
       {/*  HERO                                                        */}
       {/* ============================================================ */}
-      <section className="relative py-10 md:py-14 lg:py-16">
+      <section className="relative pt-8 pb-10 md:pt-14 lg:py-16">
         {/* Soft light background */}
         <div className="absolute inset-0 bg-slate-50 pointer-events-none" />
 
@@ -516,7 +516,7 @@ export default function Home() {
 
           {/* Headline */}
           <FadeIn delay="delay-100">
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1] max-w-4xl mx-auto mb-6">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1] max-w-4xl mx-auto mb-6">
               {t(
                 "the_work_made_effortless_that_tur",
                 "The unified workspace that turns hours into"
@@ -529,7 +529,7 @@ export default function Home() {
 
           {/* Subtitle */}
           <FadeIn delay="delay-200">
-            <p className="text-lg text-slate-600 max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
+            <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
               {t(
                 "built_for_teams_that_take_oper",
                 "Built for teams that take operations seriously. Manage cases, automate client communication, log billable hours,\n              process payments, and track HR — all in one place."

@@ -38,7 +38,7 @@ export default function About() {
         <meta name="description" content="Learn more about Slate. We are a team of engineers building the ultimate AI WorkSlate for modern businesses." />
       </Helmet>
       {/* Hero Section */}
-      <section className="relative py-10 md:py-14 lg:py-16">
+      <section className="relative pt-8 pb-10 md:pt-14 lg:py-16">
         <div className="absolute inset-0 bg-slate-50 pointer-events-none" />
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
@@ -46,13 +46,13 @@ export default function About() {
             <span className="flex h-2 w-2 rounded-full bg-primary" />
             {t("our_story", "Our Story")}
           </div>
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1] max-w-4xl mx-auto mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1] max-w-4xl mx-auto mb-6">
             {t("digitizing_business_operations", "Digitizing business operations")}{' '}
             <span className="bg-slate-100 text-primary/70 px-4 py-1 rounded-[1.5rem] inline-block mt-2">
               {t("globally", "globally")}
             </span>
           </h1>
-          <p className="text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed font-medium mb-10">
+          <p className="text-base sm:text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed font-medium mb-10">
             {t(
               "founded_by_a_team_of_industry_",
               "Founded by a team of industry practitioners and engineers, Slate is the first dedicated SaaS business management platform custom-built for regional and global operational excellence."

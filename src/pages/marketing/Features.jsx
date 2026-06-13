@@ -168,18 +168,18 @@ export default function Features() {
   return (
     <div className="overflow-x-hidden bg-white">
       {/* ── Hero Header ── */}
-      <section className="relative pt-10 pb-16 md:pt-14 md:pb-20 bg-slate-50 border-b border-slate-100">
+      <section className="relative pt-8 pb-10 md:pt-14 md:pb-20 bg-slate-50 border-b border-slate-100">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-600 text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
             {t("core_features", "Core Features")}
           </span>
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-slate-900 mb-6 max-w-4xl mx-auto leading-[1.1]">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold tracking-tight text-slate-900 mb-6 max-w-4xl mx-auto leading-[1.1]">
             {t("everything_your_business_team_", "Everything your business team needs to")}{' '}
             <span className="bg-slate-100 text-slate-900 px-4 py-1 rounded-[1.5rem] inline-block mt-2">
               {t("succeed", "succeed")}
             </span>
           </h1>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed font-medium">
+          <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed font-medium">
             {t(
               "unlock_a_comprehensive_system_",
               "Unlock a comprehensive system built specifically for modern operational\n            requirements. Minimize admin work and focus entirely on\n            delivering value to your clients."

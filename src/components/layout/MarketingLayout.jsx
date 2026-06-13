@@ -286,7 +286,9 @@ export default function MarketingLayout({ children }) {
       </header>
       </div>
       
-
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 top-[60px] z-40 bg-white/95 backdrop-blur-md overflow-y-auto pb-24">
+          <nav className="flex flex-col p-4">
               <hr className="border-border/60 my-2" />
 
               {/* Mobile Language Selector */}

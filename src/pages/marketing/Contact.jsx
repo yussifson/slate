@@ -51,7 +51,7 @@ export default function Contact() {
   return (
     <div className="overflow-x-hidden bg-white min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-10 md:py-14 lg:py-16">
+      <section className="relative pt-8 pb-10 md:pt-14 lg:py-16">
         <div className="absolute inset-0 bg-slate-50 pointer-events-none" />
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
@@ -59,14 +59,14 @@ export default function Contact() {
             <span className="flex h-2 w-2 rounded-full bg-primary" />
             {t("get_in_touch", "Get in Touch")}
           </div>
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1] max-w-4xl mx-auto mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1] max-w-4xl mx-auto mb-6">
             {t("we_re_here_to", "We're here to")}{' '}
             <span className="bg-slate-100 text-primary/70 px-4 py-1 rounded-[1.5rem] inline-block mt-2">
               {t("support", "support")}
             </span>{' '}
             {t("you", "you")}
           </h1>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed font-medium mb-10">
+          <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed font-medium mb-10">
             {t(
               "whether_you_re_exploring_enter",
               "Whether you're exploring enterprise options, need help migrating data, or have a simple question—our team is ready."
