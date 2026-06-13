@@ -258,38 +258,34 @@ export default function MarketingLayout({ children }) {
             )}
           </div>
 
-          {/* Mobile Menu Toggle */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2.5 rounded-xl text-muted-foreground hover:bg-muted/60 transition-colors"
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
+          {/* Mobile CTA */}
+          <div className="flex lg:hidden items-center gap-1.5">
+            <button
+              onClick={() => setLangDropdownOpen(!langDropdownOpen)}
+              className="p-2 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors bg-white/50 border border-slate-200/50 shadow-sm backdrop-blur-md"
+            >
+              <Globe className="w-4 h-4 text-primary" />
+            </button>
+            {isLoadingAuth ? (
+              <div className="w-16 h-9 rounded-full animate-pulse bg-muted/60"></div>
+            ) : isAuthenticated ? (
+              <a href={workspaceUrl}>
+                <Button size="sm" className="bg-primary hover:bg-primary/90 text-white font-bold rounded-full px-5 h-9 text-[11px] uppercase tracking-wider shadow-md shadow-primary/20">
+                  {t("app", "App")}
+                </Button>
+              </a>
+            ) : (
+              <Link to="/signup">
+                <Button size="sm" className="bg-primary hover:bg-primary/90 text-white font-bold rounded-full px-5 h-9 text-[11px] uppercase tracking-wider shadow-md shadow-primary/20">
+                  {t("start", "Start")}
+                </Button>
+              </Link>
+            )}
+          </div>
         </div>
       </header>
       </div>
-      {/* Mobile Navigation Drawer */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden fixed top-[65px] left-0 right-0 bottom-0 z-40 bg-white border-t border-slate-200 shadow-xl overflow-y-auto animate-in slide-in-from-top-2 duration-200">
-          <nav className="flex flex-col p-6 gap-2">
-              {navItems.map((item) => {
-                const isActive = location.pathname === item.path;
-                return (
-                  <Link
-                    key={item.name}
-                    to={item.path}
-                    className={`flex items-center gap-3 text-sm font-medium py-3 px-4 rounded-xl transition-all ${
-                      isActive 
-                        ? 'text-primary bg-primary/[0.08]' 
-                        : 'text-foreground hover:bg-muted/60'
-                    }`}
-                  >
-                    <item.icon className="w-4.5 h-4.5" />
-                    {item.name}
-                  </Link>
-                );
-              })}
+      
 
               <hr className="border-border/60 my-2" />
 
@@ -342,34 +338,34 @@ export default function MarketingLayout({ children }) {
         </div>
       )}
       {/* ========== MAIN CONTENT ========== */}
-      <main className="relative z-10 pb-20 md:pb-0 pt-[80px] md:pt-[90px]">
+      <main className="relative z-10 pb-28 md:pb-0 pt-[80px] md:pt-[90px]">
         {children}
       </main>
       {/* ========== MOBILE BOTTOM NAVIGATION ========== */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-xl border-t border-border/80 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
-        <div className="flex items-center justify-around h-16 px-2">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/90 supports-[backdrop-filter]:bg-white/60 supports-[backdrop-filter]:backdrop-blur-2xl border-t border-slate-200/50 pb-[env(safe-area-inset-bottom)] shadow-[0_-10px_40px_rgba(0,0,0,0.03)]">
+        <div className="flex items-center justify-around h-[68px] px-1">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
               <Link
                 key={item.name}
                 to={item.path}
-                className={`flex flex-col items-center justify-center gap-1 py-1.5 px-2 rounded-lg min-w-[56px] transition-all ${
+                className={`flex flex-col items-center justify-center gap-1 w-full h-full relative transition-colors ${
                   isActive 
                     ? 'text-primary' 
-                    : 'text-muted-foreground'
+                    : 'text-slate-400 hover:text-slate-600'
                 }`}
               >
-                <item.icon className={`w-5 h-5 transition-transform ${isActive ? 'scale-110' : ''}`} />
-                <span className={`text-[10px] font-semibold leading-none ${isActive ? 'text-primary' : ''}`}>
+                <div className={`relative flex items-center justify-center w-8 h-8 rounded-full transition-all duration-400 ease-out ${isActive ? 'bg-primary/10' : 'bg-transparent'}`}>
+                  <item.icon className={`w-[22px] h-[22px] transition-transform duration-400 ease-out ${isActive ? 'scale-110' : 'scale-100'}`} />
+                </div>
+                <span className={`text-[10px] font-bold tracking-wide transition-all duration-300 ${isActive ? 'text-primary' : 'text-slate-500 font-semibold'}`}>
                   {item.name}
                 </span>
               </Link>
             );
           })}
         </div>
-        {/* Safe area spacer for notched phones */}
-        <div className="h-[env(safe-area-inset-bottom)]" />
       </nav>
       {/* ========== PREMIUM FOOTER (LIGHT THEME) ========== */}
       <footer className="bg-slate-50 text-slate-600 pt-20 md:pt-28 pb-24 md:pb-12 border-t border-slate-200 relative overflow-hidden">
