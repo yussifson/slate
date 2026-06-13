@@ -100,21 +100,9 @@ export const syncOfflineOutbox = async () => {
 
 /** Push CRUD actions to syncQueue so data survives offline safely. */
 async function mirrorToSupabase(tableName, record, operation = 'upsert') {
-    if (!record) return;
-
-    const { data: { session } } = await supabase.auth.getSession();
-    const user = session?.user;
-    const row = typeof record === 'string' ? null : { ...record };
-    if (row && !row.created_by && user?.id) row.created_by = user.id;
-
-    if (operation === 'upsert') {
-        const isUpdate = !!row.updated_date; // Heuristic to know if it's PUT or POST
-        const action = isUpdate ? 'PUT' : 'POST';
-        await syncQueue.enqueue({ action, endpoint: tableName, payload: isUpdate ? { id: row.id, data: row } : row });
-    } else if (operation === 'delete') {
-        const id = typeof record === 'string' ? record : record.id;
-        await syncQueue.enqueue({ action: 'DELETE', endpoint: tableName, payload: { id } });
-    }
+    // PowerSync natively handles offline queuing and uploading via PowerSyncConnector.js
+    // We no longer need the redundant syncQueue which causes UNIQUE constraint failures.
+    return;
 }
 
 async function fetchFromSupabase(tableName, filter = {}, sort = []) {

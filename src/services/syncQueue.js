@@ -33,31 +33,13 @@ class SyncQueue {
   }
 
   async sync() {
-    if (this.isSyncing || !navigator.onLine) return;
-    this.isSyncing = true;
-    
-    try {
-      let queue = await this.getQueue();
-      if (queue.length === 0) return;
-
-      const newQueue = [];
-      for (const item of queue) {
-        try {
-          // Process the sync item using the real API client
-          await this.processItem(item);
-        } catch (err) {
-          console.error('Failed to sync item, leaving in queue:', item, err);
-          newQueue.push(item);
-        }
-      }
-      
-      await this.saveQueue(newQueue);
-    } finally {
-      this.isSyncing = false;
-    }
+    // PowerSync natively handles synchronization.
+    // We clear the redundant custom syncQueue to prevent double-insertion crashes.
+    await set(this.queueKey, []);
   }
 
   async processItem(item) {
+    return;
     const { supabase } = await import('@/api/supabaseClient');
     const { action, payload, endpoint } = item;
     
