@@ -209,7 +209,7 @@ export default function UnivDataGrid({
       if (targetTable === 'industry_records') {
         query = query.eq('industry', 'orbit_build_data').eq('record_type', effectivePageName);
       }
-      const { data, error } = await query.order('created_at', { ascending: false });
+      const { data, error } = await query.order('created_date', { ascending: false });
       if (error && error.code !== '42P01') throw error;
       return data || [];
     },
@@ -230,7 +230,7 @@ export default function UnivDataGrid({
     ];
     const firstRow = displayData[0];
     const keys = Object.keys(firstRow).filter(k =>
-      k !== 'id' && k !== 'company_id' && k !== 'created_at' && k !== 'updated_at' &&
+      k !== 'id' && k !== 'company_id' && k !== 'created_date' && k !== 'updated_date' &&
       typeof firstRow[k] !== 'object'
     );
     return keys.slice(0, 8).map(k => ({

@@ -82,13 +82,13 @@ export default function DynamicCalendarView({ data = [], fieldDefinitions = [], 
           }
         }
       });
-      // Also use created_at as fallback if no date fields
-      if (dateFields.length === 0 && record.created_at) {
+      // Also use created_date as fallback if no date fields
+      if (dateFields.length === 0 && record.created_date) {
         try {
-          const d = new Date(record.created_at);
+          const d = new Date(record.created_date);
           const key = format(d, 'yyyy-MM-dd');
           if (!map[key]) map[key] = [];
-          map[key].push({ record, fieldName: 'created_at', colorIdx: 0 });
+          map[key].push({ record, fieldName: 'created_date', colorIdx: 0 });
         } catch {
           // skip
         }
@@ -395,7 +395,7 @@ export default function DynamicCalendarView({ data = [], fieldDefinitions = [], 
                   </span>
                 </div>
               ))}
-              <p className="text-[11px] text-muted-foreground pt-2">Created: {new Date(viewRecord.created_at).toLocaleString()}</p>
+              <p className="text-[11px] text-muted-foreground pt-2">Created: {new Date(viewRecord.created_date).toLocaleString()}</p>
             </div>
           )}
           <DialogFooter className="mt-4">

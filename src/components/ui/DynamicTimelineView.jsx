@@ -58,8 +58,8 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
 
   const sortedData = useMemo(() => {
     const sorted = [...data].sort((a, b) => {
-      const dateA = new Date(a.created_at || 0).getTime();
-      const dateB = new Date(b.created_at || 0).getTime();
+      const dateA = new Date(a.created_date || 0).getTime();
+      const dateB = new Date(b.created_date || 0).getTime();
       return sortAsc ? dateA - dateB : dateB - dateA;
     });
     return sorted;
@@ -69,8 +69,8 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
   const groupedData = useMemo(() => {
     const groups = {};
     sortedData.forEach((record) => {
-      const dateKey = record.created_at
-        ? format(new Date(record.created_at), 'yyyy-MM-dd')
+      const dateKey = record.created_date
+        ? format(new Date(record.created_date), 'yyyy-MM-dd')
         : 'Unknown';
       if (!groups[dateKey]) groups[dateKey] = [];
       groups[dateKey].push(record);
@@ -211,7 +211,7 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
                           <div className="flex items-center justify-end h-full pt-4">
                             <span className="text-xs text-muted-foreground font-medium flex items-center gap-1.5">
                               <Clock className="w-3 h-3" />
-                              {record.created_at ? format(new Date(record.created_at), 'h:mm a') : ''}
+                              {record.created_date ? format(new Date(record.created_date), 'h:mm a') : ''}
                             </span>
                           </div>
                         )}
@@ -241,7 +241,7 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
                           <div className="flex items-center h-full pt-4">
                             <span className="text-xs text-muted-foreground font-medium flex items-center gap-1.5">
                               <Clock className="w-3 h-3" />
-                              {record.created_at ? format(new Date(record.created_at), 'h:mm a') : ''}
+                              {record.created_date ? format(new Date(record.created_date), 'h:mm a') : ''}
                             </span>
                           </div>
                         )}
@@ -301,7 +301,7 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
                   </span>
                 </div>
               ))}
-              <p className="text-[11px] text-muted-foreground pt-2">Created: {new Date(viewRecord.created_at).toLocaleString()}</p>
+              <p className="text-[11px] text-muted-foreground pt-2">Created: {new Date(viewRecord.created_date).toLocaleString()}</p>
             </div>
           )}
           <DialogFooter className="mt-4">
@@ -445,7 +445,7 @@ function TimelineCard({ record, fieldDefinitions, colorSet, onView, onEdit, onDe
         {/* Timestamp */}
         <div className="mt-3 pt-2 border-t border-border flex items-center gap-1.5 text-[10px] text-muted-foreground">
           <Clock className="w-3 h-3" />
-          {record.created_at ? format(new Date(record.created_at), 'MMM d, yyyy · h:mm a') : 'Unknown'}
+          {record.created_date ? format(new Date(record.created_date), 'MMM d, yyyy · h:mm a') : 'Unknown'}
         </div>
       </div>
     </div>

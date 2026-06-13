@@ -120,7 +120,7 @@ export default function Marketplace() {
           is_required: f.is_required,
           options: f.options,
           order_index: f.order_index,
-          created_at: new Date().toISOString()
+          created_date: new Date().toISOString()
         }));
         const { error: fieldsError } = await (async () => { let _p = fieldsToInsert; if (Array.isArray(_p)) _p = _p[0]; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' ? JSON.stringify(v) : v); const _pl = _k.map(()=>'?').join(', '); await powerSync.execute(`INSERT INTO field_definitions (${_k.join(', ')}) VALUES (${_pl})`, _v); })();
         if (fieldsError) throw fieldsError;

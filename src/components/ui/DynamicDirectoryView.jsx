@@ -369,7 +369,7 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
                     );
                   })}
                   <p className="text-[11px] text-muted-foreground pt-2">
-                    Added {selectedRecord.created_at ? format(new Date(selectedRecord.created_at), 'MMM d, yyyy') : 'Unknown'}
+                    Added {selectedRecord.created_date ? format(new Date(selectedRecord.created_date), 'MMM d, yyyy') : 'Unknown'}
                   </p>
                 </div>
                 <DialogFooter className="mt-4">

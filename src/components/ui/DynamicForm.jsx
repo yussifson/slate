@@ -32,7 +32,7 @@ export default function DynamicForm({ moduleDef, fieldDefinitions = [], onSucces
         module_id: moduleDef.id,
         company_id: user?.company_id || moduleDef.company_id,
         data: data,
-        created_at: new Date().toISOString()
+        created_date: new Date().toISOString()
       };
 
             const error = await (async () => {

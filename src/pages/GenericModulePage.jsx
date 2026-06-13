@@ -95,7 +95,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
         .from('dynamic_records')
         .select('*')
         .eq('module_id', mod.id)
-        .order('created_at', { ascending: false });
+        .order('created_date', { ascending: false });
       const parsedRecords = (recs || []).map(r => ({ ...r, data: typeof r.data === 'string' ? JSON.parse(r.data || '{}') : (r.data || {}) }));
       setRecords(parsedRecords);
     } catch (err) {
@@ -154,7 +154,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
               config: moduleDef.config,
               status: 'draft',
               is_active: 'true',
-              created_at: new Date().toISOString()
+              created_date: new Date().toISOString()
             };
         const _k = Object.keys(_p);
         const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
@@ -172,7 +172,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
               is_required: f.is_required,
               options: f.options,
               order_index: f.order_index,
-              created_at: new Date().toISOString()
+              created_date: new Date().toISOString()
             }));
             if (newFields.length > 0) {
               await (async () => { let _p = newFields; if (Array.isArray(_p)) _p = _p[0]; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' ? JSON.stringify(v) : v); const _pl = _k.map(()=>'?').join(', '); await powerSync.execute(`INSERT INTO field_definitions (${_k.join(', ')}) VALUES (${_pl})`, _v); })();

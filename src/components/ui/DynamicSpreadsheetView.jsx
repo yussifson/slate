@@ -462,7 +462,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
                     })}
                     {/* Created at */}
                     <td className="px-4 py-2 text-xs text-muted-foreground whitespace-nowrap">
-                      {record.created_at ? format(new Date(record.created_at), 'MMM d, yyyy') : '-'}
+                      {record.created_date ? format(new Date(record.created_date), 'MMM d, yyyy') : '-'}
                     </td>
                   </tr>
                 );
