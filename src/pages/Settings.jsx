@@ -144,13 +144,16 @@ export default function Settings() {
                       <button
                         key={s.id}
                         onClick={() => setActiveSection(s.id)}
-                        className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl transition-colors text-sm font-medium ${
+                        className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-300 text-sm font-semibold relative overflow-hidden group ${
                           isActive 
-                            ? "bg-foreground text-background shadow-md" 
+                            ? "text-primary bg-primary/10 shadow-sm" 
                             : "text-foreground/70 hover:bg-muted hover:text-foreground"
                         }`}
                       >
-                        <IconComp className={`w-4 h-4 ${isActive ? 'text-background' : 'text-muted-foreground'}`} />
+                        {isActive && (
+                          <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-r-full" />
+                        )}
+                        <IconComp className={`w-4 h-4 transition-colors ${isActive ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'}`} />
                         {s.label}
                       </button>
                     );
