@@ -344,7 +344,7 @@ function TemplatesPanel({ companyId }) {
     if (form.steps.some(s => !s.stepName.trim())) return toast.error('All step names are required');
     setSaving(true);
     await (async () => {
-      const _p = { company_id: companyId, name: form.name.trim(), steps: form.steps, created_at: new Date().toISOString() };
+      const _p = { id: crypto.randomUUID(), company_id: companyId, name: form.name.trim(), steps: form.steps, created_at: new Date().toISOString() };
       const _k = Object.keys(_p);
       const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
       await powerSync.execute(`INSERT INTO TEMPLATES_TABLE (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v);

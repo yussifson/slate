@@ -43,11 +43,11 @@ export default function UnivSeoKeyword() {
 
   const handleSave = async () => {
     if (editingId) {
-      await (async () => { const _p = { ...formData, company_id: companyId }; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_seokeyword SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingId]); })();
+      await (async () => { const _p = { ...formData, id: crypto.randomUUID(), company_id: companyId }; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_seokeyword SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingId]); })();
       const error = null; const data = [];
     } else {
       await (async () => {
-        const _p = { ...formData, company_id: companyId };
+        const _p = { ...formData, id: crypto.randomUUID(), company_id: companyId };
         const _k = Object.keys(_p);
         const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
         const _pl = _k.map(()=>'?').join(', ');

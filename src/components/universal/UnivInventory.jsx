@@ -64,7 +64,7 @@ export default function UnivInventory() {
         toast.success('Item updated!');
       } else {
         await (async () => {
-          const _p = { ...payload, company_id: companyId, sku: form.sku || `SKU-${Math.floor(Math.random()*10000)}` };
+          const _p = { ...payload, id: crypto.randomUUID(), company_id: companyId, sku: form.sku || `SKU-${Math.floor(Math.random()*10000)}` };
           delete _p.status;
           const _k = Object.keys(_p);
           const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);

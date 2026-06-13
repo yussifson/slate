@@ -54,7 +54,7 @@ const UnivTicketSales = () => {
     e.preventDefault();
     try {
       const { error } = await (async () => {
-        const _p = { ...formData, quantity_sold: 0 };
+        const _p = { ...formData, quantity_sold: 0, id: crypto.randomUUID() };
         const _k = Object.keys(_p);
         const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
         const _pl = _k.map(()=>'?').join(', ');

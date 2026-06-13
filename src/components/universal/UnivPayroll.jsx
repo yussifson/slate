@@ -70,7 +70,7 @@ export default function UnivPayroll() {
         toast.success('Payroll updated!');
       } else {
         const { error } = await (async () => {
-        const _p = { ...payload, company_id: companyId };
+        const _p = { ...payload, id: crypto.randomUUID(), company_id: companyId };
         const _k = Object.keys(_p);
         const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
         const _pl = _k.map(()=>'?').join(', ');

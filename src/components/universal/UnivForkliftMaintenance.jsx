@@ -49,12 +49,12 @@ const UnivForkliftMaintenance = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (editId) {
-      await (async () => { const _p = { ...formData, company_id: companyId }; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE  SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editId]); })();
+      await (async () => { const _p = { ...formData, id: crypto.randomUUID(), company_id: companyId }; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE  SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editId]); })();
       const error = null; const data = [];
       if (error) console.error('Error updating:', error);
     } else {
       const { error } = await (async () => {
-        const _p = { ...formData, company_id: companyId };
+        const _p = { ...formData, id: crypto.randomUUID(), company_id: companyId };
         const _k = Object.keys(_p);
         const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
         const _pl = _k.map(()=>'?').join(', ');

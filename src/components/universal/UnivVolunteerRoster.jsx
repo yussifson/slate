@@ -43,7 +43,7 @@ export default function UnivVolunteerRoster() {
   const handleSave = async () => {
     setLoading(true);
     const { error } = await (async () => {
-        const _p = { ...formData, company_id: companyId };
+        const _p = { ...formData, id: crypto.randomUUID(), company_id: companyId };
         const _k = Object.keys(_p);
         const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
         const _pl = _k.map(()=>'?').join(', ');
