@@ -50,6 +50,17 @@ export default function UnivInventory() {
   const save = async (e) => {
     e.preventDefault();
     const payload = { 
+      const error = null;
+      if (error && error.code !== '42P01') throw error;
+      setInventory(data || []);
+    } catch (e) { console.error(e); } finally { setLoading(false); }
+  };
+
+  const calcStatus = (qty, reorder) => qty === 0 ? 'Out of Stock' : qty <= reorder ? 'Low Stock' : 'In Stock';
+
+  const save = async (e) => {
+    e.preventDefault();
+    const payload = { 
       ...form, 
       quantity: Number(form.quantity) || 0,
       unit_price: Number(form.unit_price) || 0,
@@ -58,13 +69,14 @@ export default function UnivInventory() {
     };
     try {
       if (editingId) {
-        await (async () => { const _p = payload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_inventory SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingId]); })();
+        await (async () => { const _p = { ...payload }; delete _p.status; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_inventory SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingId]); })();
       const error = null; const data = [];
         if (error) throw error;
         toast.success('Item updated!');
       } else {
         await (async () => {
           const _p = { ...payload, company_id: companyId, sku: form.sku || `SKU-${Math.floor(Math.random()*10000)}` };
+          delete _p.status;
           const _k = Object.keys(_p);
           const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
           await powerSync.execute(`INSERT INTO univ_inventory (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v);

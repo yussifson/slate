@@ -108,8 +108,12 @@ export const AuthProvider = ({ children }) => {
       
       // FALLBACK TO SUPABASE FOR MISSING COLUMNS
       if (profile) {
-          const { data: supaProfile } = await supabase.from('profiles').select('*').eq('id', profile.id).maybeSingle();
-          if (supaProfile) profile = { ...profile, ...supaProfile };
+          try {
+              const { data: supaProfile } = await supabase.from('profiles').select('*').eq('id', profile.id).maybeSingle();
+              if (supaProfile) profile = { ...profile, ...supaProfile };
+          } catch (e) {
+              console.warn('[AuthContext] Offline: Using local profile cache only');
+          }
       }
 
       // Save transferred config to local storage using the correct company ID
@@ -127,11 +131,17 @@ export const AuthProvider = ({ children }) => {
       }
 
       setAuthStep("Checking invite/staff records...");
-      let { data: staffRecord } = await supabase
-        .from('staff_records')
-        .select('*')
-        .ilike('user_email', sessionUser.email)
-        .maybeSingle();
+      let staffRecord = null;
+      try {
+        const res = await supabase
+          .from('staff_records')
+          .select('*')
+          .ilike('user_email', sessionUser.email)
+          .maybeSingle();
+        staffRecord = res.data;
+      } catch (e) {
+          console.warn('[AuthContext] Offline: Cannot check fresh staff_records');
+      }
 
       if (staffRecord) {
         // Fetch company name to copy to the profile
