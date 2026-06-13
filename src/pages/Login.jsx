@@ -56,33 +56,31 @@ export default function Login() {
       if (currentSubdomain) {
         try {
           // Use RPC to bypass RLS securely for public branding info
-          const { data, error } = await supabase.rpc('get_company_by_subdomain', { p_subdomain: currentSubdomain });
+          let brandData = null;
+          const { data: rpcData, error: rpcError } = await supabase.rpc('get_company_by_subdomain', { p_subdomain: currentSubdomain });
           
-          if (error) {
-             console.error("Could not fetch branding via RPC", error);
-             // Fallback to table query if RPC is not created yet (for development)
-             const { data: tableData, error: tableError } = await powerSync.execute('SELECT name, logo_url FROM companies WHERE subdomain = ? LIMIT 1', [currentSubdomain]).then(res => ({ data: res.rows._array[0] }));
-             if (tableData) {
-               setBranding({ name: tableData.name || 'Slate', logo_url: tableData.logo_url, tagline: `Sign in to ${tableData.name || 'your workslate'}` });
-             } else if (tableError) {
-               console.error("Table fallback error:", tableError);
-               setInvalidSubdomain(true);
+          if (rpcError) {
+             console.log("RPC failed, trying direct table query...");
+             const { data: directData } = await supabase.from('companies').select('name, logo_url').eq('subdomain', currentSubdomain).maybeSingle();
+             
+             if (directData) {
+                 brandData = directData;
+             } else {
+                 const { data: tableData } = await powerSync.execute('SELECT name, logo_url FROM companies WHERE subdomain = ? LIMIT 1', [currentSubdomain]).then(res => ({ data: res.rows._array[0] || null })).catch(() => ({ data: null }));
+                 brandData = tableData;
              }
-          } else if (data) {
-            // Handle both object and array responses (depending on how the RPC was created)
-            const brandData = Array.isArray(data) ? data[0] : data;
-            if (brandData && brandData.name) {
+          } else {
+             brandData = Array.isArray(rpcData) ? rpcData[0] : rpcData;
+          }
+
+          if (brandData && brandData.name) {
               setBranding({
                 name: brandData.name || 'Slate',
                 logo_url: brandData.logo_url,
                 tagline: `Sign in to ${brandData.name || 'your workslate'}`
               });
-            } else {
-              setInvalidSubdomain(true);
-            }
           } else {
-             // RPC succeeded but returned null/empty
-             setInvalidSubdomain(true);
+              setInvalidSubdomain(true);
           }
         } catch (err) {
           console.error("Could not fetch branding", err);

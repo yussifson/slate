@@ -231,15 +231,15 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema }) {
       setActiveSession(s);
       setSessions(prev => prev.map(p => p.id === s.id ? s : p));
       saveSession(s);
-      
     } catch (err) {
       console.error(err);
-      toast.error("Failed to generate module: " + err.message);
       const errorMsg = { role: 'assistant', content: "Sorry, I ran into an error building that. Please try rephrasing." };
       s = { ...s, messages: [...updatedMsgs, errorMsg] };
       setActiveSession(s);
       setSessions(prev => prev.map(p => p.id === s.id ? s : p));
-      })();
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const handleSend = async (e) => {

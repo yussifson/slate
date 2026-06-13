@@ -301,11 +301,17 @@ export const AuthProvider = ({ children }) => {
                 tComp = Array.isArray(targetCompany) ? targetCompany[0] : targetCompany;
                 targetCompanyId = tComp?.id;
              } else {
-                // fallback if RPC fails
-                const { data: tCompData } = await powerSync.execute('SELECT * FROM companies WHERE subdomain = ?', [currentSubdomain]).then(res => ({ data: res.rows._array })).maybeSingle();
-                if (tCompData) {
-                   tComp = tCompData;
-                   targetCompanyId = tCompData.id;
+                console.log("RPC failed for targetCompany, trying direct table query...");
+                const { data: directComp } = await supabase.from('companies').select('*').eq('subdomain', currentSubdomain).maybeSingle();
+                if (directComp) {
+                   tComp = directComp;
+                   targetCompanyId = directComp.id;
+                } else {
+                   const { data: tCompData } = await powerSync.execute('SELECT * FROM companies WHERE subdomain = ?', [currentSubdomain]).then(res => ({ data: res.rows._array[0] || null })).catch(()=>({data:null}));
+                   if (tCompData) {
+                      tComp = tCompData;
+                      targetCompanyId = tCompData.id;
+                   }
                 }
              }
 
@@ -420,7 +426,7 @@ export const AuthProvider = ({ children }) => {
       const newUser = { 
         ...sessionUser, 
         ...profile, 
-        role: staffRecord?.role || profile?.role || 'lawyer',
+        role: ['super_admin', 'admin'].includes(profile?.role) ? profile.role : (staffRecord?.role || profile?.role || 'lawyer'),
         company_logo_url: companyData?.logo_url || null,
         company_name: companyData?.name || profile?.company_name || sessionUser.user_metadata?.company_name || "Slate",
         company_industry: companyData?.industry_type || 'law',
