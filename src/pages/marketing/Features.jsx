@@ -20,7 +20,7 @@ export default function Features() {
       ],
       icon: Briefcase,
       align: "left",
-      image: "/images/project_management_ui.png"
+      image: "/images/project_management_ui.png?v=2"
     },
     {
       badge: "Secure Client Portal",
@@ -35,7 +35,7 @@ export default function Features() {
       ],
       icon: Users,
       align: "right",
-      image: "/images/client_portal_ui.png"
+      image: "/images/client_portal_ui.png?v=2"
     },
     {
       badge: "Time & Billing",
@@ -50,7 +50,7 @@ export default function Features() {
       ],
       icon: CreditCard,
       align: "left",
-      image: "/images/billing_ui.png"
+      image: "/images/billing_ui.png?v=2"
     },
     {
       badge: "Offline First",
@@ -65,7 +65,7 @@ export default function Features() {
       ],
       icon: Clock,
       align: "right",
-      image: "/images/offline_feature_ui.png"
+      image: "/images/offline_feature_ui.png?v=2"
     },
     {
       badge: "Ecosystem Integrations",
@@ -80,7 +80,7 @@ export default function Features() {
       ],
       icon: Briefcase,
       align: "left",
-      image: "/images/integrations_ui.png"
+      image: "/images/integrations_ui.png?v=2"
     },
     {
       badge: "Orbit AI Assistant",
@@ -95,7 +95,7 @@ export default function Features() {
       ],
       icon: Briefcase,
       align: "right",
-      image: "/images/orbit_dashboard_mockup.png"
+      image: "/images/orbit_dashboard_mockup.png?v=2"
     },
     {
       badge: "Spotlight Search",
@@ -110,7 +110,7 @@ export default function Features() {
       ],
       icon: Briefcase,
       align: "left",
-      image: "/images/spotlight_search_ui.png"
+      image: "/images/spotlight_search_ui.png?v=2"
     },
     {
       badge: "Global Localization",
@@ -125,7 +125,7 @@ export default function Features() {
       ],
       icon: Globe,
       align: "right",
-      image: "/images/internationalization_ui.png"
+      image: "/images/internationalization_ui.png?v=2"
     },
     {
       badge: "AI WorkSlate Generation",
@@ -140,7 +140,7 @@ export default function Features() {
       ],
       icon: Sparkles,
       align: "left",
-      image: "/images/dynamic_modules_ui.png"
+      image: "/images/dynamic_modules_ui.png?v=2"
     },
   ];
 
@@ -188,7 +188,7 @@ export default function Features() {
         </div>
       </section>
       {/* ── Feature Deep Dives ── */}
-      <section className="py-20 md:py-28 bg-white">
+      <section className="py-20 md:py-28 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-28 lg:space-y-32">
           {deepDives.map((feature, index) => {
             const Icon = feature.icon;
