@@ -4,7 +4,9 @@ export const AppSchema = new Schema({
     audit_logs: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         user_email: column.text,
@@ -20,7 +22,9 @@ export const AppSchema = new Schema({
     case_emails: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         subject: column.text,
@@ -39,7 +43,9 @@ export const AppSchema = new Schema({
     case_messages: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         case_id: column.text,
@@ -53,7 +59,9 @@ export const AppSchema = new Schema({
     case_outcomes: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         case_id: column.text,
@@ -74,7 +82,9 @@ export const AppSchema = new Schema({
     case_pipelines: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         name: column.text,
@@ -85,7 +95,9 @@ export const AppSchema = new Schema({
     case_pipeline_states: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         case_id: column.text,
@@ -100,7 +112,9 @@ export const AppSchema = new Schema({
     clients: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         type: column.text,
@@ -119,7 +133,9 @@ export const AppSchema = new Schema({
     client_checklists: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         client_id: column.text,
@@ -140,7 +156,9 @@ export const AppSchema = new Schema({
     client_messages: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         case_id: column.text,
@@ -155,7 +173,9 @@ export const AppSchema = new Schema({
     companies: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         name: column.text,
         subdomain: column.text,
@@ -184,7 +204,9 @@ export const AppSchema = new Schema({
     documents: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         name: column.text,
@@ -205,7 +227,9 @@ export const AppSchema = new Schema({
     expenses: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         case_id: column.text,
@@ -229,7 +253,9 @@ export const AppSchema = new Schema({
     firm_settings: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         custom_case_types: column.text,
@@ -241,7 +267,9 @@ export const AppSchema = new Schema({
     hearings: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         case_id: column.text,
@@ -261,7 +289,9 @@ export const AppSchema = new Schema({
     h_r_complaints: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         staff_email: column.text,
@@ -281,7 +311,9 @@ export const AppSchema = new Schema({
     invoices: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         invoice_number: column.text,
@@ -304,7 +336,9 @@ export const AppSchema = new Schema({
     leads: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         full_name: column.text,
@@ -323,7 +357,9 @@ export const AppSchema = new Schema({
     leave_requests: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         staff_id: column.text,
@@ -342,7 +378,9 @@ export const AppSchema = new Schema({
     legal_cases: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         case_number: column.text,
@@ -367,7 +405,9 @@ export const AppSchema = new Schema({
     linked_emails: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         subject: column.text,
@@ -388,7 +428,9 @@ export const AppSchema = new Schema({
     notifications: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         recipient_email: column.text,
@@ -403,7 +445,9 @@ export const AppSchema = new Schema({
     payroll_slips: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         staff_email: column.text,
@@ -428,7 +472,9 @@ export const AppSchema = new Schema({
     promotions: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         staff_email: column.text,
@@ -447,7 +493,9 @@ export const AppSchema = new Schema({
     retainers: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         case_id: column.text,
@@ -466,7 +514,9 @@ export const AppSchema = new Schema({
     signature_requests: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         document_id: column.text,
@@ -491,7 +541,9 @@ export const AppSchema = new Schema({
     staff_permissions: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         staff_id: column.text,
@@ -519,7 +571,9 @@ export const AppSchema = new Schema({
     staff_records: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         user_email: column.text,
@@ -537,7 +591,9 @@ export const AppSchema = new Schema({
     module_definitions: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         name: column.text,
@@ -551,6 +607,7 @@ export const AppSchema = new Schema({
     field_definitions: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         company_id: column.text,
         module_id: column.text,
         name: column.text,
@@ -562,7 +619,9 @@ export const AppSchema = new Schema({
     dynamic_records: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         module_id: column.text,
@@ -574,7 +633,9 @@ export const AppSchema = new Schema({
     subscription_invoices: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         company_name: column.text,
@@ -594,7 +655,9 @@ export const AppSchema = new Schema({
     tasks: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         title: column.text,
@@ -613,7 +676,9 @@ export const AppSchema = new Schema({
     time_entries: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         case_id: column.text,
@@ -649,7 +714,9 @@ export const AppSchema = new Schema({
     profiles: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         role: column.text,
         company_id: column.text,
@@ -666,7 +733,9 @@ export const AppSchema = new Schema({
     school_students: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         type: column.text,
@@ -685,7 +754,9 @@ export const AppSchema = new Schema({
     school_classes: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         case_number: column.text,
@@ -706,7 +777,9 @@ export const AppSchema = new Schema({
     school_sessions: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         case_id: column.text,
@@ -724,7 +797,9 @@ export const AppSchema = new Schema({
     hospital_patients: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         type: column.text,
@@ -743,7 +818,9 @@ export const AppSchema = new Schema({
     hospital_admissions: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         case_number: column.text,
@@ -764,7 +841,9 @@ export const AppSchema = new Schema({
     hospital_appointments: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         case_id: column.text,
@@ -782,7 +861,9 @@ export const AppSchema = new Schema({
     hotel_guests: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         type: column.text,
@@ -801,7 +882,9 @@ export const AppSchema = new Schema({
     hotel_bookings: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         case_number: column.text,
@@ -822,7 +905,9 @@ export const AppSchema = new Schema({
     hotel_reservations: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         case_id: column.text,
@@ -840,7 +925,9 @@ export const AppSchema = new Schema({
     religion_members: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         type: column.text,
@@ -859,7 +946,9 @@ export const AppSchema = new Schema({
     religion_groups: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         case_number: column.text,
@@ -880,7 +969,9 @@ export const AppSchema = new Schema({
     religion_events: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         case_id: column.text,
@@ -898,7 +989,9 @@ export const AppSchema = new Schema({
     insurance_policyholders: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         type: column.text,
@@ -917,7 +1010,9 @@ export const AppSchema = new Schema({
     insurance_claims: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         case_number: column.text,
@@ -938,7 +1033,9 @@ export const AppSchema = new Schema({
     insurance_meetings: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         case_id: column.text,
@@ -956,7 +1053,9 @@ export const AppSchema = new Schema({
     retail_customers: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         type: column.text,
@@ -975,7 +1074,9 @@ export const AppSchema = new Schema({
     retail_orders: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         case_number: column.text,
@@ -996,7 +1097,9 @@ export const AppSchema = new Schema({
     retail_shifts: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         case_id: column.text,
@@ -1014,7 +1117,9 @@ export const AppSchema = new Schema({
     logistics_shippers: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         type: column.text,
@@ -1033,7 +1138,9 @@ export const AppSchema = new Schema({
     logistics_shipments: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         case_number: column.text,
@@ -1054,7 +1161,9 @@ export const AppSchema = new Schema({
     logistics_dispatches: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         case_id: column.text,
@@ -1072,7 +1181,9 @@ export const AppSchema = new Schema({
     hr_employees: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         type: column.text,
@@ -1091,7 +1202,9 @@ export const AppSchema = new Schema({
     hr_projects: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         case_number: column.text,
@@ -1112,7 +1225,9 @@ export const AppSchema = new Schema({
     hr_interviews: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         case_id: column.text,
@@ -1130,7 +1245,9 @@ export const AppSchema = new Schema({
     online_courses: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         title: column.text,
@@ -1153,7 +1270,9 @@ export const AppSchema = new Schema({
     online_lessons: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         course_id: column.text,
@@ -1169,7 +1288,9 @@ export const AppSchema = new Schema({
     online_enrollments: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         course_id: column.text,
@@ -1186,7 +1307,9 @@ export const AppSchema = new Schema({
     online_assessments: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         course_id: column.text,
@@ -1200,7 +1323,9 @@ export const AppSchema = new Schema({
     online_certificates: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         created_by: column.text,
         company_id: column.text,
         enrollment_id: column.text,
@@ -1222,12 +1347,16 @@ export const AppSchema = new Schema({
         expires_at: column.text,
         status: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
     }),
     chat_rooms: new Table({
         id: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
         room_type: column.text,
         name: column.text,
         description: column.text,
@@ -1250,7 +1379,9 @@ export const AppSchema = new Schema({
         is_edited: column.text,
         is_deleted: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
     }),
     video_rooms: new Table({
         id: column.text,
@@ -1264,6 +1395,7 @@ export const AppSchema = new Schema({
         started_at: column.text,
         ended_at: column.text,
         created_at: column.text,
+        created_date: column.text,
     }),
     subscription_plans: new Table({
         id: column.text,
@@ -1275,7 +1407,9 @@ export const AppSchema = new Schema({
         limits: column.text,
         is_active: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
     }),
     company_subscriptions: new Table({
         id: column.text,
@@ -1287,7 +1421,9 @@ export const AppSchema = new Schema({
         current_period_end: column.text,
         cancel_at_period_end: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
     }),
     usage_metrics: new Table({
         id: column.text,
@@ -1297,7 +1433,9 @@ export const AppSchema = new Schema({
         period_start: column.text,
         period_end: column.text,
         created_at: column.text,
+        created_date: column.text,
         updated_at: column.text,
+        updated_date: column.text,
     }),
     billing_transactions: new Table({
         id: column.text,
@@ -1310,6 +1448,7 @@ export const AppSchema = new Schema({
         description: column.text,
         paid_at: column.text,
         created_at: column.text,
+        created_date: column.text,
     }),
 
     // --- UNIVERSAL MODULE TABLES ---
