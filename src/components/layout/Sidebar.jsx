@@ -294,7 +294,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed }) {
     if (isAdmin) return true;
     if (!allowedPaths) return true;
     return allowedPaths.includes(item.path);
-  });
+  }));
 
   const { data: customPages = [] } = useQuery({
     queryKey: ['custom_pages', companyId],
