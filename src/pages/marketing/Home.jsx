@@ -1,3 +1,4 @@
+import confetti from "canvas-confetti";
 import { useTranslation } from "react-i18next";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
@@ -490,8 +491,11 @@ const suites = [
 /* ------------------------------------------------------------------ */
 export default function Home() {
   const { t } = useTranslation();
+  
   const [aiPrompt, setAiPrompt] = useState("");
   const [showFirmAlert, setShowFirmAlert] = useState(false);
+  const [orbitStage, setOrbitStage] = useState("idle");
+  const [progressMsg, setProgressMsg] = useState("");
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -504,17 +508,36 @@ export default function Home() {
       return;
     }
 
+    setOrbitStage("building");
+    const msgs = [
+      "Analyzing industry requirements...", 
+      "Synthesizing universal components...", 
+      "Structuring dynamic database...", 
+      "Finalizing your workspace..."
+    ];
+    let i = 0;
+    setProgressMsg(msgs[0]);
+    const intv = setInterval(() => {
+       i++;
+       if (i < msgs.length) {
+          setProgressMsg(msgs[i]);
+       } else {
+          clearInterval(intv);
+          setOrbitStage("success");
+          confetti({ particleCount: 150, spread: 80, origin: { y: 0.5 } });
+       }
+    }, 1500);
+  };
+
+  const handleAccessWorkspace = () => {
     localStorage.setItem("pendingOrbitPrompt", aiPrompt);
-    
     if (user) {
       navigate("/onboarding");
     } else {
       navigate("/signup");
     }
   };
-
-
-  return (
+return (
     <div className="overflow-x-hidden">
       <Helmet>
         <title>Slate - The Ultimate AI Workslate</title>
@@ -562,41 +585,88 @@ export default function Home() {
             </p>
           </FadeIn>
 
+          
           {/* AI Input Box */}
           <FadeIn delay="delay-250">
-            <div className="max-w-2xl mx-auto mb-10 relative z-20">
-              <form onSubmit={handleAiSubmit} className="relative group">
-                <div className="absolute -inset-1 bg-gradient-to-r from-emerald-400 to-orange-400 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-                <div className="relative flex items-center bg-white border-2 border-slate-100 hover:border-emerald-100 rounded-2xl p-2 shadow-lg transition-all">
-                  <div className="pl-4 pr-2 text-slate-400 flex-shrink-0">
-                    <Sparkles className="w-6 h-6 text-emerald-500" />
+            <div className="max-w-3xl mx-auto mb-10 relative z-20">
+              
+              {orbitStage === "idle" && (
+                <form onSubmit={handleAiSubmit} className="relative group flex flex-col items-center">
+                  <div className="w-full relative">
+                    <div className="absolute -inset-1 bg-gradient-to-r from-emerald-400 to-orange-400 rounded-3xl blur opacity-30 group-hover:opacity-60 transition duration-1000 group-hover:duration-200"></div>
+                    <div className="relative bg-white border border-slate-100 hover:border-emerald-100 rounded-3xl p-6 shadow-2xl transition-all text-left flex flex-col">
+                      <div className="flex items-center gap-2 mb-4">
+                        <Sparkles className="w-6 h-6 text-emerald-500" />
+                        <span className="font-bold text-slate-700 text-lg">Orbit AI Builder</span>
+                      </div>
+                      <textarea
+                        value={aiPrompt}
+                        onChange={(e) => {
+                           setAiPrompt(e.target.value);
+                           setShowFirmAlert(false);
+                        }}
+                        placeholder="Can't find your industry template? Describe your dream workspace... (e.g. I need a CRM for my logistics company to manage delivery drivers and track client invoices.)"
+                        className="w-full h-32 bg-slate-50/50 rounded-2xl p-4 text-slate-800 placeholder-slate-400 font-medium text-lg border border-slate-100 focus:border-emerald-300 focus:ring-4 focus:ring-emerald-500/10 outline-none resize-none transition-all"
+                      />
+                      <div className="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest hidden sm:block">Powered by Optavel Engine</span>
+                        <button
+                          type="submit"
+                          disabled={!aiPrompt.trim()}
+                          className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white px-10 py-4 rounded-xl font-black flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0"
+                        >
+                          Build with Orbit
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                  <input
-                    type="text"
-                    value={aiPrompt}
-                    onChange={(e) => {
-                       setAiPrompt(e.target.value);
-                       setShowFirmAlert(false);
-                    }}
-                    placeholder="Can't find your industry template? Describe your dream workspace..."
-                    className="flex-1 bg-transparent border-none outline-none text-slate-700 placeholder-slate-400 font-medium text-base sm:text-lg w-full"
-                  />
-                  <button
-                    type="submit"
-                    className="ml-2 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-md transition-all flex-shrink-0"
-                  >
-                    Build <span className="hidden sm:inline">with Orbit AI</span>
-                  </button>
+                </form>
+              )}
+
+              {orbitStage === "building" && (
+                <div className="w-full relative">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-emerald-400 to-orange-400 rounded-3xl blur opacity-40 animate-pulse"></div>
+                  <div className="relative bg-white rounded-3xl p-12 shadow-2xl border border-slate-100 flex flex-col items-center justify-center min-h-[300px]">
+                    <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mb-6">
+                      <Sparkles className="w-8 h-8 text-emerald-500 animate-spin-slow" />
+                    </div>
+                    <div className="w-full max-w-md h-2 bg-slate-100 rounded-full overflow-hidden mb-4">
+                      <div className="h-full bg-gradient-to-r from-emerald-500 to-orange-400 rounded-full animate-progress" style={{width: '60%', animation: 'progress 6s ease-in-out forwards'}}></div>
+                    </div>
+                    <h3 className="font-bold text-slate-800 text-xl">{progressMsg}</h3>
+                    <p className="text-sm text-slate-500 font-medium mt-2">Please wait while Orbit constructs your platform...</p>
+                  </div>
                 </div>
-              </form>
+              )}
+
+              {orbitStage === "success" && (
+                <div className="w-full relative">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-3xl blur opacity-20"></div>
+                  <div className="relative bg-white rounded-3xl p-12 shadow-2xl border border-emerald-100 flex flex-col items-center justify-center min-h-[300px]">
+                    <div className="w-20 h-20 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center text-white mb-6 shadow-lg shadow-emerald-500/30 transform scale-110">
+                      <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    </div>
+                    <h3 className="text-3xl font-black text-slate-900 mb-3 tracking-tight">Workspace Assembled!</h3>
+                    <p className="text-slate-500 font-medium text-lg mb-8 text-center max-w-md">Your custom Slate environment has been pre-configured by Orbit AI.</p>
+                    <button
+                      onClick={handleAccessWorkspace}
+                      className="bg-slate-900 hover:bg-slate-800 text-white px-12 py-5 rounded-2xl font-black flex items-center justify-center gap-3 shadow-2xl hover:-translate-y-1 transition-all text-lg w-full sm:w-auto"
+                    >
+                      Access Your Workspace <ArrowRight className="w-6 h-6" />
+                    </button>
+                  </div>
+                </div>
+              )}
               
               {showFirmAlert && (
-                <div className="mt-4 bg-orange-50 border border-orange-200 text-orange-800 px-4 py-3 rounded-xl text-sm font-medium animate-in fade-in slide-in-from-top-2 shadow-sm">
+                <div className="mt-6 bg-orange-50 border border-orange-200 text-orange-800 px-6 py-4 rounded-xl text-sm font-medium shadow-sm flex items-center justify-center gap-3">
+                  <span className="w-2 h-2 rounded-full bg-orange-500"></span>
                   You already have an active firm! Head over to your Dashboard and use <strong className="text-orange-900">Orbit Board</strong> to create a new slate.
                 </div>
               )}
             </div>
           </FadeIn>
+
 
           {/* CTA buttons */}
           <FadeIn delay="delay-300">
@@ -613,7 +683,7 @@ export default function Home() {
 
           {/* Dashboard mockup */}
           <FadeIn delay="delay-500">
-            <div className="relative w-full max-w-6xl mx-auto rounded-2xl border border-slate-200/80 bg-slate-50 overflow-hidden flex items-center justify-center shadow-2xl">
+            <div className="relative w-full max-w-6xl mx-auto rounded-2xl border border-slate-200/80 bg-slate-50 overflow-hidden flex items-center justify-center">
               <img src="/images/hero_dashboard_ui.png" alt="Slate Dashboard Mockup" className="w-full h-auto object-contain" />
             </div>
           </FadeIn>

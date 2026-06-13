@@ -280,4 +280,10 @@
     --color-surface-3: rgba(255, 255, 255, 0.08);
     --color-surface-4: rgba(255, 255, 255, 0.12);
   }
-}
+}
+
+
+@keyframes progress {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}

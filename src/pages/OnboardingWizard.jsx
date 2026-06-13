@@ -64,7 +64,7 @@ export default function OnboardingWizard() {
     if (pendingPrompt) {
       setSetupMode('orbit');
       setOrbitPrompt(pendingPrompt);
-      setStep(2);
+      setStep(3); // Jump straight to Invite Team
       localStorage.removeItem('pendingOrbitPrompt');
     }
   }, []);
