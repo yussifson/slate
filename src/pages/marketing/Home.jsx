@@ -591,13 +591,20 @@ return (
             <div className="max-w-3xl mx-auto mb-10 relative z-20">
               
               {orbitStage === "idle" && (
-                <form onSubmit={handleAiSubmit} className="relative group flex flex-col items-center">
-                  <div className="w-full relative">
-                    <div className="absolute -inset-1 bg-gradient-to-r from-emerald-400 to-orange-400 rounded-3xl blur opacity-30 group-hover:opacity-60 transition duration-1000 group-hover:duration-200"></div>
-                    <div className="relative bg-white border border-slate-100 hover:border-emerald-100 rounded-3xl p-6 shadow-2xl transition-all text-left flex flex-col">
-                      <div className="flex items-center gap-2 mb-4">
-                        <Sparkles className="w-6 h-6 text-emerald-500" />
-                        <span className="font-bold text-slate-700 text-lg">Orbit AI Builder</span>
+                <form onSubmit={handleAiSubmit} className="flex flex-col items-center group w-full">
+                  <div className="w-full relative p-[2px] rounded-[1.6rem] overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
+                    {/* Spinning Gradient Glow */}
+                    <div 
+                      className="absolute -inset-[150%] animate-[spin_25s_linear_infinite] opacity-70 group-hover:opacity-100 transition-opacity duration-500"
+                      style={{ background: 'conic-gradient(from 0deg, transparent 0%, #10b981 25%, #f97316 50%, transparent 75%)' }}
+                    />
+                    
+                    {/* Inner White Container */}
+                    <div className="relative bg-white rounded-[1.5rem] p-6 sm:p-8 text-center flex flex-col h-full w-full z-10">
+                      <div className="mb-6">
+                        <h2 className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-orange-500 text-2xl sm:text-3xl tracking-tight leading-snug">
+                          Can't find your preferred workslate?<br/><span className="font-black text-emerald-700">Build it with Orbit Build</span>
+                        </h2>
                       </div>
                       <textarea
                         value={aiPrompt}
@@ -606,14 +613,14 @@ return (
                            setShowFirmAlert(false);
                         }}
                         placeholder="Can't find your industry template? Describe your dream workspace... (e.g. I need a CRM for my logistics company to manage delivery drivers and track client invoices.)"
-                        className="w-full h-32 bg-slate-50/50 rounded-2xl p-4 text-slate-800 placeholder-slate-400 font-medium text-lg border border-slate-100 focus:border-emerald-300 focus:ring-4 focus:ring-emerald-500/10 outline-none resize-none transition-all"
+                        className="w-full h-32 bg-slate-50/50 rounded-2xl p-4 text-slate-800 placeholder-slate-400 font-medium text-lg border border-slate-200 focus:bg-white focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/20 outline-none resize-none transition-all"
                       />
                       <div className="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
                         <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest hidden sm:block">Powered by Optavel Engine</span>
                         <button
                           type="submit"
                           disabled={!aiPrompt.trim()}
-                          className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white px-10 py-4 rounded-xl font-black flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0"
+                          className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white px-10 py-4 rounded-xl font-black shadow-md transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0"
                         >
                           Build with Orbit
                         </button>
@@ -641,16 +648,15 @@ return (
 
               {orbitStage === "success" && (
                 <div className="w-full relative">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-3xl blur opacity-20"></div>
-                  <div className="relative bg-white rounded-3xl p-12 shadow-2xl border border-emerald-100 flex flex-col items-center justify-center min-h-[300px]">
+                  <div className="relative bg-white rounded-3xl p-12 shadow-sm border border-slate-200 flex flex-col items-center justify-center min-h-[300px] transition-all duration-300 hover:shadow-md">
                     <div className="w-20 h-20 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center text-white mb-6 shadow-lg shadow-emerald-500/30 transform scale-110">
                       <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                     </div>
-                    <h3 className="text-3xl font-black text-slate-900 mb-3 tracking-tight">Workspace Assembled!</h3>
+                    <h3 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-orange-500 mb-3 tracking-tight">Workspace Assembled!</h3>
                     <p className="text-slate-500 font-medium text-lg mb-8 text-center max-w-md">Your custom Slate environment has been pre-configured by Orbit AI.</p>
                     <button
                       onClick={handleAccessWorkspace}
-                      className="bg-slate-900 hover:bg-slate-800 text-white px-12 py-5 rounded-2xl font-black flex items-center justify-center gap-3 shadow-2xl hover:-translate-y-1 transition-all text-lg w-full sm:w-auto"
+                      className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white px-12 py-5 rounded-2xl font-black flex items-center justify-center gap-3 shadow-md hover:-translate-y-1 transition-all text-lg w-full sm:w-auto"
                     >
                       Access Your Workspace <ArrowRight className="w-6 h-6" />
                     </button>
@@ -844,80 +850,7 @@ return (
       {/* ============================================================ */}
       {/*  FEATURES GRID                                               */}
       {/* ============================================================ */}
-      {/* ============================================================ */}
-      {/*  FEATURES GRID (Bento Box Style)                           */}
-      {/* ============================================================ */}
-      <section className="py-16 md:py-24 lg:py-32 bg-slate-50 border-y border-slate-100 relative overflow-hidden">
-        {/* Decorative Grid */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
-        
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <FadeIn>
-            <div className="text-center max-w-2xl mx-auto mb-20">
-              <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-slate-200 text-primary text-xs font-bold uppercase tracking-widest mb-6 shadow-sm">
-                {t("unified_architecture", "Unified Architecture")}
-              </span>
-              <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-6">
-                {t(
-                  "built_for_the_complexities_of_",
-                  "Built for the complexities of modern business"
-                )}
-              </h2>
-              <p className="text-lg text-slate-600 leading-relaxed font-medium">
-                {t(
-                  "unify_case_files_client_relati",
-                  "Unify case files, client relationships, time tracking, billing,\n                and employee metrics in one beautifully designed, secure platform."
-                )}
-              </p>
-            </div>
-          </FadeIn>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {features.map((feature, i) => {
-              const isWide = i === 0 || i === 3;
-              return (
-                <FadeIn key={i} delay={`delay-[${i * 80}ms]`} className={isWide ? "lg:col-span-2" : "col-span-1"}>
-                  <div className="group relative bg-white rounded-[2.5rem] border border-primary/60 shadow-[0_8px_30px_-12px_rgba(37,99,235,0.08)] hover:shadow-2xl hover:shadow-emerald-900/15 transition-all duration-500 overflow-hidden h-full flex flex-col p-10 md:p-12 z-0">
-                    
-                    {/* Subtle Background Gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-white via-white to-primary/5 opacity-100 group-hover:from-primary/5 group-hover:via-white group-hover:to-primary/10 transition-colors duration-700 -z-10"></div>
-                    
-                    {/* Abstract Decorative Icon Watermark (Always Visible) */}
-                    <div className="absolute -bottom-12 -right-12 text-primary opacity-[0.03] group-hover:opacity-[0.06] transition-all duration-700 -z-10 transform scale-100 group-hover:scale-110 group-hover:-rotate-12 ease-out">
-                      <feature.icon className="w-72 h-72" strokeWidth={0.5} />
-                    </div>
-
-                    <div className="relative z-10 flex-1">
-                      {/* Jewel-like Icon Container (Blue by Default) */}
-                      <div className="w-16 h-16 rounded-[1.25rem] bg-gradient-to-br from-primary/10 to-white border border-primary/60 shadow-sm shadow-emerald-600/10 flex items-center justify-center mb-10 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-primary group-hover:border-transparent group-hover:shadow-[0_8px_16px_rgba(37,99,235,0.3)] transition-all duration-500">
-                        <feature.icon className="w-8 h-8 text-primary group-hover:text-white transition-colors duration-500" strokeWidth={1.5} />
-                      </div>
-                      
-                      {/* Premium Typography */}
-                      <h4 className="text-[28px] leading-[1.2] font-black text-slate-900 tracking-tight mb-5 group-hover:text-primary transition-all duration-300">
-                        {feature.title}
-                      </h4>
-                      <p className="text-slate-600 leading-[1.7] font-medium text-lg">
-                        {feature.description}
-                      </p>
-                    </div>
-                    
-                    {/* Elegant Reveal Link (Always visible but enhances on hover) */}
-                    <div className="relative z-10 mt-12 flex items-center text-primary/90 font-extrabold text-lg opacity-80 group-hover:opacity-100 transition-all duration-500 ease-out">
-                      {t("explore_capabilities", "Explore capabilities")}
-                      <span className="ml-3 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center group-hover:bg-primary text-primary/90 group-hover:text-white transition-all duration-500 shadow-sm transform group-hover:translate-x-1">
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                        </svg>
-                      </span>
-                    </div>
-                  </div>
-                </FadeIn>
-              );
-            })}
-          </div>
-        </div>
-      </section>
       {/* ============================================================ */}
       {/*  SUITES SECTION (Interactive)                                */}
       {/* ============================================================ */}
