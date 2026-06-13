@@ -227,8 +227,8 @@ export const AuthProvider = ({ children }) => {
                 const _p = {
           id: sessionUser.id,
           role: 'lawyer', // Default role for net-new independent signups
-          company_id: companyIdToUse,
-          company_name: companyNameToUse,
+          company_id: invitedCompanyId,
+          company_name: null,
           email: sessionUser.email?.toLowerCase() || null,
           full_name: sessionUser.user_metadata?.full_name || ''
         };

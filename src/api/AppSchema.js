@@ -624,6 +624,7 @@ export const AppSchema = new Schema({
         department: column.text,
         bar_number: column.text,
         industry_type: column.text,
+        onboarding_completed: column.integer,
     }),
     school_students: new Table({
         id: column.text,
