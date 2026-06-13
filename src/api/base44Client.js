@@ -443,7 +443,8 @@ export const base44 = {
                     }
                 },
                 subscribe: (callback) => {
-                    const channel = supabase.channel(`public:${tableName}`)
+                    const channelId = `public:${tableName}-${Math.random().toString(36).substring(7)}`;
+                    const channel = supabase.channel(channelId)
                         .on('postgres_changes', { event: '*', schema: 'public', table: tableName }, payload => {
                             let type = 'update';
                             if (payload.eventType === 'INSERT') type = 'create';

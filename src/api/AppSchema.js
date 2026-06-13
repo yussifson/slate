@@ -1570,6 +1570,11 @@ export const AppSchema = new Schema({
         id: column.text,
         created_at: column.text,
         company_id: column.text,
+        user_name: column.text,
+        email: column.text,
+        role: column.text,
+        status: column.text,
+        default_password: column.text,
     }),
     univ_adspend: new Table({
         id: column.text,
