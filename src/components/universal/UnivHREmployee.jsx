@@ -1,5 +1,7 @@
 import { powerSync } from '@/api/PowerSyncConnector';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import FeatureGate from '@/components/ui/FeatureGate';
+//, useEffect } from 'react';
 
 import GenericGrid from '@/components/views/GenericGrid';
 import GenericKanban from '@/components/views/GenericKanban';
@@ -93,7 +95,7 @@ export default function UnivHREmployee() {
     <div className="h-full flex flex-col gap-6 w-full bg-background p-4 sm:p-6 lg:p-8 ${view !== 'Default' ? 'hide-default' : ''}">
       <div className="view-header flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0">
         <div><h1 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-2"><Users className="w-7 h-7 text-primary"/>Employees</h1><p className="text-muted-foreground text-sm font-medium mt-1">{employees.length} total • {employees.filter(e=>e.status==='Active').length} active</p></div>
-        <button onClick={()=>openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 shadow-sm"><UserPlus className="w-4 h-4"/>Add Employee</button>
+        <FeatureGate limitName="users" fallbackType="disable"><button onClick={()=>openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 shadow-sm"><UserPlus className="w-4 h-4"/>Add Employee</button></FeatureGate>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 shrink-0">
