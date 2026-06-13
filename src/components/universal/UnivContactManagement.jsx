@@ -76,11 +76,10 @@ export default function UnivContactManagement() {
           const _p = {
             id: crypto.randomUUID(),
             company_id: companyId,
-            first_name: form.name.split(' ')[0] || '',
-            last_name: form.name.split(' ').slice(1).join(' ') || '',
+            name: form.name,
             email: form.email,
             phone: form.phone,
-            organization: form.company,
+            company: form.company,
             type: form.type,
             notes: form.notes
           };
