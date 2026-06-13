@@ -184,7 +184,7 @@ export default function Pricing() {
                         <Button
                           id={`cta-${planKey}`}
                           variant="outline"
-                          className="w-full py-6 text-sm font-bold rounded-2xl border-2 border-slate-200 text-slate-700 hover:border-slate-900 hover:text-slate-900 transition-all"
+                          className="w-full py-6 text-sm font-bold rounded-2xl border-2 border-orange-500 text-orange-500 hover:bg-orange-50 hover:text-orange-600 transition-all"
                         >
                           {meta.cta} <ArrowRight className="w-4 h-4 ml-1.5" />
                         </Button>
@@ -196,7 +196,7 @@ export default function Pricing() {
                           className={`w-full py-6 text-sm font-bold rounded-2xl transition-all ${
                             meta.highlight
                               ? 'bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20'
-                              : 'bg-white border-2 border-slate-200 text-slate-900 hover:border-slate-900'
+                              : 'bg-white border-2 border-orange-500 text-orange-500 hover:bg-orange-50'
                           }`}
                         >
                           {meta.cta}
@@ -221,7 +221,106 @@ export default function Pricing() {
         </div>
       </section>
 
-      {/* ── OFF-CLOUD ENTERPRISE ── */}
+            {/* ── COMPARISON TABLE ── */}
+      <section className="py-16 md:py-24 bg-white border-t border-slate-100 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">{t('compare_plans', 'Compare Plans')}</h2>
+            <p className="mt-4 text-slate-500 font-medium max-w-2xl mx-auto">
+              Everything you need to scale your organization, no matter your size.
+            </p>
+          </div>
+
+          <div className="overflow-x-auto pb-6 -mx-4 px-4 sm:mx-0 sm:px-0">
+            <div className="min-w-[800px] border border-slate-200 rounded-3xl overflow-hidden bg-white shadow-sm">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-slate-50 border-b border-slate-200">
+                    <th className="py-5 px-6 font-bold text-slate-900 text-sm w-1/3">Features</th>
+                    <th className="py-5 px-6 font-bold text-slate-900 text-center text-sm w-1/6">Starter</th>
+                    <th className="py-5 px-6 font-bold text-slate-900 text-center text-sm w-1/6">Professional</th>
+                    <th className="py-5 px-6 font-bold text-slate-900 text-center text-sm w-1/6">Business</th>
+                    <th className="py-5 px-6 font-bold text-slate-900 text-center text-sm w-1/6">Enterprise</th>
+                  </tr>
+                </thead>
+                <tbody className="text-sm">
+                  {/* Core Features */}
+                  <tr className="bg-slate-50/50">
+                    <td colSpan="5" className="py-3 px-6 font-bold text-xs text-slate-500 uppercase tracking-widest bg-slate-100/50 border-y border-slate-200">Core Capabilities</td>
+                  </tr>
+                  <tr className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+                    <td className="py-4 px-6 font-medium text-slate-700">All 14 Work Slate Modules</td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
+                  </tr>
+                  <tr className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+                    <td className="py-4 px-6 font-medium text-slate-700">Internal Users (Staff)</td>
+                    <td className="py-4 px-6 text-center text-slate-600 font-semibold">5</td>
+                    <td className="py-4 px-6 text-center text-slate-600 font-semibold">50</td>
+                    <td className="py-4 px-6 text-center text-slate-600 font-semibold">Unlimited</td>
+                    <td className="py-4 px-6 text-center text-slate-600 font-semibold">Unlimited</td>
+                  </tr>
+                  <tr className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+                    <td className="py-4 px-6 font-medium text-slate-700">External Users (Clients/Students)</td>
+                    <td className="py-4 px-6 text-center text-slate-600 font-semibold">Unlimited</td>
+                    <td className="py-4 px-6 text-center text-slate-600 font-semibold">Unlimited</td>
+                    <td className="py-4 px-6 text-center text-slate-600 font-semibold">Unlimited</td>
+                    <td className="py-4 px-6 text-center text-slate-600 font-semibold">Unlimited</td>
+                  </tr>
+                  
+                  {/* Infrastructure & Support */}
+                  <tr>
+                    <td colSpan="5" className="py-3 px-6 font-bold text-xs text-slate-500 uppercase tracking-widest bg-slate-100/50 border-y border-slate-200">Infrastructure & Support</td>
+                  </tr>
+                  <tr className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+                    <td className="py-4 px-6 font-medium text-slate-700">Storage Capacity</td>
+                    <td className="py-4 px-6 text-center text-slate-600 font-semibold">10 GB</td>
+                    <td className="py-4 px-6 text-center text-slate-600 font-semibold">500 GB</td>
+                    <td className="py-4 px-6 text-center text-slate-600 font-semibold">5 TB</td>
+                    <td className="py-4 px-6 text-center text-slate-600 font-semibold">Custom</td>
+                  </tr>
+                  <tr className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+                    <td className="py-4 px-6 font-medium text-slate-700">AI Tokens / mo</td>
+                    <td className="py-4 px-6 text-center text-slate-400 font-medium">—</td>
+                    <td className="py-4 px-6 text-center text-slate-600 font-semibold">10,000</td>
+                    <td className="py-4 px-6 text-center text-slate-600 font-semibold">Unlimited</td>
+                    <td className="py-4 px-6 text-center text-slate-600 font-semibold">Unlimited</td>
+                  </tr>
+                  <tr className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+                    <td className="py-4 px-6 font-medium text-slate-700">Support Level</td>
+                    <td className="py-4 px-6 text-center text-slate-600 font-semibold">Community</td>
+                    <td className="py-4 px-6 text-center text-slate-600 font-semibold">Standard</td>
+                    <td className="py-4 px-6 text-center text-slate-600 font-semibold">Priority</td>
+                    <td className="py-4 px-6 text-center text-slate-600 font-semibold">24/7 Dedicated</td>
+                  </tr>
+                  
+                  {/* Security & Deployment */}
+                  <tr>
+                    <td colSpan="5" className="py-3 px-6 font-bold text-xs text-slate-500 uppercase tracking-widest bg-slate-100/50 border-y border-slate-200">Security & Deployment</td>
+                  </tr>
+                  <tr className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+                    <td className="py-4 px-6 font-medium text-slate-700">SSO & Advanced Security</td>
+                    <td className="py-4 px-6 text-center text-slate-400 font-medium">—</td>
+                    <td className="py-4 px-6 text-center text-slate-400 font-medium">—</td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
+                  </tr>
+                  <tr className="hover:bg-slate-50/50 transition-colors">
+                    <td className="py-4 px-6 font-medium text-slate-700">On-Premise / Air-Gapped</td>
+                    <td className="py-4 px-6 text-center text-slate-400 font-medium">—</td>
+                    <td className="py-4 px-6 text-center text-slate-400 font-medium">—</td>
+                    <td className="py-4 px-6 text-center text-slate-400 font-medium">—</td>
+                    <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+\n{/* ── OFF-CLOUD ENTERPRISE ── */}
       <section className="py-16 md:py-20 bg-white border-t border-slate-100">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-slate-50 border border-slate-200 rounded-[2rem] p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-10 hover:border-slate-300 transition-colors">
