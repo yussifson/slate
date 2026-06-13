@@ -1,7 +1,9 @@
 import { useTranslation } from "react-i18next";
+import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/lib/AuthContext";
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
   ArrowRight,
@@ -488,6 +490,29 @@ const suites = [
 /* ------------------------------------------------------------------ */
 export default function Home() {
   const { t } = useTranslation();
+  const [aiPrompt, setAiPrompt] = useState("");
+  const [showFirmAlert, setShowFirmAlert] = useState(false);
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const handleAiSubmit = (e) => {
+    e.preventDefault();
+    if (!aiPrompt.trim()) return;
+
+    if (user && user.company_id) {
+      setShowFirmAlert(true);
+      return;
+    }
+
+    localStorage.setItem("pendingOrbitPrompt", aiPrompt);
+    
+    if (user) {
+      navigate("/onboarding");
+    } else {
+      navigate("/signup");
+    }
+  };
+
 
   return (
     <div className="overflow-x-hidden">
@@ -535,6 +560,42 @@ export default function Home() {
                 "Built for teams that take operations seriously. Manage cases, automate client communication, log billable hours,\n              process payments, and track HR — all in one place."
               )}
             </p>
+          </FadeIn>
+
+          {/* AI Input Box */}
+          <FadeIn delay="delay-250">
+            <div className="max-w-2xl mx-auto mb-10 relative z-20">
+              <form onSubmit={handleAiSubmit} className="relative group">
+                <div className="absolute -inset-1 bg-gradient-to-r from-emerald-400 to-orange-400 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
+                <div className="relative flex items-center bg-white border-2 border-slate-100 hover:border-emerald-100 rounded-2xl p-2 shadow-lg transition-all">
+                  <div className="pl-4 pr-2 text-slate-400 flex-shrink-0">
+                    <Sparkles className="w-6 h-6 text-emerald-500" />
+                  </div>
+                  <input
+                    type="text"
+                    value={aiPrompt}
+                    onChange={(e) => {
+                       setAiPrompt(e.target.value);
+                       setShowFirmAlert(false);
+                    }}
+                    placeholder="Can't find your industry template? Describe your dream workspace..."
+                    className="flex-1 bg-transparent border-none outline-none text-slate-700 placeholder-slate-400 font-medium text-base sm:text-lg w-full"
+                  />
+                  <button
+                    type="submit"
+                    className="ml-2 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-md transition-all flex-shrink-0"
+                  >
+                    Build <span className="hidden sm:inline">with Orbit AI</span>
+                  </button>
+                </div>
+              </form>
+              
+              {showFirmAlert && (
+                <div className="mt-4 bg-orange-50 border border-orange-200 text-orange-800 px-4 py-3 rounded-xl text-sm font-medium animate-in fade-in slide-in-from-top-2 shadow-sm">
+                  You already have an active firm! Head over to your Dashboard and use <strong className="text-orange-900">Orbit Board</strong> to create a new slate.
+                </div>
+              )}
+            </div>
           </FadeIn>
 
           {/* CTA buttons */}

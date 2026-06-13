@@ -60,6 +60,17 @@ export default function OnboardingWizard() {
   const [orbitProgress, setOrbitProgress] = useState('');
 
   useEffect(() => {
+    const pendingPrompt = localStorage.getItem('pendingOrbitPrompt');
+    if (pendingPrompt) {
+      setSetupMode('orbit');
+      setOrbitPrompt(pendingPrompt);
+      setStep(2);
+      localStorage.removeItem('pendingOrbitPrompt');
+    }
+  }, []);
+
+
+  useEffect(() => {
     const selected = COUNTRIES_CURRENCIES.find(c => c.country === country);
     if (selected) {
       setCurrency(selected.currency);
