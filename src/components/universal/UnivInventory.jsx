@@ -50,17 +50,6 @@ export default function UnivInventory() {
   const save = async (e) => {
     e.preventDefault();
     const payload = { 
-      const error = null;
-      if (error && error.code !== '42P01') throw error;
-      setInventory(data || []);
-    } catch (e) { console.error(e); } finally { setLoading(false); }
-  };
-
-  const calcStatus = (qty, reorder) => qty === 0 ? 'Out of Stock' : qty <= reorder ? 'Low Stock' : 'In Stock';
-
-  const save = async (e) => {
-    e.preventDefault();
-    const payload = { 
       ...form, 
       quantity: Number(form.quantity) || 0,
       unit_price: Number(form.unit_price) || 0,
