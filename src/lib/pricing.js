@@ -157,7 +157,7 @@ export const TIER_META = {
 };
 
 export const UNIVERSAL_FEATURES = [
-  'All 14 Industry ERP Modules',
+  'All 14 Work Slate Modules',
   'Unlimited External Users (Clients/Students)',
   'Unified Chat, Email & Video',
   'HR, Payroll & Leave Management',
