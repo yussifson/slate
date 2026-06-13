@@ -124,9 +124,14 @@ export default function SignUp() {
         const _p = {
         company_id: companyData.id,
         company_name: companyData.name,
-        full_name: username,
-        role: 'company_admin'
+        full_name: username
       };
+      
+      // Prevent downgrading super admins
+      if (user?.role !== 'super_admin') {
+        _p.role = 'company_admin';
+      }
+
         const _k = Object.keys(_p);
         const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
         await powerSync.execute(`UPDATE profiles SET ${_k.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._v, user.id]);

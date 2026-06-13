@@ -184,9 +184,13 @@ export default function OnboardingWizard() {
                   const _p = {
            full_name: step1Data.fullName,
            company_id: companyIdToUse,
-           company_name: step1Data.companyName,
-           role: 'admin' // Founder/Admin role
+           company_name: step1Data.companyName
          };
+         
+         if (user?.role !== 'super_admin') {
+           _p.role = 'admin'; // Founder/Admin role
+         }
+
          const _k = Object.keys(_p);
          const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
          await powerSync.execute(`UPDATE profiles SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, user.id]);

@@ -429,7 +429,7 @@ export const AuthProvider = ({ children }) => {
         role: ['super_admin', 'admin'].includes(profile?.role) ? profile.role : (staffRecord?.role || profile?.role || 'lawyer'),
         company_logo_url: companyData?.logo_url || null,
         company_name: companyData?.name || profile?.company_name || sessionUser.user_metadata?.company_name || "Slate",
-        company_industry: companyData?.industry_type || 'law',
+        company_industry: profile?.industry_type || companyData?.industry_type || 'law',
         email: sessionUser.email, 
         full_name: staffRecord?.full_name || profile?.full_name || sessionUser.user_metadata?.full_name || "Admin",
         avatar_url: sessionUser.user_metadata?.avatar_url || profile?.avatar_url || null,
