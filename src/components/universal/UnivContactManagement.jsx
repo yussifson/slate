@@ -73,6 +73,7 @@ export default function UnivContactManagement() {
       } else {
         await (async () => {
           const _p = {
+            id: crypto.randomUUID(),
             company_id: companyId,
             first_name: form.name.split(' ')[0] || '',
             last_name: form.name.split(' ').slice(1).join(' ') || '',

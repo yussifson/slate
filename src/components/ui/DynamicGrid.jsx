@@ -131,7 +131,7 @@ export default function DynamicGrid({ data, fieldDefinitions, theme, onRefresh }
             </div>
             
             <div className="mt-4 pt-3 border-t border-border flex justify-between items-center text-xs text-muted-foreground">
-              <span>Added {format(new Date(record.created_date || new Date()), 'MMM d')}</span>
+              <span>Added {format(new Date(record.created_at || new Date()), 'MMM d')}</span>
             </div>
           </div>
         ))}
@@ -152,7 +152,7 @@ export default function DynamicGrid({ data, fieldDefinitions, theme, onRefresh }
                   <span className="text-sm font-medium text-foreground max-w-[60%] text-right break-words">{String(viewRecord.data[f.name] ?? '-')}</span>
                 </div>
               ))}
-              <p className="text-[11px] text-muted-foreground pt-2">Created: {new Date(viewRecord.created_date).toLocaleString()}</p>
+              <p className="text-[11px] text-muted-foreground pt-2">Created: {new Date(viewRecord.created_at).toLocaleString()}</p>
             </div>
           )}
           <DialogFooter className="mt-4">

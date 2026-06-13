@@ -361,7 +361,7 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
                   </div>
 
                   <div className="mt-3 pt-2 border-t border-border text-[10px] text-muted-foreground">
-                    {record.created_date ? format(new Date(record.created_date), 'MMM d, yyyy') : ''}
+                    {record.created_at ? format(new Date(record.created_at), 'MMM d, yyyy') : ''}
                   </div>
                 </div>
               </div>
@@ -396,7 +396,7 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
                       </span>
                     </div>
                   ))}
-                  <p className="text-[11px] text-muted-foreground pt-2">Created: {new Date(viewRecord.created_date).toLocaleString()}</p>
+                  <p className="text-[11px] text-muted-foreground pt-2">Created: {new Date(viewRecord.created_at).toLocaleString()}</p>
                 </div>
                 <DialogFooter className="mt-4">
                   <Button variant="outline" onClick={() => setViewRecord(null)}>Close</Button>

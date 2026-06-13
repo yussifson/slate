@@ -37,7 +37,7 @@ export default function UnivCalendar({
       if (targetTable === 'industry_records') {
         query = query.eq('industry', 'orbit_build_data').eq('record_type', pageName);
       }
-      const { data, error } = await query.order('created_date', { ascending: false });
+      const { data, error } = await query.order('created_at', { ascending: false });
       if (error && error.code !== '42P01') throw error;
       return data || [];
     },
@@ -105,10 +105,10 @@ export default function UnivCalendar({
 
   const displayEvents = React.useMemo(() => {
     return records.map(r => {
-      const data = targetTable === 'industry_records' ? { id: r.id, ...r.data, created_date: r.created_date } : r;
+      const data = targetTable === 'industry_records' ? { id: r.id, ...r.data, created_at: r.created_at } : r;
       let day = data.day;
       if (!day) {
-        const dStr = data.date || data.start_date || data.created_date;
+        const dStr = data.date || data.start_date || data.created_at;
         if (dStr) {
            day = new Date(dStr).getDate();
         } else {

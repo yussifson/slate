@@ -272,7 +272,7 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
                   <span className="text-sm font-medium text-foreground max-w-[60%] text-right break-words">{String(selectedRecord.data[f.name] ?? '-')}</span>
                 </div>
               ))}
-              <p className="text-[11px] text-muted-foreground pt-2">Created: {new Date(selectedRecord.created_date).toLocaleString()}</p>
+              <p className="text-[11px] text-muted-foreground pt-2">Created: {new Date(selectedRecord.created_at).toLocaleString()}</p>
             </div>
           )}
           <DialogFooter className="mt-4">

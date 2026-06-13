@@ -274,7 +274,7 @@ export default function DynamicReportView({ data = [], fieldDefinitions = [], on
   const dateRange = useMemo(() => {
     if (data.length === 0) return null;
     const dates = data
-      .map(r => new Date(r.created_date))
+      .map(r => new Date(r.created_at))
       .filter(d => !isNaN(d.getTime()))
       .sort((a, b) => a - b);
     if (dates.length === 0) return null;

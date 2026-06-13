@@ -168,7 +168,7 @@ function ApprovalCard({ record, fieldDefinitions, statusFieldName, statuses, onA
                   {status}
                 </Badge>
                 <span className="text-[10px] text-muted-foreground">
-                  {record.created_date ? format(new Date(record.created_date), 'MMM d, yyyy') : ''}
+                  {record.created_at ? format(new Date(record.created_at), 'MMM d, yyyy') : ''}
                 </span>
               </div>
             </div>
@@ -500,7 +500,7 @@ export default function DynamicApprovalView({ data = [], fieldDefinitions = [], 
                 </div>
               ))}
               <p className="text-[11px] text-muted-foreground pt-2">
-                Created: {viewRecord.created_date ? new Date(viewRecord.created_date).toLocaleString() : '-'}
+                Created: {viewRecord.created_at ? new Date(viewRecord.created_at).toLocaleString() : '-'}
               </p>
             </div>
           )}
