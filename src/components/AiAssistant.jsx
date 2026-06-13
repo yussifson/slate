@@ -1007,6 +1007,7 @@ RULES FOR MULTI-STEP REASONING:
           </div>
         </div>
         </div>
+        </div>
       </div>
     </>
   );
