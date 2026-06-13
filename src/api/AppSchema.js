@@ -3048,6 +3048,13 @@ export const AppSchema = new Schema({
         id: column.text,
         created_at: column.text,
         company_id: column.text,
+        event_name: column.text,
+        ticket_type: column.text,
+        price: column.text,
+        quantity_available: column.text,
+        quantity_sold: column.text,
+        sale_start_date: column.text,
+        sale_end_date: column.text,
     }),
     univ_timebilling: new Table({
         id: column.text,

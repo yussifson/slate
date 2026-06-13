@@ -138,12 +138,12 @@ export default function UnivMessaging() {
     
     // Create a new direct room
         await (async () => {
-      const _p = { room_type: 'direct', id: crypto.randomUUID(), company_id: companyId, created_by: currentUser.id };
+      const _p = { room_type: 'direct', id: crypto.randomUUID(), company_id: companyId, created_by: currentUser.id }; window.__tmpRoomId = _p.id;
       const _k = Object.keys(_p);
       const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
       await powerSync.execute(`INSERT INTO chat_rooms (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v);
     })();
-    const newRoom = { id: `room_${Math.random().toString(36).substr(2, 9)}` };
+    const newRoom = { id: window.__tmpRoomId };
     const roomError = null;
       
     if (roomError) throw roomError;
