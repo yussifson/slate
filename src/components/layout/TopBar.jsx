@@ -339,6 +339,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
           <span className="hidden sm:block">{isRefreshing ? "Refreshing..." : "Refresh"}</span>
         </Button>
       </div>
+      </div>
       <ProfileAvatarDialog open={showAvatarDialog} onOpenChange={setShowAvatarDialog} />
     </>
   );
