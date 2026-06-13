@@ -1,4 +1,3 @@
-import { powerSync } from '@/api/PowerSyncConnector';
 import { PowerSyncDatabase } from '@powersync/web';
 import { supabase } from './supabaseClient';
 import { AppSchema } from './AppSchema';
