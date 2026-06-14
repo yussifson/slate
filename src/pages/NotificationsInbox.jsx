@@ -81,12 +81,13 @@ export default function NotificationsInbox() {
 
   const getIcon = (type) => {
     switch(type) {
-      case 'mention': return <MessageSquare className="w-5 h-5 text-blue-500" />;
-      case 'system': return <CheckCircle2 className="w-5 h-5 text-emerald-500" />;
-      case 'alert': return <AlertTriangle className="w-5 h-5 text-amber-500" />;
-      case 'task': return <AlertCircle className="w-5 h-5 text-orange-500" />;
-      case 'message': return <Mail className="w-5 h-5 text-indigo-500" />;
-      case 'billing': return <CreditCard className="w-5 h-5 text-purple-500" />;
+      case 'internal_message': return <MessageSquare className="w-5 h-5 text-blue-500" />;
+      case 'assigned_task': return <CheckCircle2 className="w-5 h-5 text-emerald-500" />;
+      case 'hearing_reminder': return <Clock className="w-5 h-5 text-amber-500" />;
+      case 'case_update': return <Mail className="w-5 h-5 text-indigo-500" />;
+      case 'invoice_overdue':
+      case 'billing_notification': return <CreditCard className="w-5 h-5 text-purple-500" />;
+      case 'other':
       default: return <Bell className="w-5 h-5 text-primary" />;
     }
   };
@@ -136,7 +137,7 @@ export default function NotificationsInbox() {
                   recipientEmail: user?.email,
                   title: 'Test Novu Alert',
                   message: 'This is a test notification to verify your Novu email pipeline is working!',
-                  type: 'system'
+                  type: 'other'
                 });
                 toast({ title: 'Test alert dispatched' });
               }} 

@@ -21,7 +21,7 @@ export const NotificationService = {
    * @param {string} [params.relatedId] - Optional link/ID (e.g. '/tasks/123').
    * @param {string} [params.createdBy] - Optional email of the sender.
    */
-  emit: async ({ companyId, recipientEmail, title, message, type = 'system', relatedId = null, createdBy = 'system' }) => {
+  emit: async ({ companyId, recipientEmail, title, message, type = 'other', relatedId = null, createdBy = 'system' }) => {
     try {
       if (!companyId || !recipientEmail) {
         console.warn('NotificationService: companyId and recipientEmail are required.');

@@ -92,12 +92,13 @@ export default function UnivNotificationCenter() {
 
   const getIcon = (type) => {
     switch(type) {
-      case 'mention': return <MessageSquare className="w-4 h-4 text-blue-500" />;
-      case 'system': return <CheckCircle2 className="w-4 h-4 text-emerald-500" />;
-      case 'alert': return <AlertTriangle className="w-4 h-4 text-amber-500" />;
-      case 'task': return <AlertCircle className="w-4 h-4 text-orange-500" />;
-      case 'message': return <Mail className="w-4 h-4 text-indigo-500" />;
-      case 'billing': return <CreditCard className="w-4 h-4 text-purple-500" />;
+      case 'internal_message': return <MessageSquare className="w-4 h-4 text-blue-500" />;
+      case 'assigned_task': return <CheckCircle2 className="w-4 h-4 text-emerald-500" />;
+      case 'hearing_reminder': return <Clock className="w-4 h-4 text-amber-500" />;
+      case 'case_update': return <Mail className="w-4 h-4 text-indigo-500" />;
+      case 'invoice_overdue':
+      case 'billing_notification': return <CreditCard className="w-4 h-4 text-purple-500" />;
+      case 'other':
       default: return <Bell className="w-4 h-4 text-primary" />;
     }
   };
