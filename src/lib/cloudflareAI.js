@@ -46,7 +46,7 @@ if (API_ACCOUNTS.length === 0) {
 let currentAccountIndex = 0;
 
 const MODELS = {
-  text: "@cf/meta/llama-3.1-8b-instruct",
+  text: "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
   vision: "@cf/meta/llama-3.2-11b-vision-instruct"
 };
 
