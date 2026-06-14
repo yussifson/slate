@@ -21,25 +21,28 @@ export const NotificationService = {
    * @param {string} [params.relatedId] - Optional link/ID (e.g. '/tasks/123').
    * @param {string} [params.createdBy] - Optional email of the sender.
    */
-  emit: async ({ companyId, recipientEmail, title, message, type = 'system', relatedId = '', createdBy = 'system' }) => {
+  emit: async ({ companyId, recipientEmail, title, message, type = 'system', relatedId = null, createdBy = 'system' }) => {
     try {
       if (!companyId || !recipientEmail) {
         console.warn('NotificationService: companyId and recipientEmail are required.');
         return;
       }
 
-      await base44.entities.Notification.create({
+      const payload = {
         id: crypto.randomUUID(),
         company_id: companyId,
         recipient_email: recipientEmail,
         title,
         message,
         type,
-        related_id: relatedId,
         created_by: createdBy,
         is_read: 'false',
         email_sent: 'false'
-      });
+      };
+      
+      if (relatedId) payload.related_id = relatedId;
+
+      await base44.entities.Notification.create(payload);
       
     } catch (e) {
       console.error('Failed to dispatch notification:', e);

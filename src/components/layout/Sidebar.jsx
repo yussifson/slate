@@ -394,6 +394,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  const baseNav = user?.role === "client" ? clientNav : (activeIndustry === 'orbit_build' ? coreOrbitNav : filteredCompanyNav);
  const createSlateItem = { label: "Create Slate", icon: "PlusCircle", path: "/slate/create"};
  const marketplaceItem = { label: "Marketplace", icon: "Store", path: "/marketplace"};
+ const notificationsItem = { label: "Notifications", icon: "Bell", path: "/notifications"};
  
  // Put AI pages FIRST, then dynamic modules, custom pages, and FINALLY the baseNav (Chat, Board, Settings)
  // Extract dashboard from baseNav to put it at the very top
@@ -401,8 +402,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  const remainingBaseNav = baseNav.filter(item => item.label !== "Dashboard" && item.path !== "/");
  
  let rawNavItems = isAdmin
- ? [...dashboardNav, ...orbitBuildNavItems, ...dynamicNavItems, ...customPageItems, ...remainingBaseNav, createSlateItem, marketplaceItem, { label: "Firm Setup", icon: "Settings", path: "/firm-setup"}]
- : [...dashboardNav, ...orbitBuildNavItems, ...dynamicNavItems, ...customPageItems, ...remainingBaseNav, marketplaceItem];
+ ? [...dashboardNav, ...orbitBuildNavItems, ...dynamicNavItems, ...customPageItems, ...remainingBaseNav, notificationsItem, createSlateItem, marketplaceItem, { label: "Firm Setup", icon: "Settings", path: "/firm-setup"}]
+ : [...dashboardNav, ...orbitBuildNavItems, ...dynamicNavItems, ...customPageItems, ...remainingBaseNav, notificationsItem, marketplaceItem];
 
  // Deduplicate by label to prevent double Dashboards
  const seenLabels = new Set();
