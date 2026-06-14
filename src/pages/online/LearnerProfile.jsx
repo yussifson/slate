@@ -27,7 +27,7 @@ export default function LearnerProfile() {
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-5xl mx-auto pb-12">
  {/* Cover Profile Header */}
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] overflow-hidden">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
  <div className="h-32 bg-gradient-to-r from-[var(--color-surface-2)] to-[var(--color-surface-1)]"></div>
  <div className="px-8 pb-8 relative">
  <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-end -mt-12 sm:-mt-16 mb-6">
@@ -45,7 +45,7 @@ export default function LearnerProfile() {
  </div>
  </div>
  <div className="pb-2">
- <button className="px-4 py-2 bg-[var(--color-surface-1)] border border-[var(--color-border-default)] text-[var(--color-text-primary)] text-sm font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors whitespace-nowrap">
+ <button className="px-4 py-2 bg-[var(--color-surface-1)] border border-primary/40 text-[var(--color-text-primary)] text-sm font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors whitespace-nowrap">
  Message Learner
  </button>
  </div>
@@ -58,7 +58,7 @@ export default function LearnerProfile() {
  )}
  </div>
  
- <div className="border-t border-[var(--color-border-subtle)] bg-[var(--color-surface-1)] flex px-4">
+ <div className="border-t border-primary/40 bg-[var(--color-surface-1)] flex px-4">
  <button onClick={() => setActiveTab('courses')} className={navClass('courses')}>Enrolled Courses</button>
  <button onClick={() => setActiveTab('certificates')} className={navClass('certificates')}>Certificates</button>
  <button onClick={() => setActiveTab('activity')} className={navClass('activity')}>Recent Activity</button>
@@ -67,7 +67,7 @@ export default function LearnerProfile() {
 
  {activeTab === 'courses' && (
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-5 hover:border-[var(--primary)] transition-colors cursor-pointer group">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-5 hover:border-[var(--primary)] transition-colors cursor-pointer group">
  <div className="w-12 h-12 bg-[var(--color-surface-1)] rounded-[var(--radius-md)] flex items-center justify-center mb-4 text-[var(--primary)]">
  <BookOpen className="w-6 h-6" />
  </div>
@@ -82,7 +82,7 @@ export default function LearnerProfile() {
 
  {activeTab === 'certificates' && (
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-5 flex gap-4 items-center">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-5 flex gap-4 items-center">
  <div className="w-16 h-16 bg-[var(--color-success-subtle)] rounded-full flex items-center justify-center text-[var(--color-success)] flex-shrink-0">
  <Award className="w-8 h-8" />
  </div>
@@ -95,8 +95,8 @@ export default function LearnerProfile() {
  )}
 
  {activeTab === 'activity' && (
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 ">
- <div className="relative pl-6 border-l-2 border-[var(--color-border-default)] space-y-8">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 ">
+ <div className="relative pl-6 border-l-2 border-primary/40 space-y-8">
  <div className="relative">
  <div className="absolute w-3 h-3 bg-[var(--primary)] rounded-full -left-[31px] top-1.5 ring-4 ring-[var(--color-surface-0)]"></div>
  <h4 className="font-semibold text-[var(--color-text-primary)]">Completed Slate 4 Assessment</h4>

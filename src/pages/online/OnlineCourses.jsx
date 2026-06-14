@@ -37,7 +37,7 @@ export default function OnlineCourses() {
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
- <div className="border-b border-[var(--color-border-subtle)] pb-4 flex justify-between items-end">
+ <div className="border-b border-primary/40 pb-4 flex justify-between items-end">
  <div>
  <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Course Catalog</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage learning slates, update curriculum, and track course performance.</p>
@@ -49,7 +49,7 @@ export default function OnlineCourses() {
  </div>
  </div>
 
- <div className="flex items-center gap-4 bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-4 ">
+ <div className="flex items-center gap-4 bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-4 ">
  <div className="relative flex-1 max-w-md">
  <Search className="absolute left-3 top-2.5 h-4 w-4 text-[var(--color-text-tertiary)]" />
  <input 
@@ -57,7 +57,7 @@ export default function OnlineCourses() {
  placeholder="Search catalog..." 
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
+ className="w-full bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
  />
  </div>
  </div>
@@ -65,13 +65,13 @@ export default function OnlineCourses() {
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
  {isLoading ? (
  [1, 2, 3].map(i => (
- <div key={i} className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] overflow-hidden flex flex-col animate-pulse">
+ <div key={i} className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden flex flex-col animate-pulse">
  <div className="aspect-video bg-[var(--color-surface-2)] w-full"></div>
  <div className="p-5 flex flex-col flex-1 gap-3">
  <div className="h-5 bg-[var(--color-surface-2)] rounded w-3/4"></div>
  <div className="h-4 bg-[var(--color-surface-2)] rounded w-full"></div>
  <div className="h-4 bg-[var(--color-surface-2)] rounded w-5/6 mb-4"></div>
- <div className="grid grid-cols-2 gap-2 mt-auto pt-4 border-t border-[var(--color-border-subtle)]">
+ <div className="grid grid-cols-2 gap-2 mt-auto pt-4 border-t border-primary/40">
  <div className="h-3 bg-[var(--color-surface-2)] rounded w-16"></div>
  <div className="h-3 bg-[var(--color-surface-2)] rounded w-20"></div>
  </div>
@@ -82,7 +82,7 @@ export default function OnlineCourses() {
  <motion.div 
  initial={{ opacity: 0, y: 10}}
  animate={{ opacity: 1, y: 0}}
- className="col-span-full py-16 text-center border-2 border-dashed border-primary/50 rounded-[var(--radius-xl)] bg-[var(--color-surface-0)] glass-card"
+ className="col-span-full py-16 text-center border-2 border-dashed border-primary/40 rounded-[var(--radius-xl)] bg-[var(--color-surface-0)] glass-card"
  >
  <BookOpen className="w-12 h-12 mx-auto mb-4 opacity-30 text-[var(--primary)]" />
  <h3 className="font-semibold text-lg text-[var(--color-text-primary)] mb-1">No courses found</h3>
@@ -101,7 +101,7 @@ export default function OnlineCourses() {
  exit={{ opacity: 0, scale: 0.95}}
  transition={{ duration: 0.2, delay: idx * 0.05}}
  key={course.id || idx} 
- className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] overflow-hidden flex flex-col group hover:border-[var(--primary)] transition-all duration-300 glass-card"
+ className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden flex flex-col group hover:border-[var(--primary)] transition-all duration-300 glass-card"
  >
  <div className="aspect-video bg-gradient-to-br from-[var(--color-surface-2)] to-[var(--color-surface-3)] relative flex items-center justify-center overflow-hidden">
  <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors z-10" />
@@ -116,7 +116,7 @@ export default function OnlineCourses() {
  {extra.description || 'No description provided for this course module.'}
  </p>
  
- <div className="grid grid-cols-2 gap-3 text-xs text-[var(--color-text-secondary)] pt-4 border-t border-[var(--color-border-subtle)]">
+ <div className="grid grid-cols-2 gap-3 text-xs text-[var(--color-text-secondary)] pt-4 border-t border-primary/40">
  <div className="flex items-center gap-1.5 font-medium">
  <Clock className="w-4 h-4 text-[var(--color-text-tertiary)]" /> {extra.duration || '4 Weeks'}
  </div>
@@ -134,7 +134,7 @@ export default function OnlineCourses() {
  </div>
  </div>
  </div>
- <div className="bg-[var(--color-surface-1)] border-t border-[var(--color-border-subtle)] px-5 py-3 group-hover:bg-[var(--primary)] transition-colors duration-300 flex items-center justify-between">
+ <div className="bg-[var(--color-surface-1)] border-t border-primary/40 px-5 py-3 group-hover:bg-[var(--primary)] transition-colors duration-300 flex items-center justify-between">
  <button onClick={() => navigate(`/o/builder/course/${course.id}`)} className="text-sm font-semibold text-[var(--primary)] group-hover:text-white flex items-center gap-1 transition-colors">
  Manage Course <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
  </button>

@@ -13,7 +13,7 @@ export default function NotesCenter() {
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-5xl mx-auto py-6">
- <div className="border-b border-[var(--color-border-subtle)] pb-4 flex justify-between items-end">
+ <div className="border-b border-primary/40 pb-4 flex justify-between items-end">
  <div>
  <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">My Notes</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Review all the notes you've taken during your courses.</p>
@@ -32,13 +32,13 @@ export default function NotesCenter() {
  placeholder="Search notes..." 
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full bg-[var(--color-surface-0)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]"
+ className="w-full bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]"
  />
  </div>
 
  <div className="space-y-2">
  {notes.map(note => (
- <div key={note.id} className="p-4 bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] cursor-pointer hover:border-[var(--primary)] transition-colors">
+ <div key={note.id} className="p-4 bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-md)] cursor-pointer hover:border-[var(--primary)] transition-colors">
  <h3 className="font-semibold text-[var(--color-text-primary)] text-sm line-clamp-1">{note.title}</h3>
  <div className="flex items-center gap-2 mt-2 text-xs text-[var(--color-text-secondary)]">
  <BookOpen className="w-3.5 h-3.5" /> <span className="truncate">{note.course}</span>
@@ -48,7 +48,7 @@ export default function NotesCenter() {
  </div>
  </div>
 
- <div className="flex-1 bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-8 min-h-[500px]">
+ <div className="flex-1 bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-8 min-h-[500px]">
  <div className="flex justify-between items-start mb-6">
  <div>
  <h2 className="text-2xl font-bold font-display text-[var(--color-text-primary)]">Component Lifecycle</h2>

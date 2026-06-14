@@ -26,7 +26,7 @@ export default function OnlineAssessments() {
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-3xl mx-auto py-12 px-4">
  
  {!started && (
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-8 text-center">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-8 text-center">
  <div className="w-16 h-16 bg-[var(--primary)] text-white rounded-full flex items-center justify-center mx-auto mb-6 ">
  <BookOpen className="w-8 h-8" />
  </div>
@@ -46,8 +46,8 @@ export default function OnlineAssessments() {
  )}
 
  {started === true && (
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] overflow-hidden flex flex-col">
- <div className="bg-[var(--color-surface-1)] border-b border-[var(--color-border-subtle)] p-4 flex justify-between items-center">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden flex flex-col">
+ <div className="bg-[var(--color-surface-1)] border-b border-primary/40 p-4 flex justify-between items-center">
  <div className="text-sm font-semibold text-[var(--color-text-secondary)]">
  Question {currentQ + 1} of {questions.length}
  </div>
@@ -64,7 +64,7 @@ export default function OnlineAssessments() {
  <button 
  key={idx}
  onClick={() => setSelectedOption(idx)}
- className={`w-full text-left p-4 rounded-[var(--radius-md)] border text-sm font-medium transition-colors ${selectedOption === idx ? 'bg-[var(--primary)] text-white border-[var(--primary)]' : 'bg-[var(--color-surface-0)] text-[var(--color-text-primary)] border-[var(--color-border-default)] hover:border-[var(--primary)]'}`}
+ className={`w-full text-left p-4 rounded-[var(--radius-md)] border text-sm font-medium transition-colors ${selectedOption === idx ? 'bg-[var(--primary)] text-white border-[var(--primary)]' : 'bg-[var(--color-surface-0)] text-[var(--color-text-primary)] border-primary/40 hover:border-[var(--primary)]'}`}
  >
  {opt}
  </button>
@@ -72,7 +72,7 @@ export default function OnlineAssessments() {
  </div>
  </div>
 
- <div className="bg-[var(--color-surface-1)] border-t border-[var(--color-border-subtle)] p-4 flex justify-end">
+ <div className="bg-[var(--color-surface-1)] border-t border-primary/40 p-4 flex justify-end">
  <button 
  disabled={selectedOption === null}
  onClick={handleNext} 
@@ -85,7 +85,7 @@ export default function OnlineAssessments() {
  )}
 
  {started === 'finished' && (
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-8 text-center">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-8 text-center">
  <div className="w-16 h-16 bg-[var(--color-success-subtle)] text-[var(--color-success)] rounded-full flex items-center justify-center mx-auto mb-6 border-4 border-white">
  <CheckCircle2 className="w-8 h-8" />
  </div>
@@ -93,7 +93,7 @@ export default function OnlineAssessments() {
  <p className="text-[var(--color-text-secondary)] mb-6">You passed the assessment with a score of 100%.</p>
  
  <div className="flex justify-center gap-4">
- <button onClick={() => navigate('/o/student-dashboard')} className="px-6 py-2 bg-[var(--color-surface-1)] border border-[var(--color-border-default)] text-[var(--color-text-primary)] font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors">
+ <button onClick={() => navigate('/o/student-dashboard')} className="px-6 py-2 bg-[var(--color-surface-1)] border border-primary/40 text-[var(--color-text-primary)] font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors">
  Back to Dashboard
  </button>
  <button onClick={() => navigate('/o/certificates')} className="px-6 py-2 bg-[var(--primary)] text-white font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">

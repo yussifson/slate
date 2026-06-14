@@ -47,11 +47,11 @@ export default function Checkout() {
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
  {/* Order Summary */}
  <div className="lg:col-span-1 lg:order-2">
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] overflow-hidden sticky top-6">
- <div className="bg-[var(--color-surface-1)] p-4 border-b border-[var(--color-border-subtle)]">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden sticky top-6">
+ <div className="bg-[var(--color-surface-1)] p-4 border-b border-primary/40">
  <h2 className="font-semibold text-[var(--color-text-primary)]">Order Summary</h2>
  </div>
- <div className="p-6 space-y-4 border-b border-[var(--color-border-subtle)]">
+ <div className="p-6 space-y-4 border-b border-primary/40">
  <div className="flex justify-between items-start gap-4">
  <div className="font-medium text-sm text-[var(--color-text-primary)]">{title}</div>
  <div className="font-semibold text-[var(--color-text-primary)]">${price}</div>
@@ -62,7 +62,7 @@ export default function Checkout() {
  <span className="text-[var(--color-text-secondary)]">Subtotal</span>
  <span className="font-medium text-[var(--color-text-primary)]">${price}</span>
  </div>
- <div className="flex justify-between items-center text-sm pb-4 border-b border-[var(--color-border-subtle)]">
+ <div className="flex justify-between items-center text-sm pb-4 border-b border-primary/40">
  <span className="text-[var(--color-text-secondary)]">Tax</span>
  <span className="font-medium text-[var(--color-text-primary)]">$0.00</span>
  </div>
@@ -76,7 +76,7 @@ export default function Checkout() {
 
  {/* Payment Form */}
  <div className="lg:col-span-2 lg:order-1 space-y-6">
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 sm:p-8">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 sm:p-8">
  <h2 className="text-xl font-bold font-display text-[var(--color-text-primary)] mb-6 flex items-center gap-2">
  <CreditCard className="w-5 h-5 text-[var(--primary)]" /> Payment Details
  </h2>
@@ -87,7 +87,7 @@ export default function Checkout() {
  <input 
  type="text" 
  placeholder="John Doe" 
- className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-4 py-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
+ className="w-full bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-md)] px-4 py-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
  />
  </div>
  <div>
@@ -96,7 +96,7 @@ export default function Checkout() {
  <input 
  type="text" 
  placeholder="0000 0000 0000 0000" 
- className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] pl-12 pr-4 py-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
+ className="w-full bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-md)] pl-12 pr-4 py-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
  />
  <CreditCard className="absolute left-4 top-3.5 h-5 w-5 text-[var(--color-text-tertiary)]" />
  </div>
@@ -107,7 +107,7 @@ export default function Checkout() {
  <input 
  type="text" 
  placeholder="MM/YY" 
- className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-4 py-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
+ className="w-full bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-md)] px-4 py-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
  />
  </div>
  <div>
@@ -115,7 +115,7 @@ export default function Checkout() {
  <input 
  type="text" 
  placeholder="123" 
- className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-4 py-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
+ className="w-full bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-md)] px-4 py-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
  />
  </div>
  </div>

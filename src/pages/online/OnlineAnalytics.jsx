@@ -95,7 +95,7 @@ export default function OnlineAnalytics() {
  <CardDescription>Daily active users over the last 30 days.</CardDescription>
  </CardHeader>
  <CardContent>
- <div className="h-[300px] w-full flex items-center justify-center border-2 border-dashed border-gray-200 rounded-xl mt-4">
+ <div className="h-[300px] w-full flex items-center justify-center border-2 border-dashed border-primary/40 rounded-xl mt-4">
  <p className="text-sm text-gray-500">Not enough data to display chart.</p>
  </div>
  </CardContent>
@@ -107,7 +107,7 @@ export default function OnlineAnalytics() {
  <CardDescription>Percentage of enrolled students who finished the course.</CardDescription>
  </CardHeader>
  <CardContent>
- <div className="flex items-center justify-center py-12 border-2 border-dashed border-gray-200 rounded-xl mt-4">
+ <div className="flex items-center justify-center py-12 border-2 border-dashed border-primary/40 rounded-xl mt-4">
  <p className="text-sm text-gray-500">No course data available.</p>
  </div>
  </CardContent>

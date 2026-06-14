@@ -11,7 +11,7 @@ export default function OnlineSubscriptions() {
 
  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
  {/* Monthly Plan */}
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-8 hover:border-[var(--primary)] transition-colors relative flex flex-col">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-8 hover:border-[var(--primary)] transition-colors relative flex flex-col">
  <h2 className="text-2xl font-bold font-display text-[var(--color-text-primary)] mb-2">Monthly</h2>
  <p className="text-[var(--color-text-secondary)] text-sm mb-6">Perfect for short-term learning goals.</p>
  <div className="flex items-end gap-1 mb-8">
@@ -38,7 +38,7 @@ export default function OnlineSubscriptions() {
  </div>
  </div>
 
- <button className="w-full py-3 bg-[var(--color-surface-1)] border border-[var(--color-border-default)] text-[var(--color-text-primary)] font-bold rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors">
+ <button className="w-full py-3 bg-[var(--color-surface-1)] border border-primary/40 text-[var(--color-text-primary)] font-bold rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors">
  Subscribe Monthly
  </button>
  </div>
@@ -80,7 +80,7 @@ export default function OnlineSubscriptions() {
  </div>
  </div>
 
- <div className="max-w-4xl mx-auto mt-12 bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 flex items-center justify-between">
+ <div className="max-w-4xl mx-auto mt-12 bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 flex items-center justify-between">
  <div>
  <h3 className="font-bold text-[var(--color-text-primary)] flex items-center gap-2"><ShieldCheck className="w-5 h-5 text-[var(--color-success)]" /> 30-Day Money-Back Guarantee</h3>
  <p className="text-sm text-[var(--color-text-secondary)] mt-1">If you're not completely satisfied, we'll refund your payment. No questions asked.</p>

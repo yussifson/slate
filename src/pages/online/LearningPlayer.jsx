@@ -23,11 +23,11 @@ export default function LearningPlayer() {
  return (
  <div className="flex flex-col h-[calc(100vh-4rem)] animate-in fade-in duration-500 bg-[var(--color-surface-0)]">
  {/* Header */}
- <div className="h-14 flex items-center px-4 border-b border-[var(--color-border-subtle)] bg-[var(--color-surface-1)] flex-shrink-0">
+ <div className="h-14 flex items-center px-4 border-b border-primary/40 bg-[var(--color-surface-1)] flex-shrink-0">
  <button onClick={() => navigate(-1)} className="p-2 hover:bg-[var(--color-surface-2)] rounded-[var(--radius-md)] text-[var(--color-text-secondary)] transition-colors mr-3">
  <ArrowLeft className="w-5 h-5" />
  </button>
- <h1 className="font-display font-semibold text-[var(--color-text-primary)] truncate pr-4 border-r border-[var(--color-border-default)]">
+ <h1 className="font-display font-semibold text-[var(--color-text-primary)] truncate pr-4 border-r border-primary/40">
  {courseTitle}
  </h1>
  <div className="ml-4 flex items-center gap-2 text-sm text-[var(--color-text-secondary)]">
@@ -70,7 +70,7 @@ export default function LearningPlayer() {
  transition={{ delay: 0.2}}
  className="p-8 max-w-5xl mx-auto w-full relative z-10"
  >
- <div className="flex items-center gap-6 border-b border-[var(--color-border-subtle)] pb-0">
+ <div className="flex items-center gap-6 border-b border-primary/40 pb-0">
  <button onClick={() => setActiveTab('overview')} className={`px-2 py-4 font-semibold text-sm transition-colors border-b-2 -mb-[1px] ${activeTab === 'overview' ? 'border-[var(--primary)] text-[var(--primary)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}>
  Overview
  </button>
@@ -91,7 +91,7 @@ export default function LearningPlayer() {
  )}
  {activeTab === 'qna' && (
  <motion.div initial={{ opacity: 0, y: 10}} animate={{ opacity: 1, y: 0}} className="space-y-4">
- <div className="flex gap-4 p-1 bg-[var(--color-surface-1)] rounded-full border border-[var(--color-border-default)] focus-within:border-[var(--primary)] focus-within:ring-1 focus-within:ring-[var(--primary)] transition-all">
+ <div className="flex gap-4 p-1 bg-[var(--color-surface-1)] rounded-full border border-primary/40 focus-within:border-[var(--primary)] focus-within:ring-1 focus-within:ring-[var(--primary)] transition-all">
  <input type="text" placeholder="Ask a new question..." className="bg-transparent border-none outline-none w-full text-sm text-[var(--color-text-primary)] px-4 py-2" />
  <button className="bg-[var(--primary)] text-white rounded-full p-2.5 hover:opacity-90 transition-opacity">
  <MessageSquare className="w-4 h-4" />
@@ -102,7 +102,7 @@ export default function LearningPlayer() {
  )}
  {activeTab === 'resources' && (
  <motion.div initial={{ opacity: 0, y: 10}} animate={{ opacity: 1, y: 0}} className="space-y-3">
- <p className="text-sm text-[var(--color-text-secondary)] text-center py-12 border-2 border-dashed border-primary/50 rounded-[var(--radius-lg)]">No resources available for this slate yet.</p>
+ <p className="text-sm text-[var(--color-text-secondary)] text-center py-12 border-2 border-dashed border-primary/40 rounded-[var(--radius-lg)]">No resources available for this slate yet.</p>
  </motion.div>
  )}
  </div>
@@ -110,8 +110,8 @@ export default function LearningPlayer() {
  </div>
 
  {/* Sidebar Curriculum */}
- <div className="w-80 border-l border-[var(--color-border-subtle)] bg-[var(--color-surface-1)] flex flex-col flex-shrink-0">
- <div className="p-4 border-b border-[var(--color-border-subtle)]">
+ <div className="w-80 border-l border-primary/40 bg-[var(--color-surface-1)] flex flex-col flex-shrink-0">
+ <div className="p-4 border-b border-primary/40">
  <h2 className="font-bold text-[var(--color-text-primary)]">Course Content</h2>
  <div className="w-full bg-[var(--color-border-default)] h-1.5 rounded-full mt-3 overflow-hidden">
  <div className="bg-[var(--primary)] h-full w-1/3"></div>

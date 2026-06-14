@@ -15,7 +15,7 @@ export default function OnlineAffiliates() {
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 py-6">
- <div className="border-b border-[var(--color-border-subtle)] pb-4 flex justify-between items-end">
+ <div className="border-b border-primary/40 pb-4 flex justify-between items-end">
  <div>
  <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Affiliate Dashboard</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Track your referrals, conversions, and commission payouts.</p>
@@ -23,7 +23,7 @@ export default function OnlineAffiliates() {
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 flex flex-col justify-center">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 flex flex-col justify-center">
  <div className="flex items-center gap-3 mb-2">
  <div className="w-10 h-10 rounded-full bg-[var(--color-info-subtle)] flex items-center justify-center text-[var(--color-info)]">
  <Users className="w-5 h-5" />
@@ -33,7 +33,7 @@ export default function OnlineAffiliates() {
  <p className="text-4xl font-bold font-display text-[var(--color-text-primary)]">1,248</p>
  </div>
  
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 flex flex-col justify-center">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 flex flex-col justify-center">
  <div className="flex items-center gap-3 mb-2">
  <div className="w-10 h-10 rounded-full bg-[var(--color-warning-subtle)] flex items-center justify-center text-[var(--color-warning)]">
  <TrendingUp className="w-5 h-5" />
@@ -43,7 +43,7 @@ export default function OnlineAffiliates() {
  <p className="text-4xl font-bold font-display text-[var(--color-text-primary)]">4.2%</p>
  </div>
  
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 flex flex-col justify-center">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 flex flex-col justify-center">
  <div className="flex items-center gap-3 mb-2">
  <div className="w-10 h-10 rounded-full bg-[var(--color-success-subtle)] flex items-center justify-center text-[var(--color-success)]">
  <DollarSign className="w-5 h-5" />
@@ -55,7 +55,7 @@ export default function OnlineAffiliates() {
  </div>
 
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
- <div className="lg:col-span-2 bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6">
+ <div className="lg:col-span-2 bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6">
  <h2 className="font-bold text-[var(--color-text-primary)] mb-6 font-display">Performance Overview</h2>
  <div className="h-[300px] w-full">
  <ResponsiveContainer width="100%" height="100%">
@@ -77,35 +77,35 @@ export default function OnlineAffiliates() {
  </div>
 
  <div className="space-y-6">
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6">
  <h2 className="font-bold text-[var(--color-text-primary)] mb-4 font-display flex items-center gap-2">
  <LinkIcon className="w-5 h-5 text-[var(--primary)]" /> Your Affiliate Link
  </h2>
  <p className="text-sm text-[var(--color-text-secondary)] mb-4">Share this link to earn a 20% commission on every course purchased.</p>
- <div className="flex bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] p-1">
+ <div className="flex bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-md)] p-1">
  <input 
  type="text" 
  readOnly 
  value="https://airflake.com/ref/johndoe123" 
  className="w-full bg-transparent px-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none"
  />
- <button className="bg-[var(--color-surface-0)] border border-[var(--color-border-default)] p-2 rounded-[var(--radius-sm)] hover:bg-[var(--color-surface-2)] transition-colors text-[var(--color-text-primary)] ">
+ <button className="bg-[var(--color-surface-0)] border border-primary/40 p-2 rounded-[var(--radius-sm)] hover:bg-[var(--color-surface-2)] transition-colors text-[var(--color-text-primary)] ">
  <Copy className="w-4 h-4" />
  </button>
  </div>
  </div>
 
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6">
  <h2 className="font-bold text-[var(--color-text-primary)] mb-4 font-display">Recent Payouts</h2>
  <div className="space-y-3">
- <div className="flex justify-between items-center py-2 border-b border-[var(--color-border-subtle)]">
+ <div className="flex justify-between items-center py-2 border-b border-primary/40">
  <div>
  <p className="text-sm font-semibold text-[var(--color-text-primary)]">Oct 01, 2026</p>
  <p className="text-xs text-[var(--color-text-secondary)]">PayPal</p>
  </div>
  <span className="font-bold text-[var(--color-success)]">+$450.00</span>
  </div>
- <div className="flex justify-between items-center py-2 border-b border-[var(--color-border-subtle)]">
+ <div className="flex justify-between items-center py-2 border-b border-primary/40">
  <div>
  <p className="text-sm font-semibold text-[var(--color-text-primary)]">Sep 01, 2026</p>
  <p className="text-xs text-[var(--color-text-secondary)]">PayPal</p>

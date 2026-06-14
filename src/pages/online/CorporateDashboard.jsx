@@ -25,7 +25,7 @@ export default function CorporateDashboard() {
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 py-6 max-w-7xl mx-auto">
- <div className="border-b border-[var(--color-border-subtle)] pb-4 flex justify-between items-end">
+ <div className="border-b border-primary/40 pb-4 flex justify-between items-end">
  <div>
  <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Corporate Portal</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage bulk licenses, track employee training, and view organizational metrics.</p>
@@ -36,7 +36,7 @@ export default function CorporateDashboard() {
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 ">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 ">
  <div className="flex items-center gap-3 mb-2">
  <div className="w-10 h-10 rounded-full bg-[var(--color-surface-2)] flex items-center justify-center text-[var(--color-text-primary)]">
  <Briefcase className="w-5 h-5" />
@@ -47,7 +47,7 @@ export default function CorporateDashboard() {
  <p className="text-xs text-[var(--color-text-tertiary)] mt-2">50 unused licenses available</p>
  </div>
  
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 ">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 ">
  <div className="flex items-center gap-3 mb-2">
  <div className="w-10 h-10 rounded-full bg-[var(--color-info-subtle)] flex items-center justify-center text-[var(--color-info)]">
  <Users className="w-5 h-5" />
@@ -58,7 +58,7 @@ export default function CorporateDashboard() {
  <p className="text-xs text-[var(--color-text-tertiary)] mt-2">Across 4 departments</p>
  </div>
  
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 ">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 ">
  <div className="flex items-center gap-3 mb-2">
  <div className="w-10 h-10 rounded-full bg-[var(--color-success-subtle)] flex items-center justify-center text-[var(--color-success)]">
  <BarChart3 className="w-5 h-5" />
@@ -72,8 +72,8 @@ export default function CorporateDashboard() {
  </div>
  </div>
 
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] overflow-hidden">
- <div className="border-b border-[var(--color-border-subtle)] bg-[var(--color-surface-1)] flex px-4">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+ <div className="border-b border-primary/40 bg-[var(--color-surface-1)] flex px-4">
  <button onClick={() => setActiveTab('overview')} className={`px-6 py-4 font-medium text-sm transition-colors border-b-2 ${activeTab === 'overview' ? 'border-[var(--primary)] text-[var(--primary)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}>Overview</button>
  <button onClick={() => setActiveTab('employees')} className={`px-6 py-4 font-medium text-sm transition-colors border-b-2 ${activeTab === 'employees' ? 'border-[var(--primary)] text-[var(--primary)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}>Employee Directory</button>
  </div>
@@ -105,7 +105,7 @@ export default function CorporateDashboard() {
  {activeTab === 'employees' && (
  <div className="overflow-x-auto">
  <table className="w-full text-left text-sm">
- <thead className="bg-[var(--color-surface-1)] border-b border-[var(--color-border-subtle)] text-[var(--color-text-secondary)]">
+ <thead className="bg-[var(--color-surface-1)] border-b border-primary/40 text-[var(--color-text-secondary)]">
  <tr>
  <th className="px-6 py-3 font-semibold">Employee</th>
  <th className="px-6 py-3 font-semibold">Department</th>

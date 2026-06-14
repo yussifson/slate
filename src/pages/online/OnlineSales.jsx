@@ -33,19 +33,19 @@ export default function OnlineSales() {
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
- <div className="border-b border-[var(--color-border-subtle)] pb-4 flex justify-between items-end">
+ <div className="border-b border-primary/40 pb-4 flex justify-between items-end">
  <div>
  <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Sales & Revenue</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Track course purchases, subscriptions, and financial metrics.</p>
  </div>
- <button className="flex items-center gap-2 px-4 py-2 bg-[var(--color-surface-1)] border border-[var(--color-border-default)] text-[var(--color-text-primary)] text-sm font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors">
+ <button className="flex items-center gap-2 px-4 py-2 bg-[var(--color-surface-1)] border border-primary/40 text-[var(--color-text-primary)] text-sm font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors">
  <Download className="w-4 h-4" /> Export Report
  </button>
  </div>
 
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
  {stats.map((stat, i) => (
- <div key={i} className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 ">
+ <div key={i} className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 ">
  <div className="flex items-center justify-between">
  <div>
  <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">{stat.label}</p>
@@ -60,38 +60,38 @@ export default function OnlineSales() {
  </div>
 
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 ">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 ">
  <div className="flex justify-between items-center mb-6">
  <div>
  <h2 className="font-semibold text-[var(--color-text-primary)]">Revenue Breakdown</h2>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)]">One-time purchases vs Subscriptions</p>
  </div>
  </div>
- <div className="h-[300px] w-full flex items-center justify-center border border-dashed border-primary/50 rounded-xl">
+ <div className="h-[300px] w-full flex items-center justify-center border border-dashed border-primary/40 rounded-xl">
  <p className="text-[var(--color-text-secondary)] text-sm">Not enough data to display chart.</p>
  </div>
  </div>
 
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 ">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 ">
  <div className="flex justify-between items-center mb-6">
  <div>
  <h2 className="font-semibold text-[var(--color-text-primary)]">Cumulative Growth</h2>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)]">Total lifetime value generated</p>
  </div>
  </div>
- <div className="h-[300px] w-full flex items-center justify-center border border-dashed border-primary/50 rounded-xl">
+ <div className="h-[300px] w-full flex items-center justify-center border border-dashed border-primary/40 rounded-xl">
  <p className="text-[var(--color-text-secondary)] text-sm">Not enough data to display chart.</p>
  </div>
  </div>
  </div>
 
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] overflow-hidden">
- <div className="p-4 border-b border-[var(--color-border-subtle)] bg-[var(--color-surface-1)]">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+ <div className="p-4 border-b border-primary/40 bg-[var(--color-surface-1)]">
  <h2 className="font-semibold text-[var(--color-text-primary)]">Recent Transactions</h2>
  </div>
  <div className="overflow-x-auto">
  <table className="w-full text-left text-sm">
- <thead className="bg-[var(--color-surface-1)] border-b border-[var(--color-border-subtle)] text-[var(--color-text-secondary)]">
+ <thead className="bg-[var(--color-surface-1)] border-b border-primary/40 text-[var(--color-text-secondary)]">
  <tr>
  <th className="px-6 py-3 font-semibold">Transaction ID</th>
  <th className="px-6 py-3 font-semibold">Date</th>

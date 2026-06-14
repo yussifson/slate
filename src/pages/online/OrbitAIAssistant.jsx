@@ -47,7 +47,7 @@ export default function OrbitAIAssistant({ isOpen = true, onClose}) {
  if (!isOpen) return null;
 
  return (
- <div className="fixed bottom-6 right-6 w-96 max-w-[calc(100vw-3rem)] h-[600px] max-h-[calc(100vh-6rem)] bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] flex flex-col z-50 overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-300">
+ <div className="fixed bottom-6 right-6 w-96 max-w-[calc(100vw-3rem)] h-[600px] max-h-[calc(100vh-6rem)] bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] flex flex-col z-50 overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-300">
  {/* Header */}
  <div className="bg-gradient-to-r from-[var(--primary)] to-[var(--color-success)] p-4 flex justify-between items-center text-white shrink-0">
  <div className="flex items-center gap-3">
@@ -70,10 +70,10 @@ export default function OrbitAIAssistant({ isOpen = true, onClose}) {
  <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[var(--color-surface-1)]">
  {messages.map((msg) => (
  <div key={msg.id} className={`flex gap-3 max-w-[85%] ${msg.role === 'user' ? 'ml-auto flex-row-reverse' : ''}`}>
- <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1 ${msg.role === 'user' ? 'bg-[var(--color-surface-2)] text-[var(--color-text-secondary)] border border-[var(--color-border-default)]' : 'bg-[var(--primary)] text-white'}`}>
+ <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1 ${msg.role === 'user' ? 'bg-[var(--color-surface-2)] text-[var(--color-text-secondary)] border border-primary/40' : 'bg-[var(--primary)] text-white'}`}>
  {msg.role === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
  </div>
- <div className={`p-3 rounded-2xl text-sm leading-relaxed ${msg.role === 'user' ? 'bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] text-[var(--color-text-primary)] rounded-tr-sm' : 'bg-[var(--primary)] text-white rounded-tl-sm'}`}>
+ <div className={`p-3 rounded-2xl text-sm leading-relaxed ${msg.role === 'user' ? 'bg-[var(--color-surface-0)] border border-primary/40 text-[var(--color-text-primary)] rounded-tr-sm' : 'bg-[var(--primary)] text-white rounded-tl-sm'}`}>
  {msg.text}
  </div>
  </div>
@@ -94,14 +94,14 @@ export default function OrbitAIAssistant({ isOpen = true, onClose}) {
  </div>
 
  {/* Input Area */}
- <div className="p-4 bg-[var(--color-surface-0)] border-t border-[var(--color-border-subtle)] shrink-0">
+ <div className="p-4 bg-[var(--color-surface-0)] border-t border-primary/40 shrink-0">
  <div className="relative flex items-end">
  <textarea 
  value={input}
  onChange={(e) => setInput(e.target.value)}
  onKeyDown={handleKeyDown}
  placeholder="Ask Orbit a question..."
- className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-xl)] pl-4 pr-12 py-3 min-h-[50px] max-h-32 text-sm text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] resize-none"
+ className="w-full bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-xl)] pl-4 pr-12 py-3 min-h-[50px] max-h-32 text-sm text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] resize-none"
  rows={1}
  />
  <button 

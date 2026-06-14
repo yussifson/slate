@@ -13,7 +13,7 @@ export default function OnlineLive() {
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-6xl mx-auto py-6">
- <div className="border-b border-[var(--color-border-subtle)] pb-4 flex justify-between items-end">
+ <div className="border-b border-primary/40 pb-4 flex justify-between items-end">
  <div>
  <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Live Sessions</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Join virtual classrooms, webinars, and interactive Q&A sessions.</p>
@@ -29,8 +29,8 @@ export default function OnlineLive() {
  
  <div className="space-y-4">
  {sessions.map(session => (
- <div key={session.id} className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-5 flex flex-col sm:flex-row gap-5 items-start sm:items-center group hover:border-[var(--primary)] transition-colors">
- <div className="w-16 h-16 rounded-[var(--radius-lg)] flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-[var(--color-surface-1)] to-[var(--color-surface-2)] border border-[var(--color-border-default)]">
+ <div key={session.id} className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-5 flex flex-col sm:flex-row gap-5 items-start sm:items-center group hover:border-[var(--primary)] transition-colors">
+ <div className="w-16 h-16 rounded-[var(--radius-lg)] flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-[var(--color-surface-1)] to-[var(--color-surface-2)] border border-primary/40">
  {session.status === 'upcoming' ? (
  <Calendar className="w-8 h-8 text-[var(--primary)]" />
  ) : (
@@ -62,7 +62,7 @@ export default function OnlineLive() {
  Join Room
  </button>
  ) : (
- <button className="w-full sm:w-auto px-6 py-2 bg-[var(--color-surface-1)] border border-[var(--color-border-default)] text-[var(--color-text-primary)] text-sm font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors whitespace-nowrap">
+ <button className="w-full sm:w-auto px-6 py-2 bg-[var(--color-surface-1)] border border-primary/40 text-[var(--color-text-primary)] text-sm font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors whitespace-nowrap">
  Watch Recording
  </button>
  )}
@@ -72,8 +72,8 @@ export default function OnlineLive() {
  </div>
 
  <div className="space-y-6">
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] overflow-hidden">
- <div className="bg-[var(--color-surface-1)] p-4 border-b border-[var(--color-border-subtle)]">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+ <div className="bg-[var(--color-surface-1)] p-4 border-b border-primary/40">
  <h2 className="font-bold text-[var(--color-text-primary)]">Quick Join Link</h2>
  </div>
  <div className="p-6">
@@ -83,9 +83,9 @@ export default function OnlineLive() {
  type="text" 
  readOnly 
  value="https://airflake.com/meet/u/john-doe" 
- className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-l-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-secondary)] focus:outline-none"
+ className="w-full bg-[var(--color-surface-1)] border border-primary/40 rounded-l-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-secondary)] focus:outline-none"
  />
- <button className="bg-[var(--color-surface-2)] border border-l-0 border-[var(--color-border-default)] px-4 text-sm font-medium rounded-r-[var(--radius-md)] hover:bg-[var(--color-surface-3)] transition-colors text-[var(--color-text-primary)]">
+ <button className="bg-[var(--color-surface-2)] border border-l-0 border-primary/40 px-4 text-sm font-medium rounded-r-[var(--radius-md)] hover:bg-[var(--color-surface-3)] transition-colors text-[var(--color-text-primary)]">
  Copy
  </button>
  </div>

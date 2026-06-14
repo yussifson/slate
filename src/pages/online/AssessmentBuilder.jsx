@@ -47,7 +47,7 @@ export default function AssessmentBuilder() {
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-4xl mx-auto">
- <div className="flex items-center gap-4 pb-4 border-b border-[var(--color-border-subtle)]">
+ <div className="flex items-center gap-4 pb-4 border-b border-primary/40">
  <button onClick={() => navigate(-1)} className="p-2 hover:bg-[var(--color-surface-2)] rounded-[var(--radius-md)] text-[var(--color-text-secondary)] transition-colors">
  <ArrowLeft className="w-5 h-5" />
  </button>
@@ -62,21 +62,21 @@ export default function AssessmentBuilder() {
  </div>
  </div>
 
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 mb-6">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 mb-6">
  <label className="block text-sm font-semibold text-[var(--color-text-primary)] mb-2">Assessment Title</label>
  <input 
  type="text" 
  value={assessmentTitle}
  onChange={(e) => setAssessmentTitle(e.target.value)}
  placeholder="e.g., Slate 1 Final Quiz" 
- className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-4 py-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
+ className="w-full bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-md)] px-4 py-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
  />
  </div>
 
  <div className="space-y-6">
  {questions.map((q, qIndex) => (
- <div key={q.id} className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] overflow-hidden">
- <div className="bg-[var(--color-surface-1)] px-6 py-4 border-b border-[var(--color-border-subtle)] flex justify-between items-center">
+ <div key={q.id} className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+ <div className="bg-[var(--color-surface-1)] px-6 py-4 border-b border-primary/40 flex justify-between items-center">
  <h3 className="font-semibold text-[var(--color-text-primary)]">Question {qIndex + 1}</h3>
  <button onClick={() => removeQuestion(q.id)} className="p-1.5 text-[var(--color-text-tertiary)] hover:text-[var(--color-error)] hover:bg-[var(--color-error-subtle)] rounded-md transition-colors">
  <Trash2 className="w-4 h-4" />
@@ -90,7 +90,7 @@ export default function AssessmentBuilder() {
  value={q.text}
  onChange={(e) => updateQuestion(q.id, 'text', e.target.value)}
  placeholder="What is the main objective of..." 
- className="w-full bg-[var(--color-surface-0)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]"
+ className="w-full bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]"
  />
  </div>
 
@@ -100,7 +100,7 @@ export default function AssessmentBuilder() {
  <div key={optIndex} className="flex items-center gap-3">
  <button 
  onClick={() => updateQuestion(q.id, 'correctIndex', optIndex)}
- className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-colors ${q.correctIndex === optIndex ? 'bg-[var(--color-success)] text-white' : 'border-2 border-[var(--color-border-default)] text-transparent hover:border-[var(--color-success)]'}`}
+ className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-colors ${q.correctIndex === optIndex ? 'bg-[var(--color-success)] text-white' : 'border-2 border-primary/40 text-transparent hover:border-[var(--color-success)]'}`}
  >
  <CheckCircle2 className="w-4 h-4" />
  </button>
@@ -109,7 +109,7 @@ export default function AssessmentBuilder() {
  value={opt}
  onChange={(e) => updateOption(q.id, optIndex, e.target.value)}
  placeholder={`Option ${optIndex + 1}`} 
- className={`flex-1 bg-[var(--color-surface-0)] border rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] focus:outline-none transition-colors ${q.correctIndex === optIndex ? 'border-[var(--color-success)] ring-1 ring-[var(--color-success)] text-[var(--color-text-primary)] font-medium' : 'border-[var(--color-border-default)] text-[var(--color-text-secondary)] focus:border-[var(--primary)]'}`}
+ className={`flex-1 bg-[var(--color-surface-0)] border rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] focus:outline-none transition-colors ${q.correctIndex === optIndex ? 'border-[var(--color-success)] ring-1 ring-[var(--color-success)] text-[var(--color-text-primary)] font-medium' : 'border-primary/40 text-[var(--color-text-secondary)] focus:border-[var(--primary)]'}`}
  />
  </div>
  ))}
@@ -119,7 +119,7 @@ export default function AssessmentBuilder() {
  ))}
  </div>
 
- <button onClick={addQuestion} className="w-full py-4 border-2 border-dashed border-primary/50 rounded-[var(--radius-xl)] flex items-center justify-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--primary)] hover:border-[var(--primary)] hover:bg-[var(--color-surface-1)] transition-colors font-medium">
+ <button onClick={addQuestion} className="w-full py-4 border-2 border-dashed border-primary/40 rounded-[var(--radius-xl)] flex items-center justify-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--primary)] hover:border-[var(--primary)] hover:bg-[var(--color-surface-1)] transition-colors font-medium">
  <PlusCircle className="w-5 h-5" /> Add Another Question
  </button>
  </div>

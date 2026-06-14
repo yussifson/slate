@@ -11,7 +11,7 @@ export default function OnlineCommunity() {
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 py-6 max-w-5xl mx-auto">
- <div className="border-b border-[var(--color-border-subtle)] pb-4 flex justify-between items-end">
+ <div className="border-b border-primary/40 pb-4 flex justify-between items-end">
  <div>
  <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Community Forums</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Connect with instructors and fellow learners.</p>
@@ -23,7 +23,7 @@ export default function OnlineCommunity() {
 
  <div className="flex flex-col md:flex-row gap-6">
  <div className="md:w-64 flex-shrink-0 space-y-6">
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-4">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-4">
  <h3 className="font-semibold text-[var(--color-text-primary)] mb-3">Categories</h3>
  <div className="space-y-1">
  <button className="w-full text-left px-3 py-2 text-sm bg-[var(--color-surface-1)] text-[var(--primary)] font-bold rounded-[var(--radius-md)]">All Discussions</button>
@@ -33,7 +33,7 @@ export default function OnlineCommunity() {
  </div>
  </div>
 
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-4 text-center">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-4 text-center">
  <Users className="w-8 h-8 mx-auto text-[var(--primary)] mb-2" />
  <h4 className="font-bold text-[var(--color-text-primary)]">1,204 Online</h4>
  <p className="text-xs text-[var(--color-text-secondary)] mt-1">Active learners right now</p>
@@ -49,17 +49,17 @@ export default function OnlineCommunity() {
  placeholder="Search discussions..." 
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full bg-[var(--color-surface-0)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]"
+ className="w-full bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]"
  />
  </div>
- <button className="px-4 py-2 bg-[var(--color-surface-1)] border border-[var(--color-border-default)] text-[var(--color-text-primary)] text-sm font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors flex items-center gap-2">
+ <button className="px-4 py-2 bg-[var(--color-surface-1)] border border-primary/40 text-[var(--color-text-primary)] text-sm font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors flex items-center gap-2">
  <Filter className="w-4 h-4" /> Filter
  </button>
  </div>
 
  <div className="space-y-4">
  {posts.map(post => (
- <div key={post.id} className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 hover:border-[var(--primary)] transition-colors cursor-pointer">
+ <div key={post.id} className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 hover:border-[var(--primary)] transition-colors cursor-pointer">
  <div className="flex items-center gap-3 mb-4">
  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white ${post.role === 'Instructor' ? 'bg-[var(--primary)]' : 'bg-[var(--color-surface-3)] text-[var(--color-text-primary)]'}`}>
  {post.avatar}
@@ -76,7 +76,7 @@ export default function OnlineCommunity() {
  <h3 className="font-bold text-lg text-[var(--color-text-primary)] mb-2 font-display">{post.title}</h3>
  <p className="text-sm text-[var(--color-text-secondary)] mb-4">{post.content}</p>
 
- <div className="flex items-center gap-6 pt-4 border-t border-[var(--color-border-subtle)]">
+ <div className="flex items-center gap-6 pt-4 border-t border-primary/40">
  <button className="flex items-center gap-1.5 text-xs font-semibold text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors">
  <Heart className="w-4 h-4" /> {post.likes} Likes
  </button>

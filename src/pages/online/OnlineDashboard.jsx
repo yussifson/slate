@@ -47,14 +47,14 @@ export default function OnlineDashboard() {
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
- <div className="border-b border-[var(--color-border-subtle)] pb-4">
+ <div className="border-b border-primary/40 pb-4">
  <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Platform Dashboard</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Overview of your online learning platform metrics and engagement.</p>
  </div>
 
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
  {stats.map((stat, i) => (
- <div key={i} className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 ">
+ <div key={i} className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 ">
  <div className="flex items-center justify-between">
  <div>
  <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">{stat.label}</p>
@@ -69,32 +69,32 @@ export default function OnlineDashboard() {
  </div>
 
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
- <div className="lg:col-span-2 bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6">
+ <div className="lg:col-span-2 bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6">
  <div className="flex justify-between items-center mb-6">
  <div>
  <h2 className="font-semibold text-[var(--color-text-primary)]">Enrollment Trends</h2>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)]">Platform-wide enrollments over the last 7 days.</p>
  </div>
  </div>
- <div className="h-[300px] w-full flex items-center justify-center border border-dashed border-primary/50 rounded-xl">
+ <div className="h-[300px] w-full flex items-center justify-center border border-dashed border-primary/40 rounded-xl">
  <p className="text-[var(--color-text-secondary)] text-sm">Not enough data to display chart.</p>
  </div>
  </div>
 
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 flex flex-col">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 flex flex-col">
  <h2 className="font-semibold text-[var(--color-text-primary)] mb-1">Recent Courses</h2>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mb-6">Latest additions to the catalog.</p>
  
  <div className="space-y-4 flex-1">
  {recentCourses.length === 0 ? (
- <div className="text-center p-6 border border-dashed border-primary/50 rounded-[var(--radius-lg)]">
+ <div className="text-center p-6 border border-dashed border-primary/40 rounded-[var(--radius-lg)]">
  <PlayCircle className="w-8 h-8 mx-auto text-[var(--color-text-tertiary)] mb-2" />
  <p className="text-sm font-medium text-[var(--color-text-secondary)]">No courses found</p>
  <p className="text-xs text-[var(--color-text-tertiary)] mt-1">Add courses to see them here.</p>
  </div>
  ) : (
  recentCourses.map((c, idx) => (
- <div key={idx} className="p-3 bg-[var(--color-surface-1)] border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] flex items-start gap-3 hover:border-[var(--primary)] transition-colors">
+ <div key={idx} className="p-3 bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-lg)] flex items-start gap-3 hover:border-[var(--primary)] transition-colors">
  <div className="w-10 h-10 rounded-[var(--radius-md)] bg-[var(--color-surface-2)] flex items-center justify-center flex-shrink-0">
  <PlayCircle className="w-5 h-5 text-[var(--primary)]" />
  </div>

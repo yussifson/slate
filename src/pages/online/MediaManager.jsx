@@ -25,7 +25,7 @@ export default function MediaManager() {
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
- <div className="border-b border-[var(--color-border-subtle)] pb-4 flex justify-between items-end">
+ <div className="border-b border-primary/40 pb-4 flex justify-between items-end">
  <div>
  <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Media Library</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage all your uploaded videos, documents, and images centrally.</p>
@@ -37,7 +37,7 @@ export default function MediaManager() {
 
  <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
  <div className="lg:col-span-1 space-y-4">
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-4">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-4">
  <h3 className="font-semibold text-[var(--color-text-primary)] mb-4">Folders</h3>
  <div className="space-y-1">
  <button className="w-full flex items-center justify-between px-3 py-2 text-sm bg-[var(--color-surface-1)] text-[var(--primary)] rounded-[var(--radius-md)] font-medium">
@@ -59,7 +59,7 @@ export default function MediaManager() {
  </div>
  </div>
 
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 text-center">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 text-center">
  <div className="w-16 h-16 bg-[var(--color-surface-1)] rounded-full flex items-center justify-center mx-auto mb-4">
  <UploadCloud className="w-8 h-8 text-[var(--primary)]" />
  </div>
@@ -70,8 +70,8 @@ export default function MediaManager() {
  </div>
 
  <div className="lg:col-span-3">
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] overflow-hidden flex flex-col h-[600px]">
- <div className="p-4 border-b border-[var(--color-border-subtle)] flex gap-4 bg-[var(--color-surface-1)]">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden flex flex-col h-[600px]">
+ <div className="p-4 border-b border-primary/40 flex gap-4 bg-[var(--color-surface-1)]">
  <div className="relative flex-1 max-w-md">
  <Search className="absolute left-3 top-2.5 h-4 w-4 text-[var(--color-text-tertiary)]" />
  <input 
@@ -79,14 +79,14 @@ export default function MediaManager() {
  placeholder="Search assets..." 
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full bg-[var(--color-surface-0)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
+ className="w-full bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
  />
  </div>
  </div>
 
  <div className="flex-1 overflow-y-auto">
  <table className="w-full text-left text-sm">
- <thead className="bg-[var(--color-surface-0)] border-b border-[var(--color-border-subtle)] text-[var(--color-text-secondary)] sticky top-0">
+ <thead className="bg-[var(--color-surface-0)] border-b border-primary/40 text-[var(--color-text-secondary)] sticky top-0">
  <tr>
  <th className="px-6 py-3 font-semibold">Name</th>
  <th className="px-6 py-3 font-semibold">Size</th>

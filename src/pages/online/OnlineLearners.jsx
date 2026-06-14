@@ -20,7 +20,7 @@ export default function OnlineLearners() {
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
- <div className="border-b border-[var(--color-border-subtle)] pb-4 flex justify-between items-end">
+ <div className="border-b border-primary/40 pb-4 flex justify-between items-end">
  <div>
  <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Learners Directory</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage and communicate with all registered learners on the platform.</p>
@@ -30,8 +30,8 @@ export default function OnlineLearners() {
  </button>
  </div>
 
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] overflow-hidden flex flex-col">
- <div className="p-4 border-b border-[var(--color-border-subtle)] flex gap-4 bg-[var(--color-surface-1)]">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden flex flex-col">
+ <div className="p-4 border-b border-primary/40 flex gap-4 bg-[var(--color-surface-1)]">
  <div className="relative flex-1 max-w-md">
  <Search className="absolute left-3 top-2.5 h-4 w-4 text-[var(--color-text-tertiary)]" />
  <input 
@@ -39,14 +39,14 @@ export default function OnlineLearners() {
  placeholder="Search learners by name..." 
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full bg-[var(--color-surface-0)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
+ className="w-full bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
  />
  </div>
  </div>
 
  <div className="overflow-x-auto">
  <table className="w-full text-left text-sm">
- <thead className="bg-[var(--color-surface-1)] border-b border-[var(--color-border-subtle)] text-[var(--color-text-secondary)]">
+ <thead className="bg-[var(--color-surface-1)] border-b border-primary/40 text-[var(--color-text-secondary)]">
  <tr>
  <th className="px-6 py-3 font-semibold">Learner Name</th>
  <th className="px-6 py-3 font-semibold">Contact Info</th>

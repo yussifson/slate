@@ -103,7 +103,7 @@ export default function OnlineBuilder() {
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Design your curriculum and configure settings.</p>
  </div>
  <div className="ml-auto flex gap-3">
- <button className="px-4 py-2 bg-[var(--color-surface-1)] border border-[var(--color-border-default)] text-[var(--color-text-primary)] text-sm font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors">
+ <button className="px-4 py-2 bg-[var(--color-surface-1)] border border-primary/40 text-[var(--color-text-primary)] text-sm font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors">
  Preview Course
  </button>
  <button onClick={handleSave} disabled={saveMutation.isPending} className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity disabled:opacity-50">
@@ -114,7 +114,7 @@ export default function OnlineBuilder() {
 
  <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
  <div className="lg:col-span-1 space-y-4">
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-4">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-4">
  <h3 className="font-semibold text-[var(--color-text-primary)] mb-4">Add Content</h3>
  <div className="space-y-2">
  <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--primary)] rounded-[var(--radius-md)] transition-colors">
@@ -134,18 +134,18 @@ export default function OnlineBuilder() {
  </div>
 
  <div className="lg:col-span-3">
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] overflow-hidden">
- <div className="p-6 border-b border-[var(--color-border-subtle)]">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+ <div className="p-6 border-b border-primary/40">
  <input 
  type="text" 
  value={title}
  onChange={(e) => setTitle(e.target.value)}
  placeholder="Enter Course Title..." 
- className="w-full text-[var(--text-2xl)] font-bold font-display text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] bg-transparent border-0 border-b border-transparent hover:border-[var(--color-border-default)] focus:border-[var(--primary)] focus:ring-0 px-0 transition-colors" 
+ className="w-full text-[var(--text-2xl)] font-bold font-display text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] bg-transparent border-0 border-b border-transparent hover:border-primary/40 focus:border-[var(--primary)] focus:ring-0 px-0 transition-colors" 
  />
  </div>
  
- <div className="flex border-b border-[var(--color-border-subtle)] h-12 bg-[var(--color-surface-1)] px-2">
+ <div className="flex border-b border-primary/40 h-12 bg-[var(--color-surface-1)] px-2">
  <button onClick={() => setActiveTab('curriculum')} className={navClass('curriculum')}>Curriculum</button>
  <button onClick={() => setActiveTab('settings')} className={navClass('settings')}>Settings</button>
  <button onClick={() => setActiveTab('pricing')} className={navClass('pricing')}>Pricing</button>
@@ -155,19 +155,19 @@ export default function OnlineBuilder() {
  {activeTab === 'curriculum' && (
  <div className="space-y-6">
  {courseId ? (
- <div className="text-center py-12 border-2 border-dashed border-primary/50 rounded-[var(--radius-lg)] text-[var(--color-text-secondary)] text-sm">
+ <div className="text-center py-12 border-2 border-dashed border-primary/40 rounded-[var(--radius-lg)] text-[var(--color-text-secondary)] text-sm">
  <p className="mb-4">No slates created yet.</p>
- <button className="px-4 py-2 bg-[var(--color-surface-1)] border border-[var(--color-border-default)] text-[var(--color-text-primary)] font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors">
+ <button className="px-4 py-2 bg-[var(--color-surface-1)] border border-primary/40 text-[var(--color-text-primary)] font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors">
  Create First Module
  </button>
  </div>
  ) : (
- <div className="text-center py-12 border-2 border-dashed border-primary/50 rounded-[var(--radius-lg)] text-[var(--color-text-secondary)] text-sm">
+ <div className="text-center py-12 border-2 border-dashed border-primary/40 rounded-[var(--radius-lg)] text-[var(--color-text-secondary)] text-sm">
  Please save the course first to start adding modules.
  </div>
  )}
 
- <button className="w-full flex items-center justify-center gap-2 py-6 border-2 border-dashed border-primary/50 rounded-[var(--radius-lg)] text-[var(--color-text-secondary)] font-medium hover:text-[var(--primary)] hover:border-[var(--primary)] hover:bg-[var(--color-surface-1)] transition-colors">
+ <button className="w-full flex items-center justify-center gap-2 py-6 border-2 border-dashed border-primary/40 rounded-[var(--radius-lg)] text-[var(--color-text-secondary)] font-medium hover:text-[var(--primary)] hover:border-[var(--primary)] hover:bg-[var(--color-surface-1)] transition-colors">
  <PlusCircle className="w-5 h-5" /> Add New Module
  </button>
  </div>
@@ -181,12 +181,12 @@ export default function OnlineBuilder() {
  value={description}
  onChange={(e) => setDescription(e.target.value)}
  rows={5}
- className="w-full bg-[var(--color-surface-0)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]"
+ className="w-full bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]"
  placeholder="Brief overview of what students will learn..."
  />
  </div>
  {courseId && (
- <div className="pt-6 mt-6 border-t border-[var(--color-border-subtle)]">
+ <div className="pt-6 mt-6 border-t border-primary/40">
  <h4 className="text-[var(--color-error)] font-semibold mb-2">Danger Zone</h4>
  <p className="text-xs text-[var(--color-text-secondary)] mb-4">Deleting this course will permanently remove it and all associated content. This action cannot be undone.</p>
  <button onClick={handleDelete} disabled={deleteMutation.isPending} className="px-4 py-2 bg-[var(--color-error-subtle)] text-[var(--color-error)] text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">
@@ -206,7 +206,7 @@ export default function OnlineBuilder() {
  value={price}
  onChange={(e) => setPrice(e.target.value)}
  placeholder="0.00"
- className="w-full bg-[var(--color-surface-0)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]"
+ className="w-full bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]"
  />
  <p className="text-xs text-[var(--color-text-tertiary)] mt-1">Leave at 0 to make this course free.</p>
  </div>
