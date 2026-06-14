@@ -157,7 +157,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
  setIsGenerating(true);
 
  const userMsg = { role: 'user', content: text};
- const updatedMsgs = [...activeSession.messages, userMsg];
+ const updatedMsgs = [...(activeSession.messages || []), userMsg];
  
  let title = activeSession.title;
  if (title === 'New WorkSlate') title = text.slice(0, 30) + '...';
@@ -344,7 +344,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
 
  {/* Chat Area */}
  <div className="flex-1 overflow-y-auto p-4 space-y-5 scrollbar-thin bg-card/50">
- {activeSession?.messages.map((m, i) => (
+ {activeSession?.messages?.map((m, i) => (
  <motion.div 
  initial={{ opacity: 0, y: 8}}
  animate={{ opacity: 1, y: 0}}

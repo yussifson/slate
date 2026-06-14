@@ -376,7 +376,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
  <Droppable droppableId="fieldsList">
  {(provided) => (
  <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2" {...provided.droppableProps} ref={provided.innerRef}>
- {fields.map((f, i) => (
+ {(fields || []).map((f, i) => (
  <Draggable key={`field-${i}`} draggableId={`field-${i}`} index={i}>
  {(provided, snapshot) => (
  <div 
