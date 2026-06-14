@@ -106,7 +106,7 @@ export default function CustomPageViewer() {
  <div className="flex flex-col items-center justify-center py-20 text-center">
  <Sparkles className="w-16 h-16 text-muted-foreground opacity-30 mb-4" />
  <h2 className="text-xl font-bold text-card-foreground">Page Not Found</h2>
- <p className="text-muted-foreground mt-2 max-w-md">The custom page "{pageId}" does not exist. Use Orbit Bolt to generate it.</p>
+ <p className="text-muted-foreground mt-2 max-w-md">The custom page "{pageId}" does not exist. Use Orbit Build to generate it.</p>
  <Button onClick={() => setIsOrbitBoltOpen(true)} className="mt-6 gap-2 bg-primary hover:bg-primary/90 text-white">
  <Sparkles className="w-4 h-4" /> Generate with OrbitBuild
  </Button>
@@ -237,7 +237,7 @@ export default function CustomPageViewer() {
  <div className="text-xs bg-slate-900 text-primary/70 p-3 rounded-lg font-mono overflow-x-auto whitespace-pre-wrap break-all">
  {JSON.stringify(selectedBlock?.dataConfig, null, 2)}
  </div>
- <p className="text-[10px] text-muted-foreground">To change data binding, ask Orbit Bolt AI.</p>
+ <p className="text-[10px] text-muted-foreground">To change data binding, ask Orbit Build AI.</p>
  </div>
 
  </div>

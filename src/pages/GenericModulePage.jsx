@@ -16,6 +16,7 @@ import { useNavigate} from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription} from "@/components/ui/dialog";
 import OrbitBoltWorkspace from "@/components/orbitbolt/OrbitBoltWorkspace";
 import SecureSandbox from "@/components/orbitbolt/SecureSandbox";
+import PageRenderer from "@/components/pages/PageRenderer";
 
 // Lazy-loaded view components for new module types
 const DynamicCalendarView = lazy(() => import("@/components/ui/DynamicCalendarView"));
@@ -239,16 +240,20 @@ export default function GenericModulePage({ title: propTitle, description: propD
  );
 
  
- const currentView = activeView === 'default' ? pageType : activeView;
- switch (currentView) {
- case 'analytics':
+  const currentView = activeView === 'default' ? pageType : activeView;
+  switch (currentView) {
+    case 'universal_component':
+      return moduleDef.config?.component_id ? React.createElement(lazy(() => import(`@/components/universal/${moduleDef.config.component_id}.jsx`).catch(() => ({ default: () => <div className="mt-6 p-8 border border-dashed rounded-xl border-red-500/50 bg-red-50 text-red-500 text-center">Component not found</div> })))) : null;
+    case 'custom_page':
+      return <PageRenderer schema={moduleDef.config || {}} editMode={false} />;
 
- case 'dashboard':
- return (
- <div className="mt-6">
- <DynamicDashboard records={records} moduleDef={moduleDef} />
- </div>
- );
+    case 'analytics':
+    case 'dashboard':
+      return (
+        <div className="mt-6">
+          <DynamicDashboard records={records} moduleDef={moduleDef} />
+        </div>
+      );
 
  case 'kanban':
  return (

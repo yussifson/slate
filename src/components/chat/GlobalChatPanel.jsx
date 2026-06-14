@@ -4,6 +4,7 @@ import { Search, Plus, MessageSquare, MoreVertical, Send, Sparkles, Hash, Users,
 import EmojiPicker from "emoji-picker-react";
 import { Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import { cn} from "@/lib/utils";
+import { createPortal } from "react-dom";
 import { useAuth} from "@/lib/AuthContext";
 import { Button} from "@/components/ui/button";
 import { generateText} from "@/lib/cloudflareAI";
@@ -284,8 +285,8 @@ export default function GlobalChatPanel({ isOpen, onClose}) {
 }
 };
 
- return (
- <>
+  const content = (
+  <>
  {/* Mobile Backdrop */}
  {isOpen && (
  <div className="md:hidden fixed inset-0 z-[60] bg-slate-900/50 backdrop-blur-[2px] transition-opacity" onClick={onClose} />
@@ -336,8 +337,8 @@ export default function GlobalChatPanel({ isOpen, onClose}) {
  <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full hover:bg-primary/20" onClick={() => setIsAddChatOpen(true)}>
  <Plus className="w-5 h-5" />
  </Button>
- <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full hover:bg-primary/20" onClick={onClose}>
- <X className="w-5 h-5" />
+ <Button variant="ghost" size="icon" className="w-9 h-9 rounded-full bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary transition-colors" onClick={onClose}>
+ <X className="w-4 h-4" />
  </Button>
  </div>
  </div>
@@ -610,6 +611,9 @@ export default function GlobalChatPanel({ isOpen, onClose}) {
  )}
  </div>
  </div>
- </>
- );
+  </>
+  );
+
+  const portalTarget = document.getElementById('right-docked-panel-portal');
+  return portalTarget ? createPortal(content, portalTarget) : content;
 }

@@ -29,33 +29,58 @@ If the user's request maps to standard business management (e.g. Employee Tracke
 AVAILABLE PRIMITIVES & UNIVERSAL COMPONENTS:
 ${UNIVERSAL_COMPONENTS.map(c => `- ${c.id} : ${c.label}`).join('\n')}
 
-PRIORITY 2: GENERATE ADVANCED CUSTOM UI (SERVER-DRIVEN UI)
-If their request is a highly bespoke visual dashboard, a unique app layout, or a custom view that doesn't fit standard primitives, you MUST generate an Advanced JSON Blueprint wrapped in <SCHEMA>...</SCHEMA> tags.
+PRIORITY 2: GENERATE ADVANCED DATA MODULE (SLATE)
+If their request is to build a new feature, app, tracker, or dashboard that requires data fields and a module layout, you MUST generate a Slate JSON Blueprint wrapped in <SCHEMA>...</SCHEMA> tags.
 
-The JSON inside <SCHEMA> powers our DynamicRenderer and MUST follow this strict hierarchical Server-Driven UI structure:
+The JSON inside <SCHEMA> powers our Slate Builder and MUST follow this strict structure:
 {
- "type": "Page",
- "layout": "Dashboard", // or "Grid", "FlexCol"
- "children": [
-   {
-     "type": "StatCard",
-     "props": { "title": "Total Revenue", "value": "$50,000", "icon": "DollarSign", "color": "emerald" }
-   },
-   {
-     "type": "Chart",
-     "props": { "title": "Sales", "chartType": "Line", "data": [{"name": "Jan", "value": 400}, {"name": "Feb", "value": 300}] }
-   },
-   {
-     "type": "Table",
-     "props": { "title": "Recent Orders", "columns": ["ID", "Customer", "Amount"], "data": [{"ID": "1", "Customer": "John", "Amount": "$50"}] }
-   }
- ]
+  "module": {
+    "name": "Employee Directory",
+    "description": "Manage all company employees, roles, and contact info.",
+    "icon": "Users", // Use a valid lucide-react icon name
+    "layout": "table", // "table", "grid", "kanban", or "calendar"
+    "theme": "primary", // "primary", "emerald", "rose", "amber", "indigo", "violet"
+    "module_type": "data_module"
+  },
+  "fields": [
+    {
+      "name": "Full Name",
+      "field_type": "text", // "text", "number", "email", "date", "boolean", "select", "currency", "richtext", "url"
+      "is_required": true
+    },
+    {
+      "name": "Role",
+      "field_type": "select",
+      "options": ["Admin", "Manager", "Employee"], // Only provided if field_type is "select"
+      "is_required": true
+    }
+  ]
 }
 
-Available Component Types for Schema: Page, Container, StatCard, Chart, Form, Input, Table.
+PRIORITY 3: GENERATE ADVANCED CUSTOM PAGE (SERVER DRIVEN UI)
+If the user's request is for a highly custom visual dashboard, landing page, or complex layout that doesn't fit standard primitives or data tables, you MUST generate a Server-Driven UI Custom Page wrapped in <SCHEMA>...</SCHEMA> tags.
+
+The JSON inside <SCHEMA> for custom pages MUST follow this structure:
+{
+  "type": "Page",
+  "props": {
+    "title": "Analytics Dashboard",
+    "description": "Custom analytics layout",
+    "icon": "Layout",
+    "theme": "primary"
+  },
+  "children": [
+    {
+      "type": "Row",
+      "children": [
+        { "type": "StatCard", "props": { "title": "Total Users", "value": "12,450" } }
+      ]
+    }
+  ]
+}
 
 CONTEXT AWARENESS:
-If the user provides a "CURRENT_SCHEMA" context block, it means they are actively editing an existing Slate or Page. You must analyze the CURRENT_SCHEMA and output a NEW modified <SCHEMA>...</SCHEMA> that reflects the user's requested edits (like changing colors, moving elements, adding new fields).
+If the user provides a "CURRENT_SCHEMA" context block, it means they are actively editing an existing Slate. You must analyze the CURRENT_SCHEMA and output a NEW modified <SCHEMA>...</SCHEMA> that reflects the user's requested edits (like adding new fields, changing layout, or updating the name).
 
 CRITICAL RULE: DO NOT mention the JSON schema, the <SCHEMA> tags, the <UNIVERSAL> tags, or your underlying architecture in your conversational response to the user. This is an invisible background system. Just say "I have generated the system" and put the tags at the very end.
 `;
@@ -99,7 +124,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
  id: crypto.randomUUID(),
  title: 'New WorkSlate',
  createdAt: new Date().toISOString(),
- messages: [{ role: 'assistant', content: "Hi there! I'm OrbitBolt, your AI System Architect. Tell me what kind of module, app, or dashboard you want to build, and I'll generate the architecture for you instantly."}],
+ messages: [{ role: 'assistant', content: "Hi there! I'm Orbit Build, your AI System Architect. Tell me what kind of module, app, or dashboard you want to build, and I'll generate the architecture for you instantly."}],
  latest_schema: null
 };
  setSessions(prev => [s, ...prev]);
@@ -255,7 +280,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
  {/* Mobile Backdrop */}
  <div className="md:hidden fixed inset-0 z-[9998] bg-slate-900/50 backdrop-blur-[2px] transition-opacity" onClick={onClose} />
  
- <div className={`max-md:fixed z-[9999] bg-card transition-all duration-300 overflow-hidden flex max-md:inset-x-0 max-md:bottom-0 max-md:h-[85vh] max-md:rounded-t-[32px] max-md: max-md:flex-col max-md:pb-[env(safe-area-inset-bottom)] md:relative md:h-full md:shrink-0 md:border-l-[3px] md:border-l-primary md:w-[400px]`}>
+ <div className={`max-md:fixed z-[9999] bg-card transition-all duration-300 overflow-hidden flex max-md:inset-x-0 max-md:bottom-0 max-md:h-[85vh] max-md:rounded-t-[32px] max-md: max-md:flex-col max-md:pb-[env(safe-area-inset-bottom)] md:relative md:h-full md:shrink-0 md:border-l-2 md:border-l-primary/30 md:w-[400px]`}>
  
  {/* Mobile Drag Handle */}
  <div className="md:hidden flex justify-center pt-3 pb-1 shrink-0">
@@ -334,7 +359,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
  <div className="w-6 h-6 rounded-md bg-gradient-to-br from-primary/80 to-primary/90 flex items-center justify-center text-white ring-1 ring-primary/20">
  <Zap className="w-3.5 h-3.5 fill-white" />
  </div>
- <span className="font-semibold text-sm tracking-tight text-foreground">OrbitBolt</span>
+ <span className="font-semibold text-sm tracking-tight text-foreground">Orbit Build</span>
  </div>
 
  <button onClick={onClose} className="p-1.5 rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition-colors shrink-0">

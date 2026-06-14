@@ -18,6 +18,7 @@ import { useUndoableState} from "@/hooks/useUndoableState";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import OrbitBoltWorkspace from "@/components/orbitbolt/OrbitBoltWorkspace";
 import SecureSandbox from "@/components/orbitbolt/SecureSandbox";
+import PageRenderer from "@/components/pages/PageRenderer";
 
 // Lazy-loaded view components for new module types
 const DynamicCalendarView = React.lazy(() => import("@/components/ui/DynamicCalendarView"));
@@ -67,15 +68,16 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
  const { impersonatedCompany} = useImpersonation();
  const activeIndustry = sessionStorage.getItem('slate_industry_override') || impersonatedCompany?.industry_type || user?.company_industry || 'law';
 
- const initialState = {
- name: "",
- description: "",
- icon: "Blocks",
- layout: "table",
- theme: "primary",
- moduleType: "data_module",
- fields: [{ name: "name", field_type: "text", is_required: true, options: ""}]
-};
+  const initialState = {
+    name: "",
+    description: "",
+    icon: "Blocks",
+    layout: "table",
+    theme: "primary",
+    moduleType: "data_module",
+    fields: [{ name: "name", field_type: "text", is_required: true, options: ""}],
+    customConfig: null
+  };
 
  const [state, setState, undo, redo, canUndo, canRedo, setWithoutHistory] = useUndoableState(initialState);
  const { name, description, icon, layout, theme, moduleType, fields} = state;
@@ -166,50 +168,83 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
  setState({ ...state, fields: newFields});
 };
 
- // Called when OrbitBolt "Apply to Builder" is clicked
- const handleApplyBoltSchema = (schema) => {
- if (!schema) return;
- const mappedFields = (schema.fields && schema.fields.length > 0)
- ? schema.fields.map(f => ({
- name: f.name || "",
- field_type: f.field_type || "text",
- is_required: !!f.is_required,
- options: Array.isArray(f.options) ? f.options.join(", ") : (f.options || "")
-}))
- : state.fields;
+  // Called when OrbitBolt "Apply to Builder" is clicked
+  const handleApplyBoltSchema = (schema) => {
+    if (!schema) return;
+    
+    if (schema.isUniversal) {
+      setState(prev => ({
+        ...prev,
+        name: schema.name || prev.name || "Universal Component",
+        description: prev.description || "Generated Component",
+        icon: "Box",
+        moduleType: "universal_component",
+        customConfig: { component_id: schema.component_id }
+      }));
+    } else if (schema.type === 'Page') {
+      setState(prev => ({
+        ...prev,
+        name: schema.props?.title || prev.name || "Custom Page",
+        description: schema.props?.description || prev.description || "Custom Layout",
+        icon: schema.props?.icon || "Layout",
+        theme: schema.props?.theme || prev.theme || "primary",
+        moduleType: "custom_page",
+        customConfig: schema
+      }));
+    } else {
+      // Normal Data Module
+      const mappedFields = (schema.fields && schema.fields.length > 0)
+        ? schema.fields.map(f => ({
+            name: f.name || "",
+            field_type: f.field_type || "text",
+            is_required: !!f.is_required,
+            options: Array.isArray(f.options) ? f.options.join(", ") : (f.options || "")
+        }))
+        : state.fields;
 
- setState({
- name: schema.module?.name || name || "",
- description: schema.module?.description || description || "",
- icon: schema.module?.icon || icon || "Blocks",
- layout: schema.module?.layout || layout || "table",
- theme: schema.module?.theme || theme || "primary",
- moduleType: schema.module?.module_type || moduleType || "data_module",
- fields: mappedFields
-});
+      setState(prev => ({
+        ...prev,
+        name: schema.module?.name || prev.name || "",
+        description: schema.module?.description || prev.description || "",
+        icon: schema.module?.icon || prev.icon || "Blocks",
+        layout: schema.module?.layout || prev.layout || "table",
+        theme: schema.module?.theme || prev.theme || "primary",
+        moduleType: schema.module?.module_type || "data_module",
+        fields: mappedFields
+      }));
+    }
 
- toast({ title: "⚡ OrbitBuild Schema Applied!", description: "Review and customize your slate, then publish."});
-};
+    toast({ title: "⚡ OrbitBuild Schema Applied!", description: "Review and customize your slate, then publish."});
+  };
 
- const saveModule = async (status = 'published') => {
- if (!name.trim() || fields.length === 0) {
- toast({ title: "Validation Error", description: "Slate Name and at least 1 field are required.", variant: "destructive"});
- return;
-}
+  const saveModule = async (status = 'published') => {
+    if (!name.trim()) {
+      toast({ title: "Validation Error", description: "Slate Name is required.", variant: "destructive"});
+      return;
+    }
+    if (state.moduleType === 'data_module' && fields.length === 0) {
+      toast({ title: "Validation Error", description: "At least 1 field is required for a data module.", variant: "destructive"});
+      return;
+    }
 
- setIsSubmitting(true);
- try {
- const moduleId = isEditing ? id : crypto.randomUUID();
+    setIsSubmitting(true);
+    try {
+      const moduleId = isEditing ? id : crypto.randomUUID();
 
- const moduleData = {
- name,
- description,
- icon,
- status,
- is_active: true,
- industry_type: activeIndustry,
- config: { layout, theme, page_type: moduleType}
-};
+      const configData = { layout, theme, page_type: state.moduleType };
+      if (state.moduleType !== 'data_module' && state.customConfig) {
+        Object.assign(configData, state.customConfig);
+      }
+
+      const moduleData = {
+        name,
+        description,
+        icon,
+        status,
+        is_active: true,
+        industry_type: activeIndustry,
+        config: configData
+      };
 
  if (!isEditing) {
  moduleData.id = moduleId;
@@ -539,64 +574,68 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
  Interactive Environment
  </div>
  </div>
- <div className="p-6 flex-1 min-h-[600px] bg-background/50">
- {fields.filter(f => f.name.trim()).length > 0 ? (
- <div className="animate-in fade-in zoom-in-95 duration-300">
- <div className="mb-6 flex items-center gap-3">
- <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
- <Blocks className="w-5 h-5" />
- </div>
- <div>
- <h2 className="text-xl font-bold text-foreground">{name || "Untitled Slate"}</h2>
- <p className="text-sm text-muted-foreground">{description || "No description provided."}</p>
- </div>
- </div>
- 
- <React.Suspense fallback={<div className="p-8 text-center text-muted-foreground animate-pulse">Loading preview...</div>}>
- {(() => {
- const dummyData = generateDummyData(fields);
- const fieldDefs = fields.map((f, i) => ({ ...f, name: f.name.trim().replace(/ /g, '_').toLowerCase(), order_index: i}));
- 
- switch (moduleType) {
- case 'dashboard':
- return <DynamicDashboard data={dummyData} fieldDefinitions={fieldDefs} />;
- case 'kanban':
- return <DynamicKanbanView data={dummyData} fieldDefinitions={fieldDefs} />;
- case 'calendar_view':
- return <DynamicCalendarView data={dummyData} fieldDefinitions={fieldDefs} />;
- case 'document_manager':
- return <DynamicGrid data={dummyData} fieldDefinitions={fieldDefs} theme={theme} isDocumentManager={true} />;
- case 'directory':
- return <DynamicDirectoryView data={dummyData} fieldDefinitions={fieldDefs} />;
- case 'timeline':
- return <DynamicTimelineView data={dummyData} fieldDefinitions={fieldDefs} />;
- case 'gallery':
- return <DynamicGalleryView data={dummyData} fieldDefinitions={fieldDefs} />;
- case 'spreadsheet':
- return <DynamicSpreadsheetView data={dummyData} fieldDefinitions={fieldDefs} />;
- case 'report':
- return <DynamicReportView data={dummyData} fieldDefinitions={fieldDefs} />;
- case 'inventory':
- return <DynamicInventoryView data={dummyData} fieldDefinitions={fieldDefs} />;
- case 'crm_pipeline':
- return <DynamicPipelineView data={dummyData} fieldDefinitions={fieldDefs} />;
- case 'approval_workflow':
- return <DynamicApprovalView data={dummyData} fieldDefinitions={fieldDefs} />;
- case 'form_builder':
- return <DynamicFormWizard data={dummyData} fieldDefinitions={fieldDefs} />;
- case 'custom_sandbox':
- return <SecureSandbox code={state.config?.custom_code || ""} initialData={{ records: dummyData, fieldDefs}} />;
- case 'data_module':
- default:
- return layout === 'table' ? (
- <DynamicTable data={dummyData} fieldDefinitions={fieldDefs} />
- ) : (
- <DynamicGrid data={dummyData} fieldDefinitions={fieldDefs} theme={theme} />
- );
-}
-})()}
- </React.Suspense>
- </div>
+  <div className="p-6 flex-1 min-h-[600px] bg-background/50">
+    {((moduleType === 'data_module' && fields.filter(f => f.name.trim()).length > 0) || moduleType === 'universal_component' || moduleType === 'custom_page') ? (
+      <div className="animate-in fade-in zoom-in-95 duration-300">
+        <div className="mb-6 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+            <Blocks className="w-5 h-5" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-foreground">{name || "Untitled Slate"}</h2>
+            <p className="text-sm text-muted-foreground">{description || "No description provided."}</p>
+          </div>
+        </div>
+        
+        <React.Suspense fallback={<div className="p-8 text-center text-muted-foreground animate-pulse">Loading preview...</div>}>
+          {(() => {
+            const dummyData = generateDummyData(fields);
+            const fieldDefs = fields.map((f, i) => ({ ...f, name: f.name.trim().replace(/ /g, '_').toLowerCase(), order_index: i }));
+            
+            switch (moduleType) {
+              case 'universal_component':
+                return state.customConfig?.component_id ? React.createElement(React.lazy(() => import(`@/components/universal/${state.customConfig.component_id}.jsx`).catch(() => ({ default: () => <div className="p-8 border border-dashed rounded-xl border-red-500/50 bg-red-50 text-red-500 text-center">Component not found</div> })))) : null;
+              case 'custom_page':
+                return <PageRenderer schema={state.customConfig || {}} editMode={false} />;
+              case 'dashboard':
+                return <DynamicDashboard data={dummyData} fieldDefinitions={fieldDefs} />;
+              case 'kanban':
+                return <DynamicKanbanView data={dummyData} fieldDefinitions={fieldDefs} />;
+              case 'calendar_view':
+                return <DynamicCalendarView data={dummyData} fieldDefinitions={fieldDefs} />;
+              case 'document_manager':
+                return <DynamicGrid data={dummyData} fieldDefinitions={fieldDefs} theme={theme} isDocumentManager={true} />;
+              case 'directory':
+                return <DynamicDirectoryView data={dummyData} fieldDefinitions={fieldDefs} />;
+              case 'timeline':
+                return <DynamicTimelineView data={dummyData} fieldDefinitions={fieldDefs} />;
+              case 'gallery':
+                return <DynamicGalleryView data={dummyData} fieldDefinitions={fieldDefs} />;
+              case 'spreadsheet':
+                return <DynamicSpreadsheetView data={dummyData} fieldDefinitions={fieldDefs} />;
+              case 'report':
+                return <DynamicReportView data={dummyData} fieldDefinitions={fieldDefs} />;
+              case 'inventory':
+                return <DynamicInventoryView data={dummyData} fieldDefinitions={fieldDefs} />;
+              case 'crm_pipeline':
+                return <DynamicPipelineView data={dummyData} fieldDefinitions={fieldDefs} />;
+              case 'approval_workflow':
+                return <DynamicApprovalView data={dummyData} fieldDefinitions={fieldDefs} />;
+              case 'form_builder':
+                return <DynamicFormWizard data={dummyData} fieldDefinitions={fieldDefs} />;
+              case 'custom_sandbox':
+                return <SecureSandbox code={state.config?.custom_code || ""} initialData={{ records: dummyData, fieldDefs }} />;
+              case 'data_module':
+              default:
+                return layout === 'table' ? (
+                  <DynamicTable data={dummyData} fieldDefinitions={fieldDefs} />
+                ) : (
+                  <DynamicGrid data={dummyData} fieldDefinitions={fieldDefs} theme={theme} />
+                );
+            }
+          })()}
+        </React.Suspense>
+      </div>
  ) : (
  <div className="h-full flex flex-col items-center justify-center text-muted-foreground">
  <Zap className="w-12 h-12 mb-4 opacity-20 text-primary" />

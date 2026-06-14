@@ -15,7 +15,7 @@ import clsx from 'clsx';
 import { useNavigate} from 'react-router-dom';
 import { UNIVERSAL_COMPONENTS} from '@/config/universal_components';
 
-const SYSTEM_PROMPT = `You are OrbitBolt, an AI System Architect for Workslate.
+const SYSTEM_PROMPT = `You are Orbit Build, an AI System Architect for Workslate.
 You can converse naturally with the user, answer questions, and help them refine their ideas.
 
 CRITICAL: If the user is just saying "Hi", asking a question, or chatting normally WITHOUT asking you to build, create, or update a page/dashboard, you MUST NOT output special tags. Just reply conversationally.
@@ -98,7 +98,7 @@ export default function OrbitBoltPagesWorkspace({ onClose, onApplySchema}) {
  id: crypto.randomUUID(),
  title: 'New WorkSlate',
  createdAt: new Date().toISOString(),
- messages: [{ role: 'assistant', content: "Hi there! I'm OrbitBolt, your AI Page Architect. Tell me what kind of page, dashboard, or layout you want to build, and I'll assemble the React components for you instantly."}],
+ messages: [{ role: 'assistant', content: "Hi there! I'm Orbit Build, your AI Page Architect. Tell me what kind of page, dashboard, or layout you want to build, and I'll assemble the React components for you instantly."}],
  latest_schema: null
 };
  setSessions(prev => [s, ...prev]);
@@ -246,7 +246,7 @@ export default function OrbitBoltPagesWorkspace({ onClose, onApplySchema}) {
 };
 
  const workspaceContent = (
- <div className="max-md:fixed z-[9999] bg-card transition-all duration-300 overflow-hidden flex max-md:inset-x-0 max-md:bottom-0 max-md:h-[85vh] max-md:rounded-t-[32px] max-md:flex-col max-md:pb-[env(safe-area-inset-bottom)] md:relative md:h-full md:shrink-0 md:border-l-[3px] md:border-l-amber-500 md:w-[400px]">
+ <div className="max-md:fixed z-[9999] bg-card transition-all duration-300 overflow-hidden flex max-md:inset-x-0 max-md:bottom-0 max-md:h-[85vh] max-md:rounded-t-[32px] max-md:flex-col max-md:pb-[env(safe-area-inset-bottom)] md:relative md:h-full md:shrink-0 md:border-l-2 md:border-l-amber-500/30 md:w-[400px]">
  
  {/* History Sidebar */}
  <AnimatePresence>
@@ -319,7 +319,7 @@ export default function OrbitBoltPagesWorkspace({ onClose, onApplySchema}) {
  <div className="w-6 h-6 rounded-md bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white ring-1 ring-amber-500/20">
  <Zap className="w-3.5 h-3.5 fill-white" />
  </div>
- <span className="font-semibold text-sm tracking-tight text-foreground">OrbitBolt</span>
+ <span className="font-semibold text-sm tracking-tight text-foreground">Orbit Build</span>
  </div>
 
  <button onClick={onClose} className="p-1.5 rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition-colors shrink-0">

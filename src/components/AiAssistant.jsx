@@ -1012,4 +1012,7 @@ RULES FOR MULTI-STEP REASONING:
  </div>
  </>
  );
+
+ const portalTarget = document.getElementById('right-docked-panel-portal');
+ return portalTarget ? createPortal(content, portalTarget) : content;
 }
