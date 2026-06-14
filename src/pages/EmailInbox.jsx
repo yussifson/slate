@@ -2,7 +2,8 @@ import { useTranslation} from "react-i18next";
 import React, { useState} from "react";
 import { base44} from "@/api/base44Client";
 import { powerSync} from "@/api/PowerSyncConnector";
-import { useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery as useTanstackQuery } from "@tanstack/react-query";
+import { useQuery } from "@powersync/react";
 import { useAuth} from "@/lib/AuthContext";
 import { supabase} from "@/api/supabaseClient";
 import {
@@ -44,13 +45,12 @@ export default function EmailInbox() {
  );
 };
 
- const { data: emails = [], isLoading} = useQuery({
- queryKey: ["case-emails", companyId],
- queryFn: () => base44.entities.CaseEmail.filter({ company_id: companyId}),
- enabled: !!companyId,
-});
+  const { data: emails = [], isLoading } = useQuery(
+    companyId ? `SELECT * FROM case_emails WHERE company_id = ?` : `SELECT * FROM case_emails WHERE 1=0`,
+    companyId ? [companyId] : []
+  );
 
- const { data: staff = []} = useQuery({
+ const { data: staff = []} = useTanstackQuery({
  queryKey: ["staff", companyId],
  queryFn: async () => {
  const { data} = await powerSync.execute('SELECT * FROM profiles WHERE company_id = ?', [companyId]).then(res => ({ data: res.rows._array}));
@@ -59,7 +59,7 @@ export default function EmailInbox() {
  enabled: !!companyId,
 });
 
- const { data: clients = []} = useQuery({
+ const { data: clients = []} = useTanstackQuery({
  queryKey: ["clients", companyId],
  queryFn: () => base44.entities.Client.filter({ company_id: companyId}),
  enabled: !!companyId,
@@ -106,36 +106,40 @@ export default function EmailInbox() {
     },
   });
 
- const userEmail = user?.email?.toLowerCase() || "";
- const userName = user?.full_name?.toLowerCase() || "";
+  const userEmail = user?.email?.toLowerCase() || "";
+  const userName = user?.full_name?.toLowerCase() || "";
 
- const filteredEmails = emails.filter(e =>
- !search ||
- e.subject?.toLowerCase().includes(search.toLowerCase()) ||
- e.sender_email?.toLowerCase().includes(search.toLowerCase()) ||
- e.recipient_email?.toLowerCase().includes(search.toLowerCase())
- ).sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
+  const filteredEmails = emails.filter(e =>
+    !search ||
+    e.subject?.toLowerCase().includes(search.toLowerCase()) ||
+    e.sender_email?.toLowerCase().includes(search.toLowerCase()) ||
+    e.recipient_email?.toLowerCase().includes(search.toLowerCase())
+  ).sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
 
- let displayedEmails = filteredEmails;
- if (activeTab === "sent") {
- displayedEmails = filteredEmails.filter(e => {
- const sender = (e.sender_email || "").toLowerCase();
- return sender === userEmail || (userName && sender.includes(userName));
-});
-} else if (activeTab === "inbox") {
- displayedEmails = filteredEmails.filter(e => {
- const sender = (e.sender_email || "").toLowerCase();
- return sender !== userEmail && !(userName && sender.includes(userName));
-});
-} else if (activeTab === "starred") {
- displayedEmails = filteredEmails.filter(e => starredEmails.includes(e.id));
-}
+  // Determine lists independent of active tab for counts
+  const inboxEmails = filteredEmails.filter(e => {
+    const sender = (e.sender_email || "").toLowerCase();
+    const recipient = (e.recipient_email || "").toLowerCase();
+    return recipient.includes(userEmail) || (sender !== userEmail && !(userName && sender.includes(userName)));
+  });
 
- const NAV_ITEMS = [
- { id: "inbox", label: "Inbox", icon: Inbox, count: displayedEmails.length},
- { id: "sent", label: "Sent", icon: Send},
- { id: "starred", label: "Starred", icon: Star},
- ];
+  const sentEmails = filteredEmails.filter(e => {
+    const sender = (e.sender_email || "").toLowerCase();
+    return sender === userEmail || (userName && sender.includes(userName));
+  });
+
+  const starredEmailsList = filteredEmails.filter(e => starredEmails.includes(e.id));
+
+  // Select displayed emails based on tab
+  let displayedEmails = inboxEmails;
+  if (activeTab === "sent") displayedEmails = sentEmails;
+  if (activeTab === "starred") displayedEmails = starredEmailsList;
+
+  const NAV_ITEMS = [
+    { id: "inbox", label: "Inbox", icon: Inbox, count: inboxEmails.length },
+    { id: "sent", label: "Sent", icon: Send, count: sentEmails.length },
+    { id: "starred", label: "Starred", icon: Star, count: starredEmailsList.length },
+  ];
 
  return (
  <div className="flex h-[calc(100vh-100px)] overflow-hidden rounded-xl border border-primary/40 bg-card ">
