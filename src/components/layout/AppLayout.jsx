@@ -268,9 +268,9 @@ export default function AppLayout() {
  toggleBolt={toggleBolt}
  />
  <div className="flex-1 relative flex flex-col overflow-hidden">
- <main className="flex-1 w-full mx-auto pb-[calc(6rem+env(safe-area-inset-bottom))] md:pb-6 overflow-y-auto">
- <Outlet />
- </main>
+  <main className="flex-1 w-full mx-auto px-6 md:px-8 lg:px-10 pt-6 pb-[calc(6rem+env(safe-area-inset-bottom))] md:pb-6 overflow-y-auto">
+    <Outlet />
+  </main>
  <GlobalVideoOverlay />
  </div>
  </div>
